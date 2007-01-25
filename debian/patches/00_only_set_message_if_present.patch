@@ -1,0 +1,28 @@
+Wed Jan 24 14:03:29 CET 2007  Sjoerd Simons <sjoerd@luon.net>
+  * Don't Add the message parameter in the PresenceUpdate signal if there is no status message
+diff -rN -u old-telepathy-gabble/src/gabble-connection.c new-telepathy-gabble/src/gabble-connection.c
+--- old-telepathy-gabble/src/gabble-connection.c	2007-01-25 15:03:17.000000000 +0100
++++ new-telepathy-gabble/src/gabble-connection.c	2007-01-25 15:03:17.000000000 +0100
+@@ -2170,14 +2170,16 @@
+           status_message = NULL;
+         }
+ 
+-      message = g_new0 (GValue, 1);
+-      g_value_init (message, G_TYPE_STRING);
+-      g_value_set_static_string (message, status_message);
+-
+       parameters = g_hash_table_new_full (g_str_hash, g_str_equal, NULL,
+           (GDestroyNotify) destroy_the_bastard);
++      if (status_message != NULL) {
++        message = g_new0 (GValue, 1);
++        g_value_init (message, G_TYPE_STRING);
++        g_value_set_static_string (message, status_message);
++
+ 
+-      g_hash_table_insert (parameters, "message", message);
++        g_hash_table_insert (parameters, "message", message);
++      }
+ 
+       contact_status = g_hash_table_new_full (g_str_hash, g_str_equal, NULL,
+           (GDestroyNotify) g_hash_table_destroy);
+

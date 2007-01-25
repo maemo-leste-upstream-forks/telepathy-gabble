@@ -1,8 +1,18 @@
-telepathy-gabble (0.5.0-2) UNRELEASED; urgency=low
+telepathy-gabble (0.5.0-2) unstable; urgency=low
 
-  * Added telepathy-gabble-dbg package. 
+  [ Riccardo Setti ]
+  * Added telepathy-gabble-dbg package.
 
- -- Riccardo Setti <giskard@debian.org>  Sat, 30 Dec 2006 12:39:20 +0100
+  [ Sjoerd Simons ]
+  * debian/patches/00_only_set_message_if_present.patch
+    - Don't add an optional message property in PresenceUpdate if the contact
+    didn't have a status message (from upstream darcs)
+  * debian/patches/01_first_update_cache_then_use_it.patch
+    - First update the cache and then proccess the information (from upstream
+    darcs)
+
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Thu, 25 Jan 2007 15:09:43 +0100
 
 telepathy-gabble (0.5.0-1) unstable; urgency=low
 
