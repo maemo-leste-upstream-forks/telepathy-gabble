@@ -17,6 +17,6 @@ common-binary-post-install-arch:: list-missing
 # Man page
 common-post-build-arch::
 	sed -e s!@libexecdir@!/usr/lib/telepathy! \
-		< debian/telepathy-gabble.8.in
+		< debian/telepathy-gabble.8.in \
 		> telepathy-gabble.8
 DEB_INSTALL_MANPAGES_telepathy-gabble := telepathy-gabble.8
