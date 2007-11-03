@@ -1,6 +1,11 @@
 #!/usr/bin/make -f
 DEB_AUTO_CLEANUP_RCS            := yes
-  
+
+# Upstream releases are going to move CMs to libexecdir soon...
+DEB_CONFIGURE_LIBEXECDIR := "\$${prefix}/lib/telepathy"
+# but haven't done so yet, so let's give Debian a head start
+DEB_CONFIGURE_EXTRA_FLAGS := --bindir=$(DEB_CONFIGURE_LIBEXECDIR)
+
 include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
@@ -8,3 +13,10 @@ include /usr/share/cdbs/1/rules/simple-patchsys.mk
 # List any files which are not installed
 include /usr/share/cdbs/1/rules/utils.mk
 common-binary-post-install-arch:: list-missing
+
+# Man page
+common-post-build-arch::
+	sed -e s!@libexecdir@!/usr/lib/telepathy! \
+		< debian/telepathy-gabble.8.in
+		> telepathy-gabble.8
+DEB_INSTALL_MANPAGES_telepathy-gabble := telepathy-gabble.8
