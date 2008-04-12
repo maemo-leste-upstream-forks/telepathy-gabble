@@ -1,12 +1,18 @@
 telepathy-gabble (0.7.3-2) UNRELEASED; urgency=low
 
+  [ Simon McVittie ]
   * Instead of shipping documentation in the -dbg package, ship a symlink
     to the main package's documentation
   * Update Build-Depends for the 0.7.3 version, which needs
     telepathy-glib (>= 0.7.0) (in practice, this is easily satisfied by the
     versions in both lenny and sid, so shouldn't be a problem)
 
- -- Simon McVittie <smcv@ianadd.pseudorandom.co.uk>  Fri, 11 Apr 2008 17:57:15 +0100
+  [ Sjoerd Simons ]
+  * debian/patches/00_retry_media_session_initiation_on_stream_removal.patch
+    - Added. When a media stream is removed before a session initiation is
+    send recheck if an initiation should be send (from upstream darcs)
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Sat, 12 Apr 2008 17:45:51 +0200
 
 telepathy-gabble (0.7.3-1) unstable; urgency=low
 
