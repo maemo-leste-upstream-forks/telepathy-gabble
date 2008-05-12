@@ -1,0 +1,17 @@
+Fri May  9 13:14:14 BST 2008  Simon McVittie <simon.mcvittie@collabora.co.uk>
+  * Don't claim support for the CallStates interface unless we're actually compiling it (it's effectively #if 0 at the moment)
+
+diff -rN -u -p old-tmphMeJ2W/src/gabble-media-channel.c new-tmphMeJ2W/src/gabble-media-channel.c
+--- old-tmphMeJ2W/src/gabble-media-channel.c	2008-05-09 13:20:22.805431221 +0100
++++ new-tmphMeJ2W/src/gabble-media-channel.c	2008-05-09 13:20:22.849433971 +0100
+@@ -713,7 +713,9 @@ gabble_media_channel_get_interfaces (TpS
+                                      DBusGMethodInvocation *context)
+ {
+   const gchar *interfaces[] = {
++#ifdef WITH_CALL_STATE
+       TP_IFACE_CHANNEL_INTERFACE_CALL_STATE,
++#endif
+       TP_IFACE_CHANNEL_INTERFACE_GROUP,
+       GABBLE_IFACE_CHANNEL_INTERFACE_HOLD,
+       TP_IFACE_CHANNEL_INTERFACE_MEDIA_SIGNALLING,
+
