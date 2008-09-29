@@ -1,0 +1,293 @@
+telepathy-gabble 0.7.9 (2008-09-29)
+===================================
+
+The "danger! danger!" release.
+
+Our unstable-branch releases are usually pretty stable in practice, but we've
+just merged 10 months' OLPC work and some fairly fundamental internal changes,
+so you might want to restrict this one to experimental distributions like
+Debian experimental and Fedora rawhide for now. We'll do a 0.7.10 release
+once it's had some more testing.
+
+Requirements:
+
+* telepathy-glib >= 0.7.16
+* GLib >= 2.16
+
+Enhancements:
+
+* Implement the Requests API introduced in spec 0.17.11 and extended in 0.17.12
+
+* Save contacts' aliases into the roster for massive bandwidth savings (in
+  conjunction with avatar caching, this should mean we don't have to fetch
+  everyone's vCard every time we connect to the server)
+
+* Merge support for the "gadget", an OLPC-specific server component that
+  supports browsing for buddies and activities
+
+* When running tests under valgrind, use the same options as in telepathy-glib
+
+telepathy-gabble 0.7.8 (2008-08-19)
+===================================
+
+The "Hildesheim Flugplatz" release.
+
+telepathy-gabble is now maintained in git instead of darcs. See README for
+details.
+
+Requirements:
+
+* telepathy-glib >= 0.7.14
+* To build from git, automake 1.9 (although 0.7.7 actually required this too)
+
+Enhancements:
+
+* Implement the Contacts interface for bulk contact-handle inspection
+
+* Implement spec 0.17.9 (add the TargetID property to all channels)
+
+* Start to port channel factories away from TpChannelFactoryIface in
+  preparation for implementing the Requests API
+
+* Add a simple smoke-test for SimplePresence
+
+* Use tp_debug_divert_messages() rather than our own copy of it, since we
+  now depend on a new enough telepathy-glib anyway
+
+Fixes:
+
+* Obey the Telepathy spec by giving 'dnd' presence type Presence_Type_Busy
+  and not Presence_Type_Away
+
+* Fix the test suite so test failure causes a nonzero exit status
+  (regression in 0.7.7)
+
+* Fix test-si-tubes and test-disco to run the test all the way through
+  (regression in 0.7.7)
+
+* Use the pedantically correct marshaller for a GArray, since GObject 2.17
+  actually checks for POINTER vs BOXED (regression in 0.7.7)
+
+* Remove unconditional debug messages in a few places
+
+telepathy-gabble 0.7.7 (2008-07-31)
+===================================
+
+The "still not in git" release.
+
+Requirements:
+
+* telepathy-glib >= 0.7.13
+
+Enhancements:
+
+* Implement XEP-0115 version 1.5 (hashed capabilities)
+
+* Implement Channel and Group properties on all channels, for round-trip
+  reduction if used with a recent client
+
+* Add infrastructure to implement planned properties InitiatorHandle,
+  InitiatorID, TargetID, Requested
+
+* In multi-user chat,
+  Group.GetHandleOwner(Group.GetSelfHandle()) == Connection.GetSelfHandle()
+
+* If a Text channel closes with messages still pending, reopen the text
+  channel, as though those messages had arrived just *after* closing it
+  (solving a race condition that could lead to messages being lost)
+
+* fd.o #14954: Set presence in MUCs to be the same as our global presence
+
+* fd.o #14955: Set nickname in MUCs to be the same as our alias for ourselves
+  (as set with Aliasing)
+
+* Implement SimplePresence as well as Presence
+
+Fixes:
+
+* Fix a reference leak when using (new-style) TLS
+
+* Fix a memory leak when invited to a MUC
+
+* Fix a possible assertion failure when we're sent an invalid MUC invitation
+
+* fd.o #16918: fix an access to freed memory when the vCard manager is
+  destroyed
+
+Miscellaneous:
+
+* Rename gabble-foo.[ch] to foo.[ch] (we like tab completion)
+
+* fd.o #14341: add a regression test (currently disabled, because the bug
+  is in Loudmouth)
+
+* Port most of the regression tests to a more comprehensible API
+
+telepathy-gabble 0.7.6 (2008-05-14)
+===================================
+
+The "my first Gabble release" release.
+
+Requirements:
+
+* telepathy-glib >= 0.7.8 is now required
+
+Enhancements:
+
+* Implement the Hold API using telepathy-glib rather than as an extension
+
+Fixes:
+
+* fd.o #15656: fix an inconsistency in audio/video capabilities
+
+* fd.o #15422: fix generation of extensions/extensions.html
+
+* fd.o #15904: fix a regression making the caller of an incoming call in
+  the remote pending set instead of the members one.
+
+
+telepathy-gabble 0.7.5 (2008-05-05)
+===================================
+
+The "what's my version again?" release.
+
+Fixes:
+
+* fd.o #15095: fix MUC contacts always appearing to be offline (and actually
+  include the patch this time) (regression in 0.7.0, probably)
+
+* fd.o #15311: update tests to work with python-twisted 8.0 (as seen in
+  current Debian unstable)
+
+* Ignore components with ID != 1 in native candidates - we can only signal
+  one component, and Farsight 2 reports RTCP components along with RTP ones
+
+* Don't assume that htmldir will be defined by autoconf (it's new in 2.59c,
+  and we only require >= 2.59; regression in 0.7.4)
+
+telepathy-gabble 0.7.4 (2008-05-01)
+===================================
+
+The "stop making coredumps, I want to go to the pub" release.
+
+Enhancements:
+
+* fd.o #14467: aggregate MembersChanged signals when joining MUCs, so we
+  get one big signal rather than lots of single-contact signals, potentially
+  reducing client round-trips
+
+* Re-enable some regression tests that were accidentally removed in 0.7.3
+
+* Build documentation for our extensions to XMPP by default
+
+Fixes:
+
+* fd.o #12791, Debian #446259: fix assertion failure with strange roster items
+
+* fd.o #14343: fix race condition that can lose messages between accepting
+  a D-Bus tube and actually connecting to it
+
+* fd.o #14602: update the StreamedMedia call API to telepathy-spec 0.17.3
+
+* fd.o #14806: when we add ourselves to the local-pending set for incoming
+  calls, set the caller as the actor
+
+* fd.o #15198: fix assertion failure when calling GetCapabilities on an invalid
+  handle
+
+* When removing a media stream before the initiate is sent, send it if possible
+
+* when blocking gtalk contacts, discard their presence
+
+* disconnect the connection if we don't receive a reply to the discovery
+  request for server features
+
+* stop using Automake 1.9 features, and prefer to autoreconf using 1.8 (if
+  available) to ensure that we don't accidentally re-add a 1.9 dependency
+
+* make sure teardown of the disco object doesn't crash if one of its callbacks
+  causes it to be destroyed (bug exposed by test-disco-no-reply.py regression
+  test)
+
+telepathy-gabble 0.7.3 (2008-04-11)
+===================================
+
+Requirements:
+
+* telepathy-glib >= 0.7.0 and Loudmouth >= 1.3.2 are now required
+
+Enhancements:
+
+* Implements the current draft of the Hold interface, which will be in
+  telepathy-spec 0.17.4 if all goes well
+
+* Improved Python regression test API and more regression tests:
+  - outgoing Jingle calls
+  - holding calls
+
+Fixes:
+
+* Only emit one AvatarRetrieved signal per contact, no matter how many
+  requests there were for their avatar (fd.o #12465)
+
+* Explicitly say we require GNU make, and turn off Automake portability
+  warnings (fd.o #14020)
+
+* Don't emit NewStreamHandler signals multiple times if Ready is called
+  multiple times on the SessionHandler (a bug in stream-engine used to
+  cause this to happen sometimes)
+
+* Assorted code cleanup prompted by adding more gcc warnings
+
+telepathy-gabble 0.7.2 (2008-01-17)
+===================================
+* Improvements to build system and code generation
+* Tubes improvements
+* Test improvements
+  * Improvements to test framework
+  * Most of the MUC tube code path is tested
+* Saner behaviour of old-ssl/server/port/require-encryption flags
+* Removal of unneccessary support hacks for N800-H263 and Nokia's
+  Instant Video
+
+telepathy-gabble 0.7.1 (2007-11-12)
+===================================
+This version detects whether Loudmouth >= 1.3.2 is present at build time;
+if found, it uses STARTTLS whenever available, enables support for SASL and
+SRV lookups, and has a require-encryption connection manager parameter which
+makes the connection fail if STARTTLS cannot be used.
+
+It also takes advantage of the debug infrastructure changes in
+telepathy-glib 0.6.1 to separate the concepts of debug flags and
+persistence.
+
+telepathy-gabble 0.7.0 (2007-11-07)
+===================================
+This is the first release on the 0.7 development branch. The main change
+is the addition of Tubes - we've finally managed to get the various
+OLPC-specific branches reviewed and merged. We aim to get this release
+into Update.1 of the OLPC system software.
+
+Highlights:
+
+* All the same bug fixes as stable branch release 0.6.1
+
+* Tubes, a generic transport for collaborative applications:
+  * multi-user D-Bus tubes, where the collaboration is in a MUC (chat room)
+    which behaves a lot like the D-Bus daemon
+  * one-to-one D-Bus tubes, which behave a lot like peer-to-peer D-Bus
+    connections
+  * multi-user stream tubes, where one user in a MUC exports a Unix,
+    IPv4 or IPv6 server socket and other users can connect to it
+  * one-to-one stream tubes, just like multi-user but without the MUC
+
+* Support for the OLPC Activity and Buddy abstractions
+
+* A man page and some protocol documentation
+
+* The connection manager binary now installs to $libexecdir -
+  distributors take note!
+
+D-Bus tubes require libdbus-1 version 1.0.2 or better; if you compile
+against an older version of libdbus you won't get D-Bus tubes support.
+
