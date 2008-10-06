@@ -10,7 +10,7 @@ To get the fully patched source: make -f debian/rules patch
 To revert to what's in git: make -f debian/rules unpatch
 
 To add a patch: obtain a diff (preferably, use git format-patch after
-adding changes to the upstream branch) and put it in debian/patches
+adding changes to the debian-patches git branch) and put it in debian/patches
 
 To remove an existing patch: delete it from debian/patches
 
@@ -42,6 +42,12 @@ The branch 'upstream' is a copy of the upstream master branch:
     git+ssh://git.collabora.co.uk/git/telepathy-gabble.git
     git checkout upstream
     git merge collabora/master
+
+The branch 'debian-patches' is 'upstream' plus any patches needed for Debian.
+It should be rebased on upstream after each upstream release.
+
+    git checkout debian-patches
+    git rebase upstream
 
 The branch 'tarballs' is a copy of the contents of upstream tarballs:
 
