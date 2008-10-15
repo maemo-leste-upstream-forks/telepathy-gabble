@@ -53,15 +53,14 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libgabble_convenience_la_DEPENDENCIES =  \
 	$(top_builddir)/extensions/libgabble-extensions.la
-am__libgabble_convenience_la_SOURCES_DIST = libmd5-rfc/md5.c \
-	libmd5-rfc/md5.h sha1/sha1.h sha1/sha1.c tube-dbus.h \
-	tube-dbus.c base64.h base64.c bytestream-factory.h \
-	bytestream-factory.c bytestream-ibb.h bytestream-ibb.c \
-	bytestream-iface.h bytestream-iface.c bytestream-muc.h \
-	bytestream-muc.c capabilities.h capabilities.c caps-hash.h \
-	caps-hash.c conn-aliasing.h conn-aliasing.c conn-avatars.h \
-	conn-avatars.c conn-olpc.h conn-olpc.c conn-presence.h \
-	conn-presence.c connection.h connection.c connection-manager.h \
+am__libgabble_convenience_la_SOURCES_DIST = tube-dbus.h tube-dbus.c \
+	base64.h base64.c bytestream-factory.h bytestream-factory.c \
+	bytestream-ibb.h bytestream-ibb.c bytestream-iface.h \
+	bytestream-iface.c bytestream-muc.h bytestream-muc.c \
+	capabilities.h capabilities.c caps-hash.h caps-hash.c \
+	conn-aliasing.h conn-aliasing.c conn-avatars.h conn-avatars.c \
+	conn-olpc.h conn-olpc.c conn-presence.h conn-presence.c \
+	connection.h connection.c connection-manager.h \
 	connection-manager.c debug.h debug.c disco.h disco.c error.c \
 	error.h gabble.c gabble.h im-channel.h im-channel.c \
 	im-factory.h im-factory.c media-channel.h media-channel.c \
@@ -78,22 +77,21 @@ am__libgabble_convenience_la_SOURCES_DIST = libmd5-rfc/md5.c \
 	tubes-channel.h tubes-channel.c tube-stream.h tube-stream.c \
 	types.h util.h util.c vcard-manager.h vcard-manager.c
 @HAVE_DBUS_TUBE_TRUE@am__objects_1 = tube-dbus.lo
-am__objects_2 = $(am__objects_1) base64.lo bytestream-factory.lo \
-	bytestream-ibb.lo bytestream-iface.lo bytestream-muc.lo \
-	capabilities.lo caps-hash.lo conn-aliasing.lo conn-avatars.lo \
-	conn-olpc.lo conn-presence.lo connection.lo \
-	connection-manager.lo debug.lo disco.lo error.lo gabble.lo \
-	im-channel.lo im-factory.lo media-channel.lo media-session.lo \
-	media-stream.lo media-factory.lo muc-channel.lo muc-factory.lo \
-	olpc-activity.lo olpc-view.lo pubsub.lo presence.lo \
-	presence-cache.lo private-tubes-factory.lo register.lo \
-	request-pipeline.lo roster.lo roster-channel.lo \
-	roomlist-channel.lo roomlist-manager.lo text-mixin.lo \
-	tube-iface.lo tubes-channel.lo tube-stream.lo util.lo \
-	vcard-manager.lo
-am_libgabble_convenience_la_OBJECTS = md5.lo sha1.lo $(am__objects_2)
-am__objects_3 = gabble-signals-marshal.lo media-session-enumtypes.lo
-nodist_libgabble_convenience_la_OBJECTS = $(am__objects_3)
+am_libgabble_convenience_la_OBJECTS = $(am__objects_1) base64.lo \
+	bytestream-factory.lo bytestream-ibb.lo bytestream-iface.lo \
+	bytestream-muc.lo capabilities.lo caps-hash.lo \
+	conn-aliasing.lo conn-avatars.lo conn-olpc.lo conn-presence.lo \
+	connection.lo connection-manager.lo debug.lo disco.lo error.lo \
+	gabble.lo im-channel.lo im-factory.lo media-channel.lo \
+	media-session.lo media-stream.lo media-factory.lo \
+	muc-channel.lo muc-factory.lo olpc-activity.lo olpc-view.lo \
+	pubsub.lo presence.lo presence-cache.lo \
+	private-tubes-factory.lo register.lo request-pipeline.lo \
+	roster.lo roster-channel.lo roomlist-channel.lo \
+	roomlist-manager.lo text-mixin.lo tube-iface.lo \
+	tubes-channel.lo tube-stream.lo util.lo vcard-manager.lo
+am__objects_2 = gabble-signals-marshal.lo media-session-enumtypes.lo
+nodist_libgabble_convenience_la_OBJECTS = $(am__objects_2)
 libgabble_convenience_la_OBJECTS =  \
 	$(am_libgabble_convenience_la_OBJECTS) \
 	$(nodist_libgabble_convenience_la_OBJECTS)
@@ -265,9 +263,7 @@ CLEANFILES = $(BUILT_SOURCES)
 @HAVE_DBUS_TUBE_TRUE@    tube-dbus.h \
 @HAVE_DBUS_TUBE_TRUE@    tube-dbus.c
 
-
-# These are the bits we wrote, so we can be really strict about coding style
-libgabble_convenience_la_our_sources = \
+libgabble_convenience_la_SOURCES = \
     $(dbus_tube_sources) \
     base64.h \
     base64.c \
@@ -357,16 +353,6 @@ libgabble_convenience_la_our_sources = \
     util.c \
     vcard-manager.h \
     vcard-manager.c
-
-
-# we don't want to subject third-party source to whitespace removal -
-# it's more useful to keep it a verbatim copy
-libgabble_convenience_la_SOURCES = \
-    libmd5-rfc/md5.c \
-    libmd5-rfc/md5.h \
-    sha1/sha1.h \
-    sha1/sha1.c \
-    $(libgabble_convenience_la_our_sources)
 
 libgabble_convenience_la_LIBADD = \
    $(top_builddir)/extensions/libgabble-extensions.la
@@ -506,7 +492,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/im-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/im-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md5.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/media-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/media-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/media-session-enumtypes.Plo@am__quote@
@@ -526,7 +511,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roomlist-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roster-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roster.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sha1.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/text-mixin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-dbus.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-iface.Plo@am__quote@
@@ -556,20 +540,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-
-md5.lo: libmd5-rfc/md5.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT md5.lo -MD -MP -MF "$(DEPDIR)/md5.Tpo" -c -o md5.lo `test -f 'libmd5-rfc/md5.c' || echo '$(srcdir)/'`libmd5-rfc/md5.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/md5.Tpo" "$(DEPDIR)/md5.Plo"; else rm -f "$(DEPDIR)/md5.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libmd5-rfc/md5.c' object='md5.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o md5.lo `test -f 'libmd5-rfc/md5.c' || echo '$(srcdir)/'`libmd5-rfc/md5.c
-
-sha1.lo: sha1/sha1.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT sha1.lo -MD -MP -MF "$(DEPDIR)/sha1.Tpo" -c -o sha1.lo `test -f 'sha1/sha1.c' || echo '$(srcdir)/'`sha1/sha1.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/sha1.Tpo" "$(DEPDIR)/sha1.Plo"; else rm -f "$(DEPDIR)/sha1.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sha1/sha1.c' object='sha1.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o sha1.lo `test -f 'sha1/sha1.c' || echo '$(srcdir)/'`sha1/sha1.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

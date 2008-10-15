@@ -1,3 +1,487 @@
+commit cfd8b6548270a85957d19a2766b5ea03a7152fd3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 15 13:03:54 2008 +0100
+
+    Prepare release 0.7.10
+
+ NEWS         |    3 +++
+ configure.ac |    4 ++--
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+commit ef02560717b106851685bbecfc52dce0edf3491e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 15 10:43:21 2008 +0100
+
+    Prepare NEWS
+
+ NEWS |   24 ++++++++++++++++++++++--
+ 1 files changed, 22 insertions(+), 2 deletions(-)
+
+commit 754df3cf226415c737997f83b29f12ec87570cd9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 15 10:37:40 2008 +0100
+
+    GabbleMucChannel: use unsigned for boolean bitfields
+
+ src/muc-channel.c |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
+
+commit 724b0dabce8ca42fdd40d9ffd97d89f68c9604ea
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 15 10:36:34 2008 +0100
+
+    GabbleMediaChannel: use unsigned for boolean bitfields
+
+ src/media-channel.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 56de600bfbdb30c0bbe946999a93ba87557eff7c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 15 10:36:17 2008 +0100
+
+    GabbleMediaStream: use unsigned for boolean bitfields
+    
+    It turns out gboolean is signed, so is unsafe to use in bitfields.
+
+ src/media-stream.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+commit fbec3a940b77baf95a2b97ec2cb0ead844c1f3cb
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 18:15:40 2008 +0100
+
+    Update to spec 0.17.13, moving various future Channel properties to the present
+    
+    This requires telepathy-glib 0.7.17, which I just released.
+
+ configure.ac                                       |    2 +-
+ extensions/Channel_Future.xml                      |  123 --------------------
+ src/im-channel.c                                   |   18 +---
+ src/media-channel.c                                |   18 +---
+ src/muc-channel.c                                  |   18 +---
+ src/roomlist-channel.c                             |   24 +---
+ src/roster-channel.c                               |   18 +---
+ src/tubes-channel.c                                |   18 +---
+ tests/twisted/jingle/test-incoming-call-reject.py  |   11 +--
+ tests/twisted/jingle/test-incoming-call.py         |   11 +--
+ .../jingle/test-outgoing-call-deprecated.py        |   11 +--
+ .../jingle/test-outgoing-call-deprecated2.py       |   11 +--
+ tests/twisted/jingle/test-outgoing-call-ensure.py  |   18 ++--
+ .../jingle/test-outgoing-call-requestotron.py      |   23 ++---
+ tests/twisted/jingle/test-outgoing-call.py         |   23 ++---
+ tests/twisted/muc/roomlist.py                      |   26 ++---
+ tests/twisted/muc/test-muc-invitation.py           |   11 +--
+ tests/twisted/muc/test-muc.py                      |   14 +--
+ tests/twisted/roster/groups.py                     |   10 +-
+ tests/twisted/roster/test-roster.py                |   11 +--
+ tests/twisted/text/ensure.py                       |    6 +-
+ tests/twisted/text/initiate-requestotron.py        |    6 +-
+ tests/twisted/text/initiate.py                     |   17 +--
+ tests/twisted/text/respawn.py                      |   34 ++----
+ tests/twisted/text/test-text.py                    |   17 +--
+ .../tubes/test-muc-accept-stream-tube-ibb.py       |   11 +--
+ tests/twisted/tubes/test-muc-offer-dbus-tube.py    |   11 +--
+ tests/twisted/tubes/test-si-tubes.py               |   16 +--
+ 28 files changed, 123 insertions(+), 414 deletions(-)
+
+commit 5ccbeffaae28e61546b4ee56f2eb5e5ea9aecb16
+Merge: acdd2f0... 6c4b6ee...
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 17:27:54 2008 +0100
+
+    Merge branch 'checksum'
+
+commit acdd2f0293ef45d12a9977637c4144f62866ac3e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:40:39 2008 +0100
+
+    test-handles: accept InvalidHandle as well as historical InvalidArgument
+    
+    telepathy-glib used to raise InvalidArgument, but we've decided that was a bug.
+
+ tests/test-handles.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+commit d85f2a9b9ce89c719fdb834d1289ae76081f3a00
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:34:29 2008 +0100
+
+    Presence cache, register, request pipeline: use G_PARAM_STATIC_STRINGS
+
+ src/presence-cache.c   |   10 +++-------
+ src/register.c         |   10 +++-------
+ src/request-pipeline.c |    3 +--
+ 3 files changed, 7 insertions(+), 16 deletions(-)
+
+commit 1838901fbfee3cfd2734ecc56edd04a562069084
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:34:08 2008 +0100
+
+    GabbleBytestream*: use G_PARAM_STATIC_STRINGS
+
+ src/bytestream-factory.c |    6 +-----
+ src/bytestream-ibb.c     |   17 +++--------------
+ src/bytestream-iface.c   |   37 +++++++------------------------------
+ 3 files changed, 11 insertions(+), 49 deletions(-)
+
+commit d3c79aca764119718ea2ef7ce4193d29a6da4c60
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:17:24 2008 +0100
+
+    GabbleMediaSession: use G_PARAM_STATIC_STRINGS
+
+ src/media-session.c |   77 ++++++++++++++++-----------------------------------
+ 1 files changed, 24 insertions(+), 53 deletions(-)
+
+commit f0d90a6cd95ac57c293b7ef53182f61bc1807aff
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:17:11 2008 +0100
+
+    GabblePrivateTubesFactory: use G_PARAM_STATIC_STRINGS
+
+ src/private-tubes-factory.c |    6 +-----
+ 1 files changed, 1 insertions(+), 5 deletions(-)
+
+commit d7fa7bc28a4ec262133935925ab642cd5f39066c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:15:19 2008 +0100
+
+    GabbleRoomlistChannel: use G_PARAM_STATIC_STRINGS
+
+ src/roomlist-channel.c |   21 +++++++--------------
+ 1 files changed, 7 insertions(+), 14 deletions(-)
+
+commit b4514c525a37b77451e1fb26df94f5be5e44696b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:15:04 2008 +0100
+
+    GabbleRoster, GabbleRosterChannel: use G_PARAM_STATIC_STRINGS
+
+ src/roster-channel.c |   18 ++++++------------
+ src/roster.c         |   10 +++-------
+ 2 files changed, 9 insertions(+), 19 deletions(-)
+
+commit 7609450953787c269670bf6b37f872fe749ac362
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:14:48 2008 +0100
+
+    GabbleTubesChannel: use G_PARAM_STATIC_STRINGS
+
+ src/tubes-channel.c |   27 +++++++--------------------
+ 1 files changed, 7 insertions(+), 20 deletions(-)
+
+commit 1a6e068d3c642c49ae2a825e105f21fb8423e2a8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:14:34 2008 +0100
+
+    GabbleVCardManager: use G_PARAM_STATIC_STRINGS
+
+ src/vcard-manager.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 8c3adcc2be327fc6a3afd8d3e92c119391f9b3ad
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:14:18 2008 +0100
+
+    GabbleMucChannel, GabbleMucFactory: use G_PARAM_STATIC_STRINGS
+
+ src/muc-channel.c |   41 +++++++++++++----------------------------
+ src/muc-factory.c |   10 +++-------
+ 2 files changed, 16 insertions(+), 35 deletions(-)
+
+commit 3247206ac6ef8dcbb75cd1d5f35a8b0cc00a4738
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:12:16 2008 +0100
+
+    GabbleMediaChannel, GabbleMediaFactory: use G_PARAM_STATIC_STRINGS
+
+ src/media-channel.c |   39 +++++++++++++--------------------------
+ src/media-factory.c |   10 +++-------
+ 2 files changed, 16 insertions(+), 33 deletions(-)
+
+commit effdb99230598b4df858168cc30527f9a68d86df
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:06:05 2008 +0100
+
+    GabbleImFactory: use G_PARAM_STATIC_STRINGS and reindent
+
+ src/im-factory.c |   10 +++-------
+ 1 files changed, 3 insertions(+), 7 deletions(-)
+
+commit f021e242893194d82bbd15d3f5ca93013c14d517
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:05:47 2008 +0100
+
+    GabbleIMChannel: use G_PARAM_STATIC_STRINGS
+
+ src/im-channel.c |   18 ++++++------------
+ 1 files changed, 6 insertions(+), 12 deletions(-)
+
+commit a028e9799aa6423995fc18c371483fa32d596f28
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 15:05:32 2008 +0100
+
+    GabbleDisco: use G_PARAM_STATIC_STRINGS
+
+ src/disco.c |   10 +++-------
+ 1 files changed, 3 insertions(+), 7 deletions(-)
+
+commit 6c4b6ee204ed523a2f5b9d7b5f35f56e6a6aab35
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Oct 13 11:53:30 2008 +0100
+
+    Remove our copies of libmd5-rfc and sha, along with their licenses and author credit
+    
+    We no longer need to ship these, since we can just use GChecksum.
+
+ AUTHORS                  |    7 -
+ COPYING                  |   65 -----
+ src/libmd5-rfc/md5.c     |  381 ----------------------------
+ src/libmd5-rfc/md5.h     |   91 -------
+ src/libmd5-rfc/md5main.c |  139 ----------
+ src/sha1/sha1.c          |  626 ----------------------------------------------
+ src/sha1/sha1.h          |   72 ------
+ 7 files changed, 0 insertions(+), 1381 deletions(-)
+
+commit 3085626830626b2c1915a04924e0a9252b6fab9d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Oct 13 11:51:13 2008 +0100
+
+    Remove unnecessary inclusions of sha1/sha1.h
+
+ src/caps-hash.c    |    1 -
+ src/conn-avatars.c |    1 -
+ 2 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 8e161744c568d2674217d02183aec0d84a6c95d5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Oct 13 11:45:27 2008 +0100
+
+    Remove MD5, SHA1 code from the build
+
+ src/Makefile.am |   12 +-----------
+ 1 files changed, 1 insertions(+), 11 deletions(-)
+
+commit 9ecf78fa3f3faeece49ad38c18b2b0c01747e2d8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Oct 13 11:43:30 2008 +0100
+
+    Implement sha1_hex, sha1_bin in terms of GChecksum
+    
+    Now that we use GLib >= 2.16, we can do this. I've kept the utility
+    wrappers because sha1_hex guarantees to return lower-case (unlike
+    GChecksum), and sha1_bin is more convenient than what's in GLib.
+    
+    Also remove compatibility #define for G_PARAM_STATIC_STRINGS, because
+    we now depend on a GLib version that has it.
+
+ src/util.c |   33 ++++++++++++++++-----------------
+ src/util.h |   12 +++++-------
+ 2 files changed, 21 insertions(+), 24 deletions(-)
+
+commit 291e274f5fe4c3dbf5e4f405a59af88cfa3ce876
+Merge: 3cee405... 6ed9547...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 10 11:56:13 2008 +0100
+
+    Merge commit 'origin/master'
+
+commit 3cee405a58573e2daa5a58be4ca59640703c6012
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 10 11:48:32 2008 +0100
+
+    remove debug print from jingle tests
+
+ .../jingle/test-outgoing-call-deprecated.py        |    1 -
+ .../jingle/test-outgoing-call-deprecated2.py       |    1 -
+ .../jingle/test-outgoing-call-requestotron.py      |    1 -
+ tests/twisted/jingle/test-outgoing-call.py         |    1 -
+ 4 files changed, 0 insertions(+), 4 deletions(-)
+
+commit 6ed95476c4e953334f8f59eac7bfe4fa2138c40a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Oct 10 11:33:05 2008 +0100
+
+    Remove TargetHandle from anonymous media channels' allowed properties
+    
+    Current specs forbid TargetHandle in requests with TargetHandleType:
+    None
+
+ src/media-factory.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 696ff8ece9f5e45b9f24cf02b545082437c7a2c9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Oct 10 11:29:22 2008 +0100
+
+    Add TargetID to allowed properties where it was missing
+
+ src/muc-factory.c                     |    1 +
+ src/private-tubes-factory.c           |    1 +
+ src/roster.c                          |    1 +
+ tests/twisted/tubes/ensure-si-tube.py |    4 +++-
+ tests/twisted/tubes/test-si-tubes.py  |    4 +++-
+ 5 files changed, 9 insertions(+), 2 deletions(-)
+
+commit 6a49b768eaa42b5dc0ceac875a4a9ecfc380c8d5
+Merge: 0a6a0ad... 49024ff...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 6 16:40:58 2008 +0100
+
+    Merge branch 'fix-invite'
+
+commit 0a6a0ad33028d6787d9430933a46624ac8129225
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 1 18:04:29 2008 +0100
+
+    gadget-invite.py: disconnect manually and reply to the PEP activity iq
+
+ tests/twisted/olpc/gadget-invite.py |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 49024ff2b151fc63dd75dd0b98f566036b2836f3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Sep 30 12:33:18 2008 +0100
+
+    conn-olpc: fix 2 references issues: add_activity_info_in_set doesn't return a new ref and we always have to ref the activity when inserting to olpc_current_act
+
+ src/conn-olpc.c |    8 ++------
+ 1 files changed, 2 insertions(+), 6 deletions(-)
+
+commit 1f05130d095bad92b22654999de18a73dab57b84
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Sep 30 11:10:48 2008 +0100
+
+    conn-olpc: revoke_invitations: ignore fake activities aka the ones without ID
+
+ src/conn-olpc.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 5ed9344aef3a8278b252a872836a80201f72030a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Sep 30 11:09:57 2008 +0100
+
+    muc-channel: fire the closed signal when disposing if needed
+
+ src/muc-channel.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 7f78a3583b8ca6d390b8f2cb035450ab8d66724a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 29 18:27:55 2008 +0100
+
+    unref activity ref when destroying pep and invited hash tables
+
+ src/conn-olpc.c |   19 +++++++++++++++++++
+ 1 files changed, 19 insertions(+), 0 deletions(-)
+
+commit e738c3bf173e32e6318d8f7bfd83621344088749
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 29 15:53:50 2008 +0100
+
+    olpc-muc-invitation.py: check if act_prop_iface.GetProperties returns the right properties
+
+ tests/twisted/olpc/olpc-muc-invitation.py |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit c2fa21247b2ede32dee9ac547062d8dddbe31d4f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 29 15:41:27 2008 +0100
+
+    olpc/olpc-muc-invitation.py: use a dict to store handles
+
+ tests/twisted/olpc/olpc-muc-invitation.py |   44 +++++++++++++++--------------
+ 1 files changed, 23 insertions(+), 21 deletions(-)
+
+commit cac00547b3e80d45363dee400137ae9fedcf7c70
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 29 15:31:40 2008 +0100
+
+    olpc/olpc-muc-invitation.py: add more signals checks
+
+ tests/twisted/olpc/olpc-muc-invitation.py |   19 +++++++++++++++++++
+ 1 files changed, 19 insertions(+), 0 deletions(-)
+
+commit d8e2bda7c2d36d977a903a5376f90a69fa5f57cd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 1 14:55:45 2008 +0100
+
+    gadget-invite: be more restrictif on a stream-iq elem to be sure to catch the right one
+
+ tests/twisted/olpc/gadget-invite.py |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 423ac01ab12105b80b7b856602cf346da214daa9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Sep 30 17:35:42 2008 +0100
+
+    muc-channel: no need to fire the contact-join signal in channel_state_changed as that's already done in _gabble_muc_channel_member_presence_updated
+
+ src/muc-channel.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+commit e40172c623ed0458faac01f8545a8edd7621d1bd
+Merge: d1d2756... 2a4dbfc...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Sep 30 14:33:24 2008 +0100
+
+    Merge branch 'tests'
+
+commit 2a4dbfcee2db6fa5a3e25da17edcc062f985c0dc
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Sep 30 14:01:03 2008 +0100
+
+    gabbletest: remove the second call of Disconnect() as it's useless
+
+ tests/twisted/gabbletest.py |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 610f3042dad72abd820c67481ec6aee9c9259993
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Sep 30 12:40:12 2008 +0100
+
+    tests/README: explain how to use the different debugging tools with twisted tests
+
+ tests/README |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+commit debfec0706df7d7296bc95ad58cee8ce8ec5c843
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Sep 30 12:33:59 2008 +0100
+
+    gabbletest.py: wait before killing the bus if GABBLE_TEST_REFDBG set as refdbg needs the process to be clearly exited
+
+ tests/twisted/gabbletest.py |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit 15a7282629270544a239751f062f1e2041480c5d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 29 18:25:26 2008 +0100
+
+    add refdbg.log to gitignore
+
+ .gitignore |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit d1d2756d86a69ea252f0efa0ff267b57acd98036
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Sep 29 17:55:56 2008 +0100
+
+    Add a maintainer-upload-release Makefile target
+
+ Makefile.am |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+commit 29cd72a33e1bac2a3520647c5f846fad54da85ee
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Sep 29 17:54:55 2008 +0100
+
+    Start 0.7.10 development
+
+ NEWS         |    9 +++++++++
+ configure.ac |    2 +-
+ 2 files changed, 10 insertions(+), 1 deletions(-)
+
 commit 789a9f70e910d3d6a5254e0fbebadef043d0be5e
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Sep 29 14:48:09 2008 +0100
