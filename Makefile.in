@@ -37,8 +37,9 @@ build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
-	config.guess config.sub depcomp install-sh ltmain.sh missing
+	$(srcdir)/tools/telepathy.am $(top_srcdir)/configure AUTHORS \
+	COPYING ChangeLog INSTALL NEWS config.guess config.sub depcomp \
+	install-sh ltmain.sh missing
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-compiler-flag.m4 \
@@ -206,7 +207,7 @@ all: config.h
 .SUFFIXES:
 am--refresh:
 	@:
-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(srcdir)/tools/telepathy.am $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -400,7 +401,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/m4 $(distdir)/tests/twisted
+	$(mkdir_p) $(distdir)/m4 $(distdir)/tests/twisted $(distdir)/tools
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -639,17 +640,17 @@ uninstall-info: uninstall-info-recursive
 	tags tags-recursive uninstall uninstall-am uninstall-info-am
 
 
+check-twisted: all
+	$(MAKE) -C tests/twisted check-twisted
+
+check-all: check check-twisted
+
 dist-hook:
 	chmod u+w ${distdir}/ChangeLog
 	if test -d ${top_srcdir}/.git; then \
 		git log --stat > ${distdir}/ChangeLog || \
 		git log > ${distdir}/ChangeLog; \
 	fi
-
-check-twisted: all
-	$(MAKE) -C tests/twisted check-twisted
-
-check-all: check check-twisted
 
 maintainer-upload-release:
 	@case @VERSION@ in \
@@ -661,7 +662,7 @@ maintainer-upload-release:
 	test -f @PACKAGE@-@VERSION@.tar.gz
 	test -f @PACKAGE@-@VERSION@.tar.gz.asc
 	gpg --verify @PACKAGE@-@VERSION@.tar.gz.asc
-	rsync -vzP @PACKAGE@-@VERSION@.tar.gz telepathy.freedesktop.org:/srv/telepathy.freedesktop.org/www/releases/@PACKAGE@/
+	rsync -vzP @PACKAGE@-@VERSION@.tar.gz telepathy.freedesktop.org:/srv/telepathy.freedesktop.org/www/releases/@PACKAGE@/@PACKAGE@-@VERSION@.tar.gz
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

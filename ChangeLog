@@ -1,3 +1,896 @@
+commit 47a667ea7c0277fb8bdbc6b0e457b3cee0bd68da
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 22 15:40:39 2008 +0100
+
+    Prepare version 0.7.11
+
+ NEWS         |   14 ++++++++------
+ configure.ac |    4 ++--
+ 2 files changed, 10 insertions(+), 8 deletions(-)
+
+commit df39cd769a720cebd6d5b6e709247907f9b7a393
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 22 12:24:30 2008 +0100
+
+    conn-presence: construct_contact_statuses_cb: reindent and use tp_g_value_slice_new
+
+ src/conn-presence.c |   13 ++++++-------
+ 1 files changed, 6 insertions(+), 7 deletions(-)
+
+commit f1640d01aa1795ad1762b0c62c5d683f78912f17
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 22 12:23:48 2008 +0100
+
+    conn-avatars: remove an unnecessary cast
+
+ src/conn-avatars.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 4cb9bc0eb48bc46ecd649aa444cbafb3ef38ecc7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 22 12:23:36 2008 +0100
+
+    conn-aliasing: remove an unnecessary cast
+
+ src/conn-aliasing.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 1e63b1a50823c656cddf26fb85f8dea94d3d62ac
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 22 12:23:27 2008 +0100
+
+    GetAliases: don't leak a hash table if handles are invalid
+
+ src/conn-aliasing.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit cc2a20e7c01bb4dce0281e90b89430d586002eaa
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 18:17:36 2008 +0100
+
+    Copy telepathy.am from telepathy-glib
+
+ Makefile.am        |   19 +------------------
+ tools/Makefile.am  |    1 +
+ tools/telepathy.am |   22 ++++++++++++++++++++++
+ 3 files changed, 24 insertions(+), 18 deletions(-)
+
+commit 715e018cf6fff5149e4009f5c593585ef369927e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Oct 14 17:33:52 2008 +0100
+
+    Don't check for endianness - it was only used by the sha1 code we no longer ship
+    
+    Verified with `git grep ENDIAN`.
+
+ configure.ac |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+commit 93c51789e083b787a8802d98caf3db4786be132c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 22 12:33:23 2008 +0100
+
+    NEWS so far
+
+ NEWS |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 8a24c91c688d0b1db96be3f00dc486fa07e332ee
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Sep 10 12:34:04 2008 +0100
+
+    Update with-session-bus.sh from telepathy-glib
+    
+    This new version of with-session-bus.sh comes from the telepathy-glib git
+    repository:
+    
+    |commit 9c6a27f7b1796abfd0e30ec0e38a7bdbf3aa3863
+    |Author: Alban Crequy <alban.crequy@collabora.co.uk>
+    |Date:   Wed Sep 10 11:42:17 2008 +0100
+    |
+    |    tools/with-session-bus.sh: Better explanation for usage
+    |
+    |commit 241d6e35c946bee2c8112f3f444fe9e2bfdaa9de
+    |Author: Alban Crequy <alban.crequy@collabora.co.uk>
+    |Date:   Tue Sep 9 18:13:39 2008 +0100
+    |
+    |    with-session-bus.sh: Fork dbus-monitor if requested
+    |
+    |    If $WITH_SESSION_BUS_FORK_DBUS_MONITOR is set, fork dbus-monitor:
+    |      dbus-monitor $WITH_SESSION_BUS_FORK_DBUS_MONITOR_OPT
+
+ tests/twisted/tools/with-session-bus.sh |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
+
+commit f21b84558b31f16c6f3f1bf0b36755ab5b88a8c0
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 20 12:20:10 2008 -0400
+
+    Style: use if (ptr != NULL) instead of if (ptr).
+
+ src/tube-dbus.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 20fdb5b52cfd50e5a0af2dd7b1389c82b7e553da
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 20 12:12:41 2008 -0400
+
+    Add --disable-Werror in configure.ac, as done in tp-glib. Useful to disable the warning -Wno-unused-parameter.
+
+ configure.ac |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit a4a45774a359624a98857b3e2d93e10f9c51eec2
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 17 17:50:14 2008 -0400
+
+    Fix dbus_server_unref when a D-Bus tube is disposed.
+    
+    According to the documentation of dbus_server_listen:
+     * To free the server, applications must call first
+       dbus_server_disconnect() and then dbus_server_unref().
+    
+    libdbus enforce this by asserting if Gabble does not disconnect before
+    unreffing.
+
+ src/tube-dbus.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 595b8556084bc5e2a271f1f8ebff106a47763813
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 17 15:37:45 2008 -0400
+
+    sha1_bin: Fix a leak, and fix size on amd64
+
+ src/util.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 5cd2a90c449fd4938f9a997c858e20e765628b03
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 14 11:24:00 2008 +0100
+
+    olpc-buddy-search.py: check if the NewChannels and NewChannel signal are properly raised
+
+ tests/twisted/olpc/olpc-buddy-search.py |   17 +++++++++++++++--
+ 1 files changed, 15 insertions(+), 2 deletions(-)
+
+commit 67e85ba276c1424452d2f422a775e86e1994ffb3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 13 17:31:51 2008 +0100
+
+    wrap a big line
+
+ tests/twisted/olpc/olpc-activity-search.py |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit bd6853684685cff1c86c38d2f77fb2f6fc8dd93a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 13 17:27:48 2008 +0100
+
+    Implement multi criterias activity view requests
+
+ src/olpc-activity-view.c                   |   59 +++++++++-------------------
+ tests/twisted/olpc/olpc-activity-search.py |   40 +++++++++++++++++++
+ 2 files changed, 59 insertions(+), 40 deletions(-)
+
+commit ef898d62891b52765728f57f79a9d064969342ca
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 13 17:18:49 2008 +0100
+
+    remove debug print
+
+ tests/twisted/olpc/olpc-buddy-search.py |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit ca0e709d50df8933206a79d40263b3354bca6d5a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 13 17:15:59 2008 +0100
+
+    Implement multi criterias buddy view requests
+
+ src/olpc-buddy-view.c                   |   60 +++++++++++--------------------
+ tests/twisted/olpc/olpc-buddy-search.py |   37 +++++++++++++++++++
+ 2 files changed, 58 insertions(+), 39 deletions(-)
+
+commit 4b3dc71155f5f6aebb5b32e12a388469b4de4e27
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 13 16:57:06 2008 +0100
+
+    always put the size attribute in view requests
+
+ src/olpc-activity-view.c                   |    2 ++
+ src/olpc-buddy-view.c                      |    2 ++
+ tests/twisted/olpc/olpc-activity-search.py |    2 ++
+ tests/twisted/olpc/olpc-buddy-search.py    |    2 ++
+ 4 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 3a6adfcbcfe71d159494bfdf57b4500ce4b4315d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 13 16:49:50 2008 +0100
+
+    olpc-activity-search.py: remove fixed TODO
+
+ tests/twisted/olpc/olpc-activity-search.py |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 0703553f1d1871268d5e2bf202ecaba068a14f20
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 13 16:47:49 2008 +0100
+
+    new activity random view protocol
+
+ src/olpc-activity-view.c   |    4 +---
+ tests/twisted/olpc/util.py |    3 +--
+ 2 files changed, 2 insertions(+), 5 deletions(-)
+
+commit ed5d9b6e30a1315b363f16c4b033ce20fe6716ae
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 13 16:39:26 2008 +0100
+
+    new buddy random view protocol
+
+ src/olpc-buddy-view.c                   |    4 +---
+ tests/twisted/olpc/olpc-buddy-search.py |    4 +---
+ 2 files changed, 2 insertions(+), 6 deletions(-)
+
+commit 7c88f7910e6746662ad8b884fbc95404b7aba29f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 16 11:02:44 2008 +0100
+
+    InitiatorHandle, InitiatorID and Requested are not in FUTUR anymore
+
+ src/olpc-activity-view.c |    6 +++---
+ src/olpc-buddy-view.c    |    6 +++---
+ src/olpc-view.c          |   12 ------------
+ 3 files changed, 6 insertions(+), 18 deletions(-)
+
+commit 14a8472622d28ac8b267928dc3d8d18d3710bc32
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 14 18:47:32 2008 +0100
+
+    remove useless blank lines
+
+ tests/twisted/olpc/olpc-activity-search.py |    2 --
+ tests/twisted/olpc/olpc-buddy-search.py    |    3 ---
+ 2 files changed, 0 insertions(+), 5 deletions(-)
+
+commit bbe2198c93874c211665ed8146ce7dbe718afa3c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 14 18:33:17 2008 +0100
+
+    remove useless blank lines
+
+ src/olpc-view.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+commit a1b01b5f9d32aba90bde4c0b5e3d04a05fc03d5e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 14 16:13:16 2008 +0100
+
+    indentation fix
+
+ src/olpc-gadget-manager.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 83054a53b1109eaaa201fb0265a55ad8dc92c6cf
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 14 16:11:18 2008 +0100
+
+    gadget-manager: remove gabble_olpc_gadget_manager_{request,create,ensure}_channel and use gabble_olpc_gadget_manager_handle_request directly
+
+ src/olpc-gadget-manager.c |   37 +++----------------------------------
+ 1 files changed, 3 insertions(+), 34 deletions(-)
+
+commit 01e28f3b024fcc5f3b85edd89d74348bab8ce20f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 14 15:39:46 2008 +0100
+
+    gadget-manager: fix debug flag
+
+ src/olpc-gadget-manager.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit c8e06b79d3f34ccf1452946310ac6e6481351371
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 13 17:48:07 2008 +0100
+
+    conn-olpc: style tweak
+
+ src/conn-olpc.c |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
+
+commit 6260538df088532b0db290bae6e11f95af056fe4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 13 17:00:39 2008 +0100
+
+    fix view number in test comments
+
+ tests/twisted/olpc/olpc-activity-search.py |   12 ++++++------
+ tests/twisted/olpc/olpc-buddy-search.py    |    7 ++-----
+ 2 files changed, 8 insertions(+), 11 deletions(-)
+
+commit d357e0e2a8879e3b0378153853f9edb6c6e8eb0f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 10 11:40:10 2008 +0100
+
+    check if the right D-Bus error is raised when requesting a view channel without MaxSize property
+
+ tests/twisted/olpc/olpc-activity-search.py |   10 ++++++++++
+ tests/twisted/olpc/olpc-buddy-search.py    |    9 +++++++++
+ 2 files changed, 19 insertions(+), 0 deletions(-)
+
+commit db6a899e60df967173635be896ab5db3561421d1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 10 11:32:49 2008 +0100
+
+    olpc-view: return the right channel-type with GetChannelType
+
+ src/olpc-view.c                            |    7 +++++--
+ tests/twisted/olpc/olpc-activity-search.py |    3 +++
+ tests/twisted/olpc/olpc-buddy-search.py    |    3 +++
+ 3 files changed, 11 insertions(+), 2 deletions(-)
+
+commit 6149acb89e7f7e2e59bdeec3266c008468326b87
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 10 11:31:36 2008 +0100
+
+    change node name of buddy/activity view to OLPC_Channel_Type_{Buddy,Activity}_View
+
+ extensions/OLPC_Channel_Type_ActivityView.xml |    2 +-
+ extensions/OLPC_Channel_Type_BuddyView.xml    |    2 +-
+ src/olpc-activity-view.c                      |   10 +++++-----
+ src/olpc-buddy-view.c                         |   10 +++++-----
+ src/olpc-gadget-manager.c                     |   25 +++++++++++++------------
+ src/olpc-view.c                               |    2 +-
+ 6 files changed, 26 insertions(+), 25 deletions(-)
+
+commit b603870873ce286f29faef26954928c3fabdb0d6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 10 11:01:53 2008 +0100
+
+    clarifiy buddy/activity views description
+
+ extensions/OLPC_Channel_Type_ActivityView.xml |    2 +-
+ extensions/OLPC_Channel_Type_BuddyView.xml    |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit cd7ef5ed6fc35bf195d74874584f26c3c6e80509
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 18:58:57 2008 +0100
+
+    add href links to the extensions HTML file
+
+ extensions/OLPC_Channel_Interface_View.xml |   11 ++++++-----
+ extensions/OLPC_Gadget.xml                 |   11 +++++++----
+ 2 files changed, 13 insertions(+), 9 deletions(-)
+
+commit 5d5d4c0ed6855874a5bb7796a030d0f702099819
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 18:27:36 2008 +0100
+
+    olpc-view: unify param declaration style
+
+ src/olpc-view.c |   22 ++++++----------------
+ 1 files changed, 6 insertions(+), 16 deletions(-)
+
+commit 0af659304b116817f698c835a76defd7a7433a09
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 18:22:56 2008 +0100
+
+    wrap big lines
+
+ src/olpc-activity-view.c |   24 ++++++++++++++++--------
+ src/olpc-buddy-view.c    |    3 ++-
+ 2 files changed, 18 insertions(+), 9 deletions(-)
+
+commit d806933e0a897f7b1d61af7c29d4f4ab180d3064
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 17:57:24 2008 +0100
+
+    {buddy,activity}-view: remove FIXME as, after checking, the current design make sense as all the XMPP parsing is done in conn-olpc
+
+ src/olpc-activity-view.c |    1 -
+ src/olpc-buddy-view.c    |    1 -
+ 2 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 116fa623a1ca8df11cf0998c591f30879f36db63
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 17:50:23 2008 +0100
+
+    gadget-manager: remove gabble_olpc_gadget_manager_constructed  as we don't use it
+
+ src/olpc-gadget-manager.c |   17 -----------------
+ 1 files changed, 0 insertions(+), 17 deletions(-)
+
+commit b4ee7bd65cced59d548b8cb38319accd792f331f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 17:45:21 2008 +0100
+
+    Raise a D-Bus error if Gadget is not available when requesting a view channel
+
+ src/olpc-gadget-manager.c                  |   14 ++++++++++++--
+ tests/twisted/olpc/olpc-activity-search.py |   12 +++++++++++-
+ tests/twisted/olpc/olpc-buddy-search.py    |   12 +++++++++++-
+ 3 files changed, 34 insertions(+), 4 deletions(-)
+
+commit 78d5733f52dd1b0b8487ece1f14009a669bbd93d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 17:31:44 2008 +0100
+
+    conn-olpc: remove check_gadget_buddy
+
+ src/conn-olpc.c |   23 +++--------------------
+ 1 files changed, 3 insertions(+), 20 deletions(-)
+
+commit 7961192f4a0e83dffd48a09790e4baad6f6514a7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 17:28:17 2008 +0100
+
+    conn-olpc: check_gadget_{buddy,activity}: no need to query disco to check if the service was discovered as now we are notified when it is and update conn->olpc_gadget_{buddy,activity} accordingly
+
+ src/conn-olpc.c |   48 ++++++++++++------------------------------------
+ 1 files changed, 12 insertions(+), 36 deletions(-)
+
+commit b9320780ac43d66c4626f0adea392ce965a577cd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 17:20:40 2008 +0100
+
+    raise a D-Bus error if sending view request failed
+
+ src/olpc-gadget-manager.c |   12 +++++++++---
+ 1 files changed, 9 insertions(+), 3 deletions(-)
+
+commit c1dc0f7c3e2d33ac212983eb20997e9af2f3966b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 17:00:50 2008 +0100
+
+    ressurect the gadget-restarted test
+
+ src/conn-olpc.c                        |   27 +--------------------------
+ tests/twisted/olpc/gadget-restarted.py |    8 ++------
+ 2 files changed, 3 insertions(+), 32 deletions(-)
+
+commit 32e44eb262325060f6d4cc163a4ebbd8545c146f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 16:59:38 2008 +0100
+
+    add gabble_olpc_gadget_manager_close_all_views
+
+ src/olpc-gadget-manager.c |   23 +++++++++++++++++++++++
+ src/olpc-gadget-manager.h |    2 ++
+ 2 files changed, 25 insertions(+), 0 deletions(-)
+
+commit 989c727707ec29a548d79c808f8c82c6b37352cf
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 16:58:24 2008 +0100
+
+    add gabble_olpc_view_close public method
+
+ src/olpc-view.c |   24 +++++++++++++++---------
+ src/olpc-view.h |    2 ++
+ 2 files changed, 17 insertions(+), 9 deletions(-)
+
+commit 68ed01198f3bb1f0ca20068dff9badf4348b2bdd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 16:35:10 2008 +0100
+
+    olpc-view: fix methods name
+
+ src/olpc-view.c |   32 ++++++++++++++++----------------
+ 1 files changed, 16 insertions(+), 16 deletions(-)
+
+commit b947b24e511cbbcbafa5bef5ee668747588614cd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 16:02:46 2008 +0100
+
+    activity_disposed_cb: check if the olpc_activities_info hash tables was not already destroyed
+
+ src/conn-olpc.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 4953c4b2831658091d83160546fc117a351ffc9e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 16:00:43 2008 +0100
+
+    current-activity.py: fix view ID and re-enable the test
+
+ tests/twisted/olpc/current-activity.py |   10 +++-------
+ 1 files changed, 3 insertions(+), 7 deletions(-)
+
+commit 2b2a1e863dac19c067837e5794ccfd17345d5cbf
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 16:00:17 2008 +0100
+
+    gabble_olpc_gadget_manager_close_all: don't have to manually unref each channel, the hash table does it for us
+
+ src/olpc-gadget-manager.c |   14 --------------
+ 1 files changed, 0 insertions(+), 14 deletions(-)
+
+commit dfcb8137f065454322d62fea39e98a5caecf0836
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 15:45:15 2008 +0100
+
+    olpc-activity-search: rename views according their actual id
+
+ tests/twisted/olpc/olpc-activity-search.py |   80 +++++++++++++--------------
+ 1 files changed, 39 insertions(+), 41 deletions(-)
+
+commit 65e82029c9aa76ec9b4cd9d066a208bb0ce566aa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 15:31:33 2008 +0100
+
+    activity-view: fix GArray leak
+
+ src/olpc-activity-view.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 915a36a8464310c9ab176378be048646e70440e9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 14:35:05 2008 +0100
+
+    rename gabble_olpc_gadget_manager_find_buddy_properties_from_views to gabble_olpc_gadget_manager_find_buddy_properties
+
+ src/conn-olpc.c           |    2 +-
+ src/olpc-gadget-manager.c |    2 +-
+ src/olpc-gadget-manager.h |    3 +--
+ 3 files changed, 3 insertions(+), 4 deletions(-)
+
+commit 0befcdd25b540900c6868ac541c5afac222a8180
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 14:30:55 2008 +0100
+
+    Re-implement activity views using the new API
+
+ src/Makefile.am                            |    2 +
+ src/conn-olpc.c                            |  463 +++------------------------
+ src/conn-olpc.h                            |    3 +
+ src/olpc-activity-view.c                   |  473 ++++++++++++++++++++++++++++
+ src/olpc-activity-view.h                   |   71 +++++
+ src/olpc-gadget-manager.c                  |  179 +++++++++++-
+ src/olpc-gadget-manager.h                  |    4 +
+ tests/twisted/olpc/olpc-activity-search.py |  150 +++++++---
+ tests/twisted/olpc/util.py                 |   14 +-
+ 9 files changed, 902 insertions(+), 457 deletions(-)
+
+commit aea5cae6e2464dde1c9f0cccf082df47493b1fbf
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 14:28:56 2008 +0100
+
+    remove olpc_views from GabbleConnection
+
+ src/conn-olpc.c  |    8 --------
+ src/connection.h |    1 -
+ 2 files changed, 0 insertions(+), 9 deletions(-)
+
+commit cf68d4715840d8853908d86f62ea29e5af7bd3bb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 14:26:28 2008 +0100
+
+    OLPC_Channel_Type_ActivityView.xm: the Participants property is au
+
+ extensions/OLPC_Channel_Type_ActivityView.xml |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ac6c2b875a3c3ba3c8cc785cce2e180678d9cb4a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 12:31:24 2008 +0100
+
+    use a public astract _send_request method instead of a private abstract _create_request as the reply callback is depend of the type of view
+
+ src/olpc-buddy-view.c |   42 ++++++++++++++++++++++++++++++++++++++----
+ src/olpc-view.c       |   42 +-----------------------------------------
+ src/olpc-view.h       |    4 +++-
+ 3 files changed, 42 insertions(+), 46 deletions(-)
+
+commit c5457eb26e9d0e7d35a54a3189617bba659db54e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 12:06:09 2008 +0100
+
+    move GABBLE_ARRAY_TYPE_HANDLE to olpc-view.h
+
+ src/olpc-view.c |    3 ---
+ src/olpc-view.h |    3 +++
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 95f15e5a6e45c6df23b2fe00ab9cc2cafd2c20db
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 12:05:43 2008 +0100
+
+    define the ChannelType in the concrete view class
+
+ src/olpc-buddy-view.c |   11 +++++++++++
+ src/olpc-view.c       |    3 +--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+commit 59b2f68a1c7082d60af4048ff1a6a441b16695c3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 9 11:51:39 2008 +0100
+
+    conn-olpc: disco_item_found_cb: set conn->olpc_gadget_{buddy,activity}"
+
+ src/conn-olpc.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit c5aee0482b5b54471868df4d1e8c4aec6cf0630e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 8 18:42:19 2008 +0100
+
+    gadget-mgr: rename properties arrays
+
+ src/olpc-gadget-manager.c |   12 +++++++-----
+ 1 files changed, 7 insertions(+), 5 deletions(-)
+
+commit 052a9ab16a4f3e15849bbdc1e3b8d0934a13e933
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 8 18:33:11 2008 +0100
+
+    gadget-mgr: factor out create_buddy_view_channel
+
+ src/olpc-gadget-manager.c |   84 +++++++++++++++++++++++++++-----------------
+ 1 files changed, 51 insertions(+), 33 deletions(-)
+
+commit f41a58117d600b75af04ecd313a09c31cad62272
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 8 18:11:14 2008 +0100
+
+    view: remove old comments
+
+ src/olpc-view.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit d8b81690fca9c4d69aca3dac693fb519cd361403
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 8 18:09:16 2008 +0100
+
+    buddy-view: free the properties and alias when finalizing
+
+ src/olpc-buddy-view.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+
+commit e3c5c007c9a9eaec0304d2e94528bc97de213e8e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 8 18:05:32 2008 +0100
+
+    buddy-view: no need to define manually the object path
+
+ src/olpc-buddy-view.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit e31dbbccae44ec8c44e448d0e5f7fcd324bd788b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 8 17:59:57 2008 +0100
+
+    gadget-manager: don't leak the channels hash table
+
+ src/olpc-gadget-manager.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 1283cc3576106032fb84d414ceb4b63944712152
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 8 17:48:45 2008 +0100
+
+    Implement channel-properties in buddy-view
+
+ src/olpc-buddy-view.c |    8 +++++---
+ src/olpc-view.c       |   14 +-------------
+ 2 files changed, 6 insertions(+), 16 deletions(-)
+
+commit b98bce3be7ebe69bdcab11a2c7b77b1edb31564b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 8 17:44:54 2008 +0100
+
+    olpc-buddy-search: check some properties returned by CreateChannel
+
+ tests/twisted/olpc/olpc-buddy-search.py |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+commit 12f89fb69ed751e2d7f2d1cd7b8cd4701e5ef6aa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 8 17:11:09 2008 +0100
+
+    buddy-view: implement its D-Bus properties
+
+ src/olpc-buddy-view.c |    6 ------
+ src/olpc-buddy-view.h |    2 ++
+ 2 files changed, 2 insertions(+), 6 deletions(-)
+
+commit 386aa7f9913a1e2c5ec082794b01028a72233e40
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 8 17:05:03 2008 +0100
+
+    olpc-buddy-search: check D-Bus properties
+
+ tests/twisted/olpc/olpc-buddy-search.py |   43 +++++++++++++++++++++++++++++-
+ 1 files changed, 41 insertions(+), 2 deletions(-)
+
+commit 9021be223ace39365ebd3cc86166053dafdbf095
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 8 16:35:01 2008 +0100
+
+    move most of the view code to a OlpcView abstract class
+
+ src/Makefile.am           |    2 +
+ src/olpc-buddy-view.c     | 1137 ++++++---------------------------------------
+ src/olpc-buddy-view.h     |   86 ++---
+ src/olpc-gadget-manager.c |    8 +-
+ src/olpc-gadget-manager.h |    2 +-
+ src/olpc-view.c           | 1083 ++++++++++++++++++++++++++++++++++++++++++
+ src/olpc-view.h           |  103 ++++
+ 7 files changed, 1353 insertions(+), 1068 deletions(-)
+
+commit d50f82e0d641b9d9950df33a2de544d6f50c07fd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 8 13:33:40 2008 +0100
+
+    olpc-buddy-search.py: we should check the D-Bus properties
+
+ tests/twisted/olpc/olpc-buddy-search.py |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 145d79806361cbaa3975c6fc6ac63b71fb874c30
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 7 18:04:01 2008 +0100
+
+    olpc-buddy-search: rename views according their actual id
+
+ tests/twisted/olpc/olpc-buddy-search.py |   21 ++++++++-------------
+ 1 files changed, 8 insertions(+), 13 deletions(-)
+
+commit 8d7c6c3e8fede38a1c50e1621abf028471d47588
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 7 17:59:35 2008 +0100
+
+    olpc-buddy-search: remove debug output
+
+ tests/twisted/olpc/olpc-buddy-search.py |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 4f839bcbf5059a211033213cac54ca82ab25ee74
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 7 17:52:11 2008 +0100
+
+    Adapapt olpc-buddy-search to use the new view API
+
+ tests/twisted/olpc/olpc-buddy-search.py |   86 ++++++++++++++++++++++---------
+ tests/twisted/olpc/util.py              |    5 +-
+ 2 files changed, 64 insertions(+), 27 deletions(-)
+
+commit 276547cadbc42f8c9755fd098b1a53a4b984c617
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 7 17:50:26 2008 +0100
+
+    build buddy-view and gadget-manager
+
+ src/Makefile.am |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 4b2eaad767f67fa882264d54f362964cd7a39ab2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 7 17:49:57 2008 +0100
+
+    Turn view object into a channel. Move BuddyView code from conn-olpc to olpc-buddy-view
+
+ src/conn-olpc.c       |  312 ++--------------------
+ src/conn-olpc.h       |    5 +
+ src/olpc-buddy-view.c |  705 ++++++++++++++++++++++++++++++++++++++-----------
+ src/olpc-buddy-view.h |   20 +-
+ src/types.h           |    3 +
+ 5 files changed, 584 insertions(+), 461 deletions(-)
+
+commit 10bb1001e2946b85bb8a3f014e04438a7c537111
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 7 17:46:09 2008 +0100
+
+    olpc-gadget-manager.c: add a FIXME saying we should check for Gadget when a view channel is requested
+
+ src/olpc-gadget-manager.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 8d80f419d9342ee65f9f19d45e414180330b191e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 7 17:44:02 2008 +0100
+
+    olpc-gadget-manager.c: check if MaxSize is not zero
+
+ src/olpc-gadget-manager.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 55713fd4a2324e6952c9dbd6149228071b178b92
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 7 16:48:00 2008 +0100
+
+    instantiate GabbleOlpcGadgetManager
+
+ src/connection.c |    6 ++++++
+ src/connection.h |    4 ++++
+ 2 files changed, 10 insertions(+), 0 deletions(-)
+
+commit e2c455f36876fc464ff392e3d7bdeffaf3c0fee8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 7 16:46:46 2008 +0100
+
+    add GabbleOlpcGadgetManager, the Gadget views channel manager
+
+ src/olpc-gadget-manager.c |  437 +++++++++++++++++++++++++++++++++++++++++++++
+ src/olpc-gadget-manager.h |   70 +++++++
+ 2 files changed, 507 insertions(+), 0 deletions(-)
+
+commit 5efbd239b58e2a84acdae1adc0f01fe8e2fc0155
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 7 16:35:48 2008 +0100
+
+    org.laptop.Telepathy.Channel.Interface.View: rename Size attribute to MaxSize
+
+ extensions/OLPC_Channel_Interface_View.xml |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit fb6c879ca6c18b5d5e5d731e5963df442b425c59
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 6 14:31:51 2008 +0100
+
+    rename olpc-view to olpc-buddy-view and comment broken code to make it build
+
+ src/olpc-buddy-view.c |  857 +++++++++++++++++++++++++++++++++++++++++++++++++
+ src/olpc-buddy-view.h |  103 ++++++
+ src/olpc-view.c       |  849 ------------------------------------------------
+ src/olpc-view.h       |  101 ------
+ 4 files changed, 960 insertions(+), 950 deletions(-)
+
+commit 7e2487b92360ed863466f4e2d3caba191970e0c3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 3 17:27:02 2008 +0100
+
+    Disable view tests for now
+
+ tests/twisted/olpc/current-activity.py     |    4 ++++
+ tests/twisted/olpc/gadget-restarted.py     |    4 ++++
+ tests/twisted/olpc/olpc-activity-search.py |    4 ++++
+ tests/twisted/olpc/olpc-buddy-search.py    |    4 ++++
+ 4 files changed, 16 insertions(+), 0 deletions(-)
+
+commit 29560a679e34fafd06e52b6a908b96c885aade3a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 3 17:26:36 2008 +0100
+
+    Disable view code for now so Gabble can build
+
+ src/Makefile.am |    2 --
+ src/conn-olpc.c |   29 ++++++++++++++++++++++-------
+ 2 files changed, 22 insertions(+), 9 deletions(-)
+
+commit 9f89a3f10130b469e990e2ea81a69b55e7c3a895
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 3 17:00:06 2008 +0100
+
+    OLPC_Gadget.xml: remove all the Search/Request methods as now that's done using the requestotron
+
+ extensions/OLPC_Gadget.xml |  131 ++------------------------------------------
+ 1 files changed, 5 insertions(+), 126 deletions(-)
+
+commit 1ae53be48f701a0da674de254fca5cd28e0faa56
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 3 16:38:47 2008 +0100
+
+    first draft of the requestotronification of the View API
+
+ extensions/Makefile.am                        |    4 +-
+ extensions/OLPC_Channel_Interface_View.xml    |   96 +++++++++++++++++++++
+ extensions/OLPC_Channel_Type_ActivityView.xml |   49 +++++++++++
+ extensions/OLPC_Channel_Type_BuddyView.xml    |   48 ++++++++++
+ extensions/OLPC_View.xml                      |  115 -------------------------
+ extensions/all.xml                            |    6 +-
+ 6 files changed, 201 insertions(+), 117 deletions(-)
+
+commit 632201d716fc0bb8b2361dbe6a041e5e90d843cd
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 15 14:25:44 2008 +0100
+
+    Nano version 0.7.10.1
+
+ NEWS         |    9 +++++++++
+ configure.ac |    2 +-
+ 2 files changed, 10 insertions(+), 1 deletions(-)
+
 commit cfd8b6548270a85957d19a2766b5ea03a7152fd3
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Oct 15 13:03:54 2008 +0100
