@@ -67,11 +67,14 @@ am__libgabble_convenience_la_SOURCES_DIST = tube-dbus.h tube-dbus.c \
 	media-session.h media-session.c media-stream.h media-stream.c \
 	media-factory.h media-factory.c muc-channel.h muc-channel.c \
 	muc-factory.h muc-factory.c namespaces.h olpc-activity.h \
-	olpc-activity.c olpc-view.h olpc-view.c pubsub.h pubsub.c \
-	presence.h presence.c presence-cache.h presence-cache.c \
-	private-tubes-factory.h private-tubes-factory.c register.c \
-	register.h request-pipeline.h request-pipeline.c roster.h \
-	roster.c roster-channel.h roster-channel.c roomlist-channel.h \
+	olpc-activity.c olpc-activity-view.h olpc-activity-view.c \
+	olpc-buddy-view.h olpc-buddy-view.c olpc-gadget-manager.h \
+	olpc-gadget-manager.c olpc-view.h olpc-view.c pubsub.h \
+	pubsub.c presence.h presence.c presence-cache.h \
+	presence-cache.c private-tubes-factory.h \
+	private-tubes-factory.c register.c register.h \
+	request-pipeline.h request-pipeline.c roster.h roster.c \
+	roster-channel.h roster-channel.c roomlist-channel.h \
 	roomlist-channel.c roomlist-manager.h roomlist-manager.c \
 	text-mixin.h text-mixin.c tube-iface.h tube-iface.c \
 	tubes-channel.h tubes-channel.c tube-stream.h tube-stream.c \
@@ -84,12 +87,14 @@ am_libgabble_convenience_la_OBJECTS = $(am__objects_1) base64.lo \
 	connection.lo connection-manager.lo debug.lo disco.lo error.lo \
 	gabble.lo im-channel.lo im-factory.lo media-channel.lo \
 	media-session.lo media-stream.lo media-factory.lo \
-	muc-channel.lo muc-factory.lo olpc-activity.lo olpc-view.lo \
-	pubsub.lo presence.lo presence-cache.lo \
-	private-tubes-factory.lo register.lo request-pipeline.lo \
-	roster.lo roster-channel.lo roomlist-channel.lo \
-	roomlist-manager.lo text-mixin.lo tube-iface.lo \
-	tubes-channel.lo tube-stream.lo util.lo vcard-manager.lo
+	muc-channel.lo muc-factory.lo olpc-activity.lo \
+	olpc-activity-view.lo olpc-buddy-view.lo \
+	olpc-gadget-manager.lo olpc-view.lo pubsub.lo presence.lo \
+	presence-cache.lo private-tubes-factory.lo register.lo \
+	request-pipeline.lo roster.lo roster-channel.lo \
+	roomlist-channel.lo roomlist-manager.lo text-mixin.lo \
+	tube-iface.lo tubes-channel.lo tube-stream.lo util.lo \
+	vcard-manager.lo
 am__objects_2 = gabble-signals-marshal.lo media-session-enumtypes.lo
 nodist_libgabble_convenience_la_OBJECTS = $(am__objects_2)
 libgabble_convenience_la_OBJECTS =  \
@@ -318,6 +323,12 @@ libgabble_convenience_la_SOURCES = \
     namespaces.h \
     olpc-activity.h \
     olpc-activity.c \
+    olpc-activity-view.h \
+    olpc-activity-view.c \
+    olpc-buddy-view.h \
+    olpc-buddy-view.c \
+    olpc-gadget-manager.h \
+    olpc-gadget-manager.c \
     olpc-view.h \
     olpc-view.c \
     pubsub.h \
@@ -499,7 +510,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/media-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muc-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muc-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-activity-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-activity.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-buddy-view.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-gadget-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/presence-cache.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/presence.Plo@am__quote@
