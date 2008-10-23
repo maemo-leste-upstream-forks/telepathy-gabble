@@ -1,3 +1,200 @@
+commit f8238fdbcb52957e636ebc21c70ed182374ac8dc
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 23 14:06:11 2008 +0100
+
+    version 0.7.12
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 1789e1de3c9fdee47e1c757cfd3af095ded7f4cf
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 23 14:01:54 2008 +0100
+
+    version 0.7.12
+
+ configure.ac |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 1784a10a45457b315ffc3c63af72bf08875d917c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 23 14:01:44 2008 +0100
+
+    upgrade NEWS for 0.7.12
+
+ NEWS |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+commit d3075b1f714fc90c94e561656bda4bcb6abc466d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 23 13:37:18 2008 +0100
+
+    view-presence.py: fix a comment
+
+ tests/twisted/olpc/view-presence.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 30e6e56d7d98434b7f306192d7025c5543ddf3e5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 23 12:18:37 2008 +0100
+
+    remove a trailing new line
+
+ src/presence-cache.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 6fb53711039af39c7eacd9d4dcc40645b4058b8a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 23 12:17:19 2008 +0100
+
+    remove the old status msg if we change the presence because of OLPC views
+
+ src/presence.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit f87dc8c93a0fd2d7537ed13e1eb23200bd638b16
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 22 15:27:41 2008 +0100
+
+    presence: use the presence aggregator to tweak presence according current views
+
+ src/presence.c |   52 +++++++++++++++++++++++++++++++++++-----------------
+ 1 files changed, 35 insertions(+), 17 deletions(-)
+
+commit 35e6b582205b4d5a11b9bec0e1546b6160057892
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 22 15:24:18 2008 +0100
+
+    view-presence: not offline presence should contain a resource
+
+ tests/twisted/olpc/view-presence.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6e2d73f05307a576f51a83ab785477ecdd4ac243
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 22 14:31:19 2008 +0100
+
+    presence: factor out aggregate_resources
+
+ src/presence.c |   52 +++++++++++++++++++++++++++++++++-------------------
+ 1 files changed, 33 insertions(+), 19 deletions(-)
+
+commit 5d745a4c1c382396d35df1ec3a9ea8fc6876b91b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 11:19:29 2008 +0100
+
+    view-presence.py: use ns.py
+
+ tests/twisted/olpc/view-presence.py |   22 +++++-----------------
+ 1 files changed, 5 insertions(+), 17 deletions(-)
+
+commit 2bef5850a761843b5ea467fcafd5c07c7bf4f4b0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 17 18:28:00 2008 +0100
+
+    view-presence.py: add ressource to one presence stanza
+
+ tests/twisted/olpc/view-presence.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 248164bde4a907f80dd1f65d6e9cff88c794a36e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 17 18:24:36 2008 +0100
+
+    :view-presence.py: test buddy in more than one view
+
+ tests/twisted/olpc/view-presence.py |   71 +++++++++++++++++++++++++++++++++--
+ 1 files changed, 67 insertions(+), 4 deletions(-)
+
+commit 7c185faf24e4da06f3eee07b497712a9f22e7be2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 16 18:20:22 2008 +0100
+
+    call gabble_presence_cache_contacts_removed_from_olpc_view when view is closed
+
+ src/olpc-view.c                     |    3 +++
+ tests/twisted/olpc/view-presence.py |   27 ++++++++++++++++++---------
+ 2 files changed, 21 insertions(+), 9 deletions(-)
+
+commit 28aa014a7d01c52fc8b34d9edbfeef71791e4e4b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 16 18:00:40 2008 +0100
+
+    view-presence: use elem() in send_presence
+
+ tests/twisted/olpc/view-presence.py |   17 ++++++++++-------
+ 1 files changed, 10 insertions(+), 7 deletions(-)
+
+commit b01482c9732db3b8a90abe451babf7ea9b0d2467
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 16 17:50:56 2008 +0100
+
+    view-presence.py: factor out remove_buddy_from_view
+
+ tests/twisted/olpc/view-presence.py |   32 +++++++++++---------------------
+ 1 files changed, 11 insertions(+), 21 deletions(-)
+
+commit a4944995d586cff6ff478923c9c78640a32a5891
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 15 18:33:10 2008 +0100
+
+    gabble_presence_cache_contacts_removed_from_olpc_view: discard presence if needed
+
+ src/presence-cache.c                |    1 +
+ tests/twisted/olpc/view-presence.py |    4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 2090c96c26d60db3e9060b138f2b81b53d2a30ed
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 15 18:25:11 2008 +0100
+
+    check if we properly presence change from a buddy who is already in a view
+
+ tests/twisted/olpc/view-presence.py |   58 ++++++++++++++++++++++++++---------
+ 1 files changed, 43 insertions(+), 15 deletions(-)
+
+commit ef8faf9c86e686a240a7d58ef9b326e75d5616f2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 15 18:09:09 2008 +0100
+
+    don't change presence when a buddy from who we received a presence is removed from a view
+
+ src/presence-cache.c                |   12 +---------
+ src/presence.c                      |   38 +++++++++++++++++++++++++++++++++++
+ src/presence.h                      |    4 ++-
+ tests/twisted/olpc/view-presence.py |   14 ++++++++++++
+ 4 files changed, 57 insertions(+), 11 deletions(-)
+
+commit 15943f316b2fa217f726bd5448f171f9f0b754b6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 15 17:07:28 2008 +0100
+
+    view-presence.py: check that the presence isn't changed if we received a presence stanza
+
+ tests/twisted/olpc/view-presence.py |   33 +++++++++++++++++++++++++++------
+ 1 files changed, 27 insertions(+), 6 deletions(-)
+
+commit 02c174bcb40d6036684b614217ffda54c89d538b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 15 16:45:06 2008 +0100
+
+    use presence interfaces to announce view buddies as online (first naive implementation)
+
+ src/olpc-view.c                     |   25 +++++++-
+ src/presence-cache.c                |   87 ++++++++++++++++++++++++
+ src/presence-cache.h                |    6 ++
+ src/presence.h                      |    1 +
+ tests/twisted/Makefile.am           |    1 +
+ tests/twisted/olpc/view-presence.py |  124 +++++++++++++++++++++++++++++++++++
+ 6 files changed, 242 insertions(+), 2 deletions(-)
+
+commit b74b5012b8762b13761b24f75f616043ff1220f9
+Merge: 47a667e... be0bec5...
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Oct 22 16:44:38 2008 +0100
+
+    Merge commit 'upstream/master'
+
 commit 47a667ea7c0277fb8bdbc6b0e457b3cee0bd68da
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Oct 22 15:40:39 2008 +0100
@@ -7,6 +204,29 @@ Date:   Wed Oct 22 15:40:39 2008 +0100
  NEWS         |   14 ++++++++------
  configure.ac |    4 ++--
  2 files changed, 10 insertions(+), 8 deletions(-)
+
+commit be0bec5e0bdf2d2388be40a685ab41df6aea0c0e
+Merge: 051770c... b04d0d5...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Oct 22 09:08:01 2008 -0400
+
+    Merge branch 'master' into alban-bug13891
+
+commit b04d0d5106af976549795d5964bc1c77c083942d
+Merge: df6ad72... df39cd7...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 22 12:44:54 2008 +0100
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble
+
+commit df6ad726504812972a152df97ed5c4bf2093864c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 22 12:44:04 2008 +0100
+
+    add ns.py to EXTRA_DIST
+
+ tests/twisted/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
 commit df39cd769a720cebd6d5b6e709247907f9b7a393
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -75,6 +295,29 @@ Date:   Wed Oct 22 12:33:23 2008 +0100
  NEWS |   10 ++++++++++
  1 files changed, 10 insertions(+), 0 deletions(-)
 
+commit 6e50fa0269dc1b02d2c3f4dbbdf6e543149dc996
+Merge: 8a24c91... 4231766...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Oct 22 12:31:08 2008 +0100
+
+    Merge branch 'ns'
+
+commit 051770cc8dac058b4519b117304d0c1fac4be069
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Oct 21 11:10:37 2008 -0400
+
+    tests/twisted/tubes/test-si-tubes.py: Regression test for Bug #13891
+
+ tests/twisted/tubes/test-si-tubes.py |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit f4e737ebdbda23b3284c8bf4125b14b1913982ea
+Merge: dd5efa0... 8a24c91...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Oct 21 10:51:58 2008 -0400
+
+    Merge branch 'master' into alban-bug13891
+
 commit 8a24c91c688d0b1db96be3f00dc486fa07e332ee
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Wed Sep 10 12:34:04 2008 +0100
@@ -119,6 +362,159 @@ Date:   Mon Oct 20 12:12:41 2008 -0400
 
  configure.ac |    5 +++++
  1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 4231766e9556019f52602117e136a20011c60fbe
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 13:18:58 2008 +0100
+
+    test-olpc-set-props-preload.py: use ns.py
+
+ tests/twisted/olpc/test-olpc-set-props-preload.py |   17 +++++++++--------
+ 1 files changed, 9 insertions(+), 8 deletions(-)
+
+commit 974d45f8c20aa68b0d9a701122aaaccd8bddfce2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 13:18:37 2008 +0100
+
+    test-olpc-bundle.py: use more ns.py namespaces
+
+ tests/twisted/olpc/test-olpc-bundle.py |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 5ab1fec3818081e65e7d502bf9041a984605d960
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 13:18:08 2008 +0100
+
+    olpc-muc-prop-change.py: use ns.py
+
+ tests/twisted/olpc/olpc-muc-prop-change.py |   33 ++++++++++++++-------------
+ 1 files changed, 17 insertions(+), 16 deletions(-)
+
+commit 31f809a418c682109089de79caae86b2e989a39c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 13:17:51 2008 +0100
+
+    olpc-muc-invitation.py: use ns.ps
+
+ tests/twisted/olpc/olpc-muc-invitation.py |   13 +++++++------
+ 1 files changed, 7 insertions(+), 6 deletions(-)
+
+commit 40a094bd576cce4d973ac8e284e3ef7801196f8f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 13:17:30 2008 +0100
+
+    gadget-invite.py: use more ns.ps namespace
+
+ tests/twisted/olpc/gadget-invite.py |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit c125c9498d26edcb41f3f056d8b6981043c29de5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 13:16:32 2008 +0100
+
+    add MUC and MUC_USER to ns.py
+
+ tests/twisted/ns.py |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 14d30e94b9784cf3dad5e994fa7de63ee91ac167
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 11:45:56 2008 +0100
+
+    util.py: use ns.py
+
+ tests/twisted/olpc/util.py |   60 +++++++++++++++++--------------------------
+ 1 files changed, 24 insertions(+), 36 deletions(-)
+
+commit ac3c438736256e75cdb7abd35a54229153a54c65
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 11:45:26 2008 +0100
+
+    test-olpc-bundle.py: use ns.py
+
+ tests/twisted/olpc/test-olpc-bundle.py |   10 +++-------
+ 1 files changed, 3 insertions(+), 7 deletions(-)
+
+commit 19ee908d9f7d2bc43776a47300224b14f0bf91b5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 11:45:15 2008 +0100
+
+    olpc-buddy-search.py: use ns.py
+
+ tests/twisted/olpc/olpc-buddy-search.py |   46 +++++++++++-------------------
+ 1 files changed, 17 insertions(+), 29 deletions(-)
+
+commit 4b9b6c17e964869fbb2b270b0c48b281ef9b526e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 11:45:01 2008 +0100
+
+    olpc-activity-search.py: use ns.py
+
+ tests/twisted/olpc/olpc-activity-search.py |   45 ++++++++++------------------
+ 1 files changed, 16 insertions(+), 29 deletions(-)
+
+commit 32a8050738e306904609fdd51b0f2a2114fc6d04
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 11:44:47 2008 +0100
+
+    gadget-restarted.py: use ns.py
+
+ tests/twisted/olpc/gadget-restarted.py |   17 ++---------------
+ 1 files changed, 2 insertions(+), 15 deletions(-)
+
+commit 9541d6ca8d078d56bdd2a00ff6ed52d0d89ce2d6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 11:44:34 2008 +0100
+
+    gadget-publish.py: use ns.py
+
+ tests/twisted/olpc/gadget-publish.py |   17 ++---------------
+ 1 files changed, 2 insertions(+), 15 deletions(-)
+
+commit 03cb1b0f0f33b82e57f16ccdf2d360a6aa2e587f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 11:44:19 2008 +0100
+
+    gadget-invite.py: use ns.py
+
+ tests/twisted/olpc/gadget-invite.py |   21 ++++-----------------
+ 1 files changed, 4 insertions(+), 17 deletions(-)
+
+commit 4bc973d22c519e83a69af7bdeff20b35e037cfb2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 11:43:56 2008 +0100
+
+    current-activity.py: use ns.py
+
+ tests/twisted/olpc/current-activity.py |   16 ++--------------
+ 1 files changed, 2 insertions(+), 14 deletions(-)
+
+commit 972581e92f8c6630e3c4899ff40633f9f125b51f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 11:43:07 2008 +0100
+
+    ns.py: add STANZA and OLPC +notify ns
+
+ tests/twisted/ns.py |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 29adfe9c98033d5b7c55d99fae310fa499e5ed29
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 11:21:12 2008 +0100
+
+    change-notifications.py: use ns.py
+
+ tests/twisted/olpc/change-notifications.py |   14 ++------------
+ 1 files changed, 2 insertions(+), 12 deletions(-)
+
+commit 03a1812b90f9eb2505d9bc84c7fc9a21ba975ba8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 20 11:18:45 2008 +0100
+
+    add twisted/ns.py
+
+ tests/twisted/ns.py |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
 
 commit a4a45774a359624a98857b3e2d93e10f9c51eec2
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
@@ -5490,6 +5886,20 @@ Date:   Tue Aug 12 10:16:10 2008 +0000
  src/conn-aliasing.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
+commit dd5efa0eb7c68817170e488c6dfad56d378422df
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Aug 8 18:08:48 2008 +0000
+
+    Fix Bug #13891: listen for D-Bus connection from the local application before returning from the AcceptDBusTube method call
+    
+    
+    20080808180848-a41c0-daef0909c8153077b122dc7c67dbe242cdb0fcf0.gz
+
+ src/tube-dbus.c     |   34 +++++++++++++++++++++++++++++++---
+ src/tube-dbus.h     |    2 ++
+ src/tubes-channel.c |    8 +++++---
+ 3 files changed, 38 insertions(+), 6 deletions(-)
+
 commit bad11b6419d7b1441a5c4091c772d20a46a7fcff
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Aug 7 09:14:10 2008 +0000
@@ -5504,7 +5914,33 @@ Date:   Thu Aug 7 09:14:10 2008 +0000
  src/gabble.c |    2 +-
  3 files changed, 1 insertions(+), 40 deletions(-)
 
+commit 0877b14c3326e2914d2d8d0608aa54f6314d14a6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 7 09:14:10 2008 +0000
+
+    use tp_debug_divert_messages instead of our own copy of it
+    
+    
+    20080807091410-7fe3f-2277c77b008b24567d8886fb93eb521b58a6d833.gz
+
+ src/debug.c  |   33 ---------------------------------
+ src/debug.h  |    6 ------
+ src/gabble.c |    2 +-
+ 3 files changed, 1 insertions(+), 40 deletions(-)
+
 commit 87f166b6999115bc4a4d23c3523c5ab5d16fa403
+Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
+Date:   Tue Aug 5 16:56:58 2008 +0000
+
+    "dnd" should be TP_CONNECTION_PRESENCE_TYPE_BUSY
+    
+    
+    20080805165658-418b8-b19546b8bb135d066266949220b600f9c0f5518d.gz
+
+ src/conn-presence.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit df6dd951ddcb4cd9944aa3614f055c20072f8a7f
 Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
 Date:   Tue Aug 5 16:56:58 2008 +0000
 
@@ -5710,6 +6146,18 @@ Date:   Thu Jul 31 19:14:08 2008 +0000
  tests/twisted/gabbletest.py |    2 ++
  1 files changed, 2 insertions(+), 0 deletions(-)
 
+commit 911fa03ae420bcff3cd1ec937769dc08fb7580b8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Jul 31 19:14:08 2008 +0000
+
+    When failing a test due to an exception, print it
+    
+    
+    20080731191408-53eee-6eb52b1cfdf7ea3486546db6cfc7ec10de1d9de8.gz
+
+ tests/twisted/gabbletest.py |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
 commit 924375b2dc4809a101cdad80082cb13e590fb898
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Thu Jul 31 18:50:33 2008 +0000
@@ -5844,6 +6292,127 @@ Date:   Mon Aug 4 08:25:04 2008 +0000
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit 4e966e09b510301dd319c7cc1b9645a276775513
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Aug 4 08:24:03 2008 +0000
+
+    connection: use DEBUG instead of g_debug
+    
+    
+    20080804082403-7fe3f-6e167e7a0943912f89662b288432c77a31613d51.gz
+
+ src/connection.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 2e68257597f9aef13b71c1b8c386da6866ff2747
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 18:35:55 2008 +0000
+
+    gabbletest: make it possible for tests to fail again
+    
+    
+    20080730183555-53eee-105e1f87820b59bb5d91f36877b19e77414c2dee.gz
+
+ tests/twisted/gabbletest.py |   30 +++++++++++++++++++-----------
+ 1 files changed, 19 insertions(+), 11 deletions(-)
+
+commit ea76d8930dbdc4459e357c3f5ddc918fc1aee2a3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Aug 5 12:09:58 2008 +0000
+
+    test-si-tubes: don't early return so the rest of the test is actually executed
+    
+    
+    20080805120958-7fe3f-dc1fcc02bedf9813b40e49c386de5fcb00a8a724.gz
+
+ tests/twisted/tubes/test-si-tubes.py |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 9bd41935f091e2eb77bc7b21c1dba0dff4499f97
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Aug 5 11:10:25 2008 +0000
+
+    test-disco: don't early return so the rest of the test is actually executed
+    
+    
+    20080805111025-7fe3f-5e646df68d65b91450908ec0041e5733996cabcf.gz
+
+ tests/twisted/test-disco.py |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit a6a3967087834ac0a58ec6e0703529ae2573a655
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Aug 4 19:47:24 2008 +0000
+
+    presence/presence.py: Remove unnecessary assertions copied from test-roster
+    
+    
+    20080804194724-53eee-496a97f2ce71e25d4fb93dd97e930977e3e69daf.gz
+
+ tests/twisted/presence/presence.py |   61 ++----------------------------------
+ 1 files changed, 3 insertions(+), 58 deletions(-)
+
+commit e502196a57ab735573e2484efc61377b2b691050
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Aug 4 11:33:18 2008 +0000
+
+    Add a simple smoke-test for SimplePresence
+    
+    
+    20080804113318-53eee-c470ebdcf276c8d1860f7399e3c9539296c35053.gz
+
+ tests/twisted/Makefile.am             |    1 +
+ tests/twisted/presence/presence.py    |  110 +++++++++++++++++++++++++++++++++
+ 2 files changed, 111 insertions(+), 0 deletions(-)
+
+commit d463349b3cd3eecba036da5d9f38cd034e14e780
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Aug 4 18:57:46 2008 +0000
+
+    Use pedantically correct marshaller for a GArray, because GObject 2.17 actually checks for this :-(
+    
+    
+    20080804185746-53eee-639d869c8a7d6ea7832ae9d5883b2c7dd181b74e.gz
+
+ src/presence-cache.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 93435333e03863851fbc1e7429cba854fd82b44f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Aug 4 08:33:15 2008 +0000
+
+    register: use DEBUG instead of g_debug
+    
+    
+    20080804083315-7fe3f-e78240def4057e1579abd6c1ee3d3d21f4ba170f.gz
+
+ src/register.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 18895c3a4545df585ef37375e5e5ec4aef83f859
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Aug 4 08:28:15 2008 +0000
+
+    util: use DEBUG instead of g_debug
+    
+    
+    20080804082815-7fe3f-e619ec80b634c5a2fbda169b01fb73315bfe65f7.gz
+
+ src/util.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 3d67d195c8b50994b8acbad65b0bbaa6351bf65a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Aug 4 08:25:04 2008 +0000
+
+    muc-channel: use DEBUG instead of g_debug
+    
+    
+    20080804082504-7fe3f-5982ccd671e1b7b2bd1a6392332dead2b1778e57.gz
+
+ src/muc-channel.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 7e4b41ab26dca27ef25e94310f5bda2d11ec66a7
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Aug 4 08:24:03 2008 +0000
 
@@ -6266,191 +6835,6 @@ Date:   Mon Jul 28 16:47:48 2008 +0000
  src/private-tubes-factory.c |   38 ++++++++++++++++++++++++++++++++------
  1 files changed, 32 insertions(+), 6 deletions(-)
 
-commit 74d738dd04a465eee36cbb1079c026b1c09fb9f8
-Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
-Date:   Mon Jul 28 16:42:52 2008 +0000
-
-    GabbleMucFactory: reduce dependence on TpChannelFactoryIface for close_all
-    
-    
-    20080728164252-53eee-8a48ac86c3423c9a0c4ee526d918f52c1c53b6ba.gz
-
- src/muc-factory.c |   14 ++++++++++----
- 1 files changed, 10 insertions(+), 4 deletions(-)
-
-commit edaada6cae64a62eac90cdb9a24b75b1888a2399
-Author: Sjoerd Simons <sjoerd@luon.net>
-Date:   Mon Jul 28 16:39:29 2008 +0000
-
-    Add support for the Contacts interface
-    
-    
-    20080728163929-93b9a-196f5df4b207c0bee6c3ddd5897d00af45a338d9.gz
-
- src/conn-presence.c |    4 ++++
- src/connection.c    |   11 +++++++++++
- src/connection.h    |    3 +++
- 3 files changed, 18 insertions(+), 0 deletions(-)
-
-commit 0877b14c3326e2914d2d8d0608aa54f6314d14a6
-Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
-Date:   Thu Aug 7 09:14:10 2008 +0000
-
-    use tp_debug_divert_messages instead of our own copy of it
-    
-    
-    20080807091410-7fe3f-2277c77b008b24567d8886fb93eb521b58a6d833.gz
-
- src/debug.c  |   33 ---------------------------------
- src/debug.h  |    6 ------
- src/gabble.c |    2 +-
- 3 files changed, 1 insertions(+), 40 deletions(-)
-
-commit df6dd951ddcb4cd9944aa3614f055c20072f8a7f
-Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
-Date:   Tue Aug 5 16:56:58 2008 +0000
-
-    "dnd" should be TP_CONNECTION_PRESENCE_TYPE_BUSY
-    
-    
-    20080805165658-418b8-b19546b8bb135d066266949220b600f9c0f5518d.gz
-
- src/conn-presence.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-commit 911fa03ae420bcff3cd1ec937769dc08fb7580b8
-Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
-Date:   Thu Jul 31 19:14:08 2008 +0000
-
-    When failing a test due to an exception, print it
-    
-    
-    20080731191408-53eee-6eb52b1cfdf7ea3486546db6cfc7ec10de1d9de8.gz
-
- tests/twisted/gabbletest.py |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-commit 2e68257597f9aef13b71c1b8c386da6866ff2747
-Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
-Date:   Wed Jul 30 18:35:55 2008 +0000
-
-    gabbletest: make it possible for tests to fail again
-    
-    
-    20080730183555-53eee-105e1f87820b59bb5d91f36877b19e77414c2dee.gz
-
- tests/twisted/gabbletest.py |   30 +++++++++++++++++++-----------
- 1 files changed, 19 insertions(+), 11 deletions(-)
-
-commit ea76d8930dbdc4459e357c3f5ddc918fc1aee2a3
-Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
-Date:   Tue Aug 5 12:09:58 2008 +0000
-
-    test-si-tubes: don't early return so the rest of the test is actually executed
-    
-    
-    20080805120958-7fe3f-dc1fcc02bedf9813b40e49c386de5fcb00a8a724.gz
-
- tests/twisted/tubes/test-si-tubes.py |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
-
-commit 9bd41935f091e2eb77bc7b21c1dba0dff4499f97
-Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
-Date:   Tue Aug 5 11:10:25 2008 +0000
-
-    test-disco: don't early return so the rest of the test is actually executed
-    
-    
-    20080805111025-7fe3f-5e646df68d65b91450908ec0041e5733996cabcf.gz
-
- tests/twisted/test-disco.py |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
-
-commit a6a3967087834ac0a58ec6e0703529ae2573a655
-Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
-Date:   Mon Aug 4 19:47:24 2008 +0000
-
-    presence/presence.py: Remove unnecessary assertions copied from test-roster
-    
-    
-    20080804194724-53eee-496a97f2ce71e25d4fb93dd97e930977e3e69daf.gz
-
- tests/twisted/presence/presence.py |   61 ++----------------------------------
- 1 files changed, 3 insertions(+), 58 deletions(-)
-
-commit e502196a57ab735573e2484efc61377b2b691050
-Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
-Date:   Mon Aug 4 11:33:18 2008 +0000
-
-    Add a simple smoke-test for SimplePresence
-    
-    
-    20080804113318-53eee-c470ebdcf276c8d1860f7399e3c9539296c35053.gz
-
- tests/twisted/Makefile.am             |    1 +
- tests/twisted/presence/presence.py    |  110 +++++++++++++++++++++++++++++++++
- 2 files changed, 111 insertions(+), 0 deletions(-)
-
-commit d463349b3cd3eecba036da5d9f38cd034e14e780
-Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
-Date:   Mon Aug 4 18:57:46 2008 +0000
-
-    Use pedantically correct marshaller for a GArray, because GObject 2.17 actually checks for this :-(
-    
-    
-    20080804185746-53eee-639d869c8a7d6ea7832ae9d5883b2c7dd181b74e.gz
-
- src/presence-cache.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-commit 93435333e03863851fbc1e7429cba854fd82b44f
-Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
-Date:   Mon Aug 4 08:33:15 2008 +0000
-
-    register: use DEBUG instead of g_debug
-    
-    
-    20080804083315-7fe3f-e78240def4057e1579abd6c1ee3d3d21f4ba170f.gz
-
- src/register.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
-
-commit 18895c3a4545df585ef37375e5e5ec4aef83f859
-Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
-Date:   Mon Aug 4 08:28:15 2008 +0000
-
-    util: use DEBUG instead of g_debug
-    
-    
-    20080804082815-7fe3f-e619ec80b634c5a2fbda169b01fb73315bfe65f7.gz
-
- src/util.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-commit 3d67d195c8b50994b8acbad65b0bbaa6351bf65a
-Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
-Date:   Mon Aug 4 08:25:04 2008 +0000
-
-    muc-channel: use DEBUG instead of g_debug
-    
-    
-    20080804082504-7fe3f-5982ccd671e1b7b2bd1a6392332dead2b1778e57.gz
-
- src/muc-channel.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-commit 7e4b41ab26dca27ef25e94310f5bda2d11ec66a7
-Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
-Date:   Mon Aug 4 08:24:03 2008 +0000
-
-    connection: use DEBUG instead of g_debug
-    
-    
-    20080804082403-7fe3f-6e167e7a0943912f89662b288432c77a31613d51.gz
-
- src/connection.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
 commit 0f2a0da650af1fad6a112d5f7f60aefcbb27f5b1
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Jul 28 16:47:33 2008 +0000
@@ -6551,6 +6935,18 @@ Date:   Mon Jul 28 16:47:48 2008 +0000
  src/private-tubes-factory.c |   38 ++++++++++++++++++++++++++++++++------
  1 files changed, 32 insertions(+), 6 deletions(-)
 
+commit 74d738dd04a465eee36cbb1079c026b1c09fb9f8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Jul 28 16:42:52 2008 +0000
+
+    GabbleMucFactory: reduce dependence on TpChannelFactoryIface for close_all
+    
+    
+    20080728164252-53eee-8a48ac86c3423c9a0c4ee526d918f52c1c53b6ba.gz
+
+ src/muc-factory.c |   14 ++++++++++----
+ 1 files changed, 10 insertions(+), 4 deletions(-)
+
 commit e15813f05015a7c159dc6c24cdb9e0599e4e1d90
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Jul 28 16:42:52 2008 +0000
@@ -6562,6 +6958,20 @@ Date:   Mon Jul 28 16:42:52 2008 +0000
 
  src/muc-factory.c |   14 ++++++++++----
  1 files changed, 10 insertions(+), 4 deletions(-)
+
+commit edaada6cae64a62eac90cdb9a24b75b1888a2399
+Author: Sjoerd Simons <sjoerd@luon.net>
+Date:   Mon Jul 28 16:39:29 2008 +0000
+
+    Add support for the Contacts interface
+    
+    
+    20080728163929-93b9a-196f5df4b207c0bee6c3ddd5897d00af45a338d9.gz
+
+ src/conn-presence.c |    4 ++++
+ src/connection.c    |   11 +++++++++++
+ src/connection.h    |    3 +++
+ 3 files changed, 18 insertions(+), 0 deletions(-)
 
 commit 3f080752de1a35d95c4ba74569d890afc7f6de7e
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
