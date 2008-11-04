@@ -1,3 +1,813 @@
+commit d39a421cd74640db1e679754a273c134dfc7378f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Nov 4 10:55:40 2008 +0000
+
+    Prepare version 0.7.14
+
+ NEWS         |    2 +-
+ configure.ac |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 6532d1150de4bf6d71b57664325f3403cfba0d42
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Nov 4 10:41:12 2008 +0000
+
+    Update NEWS
+
+ NEWS |   23 +++++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
+
+commit 1ca8e5700351d3a905f6e05aeb67d47db20b9d96
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Oct 30 15:19:49 2008 +0000
+
+    Remove redundant g_object_get call
+
+ src/im-factory.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+commit 904bb6b1c1bf5b47ba62d0e1165a7af4f3725ee1
+Merge: 22876b3... 666ec38...
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Nov 4 10:22:45 2008 +0000
+
+    Merge branch 'compliance'
+
+commit 22876b36e5e3fc97dc11d9b4d36b0813a46e4e1c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 3 19:14:44 2008 +0000
+
+    Fix usage of gabble_tube_stream_close (see bug 16797)
+
+ src/tube-stream.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit e1d4d07834e4078dacdf624510e58a5c5b992ea9
+Merge: 3a75959... d0a66d6...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 3 19:08:53 2008 +0000
+
+    Merge branch 'alban-request-tube-channel'
+
+commit d0a66d6ff89010c0b78f2db42c7ce0fcd5e666a1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 3 18:49:16 2008 +0000
+
+    Stream tubes: AcceptStreamTube: only accept UNIX sockets.
+
+ src/tube-stream.c   |    4 +---
+ src/tubes-channel.c |    4 +---
+ 2 files changed, 2 insertions(+), 6 deletions(-)
+
+commit 4753f4db7ad909febaed4809766c11f1d31badf3
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 3 18:46:39 2008 +0000
+
+    src/tube-stream.c: Fix a leak in get_property for PROP_CHANNEL_PROPERTIES.
+
+ src/tube-stream.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a067310bc5e9293072712c06b31bdfd0e7a97f6f
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 3 18:41:41 2008 +0000
+
+    src/tube-stream.c: Fix a leak in get_property for PROP_SUPPORTED_SOCKET_TYPES.
+
+ src/tube-stream.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 666ec3814101593a4c1f3887e0273a846e138497
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Nov 3 18:25:22 2008 +0000
+
+    test-capabilities.py: adjust for telepathy-glib 0.7.18
+
+ tests/twisted/test-capabilities.py |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+commit 3756aaba5da0796bacbeffc2f67f8d4c46b9243c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Nov 3 18:22:52 2008 +0000
+
+    text/destroy.py: expect the final Destroyable interface
+
+ tests/twisted/text/destroy.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 3cdd72a6423f9d4fe70ca45ec00a3249e7a99ee9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Nov 3 18:22:38 2008 +0000
+
+    text/respawn.py: expect a rescued message to have the RESCUED flag
+
+ tests/twisted/text/respawn.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit af6f015c06f99a55198ac12baadff929f53f49af
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Nov 3 18:22:17 2008 +0000
+
+    test-muc-accept-stream-tube-ibb.py: fix a race
+    
+    Previously we assumed that the Tubes channel would always be
+    signalled before the Text one. With telepathy-glib 0.7.18 this is
+    no longer true.
+
+ .../tubes/test-muc-accept-stream-tube-ibb.py       |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
+commit 03e1c4b70ecc8d56960752133776f474f8fe5839
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Nov 3 18:21:34 2008 +0000
+
+    tests/twisted/test-set-status-idempotence.py: adjust for telepathy-glib 0.7.18
+    
+    The library now complies with the spec, and returns contact-id for
+    all GetContactAttribute calls, even if o.f.T.Connection was not
+    explicitly requested.
+
+ tests/twisted/test-set-status-idempotence.py |   16 ++++++++++++----
+ 1 files changed, 12 insertions(+), 4 deletions(-)
+
+commit 175c050f9e516fbfef21720846779e703e5fe1f9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Nov 3 17:57:07 2008 +0000
+
+    tests/twisted/roster: expect CreateChannel to return before NewChannel
+    
+    Spec 0.17.14 compliance in telepathy-glib 0.7.18
+
+ tests/twisted/roster/request-group-after-roster.py |    6 +++---
+ .../twisted/roster/request-group-before-roster.py  |   11 ++++++-----
+ 2 files changed, 9 insertions(+), 8 deletions(-)
+
+commit b60987e6f652677ed2b286c66e2e71c317238da1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Nov 3 17:56:28 2008 +0000
+
+    tests/twisted/roster/ensure.py: expect that EnsureChannel returns before NewChannels is emitted
+    
+    Spec 0.17.14 compliance in telepathy-glib 0.7.18
+
+ tests/twisted/roster/ensure.py |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 63cb96afac15558a550a9c95bbf8cbef209b4789
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Nov 3 16:08:56 2008 +0000
+
+    GabbleMUCChannel: set the SCROLLBACK flag on discussion history
+
+ src/muc-channel.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+commit 1c707be94ce1a708d7a9f46e8f0fd6fca75446e8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Nov 3 16:07:13 2008 +0000
+
+    GabbleIMChannel: when rescuing a channel, set the rescued flag
+
+ src/im-channel.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 3aef23a97e6cb7416632502b3362f4a76296bc05
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Nov 3 16:02:19 2008 +0000
+
+    Revert "extensions: add Destroyable draft"
+    
+    This reverts commit 2f9c9f689539c379a9c3754705b5e0eac9479e18.
+
+ extensions/Channel_Interface_Destroyable.xml |   79 --------------------------
+ extensions/all.xml                           |    1 -
+ 2 files changed, 0 insertions(+), 80 deletions(-)
+
+commit 5d6e3545e6afe2d8eb5e7b70be290f9ea2346e79
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Nov 3 16:01:36 2008 +0000
+
+    Require telepathy-glib 0.7.18 (for Destroyable)
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 25dd050b2a01c4057d3154276506d69cea023f5f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Nov 3 16:00:49 2008 +0000
+
+    GabbleIMChannel: implement the final version of Destroyable
+
+ src/im-channel.c |   11 +++++------
+ 1 files changed, 5 insertions(+), 6 deletions(-)
+
+commit 3a75959dc4e72632c340ebf7ba0e7cd5467c50da
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 31 13:03:40 2008 +0000
+
+    docs/tubes.xml: Better explanation for closing 1-1 D-Bus tubes
+
+ docs/tubes.xml |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit e196ac87514367f370462bff30d8283ca8764c13
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 31 12:47:26 2008 +0000
+
+    docs/tubes.xml: How 1-1 D-Bus tubes are closed.
+
+ docs/tubes.xml |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 03ddfea7107c05fd424e0ddc7d707c630db0c28d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 31 12:37:48 2008 +0000
+
+    Closing tubes: Replace "local" parameter by "!closed_remotely".
+
+ src/tube-dbus.c     |    5 +++--
+ src/tube-iface.c    |    4 ++--
+ src/tube-iface.h    |    4 ++--
+ src/tube-stream.c   |    4 ++--
+ src/tubes-channel.c |   12 ++++++------
+ 5 files changed, 15 insertions(+), 14 deletions(-)
+
+commit 1d773800f4599cdb5ef193a8ebf71a9ada136406
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 31 12:33:33 2008 +0000
+
+    src/tubes-channel.c: Better debug message when the tube ID already exists
+
+ src/tubes-channel.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 20aeb6b2532b5b620f10cd97de99a0f3f44157b9
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 31 12:23:57 2008 +0000
+
+    src/tubes-channel.c: Remove the FIXME, since it is fixed
+
+ src/tubes-channel.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit c977a6dc0a36b98658d5f071fb16d89fbd3bc31c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 31 12:18:50 2008 +0000
+
+    src/tube-stream.c: coding style: add space
+
+ src/tube-stream.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 51544bf01747e5a3cf4c23bd077ce8b3eba6b32e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Oct 30 21:22:34 2008 +0000
+
+    Fix bug #16797: do not send the tube close stanza from both ends. Only send it when the tube is closed due to the local user.
+
+ src/tube-dbus.c     |    8 ++++----
+ src/tube-iface.c    |    6 +++---
+ src/tube-iface.h    |    4 ++--
+ src/tube-stream.c   |    8 ++++----
+ src/tubes-channel.c |   12 ++++++------
+ 5 files changed, 19 insertions(+), 19 deletions(-)
+
+commit fd750101f49228f8d51227a0ae9b4f14a91aee02
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Oct 30 11:34:57 2008 +0000
+
+    Add a test-case for Destroyable.Destroy()
+
+ tests/twisted/Makefile.am     |    1 +
+ tests/twisted/text/destroy.py |  139 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 140 insertions(+), 0 deletions(-)
+
+commit 8f7234575a7a3d9589cbfef9fe9c5222999b1fe1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Oct 30 11:33:48 2008 +0000
+
+    GabbleIMChannel: implement Destroyable
+
+ src/im-channel.c |   43 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 42 insertions(+), 1 deletions(-)
+
+commit 2f9c9f689539c379a9c3754705b5e0eac9479e18
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Oct 30 11:33:30 2008 +0000
+
+    extensions: add Destroyable draft
+
+ extensions/Channel_Interface_Destroyable.xml |   79 ++++++++++++++++++++++++++
+ extensions/all.xml                           |    1 +
+ 2 files changed, 80 insertions(+), 0 deletions(-)
+
+commit c2365bcfd0a738aaf91360e6282e87228ecf9882
+Merge: 92036f8... 675e409...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Oct 29 14:16:54 2008 +0000
+
+    Merge branch 'alban-refdbg'
+
+commit 675e4093f5165eb7efb7a4a284bb84976725acca
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Oct 29 12:34:15 2008 +0000
+
+    Tests: refdbg: fix README and let the user use a different refdbg
+
+ tests/README                            |    9 ++++++---
+ tests/twisted/tools/exec-with-log.sh.in |    8 ++++++--
+ 2 files changed, 12 insertions(+), 5 deletions(-)
+
+commit 7f3f4fdcc64cd6ff428ef39901ad6824b69070cc
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Oct 29 12:07:13 2008 +0000
+
+    tests/README: add an example how to use refdbg
+
+ tests/README |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+commit 9faed8a8675b5b466b4764c96c7bbabbf365aa41
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Oct 28 15:07:57 2008 +0000
+
+    Set access control on o.f.T.Channel.Type.StreamTube.AcceptStreamTube.
+
+ src/tube-stream.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit bfc19c67077fa682d824573763ad400bab281b6e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Oct 28 15:02:37 2008 +0000
+
+    Tube access control: fix again the error message according to what it does
+
+ src/tube-stream.c   |    7 +++----
+ src/tubes-channel.c |    7 +++----
+ 2 files changed, 6 insertions(+), 8 deletions(-)
+
+commit c57ed7fddba8bbf6ea193266ad72ebb8abfef346
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Oct 28 14:50:19 2008 +0000
+
+    Tubes: check for Localhost access control list only for Unix sockets
+
+ src/tube-stream.c   |    3 ++-
+ src/tubes-channel.c |    3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 92036f833d9cb6a7d496a864d696cae6bac6990e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 28 14:49:42 2008 +0000
+
+    version 0.7.13
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit bb9c166c0ed5b9b8d1f08e5a427f40fd2dd0f680
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 28 14:45:31 2008 +0000
+
+    version 0.7.13
+
+ configure.ac |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit df840d7534acfd76cc2032676714b12b42aec140
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 28 14:45:04 2008 +0000
+
+    Update NEWS for 0.7.13
+
+ NEWS |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+commit f9fd999c649774360efb8ee85a180c9f2544f8d4
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Oct 28 14:44:48 2008 +0000
+
+    src/tube-stream.c: Close the stream tube channel propertly when o.f.T.Channel.Close is called
+
+ src/tube-stream.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
+
+commit 96e93d9a9205e66ce78ed657c75f954f41b3e2c6
+Merge: ce70934... 0c60528...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Oct 28 14:33:25 2008 +0000
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble
+
+commit 0c605289189c7d9b9a439861c83d37388d4581ea
+Merge: 119605c... e9c43e0...
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Tue Oct 28 13:35:13 2008 +0000
+
+    Merge branch 'tests'
+
+commit 4f5474edae4d6f1de3064c6fdd0ca12db453ec71
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Oct 28 13:11:25 2008 +0000
+
+    GabbleTubeStream: implements D-Bus property o.f.T.Channel.Type.StreamTube.SupportedSocketTypes. Add a basic test for it.
+
+ src/tube-stream.c                    |   69 +++++++++++++++++++++++++++++++++-
+ src/tube-stream.h                    |    2 +
+ src/tubes-channel.c                  |   33 +---------------
+ tests/twisted/tubes/test-si-tubes.py |   10 +++++
+ 4 files changed, 82 insertions(+), 32 deletions(-)
+
+commit 7bcd71305b9aabc5881a78c64928d9f17813c61e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Oct 28 12:57:43 2008 +0000
+
+    GabbleTubeStream implements the o.f.T.Channel.Interfaces property correctly
+
+ src/tube-stream.c                    |   19 +++++++++++++++++++
+ tests/twisted/tubes/test-si-tubes.py |    5 +++++
+ 2 files changed, 24 insertions(+), 0 deletions(-)
+
+commit 6ef9c8eda65f79168063687d563c5f23fe86324d
+Merge: eca4235... 119605c...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Oct 28 11:20:42 2008 +0000
+
+    Merge branch 'master' into alban-request-tube-channel
+
+commit eca423530823a44864e2f8bc60a199e526861128
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 27 19:45:58 2008 +0000
+
+    Tubes: better English in error messages
+
+ src/tube-stream.c   |    6 ++++--
+ src/tubes-channel.c |    3 ++-
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+commit 353c7fb467fd9a5c29cce55fd240d5ab99af1cba
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 27 19:29:35 2008 +0000
+
+    src/tube-stream.c: remove spurious comment
+
+ src/tube-stream.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit d834a7cfd104ca6f81dc756f9e781fb5ac625d5e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 27 19:26:36 2008 +0000
+
+    src/tube-stream.c: Remove a debug
+
+ src/tube-stream.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 9ed5c338e05c884d3da60b80232718aedd52852a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 27 17:57:52 2008 +0000
+
+    src/tube-stream.c: tubes always have an initiator. Add an assertion if not.
+
+ src/tube-stream.c |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
+
+commit 5557afc5ce24c7d9f6def4af23ef582fdafaa50f
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 27 17:48:11 2008 +0000
+
+    Tube, update to the new spec: remove "Initiator" property
+
+ src/tube-dbus.c     |   25 +++++++++++++++++++------
+ src/tube-iface.c    |   14 +-------------
+ src/tube-stream.c   |   20 +++-----------------
+ src/tubes-channel.c |    4 ++--
+ 4 files changed, 25 insertions(+), 38 deletions(-)
+
+commit 4d490455b8ac006f8a109a6b5153e1aeb3442f85
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 27 17:47:19 2008 +0000
+
+    test-si-tubes.py: Update tube test with the new spec: Use Channel.InitiatorHandle instead if Channel.Interface.Tube.Initiator
+
+ tests/twisted/tubes/test-si-tubes.py |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+commit 7dc7ebc9f5ec99dcc49ef7e70b0c35326aad9474
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 27 17:43:16 2008 +0000
+
+    Update Telepathy specification in extensions/ from tubes and caps branches of telepathy-spec. "Initiator" has been removed because o.f.T.Channel already has InitiatorHandle.
+
+ extensions/Channel_Interface_Tube.xml   |   69 ++++++++++++++++++-------------
+ extensions/Channel_Type_DBus_Tube.xml   |   16 ++++---
+ extensions/Channel_Type_Stream_Tube.xml |   20 +++++----
+ 3 files changed, 61 insertions(+), 44 deletions(-)
+
+commit ce70934c9165a149bc9a25be7fe1e1bfd9ef88a4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 27 16:44:37 2008 +0000
+
+    conn-olpc: add a FIXME
+
+ src/conn-olpc.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit dea67fede902736ce0dc9dc34cd5a1115e98c215
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 27 16:41:14 2008 +0000
+
+    Invite Gadget to our activities only if we call Publish(True)
+
+ src/conn-olpc.c                     |    7 +++++--
+ tests/twisted/olpc/gadget-invite.py |    3 ++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+commit c8e93f5d7f96f95874237a596dd704c29fa474bc
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 27 16:18:16 2008 +0000
+
+    factor out gadget_publish to olpc/util.py
+
+ tests/twisted/olpc/gadget-publish.py |   34 ++++------------------------------
+ tests/twisted/olpc/util.py           |   31 +++++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+), 30 deletions(-)
+
+commit 20a4edbca4c539f798f2c72692f65abcc4d776e5
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 27 16:38:56 2008 +0000
+
+    tests/twisted/tubes/test-si-tubes.py: When the test fails, assert instead of just stopping the test
+
+ tests/twisted/tubes/test-si-tubes.py |   12 +++---------
+ 1 files changed, 3 insertions(+), 9 deletions(-)
+
+commit 2bb17efcaf81dadfa4ddc7b8f1d8b709912c0fbc
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 27 16:33:41 2008 +0000
+
+    src/private-tubes-factory.c: Fix a leak: hash table for C.T.StreamTube was not destroyed
+
+ src/private-tubes-factory.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 1ebb4124ebdd2be92e3fbca9c1ba41104df61636
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 27 16:30:43 2008 +0000
+
+    src/tube-stream.c: Coding style: wrapping of function gabble_tube_stream_offer
+
+ src/tube-stream.c |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
+
+commit 0a6072332d87d6896ea8e321da1834e504d27239
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 27 16:29:58 2008 +0000
+
+    src/tube-stream.c: Coding style: indentation of properties
+
+ src/tube-stream.c |   22 +++++++++++-----------
+ 1 files changed, 11 insertions(+), 11 deletions(-)
+
+commit 5ddb1804770692de9680ac18b3234da4c97ba65f
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 27 16:28:11 2008 +0000
+
+    src/tube-stream.c: Coding style: indentation
+
+ src/tube-stream.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 119605c0d458033ab07f24c401537b6eff63403f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 27 16:25:03 2008 +0000
+
+    remove extra blank line
+
+ src/tube-dbus.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit cf226111eba3a12c51666e0a29a9ba26335cdceb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 27 15:30:18 2008 +0000
+
+    tube_dbus_open: use the DBusServer instead of the address to check if the server exists or not
+
+ src/tube-dbus.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a97d51fb74621ecf6be761cd91cbeecd16e3e57b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 27 15:26:35 2008 +0000
+
+    gabble_tube_dbus_listen: free and set to NULL the dbus_srv_addr and socket_path if dbus_server_listen failed
+
+ src/tube-dbus.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit 8d3a22f6e74d20bf36088bf85ac479b24b51b1a3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 27 15:23:38 2008 +0000
+
+    tube_dbus_open: no need to check if there is already a D-Bus server as gabble_tube_dbus_listen will do it too
+
+ src/tube-dbus.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 7486a2cef1697ea1ffe0c0310610831574a022db
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 27 15:08:30 2008 +0000
+
+    gabble_tube_dbus_listen: prevent it to be executed twice
+
+ src/tube-dbus.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit e35cd7c3312857169504e4c10f89ceba36edd2c8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Oct 27 11:40:51 2008 +0000
+
+    fix typo in gadget-invite.py
+
+ tests/twisted/olpc/gadget-invite.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit e9c43e0dc8a12dad6e799f350333b78ae9a751f5
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Fri Oct 24 15:06:37 2008 +0100
+
+    test-muc.py: use MUC utility functions
+
+ tests/twisted/muc/test-muc.py |   35 ++++++-----------------------------
+ 1 files changed, 6 insertions(+), 29 deletions(-)
+
+commit 1b12df943ff3b542f40c07d834cf1b4e628af464
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Fri Oct 24 15:05:30 2008 +0100
+
+    add MUC utility functions to gabbletest.py
+
+ tests/twisted/gabbletest.py |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
+
+commit c15dc677f7942e2c1b4c6bd589c2eed9d67a9927
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Fri Oct 24 15:04:30 2008 +0100
+
+    add namespace for MUC owner to ns.py
+
+ tests/twisted/ns.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 7ead98535ed3531416e636c6f88a9be41739756e
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Fri Oct 24 15:02:41 2008 +0100
+
+    remove superfluous blank lines
+
+ tests/twisted/muc/test-muc.py |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit d3bb85bed600c7fc20033d4c17189ab8aa769dda
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Fri Oct 24 14:59:23 2008 +0100
+
+    test-muc.py: remove unused imports
+
+ tests/twisted/muc/test-muc.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 4960e445e5015b82689c00e45ed68e5d9222c636
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 24 14:34:42 2008 +0100
+
+    pass the item_node to _gabble_muc_channel_member_presence_updated
+
+ src/muc-channel.c |    9 +++------
+ src/muc-channel.h |    3 ++-
+ src/muc-factory.c |    2 +-
+ 3 files changed, 6 insertions(+), 8 deletions(-)
+
+commit 34cf0bf3aac3fa7f4409a9fb8e945e909a1cf6be
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 24 14:11:44 2008 +0100
+
+    muc-channel: no need to check if the item node is present, muc-factory does it for us now
+
+ src/muc-channel.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
+
+commit fb0dd8b5050c6f6accb76f81324f3e33fbb6abdb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 24 14:11:17 2008 +0100
+
+    muc-factory: discard muc presence without item node
+
+ src/muc-factory.c |   26 ++++++++++++++------------
+ 1 files changed, 14 insertions(+), 12 deletions(-)
+
+commit 4045947413ded835cb6baea352f93ba29c2c743f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 24 14:02:07 2008 +0100
+
+    muc-channel: remove the gadget check as it's done in muc-factory now
+
+ src/muc-channel.c |    9 ---------
+ 1 files changed, 0 insertions(+), 9 deletions(-)
+
+commit b4074075fe4be643318f18dc3c11c816f9602640
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Fri Oct 24 13:44:02 2008 +0100
+
+    port test-text-no-body.py to new test API
+
+ tests/twisted/text/test-text-no-body.py |   54 +++++++-----------------------
+ 1 files changed, 13 insertions(+), 41 deletions(-)
+
+commit 64966b056932ced336692b3f9acf147c9ef6cbdb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Oct 24 13:23:00 2008 +0100
+
+    The presence-cache shouldn't handle Gadget's inspector muc presence
+
+ src/muc-factory.c                   |   17 +++++++++++++++++
+ tests/twisted/olpc/gadget-invite.py |    8 ++++++++
+ 2 files changed, 25 insertions(+), 0 deletions(-)
+
+commit 8697f4f564f07fb6d7fc34de315cc5befc4b3d64
+Merge: 9114fd8... 299cf44...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Oct 23 16:45:45 2008 -0400
+
+    Merge branch 'master' into alban-request-tube-channel
+
+commit 9114fd8af48fd89d41eaa3854dbb38d022f4774c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Oct 23 15:58:45 2008 -0400
+
+    tests/twisted/tubes/test-si-tubes.py: Update the test to the new spec (no FUTURE properties), factorise the code.
+
+ tests/twisted/tubes/test-si-tubes.py |  282 +++++++++++++++++-----------------
+ 1 files changed, 144 insertions(+), 138 deletions(-)
+
+commit d08ffc45f2af7a31aea1b01d005b25d078b45cf4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Sep 19 17:18:33 2008 +0100
+
+    Remove .DRAFT from Requests interface name in a new test
+
+ tests/twisted/tubes/test-si-tubes.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit be6364e04a5289ad4fa5bdc24318dee01289561c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 23 18:41:36 2008 +0100
+
+    Test test-si-tubes.py: better comment for the NewChannels signal (no change in the code)
+
+ tests/twisted/tubes/test-si-tubes.py |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit fa60534e59ed2bf96f4515c458e62f71f9371973
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Oct 23 15:38:00 2008 -0400
+
+    Tubes requestotron: Advertise the right RequestableChannelClasses for tubes, and strongly check properties in CreateChannel/RequestChannel.
+    
+    Conflicts:
+    
+    	src/private-tubes-factory.c
+
+ extensions/Makefile.am               |    2 +-
+ src/private-tubes-factory.c          |   98 ++++++++++++++++++++++++++-------
+ src/tube-stream.c                    |   23 ++------
+ src/tubes-channel.c                  |   10 +++-
+ src/tubes-channel.h                  |    4 +-
+ tests/twisted/tubes/test-si-tubes.py |   25 ++++-----
+ 6 files changed, 103 insertions(+), 59 deletions(-)
+
+commit 2b640843bbe4e7b7ff8b30530018382482bacecf
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Oct 23 15:24:46 2008 -0400
+
+    src/private-tubes-factory.c: Remove the old "channel factory" code. Now it is a channel manager thanks to TpChannelManager
+    
+    Conflicts:
+    
+    	src/private-tubes-factory.c
+
+ src/private-tubes-factory.c |   56 +++++++++++-------------------------------
+ 1 files changed, 15 insertions(+), 41 deletions(-)
+
+commit 299cf444560d0fe164797086da020cd92c75f258
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Oct 23 15:48:12 2008 +0100
+
+    version 0.7.12
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit f8238fdbcb52957e636ebc21c70ed182374ac8dc
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Oct 23 14:06:11 2008 +0100
@@ -187,6 +997,19 @@ Date:   Wed Oct 15 16:45:06 2008 +0100
  tests/twisted/Makefile.am           |    1 +
  tests/twisted/olpc/view-presence.py |  124 +++++++++++++++++++++++++++++++++++
  6 files changed, 242 insertions(+), 2 deletions(-)
+
+commit a42142f4f46b4abbbc765c45bb0adb1b5f08308b
+Merge: 0043df2... b74b501...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Oct 22 16:45:59 2008 -0400
+
+    Merge branch 'master' into alban-request-tube-channel
+    
+    Conflicts:
+    
+    	extensions/Makefile.am
+    	src/private-tubes-factory.c
+    	tests/twisted/tubes/test-si-tubes.py
 
 commit b74b5012b8762b13761b24f75f616043ff1220f9
 Merge: 47a667e... be0bec5...
@@ -2491,6 +3314,31 @@ Date:   Fri Sep 12 12:08:57 2008 +0100
  tests/twisted/Makefile.am                         |    1 +
  tests/twisted/roster/test-save-alias-to-roster.py |   76 +++++++++++++++++++++
  2 files changed, 77 insertions(+), 0 deletions(-)
+
+commit 0043df23c6ceae5b5d0061021652e2f69f7eec28
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Sep 11 13:23:08 2008 +0100
+
+    tube-stream.c: coding style: remove trailing space
+
+ src/tube-stream.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6407b8087badc7f08fbfe9fac3decaf8f5c3e738
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Sep 11 13:22:37 2008 +0100
+
+    tube-stream.c: Fix warning: use g_return_val_if_fail with the right return value
+
+ src/tube-stream.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit f3d15720dc3c79f0c9cbd633aa5f39f3031901d0
+Merge: 1151b7e... 184aaca...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Sep 11 12:40:45 2008 +0100
+
+    Merge branch 'master' into alban-request-tube-channel
 
 commit e6f08aebc19cc38f82f2a8d5d655c69da0f161fe
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -5049,6 +5897,35 @@ Date:   Thu Dec 6 15:20:36 2007 +0000
  src/connection.c |   18 +++++++++---------
  1 files changed, 9 insertions(+), 9 deletions(-)
 
+commit 1151b7e04a7919b404a7aa1ce5b08dc4baf1cd84
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 28 16:19:34 2008 +0100
+
+    test-si-tubes.py: update to the new spec
+    
+    Update required after this commit has been merged in the tube branch:
+    
+    > commit 49293950b98b3f52aa8a0fb264455829a8653fd0
+    > Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    > Date:   Thu Aug 21 17:44:06 2008 +0100
+    >
+    >     Update to the 0.17.9 draft of the Requests API.
+    >
+    >     For now, the GabbleChannelManager API still works the old way, with
+    >     foreach_channel_class producing a GHashTable and two GStrvs; the
+    >     glue in conn-requests.c maps this to the new API by merging the two
+    >     GStrvs into a single D-Bus 'as'.
+
+ tests/twisted/tubes/test-si-tubes.py |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit d39f2185b17bb9bc3f90a246d60cdc4b762b3712
+Merge: 079d40c... 98e1b36...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 28 14:41:00 2008 +0100
+
+    Merge branch 'master' into alban-request-tube-channel
+
 commit 98e1b36dc701a5296c1f6e25cec4f4ea963a8bfa
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Aug 26 18:17:13 2008 +0100
@@ -5057,6 +5934,13 @@ Date:   Tue Aug 26 18:17:13 2008 +0100
 
  src/conn-requests.c |    1 -
  1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 079d40cddfe7f34ff542a418b83bae2d41c22076
+Merge: 90772f6... 8cc1dbd...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Aug 25 10:54:28 2008 +0100
+
+    Merge branch 'master' into alban-request-tube-channel
 
 commit 49293950b98b3f52aa8a0fb264455829a8653fd0
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -5076,6 +5960,15 @@ Date:   Thu Aug 21 17:44:06 2008 +0100
  tests/twisted/tubes/test-si-tubes.py         |    1 -
  5 files changed, 65 insertions(+), 52 deletions(-)
 
+commit 90772f61524b757279d2b2ad97d00bde645850e5
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 21 17:11:32 2008 +0100
+
+    Sync tests/twisted/text/respawn.py with branch master: it should not have been changed in this branch (alban-request-tube-channel)
+
+ tests/twisted/text/respawn.py |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
 commit 8cc1dbd7cea54a4d81ec29a967f4a63b2b5802ee
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Thu Aug 21 16:47:59 2008 +0100
@@ -5093,6 +5986,34 @@ Date:   Thu Aug 21 16:47:38 2008 +0100
 
  src/media-factory.c |   52 +++++++++++++++++++++++++++-----------------------
  1 files changed, 28 insertions(+), 24 deletions(-)
+
+commit 410a64ed7847d1bdf7b242be4d8e628693989ac0
+Merge: d45f48b... 848de0a...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 21 16:41:53 2008 +0100
+
+    Merge commit 'origin/master' into alban-request-tube-channel
+
+commit d45f48b9902b319226aaa409ee10a6a6add289c1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 21 16:38:02 2008 +0100
+
+    Fix "Parameters" property on Channel.Type.StreamTube
+    
+    src/tube-stream.c: Implement a custom Set implementation for the
+    "Parameters" property
+    
+    src/tubes-channel.c: OfferStreamTube on Channel.Type.StreamTube gives
+    the right "Parameters" property
+    
+    tests/twisted/tubes/test-si-tubes.py: check that the "Parameters"
+    property is correctly given, can be changed, but not after the tube is
+    offered.
+
+ src/tube-stream.c                    |   36 ++++++++++++++++-
+ src/tubes-channel.c                  |   14 +++++-
+ tests/twisted/tubes/test-si-tubes.py |   71 +++++++++++++++++++++++++---------
+ 3 files changed, 97 insertions(+), 24 deletions(-)
 
 commit 636abbf915844b6308d81b3aff71617d249ad642
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -5278,6 +6199,26 @@ Date:   Thu Aug 21 13:46:06 2008 +0100
  tests/twisted/muc/roomlist.py |    8 +++++---
  1 files changed, 5 insertions(+), 3 deletions(-)
 
+commit d3e287f11dc891af735e5e299286841b73fe801c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 21 13:43:56 2008 +0100
+
+    tube-stream: Implement the "parameters" property correctly
+
+ src/tube-dbus.c   |    2 +-
+ src/tube-iface.c  |    5 +++--
+ src/tube-stream.c |    4 ++--
+ 3 files changed, 6 insertions(+), 5 deletions(-)
+
+commit 7341c60e632f9218ce4509f87f265eba985edb1a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 21 13:41:55 2008 +0100
+
+    src/tube-stream.c: Remove uneeded variable
+
+ src/tube-stream.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
 commit 1a9e192913fbc1094a33d99ca2c33466000edb65
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Thu Aug 21 13:41:42 2008 +0100
@@ -5317,6 +6258,24 @@ Date:   Wed Aug 20 18:41:13 2008 +0100
 
     Merge commit 'origin/requestotron/im'
 
+commit d87d80ea0c2249d088ac278709b37d3bedaa4eb5
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 18:38:04 2008 +0100
+
+    test-si-tubes.py: send data in a stream tube with the new tube API.
+
+ tests/twisted/tubes/test-si-tubes.py |  134 ++++++++++++++++++++++++++++++++--
+ 1 files changed, 127 insertions(+), 7 deletions(-)
+
+commit d143e38a03efe5e1e7b820ef24f16cb7e7433f73
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 18:36:20 2008 +0100
+
+    src/tube-stream.c: Emit TubeChannelStateChanged correctly and store address details in the GabbleStreamTube object
+
+ src/tube-stream.c |   25 +++++++++++++++++++++++--
+ 1 files changed, 23 insertions(+), 2 deletions(-)
+
 commit 5190c7bf2b68fa5763ec5604af37adad90fa632f
 Merge: 37ea35e... c44b5a9...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -5331,6 +6290,15 @@ Date:   Wed Aug 20 17:37:54 2008 +0100
 
     Merge branch 'requestotron/dualmode'
 
+commit ffcec7b95f74f83be43a2944cc16c805afeb7c22
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 16:49:41 2008 +0100
+
+    Check D-Bus property of Channel.Type.StreamTube object on interfaces Channel and Channel.FUTURE
+
+ tests/twisted/tubes/test-si-tubes.py |   30 +++++++++++++++++++++++++++++-
+ 1 files changed, 29 insertions(+), 1 deletions(-)
+
 commit 69469b933d3bf10d4c1c12ff44c71fcaf73086ac
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 16:36:03 2008 +0100
@@ -5344,6 +6312,60 @@ Date:   Wed Aug 20 16:36:03 2008 +0100
 
  src/im-factory.c |   57 +++++++++++++++++++++++++++++------------------------
  1 files changed, 31 insertions(+), 26 deletions(-)
+
+commit 0645077c6b26280325f670c23042e33cc68e720a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 16:32:25 2008 +0100
+
+    Implements OfferStreamTube on org.freedesktop.Telepathy.Channel.Type.StreamTube
+
+ src/tube-stream.c |   56 ++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 55 insertions(+), 1 deletions(-)
+
+commit 05c42a64d656df8a8455608687ec9dc1b8ee6ba1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 16:31:47 2008 +0100
+
+    Remove debugs
+
+ src/tube-stream.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+commit 42071f7660e53bb63e4d378467a1ae61eae47fb4
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 15:50:18 2008 +0100
+
+    test-si-tubes.py: Fix test: do not assume the new tube is the first in the ListChannels list.
+
+ tests/twisted/tubes/test-si-tubes.py |   13 +++++++------
+ 1 files changed, 7 insertions(+), 6 deletions(-)
+
+commit 0ee0f734ef53dac3d01087b1c2538f5a24b4a326
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 14:26:39 2008 +0100
+
+    Fix conflict resolution:
+    
+    This conflict resolution was broken. Fix.
+    
+    |commit 6c841525009d56a49f736d3d21691ab0f7318b23
+    |Merge: 51c888a... 4a6d168...
+    |Author: Alban Crequy <alban.crequy@collabora.co.uk>
+    |Date:   Wed Aug 20 12:21:16 2008 +0100
+    |
+    |    Merge commit 'smcv/requestotron/1-1-tubes' into alban-request-tube-channel
+    |
+    |    Conflicts:
+    |
+    |        src/channel-manager.h
+    |        src/connection.c
+    |        src/private-tubes-factory.c
+    |        tests/twisted/text/respawn.py
+    |        tests/twisted/tubes/test-si-tubes.py
+
+ src/connection.c              |    4 ++++
+ tests/twisted/text/respawn.py |    2 --
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
 commit 2ee04f1c9326184f73dbc596f8ae4e0a6e489684
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -5362,6 +6384,54 @@ Date:   Wed Aug 20 14:10:11 2008 +0100
 
  src/channel-manager.c |    4 +---
  1 files changed, 1 insertions(+), 3 deletions(-)
+
+commit 2c2952a2f99da1d8abcff6d8349bff31d55097ab
+Merge: 34456a5... 476fd03...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 14:02:55 2008 +0100
+
+    Merge commit 'smcv/requestotron/1-1-tubes' into alban-request-tube-channel
+    
+    Conflicts:
+    
+    	tests/twisted/tubes/test-si-tubes.py
+
+commit 34456a57dbc3290bf1db4ae11b68f76dc7184a88
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 13:21:53 2008 +0100
+
+    Temporary debugs
+
+ src/tube-stream.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit fe5ba8c1070703a7a9d76a1b243b1f554cd4b26c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Aug 20 13:20:58 2008 +0100
+
+    Update 1-1 Tubes test to expect TargetID to be in the present, not the future
+
+ tests/twisted/tubes/test-si-tubes.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 814218863adf64c7687b7ade5336308a5540efd1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Aug 20 13:07:54 2008 +0100
+
+    Update RoomList tests to expect TargetID to be in the present, not the future
+
+ tests/twisted/muc/roomlist.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 1e6a2e977dc1351e1b52f2c6899c17f0a9b95c2d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Aug 20 12:56:27 2008 +0100
+
+    Update tests added in this branch to not expect TargetID to be in the future
+
+ tests/twisted/text/initiate-requestotron.py |    3 +--
+ tests/twisted/text/respawn.py               |    3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
 commit 476fd03d77ec8de4ec144098ee6cfad4b0c85868
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -5406,6 +6476,24 @@ Date:   Wed Aug 20 13:01:57 2008 +0100
 
     Merge branch 'requestotron/requestables' into requestotron/im
 
+commit 1bc27f0c599c7fbfe05fd34312dcca20b5374d01
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 13:01:37 2008 +0100
+
+    test-si-tubes.py: TargetID is now present, not future
+
+ tests/twisted/tubes/test-si-tubes.py |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 9fcb3a7b65e15a9d6d52f4db990e7c5223da1e8d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 13:00:57 2008 +0100
+
+    src/tube-stream.c: TargetID is now present, not future
+
+ src/tube-stream.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
 commit 37ea35edf74463e83fdc779f492533fffa492ff1
 Merge: 4e0ebab... 5b5d110...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -5422,6 +6510,20 @@ Date:   Wed Aug 20 12:56:27 2008 +0100
  tests/twisted/text/initiate-requestotron.py |    3 +--
  tests/twisted/text/respawn.py               |    3 +--
  2 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 808947d21d7cf15834eec21f3d1eb4f85a03f7dc
+Merge: 4b86bfe... 408f22b...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 12:35:41 2008 +0100
+
+    Merge commit 'smcv/requestotron/muc' into alban-request-tube-channel
+
+commit 4b86bfe2238eac24e91da4924afb56af56ea47f7
+Merge: cace605... 3842f85...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 12:35:29 2008 +0100
+
+    Merge commit 'smcv/requestotron/1-1-tubes' into alban-request-tube-channel
 
 commit 3842f85c981dfbf1a4d88f8a34c2d8cbc39f2a94
 Merge: 4a6d168... 4e0ebab...
@@ -5464,6 +6566,65 @@ Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 12:32:14 2008 +0100
 
     Merge commit 'origin/master' into requestotron/conn-requests
+
+commit cace6054f21f6913cc5ca18e752d7f04835bfaaa
+Merge: 6c84152... 2692ccc...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 12:23:27 2008 +0100
+
+    Merge commit 'smcv/requestotron/muc' into alban-request-tube-channel
+    
+    Conflicts:
+    
+    	src/connection.c
+
+commit 6c841525009d56a49f736d3d21691ab0f7318b23
+Merge: 51c888a... 4a6d168...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 12:21:16 2008 +0100
+
+    Merge commit 'smcv/requestotron/1-1-tubes' into alban-request-tube-channel
+    
+    Conflicts:
+    
+    	src/channel-manager.h
+    	src/connection.c
+    	src/private-tubes-factory.c
+    	tests/twisted/text/respawn.py
+    	tests/twisted/tubes/test-si-tubes.py
+
+commit 51c888ab27286298c9ff7493df71a58513da0455
+Merge: e84c6a7... e70499c...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 11:17:52 2008 +0100
+
+    Merge branch 'master' into alban-request-tube-channel
+
+commit e84c6a77784053cc1bc2638981c500be132b9728
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 20 11:15:33 2008 +0100
+
+    Channel.Type.{Stream|DBus}Tube are requestable with the new requestotron.
+    
+    - GabblePrivateTubesFactory is a Channel Factory for both
+      Channel.Type.Tubes and the new Channel.Type.{Stream|DBus}Tube
+      objects.
+    
+    - GabbleTubeStream implements the Channel.FUTURE properties
+    
+    - GabbleTubesChannel object has an helper function
+      gabble_tubes_channel_tube_request for the factory. The function
+      creates the tube channel with the new API.
+    
+    - The unit test test-si-tubes.py request a stream tube channel
+      with the new API.
+
+ src/private-tubes-factory.c          |   83 +++++++++++++++++++-----
+ src/tube-stream.c                    |   72 +++++++++++++++++++++
+ src/tubes-channel.c                  |   45 +++++++++++++
+ src/tubes-channel.h                  |    5 ++
+ tests/twisted/tubes/test-si-tubes.py |  115 +++++++++++++++++++++++++++++----
+ 5 files changed, 289 insertions(+), 31 deletions(-)
 
 commit e70499cd81a477c0ac71f9a37162f5b29b5b1a77
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -5746,12 +6907,61 @@ Date:   Wed Aug 13 16:35:07 2008 +0000
  src/connection.c    |    2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
 
+commit dcb1d9314fffe2ca83b60110c11b768534e0e9b1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Aug 18 18:11:13 2008 +0100
+
+    Add support StreamTube properties. Complex type properties as parameters still TBD.
+
+ src/tube-stream.c                    |   14 ++++++++++++++
+ tests/twisted/tubes/test-si-tubes.py |   16 ++++++++++++++--
+ 2 files changed, 28 insertions(+), 2 deletions(-)
+
+commit a28866f39303d2e0da687fadafa9858eb1b4f337
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Aug 18 16:34:13 2008 +0100
+
+    Add the property Service on stream tube channels, and add a unit test for it
+
+ src/tube-stream.c                    |    9 +++++++++
+ tests/twisted/tubes/test-si-tubes.py |    2 +-
+ 2 files changed, 10 insertions(+), 1 deletions(-)
+
+commit f205b33ce7371168731272180d2550b68cc36d24
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Aug 18 16:08:02 2008 +0100
+
+    tests/twisted/tubes/test-si-tubes.py: Prepare the test to check properties
+
+ tests/twisted/tubes/test-si-tubes.py |   21 +++++++++++++--------
+ 1 files changed, 13 insertions(+), 8 deletions(-)
+
+commit 9e7a27497a4e98e8e4530311913e3a746730bc72
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Aug 18 15:54:58 2008 +0100
+
+    tests/twisted/tubes/test-si-tubes.py: Fix the test for Channel.Type.StreamTube.DRAFT
+
+ tests/twisted/tubes/test-si-tubes.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
 commit 4a6d16808fb68afc6904a2fcfb2bb05d90f9d894
 Merge: 8b9bed0... ef5811d...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Aug 18 15:43:28 2008 +0100
 
     Merge branch 'requestotron/requestables' into requestotron/1-1-tubes
+
+commit b913e3dca20f36d131001463f5589273440b4227
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Aug 18 15:35:45 2008 +0100
+
+    Go through all tube channels in ListChannels: the old ones (Channel.Type.Tubes) and the new ones (Channel.Type.{Stream|DBus}Tube)
+
+ src/private-tubes-factory.c |    6 ++++++
+ src/tubes-channel.c         |   29 +++++++++++++++++++++++++++++
+ src/tubes-channel.h         |    6 +++++-
+ 3 files changed, 40 insertions(+), 1 deletions(-)
 
 commit 2692cccd3989367ba405fd93d997def016fda3c7
 Merge: 27f4c62... ef5811d...
@@ -5794,6 +7004,1117 @@ Date:   Mon Aug 18 14:34:27 2008 +0100
     	src/Makefile.am
     	src/connection.c
     	src/connection.h
+
+commit 3528f3312685de5194d52f7dff028cc767932823
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Aug 18 14:13:59 2008 +0100
+
+    Import changes in the spec as an extension and update the code for it
+
+ extensions/Channel_Interface_Tube.xml   |    7 +-
+ extensions/Channel_Type_DBusTube.xml    |  179 -------------------------
+ extensions/Channel_Type_DBus_Tube.xml   |  181 ++++++++++++++++++++++++++
+ extensions/Channel_Type_StreamTube.xml  |  216 -------------------------------
+ extensions/Channel_Type_Stream_Tube.xml |  215 ++++++++++++++++++++++++++++++
+ extensions/Makefile.am                  |    4 +-
+ extensions/all.xml                      |    4 +-
+ src/private-tubes-factory.c             |    4 +-
+ src/tube-stream.c                       |   13 +-
+ 9 files changed, 414 insertions(+), 409 deletions(-)
+
+commit 960afc1d8527faacfb96d80c7e69b299fdf8061f
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Aug 15 18:27:21 2008 +0000
+
+    Add a test for org.freedesktop.Telepathy.Channel.Type.StreamTube
+    
+    
+    20080815182721-a41c0-b1b59d993e50586cf9049a1ee31176f4c4bf976e.gz
+
+ tests/twisted/tubes/test-si-tubes.py |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
+
+commit 48532f9a8cd0cca5084ee331a8110ad22327208e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Aug 15 18:26:36 2008 +0000
+
+    Let private-tubes-factory be a factory for Stream|DBusTube.
+    
+    
+    20080815182636-a41c0-48429a6c25049def0fcab14b6c646a12928218d5.gz
+
+ src/private-tubes-factory.c |   45 +++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 43 insertions(+), 2 deletions(-)
+
+commit bb91b792810ace85b4eb992df82119eb90876321
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Aug 15 14:19:32 2008 +0000
+
+    Fix the conflict after merging gabble-smcv-muc in my branch gabble-alban-request-tube-channel
+    
+    
+    20080815141932-a41c0-9a17c461642f8d88f3529096eb7a5591c716cb44.gz
+
+ src/connection.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+commit 4128b10261afd30c812918e47be45b505afecf47
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Aug 5 15:51:57 2008 +0000
+
+    GabbleMucFactory: don't implement TpChannelFactoryIface
+    
+    
+    20080805155157-53eee-4a06251f63f756c80c28c72519dda868dc613cb4.gz
+
+ src/muc-factory.c |  103 -----------------------------------------------------
+ 1 files changed, 0 insertions(+), 103 deletions(-)
+
+commit 1ea2951c678d69724a1b9f949ab3eac8e51fa7b2
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Aug 5 15:51:30 2008 +0000
+
+    conn-olpc: assume that conn->muc_factory is a GabbleChannelManager, not a TpChannelFactoryIface
+    
+    
+    20080805155130-53eee-e84527e4a3b4f917722f9f10cd6064d1fd1057e2.gz
+
+ src/conn-olpc.c |   24 +++++++++++++++++-------
+ 1 files changed, 17 insertions(+), 7 deletions(-)
+
+commit 02b50583f35d33ea32d90925b6ec3c30a56bba34
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Aug 5 15:37:51 2008 +0000
+
+    GabbleConnection: remove another occurence of assuming the MUC factory is a TpChannelFactoryIface
+    
+    
+    20080805153751-53eee-468ee5e3c40fae46fc2aab16076a5024249a6e49.gz
+
+ src/connection.c |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
+
+commit 7d740931d75d14419808b282384acc72ffcd6bd4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Aug 5 15:37:37 2008 +0000
+
+    channel-manager.h: remove unnecessary inclusion of <telepathy-glib/channel-factory-iface.h>
+    
+    
+    20080805153737-53eee-2767780e72da8dcc5bc637a1169d9ff5fdade40d.gz
+
+ src/channel-manager.h |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit fdf36a50edda59f7c3b8cc673549c81ec070cb1c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Aug 5 15:00:19 2008 +0000
+
+    GabbleMucFactory: correctly fail requests when joining a MUC fails
+    
+    
+    20080805150019-53eee-bc38baec7e2553a9ad530a21f6f15ce4e19ffb1f.gz
+
+ src/muc-factory.c |   27 +++++++++++++++++++++++++++
+ 1 files changed, 27 insertions(+), 0 deletions(-)
+
+commit e17b1cfb0703de8371f716d85f0c03dc76f72be3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Aug 5 14:50:14 2008 +0000
+
+    GabbleConnection: use GabbleMucFactory as a GabbleChannelManager
+    
+    
+    20080805145014-53eee-5f188c0b2be3d6e0dd8419036eadb6151b56a931.gz
+
+ src/connection.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+commit 19ba761951b903122600fc00df1f48e7c43ae2f2
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Aug 5 14:48:28 2008 +0000
+
+    GabbleMucFactory: implement GabbleChannelManager
+    
+    
+    20080805144828-53eee-b2c51c880d6398e96ad12733e1d08a325007a20d.gz
+
+ src/muc-factory.c |  321 ++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 303 insertions(+), 18 deletions(-)
+
+commit 0dc556da5ab76b9d29b5887c767548a046750a52
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Aug 5 14:27:19 2008 +0000
+
+    muc/roomlist.py: add tests for using the Requests API on room lists
+    
+    
+    20080805142719-53eee-261b09dcf199d66b7ffeda95d5746f9f2faa54d2.gz
+
+ tests/twisted/muc/roomlist.py |  120 +++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 111 insertions(+), 9 deletions(-)
+
+commit 74c02124b3305703470db8f89413e2831970d8c6
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Aug 5 14:26:52 2008 +0000
+
+    GabbleMucFactory: stop managing RoomList channels
+    
+    
+    20080805142652-53eee-0797b9d2e4c461031c1d3ef31e6acd80128dd51b.gz
+
+ src/muc-factory.c |   77 -----------------------------------------------------
+ 1 files changed, 0 insertions(+), 77 deletions(-)
+
+commit c7247b02d8aeb661035a56904e0154ae2369ebf5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Aug 5 14:26:37 2008 +0000
+
+    GabbleConnection: use the new GabbleRoomlistManager
+    
+    
+    20080805142637-53eee-7d36d720da98e9d2ec5c49715f226998db66dafd.gz
+
+ src/connection.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+commit cde30b44ffa3ae0d3c3659cd50d026033b8b74d2
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Aug 5 14:26:25 2008 +0000
+
+    GabbleRoomlistManager: add new channel manager for room lists only
+    
+    
+    20080805142625-53eee-af1bc69d457df5d3e1aa1f0d093c6813a70fc4a7.gz
+
+ src/Makefile.am        |    2 +
+ src/roomlist-manager.c |  433 ++++++++++++++++++++++++++++++++++++++++++++++++
+ src/roomlist-manager.h |   62 +++++++
+ 3 files changed, 497 insertions(+), 0 deletions(-)
+
+commit 88949072fad39e81b1ee1bb7b40a36065cf2f04d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Aug 5 14:04:51 2008 +0000
+
+    GabbleRoomlistChannel: set priv->closed before emitting closed, so we don't indicate that we're about to respawn
+    
+    
+    20080805140451-53eee-de9a2b5705617289393a940bcdcdfe2d38a550cc.gz
+
+ src/roomlist-channel.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 395ef45524d817830a2ba47ba58d6195df39f315
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Jul 31 19:20:02 2008 +0000
+
+    tubes/test-si-tubes: exercise NewChannel and NewChannels signals
+    
+    
+    20080731192002-53eee-5eb6be0aa07847b9300066fc1d252a5bbc52ade1.gz
+
+ tests/twisted/tubes/test-si-tubes.py |   61 ++++++++++++++++++++++++++++++++-
+ 1 files changed, 59 insertions(+), 2 deletions(-)
+
+commit 32552bfe31e9a31819f657ab6af1bdbe1927a187
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Jul 31 19:19:48 2008 +0000
+
+    Use GabblePrivateTubesFactory as a ChannelManager
+    
+    
+    20080731191948-53eee-56af9766eef7c9a7517d2dbcfa1cccb806df25cf.gz
+
+ src/connection.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 619930f1b653995d260700f079c28cbd03292adf
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Jul 31 19:17:15 2008 +0000
+
+    GabblePrivateTubesFactory: implement GabbleChannelManager
+    
+    
+    20080731191715-53eee-92ec3b350351652ad4f28820e8764eec90093abf.gz
+
+ src/private-tubes-factory.c |  237 ++++++++++++++++++++++++++++++++----------
+ 1 files changed, 180 insertions(+), 57 deletions(-)
+
+commit 68d73ccfcb1e56736233e5332b58d78d8d4c6358
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 18:35:11 2008 +0000
+
+    text/initiate-requestotron.py: assert that the Channels and RequestableChannelClasses properties work correctly
+    
+    
+    20080730183511-53eee-71d9f011f1abc53d195bb0b2f27213b35d93550e.gz
+
+ tests/twisted/text/initiate-requestotron.py |   20 ++++++++++++++++++++
+ 1 files changed, 20 insertions(+), 0 deletions(-)
+
+commit 63bd24993888351720014cc6513fecda9076c1d8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 18:34:57 2008 +0000
+
+    GabbleConnection: hook up Requests properties
+    
+    
+    20080730183457-53eee-e7019c0feff376bd424bcba6c9600d51f27e336e.gz
+
+ src/connection.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+
+commit be10de0389a8a65725125803eba83e08388ff90c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 18:34:24 2008 +0000
+
+    GabbleIMFactory: implement foreach_channel_class
+    
+    
+    20080730183424-53eee-b0e6d8cd77a4ff14bd4ff1dd194cdd037440d01c.gz
+
+ src/im-factory.c |   38 ++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 38 insertions(+), 0 deletions(-)
+
+commit 22303f43352d02bc6fe18fc1b577e7f900621d1c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 17:37:29 2008 +0000
+
+    conn-requests: use foreach_channel_class
+    
+    
+    20080730173729-53eee-eb70fd5faece7243b5545ca44d31c7d513f094f8.gz
+
+ src/conn-requests.c |   33 ++++++++++++++++++++++++++++++++-
+ 1 files changed, 32 insertions(+), 1 deletions(-)
+
+commit ae2f984a91db6f41848cf8f312a561ab81bc8fb0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 16:55:02 2008 +0000
+
+    GabbleChannelManager: add foreach_channel_class
+    
+    
+    20080730165502-53eee-eafb03fdd4199c5b902077c84e8a15fe918b6b7b.gz
+
+ src/channel-manager.c |   18 ++++++++++++++++++
+ src/channel-manager.h |   18 ++++++++++++++++++
+ 2 files changed, 36 insertions(+), 0 deletions(-)
+
+commit f51be90b5dd9a4150998076b8e9f2ce64e6b7756
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 15:46:24 2008 +0000
+
+    conn-requests: add a stub implementation of RequestableChannelClasses
+    
+    
+    20080730154624-53eee-a10779cdfed409c3b1b5337495806e2be016a5fa.gz
+
+ src/conn-requests.c |   23 +++++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
+
+commit f6b0e43415b2cb7461bafda0a9fe27b49bad5d97
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 15:45:59 2008 +0000
+
+    conn-requests: comment why the magic number for channels is (number of managers + number of factories) * 2
+    
+    
+    20080730154559-53eee-de557a08024b7173ff108378f5255879cf9e7e5e.gz
+
+ src/conn-requests.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 2d4f34d9f9e8890004d2b49cfa6f38b59bfc2434
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 15:45:45 2008 +0000
+
+    text/initiate.py: improve output if assertions fail
+    
+    
+    20080730154545-53eee-47b7a9bc0e97614e924f039361a538ed95676ba0.gz
+
+ tests/twisted/text/initiate.py |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+commit fed5df7d0fea6a52dd9cfd41385bae7dca31b402
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 15:45:20 2008 +0000
+
+    conn-requests: stop assuming that every GabbleExportableChannel is a TpChannelIface
+    
+    
+    20080730154520-53eee-6153b5e9227736c496015135c44d155fc941494a.gz
+
+ src/conn-requests.c |   94 ++++++++++++++++++++++++++++++++++++++++++++------
+ 1 files changed, 82 insertions(+), 12 deletions(-)
+
+commit bd59019769c8cb01d91678e4c4aa207053295827
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 15:33:23 2008 +0000
+
+    conn-requests: add some more sanity checks when CreateChannel is called
+    
+    
+    20080730153323-53eee-38f95eedc187ebf89ee615bbe5023f5a95836f8a.gz
+
+ src/conn-requests.c |   69 ++++++++++++++++++++++++++++++++++++++++++++------
+ 1 files changed, 60 insertions(+), 9 deletions(-)
+
+commit 9d8b078c5b57ab0cdb3216012878d6ef173d65b9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 15:07:28 2008 +0000
+
+    conn-requests: manager_request_already_satisfied_cb: no need to assume that the channel implements TpChannelIface - GabbleExportableChannel has object-path too
+    
+    
+    20080730150728-53eee-e5e42985e235b5cbf978b74331a4d72436412a0e.gz
+
+ src/conn-requests.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+commit 77aec323e5249fd54ed8a5dcd0750e7e57126ded
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 14:18:30 2008 +0000
+
+    GabbleImFactory: implement request_channel instead of ensure_channel
+    
+    
+    20080730141830-53eee-fbeb60c1ecf35a4115416d21213b8d4bf373be1e.gz
+
+ src/im-factory.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit ec582d33e74caa1e17b1ff344bd0a22ad1d4f823
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 14:17:45 2008 +0000
+
+    conn-requests: knock out EnsureChannel functionality, explicitly use RequestChannel
+    
+    
+    20080730141745-53eee-8c6c58f539cbd97e507774fd6c53463f24ac46a1.gz
+
+ src/conn-requests.c |   51 ++++++++++++++++++++++++++++-----------------------
+ 1 files changed, 28 insertions(+), 23 deletions(-)
+
+commit 3de46ab8681df237d1f0cbb7164bf76ec4ab88ad
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 14:17:33 2008 +0000
+
+    GabbleChannelManager: add a placeholder priv pointer
+    
+    
+    20080730141733-53eee-c7decd422c11845069d8d63aeb14335ecc39d913.gz
+
+ src/channel-manager.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit cbdec96572e03a7c2946ee6637da4418aee6e617
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Jul 30 14:16:07 2008 +0000
+
+    GabbleChannelManager: explicitly have RequestChannel in the API.
+    
+    
+    For some channel factories we want RequestChannel to have different semantics
+    regarding parameters accepted, etc., for backwards compatibility (in particular
+    media channels).
+    
+    20080730141607-53eee-f90f3cd0168901249cd49455fa720960083b894f.gz
+
+ src/channel-manager.c |    8 ++++----
+ src/channel-manager.h |    5 +++--
+ 2 files changed, 7 insertions(+), 6 deletions(-)
+
+commit b19f181009eccca02247b91279feddb4b5f2c316
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 21:06:27 2008 +0000
+
+    Add a simple test for requesting a channel using the requestotron API
+    
+    
+    20080729210627-53eee-ac909c1c314c5917ec2716e922eeda845ca71f96.gz
+
+ tests/twisted/Makefile.am                   |    1 +
+ tests/twisted/text/initiate-requestotron.py |   74 +++++++++++++++++++++++++++
+ 2 files changed, 75 insertions(+), 0 deletions(-)
+
+commit 72989f2d5ce01bca4516656d8666d79b7cf5a48e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 21:05:51 2008 +0000
+
+    conn-requests: fix CreateChannel implementation, and implement EnsureChannel while I'm at it
+    
+    
+    20080729210551-53eee-949154d435a3cc121bf28cfb70228766f8288e9b.gz
+
+ src/conn-requests.c |   75 +++++++++++++++++++++++++++++++++++++++++---------
+ 1 files changed, 61 insertions(+), 14 deletions(-)
+
+commit 7ef7eb25ec1beff2f95df00cecf55840a24cf34b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 12:56:41 2008 +0000
+
+    text/respawn.py: do some cursory testing of the Requests signals
+    
+    
+    20080725125641-53eee-43d390831743cdc61c2cd8d12dd9a6dad8df5e9f.gz
+
+ tests/twisted/text/respawn.py |   44 ++++++++++++++++++++++++++++++++--------
+ 1 files changed, 35 insertions(+), 9 deletions(-)
+
+commit ddc700807248eee13f4c3b614b7a20a2d78d3368
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 20:32:15 2008 +0000
+
+    conn-requests: implement CreateChannel
+    
+    
+    20080729203215-53eee-17d069516f7057d7323f7a4efcf2df183b306782.gz
+
+ src/conn-requests.c |   58 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 57 insertions(+), 1 deletions(-)
+
+commit c26170ce2354078d40e36f2ba06893e9b62cc42a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 20:12:44 2008 +0000
+
+    conn-requests: add a stub for EnsureChannel too
+    
+    
+    20080729201244-53eee-0b0b97d65cbc7b80f5ab12ec9cae567101f6485d.gz
+
+ src/conn-requests.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+commit 3fa0d9ac8245614c37f25f538f0e289be1329d0a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 20:09:34 2008 +0000
+
+    conn-requests: expect GabbleChannelManager::new-channels to contain a GHashTable
+    
+    
+    20080729200934-53eee-7d2bf220da11824fe95b8f0c170f8b45f887d2fd.gz
+
+ src/conn-requests.c |   91 +++++++++++++++++++++++++++++----------------------
+ 1 files changed, 52 insertions(+), 39 deletions(-)
+
+commit 1eecd466da63d5ed4652791bbd016123168e84c9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 20:08:47 2008 +0000
+
+    GabbleChannelManager: change new-channels to take a GHashTable (GabbleExportableChannel => GSList of request token)
+    
+    
+    20080729200847-53eee-38c021f2742680a3963c25c072894f98c6806170.gz
+
+ src/channel-manager.c |   47 +++++++++++++++++++++++------------------------
+ src/channel-manager.h |    2 +-
+ 2 files changed, 24 insertions(+), 25 deletions(-)
+
+commit 4ac40fd61561a0f49a483fd14e730716daf1aaa7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 19:53:37 2008 +0000
+
+    GabbleConnection: move the GabbleImFactory from the factories list to the managers list, so its new API is used
+    
+    
+    20080729195337-53eee-3d2675cefffa157fcd817c35dba17c11d03f4a65.gz
+
+ src/connection.c |   13 +++++++------
+ 1 files changed, 7 insertions(+), 6 deletions(-)
+
+commit b1aa8276475ff1ea11bfc9f7bfbccb408026fc32
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 19:53:13 2008 +0000
+
+    conn-requests: allow GabbleChannelManager instances to satisfy RequestChannel requests
+    
+    
+    20080729195313-53eee-d22a7f746cbafe14d26edb9192258627d63d7472.gz
+
+ src/conn-requests.c |   38 +++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 37 insertions(+), 1 deletions(-)
+
+commit ccadd69b6c7869e3ec38adf9624bb1da3be200a8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 19:52:16 2008 +0000
+
+    conn-requests: connect to the various signals on GabbleChannelManager instances
+    
+    
+    20080729195216-53eee-ff071d157aa12f958a33648c2ced27d7153e0947.gz
+
+ src/conn-requests.c |  133 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 131 insertions(+), 2 deletions(-)
+
+commit 4edf8f3cd4b9ac727324f4a1779ba3a2ce689d7f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 19:51:59 2008 +0000
+
+    conn-requests: factor out fail_request()
+    
+    
+    20080729195159-53eee-96dddd63d2e4b24c3f42d6cdaaadacd2f801c4ea.gz
+
+ src/conn-requests.c |   36 +++++++++++++++++++++---------------
+ 1 files changed, 21 insertions(+), 15 deletions(-)
+
+commit 845122aaf987245513a035784fcbada4552f0767
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 19:51:39 2008 +0000
+
+    conn-requests: factor out satisfy_request()
+    
+    
+    20080729195139-53eee-b5b048263c10684c8a29840a28ba94fc6fed3272.gz
+
+ src/conn-requests.c |   43 +++++++++++++++++++++++++++----------------
+ 1 files changed, 27 insertions(+), 16 deletions(-)
+
+commit 6f19bf3eb26a5b08405a2673fa1c7c9fb617c15f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 18:53:09 2008 +0000
+
+    GabbleImFactory: implement CreateChannel and EnsureChannel (untested)
+    
+    
+    20080729185309-53eee-e0904cb5774acd3e68a1e1d9df28f30f6494b936.gz
+
+ src/im-factory.c |   68 ++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 files changed, 61 insertions(+), 7 deletions(-)
+
+commit db0c271da6b1d8c26aff89171b471783a976c8b9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 18:39:49 2008 +0000
+
+    GabbleImFactory: add stub implementations of CreateChannel, EnsureChannel
+    
+    
+    20080729183949-53eee-c3337fd408b9fbf23722a68cb8be49fb30846588.gz
+
+ src/im-factory.c |   29 +++++++++++++++++++++++++++++
+ 1 files changed, 29 insertions(+), 0 deletions(-)
+
+commit 0554b248b4eab416aa5c36742ebc6396108a8af5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 18:38:53 2008 +0000
+
+    GabbleChannelManager: add create_channel, ensure_channel methods
+    
+    
+    20080729183853-53eee-cffd01c49336fa34ec042883b7d77dec6b686530.gz
+
+ src/channel-manager.c |   36 ++++++++++++++++++++++++++++++++++++
+ src/channel-manager.h |   14 ++++++++++++++
+ 2 files changed, 50 insertions(+), 0 deletions(-)
+
+commit 2338ab56e666cccdc0a86914c26457e2c2d1b11e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 18:20:42 2008 +0000
+
+    GabbleImFactory: update to new GabbleChannelManager API
+    
+    
+    20080729182042-53eee-5e6559e4d98fc2371e34f2baa4b4379a3bbf3c0a.gz
+
+ src/im-factory.c |   14 +++++++++-----
+ 1 files changed, 9 insertions(+), 5 deletions(-)
+
+commit 0577323829a67f465e5771bd4b2ba74d6921c800
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 18:19:03 2008 +0000
+
+    GabbleChannelManager: include the requests that were satisfied in the arguments of new-channels, and replace request-succeeded with request-already-satisfied to cover the remaining case
+    
+    
+    20080729181903-53eee-1ead36bf4748757c2251de5565466a66646ea2cc.gz
+
+ src/channel-manager.c |   54 +++++++++++++++++++++++++++++--------------------
+ src/channel-manager.h |   11 ++++-----
+ 2 files changed, 37 insertions(+), 28 deletions(-)
+
+commit 4e7469a671ac375ddbc793b725d7f1d78170085e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Jul 28 20:07:49 2008 +0000
+
+    Register request-failed signal correctly (I lose at GObject boilerplate)
+    
+    
+    20080728200749-53eee-dab8597fd5b2e0fc5e8342a5dca4ee9b3367ce33.gz
+
+ src/channel-manager.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit d3ca3eda848c63eb5b0741243d45874a682f7707
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Jul 28 17:28:12 2008 +0000
+
+    conn-requests: fix indentation
+    
+    
+    20080728172812-53eee-9fa426ec7318b666f4bd8e5587be5c1e5e896dc1.gz
+
+ src/conn-requests.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 967a65e813bdef4357f47ef4ea512e44a3fe591f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Jul 28 16:42:28 2008 +0000
+
+    GabbleImFactory: reduce dependence on TpChannelFactoryIface
+    
+    
+    20080728164228-53eee-8bd8550fd38f7a29a15a4d064d3543fa1f070d65.gz
+
+ src/im-factory.c |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
+
+commit 7d25974d4b9a64b2ca242ffc5121cd34eda32973
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Jul 28 15:40:33 2008 +0000
+
+    GabbleImFactory: instead of using TpChannelFactoryIface's connecting/connected/disconnected callbacks, just bind to status-changed directly
+    
+    
+    20080728154033-53eee-74ad32313b22bfb16d87e73e999ab0524a392e7c.gz
+
+ src/im-factory.c |   83 ++++++++++++++++++++++++++----------------------------
+ 1 files changed, 40 insertions(+), 43 deletions(-)
+
+commit 658ab9e0ec19c29afbc44c438ab1fd4c161d18d1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 17:26:41 2008 +0000
+
+    conn-requests: add placeholder for iterating over channel managers when connecting to signals
+    
+    
+    20080729172641-53eee-009ee9cacef64b136db5a13edcc597dfa056f330.gz
+
+ src/conn-requests.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
+
+commit c6d9073418bf746bbbbbd99c4a26951b9bec7b82
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 17:26:23 2008 +0000
+
+    conn-requests: add placeholder for iterating over channel managers when implementing RequestChannel
+    
+    
+    20080729172623-53eee-102749032bc75835d532e652681c32f4cf1d4caf.gz
+
+ src/conn-requests.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 0363a30cc0e5fcc689ab35015599d65a96285da8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 17:25:51 2008 +0000
+
+    conn-requests: indicate why it is correct to refrain from calling close_all, disconnected, connecting, connected on channel managers
+    
+    
+    20080729172551-53eee-0c0f1cfa335050e2e238e91a1bbb1ff7ecb51799.gz
+
+ src/conn-requests.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 5455b221d54ff0c91539dd912515087c5c3695b7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 17:25:01 2008 +0000
+
+    conn-requests: when listing channels using the old API, assume that all channels owned by managers implement TpChannelIface, and list them too
+    
+    
+    20080729172501-53eee-cb30166bdf1dc84987b28fb225757e45cb4d7ecc.gz
+
+ src/conn-requests.c |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
+
+commit 051d83aa8d3b4500d1b9dda181add3dd6eb0ff41
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 17:24:46 2008 +0000
+
+    conn-requests: When implementing Channels D-Bus property, list channels owned by managers as well as factories
+    
+    
+    20080729172446-53eee-dc4951c35937e140d86bbe6895e0ff59a26a5ef6.gz
+
+ src/conn-requests.c |   36 ++++++++++++++++++++++++++++--------
+ 1 files changed, 28 insertions(+), 8 deletions(-)
+
+commit 903f52cfffda3737373560f5d551da23cc3f0033
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 16:35:57 2008 +0000
+
+    conn-requests: only list channels owned by channel factories, for now
+    
+    
+    20080729163557-53eee-cc781e7399c651836ea3e5e717b0e8127d0d795e.gz
+
+ src/conn-requests.c |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
+
+commit 7eb064618aed167500b9c35822c8a6e81786f9cf
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 16:35:20 2008 +0000
+
+    conn-requests: don't bind to channel-closed on channel managers for now
+    
+    
+    20080729163520-53eee-bdd9eab39db1ddc9c17dec267d5a38679bbd0747.gz
+
+ src/conn-requests.c |   18 +++---------------
+ 1 files changed, 3 insertions(+), 15 deletions(-)
+
+commit 3773ccc803e190652a5245c5f53a70333d2c7c0a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Jul 28 17:04:44 2008 +0000
+
+    conn-requests: assert that every channel manager implements GabbleChannelManager
+    
+    
+    20080728170444-53eee-ba6b4ba61b1cc3c44cf6264a614027b7f19bebbe.gz
+
+ src/conn-requests.c |   12 +++++-------
+ 1 files changed, 5 insertions(+), 7 deletions(-)
+
+commit 827f6c58497d0aff9b6482b0a29372f65ba861be
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 12:42:34 2008 +0000
+
+    conn-requests: emit NewChannels and ChannelClosed signals.
+    
+    
+    If the channel manager is a GabbleChannelManager, we assume it will emit
+    channel-closed. If it's just a TpChannelFactoryIface, we act as though it had
+    emitted channel-closed in response to each closed signal - this causes the
+    signal ordering to be wrong in the case of a respawning channel, so factories
+    for respawning channels will have to implement GabbleChannelManager.
+    
+    20080725124234-53eee-d65e8cba944f2f20a8ca0b0d1da90406475d29ca.gz
+
+ src/conn-requests.c |   99 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 97 insertions(+), 2 deletions(-)
+
+commit beab64f827b352b30c3b97822557e3051f962604
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Jul 28 17:29:13 2008 +0000
+
+    conn-requests: use GabbleChannelManager API for foreach
+    
+    
+    20080728172913-53eee-947a09355be1707913e6b0bf98db52e1867e5343.gz
+
+ src/conn-requests.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 6c7eb92b1829b330bcdd2663859c9b6f291a2882
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Jul 28 15:16:34 2008 +0000
+
+    GabbleIMFactory: implement GabbleChannelManager so far (foreach and signal emission only)
+    
+    
+    20080728151634-53eee-e23bad4597126ac1d4c7d5d4dda6c7a6f81bebe4.gz
+
+ src/im-factory.c |   71 +++++++++++++++++++++++++++++++----------------------
+ 1 files changed, 41 insertions(+), 30 deletions(-)
+
+commit e12c2f7704f4dcb941fe3bd3a45af9f4c2fe9514
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 12:56:24 2008 +0000
+
+    Add a property getter for Requests.Channels
+    
+    
+    20080725125624-53eee-7576c2677548d5c3c7ab428204bea5c2cf2f9254.gz
+
+ src/conn-requests.c |   54 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ src/conn-requests.h |    3 ++
+ 2 files changed, 56 insertions(+), 1 deletions(-)
+
+commit 9b478d80f6a9b16e42ce2cdb871411d883c948d9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Jul 28 20:18:23 2008 +0000
+
+    GabbleChannelManager: remove spurious extra parameter to request-failed
+    
+    
+    20080728201823-53eee-703149d808789d2f0e03d03b84a19de77a0178d2.gz
+
+ src/channel-manager.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 54337dfa6f1615bfbe2660108debef7cabf488bd
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Jul 28 20:17:37 2008 +0000
+
+    GabbleChannelManager: GABBLE_TYPE_EXPORTABLE_CHANNEL is not a value type, use G_TYPE_OBJECT
+    
+    
+    20080728201737-53eee-c8051e109b26a0c2db7cb673ee70081fa2c756cb.gz
+
+ src/channel-manager.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b2b2ffc8f9b6bbfd311fe680c147a84eac04ddb7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Jul 28 15:15:48 2008 +0000
+
+    GabbleChannelManager: rethink signal API, add signal emission helpers, add virtual method foreach_channel
+    
+    
+    20080728151548-53eee-0bd5d0b60ab70534ac34164d693a779d570ddf7a.gz
+
+ src/channel-manager.c    |  275 ++++++++++++++++++++++++++++++++++++++++++++--
+ src/channel-manager.h    |   45 +++++++-
+ src/exportable-channel.h |    3 +
+ 3 files changed, 308 insertions(+), 15 deletions(-)
+
+commit c627b13c85573580e46617e91ea0e8fdd1306c52
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 14:57:04 2008 +0000
+
+    Implement request signalling in a less awkward way, with a separate signal
+    
+    
+    20080725145704-53eee-13df484a3db363338aa18d64b7a329b967e5e6bd.gz
+
+ src/channel-manager.c |   19 ++++++++++++++++---
+ src/im-factory.c      |   23 ++++-------------------
+ 2 files changed, 20 insertions(+), 22 deletions(-)
+
+commit 891a3e6c7f62c192d838cc24732e7bc94a97785d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 13:22:27 2008 +0000
+
+    GabbleChannelManager, GabbleImFactory: make GabbleChannelManager implementations responsible for tracking which requests would be satisfied by which channels
+    
+    
+    Anything else doesn't really look viable.
+    
+    20080725132227-53eee-a415f248e4f71df035d307f9fd73dc0a02bc5554.gz
+
+ src/channel-manager.c |    8 +++++---
+ src/im-factory.c      |   33 ++++++++++++++++++++++++++-------
+ 2 files changed, 31 insertions(+), 10 deletions(-)
+
+commit 0129365c28dcdccc72d559926807a6e36e876861
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 13:16:50 2008 +0000
+
+    GabbleImFactory: also emit new-channels when a channel satisfies a request
+    
+    
+    20080725131650-53eee-c8c436e223fba853e9414219fcef8a8baefb36c5.gz
+
+ src/im-factory.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 482e39723cdd028acfa1d8f05afec9335624c34b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 12:42:12 2008 +0000
+
+    GabbleImFactory: implement GabbleChannelManager
+    
+    
+    20080725124212-53eee-3914dd080040e8125d38e5e0a474d30899072e9d.gz
+
+ src/im-factory.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
+
+commit bde26124a270c1e39d9fb861d796823998a53eac
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 13:22:09 2008 +0000
+
+    Start to sketch the API of GabbleChannelManager
+    
+    
+    20080725132209-53eee-39aa79f6d7d160255f3757d0740524ccbdf366e8.gz
+
+ src/channel-manager.h |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 5e38df6f422d1291dc337ba6f16c0d6bce735b6f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 12:41:49 2008 +0000
+
+    GabbleChannelManager: add channel-closed signal
+    
+    
+    20080725124149-53eee-3b99becea6239c82244b3347355e7e2dabee9af8.gz
+
+ src/channel-manager.c |   20 ++++++++++++++------
+ 1 files changed, 14 insertions(+), 6 deletions(-)
+
+commit 14f70ac264105f9afd29ce1c24b51aaaef79b82b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 12:41:37 2008 +0000
+
+    GabbleChannelManager: remove unnecessary include
+    
+    
+    20080725124137-53eee-612db042f62b0fe1a09bf2303960485482294344.gz
+
+ src/channel-manager.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit c7c178df0af0bfedd5de379374e59c5cef60172c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 11:53:35 2008 +0000
+
+    GabbleChannelManager: add a new-channels signal
+    
+    
+    20080725115335-53eee-cc3c03294260db4c44875967f86a89808c8d579e.gz
+
+ src/channel-manager.c |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
+
+commit 6c713237448896e3e0096f2bab29ac029891db5f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 16:17:05 2008 +0000
+
+    conn-requests: segregate channel factories and channel managers
+    
+    
+    20080729161705-53eee-75cf89c369ac890be7054418b01b368739b8e895.gz
+
+ src/conn-requests.c |   40 ++++++++++++++++++++++++++--------------
+ src/connection.c    |    6 ++++--
+ src/connection.h    |    1 +
+ 3 files changed, 31 insertions(+), 16 deletions(-)
+
+commit ba9c76809e2804b3d45dd1081ba1212e65d8ac25
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jul 29 16:12:57 2008 +0000
+
+    conn-requests: add method member to ChannelRequest
+    
+    
+    20080729161257-53eee-d9b3da89db1aec59eb7e5c773051285460961194.gz
+
+ src/conn-requests.c |   16 ++++++++++++++--
+ 1 files changed, 14 insertions(+), 2 deletions(-)
+
+commit e647f3ec3a1e03fa388944db0d1d4adfe7ca9aa7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 10:05:36 2008 +0000
+
+    Add GObject boilerplate for a GabbleChannelManager interface
+    
+    
+    20080725100536-53eee-81026e4cfe4b6d0b8704a342c140b8fdf395e590.gz
+
+ src/Makefile.am       |    2 +
+ src/channel-manager.c |   62 +++++++++++++++++++++++++++++++++++++++++++++++++
+ src/channel-manager.h |   55 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 119 insertions(+), 0 deletions(-)
+
+commit 0d8953344195ad0d875b185249b3fde9b11927cf
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jul 25 12:06:49 2008 +0000
+
+    Reimplement RequestChannel and ListChannels
+    
+    
+    Instead of taking the ones from TpBaseConnection, we now use an internal
+    implementation so we have complete control over the request process, so that
+    the Requests interface can be implemented on top of it.
+    
+    This code should move back to telepathy-glib once it's stable.
+    
+    20080725120649-53eee-386efddc780ff08349112c1d0ddfa6416bb87636.gz
+
+ src/Makefile.am     |    2 +
+ src/conn-requests.c |  598 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/conn-requests.h |   38 ++++
+ src/connection.c    |   14 ++
+ src/connection.h    |    5 +
+ 5 files changed, 657 insertions(+), 0 deletions(-)
+
+commit 29fd18678a4b4df6dde5aff901a05f5d14d5e572
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 14 15:56:50 2008 +0000
+
+    Implements D-Bus method AcceptStreamTube on org.freedesktop.Telepathy.Channel.Type.StreamTube
+    
+    
+    20080814155650-a41c0-44c96fad5b19d4dba21ad8cd42fcb66c2ac59fc4.gz
+
+ src/tube-stream.c |   55 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 52 insertions(+), 3 deletions(-)
+
+commit 3aea1b87e64e01a6a366bbb851f7176231c1ea12
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 14 14:53:44 2008 +0000
+
+    Implements D-Bus method GetStreamTubeSocketAddress on org.freedesktop.Telepathy.Channel.Type.StreamTube
+    
+    
+    20080814145344-a41c0-295ef250face270db66aaa79b940d3bf3307611a.gz
+
+ src/tube-stream.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 5044b0535ffd2024fee8c1919d36de8592808a41
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 14 14:28:29 2008 +0000
+
+    Move publish_tube_in_node in tube-iface because it will be used both by GabbleTubesChannel and GabbleTubeStream/GabbleTubeDBus. Move send_new_stream_tube_msg in tube-stream.c. OfferStreamTube in Channel.Type.StreamTube will be implemented with it.
+    
+    
+    20080814142829-a41c0-deddf9425b6bc971219ca64b80cd33d975e5ee37.gz
+
+ src/tube-iface.c    |   78 ++++++++++++++++++++++++++++
+ src/tube-iface.h    |    6 ++-
+ src/tube-stream.c   |   73 ++++++++++++++++++++++++---
+ src/tube-stream.h   |    5 ++
+ src/tubes-channel.c |  140 ++------------------------------------------------
+ 5 files changed, 159 insertions(+), 143 deletions(-)
+
+commit 9014990bae3e1b5b33f813b0c604d55272666617
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 13 17:48:06 2008 +0000
+
+    GabbleTubeStream exposes the Channel.Type.StreamTube object. Some methods not yet implemented.
+    
+    
+    20080813174806-a41c0-34a93595855b4d286162505940c380fab21ffb2a.gz
+
+ src/tube-stream.c |  286 ++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ src/tube-stream.h |    2 +
+ 2 files changed, 283 insertions(+), 5 deletions(-)
+
+commit 369ae719c0af0ff31f2f60339c2f340c11aca54b
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 13 17:35:56 2008 +0000
+
+    Rename signal names of StreamTubes and DBusTubes to avoid collisions when GabbleTubeDBus and GabbleTubeStream will implement TP_TYPE_SVC_CHANNEL
+    
+    
+    20080813173556-a41c0-f5e150e6ece74e95aed4b323531c40cb810ebc39.gz
+
+ src/tube-dbus.c     |    4 ++--
+ src/tube-stream.c   |    6 +++---
+ src/tubes-channel.c |    6 +++---
+ 3 files changed, 8 insertions(+), 8 deletions(-)
+
+commit 5ca29b985cb53f77316858dbd3327ef87595b1d1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Aug 12 13:45:15 2008 +0000
+
+    Add new tube spec as an extension
+    
+    
+    20080812134515-a41c0-15e1c32481e89e018c89afe9dd9f468d4cc92fdf.gz
+
+ extensions/Channel_Interface_Tube.xml  |  109 ++++++++++++++++
+ extensions/Channel_Type_DBusTube.xml   |  179 ++++++++++++++++++++++++++
+ extensions/Channel_Type_StreamTube.xml |  216 ++++++++++++++++++++++++++++++++
+ extensions/Makefile.am                 |    5 +-
+ extensions/all.xml                     |   16 +++
+ 5 files changed, 524 insertions(+), 1 deletions(-)
 
 commit c5d21e0af230f63babe100f042e3cffbcfce8552
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>

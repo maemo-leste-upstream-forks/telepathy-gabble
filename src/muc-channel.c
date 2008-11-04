@@ -1803,13 +1803,14 @@ void
 _gabble_muc_channel_member_presence_updated (GabbleMucChannel *chan,
                                              TpHandle handle,
                                              LmMessage *message,
-                                             LmMessageNode *x_node)
+                                             LmMessageNode *x_node,
+                                             LmMessageNode *item_node)
 {
   GabbleMucChannelPrivate *priv;
   TpBaseConnection *conn;
   TpIntSet *set;
   TpGroupMixin *mixin;
-  LmMessageNode *item_node, *node;
+  LmMessageNode *node;
   const gchar *affil, *role, *owner_jid, *status_code;
   TpHandle actor = 0;
   guint reason_code = TP_CHANNEL_GROUP_CHANGE_REASON_NONE;
@@ -1827,13 +1828,6 @@ _gabble_muc_channel_member_presence_updated (GabbleMucChannel *chan,
 
   mixin = TP_GROUP_MIXIN (chan);
 
-  item_node = lm_message_node_get_child (x_node, "item");
-  if (item_node == NULL)
-    {
-      g_warning ("%s: node missing 'item' child, ignoring", G_STRFUNC);
-      return;
-    }
-
   node = lm_message_node_get_child (x_node, "status");
   if (node)
     {
@@ -1847,15 +1841,6 @@ _gabble_muc_channel_member_presence_updated (GabbleMucChannel *chan,
   role = lm_message_node_get_attribute (item_node, "role");
   affil = lm_message_node_get_attribute (item_node, "affiliation");
   owner_jid = lm_message_node_get_attribute (item_node, "jid");
-
-  /* We special case OLPC Gadget as activities doesn't have to see it as
-   * a member of the room. */
-  if (owner_jid != NULL &&
-      !tp_strdiff (owner_jid, priv->conn->olpc_gadget_activity))
-    {
-      DEBUG ("Don't add Gadget's inspector as member");
-      return;
-    }
 
   /* update channel members according to presence */
   set = tp_intset_new ();
@@ -2233,6 +2218,7 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
 {
   gboolean is_error;
   GabbleMucChannelPrivate *priv;
+  TpChannelTextMessageFlags flags = 0;
 
   g_assert (GABBLE_IS_MUC_CHANNEL (chan));
 
@@ -2259,10 +2245,12 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
   /* Receive messages from other contacts and our own if they're delayed, and
    * set the timestamp for non-delayed messages */
   if (timestamp == 0)
-      timestamp = time (NULL);
+    timestamp = time (NULL);
+  else
+    flags = TP_CHANNEL_TEXT_MESSAGE_FLAG_SCROLLBACK;
 
-  tp_text_mixin_receive (G_OBJECT (chan), msg_type, sender,
-      timestamp, text);
+  tp_text_mixin_receive_with_flags (G_OBJECT (chan), msg_type, sender,
+      timestamp, text, flags);
 }
 
 /**
