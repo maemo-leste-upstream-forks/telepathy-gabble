@@ -1,3 +1,263 @@
+commit 7db78d114a171c9e1b972b92359803c8c6e1837d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Nov 6 09:53:36 2008 +0000
+
+    Prepare release 0.7.15
+
+ NEWS         |   16 ++++++++++++++--
+ configure.ac |    4 ++--
+ 2 files changed, 16 insertions(+), 4 deletions(-)
+
+commit 413ef7e44b8c00ed94f0bea77173cb80abe5d8e8
+Merge: 31246e1... 4367222...
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Nov 6 09:40:19 2008 +0000
+
+    Merge branch 'trivia'
+
+commit 31246e15627deb425d0f8c5a7fa6b73fa862e5f1
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Thu Nov 6 00:09:18 2008 +0100
+
+    gabble_media_stream_new_native_candidate(): properly scan transports and get candidate numbers
+
+ src/media-stream.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 43672228b9b1d4a9cf3fb8a85f3381d1df06f265
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:53:38 2008 +0000
+
+    GabbleMediaFactory: don't redundantly validate TargetHandle
+    
+    TpBaseConnection already checks it, so we don't need to do so again.
+
+ src/media-factory.c |   15 ++++-----------
+ 1 files changed, 4 insertions(+), 11 deletions(-)
+
+commit f44ae32398c0691a4c8de367eb49ef0bb067149d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:53:06 2008 +0000
+
+    GabbleMediaFactory: don't advertise anonymous channels as requestable
+    
+    Spec compliance: RequestableChannelClasses is only meant to contain
+    channels requestable via CreateChannel/EnsureChannel, which for us
+    means only channels with TargetHandleType == CONTACT.
+    
+    Given how many projects cargo-cult code from Gabble, it's good for
+    our code to be exemplary here.
+
+ src/media-factory.c |   15 ++++++---------
+ 1 files changed, 6 insertions(+), 9 deletions(-)
+
+commit 1a284e4faf69c38a28198d99ba84ef53b543545a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:48:32 2008 +0000
+
+    GabbleMUCFactory: don't redundantly validate TargetHandle
+    
+    TpBaseConnection already checks it, so we don't need to do so again.
+
+ src/muc-factory.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
+
+commit 46a7679cfaa475c0d69f8f6d0297431854ec5b90
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:48:21 2008 +0000
+
+    GabblePrivateTubesFactory: fix misleading error message
+    
+    Cut and paste error from GabbleIMFactory.
+
+ src/private-tubes-factory.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 67d5d0f8ae71e39858b3809f5c2504307c004b7c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:48:01 2008 +0000
+
+    GabblePrivateTubesFactory: don't redundantly validate TargetHandle
+    
+    TpBaseConnection already checks it, so we don't need to do so again.
+
+ src/private-tubes-factory.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
+
+commit b965bc333e8b533bf21a4448ddf68c399d233777
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:47:19 2008 +0000
+
+    GabbleOLPCGadgetManager: don't redundantly check TargetHandle
+    
+    TpBaseConnection already checks that the arguments are internally
+    consistent, so it's sufficient to check TargetHandleType.
+
+ src/olpc-gadget-manager.c |   12 ++++--------
+ 1 files changed, 4 insertions(+), 8 deletions(-)
+
+commit d1e95966d5a11d1260c28374b8cfc9bf1bf932b4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:47:02 2008 +0000
+
+    GabbleRoomlistManager: don't redundantly check TargetHandle
+    
+    TpBaseConnection already checks that the arguments are internally
+    consistent, so it's sufficient to check TargetHandleType.
+
+ src/roomlist-manager.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 9dbdc8ae3707acd0ba4977a5519215429be48791
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:46:15 2008 +0000
+
+    GabbleIMFactory: don't redundantly validate TargetHandle
+    
+    TpBaseConnection already did this.
+
+ src/im-factory.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
+
+commit c4d5ba9489e5e783a9a09675e953a0d6c7767134
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:33:34 2008 +0000
+
+    GabbleTubeIface, GabbleTubeDBus, GabbleTubeStream: use G_PARAM_STATIC_STRINGS
+
+ src/tube-dbus.c   |   32 ++++++--------------------------
+ src/tube-iface.c  |   51 +++++++++------------------------------------------
+ src/tube-stream.c |   35 +++++++++--------------------------
+ 3 files changed, 24 insertions(+), 94 deletions(-)
+
+commit ff9b82ba56a68602f75c8889e0f3a0e2fad20088
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:33:11 2008 +0000
+
+    GabbleOLPC*: use G_PARAM_STATIC_STRINGS
+
+ src/olpc-activity-view.c |    6 ++----
+ src/olpc-activity.c      |   24 ++++--------------------
+ src/olpc-buddy-view.c    |    6 ++----
+ src/olpc-view.c          |   30 ++++++++++--------------------
+ 4 files changed, 18 insertions(+), 48 deletions(-)
+
+commit c92dd539270bb67d7d863e336413c46853ab9140
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:23:32 2008 +0000
+
+    GabbleTubeStream: add immutable Interfaces property to channel details
+
+ src/tube-stream.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 9b376b3e75d2a29013565080b57e98b5b4c93d4d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:23:16 2008 +0000
+
+    GabbleTubesChannel: add immutable Interfaces property to channel details
+
+ src/tubes-channel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit df05f5b2cfcb49d2d3bf565373a1dc2763f7b030
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:23:00 2008 +0000
+
+    GabbleRosterChannel: add immutable Interfaces property to channel details
+
+ src/roster-channel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 865828bc514ab51445e2993c1d004c10a2645ad3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:22:46 2008 +0000
+
+    GabbleRoomlistChannel: add immutable Interfaces property to channel details
+
+ src/roomlist-channel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 44aa6863a33bc5d28b35c3cbe6761ca1078629d1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:22:30 2008 +0000
+
+    GabbleMucChannel: add immutable Interfaces property to channel details
+
+ src/muc-channel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 1afdd06a13289dfcd18ff3eebd5d535ce2a40acb
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:22:11 2008 +0000
+
+    GabbleMediaChannel: add immutable Interfaces property to channel details
+
+ src/media-channel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 3a81de7f142829c4b6eff8efa846e724bd991f03
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Nov 5 11:21:53 2008 +0000
+
+    GabbleIMChannel: add immutable Interfaces property to channel details
+
+ src/im-channel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 8e1c9f8b11346bd91683fbd231669394fd5c4842
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   Tue Nov 4 15:08:01 2008 -0500
+
+    Get the right component
+
+ src/media-stream.c |   36 ++++++++++++++++++++++++++++++++++--
+ 1 files changed, 34 insertions(+), 2 deletions(-)
+
+commit b6d25b6af85d4f1fce8434b7c46ea5a4e18650c2
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   Tue Nov 4 15:01:34 2008 -0500
+
+    Don't reject candidates > 1, just ignore them
+
+ src/media-stream.c |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
+
+commit f61a33492b5f05948b1d26c18b959705c19c31ee
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Nov 4 17:26:21 2008 +0000
+
+    Update glib-ginterface-gen.py from telepathy-glib (no significant changes)
+
+ tools/glib-ginterface-gen.py |   15 +++++++++++++--
+ 1 files changed, 13 insertions(+), 2 deletions(-)
+
+commit a9d523da53eb9730ac30e9de6e4edf06b5e4f31b
+Merge: ce81797... 89642f5...
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Nov 4 17:22:00 2008 +0000
+
+    Merge branch 'trivia'
+
+commit 89642f51ec1f4123de8cad90a12c89b07307b857
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Nov 4 17:20:00 2008 +0000
+
+    Update tools/telepathy.am from telepathy-glib so it will upload the signature
+
+ tools/telepathy.am |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+commit ce81797b1e2626a6f6793ab998e71a81a78990d4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Nov 4 12:49:23 2008 +0000
+
+    Start 0.7.15 development
+
+ NEWS         |    9 +++++++++
+ configure.ac |    2 +-
+ 2 files changed, 10 insertions(+), 1 deletions(-)
+
 commit d39a421cd74640db1e679754a273c134dfc7378f
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Nov 4 10:55:40 2008 +0000
