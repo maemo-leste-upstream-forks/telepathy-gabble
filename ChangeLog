@@ -1,3 +1,556 @@
+commit 3c664b9ce918b34d157082bb1df62cb9761cee4f
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Mon Dec 1 20:01:05 2008 +0100
+
+    include jingletest2.py in the distribution tarball
+
+ tests/twisted/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit bd03bf719bd7f0cbe5817b79b2ca975456862143
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Mon Dec 1 19:55:20 2008 +0100
+
+    media-channel.c:contact_is_media_capable: fix errors when compiling without DEBUG
+
+ src/media-channel.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 0d2f9af03279865f0c1b2b193cdafc82f17e0e97
+Merge: 3210adf... dcafb9e...
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Mon Dec 1 16:46:45 2008 +0100
+
+    Merge commit 'upstream/master'
+
+commit dcafb9e78aff56a861256a0b4b2f9d49605dd85c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Nov 27 19:00:37 2008 +0000
+
+    GabbleMucFactory: add a comment to explain why we use a temporary variable
+
+ src/muc-factory.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 2834ac31b787f239b02f27a0eade34363b049fea
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Nov 27 18:57:07 2008 +0000
+
+    GabbleMediaFactory: fix a double free in _dispose
+
+ src/media-factory.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+commit 305f182218bc6e29259046e43fe54e20556388cd
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Nov 27 18:54:58 2008 +0000
+
+    GabbleRoomlistManager: add a comment to explain why we use a temporary variable
+
+ src/roomlist-manager.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 2d5243ab0ca20ac3ba439323ea812eb0931119a0
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Nov 27 18:52:01 2008 +0000
+
+    GabbleOlpcGadgetManager: fix a double free in _dispose
+
+ src/olpc-gadget-manager.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 823bfd834b7d88c2fd280a21fdc13bb4315e855c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Nov 27 18:50:18 2008 +0000
+
+    GabbleImFactory: add a comment to explain why we use a temporary variable
+
+ src/im-factory.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit e3489362e360074e4d0cbd7058ea0f741d85be0d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Nov 27 18:48:29 2008 +0000
+
+    GabblePrivateTubesFactory: add a comment to explain why we use a temporary variable
+
+ src/private-tubes-factory.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 67cc69eb1f3f41e628a7f1db78ece7043de1e648
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Nov 27 18:46:55 2008 +0000
+
+    GabbleRoster: fix double free on Disconnect
+
+ src/roster.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+commit 3210adff6637443fe265bd33d1ccc5aa29d0e783
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 16:29:58 2008 +0100
+
+    jingle_media_rtp_codec_free: fix whitespace
+
+ src/jingle-media-rtp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit c79773cf6f59869f467a88b0b34c3f44bbaab8d9
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 16:26:38 2008 +0100
+
+    GabbleMediaStream: simplify code to ignore non-rtp components
+
+ src/media-stream.c |   15 +++------------
+ 1 files changed, 3 insertions(+), 12 deletions(-)
+
+commit f42012b3f480b658b9c714a3864848b1d84c6324
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 14:30:54 2008 +0100
+
+    jingle/test-incoming-call.py: use SupportedCodecs signal
+
+ tests/twisted/jingle/test-incoming-call.py |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit be5e75aa0dab7e55d5e39c182ec1a6b035a55f79
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 14:29:48 2008 +0100
+
+    GabbleMediaChannel: don't require all possible jingle features for media caps
+
+ src/media-channel.c |   15 ++++++++-------
+ 1 files changed, 8 insertions(+), 7 deletions(-)
+
+commit 1f29a13f8d09dfe702695d7bca7cd3dc3fb0b607
+Merge: 51eb40a... 99d02ac...
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 13:21:19 2008 +0100
+
+    Merge commit 'upstream/master'
+
+commit 51eb40a4090cd745043e129e6ea0d2e2c15df792
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 13:16:03 2008 +0100
+
+    test-dialects-incoming.py: deal with racy MembersChanged signal
+
+ tests/twisted/jingle/test-dialects-incoming.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 71ed7e1d3a1efc8d0d6d6a6723c73aa54d4fec19
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 13:14:54 2008 +0100
+
+    use SupportedCodecs signal in jingle tests
+
+ tests/twisted/jingle/test-content-complex.py   |    3 +++
+ tests/twisted/jingle/test-dialects-incoming.py |    3 +++
+ 2 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 5ec325468af7f4c626ff6abf945a0eae2d573da0
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 13:11:05 2008 +0100
+
+    GabbleMediaStream: let content parse initial codecs/candidates before asking for them
+
+ src/media-stream.c |   35 +++++++++++++++++++++++++----------
+ 1 files changed, 25 insertions(+), 10 deletions(-)
+
+commit 632b9ccccb254a779e1175555ed1b78dfcbf0125
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 13:09:48 2008 +0100
+
+    GabbleJingleSession: session termination idempotence
+
+ src/jingle-session.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+commit acca2c7868de70c8d2a8ef45555e2bf768aa29db
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 13:08:39 2008 +0100
+
+    GabbleJingleSession: immediately set content properties so media stream can use them in content creation callback
+
+ src/jingle-session.c |   19 +++++++++----------
+ 1 files changed, 9 insertions(+), 10 deletions(-)
+
+commit 6d79d676f8c457dcb1cf0b02115bc8fb328779fb
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 13:07:44 2008 +0100
+
+    GabbleJingleContent: don't update content senders if they haven't changed
+
+ src/jingle-content.c |   15 ++++++++++-----
+ src/media-stream.c   |    6 +-----
+ 2 files changed, 11 insertions(+), 10 deletions(-)
+
+commit 0f4f64effefca6dbe90daef90b39344053e769a1
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 10:25:26 2008 +0100
+
+    workaround for Loudmouth not handling xml namespaces
+
+ src/jingle-content.c          |   21 +++++++-----
+ src/jingle-media-rtp.c        |    4 ++-
+ src/jingle-session.c          |   14 +++++---
+ src/jingle-transport-google.c |    2 +-
+ src/util.c                    |   69 ++++++++++++++++++++++++++++++++--------
+ src/util.h                    |    5 +++
+ 6 files changed, 84 insertions(+), 31 deletions(-)
+
+commit 0dc85b00cdcd3e396abe9dcfec55e20e001ecf02
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 09:48:24 2008 +0100
+
+    jingle-session.c: refactor content creation code
+
+ src/jingle-session.c |  103 +++++++++++++++++++++++++------------------------
+ 1 files changed, 53 insertions(+), 50 deletions(-)
+
+commit b9ce26b657f59298f44728beaa41bc5991ee0f06
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 09:34:14 2008 +0100
+
+    support component numbering in jingle transports (still ignore everything except rtp for now)
+
+ src/jingle-content.h          |    1 +
+ src/jingle-transport-google.c |   25 +++++++++++++++++--------
+ src/jingle-transport-iface.c  |    3 ++-
+ src/jingle-transport-iface.h  |    7 ++++---
+ src/media-stream.c            |   13 +++++++++----
+ 5 files changed, 33 insertions(+), 16 deletions(-)
+
+commit dee311191be2527ff4134b456222553925ab45e4
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Nov 14 10:00:56 2008 +0100
+
+    GabbleMediaStream: use SetSupportedCodecs when we're stream responder
+
+ src/jingle-content.c |    6 ++++
+ src/jingle-content.h |    1 +
+ src/media-stream.c   |   67 +++++++++++++++++++++++++++++---------------------
+ 3 files changed, 46 insertions(+), 28 deletions(-)
+
+commit 08c470d01ef6a7594e9b2168e23b389df40ef172
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Wed Nov 12 22:47:49 2008 +0100
+
+    media-stream.c: make update_sending a file-level function
+
+ src/media-stream.c |   12 ++++++------
+ src/media-stream.h |    2 --
+ 2 files changed, 6 insertions(+), 8 deletions(-)
+
+commit 16cfc1c728fce490e9cde1c264231a77c36cec08
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Wed Nov 12 22:32:00 2008 +0100
+
+    jingle_media_rtp_codec_free: param hashtable is always there, destroy it unconditionally
+
+ src/jingle-media-rtp.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
+
+commit 60232a3699ceb71c593c895a7362cac86521bc41
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Wed Nov 12 21:58:35 2008 +0100
+
+    gabble_media_factory_requestotron: remove unused variable conn
+
+ src/media-factory.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit b646e92298d946682a9323de5b5c7706276efd98
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Wed Nov 12 21:40:12 2008 +0100
+
+    media-stream.c: remove dead code dealing with remote pending send
+
+ src/media-stream.c |   21 ---------------------
+ 1 files changed, 0 insertions(+), 21 deletions(-)
+
+commit 2eed0f65cc9bac66d18fece113f0a12a3fe1a8e8
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Wed Nov 12 20:59:59 2008 +0100
+
+    gabble_media_stream_set_stream_state: debug log the invalid stream state request
+
+ src/media-stream.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 99d02aca906087861dfab9dd4dde252957d53386
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Nov 12 15:41:30 2008 +0000
+
+    test-si-tubes.py: Better code for: Check that tube offers contains @to with the resource
+
+ tests/twisted/tubes/test-si-tubes.py |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit f4dbdeadb62386856cb39e9c982b41b5eccbcf0e
+Merge: 898f904... 0d53c3e...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Nov 12 15:21:46 2008 +0000
+
+    Merge branch 'master' into bug18480
+
+commit 898f9043494d8ae0ced7b0a6145e5c8cc0323654
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Nov 12 15:20:43 2008 +0000
+
+    test-si-tubes.py: Check that tube offers contains @to with the resource
+
+ tests/twisted/tubes/test-si-tubes.py |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 7444a784e470bd93ab5efa9346779a75e68ddbf9
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Nov 12 13:51:50 2008 +0000
+
+    tests/twisted/tubes/test-si-tubes.py: Offering a tube to someone who does not support tube does not work anymore.
+
+ tests/twisted/tubes/test-si-tubes.py |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit db4b99680f4838154f4a7b868004c9b9b74345df
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Nov 12 13:41:28 2008 +0000
+
+    src/tube-stream.c: When offering a 1-1 stream tube, set the full jid with the resource
+
+ src/tube-stream.c |   32 +++++++++++++++++++++++++++++++-
+ 1 files changed, 31 insertions(+), 1 deletions(-)
+
+commit 596a598c01074f83112414bf393b2597bb4e47ae
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Nov 11 14:49:10 2008 +0100
+
+    refactor jingle candidate sending so they're sent for non-initial contents too
+
+ src/jingle-content.c |   17 +++++++++--------
+ src/jingle-session.c |   10 ++++++++++
+ 2 files changed, 19 insertions(+), 8 deletions(-)
+
+commit 00d7e3cfefdcb18c0d03e1e8a3f83ba6984eb631
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Nov 11 14:44:18 2008 +0100
+
+    GabbleMediaStream: more stream direction handling fixes
+
+ src/media-channel.c |   31 +++++++------------------------
+ src/media-stream.c  |   41 +++++++++++++++++++++++++----------------
+ 2 files changed, 32 insertions(+), 40 deletions(-)
+
+commit eb77fc5717392cebbd1d287eb813a9b72affa639
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Nov 11 14:36:26 2008 +0100
+
+    GabbleJingleContent: senders are optional instead of required attribute
+
+ src/jingle-content.c |   36 ++++++++++++------------------------
+ 1 files changed, 12 insertions(+), 24 deletions(-)
+
+commit 0d53c3ecdc32518270d8cafc228f6d7018946ff9
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Nov 12 00:21:34 2008 +0000
+
+    Twisted tests: fix 'eavesdrop' parameter on the D-Bus test session
+
+ tests/twisted/tools/tmp-session-bus.conf.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 7cea1ec279c2608727764dec65790f22b45af3d3
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 11 23:01:08 2008 +0000
+
+    test-si-tubes.py: Fix comment
+
+ tests/twisted/tubes/test-si-tubes.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 2706f6897293862ca47699551bb5f7a798df64cf
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 11 20:03:37 2008 +0000
+
+    Test AcceptStreamTube: test bad parameters
+
+ tests/twisted/tubes/test-si-accept-tubes.py |  103 +++++++++++++++++++++++++--
+ 1 files changed, 97 insertions(+), 6 deletions(-)
+
+commit a2ae0845009d79eca85fabfda823ca4b70bf2279
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 11 20:03:07 2008 +0000
+
+    AcceptStreamTube: handle bad parameters correctly
+
+ src/tube-stream.c   |   16 ++++++++++------
+ src/tubes-channel.c |   13 ++++++++++++-
+ 2 files changed, 22 insertions(+), 7 deletions(-)
+
+commit 96ad67c3b6e7b9b4b32da162475d04b0740a7f69
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 11 19:35:09 2008 +0000
+
+    src/tube-stream.c: Fix: set the address type correctly on the new tube iface
+
+ src/tube-stream.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit e40021e94fbc687d00a5279ff7ec1186b3df2c7d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 11 19:17:02 2008 +0000
+
+    AcceptStreamTube: test both unix sockets and IPv4 sockets
+
+ tests/twisted/tubes/test-si-accept-tubes.py |  154 ++++++++++++++++-----------
+ 1 files changed, 92 insertions(+), 62 deletions(-)
+
+commit e9ab1c775c48a210b001e058589db1a1eaebd536
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 11 18:35:57 2008 +0000
+
+    test-si-accept-tubes.py: Remove dead code, clean up
+
+ tests/twisted/tubes/test-si-accept-tubes.py |  169 +--------------------------
+ 1 files changed, 3 insertions(+), 166 deletions(-)
+
+commit abe38bf926ab4550d422e3713d0614acfc558ea9
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 11 18:22:22 2008 +0000
+
+    New test: Accept a 1-1 stream tube
+
+ tests/twisted/Makefile.am                   |    1 +
+ tests/twisted/tubes/test-si-accept-tubes.py |  311 +++++++++++++++++++++++++++
+ 2 files changed, 312 insertions(+), 0 deletions(-)
+
+commit f28a1b3f3f8f16d95d9e804ad5c6137f0387cf93
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 11 18:03:39 2008 +0000
+
+    GabbleTubesChannel: Emit the NewChannel{s,} signals when a stream tube is created as a result of receiving a tube offer from a contact
+
+ src/tubes-channel.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 9180779383eb14aee3422e24894a445b2f2ba5a0
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 11 15:59:46 2008 +0000
+
+    test-si-tubes.py: Test to offer a stream tube to a contact that does not advertise the tube capability
+
+ tests/twisted/tubes/test-si-tubes.py |   69 ++++++++++++++++++++++++++++++----
+ 1 files changed, 61 insertions(+), 8 deletions(-)
+
+commit 1c2329dd5a3260a5e0ec1266dfdf2dfb849f24dd
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 11 15:20:49 2008 +0000
+
+    Stream tubes: Check access_control in gabble_tube_stream_check_params() for both OfferStreamTube and AcceptStreamTube in both old tube interface and new tube interface.
+
+ src/tube-stream.c   |  219 ++++++++++++++++++++++++--------------------------
+ src/tubes-channel.c |   32 +-------
+ 2 files changed, 106 insertions(+), 145 deletions(-)
+
+commit df74100c7af2dc24742d1de0ab56cd13bcd49923
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 11 12:45:49 2008 +0000
+
+    Revert "Stream tubes: AcceptStreamTube: only accept UNIX sockets."
+    
+    This reverts commit d0a66d6ff89010c0b78f2db42c7ce0fcd5e666a1.
+
+ src/tube-stream.c   |    4 +++-
+ src/tubes-channel.c |    4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+commit fe77f6fa27c805b9aa0cbbc55e799553a1aaa5b0
+Merge: a646843... 334a12f...
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Nov 7 16:58:58 2008 +0100
+
+    Merge commit 'upstream/master'
+
+commit a64684335538c3f2529f756e268bd79dc2334c67
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Nov 7 16:58:02 2008 +0100
+
+    GabbleMediaChannel: advertise jingle-v0.15 and jingle-v0.32 dialect support
+
+ src/media-channel.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+commit 4bcdf1735901f7c31343081e0ca181f8f645bfc2
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Nov 7 16:57:31 2008 +0100
+
+    JingleMediaRtp: use proper namespace for RTP
+
+ src/jingle-media-rtp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b107866913e972ecf5bb3e2cc55e8ecd6f220a61
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Nov 7 12:53:57 2008 +0100
+
+    GabbleJingleSession: count streams being initiated by remote peer as "active" so we don't remove the session if only they are left.
+    This happens when we want to reject some streams initiated by peers "session-initiate" action
+
+ src/jingle-session.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 2af7bc06b8e56d0fe367eb1a95691c7f0a499b65
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Nov 7 12:28:19 2008 +0100
+
+    GabbleMediaChannel: set media type when creating the stream
+
+ src/media-channel.c |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
+
+commit 9f8ebe31997986972ab049a6ea8be1f781775496
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Nov 7 12:27:27 2008 +0100
+
+    GabbleJingleSession: fix check whether session contents are ready
+
+ src/jingle-session.c |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+commit adc7977a0133b990584cf792949683932ff221ce
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Thu Nov 6 21:44:22 2008 +0100
+
+    allocate/free helpers for JingleCodec and JingleCandidate structs
+
+ src/jingle-media-rtp.c        |   54 +++++++++++++++++++++++++++-------------
+ src/jingle-media-rtp.h        |    5 ++++
+ src/jingle-session.c          |    3 +-
+ src/jingle-transport-google.c |   39 ++++-------------------------
+ src/jingle-transport-iface.c  |   40 ++++++++++++++++++++++++++++++
+ src/jingle-transport-iface.h  |    8 ++++++
+ src/media-stream.c            |   42 ++++++++++++++++----------------
+ 7 files changed, 117 insertions(+), 74 deletions(-)
+
+commit 334a12f82a4dc02a0418469f7aed217d9835a8fc
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Nov 6 11:12:22 2008 +0000
+
+    Fix race condition in roster/ensure.py (fd.o #18404)
+
+ tests/twisted/roster/ensure.py |   14 +++-----------
+ 1 files changed, 3 insertions(+), 11 deletions(-)
+
+commit 22383483c0dee0c3ea85e4627198a23f6bb9c3e1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Nov 6 10:19:35 2008 +0000
+
+    Start 0.7.16 development
+
+ NEWS         |    9 +++++++++
+ configure.ac |    2 +-
+ 2 files changed, 10 insertions(+), 1 deletions(-)
+
 commit 7db78d114a171c9e1b972b92359803c8c6e1837d
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Thu Nov 6 09:53:36 2008 +0000
@@ -23,6 +576,64 @@ Date:   Thu Nov 6 00:09:18 2008 +0100
 
  src/media-stream.c |    4 ++--
  1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit a8088a4cf1e5c4e296bb94fcb5ad7f49a2870fc3
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Thu Nov 6 00:09:18 2008 +0100
+
+    gabble_media_stream_new_native_candidate(): properly scan transports and get candidate numbers
+
+ src/media-stream.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit c9d7f246d6e7e1419830921cabb5fa3657f85106
+Merge: 28d2e6b... 8e1c9f8...
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Wed Nov 5 23:42:56 2008 +0100
+
+    Merge commit 'upstream/master'
+    
+    Ported commit 169ca96800606c9dee18ffbbeff591d61315ff2f to the new jingle code
+    Conflicts:
+    
+    	src/media-stream.c
+
+commit 28d2e6bc63c335e3d2c273d0ff9324a6a481ca7d
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Wed Nov 5 21:40:36 2008 +0100
+
+    GabbleJingleSession: fix gtalk3 detection on "candidates" jingle action
+
+ src/jingle-session.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 14052102666471bd5dadfc05caec180350e0815d
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Wed Nov 5 21:18:05 2008 +0100
+
+    GabbleMediaStream: hook up jingle "senders" and stream direction logic
+
+ src/media-stream.c |   91 +++++++++++++++++++++++++++++++++++++++++++++------
+ 1 files changed, 80 insertions(+), 11 deletions(-)
+
+commit 663a26eaae7435288c576f0b96ccd17462842612
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Wed Nov 5 21:17:22 2008 +0100
+
+    GabbleJingleContent: destroy timeout timer before content is disposed
+
+ src/jingle-content.c |   13 ++++++++-----
+ 1 files changed, 8 insertions(+), 5 deletions(-)
+
+commit 9d6794fe085652acb17641f95d8c492e4aabfaa8
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Wed Nov 5 20:38:46 2008 +0100
+
+    GabbleJingleContent: implemented timeout for content addition
+
+ src/jingle-content.c |   30 ++++++++++++++++++++++++++++++
+ src/jingle-session.c |    1 +
+ 2 files changed, 31 insertions(+), 0 deletions(-)
 
 commit 43672228b9b1d4a9cf3fb8a85f3381d1df06f265
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -119,6 +730,29 @@ Date:   Wed Nov 5 11:46:15 2008 +0000
  src/im-factory.c |    7 ++-----
  1 files changed, 2 insertions(+), 5 deletions(-)
 
+commit d2b4ed33ba94aa605fcfaf4162dac4342c8b1383
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Wed Nov 5 12:45:24 2008 +0100
+
+    GabbleJingleSession: retransmit candidates if gtalk3 dialect is detected in the middle of the session
+
+ src/jingle-content.c          |    9 ++++++++-
+ src/jingle-content.h          |    1 +
+ src/jingle-session.c          |   34 ++++++++++++++++++++++++----------
+ src/jingle-transport-google.c |   20 +++++++++++++++-----
+ src/jingle-transport-iface.c  |    7 ++++---
+ src/jingle-transport-iface.h  |    4 ++--
+ 6 files changed, 54 insertions(+), 21 deletions(-)
+
+commit d1721b8c44f0e6aa66b7d7a9f2c3bdb66325f752
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Wed Nov 5 12:43:42 2008 +0100
+
+    GabbleJingleSession: removed stale fixmes
+
+ src/jingle-session.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
 commit c4d5ba9489e5e783a9a09675e953a0d6c7767134
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Nov 5 11:33:34 2008 +0000
@@ -205,6 +839,16 @@ Date:   Wed Nov 5 11:21:53 2008 +0000
  src/im-channel.c |    1 +
  1 files changed, 1 insertions(+), 0 deletions(-)
 
+commit 945ffcc5a7b48ed34a51cce6f8cb1f6e1e132ee7
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 22:35:59 2008 +0100
+
+    added jingle headers to Makefile.am sources and documented obsolete jingle namespaces
+
+ src/Makefile.am  |    6 ++++++
+ src/namespaces.h |    7 ++-----
+ 2 files changed, 8 insertions(+), 5 deletions(-)
+
 commit 8e1c9f8b11346bd91683fbd231669394fd5c4842
 Author: Olivier Crête <olivier.crete@collabora.co.uk>
 Date:   Tue Nov 4 15:08:01 2008 -0500
@@ -223,6 +867,15 @@ Date:   Tue Nov 4 15:01:34 2008 -0500
  src/media-stream.c |   11 +++++++++--
  1 files changed, 9 insertions(+), 2 deletions(-)
 
+commit 580dbd0b17c74000c104755c261b66f91b8fe529
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 18:31:49 2008 +0100
+
+    jingle-session.c:content_ready_cb() removed stale FIXME, content addition is properly handled
+
+ src/jingle-session.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
 commit f61a33492b5f05948b1d26c18b959705c19c31ee
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Nov 4 17:26:21 2008 +0000
@@ -231,6 +884,23 @@ Date:   Tue Nov 4 17:26:21 2008 +0000
 
  tools/glib-ginterface-gen.py |   15 +++++++++++++--
  1 files changed, 13 insertions(+), 2 deletions(-)
+
+commit 9362b01a5f4fc99084d54ffc5cb8dffe99c1a1b7
+Merge: 088b165... a9d523d...
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 18:25:07 2008 +0100
+
+    Merge commit 'upstream/master'
+
+commit 088b165d4d1a90087ade419b4b978db42ec31070
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 18:23:59 2008 +0100
+
+    jingle tests: fixed race in one, and disabled other test due to race conditions
+
+ .../twisted/jingle/test-content-adding-removal.py  |    2 +-
+ tests/twisted/jingle/test-content-complex.py       |    3 +++
+ 2 files changed, 4 insertions(+), 1 deletions(-)
 
 commit a9d523da53eb9730ac30e9de6e4edf06b5e4f31b
 Merge: ce81797... 89642f5...
@@ -248,6 +918,60 @@ Date:   Tue Nov 4 17:20:00 2008 +0000
  tools/telepathy.am |    7 ++++++-
  1 files changed, 6 insertions(+), 1 deletions(-)
 
+commit e43f186238c1ccb7efc371aac818f2e99f87d1e5
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 17:58:49 2008 +0100
+
+    jingle code: comment improvements, added missing forward declaration
+
+ src/jingle-factory.c |    2 +-
+ src/jingle-session.c |    9 +++++----
+ src/media-stream.c   |    1 -
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 57c97738a99505a356f090484abefc2c46952335
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 17:43:18 2008 +0100
+
+    removed unused JingleTransportIface produce method
+
+ src/jingle-transport-iface.c |   12 ------------
+ src/jingle-transport-iface.h |    4 ----
+ 2 files changed, 0 insertions(+), 16 deletions(-)
+
+commit 3159f3264b866cc751d9c7705f12425d16c16e35
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 17:37:20 2008 +0100
+
+    improving jingle code readability
+
+ src/jingle-content.c          |    6 +++---
+ src/jingle-factory.h          |    8 ++++++--
+ src/jingle-media-rtp.c        |    1 +
+ src/jingle-session.c          |   14 +++++++++-----
+ src/jingle-transport-google.c |    4 ++--
+ src/jingle-transport-iface.c  |    1 +
+ src/media-channel.c           |    2 +-
+ 7 files changed, 23 insertions(+), 13 deletions(-)
+
+commit 8e62349d60621e68780dbcb6d95793f4de68baa8
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 16:50:01 2008 +0100
+
+    media-stream.c: fixed two trivial bugs
+
+ src/media-stream.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 0abc600198a3114b813da9e8332833d6c882fe5c
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 13:51:41 2008 +0100
+
+    removed unused JingleContent "ready" property
+
+ src/jingle-content.c |   34 ----------------------------------
+ 1 files changed, 0 insertions(+), 34 deletions(-)
+
 commit ce81797b1e2626a6f6793ab998e71a81a78990d4
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Nov 4 12:49:23 2008 +0000
@@ -257,6 +981,47 @@ Date:   Tue Nov 4 12:49:23 2008 +0000
  NEWS         |    9 +++++++++
  configure.ac |    2 +-
  2 files changed, 10 insertions(+), 1 deletions(-)
+
+commit 747abddfc8efe13fb1c34c5d64e2193c10ae52c8
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 13:39:36 2008 +0100
+
+    media_stream_stream_state(): ignore illegal stream states
+
+ src/media-stream.c |   20 ++++++++++++++++----
+ 1 files changed, 16 insertions(+), 4 deletions(-)
+
+commit 6199c8e04d52eb076096b7ca2186c5f91c2817e6
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 13:30:16 2008 +0100
+
+    properly pass extra codec params between jingle and telepathy
+
+ src/jingle-media-rtp.c |   38 +++++++++++++++++++------
+ src/jingle-media-rtp.h |    8 +++++
+ src/media-stream.c     |   73 +----------------------------------------------
+ 3 files changed, 39 insertions(+), 80 deletions(-)
+
+commit 79275e9c7b7da81465210292d3129e447626f260
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 12:44:11 2008 +0100
+
+    use g_slice for allocating JingleCodec and JingleCandidate structs
+
+ src/jingle-media-rtp.c        |   13 +++----------
+ src/jingle-transport-google.c |   13 +++----------
+ src/media-stream.c            |   23 ++---------------------
+ 3 files changed, 8 insertions(+), 41 deletions(-)
+
+commit 1865e79abaa4401d020e29917e05cd9dd316a22d
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 12:27:46 2008 +0100
+
+    media-stream.[ch]: dead code removal
+
+ src/media-stream.c |   87 ----------------------------------------------------
+ src/media-stream.h |   15 ---------
+ 2 files changed, 0 insertions(+), 102 deletions(-)
 
 commit d39a421cd74640db1e679754a273c134dfc7378f
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -292,6 +1057,82 @@ Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Nov 4 10:22:45 2008 +0000
 
     Merge branch 'compliance'
+
+commit e56aae7443811c16c690e40edf80e0dfd58f02dd
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 10:51:24 2008 +0100
+
+    enabling twisted/jingle/test-incoming-call.py
+
+ tests/twisted/jingle/test-incoming-call.py |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+commit 9043691cd74d790175dd01bcacb88042816e2297
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 10:46:41 2008 +0100
+
+    removed unused jingle-description-iface.[ch] files
+
+ src/jingle-description-iface.c |  122 ----------------------------------------
+ src/jingle-description-iface.h |   60 --------------------
+ 2 files changed, 0 insertions(+), 182 deletions(-)
+
+commit 8d84d2205e74f42225f579929859cff6506859ab
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 10:45:29 2008 +0100
+
+    renamed Jingle capabilities and namespaces to make them more consistent
+
+ src/capabilities.c     |    4 +++-
+ src/jingle-media-rtp.c |    4 ++--
+ src/media-channel.c    |   10 +++++-----
+ src/namespaces.h       |   27 ++++++++++++++++++---------
+ src/presence-cache.c   |   10 +++++-----
+ src/types.h            |    6 +++---
+ 6 files changed, 36 insertions(+), 25 deletions(-)
+
+commit 19f84d1ffcb797c1fab656f51b9315ba63168a76
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 10:20:43 2008 +0100
+
+    reordered private headers and makefile sources in alphabetical order
+
+ src/Makefile.am               |   15 +++++++--------
+ src/connection.c              |    2 +-
+ src/connection.h              |    4 ++--
+ src/jingle-content.c          |    6 +++---
+ src/jingle-content.h          |    1 +
+ src/jingle-factory.c          |   10 ++++------
+ src/jingle-factory.h          |    2 --
+ src/jingle-media-rtp.c        |    8 ++++----
+ src/jingle-session.c          |    8 ++++----
+ src/jingle-session.h          |    4 ++--
+ src/jingle-transport-google.c |    8 ++++----
+ src/jingle-transport-google.h |    1 +
+ src/jingle-transport-iface.c  |    7 ++++---
+ src/jingle-transport-iface.h  |    2 +-
+ src/media-channel.c           |   11 +++++------
+ src/media-factory.c           |    3 +--
+ src/media-stream.c            |    5 ++---
+ 17 files changed, 46 insertions(+), 51 deletions(-)
+
+commit 0069b41ce15b941eef9eb98c9059bd377954513a
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Nov 4 09:56:53 2008 +0100
+
+    taking advantage of static typechecks for Jingle*Private
+
+ src/jingle-content.c          |    4 +---
+ src/jingle-content.h          |    4 +++-
+ src/jingle-factory.c          |    4 +---
+ src/jingle-factory.h          |    4 +++-
+ src/jingle-media-rtp.c        |    4 +---
+ src/jingle-media-rtp.h        |    4 +++-
+ src/jingle-session.c          |    4 +---
+ src/jingle-session.h          |    4 +++-
+ src/jingle-transport-google.c |    4 +---
+ src/jingle-transport-google.h |    4 +++-
+ 10 files changed, 20 insertions(+), 20 deletions(-)
 
 commit 22876b36e5e3fc97dc11d9b4d36b0813a46e4e1c
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
@@ -461,6 +1302,118 @@ Date:   Mon Nov 3 16:00:49 2008 +0000
  src/im-channel.c |   11 +++++------
  1 files changed, 5 insertions(+), 6 deletions(-)
 
+commit a6710c81d82e0aaddd6b38f00f8ba55ec28ce88d
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Nov 3 09:18:42 2008 +0100
+
+    simplified debugging messages in jingle code
+
+ src/jingle-content.c          |   28 +++-------------------------
+ src/jingle-factory.c          |    1 -
+ src/jingle-media-rtp.c        |    2 --
+ src/jingle-session.c          |   22 +++-------------------
+ src/jingle-transport-google.c |   26 --------------------------
+ src/media-channel.c           |    7 -------
+ src/media-stream.c            |    1 -
+ 7 files changed, 6 insertions(+), 81 deletions(-)
+
+commit 51323a39ed7f7d360fb5809d945c165988dd11da
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Nov 3 09:02:26 2008 +0100
+
+    JingleSession: refactored parsing code into detection and parser part
+
+ src/jingle-factory.c |   23 ++++++----
+ src/jingle-session.c |  116 +++++++++++++++++++++++++++++---------------------
+ src/jingle-session.h |    6 ++-
+ 3 files changed, 85 insertions(+), 60 deletions(-)
+
+commit a1ac264e9d67bb53c4529bf51152c8c68e351958
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Nov 3 08:01:32 2008 +0100
+
+    JingleSession: use enum->string->enum functions instead of table lookup
+
+ src/jingle-content.c |   56 ++++++++++++++-----
+ src/jingle-factory.h |   12 ++--
+ src/jingle-session.c |  152 +++++++++++++++++++++++++-------------------------
+ src/jingle-session.h |    3 -
+ 4 files changed, 124 insertions(+), 99 deletions(-)
+
+commit 8e301baaf3522b48c653fa18c6e8902fac4b39b5
+Merge: 48e7dcf... 3a75959...
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Sat Nov 1 12:30:57 2008 +0100
+
+    Merge commit 'upstream/master' and fixed merge conflicts
+    
+    Conflicts:
+    
+    	tests/twisted/gabbletest.py
+
+commit 48e7dcfd1d564a215e140a490243b275544b635d
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Oct 31 22:10:07 2008 +0100
+
+    test-content-complex.py: test each dialect only once
+
+ tests/twisted/jingle/test-content-complex.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit c1dbf0180c60b38d6300c20c553ae6b16d4654fc
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Oct 31 22:08:52 2008 +0100
+
+    new test for various content addition and removal scenarios
+
+ tests/twisted/Makefile.am                          |    1 +
+ tests/twisted/jingle/jingletest2.py                |    4 +-
+ .../twisted/jingle/test-content-adding-removal.py  |    4 +-
+ tests/twisted/jingle/test-content-complex.py       |  228 ++++++++++++++++++++
+ 4 files changed, 234 insertions(+), 3 deletions(-)
+
+commit 7c75a9390bf95e2e3e897c318f5331d421da7932
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Oct 31 22:05:48 2008 +0100
+
+    fix crash if content remove is acknowledged after session termination
+
+ src/jingle-content.c |    3 +++
+ src/jingle-session.c |    3 +++
+ src/media-stream.c   |   13 ++++++++++++-
+ 3 files changed, 18 insertions(+), 1 deletions(-)
+
+commit 01bc22053d3c6a032c25f90cbff4a545dbe72b3d
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Oct 31 20:46:37 2008 +0100
+
+    JingleMediaRtp: signal error if media type is unrecognized
+
+ src/jingle-media-rtp.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit f7b7363fa403f9a9bc9c110e91c476f9aa67c40e
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Oct 31 20:45:57 2008 +0100
+
+    refactored and simplified content removal code
+
+ src/jingle-content.c |   10 ++++++--
+ src/jingle-content.h |    2 +-
+ src/jingle-session.c |   59 ++++++++++++++++++++++++++++++-------------------
+ 3 files changed, 44 insertions(+), 27 deletions(-)
+
+commit 0aba0cee128c020125e65b5181c7532d2c859a14
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Oct 31 17:22:49 2008 +0100
+
+    in functions taking format string and arguments, explicitly specify format string
+
+ src/error.c          |    2 +-
+ src/muc-channel.c    |    4 ++--
+ src/write-mgr-file.c |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
 commit 3a75959dc4e72632c340ebf7ba0e7cd5467c50da
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Fri Oct 31 13:03:40 2008 +0000
@@ -518,6 +1471,37 @@ Date:   Fri Oct 31 12:18:50 2008 +0000
 
  src/tube-stream.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 500fb5bf2803361954dcfa9afd07947e90125ccc
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Oct 31 10:05:02 2008 +0100
+
+    Updated gabble_jingle_session_send and callback prototypes to match the new code
+
+ src/jingle-session.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 36a241dbd1e22f0a049118d6874117e4f066b668
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Oct 31 10:02:22 2008 +0100
+
+    properly dispose of MediaStreams when content is removed or rejected
+
+ src/jingle-content.c |   77 ++++++++++++++++-------
+ src/jingle-content.h |    2 +-
+ src/jingle-session.c |  167 ++++++++++++++++++++++++++++++++++++++++---------
+ src/media-channel.c  |   25 +++++---
+ src/media-stream.c   |   17 +++++-
+ 5 files changed, 222 insertions(+), 66 deletions(-)
+
+commit 69afdf2ac76300e3c3764c954efe34f57fa86e16
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Oct 31 00:26:49 2008 +0100
+
+    change session timeout back to 60s and allow content-remove before session is accepted
+
+ src/jingle-session.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
 
 commit 51544bf01747e5a3cf4c23bd077ce8b3eba6b32e
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
@@ -694,6 +1678,72 @@ Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Tue Oct 28 11:20:42 2008 +0000
 
     Merge branch 'master' into alban-request-tube-channel
+
+commit 76948d58bc0838504a335e61cdb52bf08c8e9cc3
+Merge: 7ecd3f7... 119605c...
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Oct 27 22:30:29 2008 +0100
+
+    Merge commit 'upstream/master'
+
+commit 7ecd3f7b36caf0e0024990f075843294e7cce76f
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Oct 27 22:17:00 2008 +0100
+
+    Actually use the new Jingle dialect tests
+
+ tests/twisted/Makefile.am |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit e15168f9db97244bb5d2d9260b5dd5c948194c90
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Oct 27 22:15:14 2008 +0100
+
+    Added tests for incoming and outgoing calls in all supported Jingle dialects
+
+ tests/twisted/jingle/test-dialects-incoming.py |  128 ++++++++++++++++++++++
+ tests/twisted/jingle/test-dialects-outgoing.py |  139 ++++++++++++++++++++++++
+ 2 files changed, 267 insertions(+), 0 deletions(-)
+
+commit 95b437655d46dcd3865bb44fb44f5f7cd767d81d
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Oct 27 22:14:40 2008 +0100
+
+    Added new API and helper methods for writing cross-dialect Jingle tests
+
+ tests/twisted/jingle/jingletest2.py |  325 +++++++++++++++++++++++++++++++++++
+ 1 files changed, 325 insertions(+), 0 deletions(-)
+
+commit 0422ef98116fb40c82455196cf62abf8edb46484
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Oct 27 22:13:46 2008 +0100
+
+    Support for running multiple test functions inside one test
+
+ tests/twisted/gabbletest.py |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 51dda4b1cb2e2e35043ddfe3e68ec457df4530e7
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Oct 27 22:11:25 2008 +0100
+
+    Support for waiting for events that might have already happened and predicate functions to decide if we have a match.
+
+ tests/twisted/servicetest.py |   29 ++++++++++++++++++++++++++++-
+ 1 files changed, 28 insertions(+), 1 deletions(-)
+
+commit fa75d5e9e19ac446ca7ddefcd3edaf2dfcfa3e0b
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Oct 27 21:54:37 2008 +0100
+
+    Update namespaces for the current Jingle version
+
+ src/jingle-factory.h |    2 +-
+ src/jingle-session.c |    6 +++---
+ src/media-channel.c  |    2 +-
+ src/namespaces.h     |    5 ++---
+ src/presence-cache.c |    2 +-
+ 5 files changed, 8 insertions(+), 9 deletions(-)
 
 commit eca423530823a44864e2f8bc60a199e526861128
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
@@ -983,6 +2033,15 @@ Date:   Fri Oct 24 13:44:02 2008 +0100
 
  tests/twisted/text/test-text-no-body.py |   54 +++++++-----------------------
  1 files changed, 13 insertions(+), 41 deletions(-)
+
+commit aa78730ed377dde086ec02338bbf2d624d62bd6e
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Fri Oct 24 14:43:51 2008 +0200
+
+    allow multiple test runs inside one test script
+
+ tests/twisted/gabbletest.py |   25 +++++++++++++++++++++++--
+ 1 files changed, 23 insertions(+), 2 deletions(-)
 
 commit 64966b056932ced336692b3f9acf147c9ef6cbdb
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -1278,6 +2337,13 @@ Date:   Wed Oct 22 16:44:38 2008 +0100
 
     Merge commit 'upstream/master'
 
+commit 7241ed29190bea6c1f1ebc9169c66157fd761c4c
+Merge: 75eeaad... be0bec5...
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Wed Oct 22 16:55:14 2008 +0200
+
+    Merge commit 'upstream/master'
+
 commit 47a667ea7c0277fb8bdbc6b0e457b3cee0bd68da
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Oct 22 15:40:39 2008 +0100
@@ -1427,6 +2493,138 @@ Date:   Wed Sep 10 12:34:04 2008 +0100
 
  tests/twisted/tools/with-session-bus.sh |   13 ++++++++++++-
  1 files changed, 12 insertions(+), 1 deletions(-)
+
+commit 75eeaadc0d8a61d44599ad06be34bbcac7f201e3
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 16:35:49 2008 +0200
+
+    JingleSession: don't require explicit content senders for older dialects
+
+ src/jingle-content.c |   39 +++++++++++++++++++++++++--------------
+ 1 files changed, 25 insertions(+), 14 deletions(-)
+
+commit a22d2540250453841b95746f333e84c0b5e4c801
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 16:35:04 2008 +0200
+
+    JingleFactory: properly unregister message handler at disconnect
+
+ src/jingle-factory.c |   18 +++++++++++++-----
+ 1 files changed, 13 insertions(+), 5 deletions(-)
+
+commit dab5836ad05c90149a8c6d8a7a39449b6aa69a08
+Merge: f21b845... 10d4222...
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 15:24:55 2008 +0200
+
+    Merge commit 'senko/jingle'
+    
+    Conflicts:
+    
+    	src/connection.c
+    	src/connection.h
+    	src/media-channel.c
+    	src/media-factory.c
+    	src/media-session.c
+    	tests/twisted/jingle/test-incoming-call.py
+
+commit 10d4222dd53edf086f59fbe8b086913700bc51c3
+Merge: 872f88b... 30573b7...
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 09:15:56 2008 +0200
+
+    Merge commit 'wjt/jingle' into jingle
+
+commit 872f88baa9ac4666d02b0aefaf9809a7d59109bb
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 09:12:55 2008 +0200
+
+    code cleanup
+
+ src/jingle-media-rtp.c       |   55 +++++++++++++++++++++++-------------------
+ src/jingle-transport-iface.c |   10 +++++++
+ src/jingle-transport-iface.h |    2 +
+ 3 files changed, 42 insertions(+), 25 deletions(-)
+
+commit 8e2e60ff491b245a4151d1bb44f157351649f7eb
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 09:12:06 2008 +0200
+
+    JingleTransportGoogle: store remote candidates for later
+
+ src/jingle-transport-google.c |   44 +++++++++++++++++++++-------------------
+ 1 files changed, 23 insertions(+), 21 deletions(-)
+
+commit dd2280eb1b8b979e85c5e27a1e2e6058768e341e
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 09:11:43 2008 +0200
+
+    MediaFactory code cleanup
+
+ src/media-factory.c |   31 -------------------------------
+ 1 files changed, 0 insertions(+), 31 deletions(-)
+
+commit 2a356d5d17a333fba06046e15c275e364181c874
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 09:10:43 2008 +0200
+
+    Added missing content-reject action enum.
+
+ src/jingle-factory.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 9753aec97ac10301bce896d5bcdb8b86018e3a70
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 09:09:45 2008 +0200
+
+    Jingle twisted tests: added helper function for returning error to peer
+
+ tests/twisted/gabbletest.py |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 539db38c2df8031006c138ffc06a0c1a5d158a87
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 09:08:17 2008 +0200
+
+    MediaChannel code cleanup
+
+ src/media-channel.c |  167 +++++++++++++++++++++++++++-----------------------
+ 1 files changed, 90 insertions(+), 77 deletions(-)
+
+commit cae95e2cb1fe9081aec96908722cbe1e73081b86
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 09:05:55 2008 +0200
+
+    MediaStream code cleanup, support for stream directions
+
+ src/media-stream.c |  753 ++++++++--------------------------------------------
+ src/media-stream.h |    2 +
+ 2 files changed, 111 insertions(+), 644 deletions(-)
+
+commit 395ec06776338860ed6d3a8323890150a3c15c8a
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 09:04:19 2008 +0200
+
+    Actually commited half of the content-* related changes, thanks git
+
+ src/jingle-content.c |   77 +++++++--
+ src/jingle-content.h |    2 +
+ src/jingle-session.c |  439 +++++++++++++++++++++++++-------------------------
+ src/jingle-session.h |   10 +-
+ 4 files changed, 290 insertions(+), 238 deletions(-)
+
+commit ec0a42eb2ed7ad403d827c5c10e15cd775d24a98
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 21 09:01:16 2008 +0200
+
+    Fixed content-add/accept/remove, prepared twisted test to check behaviour of Request/Remove streams.
+
+ src/jingle-content.c                               |  132 +++++++++++++---
+ src/jingle-content.h                               |    1 +
+ src/jingle-session.c                               |   35 +++-
+ tests/twisted/Makefile.am                          |    1 +
+ .../twisted/jingle/test-content-adding-removal.py  |  170 ++++++++++++++++++++
+ 5 files changed, 309 insertions(+), 30 deletions(-)
 
 commit f21b84558b31f16c6f3f1bf0b36755ab5b88a8c0
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
@@ -2360,6 +3558,16 @@ Date:   Fri Oct 3 16:38:47 2008 +0100
  extensions/all.xml                            |    6 +-
  6 files changed, 201 insertions(+), 117 deletions(-)
 
+commit 30573b7d2006b2eaa608110c4c8e41eaeefce84e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Oct 15 19:13:29 2008 +0100
+
+    Coding style: if (foo != NULL) rather than if (foo) for pointer types
+
+ src/jingle-content.c |    4 ++--
+ src/jingle-session.c |   14 +++++++-------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
 commit 632201d716fc0bb8b2361dbe6a041e5e90d843cd
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Oct 15 14:25:44 2008 +0100
@@ -2369,6 +3577,25 @@ Date:   Wed Oct 15 14:25:44 2008 +0100
  NEWS         |    9 +++++++++
  configure.ac |    2 +-
  2 files changed, 10 insertions(+), 1 deletions(-)
+
+commit d7bbc30ad22f372bad323699ab4c5f449c85e32b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Oct 15 14:16:33 2008 +0100
+
+    Coding style: no newline after return type in function declarations
+
+ src/jingle-factory.c   |    5 ++---
+ src/jingle-media-rtp.c |    5 ++---
+ 2 files changed, 4 insertions(+), 6 deletions(-)
+
+commit 261a8cc1692e282c5cd6034034c10a2a3effbd9c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Oct 15 14:05:42 2008 +0100
+
+    JingleFactory: remove unused {Content,Transport}Maker typedefs
+
+ src/jingle-factory.h |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
 commit cfd8b6548270a85957d19a2766b5ea03a7152fd3
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -2597,6 +3824,106 @@ Date:   Tue Oct 14 15:05:32 2008 +0100
 
  src/disco.c |   10 +++-------
  1 files changed, 3 insertions(+), 7 deletions(-)
+
+commit 7f96b0627cb9e9d0215e8dc4642582b23800aa16
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Oct 14 15:51:48 2008 +0200
+
+    Simplified readiness-checking logic for contents, added support for content-add/accept, thus making the incoming/outgoing twisted tests work.
+
+ src/jingle-content.c                       |  140 ++++++++++++++++++++++------
+ src/jingle-content.h                       |    5 +-
+ src/jingle-media-rtp.c                     |    6 +-
+ src/jingle-session.c                       |   69 ++++++++++----
+ src/jingle-transport-google.c              |   15 ++-
+ src/media-channel.c                        |   10 ++-
+ src/media-stream.c                         |    2 +
+ tests/twisted/jingle/test-incoming-call.py |    2 +-
+ 8 files changed, 188 insertions(+), 61 deletions(-)
+
+commit c8df361154fb570ea6a7260ea03682598728b5bc
+Merge: 200043c... 2750609...
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Oct 13 19:37:19 2008 +0200
+
+    Merge commit 'wjt/jingle' into jingle
+
+commit 200043cee5f7261083c88107af72b727a56b4a70
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Oct 13 19:33:22 2008 +0200
+
+    making calls/tests working again after content addition/removal refactorization
+
+ src/jingle-content.c          |    5 +++--
+ src/jingle-session.c          |   23 ++++++++++++++++-------
+ src/jingle-transport-google.c |    6 ++++++
+ src/media-channel.c           |    2 +-
+ 4 files changed, 26 insertions(+), 10 deletions(-)
+
+commit 27506099847b093434ab942916fed1fded0bbc76
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Oct 13 18:12:38 2008 +0100
+
+    MediaStream: don't include media-session-enumtypes.h
+    
+    That file is no longer generated.
+
+ src/media-stream.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit ab32f148d7f87587d2f5fa3571a6bd7f72b8e5da
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Oct 13 17:40:53 2008 +0100
+
+    Fix a number of coding style violations.
+    
+    In particular:
+     - trim trailing spaces;
+     - function calls are written as foo () not foo();
+     - casts and pointer types are written as (Foo *) foo rather than
+       (Foo*)foo.
+
+ src/jingle-content.c           |    2 +-
+ src/jingle-description-iface.c |    4 ++--
+ src/jingle-factory.c           |    2 +-
+ src/jingle-media-rtp.c         |    2 +-
+ src/jingle-session.c           |   12 ++++++------
+ src/jingle-transport-google.c  |    2 +-
+ src/jingle-transport-iface.c   |    6 +++---
+ src/media-channel.c            |    4 ++--
+ 8 files changed, 17 insertions(+), 17 deletions(-)
+
+commit 731b4c20c0dd282430c73fe8100085c375cfa077
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Mon Oct 13 13:12:23 2008 +0200
+
+    bolted the new jingle engine onto gabble
+
+ src/Makefile.am                            |    6 +-
+ src/jingle-content.c                       |  216 ++-
+ src/jingle-content.h                       |   16 +-
+ src/jingle-factory.c                       |  222 ++-
+ src/jingle-factory.h                       |    7 +-
+ src/jingle-media-rtp.c                     |   57 +-
+ src/jingle-media-rtp.h                     |    3 +
+ src/jingle-session.c                       |  476 ++++-
+ src/jingle-session.h                       |   22 +-
+ src/jingle-transport-google.c              |  109 +-
+ src/jingle-transport-iface.c               |   10 +
+ src/jingle-transport-iface.h               |    2 +
+ src/media-channel.c                        |  942 ++++++----
+ src/media-channel.h                        |    1 -
+ src/media-factory.c                        |   24 +-
+ src/media-session.c                        | 2933 ----------------------------
+ src/media-session.h                        |  169 --
+ src/media-stream.c                         |  257 +++-
+ src/media-stream.h                         |   24 +-
+ src/namespaces.h                           |    3 +
+ src/presence-cache.c                       |    8 +
+ src/types.h                                |    6 +-
+ tests/twisted/jingle/jingletest.py         |    3 +-
+ tests/twisted/jingle/test-incoming-call.py |   12 +-
+ 24 files changed, 1809 insertions(+), 3719 deletions(-)
 
 commit 6c4b6ee204ed523a2f5b9d7b5f35f56e6a6aab35
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -3318,6 +4645,35 @@ Date:   Tue Sep 23 08:41:01 2008 +0100
  .gitignore |    1 +
  1 files changed, 1 insertions(+), 0 deletions(-)
 
+commit 7b31b2323fd3242e4cd5411db2ec3a5bfc8123aa
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Wed Sep 24 09:40:28 2008 +0200
+
+    Continuing work on new jingle engine.
+
+ src/Makefile.am                            |   10 +-
+ src/connection.c                           |    7 +
+ src/connection.h                           |    4 +
+ src/jingle-content.c                       |  297 +++++++++++++------
+ src/jingle-content.h                       |   14 +
+ src/jingle-factory.c                       |   84 ++++--
+ src/jingle-factory.h                       |   16 +-
+ src/jingle-media-rtp.c                     |  160 ++++-------
+ src/jingle-media-rtp.h                     |    6 +-
+ src/jingle-session.c                       |  290 ++++++++++++++-----
+ src/jingle-session.h                       |   13 +
+ src/jingle-transport-google.c              |  117 ++++----
+ src/jingle-transport-iface.c               |   37 ++-
+ src/jingle-transport-iface.h               |   12 +-
+ src/media-channel.c                        |  343 ++++++++++++++++++++--
+ src/media-factory.c                        |  440 ++--------------------------
+ src/media-stream.c                         |   66 ++++-
+ src/namespaces.h                           |    7 +
+ src/types.h                                |    8 +
+ tests/twisted/jingle/jingletest.py         |    3 +-
+ tests/twisted/jingle/test-incoming-call.py |   29 +-
+ 21 files changed, 1086 insertions(+), 877 deletions(-)
+
 commit e74ed7796239a32fc9ea5f6075dabe344a8243b3
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Tue Sep 23 15:27:59 2008 +0100
@@ -3514,6 +4870,50 @@ Date:   Thu Sep 18 18:57:24 2008 +0100
  tests/twisted/roster/request-never-answered.py |   53 ++++++++++++++++++++
  tests/twisted/test-group-race.py               |   62 ------------------------
  2 files changed, 53 insertions(+), 62 deletions(-)
+
+commit 9194777ca91fd8c227499e02f4f87af3a4a5c3ee
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Wed Sep 17 22:39:22 2008 +0200
+
+    Updated new jingle code to new file naming scheme without gabble- prefix
+
+ src/jingle-content.c           |    2 +-
+ src/jingle-content.h           |    2 +-
+ src/jingle-description-iface.c |    2 +-
+ src/jingle-description-iface.h |    2 +-
+ src/jingle-factory.c           |    2 +-
+ src/jingle-factory.h           |    2 +-
+ src/jingle-media-rtp.c         |    2 +-
+ src/jingle-media-rtp.h         |    2 +-
+ src/jingle-session.c           |    4 ++--
+ src/jingle-session.h           |    2 +-
+ src/jingle-transport-google.c  |    2 +-
+ src/jingle-transport-google.h  |    2 +-
+ src/jingle-transport-iface.c   |    2 +-
+ src/jingle-transport-iface.h   |    2 +-
+ 14 files changed, 15 insertions(+), 15 deletions(-)
+
+commit 565a5b196a1e006834446fbe4f57bd88636b68fe
+Author: Senko Rasic <senko@phyrexia.lan>
+Date:   Tue Sep 16 21:10:56 2008 +0200
+
+    first attempt at refactoring jingle signalling support into separate subsystem
+
+ src/jingle-content.c           |  435 ++++++++++++++++++
+ src/jingle-content.h           |   89 ++++
+ src/jingle-description-iface.c |  122 +++++
+ src/jingle-description-iface.h |   60 +++
+ src/jingle-factory.c           |  386 ++++++++++++++++
+ src/jingle-factory.h           |  143 ++++++
+ src/jingle-media-rtp.c         |  520 +++++++++++++++++++++
+ src/jingle-media-rtp.h         |   64 +++
+ src/jingle-session.c           |  976 ++++++++++++++++++++++++++++++++++++++++
+ src/jingle-session.h           |   72 +++
+ src/jingle-transport-google.c  |  548 ++++++++++++++++++++++
+ src/jingle-transport-google.h  |   62 +++
+ src/jingle-transport-iface.c   |  124 +++++
+ src/jingle-transport-iface.h   |   64 +++
+ 14 files changed, 3665 insertions(+), 0 deletions(-)
 
 commit e395af576278cc2b25f7507e85297066bd1c1f9d
 Author: Will Thompson <will.thompson@collabora.co.uk>
