@@ -35,17 +35,17 @@ or for testing/stable branches like debian-lenny:
     git checkout debian-lenny
     git-buildpackage -us -uc --git-debian-branch=debian-lenny
 
-The branch 'tarballs' is a copy of the contents of upstream tarballs. To import
+The branch 'upstream' is a copy of the contents of upstream tarballs. To import
 upstream tarballs use:
 
     git checkout debian
     git-import-orig ~/telepathy-gabble-0.7.x.tar.gz
 
-The branch 'debian-patches' is 'tarballs' plus any patches needed for Debian.
-It should be rebased on 'tarballs' after each upstream release:
+The branch 'debian-patches' is 'upstream' plus any patches needed for Debian.
+It should be rebased on 'upstream' after each upstream release:
 
     git checkout debian-patches
-    git rebase tarballs
+    git rebase upstream
 
 The preferred way of adding patches is to cherry pick from an upstream
 repository:
