@@ -58,6 +58,7 @@ TWISTED_TESTS = \
 	vcard/test-vcard-set-and-get.py \
 	jingle/hold-audio.py \
 	jingle/hold-av.py \
+	jingle/payload-types.py \
 	jingle/test-content-adding-removal.py \
 	jingle/test-incoming-call.py \
 	jingle/test-incoming-call-reject.py \
@@ -73,6 +74,7 @@ TWISTED_TESTS = \
 	test-capabilities.py \
 	test-caps-cache.py \
 	test-caps-hash.py \
+	test-caps-tubes.py \
 	connect/test-fail.py \
 	connect/test-success.py \
 	connect/test-twice.py \

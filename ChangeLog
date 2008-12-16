@@ -1,3 +1,414 @@
+commit b132d3b18df08c8fa1f76ef7972d31ef35e738f6
+Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
+Date:   Sun Dec 14 18:17:39 2008 +0000
+
+    Bump version to 0.7.17
+
+ configure.ac |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 9489c80b47db58418df840173ae683beb6e2be38
+Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
+Date:   Sun Dec 14 18:15:53 2008 +0000
+
+    NEWS for 0.7.17
+
+ NEWS |   22 +++++++++++++++++++---
+ 1 files changed, 19 insertions(+), 3 deletions(-)
+
+commit af4e417e36c0de3541dd3b9de6aa8e0ab949f3c2
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Dec 5 21:44:08 2008 +0100
+
+    jingle/test-incoming-call.py: make sure call is not autoaccepted
+
+ tests/twisted/jingle/test-incoming-call.py |   39 +++++++++++++++-------------
+ 1 files changed, 21 insertions(+), 18 deletions(-)
+
+commit 67583babb084978275d98f3eb3b480e1ff580a04
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Dec 5 20:37:06 2008 +0100
+
+    JingleSession: check that session was locally accepted
+
+ src/jingle-session.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit d0049920e231a370ca70f0329ee65feec07175de
+Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
+Date:   Sun Dec 14 16:58:33 2008 +0000
+
+    Update tube caps tests with new SHA1s for # URIs
+
+ tests/twisted/test-caps-tubes.py |   66 +++++++++++++++++++-------------------
+ 1 files changed, 33 insertions(+), 33 deletions(-)
+
+commit a14377abf7d1909b6c608cb2dd0e7789a64a88b7
+Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
+Date:   Sun Dec 14 01:09:45 2008 +0000
+
+    Update tubes capability docs for new URI
+
+ docs/tubes.xml |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 361575641a3132467e320a4484fea698ae3b935b
+Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
+Date:   Sat Dec 13 17:38:51 2008 +0000
+
+    Use # to concatenate service name to tubes caps URI
+    
+    Tweak tubes features to be like:
+     http://telepathy.freedesktop.org/xmpp/tubes/stream#rfb
+    Rather than:
+     http://telepathy.freedesktop.org/xmpp/tubes/stream/rfb
+    
+    So we can put something at the http:// URI that talks about the
+    protocol.
+
+ src/private-tubes-factory.c |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
+
+commit ab3bc9c6afc55e0fdac638926ee43cfb135925b9
+Merge: fce6ba1... 9b35aec...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Sun Dec 14 00:38:44 2008 +0000
+
+    Merge branch 'master' into alban-xmpp-spec-tube-caps
+
+commit 9b35aece13ee90005320996d962e1c8347a06e3b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Dec 11 16:30:40 2008 +0000
+
+    jingle/payload-types: remove debugging "print" statement
+
+ tests/twisted/jingle/payload-types.py |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 8bf370724f92aef0783cb1d15f1c2a39ca9986c4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Dec 11 16:30:25 2008 +0000
+
+    jingle/payload-types: define a MEDIA_STREAM_TYPE_AUDIO constant
+
+ tests/twisted/jingle/payload-types.py |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 938112a82bd147210fd75cd64161f4ea5e013975
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Dec 11 16:04:53 2008 +0000
+
+    Don't let stream die before getting initial codecs and candidates
+    
+    Constructing a GabbleMediaStream adds an idle callback to extract information
+    from its JingleContent only once the creator of the MediaStream has had a
+    chance to connect to its signals.  If the refcount of the MediaStream fell to
+    zero before that callback fired, it would crash.  So, the callback should ref
+    the stream.
+
+ src/media-stream.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 90a4466e35b2b20a28e0a321ef81f48478e64b47
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Dec 11 12:54:13 2008 +0000
+
+    Send codec parameters as <parameter/> tags.
+    
+    Fixes fd.o bug #18918
+
+ src/jingle-media-rtp.c |   37 +++++++++++++++++++++++++------------
+ 1 files changed, 25 insertions(+), 12 deletions(-)
+
+commit 53b46bbbef5300418b3e6b5b0753c87f5d43f9bb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Dec 11 12:53:58 2008 +0000
+
+    Add regression test for fd.o bug #18918
+
+ tests/twisted/Makefile.am             |    1 +
+ tests/twisted/jingle/jingletest.py    |   11 ++-
+ tests/twisted/jingle/payload-types.py |  149 +++++++++++++++++++++++++++++++++
+ 3 files changed, 160 insertions(+), 1 deletions(-)
+
+commit a8effdb85ca318d13c4e099a9704a29040094f2d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Dec 9 15:41:24 2008 +0000
+
+    Remove useless macro around o->priv.
+
+ src/jingle-media-rtp.c |   20 +++++++-------------
+ 1 files changed, 7 insertions(+), 13 deletions(-)
+
+commit 2c335975279f4482e280d4864dd5447cd68caef6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 14:07:50 2008 +0000
+
+    check_gadget_buddy: don't print debug message so we don't flood log with it each time we receive a presence
+
+ src/conn-olpc.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 2e7b72b164f3ef61f595783780e9429572170e39
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 11:29:21 2008 +0000
+
+    add generated m4 files to gitignore
+
+ .gitignore |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 69b516a5688c7c498a92e382a1215652c830b7fd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 11:28:44 2008 +0000
+
+    muc-channel: fix DEBUG msg
+
+ src/muc-channel.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit cd7a11c02867b83168b1a5e95e1c848dafa72375
+Merge: 5ec17d4... 6b4966a...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 11:28:10 2008 +0000
+
+    Merge branch 'master' into warning-crasher
+    
+    Conflicts:
+    
+    	src/media-stream.c
+
+commit 6b4966a8c756b725f162b206e0e57d185e44c166
+Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
+Date:   Mon Dec 8 15:38:05 2008 +0000
+
+    Fix auto-accepting MUC invites when changing presence
+    
+    The patch to send our presence to the MUC when we go away/etc was broken
+    because it sent a <presence> stanza to MUC channels we'd been invited to
+    but not actually accepted yet, which automatically accepted the invites.
+    This was cool because Empathy didn't actually have a way to accept the
+    invite, but when I got back from lunch people were confused why I'd
+    joined the chat with Away / Lunch and then not said anything. :)
+
+ src/muc-channel.c                        |    4 ++++
+ tests/twisted/muc/test-muc-invitation.py |   17 +++++++++++++++--
+ 2 files changed, 19 insertions(+), 2 deletions(-)
+
+commit 6e00506552117fd3566f074ed14b4d8d1c6ea12c
+Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
+Date:   Sun Dec 7 18:05:43 2008 +0000
+
+    Add tests/twisted/gabbleconfig.py to .gitignore.
+
+ .gitignore |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit fe89a500216dec57f24098551154f49c89a79b39
+Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
+Date:   Sun Dec 7 18:04:23 2008 +0000
+
+    Name the next release.
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit f8cf99589c5205ff11f47b11616405858316c9d2
+Merge: b2e9757... 1d060a2...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Dec 5 16:29:12 2008 +0000
+
+    Merge branch 'master' into alban-enhanced-caps-with-complex-types
+
+commit 1d060a217f21719780236b7d793898537b41cf07
+Merge: 6b88a52... 0900abe...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Dec 5 16:25:03 2008 +0000
+
+    Merge branch 'python-tests'
+
+commit b2e9757eee33fd74cc74d6a301145b2ac526b758
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Dec 5 16:23:47 2008 +0000
+
+    configure.ac: requires dbus-glib 0.78 (released 04 Dec 2008). It fixs the bug #17329. It is needed for the contact capabilities interface.
+
+ configure.ac |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 0900abec229667a1d12b2890c1f8bb016707c358
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Dec 5 16:15:51 2008 +0000
+
+    Twisted tests: check python has dbus support, and dbus.mainloop.glib
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b8c7374206ac718d1d41ab75df40f5932bab4280
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Dec 5 15:48:13 2008 +0000
+
+    Don't enable twisted tests if we don't have at least python 2.5.
+
+ configure.ac |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit b90bd2c2bb5a399783ff0193f543facb2dde8f02
+Merge: 11fdd81... 89252dd...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Dec 5 15:25:06 2008 +0000
+
+    Merge branch 'master' into alban-enhanced-caps-with-complex-types
+    
+    Conflicts:
+    
+    	src/connection.h
+
+commit 6b88a52846991cc2e0455a5a08b835a5de26dafc
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Dec 5 15:05:57 2008 +0000
+
+    muc-factory: remove fixed FIXME
+
+ src/muc-factory.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+commit 2b165e5f60d79c82f415b9a25eaa6862490d058c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Dec 5 14:59:28 2008 +0000
+
+    pass the requested property when creating muc-channel so text channels requested because of a tubes request have the right requested property (b.fd.o #18738)
+
+ src/muc-channel.c                                  |    8 +++-
+ src/muc-factory.c                                  |   16 +++++---
+ .../tubes/test-muc-offer-stream-tube-ibb.py        |   40 ++++++++++++++++++--
+ 3 files changed, 52 insertions(+), 12 deletions(-)
+
+commit ee5bf79f9ce0813ee04b52966d1ca1ca90a122cf
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Dec 5 14:25:56 2008 +0000
+
+    test-muc-offer-stream-tube-ibb.py: catch NewChannel signals
+
+ .../tubes/test-muc-offer-stream-tube-ibb.py        |   23 +++++++++++++++++--
+ 1 files changed, 20 insertions(+), 3 deletions(-)
+
+commit 89252dda5c729060db03b3af957c492d51a92a86
+Merge: e672a2c... 98ba9fa...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 4 21:37:07 2008 +0000
+
+    Merge branch 'dbus-dep'
+
+commit e672a2c22ba9bae664ef81e97a60e692dd44e0c3
+Author: Pierre-Luc Beaudoin <pierre-luc.beaudoin@collabora.co.uk>
+Date:   Thu Dec 4 15:00:07 2008 -0500
+
+    Fix typo: propeties
+
+ src/conn-olpc.c  |    2 +-
+ src/conn-olpc.h  |    2 +-
+ src/connection.c |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit b71b7e83c44c7c26cb71930e81d57870f4dc3c42
+Author: Pierre-Luc Beaudoin <pierre-luc.beaudoin@collabora.co.uk>
+Date:   Thu Dec 4 15:03:34 2008 -0500
+
+    Remove a def defined twice
+
+ src/presence-cache.c |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
+
+commit 98ba9fa6d5d8078550d4d555d05fcc419e8c5a7b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 4 17:43:28 2008 +0000
+
+    test-si-tubes.py: remove debug print
+
+ tests/twisted/tubes/test-si-tubes.py |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit bc35ab4d04a7e769880bb4ac3e656c0724870a94
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 4 17:42:45 2008 +0000
+
+    remove gabbleconfig.py.in
+
+ .gitignore                       |    1 -
+ configure.ac                     |    3 +--
+ tests/twisted/gabbleconfig.py.in |    4 ----
+ 3 files changed, 1 insertions(+), 7 deletions(-)
+
+commit fb137f7c84e3c16103703c07f100d9742db4ca4a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 4 17:39:40 2008 +0000
+
+    remove HAVE_DBUS_TUBES checks from twisted tests
+
+ tests/twisted/tubes/ensure-si-tube.py           |    2 --
+ tests/twisted/tubes/test-get-available-tubes.py |   12 +++---------
+ tests/twisted/tubes/test-muc-offer-dbus-tube.py |    5 +----
+ tests/twisted/tubes/test-si-tubes.py            |    8 --------
+ 4 files changed, 4 insertions(+), 23 deletions(-)
+
+commit 8664456cb4285307386ceb5680b4651723cac634
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 4 17:39:21 2008 +0000
+
+    always run D-Bus tubes tests
+
+ tests/Makefile.am |   11 ++---------
+ 1 files changed, 2 insertions(+), 9 deletions(-)
+
+commit 7121e86122314d9c356d336539febd4111836c9b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 4 17:38:56 2008 +0000
+
+    tubes-channel: always build D-Bus tube code
+
+ src/tubes-channel.c |   88 +--------------------------------------------------
+ 1 files changed, 1 insertions(+), 87 deletions(-)
+
+commit 9eea028c311fe57df3179287f2f534d0a89f0389
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 4 17:38:21 2008 +0000
+
+    always build tube-dbus
+
+ src/Makefile.am |    9 ++-------
+ 1 files changed, 2 insertions(+), 7 deletions(-)
+
+commit a0deb0fba1beb9920e31366417be4d79f9d3a994
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 4 17:37:58 2008 +0000
+
+    configure.ac: raise D-Bus dep to 1.1.0
+
+ configure.ac |   20 +-------------------
+ 1 files changed, 1 insertions(+), 19 deletions(-)
+
+commit 2d5c2310295377b737652ce2ce40dd0fdcf32160
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Dec 2 16:08:55 2008 +0100
+
+    Start 0.7.17 development
+
+ NEWS         |    9 +++++++++
+ configure.ac |    2 +-
+ 2 files changed, 10 insertions(+), 1 deletions(-)
+
+commit 4cc8385c370abdc4fdea510361743b5db750c7c6
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Dec 2 16:04:49 2008 +0100
+
+    Prepare release 0.7.16
+
+ NEWS         |   25 +++++++++++++++++++++++--
+ configure.ac |    4 ++--
+ 2 files changed, 25 insertions(+), 4 deletions(-)
+
 commit 3c664b9ce918b34d157082bb1df62cb9761cee4f
 Author: Senko Rasic <senko.rasic@collabora.co.uk>
 Date:   Mon Dec 1 20:01:05 2008 +0100
@@ -85,6 +496,91 @@ Date:   Thu Nov 27 18:46:55 2008 +0000
 
  src/roster.c |    9 +++++++--
  1 files changed, 7 insertions(+), 2 deletions(-)
+
+commit 11fdd8164e906f3dbe28588d8be418785b36bd99
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Nov 27 13:37:40 2008 +0000
+
+    Caps: fix prototype for gabble_caps_channel_manager_update_capabilities
+
+ src/caps-channel-manager.c  |    2 +-
+ src/caps-channel-manager.h  |    2 +-
+ src/private-tubes-factory.c |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit c4843b7a138113ea85b839fef5a3adc343560262
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Nov 19 12:55:41 2008 +0000
+
+    Update test-caps-tubes.py because ContactCapabilitiesChanged is plurialized
+
+ tests/twisted/test-caps-tubes.py |  119 +++++++++-----------------------------
+ 1 files changed, 27 insertions(+), 92 deletions(-)
+
+commit e60de8c4f061f910d6307c45482331fd5a7c89f3
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 18 20:43:57 2008 +0000
+
+    Caps: emit the plurialized version of CapChanged
+
+ src/connection.c |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+commit e67d54b60ab3b8925b5aca4251013f5aa2047788
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 18 20:36:25 2008 +0000
+
+    Caps: Use the type Requestable Channel Class
+
+ src/connection.c            |    2 +-
+ src/im-factory.c            |    5 +++--
+ src/private-tubes-factory.c |    4 ++--
+ 3 files changed, 6 insertions(+), 5 deletions(-)
+
+commit 4b2bce1fca7d278e86ee804da2ff2547001fcc88
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 18 20:25:36 2008 +0000
+
+    Add Requestable_Channel_Class in the list of external types used
+
+ extensions/all.xml |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 1f19ee2427ea167cfad2ffd5d305e443c3887429
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 18 20:18:57 2008 +0000
+
+    Add new caps specs from spec meeting Mon 17 Nov 2008
+
+ .../Connection_Interface_Contact_Capabilities.xml  |   86 +++++++++-----------
+ 1 files changed, 39 insertions(+), 47 deletions(-)
+
+commit 43f32e85786e3db622b82d931a987e7af86fcc92
+Merge: 653b291... 183766c...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 18 20:18:09 2008 +0000
+
+    Merge branch 'tubes-new-spec' into alban-enhanced-caps-with-complex-types
+
+commit 183766c57371b62e000c888eb9991e4d3fbfc39b
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 18 20:16:24 2008 +0000
+
+    Remove implementation of GetStreamTubeSocketAddress on org.freedesktop.Telepathy.Channel.Type.StreamTube
+
+ src/tube-stream.c |   19 -------------------
+ 1 files changed, 0 insertions(+), 19 deletions(-)
+
+commit 1021fe7d22371c600b136ceb8dbd04e6814ddf2f
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Nov 18 20:10:02 2008 +0000
+
+    Add new tube specs from spec meeting Mon 17 Nov 2008
+
+ extensions/Channel_Interface_Tube.xml   |   12 +++++--
+ extensions/Channel_Type_DBus_Tube.xml   |    8 ++--
+ extensions/Channel_Type_Stream_Tube.xml |   51 +++++++++----------------------
+ 3 files changed, 27 insertions(+), 44 deletions(-)
 
 commit 3210adff6637443fe265bd33d1ccc5aa29d0e783
 Author: Senko Rasic <senko.rasic@collabora.co.uk>
@@ -464,6 +960,67 @@ Date:   Tue Nov 11 12:45:49 2008 +0000
  src/tubes-channel.c |    4 +++-
  2 files changed, 6 insertions(+), 2 deletions(-)
 
+commit 653b2910ad26c10803a6067032bfc9514d988383
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 10 17:08:11 2008 +0000
+
+    src/private-tubes-factory.c: Fix: do not send the NewChannels signal twice
+
+ src/private-tubes-factory.c |   33 +++++++++++++++++++--------------
+ 1 files changed, 19 insertions(+), 14 deletions(-)
+
+commit 8fff72c033b79408296430745b18bdeac67c7846
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 10 16:51:54 2008 +0000
+
+    src/private-tubes-factory.c: English: "either, or"
+
+ src/private-tubes-factory.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 3b48d6c8c59bea9100f86dd152414d365543bd5d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 10 16:50:57 2008 +0000
+
+    src/private-tubes-factory.c: Better English, again
+
+ src/private-tubes-factory.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit d3bce54cd7ad2db173cafa4fc64b481424577264
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 10 16:49:36 2008 +0000
+
+    src/private-tubes-factory.c: Better english, thanks to Will
+
+ src/private-tubes-factory.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 6d7570da3c0a9455800eb7afb206fd8a6c19dd45
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 10 14:53:26 2008 +0000
+
+    src/connection.c: Use g_value_array_free to free enhanced capabilities
+
+ src/connection.c |    6 +-----
+ 1 files changed, 1 insertions(+), 5 deletions(-)
+
+commit 3d36c67c1fd89bf17f31f60471885455fb5455f8
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 10 14:53:08 2008 +0000
+
+    src/connection.c: Use g_value_array_free to free capabilities
+
+ src/connection.c |    6 +-----
+ 1 files changed, 1 insertions(+), 5 deletions(-)
+
+commit 76e37b75629cda586eab3fbfa2efef2e0824d95c
+Merge: 2a39510... 334a12f...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 10 12:28:23 2008 +0000
+
+    Merge branch 'master' into alban-enhanced-caps-with-complex-types
+
 commit fe77f6fa27c805b9aa0cbbc55e799553a1aaa5b0
 Merge: a646843... 334a12f...
 Author: Senko Rasic <senko@phyrexia.lan>
@@ -531,6 +1088,28 @@ Date:   Thu Nov 6 21:44:22 2008 +0100
  src/jingle-transport-iface.h  |    8 ++++++
  src/media-stream.c            |   42 ++++++++++++++++----------------
  7 files changed, 117 insertions(+), 74 deletions(-)
+
+commit 5ec17d486353ccfd2636874838c3ccd07d9bd3f0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Nov 6 17:25:33 2008 +0000
+
+    stop to use g_warning and use DEBUG instead
+
+ src/conn-aliasing.c  |    2 +-
+ src/media-stream.c   |    8 ++++----
+ src/muc-channel.c    |   44 ++++++++++++++++++++------------------------
+ src/presence-cache.c |    4 ++--
+ src/text-mixin.c     |    4 ++--
+ 5 files changed, 29 insertions(+), 33 deletions(-)
+
+commit fcd03d84cb87df45743aac7a26f27cdfd83cbb92
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Nov 6 17:16:35 2008 +0000
+
+    make warning crashers when running tests
+
+ tests/twisted/tools/exec-with-log.sh.in |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
 commit 334a12f82a4dc02a0418469f7aed217d9835a8fc
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -1134,6 +1713,13 @@ Date:   Tue Nov 4 09:56:53 2008 +0100
  src/jingle-transport-google.h |    4 +++-
  10 files changed, 20 insertions(+), 20 deletions(-)
 
+commit 2a395100c5f528ea81c3efd66d6c86abe81632da
+Merge: a968f76... 22876b3...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Nov 3 19:24:14 2008 +0000
+
+    Merge branch 'master' into alban-enhanced-caps-with-complex-types
+
 commit 22876b36e5e3fc97dc11d9b4d36b0813a46e4e1c
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Mon Nov 3 19:14:44 2008 +0000
@@ -1571,6 +2157,13 @@ Date:   Wed Oct 29 12:07:13 2008 +0000
  tests/README |   10 ++++++----
  1 files changed, 6 insertions(+), 4 deletions(-)
 
+commit a968f760d0d9ea3858279490def0767434b54a82
+Merge: 7f1dacd... 9faed8a...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Oct 28 15:15:38 2008 +0000
+
+    Merge branch 'alban-request-tube-channel' into alban-enhanced-caps-with-complex-types
+
 commit 9faed8a8675b5b466b4764c96c7bbabbf365aa41
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Tue Oct 28 15:07:57 2008 +0000
@@ -1642,6 +2235,17 @@ Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Oct 28 14:33:25 2008 +0000
 
     Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble
+
+commit 7f1dacd36aeb753a2e41988f6333c164b1c51965
+Merge: 2883f77... 4f5474e...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Oct 28 14:30:26 2008 +0000
+
+    Merge branch 'alban-request-tube-channel' into alban-enhanced-caps-with-complex-types
+    
+    Conflicts:
+    
+    	extensions/Channel_Interface_Tube.xml
 
 commit 0c605289189c7d9b9a439861c83d37388d4581ea
 Merge: 119605c... e9c43e0...
@@ -2053,12 +2657,46 @@ Date:   Fri Oct 24 13:23:00 2008 +0100
  tests/twisted/olpc/gadget-invite.py |    8 ++++++++
  2 files changed, 25 insertions(+), 0 deletions(-)
 
+commit 2883f77e1264733f9b22ec44c12e458226971660
+Merge: 593429c... 8697f4f...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Oct 23 16:48:20 2008 -0400
+
+    Merge branch 'alban-request-tube-channel' into alban-enhanced-caps-with-complex-types
+    
+    Conflicts:
+    
+    	src/presence-cache.h
+
 commit 8697f4f564f07fb6d7fc34de315cc5befc4b3d64
 Merge: 9114fd8... 299cf44...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Thu Oct 23 16:45:45 2008 -0400
 
     Merge branch 'master' into alban-request-tube-channel
+
+commit 593429c4db760773a29eb32d6f4b402dae10d7de
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Oct 23 16:16:45 2008 -0400
+
+    Fix previous conflict
+
+ src/private-tubes-factory.c |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
+
+commit 575591ff8b763bfc28b3ddf886e1161d70299005
+Merge: 8ea2ba6... 9114fd8...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Oct 23 16:16:29 2008 -0400
+
+    Merge branch 'alban-request-tube-channel' into alban-enhanced-caps-with-complex-types
+    
+    Conflicts:
+    
+    	extensions/Makefile.am
+    	src/private-tubes-factory.c
+    	src/tube-stream.c
+    	src/tubes-channel.h
 
 commit 9114fd8af48fd89d41eaa3854dbb38d022f4774c
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
@@ -2330,6 +2968,13 @@ Date:   Wed Oct 22 16:45:59 2008 -0400
     	src/private-tubes-factory.c
     	tests/twisted/tubes/test-si-tubes.py
 
+commit fce6ba1a6a5e36e5d201efc28dc4ff0ca0d87212
+Merge: d7a3f90... b74b501...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Oct 22 15:52:02 2008 -0400
+
+    Merge branch 'master' into alban-xmpp-spec-tube-caps
+
 commit b74b5012b8762b13761b24f75f616043ff1220f9
 Merge: 47a667e... be0bec5...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -2450,6 +3095,13 @@ Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Oct 22 12:31:08 2008 +0100
 
     Merge branch 'ns'
+
+commit 8ea2ba6eecb69144ff53f228859027289e940123
+Merge: 6736fcc... 8a24c91...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Oct 21 11:43:24 2008 -0400
+
+    Merge branch 'master' into alban-enhanced-caps-with-complex-types
 
 commit 051770cc8dac058b4519b117304d0c1fac4be069
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
@@ -2626,6 +3278,13 @@ Date:   Tue Oct 21 09:01:16 2008 +0200
  .../twisted/jingle/test-content-adding-removal.py  |  170 ++++++++++++++++++++
  5 files changed, 309 insertions(+), 30 deletions(-)
 
+commit 6736fcc525d7a2e27a0bfa66881ae3dede53dfdf
+Merge: 16f7a8d... f21b845...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 20 12:28:47 2008 -0400
+
+    Merge branch 'master' into alban-enhanced-caps-with-complex-types
+
 commit f21b84558b31f16c6f3f1bf0b36755ab5b88a8c0
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Mon Oct 20 12:20:10 2008 -0400
@@ -2797,6 +3456,31 @@ Date:   Mon Oct 20 11:18:45 2008 +0100
  tests/twisted/ns.py |   10 ++++++++++
  1 files changed, 10 insertions(+), 0 deletions(-)
 
+commit 16f7a8d516624356bdc19144903b814b90abd8eb
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 17 18:06:28 2008 -0400
+
+    Fix test: do not use a variable before its initialisation
+
+ tests/twisted/tubes/test-si-tubes.py |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit c6fc8d6c6f7c2e0235a8176cc81e3904313f6f7f
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 17 18:05:51 2008 -0400
+
+    Add the allowed property .TargetID in the channel classes Tubes and DBusTube
+
+ src/private-tubes-factory.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit f2ff7025de6acde996925938ab4ac20bf5a8c7e7
+Merge: f5494d0... a4a4577...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 17 17:54:00 2008 -0400
+
+    Merge branch 'alban-trivial' into alban-enhanced-caps-with-complex-types
+
 commit a4a45774a359624a98857b3e2d93e10f9c51eec2
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Fri Oct 17 17:50:14 2008 -0400
@@ -2813,6 +3497,31 @@ Date:   Fri Oct 17 17:50:14 2008 -0400
  src/tube-dbus.c |    6 +++++-
  1 files changed, 5 insertions(+), 1 deletions(-)
 
+commit f5494d060f8f5d22e1c569ae31be5cbd42883f81
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 17 16:05:42 2008 -0400
+
+    src/tube-stream.c: Move some properties from Channel.FUTURE to Channel because the future is today
+
+ src/tube-stream.c |   18 ++++--------------
+ 1 files changed, 4 insertions(+), 14 deletions(-)
+
+commit e0181be928bcc83a44b17c2652f7f45e1e781ec8
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 17 15:50:42 2008 -0400
+
+    The new OLPC Gadget channel manager implements the GABBLE_TYPE_CAPS_CHANNEL_MANAGER
+
+ src/olpc-gadget-manager.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 956f207c43efcfc51d48d67488811a17849cc2cc
+Merge: 8e388d7... 595b855...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 17 15:43:36 2008 -0400
+
+    Merge commit '595b8556084bc5e2a271f1f8ebff106a47763813' into alban-enhanced-caps-with-complex-types
+
 commit 595b8556084bc5e2a271f1f8ebff106a47763813
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Fri Oct 17 15:37:45 2008 -0400
@@ -2821,6 +3530,30 @@ Date:   Fri Oct 17 15:37:45 2008 -0400
 
  src/util.c |    3 ++-
  1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 8e388d74e69ae0190ad2986dcc45d61a4aeb6979
+Merge: 1ccaf87... 5cd2a90...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 17 15:20:56 2008 -0400
+
+    Merge branch 'master' into alban-enhanced-caps-with-complex-types
+    
+    Conflicts:
+    
+    	src/im-factory.c
+    	src/media-factory.c
+    	src/private-tubes-factory.c
+    	tests/twisted/tubes/test-si-tubes.py
+
+commit 1ccaf87c180f709329822bf988cd1ad539270b97
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Oct 17 14:57:05 2008 -0400
+
+    Fix strict-aliasing warnings, and remove excessive usage of casts
+
+ src/capabilities.c          |    7 ++++---
+ src/private-tubes-factory.c |   34 +++++++++++++++++-----------------
+ 2 files changed, 21 insertions(+), 20 deletions(-)
 
 commit 5cd2a90c449fd4938f9a997c858e20e765628b03
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -4022,6 +4755,47 @@ Date:   Fri Oct 10 11:29:22 2008 +0100
  tests/twisted/tubes/test-si-tubes.py  |    4 +++-
  5 files changed, 9 insertions(+), 2 deletions(-)
 
+commit 7cea676b629f8302c12f5571ab2b5b2ae2789212
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Oct 8 14:38:33 2008 +0100
+
+    Capabilities: Fix a leak
+
+ src/capabilities.h          |    2 +-
+ src/presence-cache.c        |    2 ++
+ src/private-tubes-factory.c |   26 ++++++++++++++++++++------
+ 3 files changed, 23 insertions(+), 7 deletions(-)
+
+commit 6971f458ad0816e40807549202d8a4ffe58b72aa
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Oct 8 11:30:59 2008 +0100
+
+    Stop using the workaround for bug #17329
+    
+    - Update the spec in extensions/:
+    There was a bug in dbus-glib that prevent to use the right type:
+    Instead of a{ua(a{sv}as)}, we used a(ua{sv}as) as a workaround.
+    See http://bugs.freedesktop.org/show_bug.cgi?id=17329
+    Now there is a fix, so we don't use the workaround anymore.
+    
+    - Update the implementation for the new spec
+    
+    - Update the unit test
+
+ .../Connection_Interface_Contact_Capabilities.xml  |   46 ++++--
+ src/connection.c                                   |   14 +-
+ src/im-factory.c                                   |    5 +-
+ src/private-tubes-factory.c                        |    5 +-
+ tests/twisted/test-caps-tubes.py                   |  176 ++++++++++----------
+ 5 files changed, 136 insertions(+), 110 deletions(-)
+
+commit 924abfeee339dbb497c73abac85754ee46ddda5b
+Merge: 0872440... 6a49b76...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Oct 6 18:50:06 2008 +0100
+
+    Merge branch 'master' into alban-enhanced-caps-merging-attempt
+
 commit 6a49b768eaa42b5dc0ceac875a4a9ecfc380c8d5
 Merge: 0a6a0ad... 49024ff...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -4119,12 +4893,73 @@ Date:   Tue Sep 30 17:35:42 2008 +0100
  src/muc-channel.c |    4 ----
  1 files changed, 0 insertions(+), 4 deletions(-)
 
+commit 0872440a60baf94f66d706b4b93878b43a3f009a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 30 15:14:24 2008 +0100
+
+    Update extensions/Channel_Interface_Tube.xml
+
+ extensions/Channel_Interface_Tube.xml |   30 +++++++++++++++++++-----------
+ 1 files changed, 19 insertions(+), 11 deletions(-)
+
+commit 82bdb734efa737e9339ff6f023850da18751f16b
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 30 14:43:25 2008 +0100
+
+    Use the "channel manager" terminology everywhere instead of "channel factory"
+
+ src/capabilities.c          |    6 ++--
+ src/capabilities.h          |    2 +-
+ src/caps-hash.c             |    2 +-
+ src/connection.c            |   18 +++++++-------
+ src/im-factory.c            |    2 +-
+ src/media-factory.c         |    2 +-
+ src/presence-cache.c        |   56 +++++++++++++++++++++---------------------
+ src/presence-cache.h        |    8 +++---
+ src/presence.c              |   56 +++++++++++++++++++++---------------------
+ src/presence.h              |    4 +-
+ src/private-tubes-factory.c |   14 +++++-----
+ 11 files changed, 85 insertions(+), 85 deletions(-)
+
 commit e40172c623ed0458faac01f8545a8edd7621d1bd
 Merge: d1d2756... 2a4dbfc...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Sep 30 14:33:24 2008 +0100
 
     Merge branch 'tests'
+
+commit 21749ae8b6101139321952561052159f511d73e7
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 30 14:31:18 2008 +0100
+
+    Add some documentation on gabble_presence_cache_{free,copy,update}_cache_entry
+
+ src/presence-cache.h |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit 36bb9091ee2cf7c78b0a3b1e56fbe02e28d4168c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 30 14:26:59 2008 +0100
+
+    Factorise code in gabble_free_enhanced_contact_capabilities (GPtrArray *)
+
+ src/connection.c |   39 ++++++++++++++++++---------------------
+ 1 files changed, 18 insertions(+), 21 deletions(-)
+
+commit 5690d5e3c7b549fa39a0cbda0329192c04f11813
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 30 14:05:48 2008 +0100
+
+    Every Channel Managers must now implement the GABBLE_CAPS_CHANNEL_MANAGER interface.
+
+ src/connection.c       |   16 ++++++----------
+ src/im-factory.c       |    1 -
+ src/media-factory.c    |    4 +++-
+ src/muc-factory.c      |    4 +++-
+ src/presence-cache.c   |    5 ++---
+ src/roomlist-manager.c |    4 +++-
+ src/roster.c           |    4 +++-
+ 7 files changed, 20 insertions(+), 18 deletions(-)
 
 commit 2a4dbfcee2db6fa5a3e25da17edcc062f985c0dc
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -4161,6 +4996,17 @@ Date:   Mon Sep 29 18:25:26 2008 +0100
 
  .gitignore |    1 +
  1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit ac19d9f77b844aabf17485466b2042c1601f7dd5
+Merge: b4c4d84... d1d2756...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 30 10:58:24 2008 +0100
+
+    Merge branch 'master' into alban-enhanced-caps-merging-attempt
+    
+    Conflicts:
+    
+    	extensions/Makefile.am
 
 commit d1d2756d86a69ea252f0efa0ff267b57acd98036
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -4277,6 +5123,27 @@ Date:   Fri Sep 26 20:15:06 2008 +0100
     Conflicts:
     
     	tests/twisted/Makefile.am
+
+commit b4c4d8409adfd03b84ac0a9c14717653575f55d5
+Merge: 144baeb... 2c97b3b...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Sep 26 20:03:55 2008 +0100
+
+    Merge branch 'master' into alban-enhanced-caps-merging-attempt
+    
+    Conflicts:
+    
+    	extensions/all.xml
+    	src/connection.c
+
+commit 144baeb3471470315a7555f12febd9d3620288b8
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Sep 26 19:37:48 2008 +0100
+
+    Fix a leak in gabble_connection_set_self_capabilities(). Thanks wjt who spotted it.
+
+ src/connection.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
 commit 2c97b3b81fcb36515f3f99319dd909ece80db46b
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -4447,6 +5314,15 @@ Date:   Thu Sep 25 17:58:43 2008 +0100
  tests/twisted/Makefile.am             |    1 +
  tests/twisted/tubes/ensure-si-tube.py |  167 +++++++++++++++++++++++++++++++++
  3 files changed, 181 insertions(+), 0 deletions(-)
+
+commit c2ba510621a3d64a4bc98ce9c27221a0b68e041e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Sep 25 17:42:58 2008 +0100
+
+    Tube tests: check the Channel.Interface.Tube.Status property
+
+ tests/twisted/tubes/test-si-tubes.py |   16 ++++++++++++++--
+ 1 files changed, 14 insertions(+), 2 deletions(-)
 
 commit b934503c1ee9d878bd19fdae3a36ff66ffa693b2
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -4624,6 +5500,34 @@ Date:   Thu Sep 25 11:14:33 2008 +0100
     	src/conn-olpc.c
     	src/connection.c
 
+commit 87f15020f84a3ab1b28724ec2e05a488a142e4e6
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Sep 24 12:36:58 2008 +0100
+
+    Tubes test: test channel properties: factorise the code
+
+ tests/twisted/tubes/test-si-tubes.py |  121 ++++++++++++++++------------------
+ 1 files changed, 56 insertions(+), 65 deletions(-)
+
+commit 31d366b44b96999e722f741348d68a1c9c385a7b
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Sep 24 12:10:00 2008 +0100
+
+    Test tube requestotron: check RequestableChannelClasses, check that requests with unknown properties are rejected, and check that requests which missing properties are rejected too.
+
+ tests/twisted/tubes/test-si-tubes.py |   40 ++++++++++++++++++++++------------
+ 1 files changed, 26 insertions(+), 14 deletions(-)
+
+commit d06ea68d0e0186d380d24f9865012b6cdd4ba0dd
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Sep 24 12:07:35 2008 +0100
+
+    Tubes requestotron: Advertise the right RequestableChannelClasses for tubes, and strongly check properties in CreateChannel/RequestChannel.
+
+ src/private-tubes-factory.c |   80 ++++++++++++++++++++++++++++++++++++------
+ src/tubes-channel.c         |    4 ++
+ 2 files changed, 72 insertions(+), 12 deletions(-)
+
 commit 7d0652e32f21e8682b4558759841b2bed20cb557
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Wed Sep 24 11:28:23 2008 +0100
@@ -4674,6 +5578,36 @@ Date:   Wed Sep 24 09:40:28 2008 +0200
  tests/twisted/jingle/test-incoming-call.py |   29 +-
  21 files changed, 1086 insertions(+), 877 deletions(-)
 
+commit d4323f926eb4fff772c678d5cbc1077fc2d762e0
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 23 19:26:36 2008 +0100
+
+    test-si-tubes.py: Factorise code
+    
+     test-si-tubes.py |  126 ++++++++++++++++++++++++-------------------------------
+     1 file changed, 55 insertions(+), 71 deletions(-)
+
+ tests/twisted/tubes/test-si-tubes.py |  126 +++++++++++++++-------------------
+ 1 files changed, 55 insertions(+), 71 deletions(-)
+
+commit ff64f3f26a9eee5d2721ba26ed641f39a46c294f
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 23 18:42:32 2008 +0100
+
+    src/private-tubes-factory.c: Remove the old "channel factory" code. Now it is a channel manager thanks to TpChannelManager
+
+ src/private-tubes-factory.c |   56 ++++++++++--------------------------------
+ 1 files changed, 14 insertions(+), 42 deletions(-)
+
+commit f98662091871d7e59ce00c29d91e270617bc0448
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 23 18:41:36 2008 +0100
+
+    Test test-si-tubes.py: better comment for the NewChannels signal (no change in the code)
+
+ tests/twisted/tubes/test-si-tubes.py |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
 commit e74ed7796239a32fc9ea5f6075dabe344a8243b3
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Tue Sep 23 15:27:59 2008 +0100
@@ -4692,6 +5626,13 @@ Date:   Tue Sep 23 12:22:16 2008 +0100
 
  src/media-factory.c |   99 +++++++++++++++++++++++++++++++++++++++------------
  1 files changed, 76 insertions(+), 23 deletions(-)
+
+commit 10ba609ada73ab2185f4a5f5ff4416f259d224f1
+Merge: f4e1306... 8054460...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 23 11:28:43 2008 +0100
+
+    Merge branch 'master' into alban-enhanced-caps-merging-attempt
 
 commit 8054460868a54d6cca6d6e4d73fa2522ffdfeab8
 Merge: 129896a... 04ce81b...
@@ -4760,6 +5701,27 @@ Date:   Mon Sep 22 18:05:34 2008 +0100
  tests/twisted/roster/request-never-answered.py     |   53 ------------------
  5 files changed, 114 insertions(+), 114 deletions(-)
 
+commit f4e130653906587f21bd8f2b57432781a739f3ed
+Merge: 172a017... 53cf2b0...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 22 18:14:48 2008 +0100
+
+    Merge commit 'wjt/wjt-enhanced-caps-merged-again' into alban-enhanced-caps-merging-attempt
+
+commit 172a017fb58d5bbb8d60ed754e1ec30b3addb048
+Merge: d031ab0... 33fd627...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 22 18:04:02 2008 +0100
+
+    Merge commit 'wjt/requestotron' into alban-enhanced-caps-merging-attempt
+
+commit d031ab053b13692745fdc9206663bdf6ea2208d6
+Merge: ffb437b... 129896a...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 22 17:54:57 2008 +0100
+
+    Merge branch 'master' into alban-enhanced-caps-merging-attempt
+
 commit 129896a3bfdb4059accaa6241c390f02bc75f5ef
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Fri Sep 19 17:07:41 2008 +0100
@@ -4783,12 +5745,38 @@ Date:   Fri Sep 19 17:29:46 2008 +0100
  src/tubes-channel.c    |    2 +-
  6 files changed, 6 insertions(+), 6 deletions(-)
 
+commit 53cf2b0af1924ab2794be5349168f6107789f80b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Sep 19 17:18:55 2008 +0100
+
+    private tubes: include StreamTube.Service and Tube.Parameters in allowed
+
+ src/private-tubes-factory.c          |    2 ++
+ tests/twisted/tubes/test-si-tubes.py |   14 ++++++++++----
+ 2 files changed, 12 insertions(+), 4 deletions(-)
+
+commit 5db8d8b1c2e87e8328b363d830dbcf37511ea232
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Sep 19 17:18:33 2008 +0100
+
+    Remove .DRAFT from Requests interface name in a new test
+
+ tests/twisted/tubes/test-si-tubes.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
 commit 4a56e5804bdf78a6b693928a3c8d60cf1dc0015f
 Merge: d74f367... fd3cf54...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Fri Sep 19 17:00:05 2008 +0100
 
     Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble
+
+commit c752ca83c17f9c977925dd7ce3c7b45a97504ae7
+Merge: ffb437b... afc3146...
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Sep 19 16:36:51 2008 +0100
+
+    Merge branch 'requestotron' into alban-enhanced-caps-merging-attempt
 
 commit afc31469a2b4034534eb839bb3410ece5693693b
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -4963,6 +5951,131 @@ Date:   Mon Sep 15 19:03:06 2008 +0100
  tests/twisted/tubes/test-si-tubes.py        |    4 ++--
  3 files changed, 7 insertions(+), 7 deletions(-)
 
+commit ffb437b5d45039e2dc8e7d47cf4a125997675c7c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 15 16:40:44 2008 +0100
+
+    Update spec in extensions/: Contact capabilities
+
+ .../Connection_Interface_Contact_Capabilities.xml  |   30 +++++++++++--------
+ 1 files changed, 17 insertions(+), 13 deletions(-)
+
+commit d06e2888960feb51a0c5daf6067701428bfe141c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 15 16:40:31 2008 +0100
+
+    Update spec in extensions/: tubes
+
+ extensions/Channel_Interface_Tube.xml   |   35 +++++++++++++++++++++---------
+ extensions/Channel_Type_DBus_Tube.xml   |   16 ++++++++------
+ extensions/Channel_Type_Stream_Tube.xml |   20 ++++++++++-------
+ 3 files changed, 45 insertions(+), 26 deletions(-)
+
+commit c19b3b26eba77451576f2f21fdb4e65650d6c09d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 15 16:39:55 2008 +0100
+
+    Update spec in extensions/: Channel_Bundle and Channel_Future
+
+ extensions/Channel_Bundle.xml |    4 ++--
+ extensions/Channel_Future.xml |   25 +++++++++++++++----------
+ 2 files changed, 17 insertions(+), 12 deletions(-)
+
+commit 08459dd4d4a97743a73dd15589f5d30fa560e516
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 15 14:43:44 2008 +0100
+
+    src/private-tubes-factory.c: Better explanation for TubesCapabilities
+
+ src/private-tubes-factory.c |   27 ++++++++++++++++++++-------
+ 1 files changed, 20 insertions(+), 7 deletions(-)
+
+commit d15a5ebfdf016da58b34e9620b51cf86fa449e60
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 15 13:18:03 2008 +0100
+
+    Update function names specific_cache -> cache_entry
+
+ src/connection.c     |    2 +-
+ src/presence-cache.c |   38 +++++++++++++++++++-------------------
+ src/presence-cache.h |    6 +++---
+ src/presence.c       |   16 ++++++++--------
+ 4 files changed, 31 insertions(+), 31 deletions(-)
+
+commit ff71debb4fc9bfefad5ef30ef167873ed549cf9a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 15 13:02:14 2008 +0100
+
+    src/presence-cache.c: add documentation for CapabilityInfo::per_channel_factory_caps
+
+ src/presence-cache.c |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
+
+commit 5e347236e8d56ea828db4c80256e6c6847101fdb
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 15 13:01:51 2008 +0100
+
+    src/connection.c: Fix a leak
+
+ src/connection.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+commit f7d58bcc7b691b2130909c7c31781d8d8d33aafa
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 15 12:06:14 2008 +0100
+
+    connection.c: Fix bogus documentation
+
+ src/connection.c |   12 ------------
+ 1 files changed, 0 insertions(+), 12 deletions(-)
+
+commit bf3a4804aa95cc202a833046e302242bd3bfa224
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 15 12:01:51 2008 +0100
+
+    connection.c: use TpHandle instead of guint
+
+ src/connection.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 0ab709c402f11c666919114f7c93e1f11ff54ab7
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 15 11:50:19 2008 +0100
+
+    Typo: s/enhenced/enhanced/
+
+ src/connection.c     |    8 ++++----
+ src/presence-cache.c |   26 +++++++++++++-------------
+ 2 files changed, 17 insertions(+), 17 deletions(-)
+
+commit 750ee7b9a9801fa5d81295f546b24a046c50a54f
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Sep 12 15:18:38 2008 +0100
+
+    caps-channel-manager.c: add assert: update_capabilities cannot be called on channel manager that does not implement the caps interface
+
+ src/caps-channel-manager.c |    8 +++-----
+ 1 files changed, 3 insertions(+), 5 deletions(-)
+
+commit fe1c107eb10da544e84e21010d5adc54f296fab1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Sep 12 12:36:36 2008 +0100
+
+    Use TpChannelManagerIter to iterate over channel managers.
+
+ src/connection.c     |   25 ++++++++++++++-----------
+ src/presence-cache.c |    9 ++++++---
+ 2 files changed, 20 insertions(+), 14 deletions(-)
+
+commit 3646db92832a4d0c877128e1b1683aa74e88149a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Sep 12 12:35:25 2008 +0100
+
+    struct _GabbleConnection: remove fields for requestotron, obsoleted by merging wjt/requestotron
+
+ src/connection.h |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
+
 commit fd3cf5450657797f55d8d09dfb7677ba1579fb25
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   Fri Sep 12 12:08:57 2008 +0100
@@ -4974,6 +6087,415 @@ Date:   Fri Sep 12 12:08:57 2008 +0100
  tests/twisted/Makefile.am                         |    1 +
  tests/twisted/roster/test-save-alias-to-roster.py |   76 +++++++++++++++++++++
  2 files changed, 77 insertions(+), 0 deletions(-)
+
+commit 29513ffe39228422cdf3a39e0fbb05fdd915ef48
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Sep 12 11:54:19 2008 +0100
+
+    Fix merge issues after merging wjt/requestotron
+
+ extensions/all.xml          |    4 ++++
+ src/capabilities.c          |    2 +-
+ src/caps-channel-manager.c  |    5 ++---
+ src/caps-channel-manager.h  |    2 +-
+ src/im-factory.c            |    1 -
+ src/presence-cache.c        |    2 +-
+ src/presence.c              |    2 +-
+ src/private-tubes-factory.c |   16 +++++++---------
+ src/tube-stream.c           |    6 +++---
+ src/tubes-channel.c         |    6 +++---
+ src/tubes-channel.h         |    4 ++--
+ 11 files changed, 25 insertions(+), 25 deletions(-)
+
+commit b80beaf86216ae83b77256171613f727a618b5d3
+Merge: f4d0efc... e6f08ae...
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Sep 12 11:53:34 2008 +0100
+
+    Merge commit 'wjt/requestotron' into alban-enhanced-caps-merging-attempt
+    
+    Conflicts:
+    
+    	src/Makefile.am
+    	src/im-factory.c
+    	src/private-tubes-factory.c
+
+commit f4d0efcf4aaa382776e136dcf5256b6fdccf46ac
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Sep 11 16:42:06 2008 +0100
+
+    Remove useless diffs that should not be in this branch
+
+ src/channel-manager.c |    1 +
+ src/channel-manager.h |    3 ---
+ 2 files changed, 1 insertions(+), 3 deletions(-)
+
+commit fefe0cf2c1ae02c3a46feb03358d444d3265c09b
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Sep 11 16:07:07 2008 +0100
+
+    private-tubes-factory.c: Fix gabble_private_tubes_factory_update_caps: do not call tp_g_hash_table_update with source == target
+
+ src/private-tubes-factory.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit c7f47c36389ad42a47987d164f0923d0ad4aaebf
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Sep 11 15:30:50 2008 +0100
+
+    Proper cast to fix GLib-GObject-WARNING and im-factory.c implements GabbleCapsChannelManager correctly
+
+ src/connection.c     |   26 +++++++++++++++-----------
+ src/im-factory.c     |    6 +++---
+ src/presence-cache.c |   12 ++++++++----
+ 3 files changed, 26 insertions(+), 18 deletions(-)
+
+commit 7024b72ca3b8bbdde97b28adb56ff97a95a57024
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Sep 11 14:56:14 2008 +0100
+
+    Split GabbleChannelManager in 2 parts: GabbleChannelManager (will become TpChannelManager in tp-glib) and GabbleCapsChannelManager (will stay in tp-gabble)
+
+ src/Makefile.am             |    2 +
+ src/capabilities.c          |   10 ++-
+ src/caps-channel-manager.c  |  194 +++++++++++++++++++++++++++++++++++++++++++
+ src/caps-channel-manager.h  |  140 +++++++++++++++++++++++++++++++
+ src/channel-manager.c       |  130 -----------------------------
+ src/channel-manager.h       |   75 -----------------
+ src/connection.c            |   23 ++++--
+ src/im-factory.c            |   16 +++-
+ src/presence-cache.c        |   19 ++--
+ src/private-tubes-factory.c |   52 +++++++-----
+ 10 files changed, 415 insertions(+), 246 deletions(-)
+
+commit f7c6faa3307a8519436f004550df287c6f76d2b6
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Sep 11 13:40:08 2008 +0100
+
+    src/presence.c: coding style: remove trailing spaces
+
+ src/presence.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 34f4ae59554b4db180f2235d9941012b69eec26f
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Sep 11 13:39:02 2008 +0100
+
+    Fix warnings by using the right cast
+
+ src/capabilities.c          |    3 ++-
+ src/private-tubes-factory.c |   30 ++++++++++++++++++------------
+ 2 files changed, 20 insertions(+), 13 deletions(-)
+
+commit ac0c0963c67b2ebf0e8e33e8379afdb195c682c3
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 9 17:58:52 2008 +0100
+
+    Comment virtual methods on GabbleChannelManager iface
+
+ src/channel-manager.h |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit a42fe375fe5b1ec46941893118eaf6e26d2c72fc
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Sep 8 13:48:34 2008 +0100
+
+    src/private-tubes-factory.c: fix a leak
+
+ src/private-tubes-factory.c |   24 +++++++++++++++---------
+ 1 files changed, 15 insertions(+), 9 deletions(-)
+
+commit 683b68b8226119c1d8d10ffe181af6dc4b785c12
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Sep 5 15:45:28 2008 +0100
+
+    Update the spec in extensions/ to remove possible errors on GetContactCapabilities
+
+ .../Connection_Interface_Contact_Capabilities.xml  |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 8e69567116086f50bb91853c98cb84a3a1c2c82c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Sep 5 15:22:36 2008 +0100
+
+    Update the ContactCapabilities spec in extensions/, finish the implementation of caps advertisement, write a full twisted test
+
+ .../Connection_Interface_Contact_Capabilities.xml  |   61 ++---
+ src/capabilities.c                                 |   17 +-
+ src/capabilities.h                                 |    3 +-
+ src/caps-hash.c                                    |    3 +-
+ src/channel-manager.c                              |   45 +++-
+ src/channel-manager.h                              |   30 ++-
+ src/connection.c                                   |  158 ++++++---
+ src/private-tubes-factory.c                        |  139 +++++++--
+ tests/twisted/test-caps-tubes.py                   |  340 +++++++++++++++++---
+ 9 files changed, 629 insertions(+), 167 deletions(-)
+
+commit 202cc1ce43536eacfa740ee7e5b8c42f9d5492a4
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Sep 4 14:58:03 2008 +0100
+
+    test-caps-tubes.py: Update test description with its content
+
+ tests/twisted/test-caps-tubes.py |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 4d47989e6bce172cbdf0bf261e9a5c18fa340034
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Sep 4 12:35:49 2008 +0100
+
+    Import AdvertiseContactCapabilities in extentions/
+
+ .../Connection_Interface_Contact_Capabilities.xml  |   43 ++++++++++++++++++-
+ 1 files changed, 40 insertions(+), 3 deletions(-)
+
+commit 13a369df3020791b8931860fdf03ae8a8e8c4fa3
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Sep 3 20:45:53 2008 +0100
+
+    Fully implement signal ContactCapabilitiesChanged. Update unit test.
+
+ src/channel-manager.c            |   22 ++++-
+ src/channel-manager.h            |   15 +++-
+ src/connection.c                 |   52 +++++++---
+ src/presence-cache.c             |   29 +++---
+ src/presence.c                   |   15 +++-
+ src/private-tubes-factory.c      |  220 ++++++++++++++++++++++++--------------
+ tests/twisted/test-caps-tubes.py |   66 +++++++++++-
+ 7 files changed, 302 insertions(+), 117 deletions(-)
+
+commit 779f51c22cb3eb276f32a0bd67e89428f8900bc5
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Sep 3 16:26:44 2008 +0100
+
+    Emit ContactCapabilitiesChanged, and update twisted test. The signal is still empty (to be done)
+
+ src/connection.c                 |   44 ++++++++++++++++++++++++++++++++++---
+ src/presence-cache.c             |   42 ++++++++++++++++++++++++++---------
+ tests/twisted/test-caps-tubes.py |   19 ++++++----------
+ 3 files changed, 78 insertions(+), 27 deletions(-)
+
+commit 6fdc2640bbf8c99c03a267c48d089e130da4d20e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 2 19:36:49 2008 +0100
+
+    Parse the caps stanza for tubes in the tube factory, using the channel manager uinterface
+
+ src/channel-manager.c       |    4 +-
+ src/channel-manager.h       |    5 +-
+ src/connection.c            |    6 +-
+ src/presence-cache.c        |   77 +++---------
+ src/presence-cache.h        |    2 +-
+ src/presence.c              |   69 ++---------
+ src/presence.h              |    3 -
+ src/private-tubes-factory.c |  288 ++++++++++++++++++++++++++++++++-----------
+ tests/test-presence.c       |    4 +-
+ 9 files changed, 255 insertions(+), 203 deletions(-)
+
+commit c832d29cce467ce38a593ca1dc74c3bc8e81e222
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 2 18:02:53 2008 +0100
+
+    Abstract enhanced capabilities in channel managers
+
+ src/channel-manager.c |   62 ++++++++++++++++++++++++++
+ src/channel-manager.h |   30 +++++++++++++
+ src/connection.c      |    8 ++--
+ src/presence-cache.c  |  116 +++++++++++++++++++++++++++++++++++++++++++------
+ src/presence-cache.h  |    6 +++
+ src/presence.c        |   47 ++++++++++++++++++--
+ src/presence.h        |    4 +-
+ tests/test-presence.c |    4 +-
+ 8 files changed, 251 insertions(+), 26 deletions(-)
+
+commit e1a19635376baf0dfb5cfe953fc44c2a42df7ff4
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 2 13:56:06 2008 +0100
+
+    presence-cache.c: Fix the caps cache when the first received caps is void except tubes caps.
+
+ src/presence-cache.c |   31 +++++++++++++++++++------------
+ 1 files changed, 19 insertions(+), 12 deletions(-)
+
+commit 55a3b62622b5bb8583167b3d227563de83f24a2a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Sep 2 13:54:34 2008 +0100
+
+    test-caps-cache.py: Check that caps in the cache are persistent
+
+ tests/twisted/test-caps-cache.py |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+commit b09545b70baddbdf68e64bd6ccb6c3529c7bb85d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 28 16:31:31 2008 +0100
+
+    test-caps-tubes.py: test the caps cache when it contains tubes
+
+ tests/twisted/test-caps-tubes.py |   28 ++++++++++++++++++++++++++++
+ 1 files changed, 28 insertions(+), 0 deletions(-)
+
+commit 28a7392a8b8c6e9080439436c6778f5ce5745d3e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 28 16:26:03 2008 +0100
+
+    Add signal ContactCapabilitiesChanged in extensions/
+
+ .../Connection_Interface_Contact_Capabilities.xml  |   26 ++++++++++++++++++++
+ 1 files changed, 26 insertions(+), 0 deletions(-)
+
+commit 9ba29a284af17a933599e61d3eac14b8c4e4b95b
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 28 15:21:43 2008 +0100
+
+    Test tube capabilities via Contacts.GetContactAttributes
+
+ tests/twisted/test-caps-tubes.py |   42 +++++++++++++++++++++++++++++++++----
+ 1 files changed, 37 insertions(+), 5 deletions(-)
+
+commit 53ebe689fdc8c37f28b0da2f14158b459f6a1362
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 28 14:35:00 2008 +0100
+
+    More tests for tube capabilities: both D-Bus and stream tubes, and advertise several tube caps at the same time
+
+ tests/twisted/test-caps-tubes.py |  149 +++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 147 insertions(+), 2 deletions(-)
+
+commit a2e28cf5fd3148a2164b128aa2018d94cc08f26b
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 28 14:32:42 2008 +0100
+
+    Advertise D-Bus tube capabilities
+
+ src/private-tubes-factory.c |   42 +++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 41 insertions(+), 1 deletions(-)
+
+commit 07064c1bd8685a0e16a37bf57b24dc37c8da6a82
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 28 12:54:48 2008 +0100
+
+    Add a basic test for stream tube capabilities
+
+ tests/twisted/Makefile.am        |    1 +
+ tests/twisted/test-caps-tubes.py |  159 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 160 insertions(+), 0 deletions(-)
+
+commit d1fef2ac3df239db9cfe4a38c0addf3db80b0ee9
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Aug 28 12:50:23 2008 +0100
+
+    Fix stream tube capabilities
+
+ src/private-tubes-factory.c |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
+
+commit a60c175a20baee4e2761a108e1abd9401dbefed3
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 27 18:23:07 2008 +0100
+
+    Tube factory implement its part of GetContactCapabilities, reading the Presence structure
+
+ src/channel-manager.c       |    3 +-
+ src/channel-manager.h       |    7 +++-
+ src/connection.c            |    3 +-
+ src/im-factory.c            |    1 +
+ src/private-tubes-factory.c |   70 +++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 80 insertions(+), 4 deletions(-)
+
+commit 374d27e85b320e959e42cdba4ae2e61c634cc170
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 27 17:30:02 2008 +0100
+
+    Each channel factories add its own set of caps for a contact handle
+
+ src/channel-manager.c |   15 ++++++++++++++
+ src/channel-manager.h |    9 ++++++++
+ src/connection.c      |   47 ++++++--------------------------------------
+ src/im-factory.c      |   51 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 82 insertions(+), 40 deletions(-)
+
+commit 765d7ac5f06a455a71c22750da2f254cb385605a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 27 16:57:34 2008 +0100
+
+    Update the spec (GetContactCapabilities), avoid Bug #17329
+
+ .../Connection_Interface_Contact_Capabilities.xml  |    6 ++++--
+ src/connection.c                                   |    5 +++--
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+commit d6b0dc603252edf01f526d1b77b8950c2cc72196
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 27 13:04:04 2008 +0100
+
+    Fix leak and comment in new capabilities API
+
+ src/connection.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 3bba299330732138f0054d634fe042c38b633b1d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 27 12:44:51 2008 +0100
+
+    Add tubes caps in GabblePresence and Resource
+
+ src/presence-cache.c |   12 ++++++++++--
+ src/presence.c       |   44 ++++++++++++++++++++++++++++++++++++++++++++
+ src/presence.h       |    2 ++
+ 3 files changed, 56 insertions(+), 2 deletions(-)
+
+commit 3fe147aace4cfe1081ebf6c34a954d8dea3a2f08
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Aug 25 18:06:04 2008 +0100
+
+    Parse and store received capabilities of tube caps
+
+ src/connection.c      |    8 +++---
+ src/presence-cache.c  |   65 +++++++++++++++++++++++++++++++++++++++++++------
+ src/presence.c        |    2 +
+ src/presence.h        |    3 +-
+ tests/test-presence.c |    4 +-
+ 5 files changed, 67 insertions(+), 15 deletions(-)
+
+commit ac39607e0806ec03ae6b1acd3c517efab9a89bda
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Aug 25 15:30:26 2008 +0100
+
+    Copyright update to 2008
+
+ src/connection.c |    4 ++--
+ src/disco.c      |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 925aa467842d0b3598f0c6619dce4b7badd331ed
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Aug 25 15:19:54 2008 +0100
+
+    Always returns text channels with Connection.Interface.ContactCapabilities.DRAFT
+
+ src/connection.c |   40 ++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 38 insertions(+), 2 deletions(-)
+
+commit 5b2bf491c78d2726f85aeb2792b9090247ec7352
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Aug 25 12:03:53 2008 +0100
+
+    Add empty implementation of GetContactCapabilities on Connection.Interface.ContactCapabilities.DRAFT. Also requestable with Connection.Interface.Contacts
+
+ src/connection.c |  133 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 133 insertions(+), 0 deletions(-)
+
+commit 64d0e433f4e72c14c579a718e8f4e5fe8f776bf1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Mon Aug 25 11:03:30 2008 +0100
+
+    Add spec extension Connection_Interface_Contact_Capabilities.xml
+
+ .../Connection_Interface_Contact_Capabilities.xml  |  106 ++++++++++++++++++++
+ extensions/Makefile.am                             |    1 +
+ extensions/all.xml                                 |    1 +
+ 3 files changed, 108 insertions(+), 0 deletions(-)
 
 commit 0043df23c6ceae5b5d0061021652e2f69f7eec28
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
@@ -9908,6 +11430,18 @@ Date:   Thu Aug 7 09:14:10 2008 +0000
  src/debug.h  |    6 ------
  src/gabble.c |    2 +-
  3 files changed, 1 insertions(+), 40 deletions(-)
+
+commit d7a3f9096cceccdab1c0c432b81e9159dbc9f204
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Aug 6 15:28:55 2008 +0000
+
+    docs/tubes.xml: tube capabilities
+    
+    
+    20080806152855-a41c0-1f8730b964237a1eae969399e9e41570458a1809.gz
+
+ docs/tubes.xml |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
 
 commit 87f166b6999115bc4a4d23c3523c5ab5d16fa403
 Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
