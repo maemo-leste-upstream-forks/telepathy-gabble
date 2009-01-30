@@ -26,6 +26,7 @@ TWISTED_TESTS = \
 	roster/request-group-after-roster.py \
 	roster/test-google-roster.py \
 	roster/test-roster.py \
+	roster/test-roster-item-deletion.py \
 	roster/test-roster-subscribe.py \
 	roster/test-save-alias-to-roster.py \
 	text/initiate.py \
@@ -37,14 +38,16 @@ TWISTED_TESTS = \
 	text/test-text-no-body.py \
 	text/test-text.py \
 	tubes/muc-presence.py \
+	tubes/close-muc-with-closed-tube.py \
+	tubes/crash-on-list-channels.py \
 	tubes/test-get-available-tubes.py \
-	tubes/test-muc-accept-stream-tube-ibb.py \
-	tubes/test-muc-offer-dbus-tube.py \
-	tubes/test-muc-offer-stream-tube-ibb.py \
-        tubes/test-si-accept-tubes.py \
-	tubes/test-si-fallback.py \
-	tubes/test-si-ibb-tubes.py \
-	tubes/test-si-socks5-tubes.py \
+	tubes/accept-muc-stream-tube-ibb.py \
+	tubes/accept-private-stream-tube.py \
+	tubes/offer-accept-private-dbus-stream-tube-ibb.py \
+	tubes/offer-accept-private-dbus-stream-tube-socks5.py \
+	tubes/offer-accept-private-stream-tube-si-fallback.py \
+	tubes/offer-muc-dbus-tube.py \
+	tubes/offer-muc-stream-tube-ibb.py \
 	tubes/ensure-si-tube.py \
 	vcard/test-alias-empty-vcard.py \
 	vcard/test-alias-pep.py \
@@ -96,11 +99,22 @@ TESTS_ENVIRONMENT = \
 
 check-local: check-coding-style check-twisted
 
+# set to 6 when using refdbg, to give Gabble time to exit
+CHECK_TWISTED_SLEEP=0
+
 check-twisted:
 	$(MAKE) -C tools
 	rm -f tools/core
 	rm -f tools/gabble-testing.log
-	sh $(srcdir)/tools/with-session-bus.sh --config-file=tools/tmp-session-bus.conf -- $(MAKE) check-TESTS \
+	if test -n "$$GABBLE_TEST_REFDBG"; then \
+	  sleep=6; \
+        else \
+	  sleep=$(CHECK_TWISTED_SLEEP); \
+	fi; \
+	sh $(srcdir)/tools/with-session-bus.sh \
+		--sleep=$$sleep \
+		--config-file=tools/tmp-session-bus.conf \
+		-- $(MAKE) check-TESTS \
 		TESTS="$(TWISTED_TESTS)" \
 		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON)"
 	@if test -e tools/core; then\
@@ -110,6 +124,7 @@ check-twisted:
 
 EXTRA_DIST = \
 	$(TWISTED_TESTS) \
+	constants.py \
 	gabbletest.py \
 	servicetest.py \
 	jingle/jingletest.py \
@@ -130,7 +145,7 @@ telepathy_gabble_debug_LDADD = \
     $(ALL_LIBS)
 
 AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @LOUDMOUTH_CFLAGS@ \
-    @COVERAGE_CFLAGS@ @TP_GLIB_CFLAGS@ \
+    @TP_GLIB_CFLAGS@ \
     -I $(top_srcdir)/src -I $(top_builddir)/src
 ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @LOUDMOUTH_LIBS@ @TP_GLIB_LIBS@
 

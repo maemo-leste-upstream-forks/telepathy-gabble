@@ -352,7 +352,7 @@ gabble_jingle_session_class_init (GabbleJingleSessionClass *cls)
   signals[NEW_CONTENT] = g_signal_new ("new-content",
         G_TYPE_FROM_CLASS (cls), G_SIGNAL_RUN_LAST,
         0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
-        G_TYPE_NONE, 1, G_TYPE_POINTER);
+        G_TYPE_NONE, 1, G_TYPE_OBJECT);
 
   signals[TERMINATED] = g_signal_new ("terminated",
         G_TYPE_FROM_CLASS (cls), G_SIGNAL_RUN_LAST,
@@ -715,11 +715,20 @@ _each_content_accept (GabbleJingleSession *sess, GabbleJingleContent *c,
     LmMessageNode *content_node ,GError **error)
 {
   GabbleJingleSessionPrivate *priv = GABBLE_JINGLE_SESSION_GET_PRIVATE (sess);
+  JingleContentState state;
 
   if (c == NULL)
     {
       const gchar *name = lm_message_node_get_attribute (content_node, "name");
       SET_BAD_REQ ("content called \"%s\" doesn't exist", name);
+      return;
+    }
+
+  g_object_get (c, "state", &state, NULL);
+  if (state != JINGLE_CONTENT_STATE_SENT)
+    {
+      const gchar *name = lm_message_node_get_attribute (content_node, "name");
+      DEBUG ("ignoring content \"%s\"s acceptance for content not in SENT state", name);
       return;
     }
 

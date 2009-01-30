@@ -1,3 +1,779 @@
+commit 272b70daae6f67bd800d2e8136f01a9f94951e88
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Jan 29 11:29:36 2009 +0000
+
+    version 0.7.19
+
+ configure.ac |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit a290dbc66172242f8f86f990ba1a91c24e407b3c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Jan 29 11:18:56 2009 +0000
+
+    update NEWS for 0.7.19
+
+ NEWS |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit fca5346c8aadd821bb7fb19e0f4161a219dd39f6
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Jan 29 12:49:27 2009 +0100
+
+    conn-presence: check that we allow setting a particular status
+
+ src/conn-presence.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+commit 08188078675c3e05fb04fe7242197cce86a64b48
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Jan 29 12:58:49 2009 +0100
+
+    NEWS: mentioned refcount leak and offline presence crash fixes
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 1ff8f2c9cb521d9774a079afc783b462d32cbf30
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Jan 29 10:52:53 2009 +0000
+
+    NEWS: dev.sugarlabs.org #60 have been fixed by f91276ededfc019421000b4975b2da010aa96e2c
+
+ NEWS |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit e808784effcfd8b8cca23056a937f5f2ed3094cb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Jan 29 10:39:42 2009 +0000
+
+    remove trailing space in NEWS
+
+ NEWS |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 94508ccf3736e2e940b94efebb3918e3cb9b64fa
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Wed Jan 28 10:20:16 2009 +0100
+
+    JingleMediaRTP: remove session refcount leak
+
+ src/jingle-media-rtp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ae77c2f5c3713e38c91d1cd9daffaac1d82f273e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 27 17:09:28 2009 +0000
+
+    rename TUBE_STATUS to TUBE_STATE
+
+ tests/twisted/constants.py                         |    2 +-
+ .../offer-accept-private-dbus-stream-tube-ibb.py   |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit b0ef17f22c153c8bd1b11acee259fbac06b652e3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 27 16:51:09 2009 +0000
+
+    offer-accept-private-dbus-stream-tube-socks5.py: Status property has been renamed to State
+
+ ...offer-accept-private-dbus-stream-tube-socks5.py |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 621ed5abf8498e214c77e3f17aeb14c47baffac5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 27 16:50:41 2009 +0000
+
+    offer-accept-private-dbus-stream-tube-ibb.py: Status property has been renamed to State
+
+ .../offer-accept-private-dbus-stream-tube-ibb.py   |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit ecdddd7f33ba4b1c4ecb754c8f9a6fbf3c490eb7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 27 16:50:17 2009 +0000
+
+    gabble_tube_stream_class_init: Status property has been renamed to State
+
+ src/tube-stream.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit f42c29aed06d8a012d1d73b79fa75a672f3698fa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 27 16:49:54 2009 +0000
+
+    sync tube new API draft with tp-spec master
+
+ extensions/Channel_Interface_Tube.xml   |   12 ++--
+ extensions/Channel_Type_DBus_Tube.xml   |  102 +++++++++++--------------------
+ extensions/Channel_Type_Stream_Tube.xml |    4 +-
+ 3 files changed, 45 insertions(+), 73 deletions(-)
+
+commit 99b62587dffb2893812518a7b4065657d62a0528
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 27 16:43:12 2009 +0000
+
+    all.xml: add DBus_Unique_Name external type
+
+ extensions/all.xml |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 466d428a8ad82d1a2c1ee8cd9ceb7ce3f2b9d064
+Merge: 77db359... 04891ac...
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jan 27 14:12:08 2009 +0000
+
+    Merge branch 'invalidhandle'
+    
+    Signed-off-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 77db35924d2da9aab1ce58799494da8b417fe1bc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jan 22 15:40:28 2009 +1100
+
+    Don't include dtubes in tubes_foreach_channel.
+
+ src/tubes-channel.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 78350203d8d85fbf080a8a012383a32689519f47
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jan 21 18:26:16 2009 +1100
+
+    Add a test for ListChannels() crashing given a dtube
+
+ tests/twisted/Makefile.am                     |    1 +
+ tests/twisted/tubes/crash-on-list-channels.py |   67 +++++++++++++++++++++++++
+ 2 files changed, 68 insertions(+), 0 deletions(-)
+
+commit 9f8be82197d77a3d46e4d155e67bb3c9f8f9a516
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jan 20 19:14:43 2009 +0000
+
+    Document how to run tests with coverage
+    
+    Also correct the instruction to run "make check-all" - the Twisted tests
+    haven't required that for a long time.
+
+ tests/README |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+commit d07743ba9fc04869f9831da5ef237727e426f59b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jan 20 19:03:26 2009 +0000
+
+    gabbletest: don't wait for Gabble to exit
+    
+    with-session-bus.sh will now do this if using refdbg, which means that
+    individual tests shouldn't need to.
+
+ tests/twisted/gabbletest.py |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+commit 978f93ba348ef3b472edc7f3e3c6d60c8b44c951
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jan 20 19:00:46 2009 +0000
+
+    Insert "wait for exit" in a way that only enables it when using lcov or refdbg
+    
+    Based on comments from Guillaume.
+
+ Makefile.am               |    2 ++
+ tests/twisted/Makefile.am |   10 +++++++++-
+ tools/lcov.am             |    2 +-
+ 3 files changed, 12 insertions(+), 2 deletions(-)
+
+commit 9842081653c93831bf509d2954b6cc99a63b3a52
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Tue Jan 20 18:04:58 2009 +0000
+
+    Use compiler.m4 (from Aranha via telepathy-glib) to control coverage/optimizations
+
+ configure.ac              |   12 ++------
+ m4/Makefile.am            |    3 +-
+ m4/compiler.m4            |   67 +++++++++++++++++++++++++++++++++++++++++++++
+ src/Makefile.am           |    2 +-
+ tests/Makefile.am         |    2 +-
+ tests/twisted/Makefile.am |    2 +-
+ 6 files changed, 75 insertions(+), 13 deletions(-)
+
+commit 2f9f04960e8acc42e2f58a1fd7c39116ed36db91
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jan 16 10:49:47 2009 +0000
+
+    tests/twisted: after tests, sleep long enough for Gabble to exit cleanly
+    
+    If libdbus calls _exit() as a result of being disconnected from the session
+    bus, Gabble won't write out coverage data. Libraries exiting
+    considered harmful, etc.
+    
+    This doesn't slow tests down very much in practice, since we only invoke
+    with-session-bus.sh once for the entire twisted directory.
+    
+    (This change requires copying in a newer with-session-bus.sh from
+    telepathy-glib)
+
+ tests/twisted/Makefile.am               |    5 ++++-
+ tests/twisted/tools/with-session-bus.sh |   10 ++++++++++
+ 2 files changed, 14 insertions(+), 1 deletions(-)
+
+commit fb8a53ca392f276739a92de0b88727b262c7cca9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jan 16 10:47:39 2009 +0000
+
+    Add LCOV machinery
+
+ .gitignore        |    4 ++++
+ Makefile.am       |    1 +
+ tools/Makefile.am |    1 +
+ tools/lcov.am     |   24 ++++++++++++++++++++++++
+ 4 files changed, 30 insertions(+), 0 deletions(-)
+
+commit e9617286b23c53c21391640b329dd28352f20dff
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jan 16 10:46:15 2009 +0000
+
+    .gitignore: anchor paths at root of tree where appropriate
+
+ .gitignore |  112 ++++++++++++++++++++++++++++++------------------------------
+ 1 files changed, 56 insertions(+), 56 deletions(-)
+
+commit 85289b08f621bb3fbe39a76b834c39955ef9a1e5
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 20 13:28:18 2009 +0100
+
+    Add reference to the fixed fd.o bug #19524 to test and NEWS.
+
+ NEWS                                              |    1 +
+ tests/twisted/roster/test-roster-item-deletion.py |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+commit a4d1c64325b6a221f6d0f2b81d7b2cb3e52196d9
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 20 12:36:49 2009 +0100
+
+    roster.c: explain the handle ref for roster_edited_cb
+
+ src/roster.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 81be6cd099b5159dcfe9f2dc8c86f8e434324473
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 20 11:57:19 2009 +0100
+
+    test roster handle reffing by deleting roster items
+
+ tests/twisted/Makefile.am                         |    1 +
+ tests/twisted/roster/test-roster-item-deletion.py |   68 +++++++++++++++++++++
+ 2 files changed, 69 insertions(+), 0 deletions(-)
+
+commit d172f1b96de42da64fec4a0bd81af40166aee879
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 20 11:49:26 2009 +0100
+
+    roster.c: ref handles expected to be valid in later roster edit callback
+
+ src/roster.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+commit 3ea6c9e0af2aed0ca38b9d4d38974db42caf42ba
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 20 13:08:10 2009 +0100
+
+    I accidentially the fd.o#
+
+ NEWS                                               |    3 ++-
+ .../twisted/jingle/test-content-adding-removal.py  |    5 +----
+ 2 files changed, 3 insertions(+), 5 deletions(-)
+
+commit 1e243c01bade3476aff4c54e95a98a8d23fbe6d0
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 20 12:27:05 2009 +0100
+
+    fix typo in NEWS
+
+ NEWS |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5de6335beecaa3d07b23aaaba946f706d571b845
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 20 12:24:20 2009 +0100
+
+    test-content-adding-removal.py: use constants instead of hardcoded numbers
+
+ tests/twisted/constants.py                         |    7 +++++++
+ .../twisted/jingle/test-content-adding-removal.py  |   13 +++++++------
+ 2 files changed, 14 insertions(+), 6 deletions(-)
+
+commit 5101ef3d36d30161382474e492189a67e98ac057
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 20 12:13:17 2009 +0100
+
+    add reference to fixed fd.o#19327 to NEWS and test source
+
+ NEWS                                               |    2 ++
+ .../twisted/jingle/test-content-adding-removal.py  |    7 ++++++-
+ 2 files changed, 8 insertions(+), 1 deletions(-)
+
+commit 8f00ca50a5d7b5e1624b4ed51fdc8c22664b3a7b
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 20 12:06:17 2009 +0100
+
+    jingletest.py: refactor create_content_node helper as a standalone method
+
+ tests/twisted/jingle/jingletest.py |   40 +++++++++++++++++------------------
+ 1 files changed, 19 insertions(+), 21 deletions(-)
+
+commit a0eb85790ca784e02f34699de1c4b856120e9503
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 20 09:41:56 2009 +0100
+
+    JingleSession: ignore session-accept accepting streams we're in the middle of removing
+
+ src/jingle-session.c                               |    9 ++++
+ tests/twisted/jingle/jingletest.py                 |   44 ++++++++++++--------
+ .../twisted/jingle/test-content-adding-removal.py  |   32 ++++++++++++--
+ 3 files changed, 62 insertions(+), 23 deletions(-)
+
+commit 04891ac23408b733abf3a8bbb2fae4bfa053036e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Fri Jan 16 16:42:56 2009 +0000
+
+    gabble_normalize_room, gabble_normalize_contact: use InvalidHandle for errors
+    
+    As per recent spec changes.
+
+ src/util.c |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 30d6b4d417ee2b437be26e4bc2c8a3b69d79263a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Jan 16 10:47:59 2009 +0000
+
+    Connection_Interface_Contact_Capabilities.xml: update to latest draft
+
+ .../Connection_Interface_Contact_Capabilities.xml  |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 107f86c8c20c4d7cc4c81db464ac20607bb31ba9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Jan 16 11:03:07 2009 +0000
+
+    add DBusTube constants to constants.py
+
+ tests/twisted/constants.py |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 9e4ea552da65f72d45d287c66efcfb646f6ed61f
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 13 23:23:15 2009 +0100
+
+    JingleSession: fix signature for new-content signal
+
+ src/jingle-session.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 0744fcf53db7e8345a194aadc22a389c20c7ef0d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jan 13 17:32:04 2009 +0000
+
+    Fix a race between two expects by combining them.
+
+ .../offer-accept-private-dbus-stream-tube-ibb.py   |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
+
+commit ce849f046596f0c71c4e593454858cc4ac8b83e0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 13 15:47:13 2009 +0000
+
+    offer-accept-private-dbus-stream-tube-ibb.py: use constants.py
+
+ .../offer-accept-private-dbus-stream-tube-ibb.py   |  206 ++++++++------------
+ 1 files changed, 78 insertions(+), 128 deletions(-)
+
+commit 41024c3fd93e149107206c6a0248dd5d5917bf8b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 13 15:46:41 2009 +0000
+
+    add more constants
+
+ tests/twisted/constants.py |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+
+commit b568b7d4922912efad0d46bdbfb389250b57c1f9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 13 15:11:56 2009 +0000
+
+    steal constants.py from Salut
+
+ tests/twisted/Makefile.am  |    1 +
+ tests/twisted/constants.py |   22 ++++++++++++++++++++++
+ 2 files changed, 23 insertions(+), 0 deletions(-)
+
+commit 08a8e3114ddf350394192654a909b674828befc1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 13 12:46:40 2009 +0000
+
+    offer-accept-private-dbus-stream-tube-ibb: make test clearer and fix properties checking
+
+ .../offer-accept-private-dbus-stream-tube-ibb.py   |   79 +++++++++++---------
+ 1 files changed, 44 insertions(+), 35 deletions(-)
+
+commit 46b1857350a84a99c2811a94f9bf0215c9ee5cb3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 13 12:46:01 2009 +0000
+
+    Status and Parameters don't have to be in channel-properties as they are mutables
+
+ src/tube-stream.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 4079187646daa61107e5485dd9bfba4a2393ae80
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 13 10:54:11 2009 +0000
+
+    offer-muc-stream-tube-ibb: remove commented code and explain why we can't catch NewChannel signal anymore
+
+ tests/twisted/tubes/offer-muc-stream-tube-ibb.py |    9 +++------
+ 1 files changed, 3 insertions(+), 6 deletions(-)
+
+commit bf1a7c4f622612945142eb50873aa9e903bff132
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 17:43:28 2009 +0000
+
+    offer-muc-stream-tube-ibb: text and tubes channels are now announced together
+
+ tests/twisted/tubes/offer-muc-stream-tube-ibb.py |   84 ++++++++++------------
+ 1 files changed, 39 insertions(+), 45 deletions(-)
+
+commit 77a39c58a6a7ebeadd8001be8abc754b5bf746e6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 17:43:02 2009 +0000
+
+    test-get-available-tubes.py: check that the tubes and text channels are announced together
+
+ tests/twisted/tubes/test-get-available-tubes.py |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
+
+commit d5866e5817f1f284708badbcddd7656281d53aaf
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 17:42:33 2009 +0000
+
+    announce tubes and text channels together when the text one was created as a side effect of the tubes request
+
+ src/muc-factory.c |   72 ++++++++++++++++++++++++++++++++++++----------------
+ 1 files changed, 50 insertions(+), 22 deletions(-)
+
+commit a199cb4fddf8e4087bfb3aded73953346bea839c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 16:37:50 2009 +0000
+
+    gabble_muc_factory_request: use tp_channel_manager_emit_new_channel directly instead of gabble_muc_factory_associate_request when announcing a newly created tubes channel
+
+ src/muc-factory.c |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+commit 39863df3228568e13a4644090f8e5e601a392727
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 16:34:30 2009 +0000
+
+    muc_factory_presence_cb: use tp_channel_manager_emit_new_channel directly instead of gabble_muc_factory_emit_new_channel as the text channel was already announced as ready so there is no pending queued requests associated with it
+
+ src/muc-factory.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 05d2b2a90d4931ebfa9a13a8d7064649af174083
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 15:09:10 2009 +0000
+
+    muc-factory: factor out ensure_tubes_channel
+
+ src/muc-factory.c |   32 ++++++++++++++++++++++++--------
+ 1 files changed, 24 insertions(+), 8 deletions(-)
+
+commit 78089c134ee40cea745e1389dfa25dc00b26259c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 13:07:53 2009 +0000
+
+    tubes test have been renamed to {offer,accept}-{muc,private}-{dbus,stream}-tube-{streaming_method}.py
+
+ tests/twisted/Makefile.am |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 9f2b4375f0fa8c77189dbd611772dd691294417d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 13:06:51 2009 +0000
+
+    rename test-muc-offer-stream-tube-ibb.py to offer-muc-stream-tube-ibb.py
+
+ tests/twisted/tubes/offer-muc-stream-tube-ibb.py   |  307 ++++++++++++++++++++
+ .../tubes/test-muc-offer-stream-tube-ibb.py        |  307 --------------------
+ 2 files changed, 307 insertions(+), 307 deletions(-)
+
+commit bb20ccb6483b123e888654cbe0239fee3263a7ea
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 13:06:27 2009 +0000
+
+    rename test-muc-offer-dbus-tube.py to offer-muc-dbus-tube.py
+
+ tests/twisted/tubes/offer-muc-dbus-tube.py      |  188 +++++++++++++++++++++++
+ tests/twisted/tubes/test-muc-offer-dbus-tube.py |  188 -----------------------
+ 2 files changed, 188 insertions(+), 188 deletions(-)
+
+commit c411de3a24840ca7c427eb3398a47d147d495d80
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 13:06:10 2009 +0000
+
+    rename test-si-fallback.py to offer-accept-private-stream-tube-si-fallback.py
+
+ ...offer-accept-private-stream-tube-si-fallback.py |  355 ++++++++++++++++++++
+ tests/twisted/tubes/test-si-fallback.py            |  355 --------------------
+ 2 files changed, 355 insertions(+), 355 deletions(-)
+
+commit 85d81694da1fc0b96049c185e4fac0ebbca73d05
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 13:05:48 2009 +0000
+
+    rename test-si-socks5-tubes.py to offer-accept-private-dbus-stream-tube-socks5.py
+
+ ...offer-accept-private-dbus-stream-tube-socks5.py |  989 ++++++++++++++++++++
+ tests/twisted/tubes/test-si-socks5-tubes.py        |  989 --------------------
+ 2 files changed, 989 insertions(+), 989 deletions(-)
+
+commit 8fa410954a943b7a9b128b2151266c6c3e6f2d50
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 13:05:30 2009 +0000
+
+    rename test-si-ibb-tubes.py to offer-accept-private-dbus-stream-tube-ibb.py
+
+ .../offer-accept-private-dbus-stream-tube-ibb.py   |  949 ++++++++++++++++++++
+ tests/twisted/tubes/test-si-ibb-tubes.py           |  949 --------------------
+ 2 files changed, 949 insertions(+), 949 deletions(-)
+
+commit 3f49c96fb2a4707929d885423ebce64f275f7ca6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 13:05:09 2009 +0000
+
+    rename test-si-accept-tubes.py to accept-private-stream-tube.py
+
+ tests/twisted/tubes/accept-private-stream-tube.py |  271 +++++++++++++++++++++
+ tests/twisted/tubes/test-si-accept-tubes.py       |  271 ---------------------
+ 2 files changed, 271 insertions(+), 271 deletions(-)
+
+commit 2a4bac2b6aace43e6834ee2983f7dd5103927396
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 13:04:45 2009 +0000
+
+    rename test-muc-accept-stream-tube-ibb.py to accept-muc-stream-tube-ibb.py
+
+ tests/twisted/tubes/accept-muc-stream-tube-ibb.py  |  251 ++++++++++++++++++++
+ .../tubes/test-muc-accept-stream-tube-ibb.py       |  251 --------------------
+ 2 files changed, 251 insertions(+), 251 deletions(-)
+
+commit baf1c2c2fca49da839ff5fd6bdaa3455ace2806b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 12:46:01 2009 +0000
+
+    tube-dbus: fix tube-offered signal definition
+
+ src/tube-dbus.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ed1b6eb223dcb3c53f51aa0f5d5ee46f4f79e1e1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 12:31:16 2009 +0000
+
+    test if the NewTube signal is correcty fired when using the new API
+
+ tests/twisted/tubes/test-si-ibb-tubes.py |   22 ++++++++++++++++++----
+ 1 files changed, 18 insertions(+), 4 deletions(-)
+
+commit 045715e20539ce9ee895b3460c44456d8f6b73db
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 12:30:51 2009 +0000
+
+    tubes-channel: delay the NewTube signal until the tube has been offered as the old API doesn't have a not-offered state
+
+ src/tubes-channel.c |   54 ++++++++++++++++++++++++++++++++++++++++++++------
+ 1 files changed, 47 insertions(+), 7 deletions(-)
+
+commit 0f97ab149383d0523f3e3581551069e29a1d8508
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 12:29:58 2009 +0000
+
+    tube-dbus: add tube-offered signal
+
+ src/tube-dbus.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit e49d12d948e1a7edcef5b5816ce1e651a5d74f8d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 12:29:37 2009 +0000
+
+    tube-stream: add tube-offered signal
+
+ src/tube-stream.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+commit 11402119593d7731b74d8fe5c4f580156d4a8464
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 11:47:03 2009 +0000
+
+    private-tubes-factory: rename priv->channels to priv->tubes_channels
+
+ src/private-tubes-factory.c |   32 ++++++++++++++++----------------
+ 1 files changed, 16 insertions(+), 16 deletions(-)
+
+commit 6e950160d75316b0d9f095dd0acd3234e18ebbb7
+Merge: 77d9d39... 5166e88...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 11:14:30 2009 +0000
+
+    Merge branch 'master' into old-new-tube-api
+
+commit 77d9d3951dad2d5b9a8b5ab89e54cf9a04ef09ab
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 11:12:03 2009 +0000
+
+    test-si-ibb-tubes.py: check if the tube newly created channel is properly announced when we create a tube using the old API
+
+ tests/twisted/tubes/test-si-ibb-tubes.py |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
+
+commit d0c10f979a0a4c1ca68a27b20b5673d43a50847a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 11:11:22 2009 +0000
+
+    test-si-ibb-tubes.py: some cleaning
+
+ tests/twisted/tubes/test-si-ibb-tubes.py |   34 +++++++++++++++++------------
+ 1 files changed, 20 insertions(+), 14 deletions(-)
+
+commit b050a5f296358227178b44b2fae79e0517accf69
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 11:08:24 2009 +0000
+
+    gabble_tubes_channel_offer_stream_tube: announce the newly created tube channel
+
+ src/tubes-channel.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+
+commit 8f939a931e1aac22541d02a5d064207a21dfda62
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 12 11:07:03 2009 +0000
+
+    add gabble_private_tubes_factory_tube_created
+
+ src/private-tubes-factory.c |    6 ++++++
+ src/private-tubes-factory.h |    3 +++
+ 2 files changed, 9 insertions(+), 0 deletions(-)
+
+commit 5166e88ed1bc112ef8ec8f2ee6d425aba836da93
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Sat Jan 10 18:49:47 2009 +0000
+
+    src/jingle-factory.c: fix leaks in lm stanza
+
+ src/jingle-factory.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 83d0aedefdcc706fbefa909a311c192cbe30c115
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Jan 9 15:54:51 2009 +0000
+
+    test-si-ibb-tubes.py; check Status and Parameters
+
+ tests/twisted/tubes/test-si-ibb-tubes.py |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 4b06bbc0522d2a94114274c352e93577561777ab
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Jan 9 15:54:14 2009 +0000
+
+    tube-stream: add Status and Parameters to channel properties
+
+ src/tube-stream.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit af2f8a6ad3bd6ead1f55c40dfd05a0c8ba2ba99f
+Merge: c8b4411... 25e7835...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Jan 7 16:32:00 2009 +0000
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble
+
+commit c8b441130841e933e94fd9de503f78572e3e595e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Jan 7 16:31:19 2009 +0000
+
+    start NEWS for the future release
+
+ NEWS |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit f91276ededfc019421000b4975b2da010aa96e2c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Jan 7 16:12:27 2009 +0000
+
+    gabble_bytestream_muc_set_property: g_signal_emit_by_name doesn't take a 0 argument
+
+ src/bytestream-muc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 64578362aaecf7354169a746c567cd383eb39d8d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Jan 7 16:12:03 2009 +0000
+
+    add tubes/close-muc-with-closed-tube.py to test suite
+
+ tests/twisted/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 9f33791d66f4ff26806402d4a21c5b84fcaa7aa0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Jan 7 16:11:49 2009 +0000
+
+    add tubes/close-muc-with-closed-tube.py
+
+ tests/twisted/tubes/close-muc-with-closed-tube.py |  176 +++++++++++++++++++++
+ 1 files changed, 176 insertions(+), 0 deletions(-)
+
+commit 25e7835581b2b41bf1450dce474692867e327084
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Jan 7 15:17:56 2009 +0000
+
+    Add a random id to the stream opening instead of assuming buggy clients
+
+ tests/twisted/gabbletest.py |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 3c4ebd31daa7c45bfde2de00a097ea5be472149c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Jan 7 11:44:17 2009 +0000
+
+    Don't define things as const that aren't
+
+ src/bytestream-multiple.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ad29c2480ddd5dad97a9de183231797dde2be1c0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Jan 7 11:43:44 2009 +0000
+
+    Don't free a GList using g_slist_free
+
+ src/bytestream-multiple.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5d648757a2308868cff981fc4f63199339d63cc2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 6 18:18:36 2009 +0000
+
+    version 0.7.18
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 124c9cf28caf9b7b55c4b7eee297b53afd28e729
 Merge: 79425e0... 102b010...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
