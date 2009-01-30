@@ -1,3 +1,785 @@
+commit 124c9cf28caf9b7b55c4b7eee297b53afd28e729
+Merge: 79425e0... 102b010...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 6 18:11:25 2009 +0000
+
+    Merge branch 'release'
+
+commit 79425e02137a3290936035d56c6bba81bb868cc7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 6 18:01:01 2009 +0000
+
+    add tubes/muctubeutil.py to EXTRA_DIST
+
+ tests/twisted/Makefile.am |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 056f91cf6fedb18245f83ec426ccccf020ad8ca9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 6 17:57:41 2009 +0000
+
+    gibber-debug.c: build if debug is disabled
+
+ lib/gibber/gibber-debug.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 102b01051881fac40eaeb944da238e2d699a5b41
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 6 17:16:53 2009 +0000
+
+    version 0.7.18
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 04231a846971875afef25b3e5b6cb339bfae182e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 6 17:31:29 2009 +0000
+
+    upgrade NEWS for 0.7.18
+
+ NEWS |   19 +++++++++++++++++++
+ 1 files changed, 19 insertions(+), 0 deletions(-)
+
+commit 7e25a5f61b224e1de75defbf8483963427d2547c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 6 17:15:41 2009 +0000
+
+    disable test-dialects-outgoing.py for now as it's broken
+
+ tests/twisted/jingle/test-dialects-outgoing.py |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit b3159304a020201243544ead062b0af4814d70dd
+Merge: 1b9abbd... 5d48b18...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 6 16:38:42 2009 +0000
+
+    Merge branch 'bytestream-multi'
+
+commit 1b9abbdcb5190ec36e01da1d20cd0adbd6971c2c
+Merge: ed7a13c... bf3c983...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Jan 6 16:38:25 2009 +0000
+
+    Merge branch 'sock5'
+
+commit ed7a13c4b2aee6631b174ad1377b7655f9c8e48b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 5 17:39:44 2009 +0000
+
+    gabble_bytestream_muc_receive: signal is data-received not data-receied
+
+ src/bytestream-muc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5d48b181343776c08f27cf5398ada9d33210d731
+Merge: 4e0cdcc... bf3c983...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 5 11:50:39 2009 +0000
+
+    Merge branch 'sock5' into bytestream-multi
+
+commit bf3c9830c5c2c670dec74b7945e5a8a287a52ef0
+Merge: f7b0320... 19d44d8...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jan 5 11:03:43 2009 +0000
+
+    Merge branch 'master' into sock5
+
+commit 19d44d84b4b327cb6d9b10317aa0b31c129225b8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Dec 29 15:53:50 2008 +0000
+
+    Don't crash on setting presence if there are open MUC Tubes
+    
+    The previous code iterated across all channels managed by
+    GabbleMucFactory and cast them to GabbleMucChannel; if there are open
+    tubes, the cast is invalid for them.
+
+ src/connection.c  |    5 +----
+ src/muc-factory.c |   17 +++++++++++++++++
+ src/muc-factory.h |    2 ++
+ 3 files changed, 20 insertions(+), 4 deletions(-)
+
+commit d4f07700fff255178e6f0e3f587e2be5573defe2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Dec 25 11:15:58 2008 +0000
+
+    Regression test: don't crash when setting presence with open MUC Tubes
+
+ tests/twisted/Makefile.am           |    1 +
+ tests/twisted/tubes/muc-presence.py |   27 +++++++++++++++++++++++++++
+ 2 files changed, 28 insertions(+), 0 deletions(-)
+
+commit 02a8e024f401bee8aa1d0b7cee96a61d2258508a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Dec 25 11:04:16 2008 +0000
+
+    tests/twisted/tubes: extract "get MUC Tubes" boilerplate
+
+ tests/twisted/tubes/muctubeutil.py              |   68 +++++++++++++++++++++++
+ tests/twisted/tubes/test-muc-offer-dbus-tube.py |   56 +-----------------
+ 2 files changed, 72 insertions(+), 52 deletions(-)
+
+commit 3ae43d35f0d71381fbbe50f3e36441292cc2edf2
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Jan 2 13:31:24 2009 +0000
+
+    Fix condition on GABBLE_CONNECTION_FEATURES_PEP
+
+ src/connection.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 4e0cdcc7e10ed1c1d1ef5963aa54cf0788f429ab
+Merge: 969755c... f7b0320...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 23 17:06:28 2008 +0100
+
+    Merge branch 'sock5' into si-fallback
+
+commit f7b03208f323ee8e0d9bd8eae8139b135882158e
+Merge: 66e7a13... db01f9c...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 23 17:06:09 2008 +0100
+
+    Merge branch 'master' into sock5
+
+commit db01f9c9c3f16adb4c9ab85e051cbc424862d2d0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 23 17:04:29 2008 +0100
+
+    new_connection_to_socket: fix transport leak
+
+ src/tube-stream.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 969755c2ba2ecc649cdfe7e5c71ab9619de6750f
+Merge: 99aa045... 66e7a13...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 23 17:00:30 2008 +0100
+
+    Merge branch 'sock5' into si-fallback
+
+commit 66e7a134a658b36e11dd538557c7d2d3f1d40ffa
+Merge: 356057f... 45ede60...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 23 16:58:54 2008 +0100
+
+    Merge branch 'master' into sock5
+
+commit 356057f04ffa3ddb26da9f28e905a623f35c73b4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 23 16:50:11 2008 +0100
+
+    remove sock5 close stanza as there is no such think in the XEP
+
+ src/bytestream-factory.c |   59 ----------------------------------------------
+ src/bytestream-socks5.c  |   18 --------------
+ 2 files changed, 0 insertions(+), 77 deletions(-)
+
+commit 99aa045eccdc9ffe7ac0f6025409f17c335ec7b5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Dec 19 11:52:50 2008 +0000
+
+    gabble_bytestream_multiple_finalize: free the fallback_stream_methods list if needed
+
+ src/bytestream-multiple.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 45ede60f1ec3e6746557ab882607945a84846499
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Thu Dec 18 18:56:25 2008 +0000
+
+    GabbleConnection: advertise the interface GABBLE_IFACE_CONNECTION_INTERFACE_CONTACT_CAPABILITIES
+
+ src/connection.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit f8f87527c8c966459229427dddf59a459bf7fcf6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 17:52:39 2008 +0000
+
+    bytestream_activate_next: free the stream method
+
+ src/bytestream-multiple.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 87fa6d70058067d5b562b8a763a0a341ba8643c9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 17:51:11 2008 +0000
+
+    bytestream_activate_next: use g_list_delete_link instead of g_list_remove_link as link has to be freed
+
+ src/bytestream-multiple.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a8011344c7e4777aa3af8a73d2b49656a5ef08e1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 17:03:41 2008 +0000
+
+    bytestream-multiple: signals are not defined in bytestream-iface
+
+ src/bytestream-multiple.c |   42 ++----------------------------------------
+ 1 files changed, 2 insertions(+), 40 deletions(-)
+
+commit c5c587392105635db372487dc3fe6306419666fa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 17:03:00 2008 +0000
+
+    bytestream-socks5: re-emit connection-error signals
+
+ src/bytestream-socks5.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 9bd5e4d9ddc05bc89114e7a27b0eb939775e1dc9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 17:02:32 2008 +0000
+
+    add connection-error signal to bytestream-iface
+
+ src/bytestream-iface.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 10faa72c524ed3c2ad1362f5124c89464ec9e364
+Merge: 58cc78a... 6f8331f...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 16:55:18 2008 +0000
+
+    Merge branch 'sock5' into si-fallback
+    
+    Conflicts:
+    
+    	src/bytestream-ibb.c
+    	src/bytestream-socks5.c
+
+commit 6f8331f008a1d8cfc32ee19ce9f3b4f2bf5e79c8
+Merge: 62e881c... 0f1ce5a...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 15:59:20 2008 +0000
+
+    Merge branch 'master' into sock5
+    
+    Conflicts:
+    
+    	src/tube-stream.c
+
+commit 0f1ce5a8b0158c905ddee01803d9fa2857eaac36
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 15:53:09 2008 +0000
+
+    sync with current gibber
+
+ lib/gibber/gibber-fd-transport.c |   43 ++++++++++++++++++++++++++++++++++++-
+ lib/gibber/gibber-fd-transport.h |    9 ++++++++
+ 2 files changed, 50 insertions(+), 2 deletions(-)
+
+commit 4ad8cd7ddadee6c300f50baf6d295b1d5140cca6
+Merge: b38478f... 3ac69cb...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 15:31:18 2008 +0000
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble
+
+commit b38478f4bae31c0691cb5b99c3a93b6d1d6c17b7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 13:51:38 2008 +0000
+
+    tube-stream: data_received_cb: unref the transport when early returning
+
+ src/tube-stream.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 96e7f9a282783eac20986e571bb71cf86ceedfb0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 13:13:34 2008 +0000
+
+    tube-stream: data_received_cb ref the transport to keep it artificially alive if needed
+
+ src/tube-stream.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit caf0c7435408d2931a736f3b7ded8ac6fdd96136
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 12:13:52 2008 +0000
+
+    data_received_cb: early return if sending failed
+
+ src/tube-stream.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 62e881c5dc1f0a12f5aee8586c413c573c22d12e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 13:13:34 2008 +0000
+
+    tube-stream: data_received_cb ref the transport to keep it artificially alive if needed
+
+ src/tube-stream.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit b72da142c67f82ea6ff0faf9364e164cf3feefbd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 13:07:39 2008 +0000
+
+    gabble_bytestream_socks5_send: check if transport was not set to NULL after writing
+
+ src/bytestream-socks5.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 176789229819438a44e1842767665afba2736bb6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 12:13:52 2008 +0000
+
+    data_received_cb: early return if sending failed
+
+ src/tube-stream.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 698173bcebc155d709d8d72e288a3c93712e6be6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 18 11:55:23 2008 +0000
+
+    block_read was renamed to block_reading
+
+ src/bytestream-socks5.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 3ac69cb65a6cc09a643680c4f7dbcc0235316334
+Merge: c97adae... ab957c4...
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Wed Dec 17 19:49:52 2008 +0100
+
+    Merge branch 'wait-for-caps'
+
+commit c97adae7b781cc433260a99ea5b4bec11068bdbf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Dec 17 18:38:03 2008 +0000
+
+    Revert "Don't let stream die before getting initial codecs and candidates"
+    
+    This reverts commit 938112a82bd147210fd75cd64161f4ea5e013975; Senko has a
+    better fix.
+
+ src/media-stream.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
+
+commit e84b38984d5549f1705f47f4acfa6bac73fcbb1b
+Merge: 07abbeb... cc0c086...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 17:45:15 2008 +0000
+
+    Merge branch 'sock5+transport' into sock5
+
+commit 07abbeb7bf28cb445fc03038c86e296cfcae1701
+Merge: b5be29e... e5e64f0...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 17:45:05 2008 +0000
+
+    Merge branch 'master' into sock5
+
+commit e5e64f0cf8d350aac999c05637356c25622c4436
+Merge: 317eae6... 03cd6c6...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 17:38:17 2008 +0000
+
+    Merge branch 'master' into gibber-transport
+
+commit 03cd6c69dc4dc163baa4d65dddc192aef4090c4d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 17:33:58 2008 +0000
+
+    tube_iface_props_setter: use the property setter
+
+ src/tube-stream.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+commit d6a8aad81871e8245f506c391b4bc78741a8b948
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 17:33:40 2008 +0000
+
+    gabble_tube_stream_set_property: destroy the previous parameters if needed
+
+ src/tube-stream.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 2ed21c282a94482109d464ec670138d1241e4c0e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 17:25:17 2008 +0000
+
+    tube_iface_props_setter: destroy the previous parameters if needed
+
+ src/tube-stream.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 1241312e546065ae970d9ddc780f7b455724681b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 16:56:46 2008 +0000
+
+    d_bus_names_changed_removed: don't leak arrays if handle_type == TP_HANDLE_TYPE_CONTACT
+
+ src/tubes-channel.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 6c25529f0120685dbedcf95734945f4e4d09a16a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 16:54:32 2008 +0000
+
+    always destroy parameters hash table created in extract_tube_information
+
+ src/tubes-channel.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 9f5556c7cbf7a024500273f4eb80ea97e17f5b9a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 16:48:04 2008 +0000
+
+    tubes-channel: no need to copy the tube parameters as the tube object already makes its own copy
+
+ src/tubes-channel.c |   31 ++-----------------------------
+ 1 files changed, 2 insertions(+), 29 deletions(-)
+
+commit 86733522eff64709dd3479c0cb1246e6e3a6c071
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 16:27:37 2008 +0000
+
+    gabble_tubes_channel_presence_updated: don't leak parameters hash table
+
+ src/tubes-channel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 317eae63ed9f7fad866ed1d7323260172c6d3a3d
+Merge: 8a3071e... afddeb6...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 16:17:48 2008 +0000
+
+    Merge branch 'master' into gibber-transport
+
+commit 8a3071ea2b02924faef07631515c24507094cf22
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 16:09:09 2008 +0000
+
+    start_stream_initiation: add a FIXME
+
+ src/tube-stream.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 1d32f66a437de93abbe131f7082b7dcb0bb07315
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 16:08:17 2008 +0000
+
+    data_received_cb: assert that the transport is not NULL
+
+ src/tube-stream.c |    6 +-----
+ 1 files changed, 1 insertions(+), 5 deletions(-)
+
+commit 9313027e33b19c61b78440ec5b007265af930417
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 16:07:24 2008 +0000
+
+    remove old TODO
+
+ src/tube-stream.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 7085a37a53453c01dc97f67f69f604a774096cf3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 16:07:05 2008 +0000
+
+    start_stream_initiation: free data if salut_si_bytestream_manager_negotiate_stream failed
+
+ src/tube-stream.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit afddeb6574066b168585dc1c80bf9670fbc7c2d2
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Dec 17 12:43:27 2008 +0000
+
+    Channel.Type.DBusTube.DRAFT disabled because it is not implemented.
+
+ src/private-tubes-factory.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit 0a02cfab65cf1922016f77e45102e243290ccf42
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 12:36:19 2008 +0000
+
+    tube-stream: gabble_bytestream_iface_block_read was renamed to gabble_bytestream_iface_block_reading
+
+ src/tube-stream.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit bd3219aaa2ee0802385279514ececa8feb47debc
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 17 12:36:07 2008 +0000
+
+    rename gabble_bytestream_iface_block_read to gabble_bytestream_iface_block_reading
+
+ src/bytestream-iface.c |    6 +++---
+ src/bytestream-iface.h |    4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+commit dad6aee6f545af3f5128eb90255c356358edac4a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Dec 17 12:34:36 2008 +0000
+
+    Test Channel.Type.DBusTube.DRAFT: this interface is not yet implemented, but Gabble must not crash when requesting a channel. Add a test.
+
+ tests/twisted/tubes/test-si-tubes.py |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
+
+commit cc0c086db13ff92015422bb76ab3933b477cfe63
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 16 17:50:10 2008 +0000
+
+    transport_handler: use G_GSIZE_FORMAT
+
+ src/bytestream-socks5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ac5edf8daf2e2c9371cb21389e1eb28d72f2a6a8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 16 17:38:09 2008 +0000
+
+    bytestream-socks5: block receiving data when the sock5 stream is connected but not the bytestream
+
+ src/bytestream-socks5.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit 8cd97a0ded0c16d58acede9caf4e0984b74fefbf
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 16 17:30:23 2008 +0000
+
+    implement gabble_bytestream_socks5_block_read
+
+ src/bytestream-socks5.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
+
+commit 5938de86f9a3c565a4e25d273f78e6fb3f530e42
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 16 16:25:14 2008 +0000
+
+    socks5_handle_received_data: add a debug msg when the stream is connected
+
+ src/bytestream-socks5.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 104988477a787365750de2e9a06890d678419bf9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 16 16:24:00 2008 +0000
+
+    socks5_handle_received_data: stop to listen for connections once we have a connection sock5 stream
+
+ src/bytestream-socks5.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 92df87a87b96bb27eac4494fea8e5ea8847e6ec8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 16 16:19:33 2008 +0000
+
+    bytestream-socks5: use Gibber transports instead of GIOChannel
+
+ src/bytestream-socks5.c |  548 ++++++++++++++++++++---------------------------
+ 1 files changed, 235 insertions(+), 313 deletions(-)
+
+commit df7388bbf2dd43248c8779e6a27e6ab55c9bc55f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Dec 16 15:27:38 2008 +0000
+
+    add GABBLE_BYTESTREAM_STATE_CLOSING state
+
+ src/bytestream-iface.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 75f93001542796491837416c156829b137c28187
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 18:01:07 2008 +0000
+
+    bytestream-socks5: don't redefine signals
+
+ src/bytestream-socks5.c |   32 ++------------------------------
+ 1 files changed, 2 insertions(+), 30 deletions(-)
+
+commit 8f353fc53d71797e0673f8a73a1b66d80a54ec36
+Merge: b5be29e... d87fd2b...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 17:54:59 2008 +0000
+
+    Merge branch 'gibber-transport' into sock5+transport
+
+commit d87fd2b27b57df9bae2fd5196c66f2e586221ead
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 17:51:20 2008 +0000
+
+    tube-stream: uncomment bytestream_write_blocked_cb callback
+
+ src/tube-stream.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+commit 14236f87623ef4b11bf4c13c7baca248dbd61b85
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 17:51:08 2008 +0000
+
+    bytestream-iface: add write-blocked signal
+
+ src/bytestream-iface.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit a6a9e20e4e8e9550484e8a025d737a8cebc02028
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 17:44:09 2008 +0000
+
+    bytestream-muc: don't redefine signals
+
+ src/bytestream-muc.c |   34 ++--------------------------------
+ 1 files changed, 2 insertions(+), 32 deletions(-)
+
+commit e7e9b5c87dc0c41f001b57a9f2f1d9652049de8a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 17:43:58 2008 +0000
+
+    bytestream-ibb: don't redefine signals
+
+ src/bytestream-ibb.c |   33 ++-------------------------------
+ 1 files changed, 2 insertions(+), 31 deletions(-)
+
+commit a80286d621f616ba6964c20e64617d1710e6d9c5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 17:43:21 2008 +0000
+
+    bytestream-iface: define bytestream signals
+
+ src/bytestream-iface.c |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
+
+commit 65ec6da74fae23abf1a8b921c9e545d9862d9e10
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Dec 12 19:48:34 2008 +0000
+
+    Stream tube channel advertises the immutable channel properties, including thoses not on the Channel interface
+
+ src/tube-stream.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit bae8ea0293a05e870dcbf080b1e61d83994ba66c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 15:54:26 2008 +0000
+
+    tube-stream: uncomment gabble_bytestream_iface_block_read calls
+
+ src/tube-stream.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 55430456876b5064e6ba08f03c3b5134f36c3fbc
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 15:54:05 2008 +0000
+
+    add gabble_bytestream_iface_block_read as an optionnal abstract method
+
+ src/bytestream-iface.c |   11 +++++++++++
+ src/bytestream-iface.h |    4 ++++
+ 2 files changed, 15 insertions(+), 0 deletions(-)
+
+commit cfce9d18df3e1ae01d958cb8a8a18a72d3e52bff
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 15:22:53 2008 +0000
+
+    test-si-accept-tubes.py: reply to SI iq
+
+ tests/twisted/tubes/test-si-accept-tubes.py |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 6a75e892aadc1c7e1507d7d4c2c4d55a1a59fb13
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 15:21:33 2008 +0000
+
+    extra_bytestream_negotiate_cb: free the data structur if the bytestream was rejected
+
+ src/tube-stream.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 516c28756a160a92627a5390ff079f7aeae53528
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 15:17:41 2008 +0000
+
+    use Gibber transports and listenner
+
+ src/tube-stream.c |  678 ++++++++++++++++++++++-------------------------------
+ 1 files changed, 282 insertions(+), 396 deletions(-)
+
+commit e75b84466ebd9cc1ec52fefe0df6ab600bbea469
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 14:36:47 2008 +0000
+
+    build tests with libgibber
+
+ tests/Makefile.am         |   24 ++++++++++++++++++------
+ tests/twisted/Makefile.am |    4 +++-
+ 2 files changed, 21 insertions(+), 7 deletions(-)
+
+commit 675d43a53d566437bfa5088e6154ef00659a6fb1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 12:59:01 2008 +0000
+
+    sync with gibber master
+
+ lib/gibber/gibber-fd-transport.c |   10 +++++-----
+ lib/gibber/gibber-listener.c     |    2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+commit b980221c4b7e73bf56d1cc99b88394474db02b4e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 11:31:28 2008 +0000
+
+    update gitignore
+
+ .gitignore |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 45a07045c47ef7454854be43b43071bda7478a45
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 11:29:06 2008 +0000
+
+    link Gabble with libgibber
+
+ src/Makefile.am |   16 +++++++++++++---
+ 1 files changed, 13 insertions(+), 3 deletions(-)
+
+commit 6533297a3cfce71a5314293f20d22768f077a3fb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 11:28:46 2008 +0000
+
+    build lib/gibber
+
+ Makefile.am  |    2 +-
+ configure.ac |    4 +++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 60456b36fe2af3168bac0fd1c718ef92da6f7c92
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Dec 15 11:28:11 2008 +0000
+
+    Import gibber transports and listerner
+
+ lib/Makefile.am                         |    1 +
+ lib/gibber/Makefile.am                  |   80 +++++
+ lib/gibber/gibber-debug.c               |   95 ++++++
+ lib/gibber/gibber-debug.h               |   99 ++++++
+ lib/gibber/gibber-fd-transport.c        |  461 +++++++++++++++++++++++++++
+ lib/gibber/gibber-fd-transport.h        |   83 +++++
+ lib/gibber/gibber-linklocal-transport.c |  194 ++++++++++++
+ lib/gibber/gibber-linklocal-transport.h |   84 +++++
+ lib/gibber/gibber-listener.c            |  524 +++++++++++++++++++++++++++++++
+ lib/gibber/gibber-listener.h            |   99 ++++++
+ lib/gibber/gibber-tcp-transport.c       |  181 +++++++++++
+ lib/gibber/gibber-tcp-transport.h       |   67 ++++
+ lib/gibber/gibber-transport.c           |  284 +++++++++++++++++
+ lib/gibber/gibber-transport.h           |  125 ++++++++
+ lib/gibber/gibber-unix-transport.c      |  166 ++++++++++
+ lib/gibber/gibber-unix-transport.h      |   78 +++++
+ lib/gibber/gibber-util.c                |   72 +++++
+ lib/gibber/gibber-util.h                |   34 ++
+ 18 files changed, 2727 insertions(+), 0 deletions(-)
+
 commit b132d3b18df08c8fa1f76ef7972d31ef35e738f6
 Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
 Date:   Sun Dec 14 18:17:39 2008 +0000
@@ -76,6 +858,31 @@ Date:   Sun Dec 14 00:38:44 2008 +0000
 
     Merge branch 'master' into alban-xmpp-spec-tube-caps
 
+commit b5be29ee06e3eb3d1d8e611ae58fc6f8323e8600
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 18:06:34 2008 +0000
+
+    socks5_channel_readable_cb: check g_io_channel_read_chars return value
+
+ src/bytestream-socks5.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+commit dee19eb48ba08352b2b2fe27d96d4261fe1908a2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 18:06:08 2008 +0000
+
+    test-si-socks5-tubes.py: test if the world doesn't explode if a sock5 connection is closed
+
+ tests/twisted/tubes/test-si-socks5-tubes.py |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 846bc5884263fab1331fe05ceba7fdf326173c4d
+Merge: 930198b... 2c33597...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 16:48:22 2008 +0000
+
+    Merge branch 'master' into sock5
+
 commit 9b35aece13ee90005320996d962e1c8347a06e3b
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Thu Dec 11 16:30:40 2008 +0000
@@ -93,6 +900,24 @@ Date:   Thu Dec 11 16:30:25 2008 +0000
 
  tests/twisted/jingle/payload-types.py |    3 ++-
  1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 58cc78a2de7760ae6cc0de957f782e5d978983b7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 16:24:23 2008 +0000
+
+    gabble_bytestream_factory_make_stream_init_iq: each value has to be in its own option node
+
+ src/bytestream-factory.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit f2c539868909412a86ab17c17c3af7c5d7a8f0ac
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 16:24:05 2008 +0000
+
+    fix typo
+
+ tests/twisted/tubes/test-si-fallback.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit 938112a82bd147210fd75cd64161f4ea5e013975
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -139,6 +964,213 @@ Date:   Tue Dec 9 15:41:24 2008 +0000
 
  src/jingle-media-rtp.c |   20 +++++++-------------
  1 files changed, 7 insertions(+), 13 deletions(-)
+
+commit 9c5f6f60d9b19efdee9035b600ab6b8ed63221b1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 16:16:25 2008 +0000
+
+    bytestream_factory_iq_si_cb: add a debug msg
+
+ src/bytestream-factory.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 4676f7afdaa4ce467e38ac03a3d3eaa0465c80c4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 16:04:36 2008 +0000
+
+    replace gabble_bytestream_multiple_count_stream_method by gabble_bytestream_multiple_has_stream_method
+
+ src/bytestream-factory.c  |    4 ++--
+ src/bytestream-multiple.c |    9 ++++++---
+ src/bytestream-multiple.h |    2 +-
+ 3 files changed, 9 insertions(+), 6 deletions(-)
+
+commit ffc72a649c276e7de677167e89467cde2b07b1e9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 15:03:16 2008 +0000
+
+    test-si-fallback.py: no need to use call_async if we wait directly for the return value
+
+ tests/twisted/tubes/test-si-fallback.py |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+commit 7e8a19094cc16b0bc148ce219b17ce2bf4e6e72b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 14:58:59 2008 +0000
+
+    test-si-fallback.py: add some comments
+
+ tests/twisted/tubes/test-si-fallback.py |   20 ++++++++++++++++----
+ 1 files changed, 16 insertions(+), 4 deletions(-)
+
+commit 9a217e2ee07678622ff074b21e4f433746927d42
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 14:49:19 2008 +0000
+
+    bytestream_connection_error_cb: assert the state of the bytestream
+
+ src/bytestream-multiple.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 6ebb9e266bc9dfbb73937707093c8d024f580e52
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 14:18:54 2008 +0000
+
+    coding style fixes
+
+ src/bytestream-multiple.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 84c2bd9c49b0b35845ea38f39b2afb18dce7e553
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 12:52:45 2008 +0000
+
+    _GabbleBytestreamMultiplePrivate: improve fallback_stream_methods description
+
+ src/bytestream-multiple.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b8b48c4e94dd8ddbe5e36fc147776fc0e54635f9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 12:49:59 2008 +0000
+
+    si-multiple.xml: fix tag
+
+ docs/si-multiple.xml |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 00a875cb27c34e71faed29f304a5a9ae8597255f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 12:43:09 2008 +0000
+
+    document si-multiple protocol
+
+ docs/Makefile.am     |    1 +
+ docs/si-multiple.xml |  105 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 106 insertions(+), 0 deletions(-)
+
+commit 57458dd0c16dc69ba7b38e7d84cc96d3a402b4fa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Dec 11 11:16:49 2008 +0000
+
+    rename gabble_bytestream_multiple_nb_stream_method to gabble_bytestream_multiple_count_stream_method
+
+ src/bytestream-factory.c  |    2 +-
+ src/bytestream-multiple.c |    2 +-
+ src/bytestream-multiple.h |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 34de41346bcdef68206c20278778fb7dd2eac88d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 16:58:46 2008 +0000
+
+    bytestream-factory: most of the create bytestream methods don't have to be public
+
+ src/bytestream-factory.c |   21 ++++++++++++++++++---
+ src/bytestream-factory.h |   16 ----------------
+ 2 files changed, 18 insertions(+), 19 deletions(-)
+
+commit 08fe12c316772c677920baacf77e8c8db228ed34
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 16:48:43 2008 +0000
+
+    gabble_bytestream_factory_make_multi_accept_iq:  send multi stream methods in <si-multiple>
+
+ src/bytestream-factory.c                |    8 ++++++--
+ tests/twisted/tubes/test-si-fallback.py |    8 +++++---
+ 2 files changed, 11 insertions(+), 5 deletions(-)
+
+commit ce90e54dc0709d89df3e24e36cd7ea12daee3841
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 16:31:24 2008 +0000
+
+    streaminit_get_multiple_bytestream: look for multi stream methods in <si-multiple>
+
+ src/bytestream-factory.c                |   33 +++++++++++++++----------------
+ tests/twisted/tubes/test-si-fallback.py |    7 +++--
+ 2 files changed, 20 insertions(+), 20 deletions(-)
+
+commit 5c0ffefb577e72f3e2b3ade9b91267d40051c889
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 16:00:16 2008 +0000
+
+    gabble_bytestream_factory_create_multiple: insert bytestream to multiple_bytestreams hash table
+
+ src/bytestream-factory.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 6f1a50929559f0cafbe3308fae2ec62c647b7363
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 15:58:46 2008 +0000
+
+    gabble_bytestream_multiple_dispose: don't unref factory as we don't have a ref on it (which is sane as it does have a ref on the bytestream)
+
+ src/bytestream-multiple.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+commit 01a53933eb253ec6934f5974332cb27e6fc39318
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 15:47:54 2008 +0000
+
+    bytestream_factory_iq_si_cb: check if the multi bytestreams contains at least one stream method
+
+ src/bytestream-factory.c |   16 ++++++++++++++--
+ 1 files changed, 14 insertions(+), 2 deletions(-)
+
+commit fee63d200beb7df937eccfe258e4697c3394709f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 15:46:02 2008 +0000
+
+    add gabble_bytestream_multiple_nb_stream_method
+
+ src/bytestream-multiple.c |    9 +++++++++
+ src/bytestream-multiple.h |    3 +++
+ 2 files changed, 12 insertions(+), 0 deletions(-)
+
+commit ec51ef3b96d53d1cedb2b08aa10a944b98a52db6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 15:34:13 2008 +0000
+
+    coding style fix
+
+ src/bytestream-multiple.h |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 87afdb292aa943b0f2069f54f76f08998bcdb42c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 15:32:02 2008 +0000
+
+    bytestream_factory_iq_si_cb: add some comments
+
+ src/bytestream-factory.c |   26 ++++++++++++++++++++------
+ 1 files changed, 20 insertions(+), 6 deletions(-)
+
+commit 13be891aeb9de834ff0c3a5d790311c5a8d8a86b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 15:12:26 2008 +0000
+
+    reorder namespaces.h
+
+ src/namespaces.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 2c66c0ede79e2ea1b20c71eb5d9772059d4ce20d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 14:55:54 2008 +0000
+
+    coding style fix
+
+ src/bytestream-factory.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit fe9ba3df9df264566dca53a76b7722c90f0d7f0b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Dec 10 14:54:51 2008 +0000
+
+    stream_method_supported: make function easier to read
+
+ src/bytestream-factory.c |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
 
 commit 2c335975279f4482e280d4864dd5447cd68caef6
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -194,6 +1226,180 @@ Date:   Mon Dec 8 15:38:05 2008 +0000
  src/muc-channel.c                        |    4 ++++
  tests/twisted/muc/test-muc-invitation.py |   17 +++++++++++++++--
  2 files changed, 19 insertions(+), 2 deletions(-)
+
+commit 80ff9faf8dd5ef0994aeabfba535ed8310bb470b
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 21:57:57 2008 +0000
+
+    Remove a hack now that NewChannel is correctly emitted
+
+ tests/twisted/tubes/test-si-fallback.py |    9 ++-------
+ 1 files changed, 2 insertions(+), 7 deletions(-)
+
+commit 05ab21d6e85fb4fb83268f5623f94606b66871a5
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 21:50:28 2008 +0000
+
+    Improve some comments for corner cases
+
+ src/bytestream-multiple.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit d566465675063a5a6608b88164c86cee61f40e6e
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 21:47:13 2008 +0000
+
+    Remove an outdated comment
+
+ src/bytestream-factory.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 480fb6ff694ff76a5876fbcb7481ee945de89706
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 21:46:33 2008 +0000
+
+    Handle clients that send us unsupported stream methods
+
+ src/bytestream-factory.c                |   30 ++++++++++++++++++++++++------
+ tests/twisted/tubes/test-si-fallback.py |    6 +++++-
+ 2 files changed, 29 insertions(+), 7 deletions(-)
+
+commit 1d0dca9e01aea6753c77404140cd8a94ab684503
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 21:34:22 2008 +0000
+
+    Remove a trailing space
+
+ src/bytestream-multiple.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6499fa8aa71a49f496d37493d9fc9d6eb504ba1f
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 21:32:47 2008 +0000
+
+    Split a long line
+
+ src/bytestream-factory.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit 1f318fbae65446598753f294436ba9d059574251
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 21:30:55 2008 +0000
+
+    Rename gabble_bytestream_multiple_add_bytestream() to _add_stream_method()
+
+ src/bytestream-factory.c  |    5 +++--
+ src/bytestream-multiple.c |    5 ++---
+ src/bytestream-multiple.h |    4 ++--
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+commit d5fa8f382f16ed55ac4ea1bb3d6b168a19ebbd20
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 21:28:32 2008 +0000
+
+    Remove some leftover code to handle a removed property
+
+ src/bytestream-multiple.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+commit ef6d07985341c3cab6ec64dcf72f6996e5e11bae
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 21:25:55 2008 +0000
+
+    Split some long lines
+
+ src/bytestream-multiple.c |   33 ++++++++++++++++++++++-----------
+ 1 files changed, 22 insertions(+), 11 deletions(-)
+
+commit ed0e33ee7dbc0a797a4f8b92bb08cd5ffe6f7292
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 21:23:11 2008 +0000
+
+    Refactor streaminit_reply_cb() to be more readable
+
+ src/bytestream-factory.c |  166 +++++++++++++++++++++++++++-------------------
+ 1 files changed, 99 insertions(+), 67 deletions(-)
+
+commit 0b4ce7b39a0e1e2ce3251efeee897a1952769736
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 21:00:02 2008 +0000
+
+    Remove the checks for the bytestream going from OPEN to INITIATING
+    
+    A bug in the SOCSK5 code allowed the bytestream to emit a
+    connection-error signal when the stream was already OPEN, so the
+    fallback code had to check for the state going to OPEN back to
+    INITIATING (for a fallback stream).
+    The checks are not useful anymore now that the bug is fixed.
+
+ src/tube-stream.c |    8 --------
+ 1 files changed, 0 insertions(+), 8 deletions(-)
+
+commit 065d3b048ac8f84b26fab364ab5fee1066250942
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 20:59:25 2008 +0000
+
+    Remove the close-on-connection-error crack
+
+ src/bytestream-ibb.c      |   13 ----------
+ src/bytestream-iface.c    |    8 ------
+ src/bytestream-multiple.c |   14 -----------
+ src/bytestream-socks5.c   |   54 +++++++++++++++------------------------------
+ 4 files changed, 18 insertions(+), 71 deletions(-)
+
+commit b4c8c0c7fc6aa1f9f32b4fee024d01899d62ae72
+Merge: 5a9c36e... 930198b...
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 20:47:29 2008 +0000
+
+    Merge branch 'socks5-bytestreams' into si-fallback
+
+commit 930198b10311987eda910b3fca60aed534e5f127
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 20:46:42 2008 +0000
+
+    Update the IBB test from master
+
+ tests/twisted/tubes/test-si-ibb-tubes.py |   78 +++++++++++++++++++++++-------
+ 1 files changed, 61 insertions(+), 17 deletions(-)
+
+commit 5a9c36e2773abd64a561e45a10e62ae0fab54e2b
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 18:42:20 2008 +0000
+
+    Remove HAVE_DBUS_TUBES
+
+ tests/twisted/tubes/test-si-fallback.py |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 56ae544404157f6774c38202f39b8d37746686c8
+Merge: 2991ad1... 640eef6...
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 18:31:55 2008 +0000
+
+    Merge branch 'socks5-bytestreams' into si-fallback
+
+commit 640eef6a3a1a158f042b4324967a7eea0f94cb42
+Merge: da7068c... f8cf995...
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 18:31:07 2008 +0000
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble into socks5-bytestreams
+
+commit 2991ad1e51743e155d9bcc90b9b9cbbca28ec71d
+Author: Marco Barisione <marco@barisione.org>
+Date:   Sun Dec 7 18:29:56 2008 +0000
+
+    Implement a different and saner way to have SI fallback
+
+ src/bytestream-factory.c                |  226 +++++++++++++++++------------
+ src/bytestream-factory.h                |   10 ++
+ src/bytestream-multiple.c               |  241 ++++++++++++++++---------------
+ src/bytestream-multiple.h               |    2 +-
+ src/bytestream-socks5.c                 |    1 +
+ src/namespaces.h                        |    1 +
+ tests/twisted/tubes/test-si-fallback.py |   84 +++++++-----
+ 7 files changed, 321 insertions(+), 244 deletions(-)
 
 commit 6e00506552117fd3566f074ed14b4d8d1c6ea12c
 Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
@@ -294,6 +1500,100 @@ Date:   Fri Dec 5 14:25:56 2008 +0000
  .../tubes/test-muc-offer-stream-tube-ibb.py        |   23 +++++++++++++++++--
  1 files changed, 20 insertions(+), 3 deletions(-)
 
+commit dbe867256cc820f30d6bc42664388d6629d5c16b
+Merge: 37d5999... da7068c...
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Dec 5 12:56:31 2008 +0000
+
+    Merge branch 'socks5-bytestreams' into si-fallback
+    
+    Conflicts:
+    
+    	src/bytestream-socks5.c
+
+commit da7068c1e53d8b3e0aa67e704deee7794908fa8c
+Merge: 35dc2a1... 89252dd...
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Dec 5 12:22:48 2008 +0000
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble into socks5-bytestreams
+    
+    Conflicts:
+    
+    	configure.ac
+    	tests/twisted/tubes/test-si-socks5-tubes.py
+
+commit ab957c4c4400f97790eea22abf1a2fa40f1b45ca
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Dec 5 12:31:49 2008 +0100
+
+    MediaStream: prevent idle callback for initial codecs/candidates after stream is disposed
+
+ src/media-stream.c |   14 +++++++++++++-
+ 1 files changed, 13 insertions(+), 1 deletions(-)
+
+commit 729242161e0b51416a6c92409c539653d1e260e1
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Dec 5 12:30:04 2008 +0100
+
+    Twisted test for handling incomplete stream requests when channel is disposed
+
+ tests/twisted/Makefile.am                          |    1 +
+ .../jingle/test-wait-for-caps-incomplete.py        |   71 ++++++++++++++++++++
+ 2 files changed, 72 insertions(+), 0 deletions(-)
+
+commit 4ea63396fd249537c7f4cfd58c4f860069c5a5f2
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Dec 5 12:28:56 2008 +0100
+
+    MediaChannel: return DBus error for incomplete stream requests when channel is dispose
+
+ src/media-channel.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit e6f1c4bdf904a47f2aaa4dcc217f288a8179b462
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Dec 5 11:34:51 2008 +0100
+
+    MediaChannel: clean up incomplete delayed stream requests
+
+ src/media-channel.c |   76 ++++++++++++++++++++++++++++++++++++++++-----------
+ 1 files changed, 60 insertions(+), 16 deletions(-)
+
+commit a6ee31f74af7870f512daedd9ff1a420afad0ee5
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Dec 5 09:32:49 2008 +0100
+
+    Remove unneeded wait for caps hack in other jingle tests
+
+ .../twisted/jingle/test-content-adding-removal.py  |   10 ----------
+ tests/twisted/jingle/test-dialects-outgoing.py     |   10 ----------
+ tests/twisted/jingle/test-outgoing-call-ensure.py  |   10 ----------
+ .../jingle/test-outgoing-call-requestotron.py      |   10 ----------
+ tests/twisted/jingle/test-outgoing-call.py         |   10 ----------
+ 5 files changed, 0 insertions(+), 50 deletions(-)
+
+commit 88896d558a945a13246a19c3936d766170bb1a37
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Dec 5 09:32:21 2008 +0100
+
+    Added test for waiting for capabilities in outgoing calls
+
+ tests/twisted/Makefile.am                  |    1 +
+ tests/twisted/jingle/test-wait-for-caps.py |   83 ++++++++++++++++++++++++++++
+ 2 files changed, 84 insertions(+), 0 deletions(-)
+
+commit 323ecc04fce334fe48640e4a6c386196107c9b2d
+Merge: 483ca5a... e672a2c...
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Dec 5 09:00:43 2008 +0100
+
+    Merge branch 'master' into wait-for-caps and fix merge errors
+    
+    Conflicts:
+    
+    	src/presence-cache.c
+
 commit 89252dda5c729060db03b3af957c492d51a92a86
 Merge: e672a2c... 98ba9fa...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -320,6 +1620,31 @@ Date:   Thu Dec 4 15:03:34 2008 -0500
 
  src/presence-cache.c |    6 ------
  1 files changed, 0 insertions(+), 6 deletions(-)
+
+commit 35dc2a1d7c3718bd53154b6c1c58203824cc1500
+Merge: bf00411... 2d5c231...
+Author: Marco Barisione <marco@barisione.org>
+Date:   Thu Dec 4 18:21:04 2008 +0000
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble into socks5-bytestreams
+
+commit bf00411e560f9c048a2b4bce679a94b9446ada6b
+Author: Marco Barisione <marco@barisione.org>
+Date:   Thu Dec 4 18:13:55 2008 +0000
+
+    Use a symbolic name for the length of the SOCKS5 CONNECT command
+
+ src/bytestream-socks5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 4ad68e77f9dfa636ab1852b2b2168802931bd4ee
+Author: Marco Barisione <marco@barisione.org>
+Date:   Thu Dec 4 17:58:39 2008 +0000
+
+    Improve some comments and debug messages
+
+ src/bytestream-socks5.c |   15 +++++++++++----
+ 1 files changed, 11 insertions(+), 4 deletions(-)
 
 commit 98ba9fa6d5d8078550d4d555d05fcc419e8c5a7b
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -389,6 +1714,62 @@ Date:   Thu Dec 4 17:37:58 2008 +0000
  configure.ac |   20 +-------------------
  1 files changed, 1 insertions(+), 19 deletions(-)
 
+commit ddc9bb11d4ad6dcefa746b7ff711bdf8f51a0d82
+Author: Marco Barisione <marco@barisione.org>
+Date:   Thu Dec 4 17:30:54 2008 +0000
+
+    Check the state to decide whether to try to connect to another streamhost
+
+ src/bytestream-socks5.c |   18 ++++++++++++++----
+ 1 files changed, 14 insertions(+), 4 deletions(-)
+
+commit 483ca5a440d9e39bcbe6854077dda9615dc39ce5
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Dec 4 16:15:46 2008 +0100
+
+    MediaChannel: delay RequestStreams if we're unsure about contacts' presence
+
+ src/media-channel.c |   60 ++++++++++++++++++++++++++++++++++----------------
+ 1 files changed, 41 insertions(+), 19 deletions(-)
+
+commit 04315a55533f9b543dc0d2630cdca1b22e6cceab
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Dec 4 16:12:53 2008 +0100
+
+    PresenceCache: define an "unsure" period 5 seconds after cache creation
+
+ src/presence-cache.c |   23 +++++++++++++++++++++++
+ src/presence-cache.h |    2 ++
+ 2 files changed, 25 insertions(+), 0 deletions(-)
+
+commit 52cd8cedb627bfc8b85984246cb6fb724e0bfdfb
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Dec 4 15:11:28 2008 +0100
+
+    MediaChannel: delay RequestStreams if caps discover for contact is in progress
+
+ src/media-channel.c |  107 +++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 files changed, 99 insertions(+), 8 deletions(-)
+
+commit 718415776616983d56d8101be1e9f7231a506907
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Dec 4 15:10:21 2008 +0100
+
+    PresenceCache: emit new "capabilities-discovered" signal unconditionally when one caps disco is complete
+
+ src/presence-cache.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 113ec852ac6e7850de2af030df8128ffb36e8cd8
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Dec 4 15:09:05 2008 +0100
+
+    added helper function to determine whether there are pending disco request for caps for some handle
+
+ src/presence-cache.c |   29 +++++++++++++++++++++++++++++
+ src/presence-cache.h |    3 +++
+ 2 files changed, 32 insertions(+), 0 deletions(-)
+
 commit 2d5c2310295377b737652ce2ce40dd0fdcf32160
 Author: Senko Rasic <senko.rasic@collabora.co.uk>
 Date:   Tue Dec 2 16:08:55 2008 +0100
@@ -409,6 +1790,25 @@ Date:   Tue Dec 2 16:04:49 2008 +0100
  configure.ac |    4 ++--
  2 files changed, 25 insertions(+), 4 deletions(-)
 
+commit 2b5e0d57deb5115c4a76e2dbc794830d83d2d704
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 19:20:22 2008 +0000
+
+    Set the tube state to open only when the SOCKS5 connection is ready
+
+ src/bytestream-factory.c |    3 ---
+ src/bytestream-socks5.c  |    1 +
+ 2 files changed, 1 insertions(+), 3 deletions(-)
+
+commit d1e381a6f63d1c66d8aa6ac72ed868e5285f171a
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 19:19:35 2008 +0000
+
+    Don't expect TubeStateChanged before a connection has been established
+
+ tests/twisted/tubes/test-si-socks5-tubes.py |    9 +++------
+ 1 files changed, 3 insertions(+), 6 deletions(-)
+
 commit 3c664b9ce918b34d157082bb1df62cb9761cee4f
 Author: Senko Rasic <senko.rasic@collabora.co.uk>
 Date:   Mon Dec 1 20:01:05 2008 +0100
@@ -427,12 +1827,120 @@ Date:   Mon Dec 1 19:55:20 2008 +0100
  src/media-channel.c |    4 +++-
  1 files changed, 3 insertions(+), 1 deletions(-)
 
+commit 747b8eb2d15ad412c1c0dd254f9b49d4bb81717e
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 18:53:44 2008 +0000
+
+    Pass an error message to _gabble_connection_send_iq_error() in handle_socks5_query_iq()
+
+ src/bytestream-factory.c |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+commit f93d98c3bc3f52139811ba8eb98b1888540ba346
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 18:11:55 2008 +0000
+
+    Advertise SOCKS5 support
+
+ src/capabilities.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit fd5f60a28b1b181a0a88714dd8a3bbf4fa15cc83
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 17:53:32 2008 +0000
+
+    NS_BYTESTREAMS was already defined
+
+ src/namespaces.h |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
 commit 0d2f9af03279865f0c1b2b193cdafc82f17e0e97
 Merge: 3210adf... dcafb9e...
 Author: Senko Rasic <senko.rasic@collabora.co.uk>
 Date:   Mon Dec 1 16:46:45 2008 +0100
 
     Merge commit 'upstream/master'
+
+commit 78eb91075061dd2de94f9a749abfb474465abe2c
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 15:15:55 2008 +0000
+
+    Initialize the table variable in remove_bytestream()
+
+ src/bytestream-factory.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ea149a36ea82db8419558c2bd45924126acf09f7
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 15:08:08 2008 +0000
+
+    Call socks5_handle_received_data() until there is no more data to process
+
+ src/bytestream-socks5.c |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
+
+commit 5e5965a0050b6ed82e793c8eb1ee75616831dc88
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 14:58:23 2008 +0000
+
+    Add more comments and make code clearer
+
+ src/bytestream-factory.c |    1 +
+ src/bytestream-socks5.c  |   74 +++++++++++++++++++++++++++++++++++----------
+ 2 files changed, 58 insertions(+), 17 deletions(-)
+
+commit ce7309e58594b89a7dd7da1be53d357b0b9bbe11
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 13:07:34 2008 +0000
+
+    Make some DEBUG() messages clearer
+
+ src/bytestream-factory.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 35ee7261136eda36cde204079107a88f7a7e3a74
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 12:51:22 2008 +0000
+
+    Use a backlog of 1 for listen() as we expect only a connection
+
+ src/bytestream-socks5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ed469364bbfd78c47805c0f22ba9ac9fd09f31a0
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 12:49:10 2008 +0000
+
+    Use g_slice_new instead of g_new to allocate the Streamhost structs
+
+ src/bytestream-socks5.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 7729dc39515f6f05e54bdf92342444162f8c0ea2
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 12:48:01 2008 +0000
+
+    Use tp_strdiff instead of strcmp
+
+ src/bytestream-factory.c |    4 ++--
+ src/bytestream-socks5.c  |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit cc8a2b02e96e217204601b41ab6d9686983b31e3
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 12:43:43 2008 +0000
+
+    Style fixes
+
+ src/bytestream-socks5.c |   44 ++++++++++++++++++++++----------------------
+ 1 files changed, 22 insertions(+), 22 deletions(-)
+
+commit e07ada18ea94981b2e61857f743d816c8272c21f
+Merge: df4d5ab... dcafb9e...
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Dec 1 11:47:42 2008 +0000
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble into socks5-bytestreams
 
 commit dcafb9e78aff56a861256a0b4b2f9d49605dd85c
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
@@ -507,6 +2015,84 @@ Date:   Thu Nov 27 13:37:40 2008 +0000
  src/caps-channel-manager.h  |    2 +-
  src/private-tubes-factory.c |    2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 37d59998d6378164017d0a046f7931d0c8fa8016
+Merge: 257dfbd... df4d5ab...
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 21 19:08:14 2008 +0000
+
+    Merge branch 'socks5-bytestreams' into si-fallback
+    
+    Conflicts:
+    
+    	tests/twisted/Makefile.am
+
+commit df4d5abc2458a028ec2c59b8c4a114c1c97378ac
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 21 19:04:08 2008 +0000
+
+    Style fixes
+
+ src/bytestream-factory.c |    4 +-
+ src/bytestream-socks5.c  |   90 ++++++++++++++++++++++++++++++---------------
+ 2 files changed, 62 insertions(+), 32 deletions(-)
+
+commit 463240cb12e6328e644b0c3a8bbdaf666bb064ba
+Merge: d99a856... 99d02ac...
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 21 16:21:50 2008 +0000
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble into socks5-bytestreams
+    
+    Conflicts:
+    
+    	tests/twisted/Makefile.am
+
+commit 257dfbdcd10928f1d3b5442158f7d9259998c1ec
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 21 16:16:22 2008 +0000
+
+    Remove a useless return
+
+ tests/twisted/tubes/test-si-fallback.py |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit b3f08d18d2c41b119b3443ffd5acba627e540f92
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 21 16:14:58 2008 +0000
+
+    Be sure to always close the active bytestream and not just the first one
+
+ src/bytestream-multiple.c |   45 +++++++++++++++++++++++++++++++--------------
+ 1 files changed, 31 insertions(+), 14 deletions(-)
+
+commit 40ef2c35d81cc5378d7432394e07981e5aca5575
+Author: Marco Barisione <marco@barisione.org>
+Date:   Wed Nov 19 17:54:51 2008 +0000
+
+    Remove an unneeded g_object_unref()
+
+ src/bytestream-socks5.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 5d1e9353c7b72fb47a87ec4db81b0ef744901ae4
+Author: Marco Barisione <marco@barisione.org>
+Date:   Wed Nov 19 17:38:23 2008 +0000
+
+    Implement SI fallback
+
+ src/Makefile.am                         |    2 +
+ src/bytestream-factory.c                |  173 +++++++--
+ src/bytestream-factory.h                |    6 +
+ src/bytestream-ibb.c                    |   23 ++
+ src/bytestream-iface.c                  |    8 +
+ src/bytestream-multiple.c               |  604 +++++++++++++++++++++++++++++++
+ src/bytestream-multiple.h               |   74 ++++
+ src/bytestream-socks5.c                 |   67 +++-
+ src/tube-stream.c                       |    8 +
+ tests/twisted/Makefile.am               |    1 +
+ tests/twisted/tubes/test-si-fallback.py |  332 +++++++++++++++++
+ 11 files changed, 1241 insertions(+), 57 deletions(-)
 
 commit c4843b7a138113ea85b839fef5a3adc343560262
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
@@ -960,6 +2546,15 @@ Date:   Tue Nov 11 12:45:49 2008 +0000
  src/tubes-channel.c |    4 +++-
  2 files changed, 6 insertions(+), 2 deletions(-)
 
+commit d99a856c949f41b9a7e4912994be89a2f4523e56
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Nov 11 11:43:42 2008 +0000
+
+    Some SOCSK5 tests were actually testing IBB
+
+ tests/twisted/tubes/test-si-socks5-tubes.py |   92 +++++++++++++++++---------
+ 1 files changed, 60 insertions(+), 32 deletions(-)
+
 commit 653b2910ad26c10803a6067032bfc9514d988383
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Mon Nov 10 17:08:11 2008 +0000
@@ -1021,6 +2616,96 @@ Date:   Mon Nov 10 12:28:23 2008 +0000
 
     Merge branch 'master' into alban-enhanced-caps-with-complex-types
 
+commit d9eddaa5706001aced87e5c2af60a8b245cc484e
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Nov 10 11:24:41 2008 +0000
+
+    Don't leak the channel that listens for incoming socks5 connections
+
+ src/bytestream-socks5.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 9cea1adf4f91a68c75b3e308b66c12b77cffd8d6
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 7 18:50:20 2008 +0000
+
+    Move the duplicated SOCKS5 channel setup to a function
+
+ src/bytestream-socks5.c |   82 +++++++++++++++++++++-------------------------
+ 1 files changed, 37 insertions(+), 45 deletions(-)
+
+commit d135026dbc6f4127a47a842c5ee4bfbaf2cd5484
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 7 18:34:52 2008 +0000
+
+    Handle errors when listening on the SOCKS5 socket
+
+ src/bytestream-socks5.c |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
+
+commit dd88540ce55e2157c75cd1f964802c63adfe4963
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 7 18:24:07 2008 +0000
+
+    Don't fail if the streamhost suppports more than one auth method
+
+ src/bytestream-socks5.c |   36 +++++++++++++++++++++++++-----------
+ 1 files changed, 25 insertions(+), 11 deletions(-)
+
+commit 9d82a4774ba0b8a7b483a7ad4d9d16b5aacc89ba
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 7 18:01:11 2008 +0000
+
+    Remove a now useless assert
+
+ src/bytestream-socks5.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 7ded8b9f5eb1d441b2161fe706d4613d5e7d4f9f
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 7 17:59:20 2008 +0000
+
+    Free the buffers when the SOCKS5 GIOChannel is closed
+
+ src/bytestream-socks5.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+commit c64dc321bfccd8bf35f57c0860218f5b97e61cab
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 7 17:55:25 2008 +0000
+
+    Don't the the GIOChannel is case of connection error
+
+ src/bytestream-socks5.c |   56 +++++++++++++++++++++++++++-------------------
+ 1 files changed, 33 insertions(+), 23 deletions(-)
+
+commit 6de94d54c30a2500c08da7b2308ca385d454cf48
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 7 17:50:15 2008 +0000
+
+    Don't define twice the same variable
+
+ src/bytestream-socks5.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 8c2553a43a6a40ef7fdc1633f7b1282387aa0052
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 7 17:40:57 2008 +0000
+
+    Handle errors on the SOCKS5 bytestream
+
+ src/bytestream-socks5.c |  167 ++++++++++++++++++++++++++++++++++++-----------
+ 1 files changed, 129 insertions(+), 38 deletions(-)
+
+commit 087693be39a5ed0608c14f968b8b937db6b9ee94
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 7 17:30:21 2008 +0000
+
+    Send a valid SOCKS5 connect command instead of dummy data
+
+ tests/twisted/tubes/test-si-socks5-tubes.py |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
 commit fe77f6fa27c805b9aa0cbbc55e799553a1aaa5b0
 Merge: a646843... 334a12f...
 Author: Senko Rasic <senko@phyrexia.lan>
@@ -1056,6 +2741,17 @@ Date:   Fri Nov 7 12:53:57 2008 +0100
  src/jingle-session.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
+commit c83eaf6cc3db5ba1f6145f33782b15b7269592c7
+Merge: c3d2888... 334a12f...
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 7 11:33:17 2008 +0000
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble into socks5-bytestreams
+    
+    Conflicts:
+    
+    	tests/twisted/tubes/test-si-socks5-tubes.py
+
 commit 2af7bc06b8e56d0fe367eb1a95691c7f0a499b65
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Fri Nov 7 12:28:19 2008 +0100
@@ -1073,6 +2769,15 @@ Date:   Fri Nov 7 12:27:27 2008 +0100
 
  src/jingle-session.c |    7 ++++++-
  1 files changed, 6 insertions(+), 1 deletions(-)
+
+commit c3d2888e71a4bd915ecbfc440bcead90f1088a79
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Nov 7 10:49:19 2008 +0000
+
+    sha1_hex accepts a guint for the string length so don't pass -1
+
+ src/bytestream-socks5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit adc7977a0133b990584cf792949683932ff221ce
 Author: Senko Rasic <senko@phyrexia.lan>
@@ -1204,6 +2909,24 @@ Date:   Wed Nov 5 21:17:22 2008 +0100
  src/jingle-content.c |   13 ++++++++-----
  1 files changed, 8 insertions(+), 5 deletions(-)
 
+commit c2060eacd6ed6423ebc012a2b1e51f3c71c4ffa2
+Author: Marco Barisione <marco@barisione.org>
+Date:   Wed Nov 5 20:10:09 2008 +0000
+
+    Testing sending another working <streamhost> but that should not be tried
+
+ tests/twisted/tubes/test-si-socks5-tubes.py |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit f5870343ad099ad18a13a4445158cf9dd18a320e
+Author: Marco Barisione <marco@barisione.org>
+Date:   Wed Nov 5 20:07:12 2008 +0000
+
+    Test sending more than a single <streamhost>
+
+ tests/twisted/tubes/test-si-socks5-tubes.py |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
 commit 9d6794fe085652acb17641f95d8c492e4aabfaa8
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Wed Nov 5 20:38:46 2008 +0100
@@ -1213,6 +2936,34 @@ Date:   Wed Nov 5 20:38:46 2008 +0100
  src/jingle-content.c |   30 ++++++++++++++++++++++++++++++
  src/jingle-session.c |    1 +
  2 files changed, 31 insertions(+), 0 deletions(-)
+
+commit 6432ba5b72d09ddd24e5531d81eb361fd6ccdada
+Author: Marco Barisione <marco@barisione.org>
+Date:   Wed Nov 5 16:46:10 2008 +0000
+
+    Don't leak the streamhosts list
+
+ src/bytestream-socks5.c |   40 ++++++++++++++++++++++++++++++++++------
+ 1 files changed, 34 insertions(+), 6 deletions(-)
+
+commit 0631e14a1dd62acf07da2678b230e96ea082f3dc
+Author: Marco Barisione <marco@barisione.org>
+Date:   Wed Nov 5 15:18:28 2008 +0000
+
+    Remove an outdated comment
+
+ src/bytestream-socks5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 7e6003d52412c33813c24f6aea612e41693ee979
+Author: Marco Barisione <marco@barisione.org>
+Date:   Wed Nov 5 14:57:50 2008 +0000
+
+    Set the domain name when sending a SOCKS5 connect message
+
+ src/bytestream-socks5.c                     |   19 +++++++++++++++++--
+ tests/twisted/tubes/test-si-socks5-tubes.py |   15 +++++++++------
+ 2 files changed, 26 insertions(+), 8 deletions(-)
 
 commit 43672228b9b1d4a9cf3fb8a85f3381d1df06f265
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -1446,6 +3197,53 @@ Date:   Tue Nov 4 15:01:34 2008 -0500
  src/media-stream.c |   11 +++++++++--
  1 files changed, 9 insertions(+), 2 deletions(-)
 
+commit bf8c4a829d7c41f182bfce1b45fb261f18cdae11
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Nov 4 18:00:14 2008 +0000
+
+    Send <streamhost-used> when connected to a streamhost
+
+ src/bytestream-socks5.c |   20 +++++++++++++++++++-
+ 1 files changed, 19 insertions(+), 1 deletions(-)
+
+commit 3b1c680f782dddc32593d41c9a97ccb101e3b79f
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Nov 4 17:58:32 2008 +0000
+
+    Document lm_iq_message_make_result
+
+ src/util.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit e7176c6310267f3c883c2128867f558c7fa2f966
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Nov 4 17:49:18 2008 +0000
+
+    Move _lm_iq_message_make_result to util.c and rename to lm_iq_message_make_result
+
+ src/connection.c |   36 ++----------------------------------
+ src/util.c       |   31 +++++++++++++++++++++++++++++++
+ src/util.h       |    3 +++
+ 3 files changed, 36 insertions(+), 34 deletions(-)
+
+commit e90f1a7d57695d47c5570a3a8e4bea17d47e2223
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Nov 4 17:47:52 2008 +0000
+
+    Store event.properties['transport'] in a variable instead of always using the dict directly
+
+ tests/twisted/tubes/test-si-socks5-tubes.py |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
+
+commit 6bf7de8fbeaf379476c9a9bb754f1eb7376db576
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Nov 4 17:43:43 2008 +0000
+
+    Verify that gabble sends a streamhost-used tag
+
+ tests/twisted/tubes/test-si-socks5-tubes.py |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
+
 commit 580dbd0b17c74000c104755c261b66f91b8fe529
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Tue Nov 4 18:31:49 2008 +0100
@@ -1561,6 +3359,15 @@ Date:   Tue Nov 4 12:49:23 2008 +0000
  configure.ac |    2 +-
  2 files changed, 10 insertions(+), 1 deletions(-)
 
+commit 6d19e170ebf7b0e0c7cde188c1556a6e6a6e2bdc
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Nov 4 12:42:12 2008 +0000
+
+    Add an empty S5BFactory.clientConnectionLost to make twisted happy
+
+ tests/twisted/tubes/test-si-socks5-tubes.py |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
 commit 747abddfc8efe13fb1c34c5d64e2193c10ae52c8
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Tue Nov 4 13:39:36 2008 +0100
@@ -1569,6 +3376,16 @@ Date:   Tue Nov 4 13:39:36 2008 +0100
 
  src/media-stream.c |   20 ++++++++++++++++----
  1 files changed, 16 insertions(+), 4 deletions(-)
+
+commit 298c88b9f6d199bd9fd1950686881432be394911
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Nov 4 12:36:29 2008 +0000
+
+    Use getifaddrs to get the local IPs if available
+
+ configure.ac            |    3 ++
+ src/bytestream-socks5.c |   56 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 59 insertions(+), 0 deletions(-)
 
 commit 6199c8e04d52eb076096b7ca2186c5f91c2817e6
 Author: Senko Rasic <senko@phyrexia.lan>
@@ -1580,6 +3397,15 @@ Date:   Tue Nov 4 13:30:16 2008 +0100
  src/jingle-media-rtp.h |    8 +++++
  src/media-stream.c     |   73 +----------------------------------------------
  3 files changed, 39 insertions(+), 80 deletions(-)
+
+commit b6ac94607e5174ba06a1b8087e9b8ad5eb17871f
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Nov 4 12:22:56 2008 +0000
+
+    Obtain the list of our addresses and send them instead of hard-coding localhost
+
+ src/bytestream-socks5.c |  115 ++++++++++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 109 insertions(+), 6 deletions(-)
 
 commit 79275e9c7b7da81465210292d3129e447626f260
 Author: Senko Rasic <senko@phyrexia.lan>
@@ -1611,6 +3437,15 @@ Date:   Tue Nov 4 10:55:40 2008 +0000
  NEWS         |    2 +-
  configure.ac |    4 ++--
  2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 00271b0deedb2ba0698f492eef055981d6bab3c5
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Nov 4 10:45:23 2008 +0000
+
+    Listen on a random free port instead of a hard-coded one
+
+ src/bytestream-socks5.c |   14 ++++++++------
+ 1 files changed, 8 insertions(+), 6 deletions(-)
 
 commit 6532d1150de4bf6d71b57664325f3403cfba0d42
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -1817,6 +3652,13 @@ Date:   Mon Nov 3 18:21:34 2008 +0000
  tests/twisted/test-set-status-idempotence.py |   16 ++++++++++++----
  1 files changed, 12 insertions(+), 4 deletions(-)
 
+commit 7475a6bba58d4667d4a925e86fa2cc1be6b56cae
+Merge: 3925134... 3a75959...
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Nov 3 18:07:20 2008 +0000
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble into socks5-bytestreams
+
 commit 175c050f9e516fbfef21720846779e703e5fe1f9
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Nov 3 17:57:07 2008 +0000
@@ -1840,6 +3682,52 @@ Date:   Mon Nov 3 17:56:28 2008 +0000
  tests/twisted/roster/ensure.py |    5 +++--
  1 files changed, 3 insertions(+), 2 deletions(-)
 
+commit 3925134184a6cfab99d79421347b6b076c9e31ea
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Nov 3 17:24:14 2008 +0000
+
+    Remove a debug print of the data received from SOCKS5
+
+ tests/twisted/tubes/test-si-socks5-tubes.py |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 3e1fbcbcf9bbdef8291652ef58fa2a2affb6a4e0
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Nov 3 17:23:42 2008 +0000
+
+    Rename the IBB test in the Makefile and add the SOCKS5 one
+
+ tests/twisted/Makefile.am |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 0c70cf401cb1586874eb0d7e41527247776afab4
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Nov 3 17:18:17 2008 +0000
+
+    Expect to receive SOCKS5 as the bytestrean method preferred by the CM
+
+ tests/twisted/tubes/test-si-ibb-tubes.py |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 8cfb49d8383948f3002bffe51f449ed4e61d06bd
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Nov 3 17:16:17 2008 +0000
+
+    Add a test for SOCKS5 tubes
+
+ tests/twisted/tubes/test-si-socks5-tubes.py |  552 +++++++++++++++++++++++++++
+ 1 files changed, 552 insertions(+), 0 deletions(-)
+
+commit 5337cdf27393e6b47b33f85a3d8137958ebbbd30
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Nov 3 17:02:29 2008 +0000
+
+    Rename the SI test as it also tests IBB
+
+ tests/twisted/tubes/test-si-ibb-tubes.py |  545 ++++++++++++++++++++++++++++++
+ tests/twisted/tubes/test-si-tubes.py     |  545 ------------------------------
+ 2 files changed, 545 insertions(+), 545 deletions(-)
+
 commit 63cb96afac15558a550a9c95bbf8cbef209b4789
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Nov 3 16:08:56 2008 +0000
@@ -1848,6 +3736,24 @@ Date:   Mon Nov 3 16:08:56 2008 +0000
 
  src/muc-channel.c |    9 ++++++---
  1 files changed, 6 insertions(+), 3 deletions(-)
+
+commit 62210fc973847af0692d99b75c7b328b377c05ac
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Nov 3 16:54:57 2008 +0000
+
+    Support streams opened by the remote host
+
+ src/bytestream-socks5.c |  105 ++++++++++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 99 insertions(+), 6 deletions(-)
+
+commit 650513e6166461ee836014f1e91a65decb971db1
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Nov 3 16:53:02 2008 +0000
+
+    List SOCKS5 bytestreams among the supported methods
+
+ src/bytestream-factory.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
 commit 1c707be94ce1a708d7a9f46e8f0fd6fca75446e8
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -2101,6 +4007,20 @@ Date:   Thu Oct 30 21:22:34 2008 +0000
  src/tube-stream.c   |    8 ++++----
  src/tubes-channel.c |   12 ++++++------
  5 files changed, 19 insertions(+), 19 deletions(-)
+
+commit 34bb171b12b4c3f88783275046ee1f3f52236b30
+Author: Marco Barisione <marco@barisione.org>
+Date:   Thu Oct 30 15:15:21 2008 +0000
+
+    Add an initial implementation of SOCKS5 bytestreams
+
+ src/Makefile.am          |    2 +
+ src/bytestream-factory.c |  233 +++++++++++-
+ src/bytestream-factory.h |    6 +
+ src/bytestream-socks5.c  |  973 ++++++++++++++++++++++++++++++++++++++++++++++
+ src/bytestream-socks5.h  |   75 ++++
+ src/namespaces.h         |    1 +
+ 6 files changed, 1288 insertions(+), 2 deletions(-)
 
 commit fd750101f49228f8d51227a0ae9b4f14a91aee02
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
