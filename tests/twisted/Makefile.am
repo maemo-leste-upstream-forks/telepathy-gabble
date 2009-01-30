@@ -36,12 +36,15 @@ TWISTED_TESTS = \
 	text/test-text-delayed.py \
 	text/test-text-no-body.py \
 	text/test-text.py \
+	tubes/muc-presence.py \
 	tubes/test-get-available-tubes.py \
 	tubes/test-muc-accept-stream-tube-ibb.py \
 	tubes/test-muc-offer-dbus-tube.py \
 	tubes/test-muc-offer-stream-tube-ibb.py \
         tubes/test-si-accept-tubes.py \
-	tubes/test-si-tubes.py \
+	tubes/test-si-fallback.py \
+	tubes/test-si-ibb-tubes.py \
+	tubes/test-si-socks5-tubes.py \
 	tubes/ensure-si-tube.py \
 	vcard/test-alias-empty-vcard.py \
 	vcard/test-alias-pep.py \
@@ -71,6 +74,8 @@ TWISTED_TESTS = \
 	jingle/test-dialects-incoming.py \
 	jingle/test-dialects-outgoing.py \
 	jingle/test-content-complex.py \
+	jingle/test-wait-for-caps.py \
+	jingle/test-wait-for-caps-incomplete.py \
 	test-capabilities.py \
 	test-caps-cache.py \
 	test-caps-hash.py \
@@ -110,7 +115,8 @@ EXTRA_DIST = \
 	jingle/jingletest.py \
 	jingle/jingletest2.py \
 	ns.py \
-	olpc/util.py
+	olpc/util.py \
+	tubes/muctubeutil.py
 
 noinst_PROGRAMS = \
 	telepathy-gabble-debug
@@ -119,7 +125,9 @@ telepathy_gabble_debug_SOURCES = \
     main-debug.c
 
 telepathy_gabble_debug_LDADD = \
-    $(top_builddir)/src/libgabble-convenience.la $(ALL_LIBS)
+    $(top_builddir)/src/libgabble-convenience.la \
+    $(top_builddir)/lib/gibber/libgibber.la \
+    $(ALL_LIBS)
 
 AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @LOUDMOUTH_CFLAGS@ \
     @COVERAGE_CFLAGS@ @TP_GLIB_CFLAGS@ \

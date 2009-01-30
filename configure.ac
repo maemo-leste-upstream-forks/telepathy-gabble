@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [7])
-m4_define([gabble_micro_version], [17])
+m4_define([gabble_micro_version], [18])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -171,6 +171,9 @@ PKG_CHECK_MODULES(LOUDMOUTH, loudmouth-1.0 >= 1.3.2)
 AC_SUBST(LOUDMOUTH_CFLAGS)
 AC_SUBST(LOUDMOUTH_LIBS)
 
+dnl Check for functions
+AC_CHECK_FUNCS(getifaddrs)
+
 AC_OUTPUT( Makefile \
            docs/Makefile \
            extensions/Makefile \
@@ -180,5 +183,7 @@ AC_OUTPUT( Makefile \
            tests/Makefile \
            tools/Makefile \
            tests/twisted/Makefile \
-           tests/twisted/tools/Makefile
+           tests/twisted/tools/Makefile \
+           lib/Makefile \
+           lib/gibber/Makefile
 )
