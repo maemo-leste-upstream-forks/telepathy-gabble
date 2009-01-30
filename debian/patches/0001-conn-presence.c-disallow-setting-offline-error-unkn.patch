@@ -1,0 +1,45 @@
+From 996d626ee7550d4dd761af999872c79b0d9029ea Mon Sep 17 00:00:00 2001
+From: Senko Rasic <senko.rasic@collabora.co.uk>
+Date: Thu, 29 Jan 2009 14:20:51 +0100
+Subject: [PATCH] conn-presence.c: disallow setting offline/error/unknown statuses, but don't hide it in GetStatuses()
+ (cherry picked from commit b641b75ebbfd9d86f984a27dc4cbdd75243edc3a)
+
+---
+ src/conn-presence.c |   17 +++++++++++------
+ 1 files changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/src/conn-presence.c b/src/conn-presence.c
+index bcc73e1..7a13192 100644
+--- a/src/conn-presence.c
++++ b/src/conn-presence.c
+@@ -199,6 +199,17 @@ set_own_status_cb (GObject *obj,
+       GValue *message = NULL, *priority = NULL;
+       const gchar *message_str = NULL;
+ 
++      /* Workaround for tp-glib not checking whether we support setting
++       * a particular status (can be removed once we depend on tp-glib
++       * with the check enabled). Assumes PresenceId value ordering. */
++      if (i < GABBLE_PRESENCE_HIDDEN)
++        {
++          g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
++              "Status '%s' can not be requested in this connection",
++                gabble_statuses[i].name);
++          return FALSE;
++        }
++
+       if (args != NULL)
+         {
+           message = g_hash_table_lookup (args, "message");
+@@ -295,12 +306,6 @@ status_available_cb (GObject *obj, guint status)
+   if (base->status != TP_CONNECTION_STATUS_CONNECTED)
+     return FALSE;
+ 
+-  /* Workaround for tp-glib not checking whether we support setting
+-   * a particular status (can be removed once we depend on tp-glib
+-   * with the check enabled). */
+-  if (!gabble_statuses[status].self)
+-    return FALSE;
+-
+   if (gabble_statuses[status].presence_type == TP_CONNECTION_PRESENCE_TYPE_HIDDEN &&
+       (conn->features & GABBLE_CONNECTION_FEATURES_PRESENCE_INVISIBLE) == 0)
+     return FALSE;
