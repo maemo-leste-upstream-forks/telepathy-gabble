@@ -9,11 +9,12 @@ from gabbletest import exec_test, make_result_iq, sync_stream, \
         send_error_reply
 from servicetest import make_channel_proxy, unwrap, tp_path_prefix, \
         call_async, EventPattern
-from twisted.words.xish import domish
+from twisted.words.xish import domish, xpath
 import jingletest
 import gabbletest
 import dbus
 import time
+from constants import *
 
 
 def test(q, bus, conn, stream):
@@ -55,7 +56,7 @@ def test(q, bus, conn, stream):
 
     # This is the interesting part of this test
 
-    media_iface.RequestStreams(handle, [0]) # 0 == MEDIA_STREAM_TYPE_AUDIO
+    media_iface.RequestStreams(handle, [MEDIA_STREAM_TYPE_AUDIO])
 
     # S-E gets notified about new session handler, and calls Ready on it
     e = q.expect('dbus-signal', signal='NewSessionHandler')
@@ -70,22 +71,47 @@ def test(q, bus, conn, stream):
     stream_handler = make_channel_proxy(conn, e.args[0], 'Media.StreamHandler')
 
     stream_handler.NewNativeCandidate("fake", jt.get_remote_transports_dbus())
+
+    # Before sending the initiate, request another stream
+
+    media_iface.RequestStreams(handle, [MEDIA_STREAM_TYPE_VIDEO])
+
+    e = q.expect('dbus-signal', signal='NewStreamHandler')
+    stream_id2 = e.args[1]
+
+    stream_handler2 = make_channel_proxy(conn, e.args[0], 'Media.StreamHandler')
+
+    # We set both streams as ready, which will trigger the session invite
     stream_handler.Ready(jt.get_audio_codecs_dbus())
-    stream_handler.StreamState(2)
+    stream_handler.StreamState(MEDIA_STREAM_STATE_CONNECTED)
+    stream_handler2.Ready(jt.get_audio_codecs_dbus())
+    stream_handler2.StreamState(MEDIA_STREAM_STATE_CONNECTED)
+
+    # We changed our mind locally, don't want video
+    media_iface.RemoveStreams([stream_id2])
 
     e = q.expect('stream-iq')
     assert e.query.name == 'jingle'
     assert e.query['action'] == 'session-initiate'
     stream.send(gabbletest.make_result_iq(stream, e.stanza))
-    # send_error_reply(stream, e.stanza)
 
-    jt.outgoing_call_reply(e.query['sid'], True)
+    e2 = q.expect('stream-iq', predicate=lambda x:
+        xpath.queryForNodes("/iq/jingle[@action='content-remove']",
+            x.stanza))
 
+    jt.outgoing_call_reply(e.query['sid'], True, with_video=True)
     q.expect('stream-iq', iq_type='result')
 
-    # Now we want another stream!
+    # Only now the remote end removes the video stream; if gabble mistakenly
+    # marked it as accepted on session acceptance, it'll crash right about
+    # now. If it's good, stream will be really removed, and
+    # we can proceed.
 
-    media_iface.RequestStreams(handle, [1]) # 1 == MEDIA_STREAM_TYPE_VIDEO
+    stream.send(gabbletest.make_result_iq(stream, e2.stanza))
+
+    q.expect('dbus-signal', signal='StreamRemoved')
+
+    media_iface.RequestStreams(handle, [MEDIA_STREAM_TYPE_VIDEO])
 
     e = q.expect('dbus-signal', signal='NewStreamHandler')
     stream2_id = e.args[1]
@@ -94,7 +120,7 @@ def test(q, bus, conn, stream):
 
     stream_handler2.NewNativeCandidate("fake", jt.get_remote_transports_dbus())
     stream_handler2.Ready(jt.get_audio_codecs_dbus())
-    stream_handler2.StreamState(2)
+    stream_handler2.StreamState(MEDIA_STREAM_STATE_CONNECTED)
 
     e = q.expect('stream-iq')
     assert e.query.name == 'jingle'
@@ -148,7 +174,6 @@ def test(q, bus, conn, stream):
     assert (tp_path_prefix + e.path) == path
 
     # Test completed, close the connection
-
     conn.Disconnect()
     q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
 

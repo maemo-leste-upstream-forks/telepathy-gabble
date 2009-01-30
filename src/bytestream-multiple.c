@@ -126,7 +126,7 @@ gabble_bytestream_multiple_finalize (GObject *object)
 
   for (l = priv->fallback_stream_methods; l != NULL; l = g_list_next (l))
     g_free (l->data);
-  g_slist_free (priv->fallback_stream_methods);
+  g_list_free (priv->fallback_stream_methods);
 
   g_free (priv->stream_id);
   g_free (priv->stream_init_id);
@@ -534,7 +534,7 @@ bytestream_activate_next (GabbleBytestreamMultiple *self)
 {
   GabbleBytestreamMultiplePrivate *priv =
       GABBLE_BYTESTREAM_MULTIPLE_GET_PRIVATE (self);
-  const gchar *stream_method;
+  gchar *stream_method;
 
   g_return_if_fail (priv->active_bytestream == NULL);
   /* The caller has to be sure that there is a fallback method */

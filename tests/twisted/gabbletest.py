@@ -8,6 +8,7 @@ import os
 import sha
 import sys
 import time
+import random
 
 import ns
 import servicetest
@@ -99,7 +100,7 @@ class JabberAuthenticator(xmlstream.Authenticator):
 
     def streamStarted(self, root=None):
         if root:
-            self.xmlstream.sid = root.getAttribute('id')
+            self.xmlstream.sid = '%x' % random.randint(1, sys.maxint)
 
         self.xmlstream.sendHeader()
         self.xmlstream.addOnetimeObserver(
@@ -378,11 +379,6 @@ def exec_test_deferred (funs, params, protocol=None, timeout=None):
             d.addBoth((lambda *args: os._exit(1)))
 
         conn.Disconnect()
-
-        if 'GABBLE_TEST_REFDBG' in os.environ:
-            # we have to wait that Gabble timeouts so the process is properly
-            # exited and refdbg can generates its report
-            time.sleep(5.5)
 
     except dbus.DBusException, e:
         pass

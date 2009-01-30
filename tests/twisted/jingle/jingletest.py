@@ -186,8 +186,26 @@ class JingleTest:
 
         self.stream.send(iq.toXml())
 
+    def create_content_node(self, name, type, codecs):
+        content = domish.Element((None, 'content'))
+        content['creator'] = 'initiator'
+        content['name'] = name
+        content['senders'] = 'both'
 
-    def outgoing_call_reply(self, session_id, accept):
+        desc = domish.Element(("http://jabber.org/protocol/jingle/description/" + type, 'description'))
+        for codec, id, rate in codecs:
+            p = domish.Element((None, 'payload-type'))
+            p['name'] = codec
+            p['id'] = str(id)
+            p['rate'] = str(rate)
+            desc.addChild(p)
+        content.addChild(desc)
+
+        xport = domish.Element(("http://www.google.com/transport/p2p", 'transport'))
+        content.addChild(xport)
+        return content
+
+    def outgoing_call_reply(self, session_id, accept, with_video=False):
         self.session_id = session_id
         self.direction = 'outgoing'
 
@@ -197,24 +215,12 @@ class JingleTest:
 
         iq, jingle = self._jingle_stanza('session-accept')
 
-        content = domish.Element((None, 'content'))
-        content['creator'] = 'initiator'
-        content['name'] = 'stream1'
-        content['senders'] = 'both'
-        jingle.addChild(content)
+        jingle.addChild(self.create_content_node('stream1', 'audio',
+            self.audio_codecs))
 
-        desc = domish.Element(("http://jabber.org/protocol/jingle/description/audio", 'description'))
-        for codec, id, rate in self.audio_codecs:
-            p = domish.Element((None, 'payload-type'))
-            p['name'] = codec
-            p['id'] = str(id)
-            p['rate'] = str(rate)
-            desc.addChild(p)
-
-        content.addChild(desc)
-
-        xport = domish.Element(("http://www.google.com/transport/p2p", 'transport'))
-        content.addChild(xport)
+        if with_video:
+            jingle.addChild(self.create_content_node('stream2', 'video',
+                self.video_codecs))
 
         self.stream.send(iq.toXml())
 

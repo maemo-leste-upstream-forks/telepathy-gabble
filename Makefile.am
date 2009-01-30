@@ -9,4 +9,7 @@ check-twisted: all
 
 check-all: check check-twisted
 
+include tools/lcov.am
+LCOV_CHECK_ARGS = CHECK_TWISTED_SLEEP=6
+
 include tools/telepathy.am

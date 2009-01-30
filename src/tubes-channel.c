@@ -48,6 +48,7 @@
 #include "namespaces.h"
 #include "presence-cache.h"
 #include "presence.h"
+#include "private-tubes-factory.h"
 #include "tube-iface.h"
 #include "tube-dbus.h"
 #include "tube-stream.h"
@@ -462,6 +463,40 @@ tube_opened_cb (GabbleTubeIface *tube,
       TP_TUBE_STATE_OPEN);
 }
 
+static void
+tube_offered_cb (GabbleTubeIface *tube,
+                 gpointer user_data)
+{
+  GabbleTubesChannel *self = GABBLE_TUBES_CHANNEL (user_data);
+  guint tube_id;
+  TpHandle initiator;
+  TpTubeType type;
+  gchar *service;
+  GHashTable *parameters;
+  TpTubeState state;
+
+  g_object_get (tube,
+      "id", &tube_id,
+      "initiator-handle", &initiator,
+      "type", &type,
+      "service", &service,
+      "parameters", &parameters,
+      "state", &state,
+      NULL);
+
+  /* tube has been offered and so can be announced using the old API */
+  tp_svc_channel_type_tubes_emit_new_tube (self,
+      tube_id,
+      initiator,
+      type,
+      service,
+      parameters,
+      state);
+
+  g_free (service);
+  g_hash_table_destroy (parameters);
+}
+
 static GabbleTubeIface *
 create_new_tube (GabbleTubesChannel *self,
                  TpTubeType type,
@@ -498,13 +533,18 @@ create_new_tube (GabbleTubesChannel *self,
 
   g_object_get (tube, "state", &state, NULL);
 
-  tp_svc_channel_type_tubes_emit_new_tube (self,
-      tube_id,
-      initiator,
-      type,
-      service,
-      parameters,
-      state);
+  /* The old API doesn't know the "not offered" state, so we have to wait that
+   * the tube is offered before announcing it. */
+  if (state != GABBLE_TUBE_CHANNEL_STATE_NOT_OFFERED)
+    {
+      tp_svc_channel_type_tubes_emit_new_tube (self,
+          tube_id,
+          initiator,
+          type,
+          service,
+          parameters,
+          state);
+    }
 
   if (type == TP_TUBE_TYPE_DBUS &&
       state != TP_TUBE_STATE_LOCAL_PENDING)
@@ -514,6 +554,7 @@ create_new_tube (GabbleTubesChannel *self,
 
   g_signal_connect (tube, "tube-opened", G_CALLBACK (tube_opened_cb), self);
   g_signal_connect (tube, "tube-closed", G_CALLBACK (tube_closed_cb), self);
+  g_signal_connect (tube, "tube-offered", G_CALLBACK (tube_offered_cb), self);
 
   return tube;
 }
@@ -664,8 +705,11 @@ foreach_slave (gpointer key,
 {
   GabbleTubeIface *tube = GABBLE_TUBE_IFACE (value);
   struct _ForeachData *data = (struct _ForeachData *) user_data;
+  TpTubeType type;
 
-  data->foreach (TP_EXPORTABLE_CHANNEL (tube), data->user_data);
+  g_object_get (tube, "type", &type, NULL);
+  if (type == TP_TUBE_TYPE_STREAM)
+    data->foreach (TP_EXPORTABLE_CHANNEL (tube), data->user_data);
 }
 
 void gabble_tubes_channel_foreach (GabbleTubesChannel *self,
@@ -1718,6 +1762,19 @@ gabble_tubes_channel_offer_stream_tube (TpSvcChannelTypeTubes *iface,
 
   g_signal_connect (tube, "tube-new-connection",
       G_CALLBACK (stream_unix_tube_new_connection_cb), self);
+
+  /* announce the new tube channel we just created (new tube API) */
+  if (priv->handle_type == TP_HANDLE_TYPE_CONTACT)
+    {
+      gabble_private_tubes_factory_tube_created (
+          priv->conn->private_tubes_factory, tube);
+    }
+  else
+    {
+      /* FIXME
+      gabble_muc_factory_tube_created (priv->conn->muc_factory, tube);
+      */
+    }
 
   tp_svc_channel_type_tubes_return_from_offer_stream_tube (context,
       tube_id);

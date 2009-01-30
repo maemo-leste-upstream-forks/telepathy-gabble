@@ -3,15 +3,16 @@
 import base64
 import errno
 import os
-import sha
 
 import dbus
 from dbus.connection import Connection
 from dbus.lowlevel import SignalMessage
 
-from servicetest import call_async, EventPattern, tp_name_prefix, \
-     watch_tube_signals, sync_dbus
+from servicetest import call_async, EventPattern, watch_tube_signals
 from gabbletest import exec_test, acknowledge_iq, sync_stream
+from constants import *
+
+from dbus import PROPERTIES_IFACE
 
 from twisted.words.xish import domish, xpath
 from twisted.internet.protocol import Factory, Protocol
@@ -39,10 +40,9 @@ new_sample_parameters = dbus.Dictionary({
     'i': dbus.Int32(-123),
     }, signature='sv')
 
-
 class Echo(Protocol):
     def dataReceived(self, data):
-        self.transport.write(data.lower())
+        self.transport.write(data)
 
 def set_up_echo(name):
     factory = Factory()
@@ -54,35 +54,10 @@ def set_up_echo(name):
             raise
     reactor.listenUNIX(os.getcwd() + '/stream' + name, factory)
 
-class S5BProtocol(Protocol):
-    def connectionMade(self):
-        self.factory.event_func(EventPattern('s5b-connected',
-            transport=self.transport))
-
-    def dataReceived(self, data):
-        self.factory.event_func(EventPattern('s5b-data-received', data=data,
-            transport=self.transport))
-
-class S5BFactory(Factory):
-    protocol = S5BProtocol
-
-    def __init__(self, event_func):
-        self.event_func = event_func
-
-    def buildProtocol(self, addr):
-        protocol = Factory.buildProtocol(self, addr)
-        return protocol
-
-    def startedConnecting(self, connector):
-        pass
-
-    def clientConnectionLost(self, connector, reason):
-        pass
-
 def check_conn_properties(q, bus, conn, stream, channel_list=None):
     properties = conn.GetAll(
-            'org.freedesktop.Telepathy.Connection.Interface.Requests',
-            dbus_interface='org.freedesktop.DBus.Properties')
+            CONN_IFACE_REQUESTS,
+            dbus_interface=PROPERTIES_IFACE)
 
     if channel_list == None:
         assert properties.get('Channels') == [], properties['Channels']
@@ -91,24 +66,17 @@ def check_conn_properties(q, bus, conn, stream, channel_list=None):
             assert i in properties['Channels'], \
                 (i, properties['Channels'])
 
-    assert ({'org.freedesktop.Telepathy.Channel.ChannelType':
-                'org.freedesktop.Telepathy.Channel.Type.Tubes',
-             'org.freedesktop.Telepathy.Channel.TargetHandleType': 1,
+    assert ({CHANNEL_TYPE: CHANNEL_TYPE_TUBES,
+             TARGET_HANDLE_TYPE: HT_CONTACT,
              },
-             ['org.freedesktop.Telepathy.Channel.TargetHandle',
-              'org.freedesktop.Telepathy.Channel.TargetID',
+             [TARGET_HANDLE, TARGET_ID
              ]
             ) in properties.get('RequestableChannelClasses'),\
                      properties['RequestableChannelClasses']
-    assert ({'org.freedesktop.Telepathy.Channel.ChannelType':
-                'org.freedesktop.Telepathy.Channel.Type.StreamTube.DRAFT',
-             'org.freedesktop.Telepathy.Channel.TargetHandleType': 1,
+    assert ({CHANNEL_TYPE: CHANNEL_TYPE_STREAM_TUBE,
+             TARGET_HANDLE_TYPE: HT_CONTACT
              },
-             ['org.freedesktop.Telepathy.Channel.TargetHandle',
-              'org.freedesktop.Telepathy.Channel.TargetID',
-              'org.freedesktop.Telepathy.Channel.Interface.Tube.DRAFT.Parameters',
-              'org.freedesktop.Telepathy.Channel.Type.StreamTube.DRAFT.Service',
-             ]
+             [TARGET_HANDLE, TARGET_ID, TUBE_PARAMETERS, STREAM_TUBE_SERVICE]
             ) in properties.get('RequestableChannelClasses'),\
                      properties['RequestableChannelClasses']
 
@@ -116,18 +84,14 @@ def check_channel_properties(q, bus, conn, stream, channel, channel_type,
         contact_handle, contact_id, state=None):
     # Exercise basic Channel Properties from spec 0.17.7
     # on the channel of type channel_type
-    channel_props = channel.GetAll(
-            'org.freedesktop.Telepathy.Channel',
-            dbus_interface='org.freedesktop.DBus.Properties')
+    channel_props = channel.GetAll(CHANNEL, dbus_interface=PROPERTIES_IFACE)
     assert channel_props.get('TargetHandle') == contact_handle,\
             (channel_props.get('TargetHandle'), contact_handle)
     assert channel_props.get('TargetHandleType') == 1,\
             channel_props.get('TargetHandleType')
-    assert channel_props.get('ChannelType') == \
-            'org.freedesktop.Telepathy.Channel.Type.' + channel_type,\
-            channel_props.get('ChannelType')
+    assert channel_props.get('ChannelType') == channel_type , channel_props.get('ChannelType')
     assert 'Interfaces' in channel_props, channel_props
-    assert 'org.freedesktop.Telepathy.Channel.Interface.Group' not in \
+    assert CHANNEL_IFACE_GROUP not in \
             channel_props['Interfaces'], \
             channel_props['Interfaces']
     assert channel_props['TargetID'] == contact_id
@@ -135,39 +99,36 @@ def check_channel_properties(q, bus, conn, stream, channel, channel_type,
     assert channel_props['InitiatorID'] == 'test@localhost'
     assert channel_props['InitiatorHandle'] == conn.GetSelfHandle()
 
-
-    if channel_type == "Tubes":
+    if channel_type == CHANNEL_TYPE_TUBES:
         assert state is None
         assert len(channel_props['Interfaces']) == 0, channel_props['Interfaces']
         supported_socket_types = channel.GetAvailableStreamTubeTypes()
     else:
         assert state is not None
-        tube_props = channel.GetAll(
-                'org.freedesktop.Telepathy.Channel.Interface.Tube.DRAFT',
-                dbus_interface='org.freedesktop.DBus.Properties')
-        assert tube_props['Status'] == state
+        tube_props = channel.GetAll(CHANNEL_IFACE_TUBE,
+                dbus_interface=PROPERTIES_IFACE)
+        assert tube_props['State'] == state
         # no strict check but at least check the properties exist
         assert tube_props['Parameters'] is not None
         assert channel_props['Interfaces'] == \
-            dbus.Array(['org.freedesktop.Telepathy.Channel.Interface.Tube.DRAFT'],
-                    signature='s'), \
+            dbus.Array([CHANNEL_IFACE_TUBE], signature='s'), \
             channel_props['Interfaces']
 
-        stream_tube_props = channel.GetAll(
-                'org.freedesktop.Telepathy.Channel.Type.StreamTube.DRAFT',
-                dbus_interface='org.freedesktop.DBus.Properties')
+        stream_tube_props = channel.GetAll(CHANNEL_TYPE_STREAM_TUBE,
+                dbus_interface=PROPERTIES_IFACE)
         supported_socket_types = stream_tube_props['SupportedSocketTypes']
 
     # Support for different socket types. no strict check but at least check
     # there is some support.
     assert len(supported_socket_types) == 3
 
-def check_NewChannel_signal(old_sig, channel_type, chan_path, contact_handle):
-    assert old_sig[0] == chan_path
-    assert old_sig[1] == tp_name_prefix + '.Channel.Type.' + channel_type
-    assert old_sig[2] == 1         # contact handle
+def check_NewChannel_signal(old_sig, channel_type, chan_path, contact_handle, suppress_handler):
+    if chan_path is not None:
+        assert old_sig[0] == chan_path
+    assert old_sig[1] == channel_type
+    assert old_sig[2] == HT_CONTACT
     assert old_sig[3] == contact_handle
-    assert old_sig[4] == True      # suppress handler
+    assert old_sig[4] == suppress_handler      # suppress handler
 
 def check_NewChannels_signal(new_sig, channel_type, chan_path, contact_handle,
         contact_id, initiator_handle):
@@ -177,18 +138,13 @@ def check_NewChannels_signal(new_sig, channel_type, chan_path, contact_handle,
     assert new_sig[0][0][0] == chan_path
     emitted_props = new_sig[0][0][1]
 
-    assert emitted_props[tp_name_prefix + '.Channel.ChannelType'] ==\
-            tp_name_prefix + '.Channel.Type.' + channel_type
-    assert emitted_props[tp_name_prefix + '.Channel.TargetHandleType'] == 1
-    assert emitted_props[tp_name_prefix + '.Channel.TargetHandle'] ==\
-            contact_handle
-    assert emitted_props[tp_name_prefix + '.Channel.TargetID'] == \
-            contact_id
-    assert emitted_props[tp_name_prefix + '.Channel.Requested'] == True
-    assert emitted_props[tp_name_prefix + '.Channel.InitiatorHandle'] \
-            == initiator_handle
-    assert emitted_props[tp_name_prefix + '.Channel.InitiatorID'] == \
-            'test@localhost'
+    assert emitted_props[CHANNEL_TYPE] == channel_type
+    assert emitted_props[TARGET_HANDLE_TYPE] == 1
+    assert emitted_props[TARGET_HANDLE] == contact_handle
+    assert emitted_props[TARGET_ID] == contact_id
+    assert emitted_props[REQUESTED] == True
+    assert emitted_props[INITIATOR_HANDLE] == initiator_handle
+    assert emitted_props[INITIATOR_ID] == 'test@localhost'
 
 
 def test(q, bus, conn, stream):
@@ -205,6 +161,7 @@ def test(q, bus, conn, stream):
             query_name='vCard'),
         EventPattern('stream-iq', query_ns='jabber:iq:roster'))
 
+    self_handle = conn.GetSelfHandle()
     acknowledge_iq(stream, vcard_event.stanza)
 
     roster = roster_event.stanza
@@ -262,14 +219,12 @@ def test(q, bus, conn, stream):
     sync_stream(q, stream)
 
     # new requestotron
-    requestotron = dbus.Interface(conn,
-            'org.freedesktop.Telepathy.Connection.Interface.Requests')
+    requestotron = dbus.Interface(conn, CONN_IFACE_REQUESTS)
 
     # Test tubes with Joe. Joe does not have tube capabilities.
     # Gabble does not allow to offer a tube to him.
     joe_handle = conn.RequestHandles(1, ['joe@localhost'])[0]
-    call_async(q, conn, 'RequestChannel',
-            tp_name_prefix + '.Channel.Type.Tubes', 1, joe_handle, True);
+    call_async(q, conn, 'RequestChannel', CHANNEL_TYPE_TUBES, HT_CONTACT, joe_handle, True);
 
     ret, old_sig, new_sig = q.expect_many(
         EventPattern('dbus-return', method='RequestChannel'),
@@ -279,8 +234,7 @@ def test(q, bus, conn, stream):
     joe_chan_path = ret.value[0]
 
     joe_tubes_chan = bus.get_object(conn.bus_name, joe_chan_path)
-    joe_tubes_iface = dbus.Interface(joe_tubes_chan,
-        tp_name_prefix + '.Channel.Type.Tubes')
+    joe_tubes_iface = dbus.Interface(joe_tubes_chan, CHANNEL_TYPE_TUBES)
     path = os.getcwd() + '/stream'
     call_async(q, joe_tubes_iface, 'OfferStreamTube',
         'echo', sample_parameters, 0, dbus.ByteArray(path), 0, "")
@@ -292,8 +246,7 @@ def test(q, bus, conn, stream):
     bob_handle = conn.RequestHandles(1, ['bob@localhost'])[0]
 
     # old requestotron
-    call_async(q, conn, 'RequestChannel',
-            tp_name_prefix + '.Channel.Type.Tubes', 1, bob_handle, True);
+    call_async(q, conn, 'RequestChannel', CHANNEL_TYPE_TUBES, 1, bob_handle, True)
 
     ret, old_sig, new_sig = q.expect_many(
         EventPattern('dbus-return', method='RequestChannel'),
@@ -304,8 +257,8 @@ def test(q, bus, conn, stream):
     assert len(ret.value) == 1
     chan_path = ret.value[0]
 
-    check_NewChannel_signal(old_sig.args, "Tubes", chan_path, bob_handle)
-    check_NewChannels_signal(new_sig.args, "Tubes", chan_path,
+    check_NewChannel_signal(old_sig.args, CHANNEL_TYPE_TUBES, chan_path, bob_handle, True)
+    check_NewChannels_signal(new_sig.args, CHANNEL_TYPE_TUBES, chan_path,
             bob_handle, 'bob@localhost', conn.GetSelfHandle())
     old_tubes_channel_properties = new_sig.args[0][0]
 
@@ -314,12 +267,9 @@ def test(q, bus, conn, stream):
     # Try to CreateChannel with unknown properties
     # Gabble must return an error
     call_async(q, requestotron, 'CreateChannel',
-            {'org.freedesktop.Telepathy.Channel.ChannelType':
-                'org.freedesktop.Telepathy.Channel.Type.StreamTube.DRAFT',
-             'org.freedesktop.Telepathy.Channel.TargetHandleType':
-                1,
-             'org.freedesktop.Telepathy.Channel.TargetHandle':
-                bob_handle,
+            {CHANNEL_TYPE: CHANNEL_TYPE_STREAM_TUBE,
+             TARGET_HANDLE_TYPE: HT_CONTACT,
+             TARGET_HANDLE: bob_handle,
              'this.property.does.not.exist':
                 'this.value.should.not.exist'
             });
@@ -330,30 +280,9 @@ def test(q, bus, conn, stream):
     # Try to CreateChannel with missing properties ("Service")
     # Gabble must return an error
     call_async(q, requestotron, 'CreateChannel',
-            {'org.freedesktop.Telepathy.Channel.ChannelType':
-                'org.freedesktop.Telepathy.Channel.Type.StreamTube.DRAFT',
-             'org.freedesktop.Telepathy.Channel.TargetHandleType':
-                1,
-             'org.freedesktop.Telepathy.Channel.TargetHandle':
-                bob_handle
-            });
-    ret = q.expect_many(EventPattern('dbus-error', method='CreateChannel'))
-    # CreateChannel failed, we expect no new channel
-    check_conn_properties(q, bus, conn, stream, [old_tubes_channel_properties])
-
-    # Try to create a DBusTube.DRAFT channel. This is not implemented yet, so
-    # it will fail. But it should not assert.
-    call_async(q, requestotron, 'CreateChannel',
-            {'org.freedesktop.Telepathy.Channel.ChannelType':
-                'org.freedesktop.Telepathy.Channel.Type.DBusTube.DRAFT',
-             'org.freedesktop.Telepathy.Channel.TargetHandleType':
-                1,
-             'org.freedesktop.Telepathy.Channel.TargetHandle':
-                bob_handle,
-             'org.freedesktop.Telepathy.Channel.Type.DBusTube.DRAFT.ServiceName':
-                "com.example.ServiceName",
-             'org.freedesktop.Telepathy.Channel.Interface.Tube.DRAFT.Parameters':
-                dbus.Dictionary({'foo': 'bar'}, signature='sv'),
+            {CHANNEL_TYPE: CHANNEL_TYPE_STREAM_TUBE,
+             TARGET_HANDLE_TYPE: HT_CONTACT,
+             TARGET_HANDLE: bob_handle
             });
     ret = q.expect_many(EventPattern('dbus-error', method='CreateChannel'))
     # CreateChannel failed, we expect no new channel
@@ -362,17 +291,15 @@ def test(q, bus, conn, stream):
     # Try to CreateChannel with correct properties
     # Gabble must succeed
     call_async(q, requestotron, 'CreateChannel',
-            {'org.freedesktop.Telepathy.Channel.ChannelType':
-                'org.freedesktop.Telepathy.Channel.Type.StreamTube.DRAFT',
-             'org.freedesktop.Telepathy.Channel.TargetHandleType':
-                1,
-             'org.freedesktop.Telepathy.Channel.TargetHandle':
-                bob_handle,
-             'org.freedesktop.Telepathy.Channel.Type.StreamTube.DRAFT.Service':
-                "newecho",
-             'org.freedesktop.Telepathy.Channel.Interface.Tube.DRAFT.Parameters':
-                dbus.Dictionary({'foo': 'bar'}, signature='sv'),
+            {CHANNEL_TYPE: CHANNEL_TYPE_STREAM_TUBE,
+             TARGET_HANDLE_TYPE: HT_CONTACT,
+             TARGET_HANDLE: bob_handle,
+             STREAM_TUBE_SERVICE: 'newecho',
+             TUBE_PARAMETERS: dbus.Dictionary({'foo': 'bar'}, signature='sv'),
             });
+
+    # the NewTube signal (old API) is not fired now as the tube wasn't offered
+    # yet
     ret, old_sig, new_sig = q.expect_many(
         EventPattern('dbus-return', method='CreateChannel'),
         EventPattern('dbus-signal', signal='NewChannel'),
@@ -382,15 +309,29 @@ def test(q, bus, conn, stream):
     assert len(ret.value) == 2 # CreateChannel returns 2 values: o, a{sv}
     new_chan_path = ret.value[0]
     new_chan_prop_asv = ret.value[1]
+    # State and Parameters are mutables so not announced
+    assert (TUBE_STATE) not in new_chan_prop_asv
+    assert (TUBE_PARAMETERS) not in new_chan_prop_asv
     assert new_chan_path.find("StreamTube") != -1, new_chan_path
     assert new_chan_path.find("SITubesChannel") == -1, new_chan_path
     # The path of the Channel.Type.Tubes object MUST be different to the path
     # of the Channel.Type.StreamTube object !
     assert chan_path != new_chan_path
 
-    check_NewChannel_signal(old_sig.args, "StreamTube.DRAFT", \
-            new_chan_path, bob_handle)
-    check_NewChannels_signal(new_sig.args, "StreamTube.DRAFT", new_chan_path, \
+    new_tube_chan = bus.get_object(conn.bus_name, new_chan_path)
+    new_tube_iface = dbus.Interface(new_tube_chan, CHANNEL_TYPE_STREAM_TUBE)
+
+    # check State and Parameters
+    new_tube_props = new_tube_chan.GetAll(CHANNEL_IFACE_TUBE,
+            dbus_interface=PROPERTIES_IFACE)
+
+    # the tube created using the old API is in the "not offered" state
+    assert new_tube_props['State'] == TUBE_CHANNEL_STATE_NOT_OFFERED
+    assert new_tube_props['Parameters'] == {'foo': 'bar'}
+
+    check_NewChannel_signal(old_sig.args, CHANNEL_TYPE_STREAM_TUBE,
+            new_chan_path, bob_handle, True)
+    check_NewChannels_signal(new_sig.args, CHANNEL_TYPE_STREAM_TUBE, new_chan_path, \
             bob_handle, 'bob@localhost', conn.GetSelfHandle())
     stream_tube_channel_properties = new_sig.args[0][0]
 
@@ -398,17 +339,22 @@ def test(q, bus, conn, stream):
             [old_tubes_channel_properties, stream_tube_channel_properties])
 
     tubes_chan = bus.get_object(conn.bus_name, chan_path)
-    tubes_iface = dbus.Interface(tubes_chan,
-        tp_name_prefix + '.Channel.Type.Tubes')
 
-    check_channel_properties(q, bus, conn, stream, tubes_chan, "Tubes",
+    tubes_iface = dbus.Interface(tubes_chan, CHANNEL_TYPE_TUBES)
+
+    check_channel_properties(q, bus, conn, stream, tubes_chan, CHANNEL_TYPE_TUBES,
             bob_handle, "bob@localhost")
 
-    # Offer the tube, old API
+    # Create another tube using old API
     call_async(q, tubes_iface, 'OfferStreamTube',
         'echo', sample_parameters, 0, dbus.ByteArray(path), 0, "")
 
-    event = q.expect('stream-message')
+    event, return_event, new_chan, new_chans = q.expect_many(
+        EventPattern('stream-message'),
+        EventPattern('dbus-return', method='OfferStreamTube'),
+        EventPattern('dbus-signal', signal='NewChannel'),
+        EventPattern('dbus-signal', signal='NewChannels'))
+
     message = event.stanza
     assert message['to'] == 'bob@localhost/Bob' # check the resource
     tube_nodes = xpath.queryForNodes('/message/tube[@xmlns="%s"]' % NS_TUBES,
@@ -433,65 +379,69 @@ def test(q, bus, conn, stream):
                       'u': ('uint', '123'),
                      }
 
+
+    # the tube channel (new API) is announced
+    check_NewChannel_signal(new_chan.args, CHANNEL_TYPE_STREAM_TUBE,
+        None, bob_handle, False)
+    check_NewChannels_signal(new_chans.args, CHANNEL_TYPE_STREAM_TUBE, new_chan.args[0],
+        bob_handle, "bob@localhost", self_handle)
+
+    props = new_chans.args[0][0][1]
+
     # We offered a tube using the old tube API and created one with the new
-    # API, so there is 2 tubes. Check the new tube API works
+    # API, so there are 2 tubes. Check the new tube API works
     assert len(filter(lambda x:
-                  x[1] == "org.freedesktop.Telepathy.Channel.Type.Tubes",
+                  x[1] == CHANNEL_TYPE_TUBES,
                   conn.ListChannels())) == 1
     channels = filter(lambda x:
-      x[1] == "org.freedesktop.Telepathy.Channel.Type.StreamTube.DRAFT" and
+      x[1] == CHANNEL_TYPE_STREAM_TUBE and
       x[0] == new_chan_path,
       conn.ListChannels())
     assert len(channels) == 1
     assert new_chan_path == channels[0][0]
 
-    tube_chan = bus.get_object(conn.bus_name, channels[0][0])
-    tube_iface = dbus.Interface(tube_chan,
-        tp_name_prefix + '.Channel.Type.StreamTube.DRAFT')
+    old_tube_chan = bus.get_object(conn.bus_name, new_chan.args[0])
 
-    self_handle = conn.GetSelfHandle()
-    tube_basic_props = tube_chan.GetAll(
-            'org.freedesktop.Telepathy.Channel',
-            dbus_interface='org.freedesktop.DBus.Properties')
+    tube_basic_props = old_tube_chan.GetAll(CHANNEL,
+            dbus_interface=PROPERTIES_IFACE)
     assert tube_basic_props.get("InitiatorHandle") == self_handle
 
-    stream_tube_props = tube_chan.GetAll(
-            'org.freedesktop.Telepathy.Channel.Type.StreamTube.DRAFT',
-            dbus_interface='org.freedesktop.DBus.Properties')
-    assert stream_tube_props.get("Service") == "newecho", stream_tube_props
+    stream_tube_props = old_tube_chan.GetAll(CHANNEL_TYPE_STREAM_TUBE,
+            dbus_interface=PROPERTIES_IFACE)
+    assert stream_tube_props.get("Service") == "echo", stream_tube_props
 
-    tube_props = tube_chan.GetAll(
-            'org.freedesktop.Telepathy.Channel.Interface.Tube.DRAFT',
-            dbus_interface='org.freedesktop.DBus.Properties')
-    assert tube_props.get("Parameters") == dbus.Dictionary(
-            {dbus.String(u'foo'): dbus.String(u'bar')},
-            signature=dbus.Signature('sv'))
-    # change the parameters
-    tube_chan.Set('org.freedesktop.Telepathy.Channel.Interface.Tube.DRAFT',
-            'Parameters', new_sample_parameters,
-            dbus_interface='org.freedesktop.DBus.Properties')
-    # check it is correctly changed
-    tube_props = tube_chan.GetAll(
-            'org.freedesktop.Telepathy.Channel.Interface.Tube.DRAFT',
-            dbus_interface='org.freedesktop.DBus.Properties', byte_arrays=True)
-    assert tube_props.get("Parameters") == new_sample_parameters, \
-            tube_props.get("Parameters")
-    
-    # 3 == Tube_Channel_State_Not_Offered
-    assert tube_props.get("Status") == 3, tube_props
+    old_tube_props = old_tube_chan.GetAll(CHANNEL_IFACE_TUBE,
+            dbus_interface=PROPERTIES_IFACE, byte_arrays=True)
+    assert old_tube_props.get("Parameters") == dbus.Dictionary(sample_parameters)
 
-    check_channel_properties(q, bus, conn, stream, tubes_chan, "Tubes",
+    # Tube have been created using the old API and so is already offered
+    assert old_tube_props['State'] == TUBE_CHANNEL_STATE_REMOTE_PENDING
+
+    check_channel_properties(q, bus, conn, stream, tubes_chan, CHANNEL_TYPE_TUBES,
             bob_handle, "bob@localhost")
-    check_channel_properties(q, bus, conn, stream, tube_chan,
-            "StreamTube.DRAFT", bob_handle, "bob@localhost", 3)
+    check_channel_properties(q, bus, conn, stream, old_tube_chan,
+            CHANNEL_TYPE_STREAM_TUBE, bob_handle, "bob@localhost", TUBE_CHANNEL_STATE_REMOTE_PENDING)
 
-    # Offer the tube, new API
+    # change the parameters of the not offered tube (the one created using the
+    # new API)
+    new_tube_chan.Set(CHANNEL_IFACE_TUBE, 'Parameters', new_sample_parameters,
+            dbus_interface=PROPERTIES_IFACE)
+    # check it is correctly changed
+    new_tube_props = new_tube_chan.GetAll(CHANNEL_IFACE_TUBE,
+            dbus_interface=PROPERTIES_IFACE, byte_arrays=True)
+    assert new_tube_props.get("Parameters") == new_sample_parameters, \
+            new_tube_props.get("Parameters")
+
+    # Offer the first tube created (new API)
     path2 = os.getcwd() + '/stream2'
-    call_async(q, tube_iface, 'OfferStreamTube',
+    call_async(q, new_tube_iface, 'OfferStreamTube',
         0, dbus.ByteArray(path2), 0, "")
 
-    event = q.expect('stream-message')
-    message = event.stanza
+    msg_event, new_tube_sig = q.expect_many(
+        EventPattern('stream-message'),
+        EventPattern('dbus-signal', signal='NewTube'))
+
+    message = msg_event.stanza
     assert message['to'] == 'bob@localhost/Bob' # check the resource
     tube_nodes = xpath.queryForNodes('/message/tube[@xmlns="%s"]' % NS_TUBES,
         message)
@@ -514,23 +464,29 @@ def test(q, bus, conn, stream):
                       'i': ('int', '-123'),
                       'u': ('uint', '123'),
                      }
+
+    # check NewTube signal (old API)
+    id, initiator_handle, type, service, params, state = new_tube_sig.args
+    assert initiator_handle == self_handle
+    assert type == 1 # stream
+    assert service == 'newecho'
+    assert params == new_sample_parameters
+    assert state == 1 # remote pending
+
     # The new tube has been offered, the parameters cannot be changed anymore
     # We need to use call_async to check the error
-    tube_prop_iface = dbus.Interface(tube_chan,
-        'org.freedesktop.DBus.Properties')
-    call_async(q, tube_prop_iface, 'Set',
-        'org.freedesktop.Telepathy.Channel.Interface.Tube.DRAFT',
+    tube_prop_iface = dbus.Interface(old_tube_chan, PROPERTIES_IFACE)
+    call_async(q, tube_prop_iface, 'Set', CHANNEL_IFACE_TUBE,
             'Parameters', dbus.Dictionary(
             {dbus.String(u'foo2'): dbus.String(u'bar2')},
             signature=dbus.Signature('sv')),
-            dbus_interface='org.freedesktop.DBus.Properties')
+            dbus_interface=PROPERTIES_IFACE)
     set_error = q.expect('dbus-error')
     # check it is *not* correctly changed
-    tube_props = tube_chan.GetAll(
-            'org.freedesktop.Telepathy.Channel.Interface.Tube.DRAFT',
-            dbus_interface='org.freedesktop.DBus.Properties', byte_arrays=True)
-    assert tube_props.get("Parameters") == new_sample_parameters, \
-            tube_props.get("Parameters")
+    new_tube_props = new_tube_chan.GetAll(CHANNEL_IFACE_TUBE,
+            dbus_interface=PROPERTIES_IFACE, byte_arrays=True)
+    assert new_tube_props.get("Parameters") == new_sample_parameters, \
+            new_tube_props.get("Parameters")
 
     # The CM is the server, so fake a client wanting to talk to it
     # Old API tube
@@ -548,7 +504,7 @@ def test(q, bus, conn, stream):
     field['type'] = 'list-single'
     option = field.addElement((None, 'option'))
     value = option.addElement((None, 'value'))
-    value.addContent(NS_BYTESTREAMS)
+    value.addContent(NS_IBB)
 
     stream_node = si.addElement((NS_TUBES, 'stream'))
     stream_node['tube'] = str(stream_tube_id)
@@ -564,7 +520,7 @@ def test(q, bus, conn, stream):
     value = xpath.queryForNodes('/si/feature/x/field/value', si)
     assert len(value) == 1
     proto = value[0]
-    assert str(proto) == NS_BYTESTREAMS
+    assert str(proto) == NS_IBB
     tube = xpath.queryForNodes('/si/tube[@xmlns="%s"]' % NS_TUBES, si)
     assert len(tube) == 1
 
@@ -597,7 +553,7 @@ def test(q, bus, conn, stream):
     field['type'] = 'list-single'
     option = field.addElement((None, 'option'))
     value = option.addElement((None, 'value'))
-    value.addContent(NS_BYTESTREAMS)
+    value.addContent(NS_IBB)
 
     stream_node = si.addElement((NS_TUBES, 'stream'))
     stream_node['tube'] = str(new_stream_tube_id)
@@ -613,7 +569,7 @@ def test(q, bus, conn, stream):
     value = xpath.queryForNodes('/si/feature/x/field/value', si)
     assert len(value) == 1
     proto = value[0]
-    assert str(proto) == NS_BYTESTREAMS
+    assert str(proto) == NS_IBB
     tube = xpath.queryForNodes('/si/tube[@xmlns="%s"]' % NS_TUBES, si)
     assert len(tube) == 1
 
@@ -630,122 +586,74 @@ def test(q, bus, conn, stream):
         2,      # OPEN
         ) in tubes, tubes
 
-    reactor.listenTCP(5086, S5BFactory(q.append))
-
     # have the fake client open the stream
     # Old tube API
     iq = IQ(stream, 'set')
     iq['to'] = 'test@localhost/Resource'
     iq['from'] = 'bob@localhost/Bob'
-    query = iq.addElement((NS_BYTESTREAMS, 'query'))
-    query['sid'] = 'alpha'
-    query['mode'] = 'tcp'
-    # Not working streamhost
-    streamhost = query.addElement('streamhost')
-    streamhost['jid'] = 'invalid.invalid'
-    streamhost['host'] = 'invalid.invalid'
-    streamhost['port'] = '5086'
-    # Working streamhost
-    streamhost = query.addElement('streamhost')
-    streamhost['jid'] = 'bob@localhost/Bob'
-    streamhost['host'] = '127.0.0.1'
-    streamhost['port'] = '5086'
-    # This works too but should not be tried as gabble should just
-    # connect to the previous one
-    streamhost = query.addElement('streamhost')
-    streamhost['jid'] = 'bob@localhost'
-    streamhost['host'] = '127.0.0.1'
-    streamhost['port'] = '5086'
+    open = iq.addElement((NS_IBB, 'open'))
+    open['sid'] = 'alpha'
+    open['block-size'] = '4096'
     stream.send(iq)
 
-    event = q.expect('s5b-data-received')
-    assert event.properties['data'] == '\x05\x01\x00' # version 5, 1 auth method, no auth
-    transport = event.properties['transport']
-    transport.write('\x05\x00') # version 5, no auth
-    event = q.expect('s5b-data-received')
-    # version 5, connect, reserved, domain type
-    expected_connect = '\x05\x01\x00\x03'
-    expected_connect += chr(40) # len (SHA-1)
-    # sha-1(sid + initiator + target)
-    unhashed_domain = query['sid'] + iq['from'] + iq['to']
-    expected_connect += sha.new(unhashed_domain).hexdigest()
-    expected_connect += '\x00\x00' # port
-    assert event.properties['data'] == expected_connect
+    q.expect('stream-iq', iq_type='result')
+    # have the fake client send us some data
+    message = domish.Element(('jabber:client', 'message'))
+    message['to'] = 'test@localhost/Resource'
+    message['from'] = 'bob@localhost/Bob'
+    data_node = message.addElement((NS_IBB, 'data'))
+    data_node['sid'] = 'alpha'
+    data_node['seq'] = '0'
+    data_node.addContent(base64.b64encode('hello, world'))
+    stream.send(message)
 
-    transport.write('\x05\x00') #version 5, ok
+    event = q.expect('stream-message', to='bob@localhost/Bob')
+    message = event.stanza
 
-    event = q.expect('stream-iq', iq_type='result')
-    iq = event.stanza
-    query = xpath.queryForNodes('/iq/query', iq)[0]
-    assert query.uri == NS_BYTESTREAMS
-    streamhost_used = xpath.queryForNodes('/query/streamhost-used', query)[0]
-    assert streamhost_used['jid'] == 'bob@localhost/Bob'
-
-    transport.write("HELLO WORLD")
-    event = q.expect('s5b-data-received')
-    assert event.properties['data'] == 'hello world'
-
-    # this connection is disconnected
-    transport.loseConnection()
-
-    reactor.listenTCP(5085, S5BFactory(q.append))
+    data_nodes = xpath.queryForNodes('/message/data[@xmlns="%s"]' % NS_IBB,
+        message)
+    assert data_nodes is not None
+    assert len(data_nodes) == 1
+    ibb_data = data_nodes[0]
+    assert ibb_data['sid'] == 'alpha'
+    binary = base64.b64decode(str(ibb_data))
+    assert binary == 'hello, world'
 
     # have the fake client open the stream
     # New tube API
     iq = IQ(stream, 'set')
     iq['to'] = 'test@localhost/Resource'
     iq['from'] = 'bob@localhost/Bob'
-    query = iq.addElement((NS_BYTESTREAMS, 'query'))
-    query['sid'] = 'beta'
-    query['mode'] = 'tcp'
-    # Not working streamhost
-    streamhost = query.addElement('streamhost')
-    streamhost['jid'] = 'invalid.invalid'
-    streamhost['host'] = 'invalid.invalid'
-    streamhost['port'] = '5085'
-    # Working streamhost
-    streamhost = query.addElement('streamhost')
-    streamhost['jid'] = 'bob@localhost/Bob'
-    streamhost['host'] = '127.0.0.1'
-    streamhost['port'] = '5085'
-    # This works too but should not be tried as gabble should just
-    # connect to the previous one
-    streamhost = query.addElement('streamhost')
-    streamhost['jid'] = 'bob@localhost'
-    streamhost['host'] = '127.0.0.1'
-    streamhost['port'] = '5085'
+    open = iq.addElement((NS_IBB, 'open'))
+    open['sid'] = 'beta'
+    open['block-size'] = '4096'
     stream.send(iq)
 
-    event = q.expect('s5b-data-received')
-    assert event.properties['data'] == '\x05\x01\x00' # version 5, 1 auth method, no auth
-    transport = event.properties['transport']
-    transport.write('\x05\x00') # version 5, no auth
-    event = q.expect('s5b-data-received')
-    # version 5, connect, reserved, domain type
-    expected_connect = '\x05\x01\x00\x03'
-    expected_connect += chr(40) # len (SHA-1)
-    # sha-1(sid + initiator + target)
-    unhashed_domain = query['sid'] + iq['from'] + iq['to']
-    expected_connect += sha.new(unhashed_domain).hexdigest()
-    expected_connect += '\x00\x00' # port
-    assert event.properties['data'] == expected_connect
+    q.expect('stream-iq', iq_type='result')
+    # have the fake client send us some data
+    message = domish.Element(('jabber:client', 'message'))
+    message['to'] = 'test@localhost/Resource'
+    message['from'] = 'bob@localhost/Bob'
+    data_node = message.addElement((NS_IBB, 'data'))
+    data_node['sid'] = 'beta'
+    data_node['seq'] = '0'
+    data_node.addContent(base64.b64encode('hello, new world'))
+    stream.send(message)
 
-    transport.write('\x05\x00') #version 5, ok
+    event = q.expect('stream-message', to='bob@localhost/Bob')
+    message = event.stanza
 
-    event = q.expect('stream-iq', iq_type='result')
-    iq = event.stanza
-    query = xpath.queryForNodes('/iq/query', iq)[0]
-    assert query.uri == NS_BYTESTREAMS
-    streamhost_used = xpath.queryForNodes('/query/streamhost-used', query)[0]
-    assert streamhost_used['jid'] == 'bob@localhost/Bob'
-
-    transport.write("HELLO, NEW WORLD")
-    event = q.expect('s5b-data-received')
-    assert event.properties['data'] == 'hello, new world'
+    data_nodes = xpath.queryForNodes('/message/data[@xmlns="%s"]' % NS_IBB,
+        message)
+    assert data_nodes is not None
+    assert len(data_nodes) == 1
+    ibb_data = data_nodes[0]
+    assert ibb_data['sid'] == 'beta'
+    binary = base64.b64decode(str(ibb_data))
+    assert binary == 'hello, new world'
 
     # OK, how about D-Bus?
-    call_async(q, tubes_iface, 'OfferDBusTube',
-        'com.example.TestCase', sample_parameters)
+    call_async(q, tubes_iface, 'OfferDBusTube', 'com.example.TestCase', sample_parameters)
 
     event = q.expect('stream-iq', iq_type='set', to='bob@localhost/Bob')
     iq = event.stanza
@@ -797,38 +705,15 @@ def test(q, bus, conn, stream):
     res_field = res_x.addElement((None, 'field'))
     res_field['var'] = 'stream-method'
     res_value = res_field.addElement((None, 'value'))
-    res_value.addContent(NS_BYTESTREAMS)
+    res_value.addContent(NS_IBB)
 
     stream.send(result)
 
     event = q.expect('stream-iq', iq_type='set', to='bob@localhost/Bob')
     iq = event.stanza
-    query = xpath.queryForNodes('/iq/query', iq)[0]
-    assert query.uri == NS_BYTESTREAMS
-    assert query['mode'] == 'tcp'
-    assert query['sid'] == dbus_stream_id
-    streamhost = xpath.queryForNodes('/query/streamhost', query)[0]
-    reactor.connectTCP(streamhost['host'], int(streamhost['port']),
-        S5BFactory(q.append))
-
-    event = q.expect('s5b-connected')
-    transport = event.properties['transport']
-    transport.write('\x05\x01\x00') #version 5, 1 auth method, no auth
-
-    event = q.expect('s5b-data-received')
-    event.properties['data'] == '\x05\x00' # version 5, no auth
-
-    # version 5, connect, reserved, domain type
-    connect = '\x05\x01\x00\x03'
-    connect += chr(40) # len (SHA-1)
-    # sha-1(sid + initiator + target)
-    unhashed_domain = query['sid'] + 'test@localhost/Resource' + 'bob@localhost/Bob'
-    connect += sha.new(unhashed_domain).hexdigest()
-    connect += '\x00\x00' # port
-    transport.write(connect)
-
-    event = q.expect('s5b-data-received')
-    event.properties['data'] == '\x05\x00' # version 5, ok
+    open = xpath.queryForNodes('/iq/open', iq)[0]
+    assert open.uri == NS_IBB
+    assert open['sid'] == dbus_stream_id
 
     result = IQ(stream, 'result')
     result['id'] = iq['id']
@@ -867,31 +752,69 @@ def test(q, bus, conn, stream):
     signal.append(42, signature='u')
     dbus_tube_conn.send_message(signal)
 
-    event = q.expect('s5b-data-received')
-    dbus_message = event.properties['data']
+    event = q.expect('stream-message')
+    message = event.stanza
 
+    assert message['to'] == 'bob@localhost/Bob'
+
+    data_nodes = xpath.queryForNodes('/message/data[@xmlns="%s"]' % NS_IBB,
+        message)
+    assert data_nodes is not None
+    assert len(data_nodes) == 1
+    ibb_data = data_nodes[0]
+    assert ibb_data['sid'] == dbus_stream_id
+    binary = base64.b64decode(str(ibb_data))
     # little and big endian versions of: SIGNAL, NO_REPLY, protocol v1,
     # 4-byte payload
-    assert dbus_message.startswith('l\x04\x01\x01' '\x04\x00\x00\x00') or \
-           dbus_message.startswith('B\x04\x01\x01' '\x00\x00\x00\x04')
+    assert binary.startswith('l\x04\x01\x01' '\x04\x00\x00\x00') or \
+           binary.startswith('B\x04\x01\x01' '\x00\x00\x00\x04')
     # little and big endian versions of the 4-byte payload, UInt32(42)
-    assert (dbus_message[0] == 'l' and dbus_message.endswith('\x2a\x00\x00\x00')) or \
-           (dbus_message[0] == 'B' and dbus_message.endswith('\x00\x00\x00\x2a'))
+    assert (binary[0] == 'l' and binary.endswith('\x2a\x00\x00\x00')) or \
+           (binary[0] == 'B' and binary.endswith('\x00\x00\x00\x2a'))
     # XXX: verify that it's actually in the "sender" slot, rather than just
     # being in the message somewhere
-    assert my_bus_name in dbus_message
+    assert my_bus_name in binary
 
     watch_tube_signals(q, dbus_tube_conn)
 
+    dbus_message = binary
+    seq = 0
+
     # Have the fake client send us a message all in one go...
-    transport.write(dbus_message)
+    msg = domish.Element(('jabber:client', 'message'))
+    msg['to'] = 'test@localhost/Resource'
+    msg['from'] = 'bob@localhost/Bob'
+    data_node = msg.addElement('data', NS_IBB)
+    data_node['sid'] = dbus_stream_id
+    data_node['seq'] = str(seq)
+    data_node.addContent(base64.b64encode(dbus_message))
+    stream.send(msg)
+    seq += 1
 
     # ... and a message one byte at a time ...
+
     for byte in dbus_message:
-        transport.write(byte)
+        msg = domish.Element(('jabber:client', 'message'))
+        msg['to'] = 'test@localhost/Resource'
+        msg['from'] = 'bob@localhost/Bob'
+        data_node = msg.addElement('data', NS_IBB)
+        data_node['sid'] = dbus_stream_id
+        data_node['seq'] = str(seq)
+        data_node.addContent(base64.b64encode(byte))
+        stream.send(msg)
+        seq += 1
 
     # ... and two messages in one go
-    transport.write(dbus_message + dbus_message)
+
+    msg = domish.Element(('jabber:client', 'message'))
+    msg['to'] = 'test@localhost/Resource'
+    msg['from'] = 'bob@localhost/Bob'
+    data_node = msg.addElement('data', NS_IBB)
+    data_node['sid'] = dbus_stream_id
+    data_node['seq'] = str(seq)
+    data_node.addContent(base64.b64encode(dbus_message + dbus_message))
+    stream.send(msg)
+    seq += 1
 
     q.expect('tube-signal', signal='baz', args=[42], tube=dbus_tube_conn)
     q.expect('tube-signal', signal='baz', args=[42], tube=dbus_tube_conn)
@@ -913,7 +836,7 @@ def test(q, bus, conn, stream):
     field['type'] = 'list-single'
     option = field.addElement((None, 'option'))
     value = option.addElement((None, 'value'))
-    value.addContent(NS_BYTESTREAMS)
+    value.addContent(NS_IBB)
 
     tube = si.addElement((NS_TUBES, 'tube'))
     tube['type'] = 'dbus'
@@ -953,31 +876,28 @@ def test(q, bus, conn, stream):
     value = xpath.queryForNodes('/si/feature/x/field/value', si)
     assert len(value) == 1
     proto = value[0]
-    assert str(proto) == NS_BYTESTREAMS
+    assert str(proto) == NS_IBB
     tube = xpath.queryForNodes('/si/tube[@xmlns="%s"]' % NS_TUBES, si)
     assert len(tube) == 1
 
-    reactor.listenTCP(5084, S5BFactory(q.append))
-
-    # Init the SOCKS5 bytestream
+    # Init the IBB bytestream
     iq = IQ(stream, 'set')
     iq['to'] = 'test@localhost/Resource'
     iq['from'] = 'bob@localhost/Bob'
-    query = iq.addElement((NS_BYTESTREAMS, 'query'))
-    query['sid'] = 'beta'
-    query['mode'] = 'tcp'
-    streamhost = query.addElement('streamhost')
-    streamhost['jid'] = 'bob@localhost/Bob'
-    streamhost['host'] = '127.0.0.1'
-    streamhost['port'] = '5084'
+    open = iq.addElement((NS_IBB, 'open'))
+    open['sid'] = 'beta'
+    open['block-size'] = '4096'
     stream.send(iq)
 
-    event, _ = q.expect_many(
-        EventPattern('dbus-return', method='AcceptDBusTube'),
-        EventPattern('s5b-connected'))
+    event = q.expect('dbus-return', method='AcceptDBusTube')
     address = event.value[0]
     # FIXME: this is currently broken. See FIXME in tubes-channel.c
     #assert len(address) > 0
+
+    event = q.expect('dbus-signal', signal='TubeStateChanged',
+        args=[69, 2]) # 2 == OPEN
+    id = event.args[0]
+    state = event.args[1]
 
     # OK, we're done
     conn.Disconnect()

@@ -106,6 +106,7 @@ enum
   OPENED,
   NEW_CONNECTION,
   CLOSED,
+  OFFERED,
   LAST_SIGNAL
 };
 
@@ -1163,7 +1164,7 @@ gabble_tube_stream_class_init (GabbleTubeStreamClass *gabble_tube_stream_class)
   };
   static TpDBusPropertiesMixinPropImpl tube_iface_props[] = {
       { "Parameters", "parameters", "parameters" },
-      { "Status", "state", NULL },
+      { "State", "state", NULL },
       { NULL }
   };
   static TpDBusPropertiesMixinIfaceImpl prop_interfaces[] = {
@@ -1325,6 +1326,15 @@ gabble_tube_stream_class_init (GabbleTubeStreamClass *gabble_tube_stream_class)
 
   signals[CLOSED] =
     g_signal_new ("tube-closed",
+                  G_OBJECT_CLASS_TYPE (gabble_tube_stream_class),
+                  G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
+                  0,
+                  NULL, NULL,
+                  gabble_marshal_VOID__VOID,
+                  G_TYPE_NONE, 0);
+
+  signals[OFFERED] =
+    g_signal_new ("tube-offered",
                   G_OBJECT_CLASS_TYPE (gabble_tube_stream_class),
                   G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
                   0,
@@ -1986,6 +1996,8 @@ gabble_tube_stream_offer_stream_tube (GabbleSvcChannelTypeStreamTube *iface,
 
   g_signal_connect (self, "tube-new-connection",
       G_CALLBACK (stream_unix_tube_new_connection_cb), self);
+
+  g_signal_emit (G_OBJECT (self), signals[OFFERED], 0);
 
   gabble_svc_channel_type_stream_tube_return_from_offer_stream_tube (context);
 }
