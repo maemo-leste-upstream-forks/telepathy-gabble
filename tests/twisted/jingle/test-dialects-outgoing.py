@@ -12,10 +12,6 @@ from twisted.words.xish import xpath
 
 from jingletest2 import *
 
-print "FIXME: This test is broken: http://bugs.freedesktop.org/show_bug.cgi?id=19161"
-# exiting 77 causes automake to consider the test to have been skipped
-raise SystemExit(77)
-
 def worker(jp, q, bus, conn, stream):
 
     jt2 = JingleTest2(jp, conn, q, stream, 'test@localhost', 'foo@bar.com/Foo')
@@ -128,6 +124,7 @@ def testg4(q, bus, conn, stream):
     return worker(GtalkProtocol04(), q, bus, conn, stream)
 
 if __name__ == '__main__':
-    exec_tests([testg3, testg4, test015, test031])
-
-
+    exec_test(testg3)
+    exec_test(testg4)
+    exec_test(test015)
+    exec_test(test031)

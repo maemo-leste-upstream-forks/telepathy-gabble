@@ -42,10 +42,7 @@ DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 subdir = tests/twisted
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-compiler-flag.m4 \
-	$(top_srcdir)/m4/compiler.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/compiler.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -95,13 +92,17 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
+CXXDEPMODE = @CXXDEPMODE@
+CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DSYMUTIL = @DSYMUTIL@
-DUMPBIN = @DUMPBIN@
+ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -109,7 +110,8 @@ EGREP = @EGREP@
 ENABLE_CODING_STYLE_CHECKS = @ENABLE_CODING_STYLE_CHECKS@
 ERROR_CFLAGS = @ERROR_CFLAGS@
 EXEEXT = @EXEEXT@
-FGREP = @FGREP@
+F77 = @F77@
+FFLAGS = @FFLAGS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
@@ -119,22 +121,17 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
-LIPO = @LIPO@
 LN_S = @LN_S@
 LOUDMOUTH_CFLAGS = @LOUDMOUTH_CFLAGS@
 LOUDMOUTH_LIBS = @LOUDMOUTH_LIBS@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 NMEDIT = @NMEDIT@
 OBJEXT = @OBJEXT@
-OTOOL = @OTOOL@
-OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -157,9 +154,12 @@ WANT_TWISTED_TESTS_FALSE = @WANT_TWISTED_TESTS_FALSE@
 WANT_TWISTED_TESTS_TRUE = @WANT_TWISTED_TESTS_TRUE@
 XSLTPROC = @XSLTPROC@
 ac_ct_CC = @ac_ct_CC@
-ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
+ac_ct_CXX = @ac_ct_CXX@
+ac_ct_F77 = @ac_ct_F77@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
+am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
+am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -189,7 +189,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -202,6 +201,8 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 TWISTED_TESTS = \
+	muc/name-conflict.py \
+	muc/renamed.py \
 	muc/roomlist.py \
 	muc/test-ensure.py \
 	muc/test-muc-alias.py \
@@ -286,6 +287,7 @@ TWISTED_TESTS = \
 	test-caps-cache.py \
 	test-caps-hash.py \
 	test-caps-tubes.py \
+	caps_helper.py \
 	connect/test-fail.py \
 	connect/test-success.py \
 	connect/test-twice.py \
@@ -293,7 +295,8 @@ TWISTED_TESTS = \
 	test-disco.py \
 	test-disco-no-reply.py \
 	test-register.py \
-	test-set-status-idempotence.py
+	test-set-status-idempotence.py \
+        test-location.py
 
 TESTS = 
 TESTS_ENVIRONMENT = \
@@ -302,8 +305,10 @@ TESTS_ENVIRONMENT = \
 
 # set to 6 when using refdbg, to give Gabble time to exit
 CHECK_TWISTED_SLEEP = 0
+BUILT_SOURCES = config.py
 EXTRA_DIST = \
 	$(TWISTED_TESTS) \
+	config.py \
 	constants.py \
 	gabbletest.py \
 	servicetest.py \
@@ -326,10 +331,11 @@ AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @LOUDMOUTH_CFLAGS@ \
     -I $(top_srcdir)/src -I $(top_builddir)/src
 
 ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @LOUDMOUTH_LIBS@ @TP_GLIB_LIBS@
-CLEANFILES = gabble-[1-9]*.log *.pyc */*.pyc
+CLEANFILES = gabble-[1-9]*.log *.pyc */*.pyc config.py
 check_misc_sources = $(TESTS)
 SUBDIRS = tools
-all: all-recursive
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
@@ -662,11 +668,13 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS check-local
-check: check-recursive
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-recursive
 all-am: Makefile $(PROGRAMS)
 installdirs: installdirs-recursive
 installdirs-am:
-install: install-recursive
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
 uninstall: uninstall-recursive
@@ -691,6 +699,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-recursive
 
 clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
@@ -781,6 +790,9 @@ check-twisted:
 		echo "Core dump exists: tools/core";\
 		exit 1;\
 	fi
+
+config.py: Makefile
+	echo "PACKAGE_STRING = \"$(PACKAGE_STRING)\"" > config.py
 check-coding-style:
 	@fail=0; \
 	if test -n "$(check_misc_sources)"; then \
