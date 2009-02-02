@@ -116,6 +116,34 @@ struct _TubesCapabilities
    * gchar *ServiceName -> Feature *feature
    */
   GHashTable *dbus_tube_caps;
+
+  gboolean tubes_supported;
+};
+
+static const gchar * const tubes_channel_fixed_properties[] = {
+    TP_IFACE_CHANNEL ".ChannelType",
+    TP_IFACE_CHANNEL ".TargetHandleType",
+    NULL
+};
+
+static const gchar * const old_tubes_channel_allowed_properties[] = {
+    TP_IFACE_CHANNEL ".TargetHandle",
+    TP_IFACE_CHANNEL ".TargetID",
+    NULL
+};
+static const gchar * const stream_tube_channel_allowed_properties[] = {
+    TP_IFACE_CHANNEL ".TargetHandle",
+    TP_IFACE_CHANNEL ".TargetID",
+    GABBLE_IFACE_CHANNEL_INTERFACE_TUBE ".Parameters",
+    GABBLE_IFACE_CHANNEL_TYPE_STREAM_TUBE ".Service",
+    NULL
+};
+static const gchar * const dbus_tube_channel_allowed_properties[] = {
+    TP_IFACE_CHANNEL ".TargetHandle",
+    TP_IFACE_CHANNEL ".TargetID",
+    GABBLE_IFACE_CHANNEL_INTERFACE_TUBE ".Parameters",
+    GABBLE_IFACE_CHANNEL_TYPE_DBUS_TUBE ".ServiceName",
+    NULL
 };
 
 
@@ -407,10 +435,12 @@ add_service_to_array (gchar *service,
   GValue *channel_type_value;
   GValue *target_handle_type_value;
   gchar *tube_allowed_properties[] =
-      {
+    {
         TP_IFACE_CHANNEL ".TargetHandle",
+        TP_IFACE_CHANNEL ".TargetID",
+        GABBLE_IFACE_CHANNEL_INTERFACE_TUBE ".Parameters",
         NULL
-      };
+    };
 
   g_assert (type == TP_TUBE_TYPE_STREAM || type == TP_TUBE_TYPE_DBUS);
 
@@ -459,6 +489,73 @@ add_service_to_array (gchar *service,
 }
 
 static void
+add_generic_tube_caps (GPtrArray *arr)
+{
+  GValue monster1 = {0,}, monster2 = {0,};
+  GHashTable *fixed_properties;
+  GValue *channel_type_value;
+  GValue *target_handle_type_value;
+
+  /* StreamTube */
+  g_value_init (&monster1, TP_STRUCT_TYPE_REQUESTABLE_CHANNEL_CLASS);
+  g_value_take_boxed (&monster1,
+      dbus_g_type_specialized_construct (
+        TP_STRUCT_TYPE_REQUESTABLE_CHANNEL_CLASS));
+
+  fixed_properties = g_hash_table_new_full (g_str_hash, g_str_equal,
+      NULL, (GDestroyNotify) tp_g_value_slice_free);
+
+  channel_type_value = tp_g_value_slice_new (G_TYPE_STRING);
+  g_value_set_static_string (channel_type_value,
+      GABBLE_IFACE_CHANNEL_TYPE_STREAM_TUBE);
+
+  g_hash_table_insert (fixed_properties, TP_IFACE_CHANNEL ".ChannelType",
+      channel_type_value);
+
+  target_handle_type_value = tp_g_value_slice_new (G_TYPE_UINT);
+  g_value_set_uint (target_handle_type_value, TP_HANDLE_TYPE_CONTACT);
+  g_hash_table_insert (fixed_properties,
+      TP_IFACE_CHANNEL ".TargetHandleType", target_handle_type_value);
+
+  dbus_g_type_struct_set (&monster1,
+      0, fixed_properties,
+      1, stream_tube_channel_allowed_properties,
+      G_MAXUINT);
+
+  g_hash_table_destroy (fixed_properties);
+  g_ptr_array_add (arr, g_value_get_boxed (&monster1));
+
+  /* DBusTube */
+  g_value_init (&monster2, TP_STRUCT_TYPE_REQUESTABLE_CHANNEL_CLASS);
+  g_value_take_boxed (&monster2,
+      dbus_g_type_specialized_construct (
+        TP_STRUCT_TYPE_REQUESTABLE_CHANNEL_CLASS));
+
+  fixed_properties = g_hash_table_new_full (g_str_hash, g_str_equal,
+      NULL, (GDestroyNotify) tp_g_value_slice_free);
+
+  channel_type_value = tp_g_value_slice_new (G_TYPE_STRING);
+  g_value_set_static_string (channel_type_value,
+      GABBLE_IFACE_CHANNEL_TYPE_DBUS_TUBE);
+
+  g_hash_table_insert (fixed_properties, TP_IFACE_CHANNEL ".ChannelType",
+      channel_type_value);
+
+  target_handle_type_value = tp_g_value_slice_new (G_TYPE_UINT);
+  g_value_set_uint (target_handle_type_value, TP_HANDLE_TYPE_CONTACT);
+  g_hash_table_insert (fixed_properties,
+      TP_IFACE_CHANNEL ".TargetHandleType", target_handle_type_value);
+
+  dbus_g_type_struct_set (&monster2,
+      0, fixed_properties,
+      1, dbus_tube_channel_allowed_properties,
+      G_MAXUINT);
+
+  g_hash_table_destroy (fixed_properties);
+  g_ptr_array_add (arr, g_value_get_boxed (&monster2));
+}
+
+static void
 gabble_private_tubes_factory_get_contact_caps (
     GabbleCapsChannelManager *manager,
     GabbleConnection *conn,
@@ -483,12 +580,29 @@ gabble_private_tubes_factory_get_contact_caps (
   if (presence == NULL)
     return;
 
+  if (handle == base->self_handle &&
+      (presence->per_channel_manager_caps == NULL ||
+       g_hash_table_lookup (presence->per_channel_manager_caps, manager)
+       == NULL))
+    {
+      /* No tubes capabilities have been set but we always support at
+       * least generic tubes caps */
+      add_generic_tube_caps (arr);
+      return;
+    }
+
   if (presence->per_channel_manager_caps == NULL)
     return;
 
   caps = g_hash_table_lookup (presence->per_channel_manager_caps, manager);
+
   if (caps == NULL)
     return;
+
+  if (!caps->tubes_supported)
+    return;
+
+  add_generic_tube_caps (arr);
 
   stream_tube_caps = caps->stream_tube_caps;
   dbus_tube_caps = caps->dbus_tube_caps;
@@ -580,6 +694,12 @@ gabble_private_tubes_factory_parse_caps (
       if (NULL == var)
         continue;
 
+      if (!g_str_has_prefix (var, NS_TUBES))
+        continue;
+
+      /* tubes generic cap or service specific */
+      caps->tubes_supported = TRUE;
+
       if (g_str_has_prefix (var, NS_TUBES "/"))
         {
           /* http://telepathy.freedesktop.org/xmpp/tubes/$type#$service */
@@ -643,6 +763,8 @@ gabble_private_tubes_factory_copy_caps (
   g_hash_table_foreach (caps_in->dbus_tube_caps, copy_caps_helper,
       caps_out->dbus_tube_caps);
 
+  caps_out->tubes_supported = caps_in->tubes_supported;
+
   *specific_caps_out = caps_out;
 }
 
@@ -665,6 +787,24 @@ gabble_private_tubes_factory_update_caps (
 }
 
 static gboolean
+hash_table_is_subset (GHashTable *superset,
+                      GHashTable *subset)
+{
+  GHashTableIter iter;
+  gpointer look_for;
+
+  g_hash_table_iter_init (&iter, subset);
+  while (g_hash_table_iter_next (&iter, &look_for, NULL))
+    {
+      if (!g_hash_table_lookup_extended (superset, look_for, NULL, NULL))
+        /* One of subset's key is not in superset */
+        return FALSE;
+    }
+
+  return TRUE;
+}
+
+static gboolean
 gabble_private_tubes_factory_caps_diff (
     GabbleCapsChannelManager *manager,
     TpHandle handle,
@@ -673,64 +813,33 @@ gabble_private_tubes_factory_caps_diff (
 {
   TubesCapabilities *old_caps = specific_old_caps;
   TubesCapabilities *new_caps = specific_new_caps;
-  GHashTableIter tube_caps_iter;
-  gpointer service;
 
-  if (old_caps != NULL)
-    {
-      g_hash_table_iter_init (&tube_caps_iter, old_caps->stream_tube_caps);
-      while (g_hash_table_iter_next (&tube_caps_iter, &service,
-            NULL))
-        {
-          gpointer key, value;
-          if (new_caps == NULL ||
-              !g_hash_table_lookup_extended (new_caps->stream_tube_caps,
-                  service, &key, &value))
-            {
-              return TRUE;
-            }
-        }
-      g_hash_table_iter_init (&tube_caps_iter, old_caps->dbus_tube_caps);
-      while (g_hash_table_iter_next (&tube_caps_iter, &service,
-            NULL))
-        {
-          gpointer key, value;
-          if (new_caps == NULL ||
-              !g_hash_table_lookup_extended (new_caps->dbus_tube_caps,
-                  service, &key, &value))
-            {
-              return TRUE;
-            }
-        }
-    }
+  if (old_caps == new_caps)
+    return FALSE;
 
-  if (new_caps != NULL)
-    {
-      g_hash_table_iter_init (&tube_caps_iter, new_caps->stream_tube_caps);
-      while (g_hash_table_iter_next (&tube_caps_iter, &service,
-            NULL))
-        {
-          gpointer key, value;
-          if (old_caps == NULL ||
-              !g_hash_table_lookup_extended (old_caps->stream_tube_caps,
-                  service, &key, &value))
-            {
-              return TRUE;
-            }
-        }
-      g_hash_table_iter_init (&tube_caps_iter, new_caps->dbus_tube_caps);
-      while (g_hash_table_iter_next (&tube_caps_iter, &service,
-            NULL))
-        {
-          gpointer key, value;
-          if (old_caps == NULL ||
-              !g_hash_table_lookup_extended (old_caps->dbus_tube_caps,
-                  service, &key, &value))
-            {
-              return TRUE;
-            }
-        }
-    }
+  if (old_caps == NULL || new_caps == NULL)
+    return TRUE;
+
+  if (old_caps->tubes_supported != new_caps->tubes_supported)
+    return TRUE;
+
+  if (g_hash_table_size (old_caps->stream_tube_caps) !=
+      g_hash_table_size (new_caps->stream_tube_caps))
+    return TRUE;
+
+  if (g_hash_table_size (old_caps->dbus_tube_caps) !=
+      g_hash_table_size (new_caps->dbus_tube_caps))
+    return TRUE;
+
+  /* Hash tables have the same size */
+  if (!hash_table_is_subset (new_caps->stream_tube_caps,
+        old_caps->stream_tube_caps))
+    return TRUE;
+
+  if (!hash_table_is_subset (new_caps->dbus_tube_caps,
+        old_caps->dbus_tube_caps))
+    return TRUE;
+
   return FALSE;
 }
 
@@ -777,6 +886,10 @@ gabble_private_tubes_factory_add_cap (GabbleCapsChannelManager *manager,
       caps->dbus_tube_caps = g_hash_table_new_full (g_str_hash, g_str_equal,
           g_free, gabble_private_tubes_factory_free_feat);
       g_hash_table_insert (presence->per_channel_manager_caps, manager, caps);
+
+      if (handle == base->self_handle)
+        /* We always support generic tubes caps */
+        caps->tubes_supported = TRUE;
     }
 
   if (!tp_strdiff (channel_type, GABBLE_IFACE_CHANNEL_TYPE_STREAM_TUBE))
@@ -972,34 +1085,6 @@ gabble_private_tubes_factory_new (GabbleConnection *conn)
       "connection", conn,
       NULL);
 }
-
-
-static const gchar * const tubes_channel_fixed_properties[] = {
-    TP_IFACE_CHANNEL ".ChannelType",
-    TP_IFACE_CHANNEL ".TargetHandleType",
-    NULL
-};
-
-static const gchar * const old_tubes_channel_allowed_properties[] = {
-    TP_IFACE_CHANNEL ".TargetHandle",
-    TP_IFACE_CHANNEL ".TargetID",
-    NULL
-};
-static const gchar * const stream_tube_channel_allowed_properties[] = {
-    TP_IFACE_CHANNEL ".TargetHandle",
-    TP_IFACE_CHANNEL ".TargetID",
-    GABBLE_IFACE_CHANNEL_INTERFACE_TUBE ".Parameters",
-    GABBLE_IFACE_CHANNEL_TYPE_STREAM_TUBE ".Service",
-    NULL
-};
-static const gchar * const dbus_tube_channel_allowed_properties[] = {
-    TP_IFACE_CHANNEL ".TargetHandle",
-    TP_IFACE_CHANNEL ".TargetID",
-    GABBLE_IFACE_CHANNEL_INTERFACE_TUBE ".Parameters",
-    GABBLE_IFACE_CHANNEL_TYPE_DBUS_TUBE ".ServiceName",
-    NULL
-};
-
 
 static void
 gabble_private_tubes_factory_foreach_channel_class (

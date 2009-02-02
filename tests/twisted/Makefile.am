@@ -1,4 +1,6 @@
 TWISTED_TESTS = \
+	muc/name-conflict.py \
+	muc/renamed.py \
 	muc/roomlist.py \
 	muc/test-ensure.py \
 	muc/test-muc-alias.py \
@@ -83,6 +85,7 @@ TWISTED_TESTS = \
 	test-caps-cache.py \
 	test-caps-hash.py \
 	test-caps-tubes.py \
+	caps_helper.py \
 	connect/test-fail.py \
 	connect/test-success.py \
 	connect/test-twice.py \
@@ -90,7 +93,8 @@ TWISTED_TESTS = \
 	test-disco.py \
 	test-disco-no-reply.py \
 	test-register.py \
-	test-set-status-idempotence.py
+	test-set-status-idempotence.py \
+        test-location.py
 
 TESTS =
 
@@ -122,8 +126,14 @@ check-twisted:
 		exit 1;\
 	fi
 
+config.py: Makefile
+	echo "PACKAGE_STRING = \"$(PACKAGE_STRING)\"" > config.py
+
+BUILT_SOURCES = config.py
+
 EXTRA_DIST = \
 	$(TWISTED_TESTS) \
+	config.py \
 	constants.py \
 	gabbletest.py \
 	servicetest.py \
@@ -149,7 +159,7 @@ AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @LOUDMOUTH_CFLAGS@ \
     -I $(top_srcdir)/src -I $(top_builddir)/src
 ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @LOUDMOUTH_LIBS@ @TP_GLIB_LIBS@
 
-CLEANFILES = gabble-[1-9]*.log *.pyc */*.pyc
+CLEANFILES = gabble-[1-9]*.log *.pyc */*.pyc config.py
 
 check_misc_sources = $(TESTS)
 

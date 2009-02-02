@@ -334,6 +334,8 @@ def test(q, bus, conn, stream):
     check_NewChannels_signal(new_sig.args, CHANNEL_TYPE_STREAM_TUBE, new_chan_path, \
             bob_handle, 'bob@localhost', conn.GetSelfHandle())
     stream_tube_channel_properties = new_sig.args[0][0]
+    assert TUBE_STATE not in stream_tube_channel_properties
+    assert TUBE_PARAMETERS not in stream_tube_channel_properties
 
     check_conn_properties(q, bus, conn, stream,
             [old_tubes_channel_properties, stream_tube_channel_properties])
@@ -387,6 +389,8 @@ def test(q, bus, conn, stream):
         bob_handle, "bob@localhost", self_handle)
 
     props = new_chans.args[0][0][1]
+    assert TUBE_STATE not in props
+    assert TUBE_PARAMETERS not in props
 
     # We offered a tube using the old tube API and created one with the new
     # API, so there are 2 tubes. Check the new tube API works
@@ -437,9 +441,12 @@ def test(q, bus, conn, stream):
     call_async(q, new_tube_iface, 'OfferStreamTube',
         0, dbus.ByteArray(path2), 0, "")
 
-    msg_event, new_tube_sig = q.expect_many(
+    msg_event, new_tube_sig, state_event = q.expect_many(
         EventPattern('stream-message'),
-        EventPattern('dbus-signal', signal='NewTube'))
+        EventPattern('dbus-signal', signal='NewTube'),
+        EventPattern('dbus-signal', signal='TubeChannelStateChanged'))
+
+    assert state_event.args[0] == TUBE_CHANNEL_STATE_REMOTE_PENDING
 
     message = msg_event.stanza
     assert message['to'] == 'bob@localhost/Bob' # check the resource
