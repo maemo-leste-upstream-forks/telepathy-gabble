@@ -1,3 +1,13 @@
+telepathy-gabble (0.7.20-2) UNRELEASED; urgency=low
+
+  * Bump dbus-glib build dependency to 0.80-2, so we get a runtime dependency
+    on 0.78 (which can deal with all the D-Bus types we need, and consistently
+    unrefs simply-typed hash tables) rather than 0.76 (which can't deal with
+    all D-Bus types, and might unref or destroy hash tables depending on the
+    version of GLib it was built against).
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 16 Feb 2009 11:01:48 +0000
+
 telepathy-gabble (0.7.20-1) experimental; urgency=low
 
   * New upstream release
