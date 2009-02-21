@@ -46,6 +46,7 @@
 #include "namespaces.h"
 #include "presence-cache.h"
 #include "presence.h"
+#include "util.h"
 
 #define MAX_STREAMS 99
 
@@ -200,7 +201,7 @@ create_stream_from_content (GabbleMediaChannel *chan, GabbleJingleContent *c);
 static gboolean contact_is_media_capable (GabbleMediaChannel *chan, TpHandle peer,
     gboolean *wait);
 
-static gboolean
+static void
 _create_streams (GabbleMediaChannel *chan)
 {
   GabbleMediaChannelPrivate *priv = GABBLE_MEDIA_CHANNEL_GET_PRIVATE (chan);
@@ -213,8 +214,6 @@ _create_streams (GabbleMediaChannel *chan)
     }
 
   g_list_free (contents);
-
-  return FALSE;
 }
 
 static void
@@ -332,11 +331,9 @@ gabble_media_channel_constructor (GType type, guint n_props,
       tp_group_mixin_change_flags (obj,
           TP_CHANNEL_GROUP_FLAG_CAN_ADD | TP_CHANNEL_GROUP_FLAG_CAN_REMOVE, 0);
 
-      /* We want streams to appear on DBus after the channel is signalled */
-      g_idle_add ((GSourceFunc) _create_streams, GABBLE_MEDIA_CHANNEL (obj));
-
       /* Set up signal callbacks, emit session handler, initialize streams */
       _latch_to_session (GABBLE_MEDIA_CHANNEL (obj));
+      _create_streams (GABBLE_MEDIA_CHANNEL (obj));
     }
 
   return obj;
@@ -505,6 +502,15 @@ gabble_media_channel_set_property (GObject     *object,
       break;
     case PROP_INITIAL_PEER:
       priv->initial_peer = g_value_get_uint (value);
+
+      if (priv->initial_peer != 0)
+        {
+          TpBaseConnection *base_conn = (TpBaseConnection *) priv->conn;
+          TpHandleRepoIface *repo = tp_base_connection_get_handles (base_conn,
+              TP_HANDLE_TYPE_CONTACT);
+          tp_handle_ref (repo, priv->initial_peer);
+        }
+
       break;
     case PROP_SESSION:
       g_assert (priv->session == NULL);
@@ -720,6 +726,12 @@ gabble_media_channel_dispose (GObject *object)
 
   tp_handle_unref (contact_handles, priv->creator);
   priv->creator = 0;
+
+  if (priv->initial_peer != 0)
+    {
+      tp_handle_unref (contact_handles, priv->initial_peer);
+      priv->initial_peer = 0;
+    }
 
   /** In this we set the state to ENDED, then the callback unrefs
    * the session
@@ -1161,6 +1173,12 @@ _pick_best_content_type (GabbleMediaChannel *chan, TpHandle peer,
 
   presence = gabble_presence_cache_get (priv->conn->presence_cache, peer);
 
+  if (presence == NULL)
+    {
+      DEBUG ("contact %d has no presence available", peer);
+      return NULL;
+    }
+
   if (gabble_presence_resource_has_caps (presence, resource,
           PRESENCE_CAP_JINGLE_RTP))
     {
@@ -1202,6 +1220,12 @@ _pick_best_resource (GabbleMediaChannel *chan,
   const gchar *resource = NULL;
 
   presence = gabble_presence_cache_get (priv->conn->presence_cache, peer);
+
+  if (presence == NULL)
+    {
+      DEBUG ("contact %d has no presence available", peer);
+      return NULL;
+    }
 
   *dialect = JINGLE_DIALECT_ERROR;
   *transport_ns = NULL;
@@ -1797,6 +1821,10 @@ _gabble_media_channel_add_member (GObject *obj,
           tp_group_mixin_change_flags (obj,
               0, TP_CHANNEL_GROUP_FLAG_CAN_ADD);
 
+          /* accept any local pending sends */
+          g_ptr_array_foreach (priv->streams,
+              (GFunc) gabble_media_stream_accept_pending_local_send, NULL);
+
           /* signal acceptance */
           gabble_jingle_session_accept (priv->session);
 
@@ -2286,6 +2314,7 @@ _gabble_media_channel_typeflags_to_caps (TpChannelMediaCapabilities flags)
 static GabbleMediaStream *
 create_stream_from_content (GabbleMediaChannel *chan, GabbleJingleContent *c)
 {
+  GObject *chan_o = (GObject *) chan;
   GabbleMediaChannelPrivate *priv = GABBLE_MEDIA_CHANNEL_GET_PRIVATE (chan);
   GabbleMediaStream *stream;
   JingleMediaType type;
@@ -2293,8 +2322,10 @@ create_stream_from_content (GabbleMediaChannel *chan, GabbleJingleContent *c)
   gchar *name;
   guint id;
   gchar *object_path;
+  gboolean locally_created;
 
-  g_object_get (c, "name", &name, "media-type", &type, NULL);
+  g_object_get (c, "name", &name, "media-type", &type,
+      "locally-created", &locally_created, NULL);
 
   if (G_OBJECT_TYPE (c) != GABBLE_TYPE_JINGLE_MEDIA_RTP)
     {
@@ -2320,23 +2351,29 @@ create_stream_from_content (GabbleMediaChannel *chan, GabbleJingleContent *c)
       "media-type", mtype,
       NULL);
 
+  if (locally_created)
+    {
+      g_object_set (stream, "combined-direction",
+          MAKE_COMBINED_DIRECTION (TP_MEDIA_STREAM_DIRECTION_BIDIRECTIONAL,
+            0), NULL);
+    }
+
   DEBUG ("%p: created new MediaStream %p for content '%s'", chan, stream, name);
 
-  /* we will own the only reference to this stream */
   g_ptr_array_add (priv->streams, stream);
 
-  g_signal_connect (stream, "close",
-                    (GCallback) stream_close_cb, chan);
-  g_signal_connect (stream, "error",
-                    (GCallback) stream_error_cb, chan);
-  g_signal_connect (stream, "unhold-failed",
-                    (GCallback) stream_unhold_failed, chan);
-  g_signal_connect (stream, "notify::connection-state",
-                    (GCallback) stream_state_changed_cb, chan);
-  g_signal_connect (stream, "notify::combined-direction",
-                    (GCallback) stream_direction_changed_cb, chan);
-  g_signal_connect (stream, "notify::local-hold",
-                    (GCallback) stream_hold_state_changed, chan);
+  gabble_signal_connect_weak (stream, "close", (GCallback) stream_close_cb,
+      chan_o);
+  gabble_signal_connect_weak (stream, "error", (GCallback) stream_error_cb,
+      chan_o);
+  gabble_signal_connect_weak (stream, "unhold-failed",
+      (GCallback) stream_unhold_failed, chan_o);
+  gabble_signal_connect_weak (stream, "notify::connection-state",
+      (GCallback) stream_state_changed_cb, chan_o);
+  gabble_signal_connect_weak (stream, "notify::combined-direction",
+      (GCallback) stream_direction_changed_cb, chan_o);
+  gabble_signal_connect_weak (stream, "notify::local-hold",
+      (GCallback) stream_hold_state_changed, chan_o);
 
   /* emit StreamAdded */
   DEBUG ("emitting StreamAdded with type '%s'",
@@ -2347,6 +2384,10 @@ create_stream_from_content (GabbleMediaChannel *chan, GabbleJingleContent *c)
 
   /* A stream being added might cause the "total" hold state to change */
   stream_hold_state_changed (stream, NULL, chan);
+
+  /* Initial stream direction was changed before we had time to hook up
+   * signal handler, so we call the handler manually to pick it up. */
+  stream_direction_changed_cb (stream, NULL, chan);
 
   if (priv->ready)
     {

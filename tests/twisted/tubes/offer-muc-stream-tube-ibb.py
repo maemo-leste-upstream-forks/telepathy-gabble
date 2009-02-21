@@ -5,9 +5,13 @@ import errno
 import os
 
 import dbus
+from dbus import PROPERTIES_IFACE
 
 from servicetest import call_async, EventPattern, tp_name_prefix, EventProtocolFactory
-from gabbletest import exec_test, make_result_iq, acknowledge_iq
+from gabbletest import exec_test, make_result_iq, acknowledge_iq, make_muc_presence
+from constants import *
+import ns
+import tubetestutil as t
 
 from twisted.words.xish import domish, xpath
 from twisted.internet import reactor
@@ -20,25 +24,19 @@ sample_parameters = dbus.Dictionary({
     'i': dbus.Int32(-123),
     }, signature='sv')
 
-NS_TUBES = 'http://telepathy.freedesktop.org/xmpp/tubes'
-NS_SI = 'http://jabber.org/protocol/si'
-NS_FEATURE_NEG = 'http://jabber.org/protocol/feature-neg'
-NS_IBB = 'http://jabber.org/protocol/ibb'
-NS_MUC_BYTESTREAM = 'http://telepathy.freedesktop.org/xmpp/protocol/muc-bytestream'
-NS_X_DATA = 'jabber:x:data'
-
-
-def set_up_listener_socket(q):
+def set_up_listener_socket(q, path):
     factory = EventProtocolFactory(q)
+    full_path = os.getcwd() + path
     try:
-        os.remove(os.getcwd() + '/stream')
+        os.remove(full_path)
     except OSError, e:
         if e.errno != errno.ENOENT:
             raise
-    reactor.listenUNIX(os.getcwd() + '/stream', factory)
+    reactor.listenUNIX(full_path, factory)
+    return full_path
 
 def test(q, bus, conn, stream):
-    set_up_listener_socket(q)
+    srv_path = set_up_listener_socket(q, '/stream')
     conn.Connect()
 
     _, iq_event = q.expect_many(
@@ -48,10 +46,12 @@ def test(q, bus, conn, stream):
 
     acknowledge_iq(stream, iq_event.stanza)
 
+    t.check_conn_properties(q, conn)
+
     self_handle = conn.GetSelfHandle()
     self_name = conn.InspectHandles(1, [self_handle])[0]
 
-    call_async(q, conn, 'RequestHandles', 2,
+    call_async(q, conn, 'RequestHandles', HT_ROOM,
         ['chat@conf.localhost'])
 
     event = q.expect('stream-iq', to='conf.localhost',
@@ -66,8 +66,8 @@ def test(q, bus, conn, stream):
     chat_handle = handles[0]
 
     # request tubes channel
-    call_async(q, conn, 'RequestChannel',
-        tp_name_prefix + '.Channel.Type.Tubes', 2, chat_handle, True)
+    call_async(q, conn, 'RequestChannel', CHANNEL_TYPE_TUBES,
+        HT_ROOM, chat_handle, True)
 
     _, stream_event = q.expect_many(
         EventPattern('dbus-signal', signal='MembersChanged',
@@ -75,22 +75,10 @@ def test(q, bus, conn, stream):
         EventPattern('stream-presence', to='chat@conf.localhost/test'))
 
     # Send presence for other member of room.
-    presence = domish.Element((None, 'presence'))
-    presence['from'] = 'chat@conf.localhost/bob'
-    x = presence.addElement(('http://jabber.org/protocol/muc#user', 'x'))
-    item = x.addElement('item')
-    item['affiliation'] = 'owner'
-    item['role'] = 'moderator'
-    stream.send(presence)
+    stream.send(make_muc_presence('owner', 'moderator', 'chat@conf.localhost', 'bob'))
 
     # Send presence for own membership of room.
-    presence = domish.Element((None, 'presence'))
-    presence['from'] = 'chat@conf.localhost/test'
-    x = presence.addElement(('http://jabber.org/protocol/muc#user', 'x'))
-    item = x.addElement('item')
-    item['affiliation'] = 'none'
-    item['role'] = 'participant'
-    stream.send(presence)
+    stream.send(make_muc_presence('none', 'participant', 'chat@conf.localhost', 'test'))
 
     q.expect('dbus-signal', signal='MembersChanged',
             args=[u'', [2, 3], [], [], [], 0, 0])
@@ -112,47 +100,41 @@ def test(q, bus, conn, stream):
 
     for channel in channels:
         path, props = channel
-        type = props[tp_name_prefix + '.Channel.ChannelType']
+        type = props[CHANNEL_TYPE]
 
-        if type == 'org.freedesktop.Telepathy.Channel.Type.Text':
+        if type == CHANNEL_TYPE_TEXT:
             # check text channel properties
-            assert props[tp_name_prefix + '.Channel.TargetHandle'] == chat_handle
-            assert props[tp_name_prefix + '.Channel.TargetHandleType'] == 2
-            assert props[tp_name_prefix + '.Channel.TargetID'] == 'chat@conf.localhost'
-            assert props[tp_name_prefix + '.Channel.Requested'] == False
-            assert props[tp_name_prefix + '.Channel.InitiatorHandle'] \
-                    == self_handle
-            assert props[tp_name_prefix + '.Channel.InitiatorID'] \
-                    == self_name
-        elif type == 'org.freedesktop.Telepathy.Channel.Type.Tubes':
+            assert props[TARGET_HANDLE] == chat_handle
+            assert props[TARGET_HANDLE_TYPE] == HT_ROOM
+            assert props[TARGET_ID] == 'chat@conf.localhost'
+            assert props[REQUESTED] == False
+            assert props[INITIATOR_HANDLE] == self_handle
+            assert props[INITIATOR_ID] == self_name
+        elif type == CHANNEL_TYPE_TUBES:
             # check tubes channel properties
-            assert props[tp_name_prefix + '.Channel.TargetHandleType'] == 2
-            assert props[tp_name_prefix + '.Channel.TargetHandle'] == chat_handle
-            assert props[tp_name_prefix + '.Channel.TargetID'] == 'chat@conf.localhost'
-            assert props[tp_name_prefix + '.Channel.Requested'] == True
-            assert props[tp_name_prefix + '.Channel.InitiatorHandle'] \
-                    == self_handle
-            assert props[tp_name_prefix + '.Channel.InitiatorID'] \
-                    == self_name
+            assert props[TARGET_HANDLE_TYPE] == HT_ROOM
+            assert props[TARGET_HANDLE] == chat_handle
+            assert props[TARGET_ID] == 'chat@conf.localhost'
+            assert props[REQUESTED] == True
+            assert props[INITIATOR_HANDLE] == self_handle
+            assert props[INITIATOR_ID] == self_name
         else:
             assert True
 
     tubes_chan = bus.get_object(conn.bus_name, returned.value[0])
-    tubes_iface = dbus.Interface(tubes_chan,
-            tp_name_prefix + '.Channel.Type.Tubes')
+    tubes_iface = dbus.Interface(tubes_chan, CHANNEL_TYPE_TUBES)
 
-    tubes_self_handle = tubes_chan.GetSelfHandle(
-        dbus_interface=tp_name_prefix + '.Channel.Interface.Group')
+    tubes_self_handle = tubes_chan.GetSelfHandle(dbus_interface=CHANNEL_IFACE_GROUP)
 
-    # Unix socket
-    path = os.getcwd() + '/stream'
+    # offer stream tube (old API) using an Unix socket
     call_async(q, tubes_iface, 'OfferStreamTube',
-        'echo', sample_parameters, 0, dbus.ByteArray(path), 0, "")
+        'echo', sample_parameters, 0, dbus.ByteArray(srv_path), 0, "")
 
-    new_tube_event, stream_event, _ = q.expect_many(
+    new_tube_event, stream_event, _, new_channels_event = q.expect_many(
         EventPattern('dbus-signal', signal='NewTube'),
         EventPattern('stream-presence', to='chat@conf.localhost/test'),
-        EventPattern('dbus-return', method='OfferStreamTube'))
+        EventPattern('dbus-return', method='OfferStreamTube'),
+        EventPattern('dbus-signal', signal='NewChannels'))
 
     # handle new_tube_event
     stream_tube_id = new_tube_event.args[0]
@@ -160,7 +142,7 @@ def test(q, bus, conn, stream):
     assert new_tube_event.args[2] == 1       # Stream
     assert new_tube_event.args[3] == 'echo'
     assert new_tube_event.args[4] == sample_parameters
-    assert new_tube_event.args[5] == 2       # OPEN
+    assert new_tube_event.args[5] == TUBE_CHANNEL_STATE_OPEN
 
     # handle stream_event
     # We announce our newly created tube in our muc presence
@@ -171,7 +153,7 @@ def test(q, bus, conn, stream):
     assert len(x_nodes) == 1
 
     tubes_nodes = xpath.queryForNodes('/presence/tubes[@xmlns="%s"]'
-        % NS_TUBES, presence)
+        % ns.TUBES, presence)
     assert tubes_nodes is not None
     assert len(tubes_nodes) == 1
 
@@ -197,6 +179,25 @@ def test(q, bus, conn, stream):
                       'u': ('uint', '123'),
                      }
 
+    # tube is also announced using new API
+    channels = new_channels_event.args[0]
+    assert len(channels) == 1
+    path, props = channels[0]
+    assert props[CHANNEL_TYPE] == CHANNEL_TYPE_STREAM_TUBE
+    assert props[INITIATOR_HANDLE] == tubes_self_handle
+    assert props[INITIATOR_ID] == 'chat@conf.localhost/test'
+    assert props[INTERFACES] == [CHANNEL_IFACE_GROUP, CHANNEL_IFACE_TUBE]
+    assert props[REQUESTED] == True
+    assert props[TARGET_HANDLE] == chat_handle
+    assert props[TARGET_ID] == 'chat@conf.localhost'
+    assert props[STREAM_TUBE_SERVICE] == 'echo'
+
+    tube_chan = bus.get_object(conn.bus_name, path)
+    tube_props = tube_chan.GetAll(CHANNEL_IFACE_TUBE, dbus_interface=PROPERTIES_IFACE,
+        byte_arrays=True)
+    assert tube_props['Parameters'] == sample_parameters
+    assert tube_props['State'] == TUBE_CHANNEL_STATE_OPEN
+
     tubes = tubes_iface.ListTubes(byte_arrays=True)
     assert tubes == [(
         stream_tube_id,
@@ -204,8 +205,13 @@ def test(q, bus, conn, stream):
         1,      # Stream
         'echo',
         sample_parameters,
-        2,      # OPEN
+        TUBE_CHANNEL_STATE_OPEN
         )]
+
+    assert len(tubes) == 1, unwrap(tubes)
+    expected_tube = (stream_tube_id, tubes_self_handle, TUBE_TYPE_STREAM,
+        'echo', sample_parameters, TUBE_STATE_OPEN)
+    t.check_tube_in_tubes(expected_tube, tubes)
 
     # FIXME: if we use an unknown JID here, everything fails
     # (the code uses lookup where it should use ensure)
@@ -214,20 +220,20 @@ def test(q, bus, conn, stream):
     iq = IQ(stream, 'set')
     iq['to'] = 'test@localhost/Resource'
     iq['from'] = 'chat@conf.localhost/bob'
-    si = iq.addElement((NS_SI, 'si'))
+    si = iq.addElement((ns.SI, 'si'))
     si['id'] = 'alpha'
-    si['profile'] = NS_TUBES
-    feature = si.addElement((NS_FEATURE_NEG, 'feature'))
-    x = feature.addElement((NS_X_DATA, 'x'))
+    si['profile'] = ns.TUBES
+    feature = si.addElement((ns.FEATURE_NEG, 'feature'))
+    x = feature.addElement((ns.X_DATA, 'x'))
     x['type'] = 'form'
     field = x.addElement((None, 'field'))
     field['var'] = 'stream-method'
     field['type'] = 'list-single'
     option = field.addElement((None, 'option'))
     value = option.addElement((None, 'value'))
-    value.addContent(NS_IBB)
+    value.addContent(ns.IBB)
 
-    stream_node = si.addElement((NS_TUBES, 'muc-stream'))
+    stream_node = si.addElement((ns.TUBES, 'muc-stream'))
     stream_node['tube'] = str(stream_tube_id)
 
     stream.send(iq)
@@ -242,20 +248,20 @@ def test(q, bus, conn, stream):
 
     # handle iq_event
     iq = iq_event.stanza
-    si = xpath.queryForNodes('/iq/si[@xmlns="%s"]' % NS_SI,
+    si = xpath.queryForNodes('/iq/si[@xmlns="%s"]' % ns.SI,
         iq)[0]
     value = xpath.queryForNodes('/si/feature/x/field/value', si)
     assert len(value) == 1
     proto = value[0]
-    assert str(proto) == NS_IBB
-    tube = xpath.queryForNodes('/si/tube[@xmlns="%s"]' % NS_TUBES, si)
+    assert str(proto) == ns.IBB
+    tube = xpath.queryForNodes('/si/tube[@xmlns="%s"]' % ns.TUBES, si)
     assert len(tube) == 1
 
     # have the fake client open the stream
     iq = IQ(stream, 'set')
     iq['to'] = 'test@localhost/Resource'
     iq['from'] = 'chat@conf.localhost/bob'
-    open = iq.addElement((NS_IBB, 'open'))
+    open = iq.addElement((ns.IBB, 'open'))
     open['sid'] = 'alpha'
     open['block-size'] = '4096'
     stream.send(iq)
@@ -266,7 +272,7 @@ def test(q, bus, conn, stream):
     message = domish.Element(('jabber:client', 'message'))
     message['to'] = 'test@localhost/Resource'
     message['from'] = 'chat@conf.localhost/bob'
-    data_node = message.addElement((NS_IBB, 'data'))
+    data_node = message.addElement((ns.IBB, 'data'))
     data_node['sid'] = 'alpha'
     data_node['seq'] = '0'
     data_node.addContent(base64.b64encode('hello initiator'))
@@ -280,7 +286,7 @@ def test(q, bus, conn, stream):
     event = q.expect('stream-message', to='chat@conf.localhost/bob')
     message = event.stanza
 
-    data_nodes = xpath.queryForNodes('/message/data[@xmlns="%s"]' % NS_IBB,
+    data_nodes = xpath.queryForNodes('/message/data[@xmlns="%s"]' % ns.IBB,
         message)
     assert data_nodes is not None
     assert len(data_nodes) == 1
@@ -288,6 +294,127 @@ def test(q, bus, conn, stream):
     assert ibb_data['sid'] == 'alpha'
     binary = base64.b64decode(str(ibb_data))
     assert binary == 'hello joiner'
+
+    # offer a stream tube to another room (new API)
+    srv_path = set_up_listener_socket(q, '/stream2')
+    requestotron = dbus.Interface(conn, CONN_IFACE_REQUESTS)
+
+    call_async(q, requestotron, 'CreateChannel',
+            {CHANNEL_TYPE: CHANNEL_TYPE_STREAM_TUBE,
+         TARGET_HANDLE_TYPE: HT_ROOM,
+         TARGET_ID: 'chat2@conf.localhost',
+         STREAM_TUBE_SERVICE: 'newecho',
+        })
+
+    # Send presence for other member of room.
+    stream.send(make_muc_presence('owner', 'moderator', 'chat2@conf.localhost', 'bob'))
+
+    # Send presence for own membership of room.
+    stream.send(make_muc_presence('none', 'participant', 'chat2@conf.localhost', 'test'))
+
+    event = q.expect('dbus-return', method='CreateChannel')
+    new_tube_path, new_tube_props = event.value
+
+    # first text and tubes channels are announced
+    event = q.expect('dbus-signal', signal='NewChannels')
+    channels = event.args[0]
+    assert len(channels) == 2
+    path1, prop1 = channels[0]
+    path2, prop2 = channels[1]
+    assert sorted([prop1[CHANNEL_TYPE], prop2[CHANNEL_TYPE]]) == \
+        [CHANNEL_TYPE_TEXT, CHANNEL_TYPE_TUBES]
+
+    got_text, got_tubes = False, False
+    for path, props in channels:
+        if props[CHANNEL_TYPE] == CHANNEL_TYPE_TEXT:
+            got_text = True
+        elif props[CHANNEL_TYPE] == CHANNEL_TYPE_TUBES:
+            got_tubes = True
+        else:
+            assert False
+
+        assert props[INITIATOR_HANDLE] == self_handle
+        assert props[INITIATOR_ID] == self_name
+        assert CHANNEL_IFACE_GROUP in props[INTERFACES]
+        assert props[TARGET_ID] == 'chat2@conf.localhost'
+        assert props[REQUESTED] == False
+
+    assert (got_text, got_tubes) == (True, True)
+
+    # now the tube channel is announced
+    # FIXME: in this case, all channels should probably be announced together
+    event = q.expect('dbus-signal', signal='NewChannels')
+    channels = event.args[0]
+    assert len(channels) == 1
+    path, prop = channels[0]
+    assert prop[CHANNEL_TYPE] == CHANNEL_TYPE_STREAM_TUBE
+    assert prop[INITIATOR_ID] == 'chat2@conf.localhost/test'
+    assert prop[REQUESTED] == True
+    assert prop[TARGET_HANDLE_TYPE] == HT_ROOM
+    assert prop[TARGET_ID] == 'chat2@conf.localhost'
+    assert prop[STREAM_TUBE_SERVICE] == 'newecho'
+
+    tube_chan = bus.get_object(conn.bus_name, path)
+    stream_tube_iface = dbus.Interface(tube_chan, CHANNEL_TYPE_STREAM_TUBE)
+    chan_iface = dbus.Interface(tube_chan, CHANNEL)
+    tube_props = tube_chan.GetAll(CHANNEL_IFACE_TUBE, dbus_interface=PROPERTIES_IFACE)
+
+    assert tube_props['State'] == TUBE_CHANNEL_STATE_NOT_OFFERED
+
+    # offer the tube
+    call_async(q, stream_tube_iface, 'OfferStreamTube',
+        SOCKET_ADDRESS_TYPE_UNIX, dbus.ByteArray(srv_path), SOCKET_ACCESS_CONTROL_LOCALHOST, "",
+        {'foo': 'bar'})
+
+    new_tube_event, stream_event, _, status_event = q.expect_many(
+        EventPattern('dbus-signal', signal='NewTube'),
+        EventPattern('stream-presence', to='chat2@conf.localhost/test'),
+        EventPattern('dbus-return', method='OfferStreamTube'),
+        EventPattern('dbus-signal', signal='TubeChannelStateChanged', args=[TUBE_CHANNEL_STATE_OPEN]))
+
+    tube_self_handle = tube_chan.GetSelfHandle(dbus_interface=CHANNEL_IFACE_GROUP)
+    assert conn.InspectHandles(HT_CONTACT, [tube_self_handle]) == ['chat2@conf.localhost/test']
+
+    # handle new_tube_event
+    stream_tube_id = new_tube_event.args[0]
+    assert new_tube_event.args[2] == 1       # Stream
+    assert new_tube_event.args[3] == 'newecho'
+    assert new_tube_event.args[4] == {'foo': 'bar'}
+    assert new_tube_event.args[5] == TUBE_CHANNEL_STATE_OPEN
+
+    presence = stream_event.stanza
+    x_nodes = xpath.queryForNodes('/presence/x[@xmlns="http://jabber.org/'
+            'protocol/muc"]', presence)
+    assert x_nodes is not None
+    assert len(x_nodes) == 1
+
+    tubes_nodes = xpath.queryForNodes('/presence/tubes[@xmlns="%s"]'
+        % ns.TUBES, presence)
+    assert tubes_nodes is not None
+    assert len(tubes_nodes) == 1
+
+    tube_nodes = xpath.queryForNodes('/tubes/tube', tubes_nodes[0])
+    assert tube_nodes is not None
+    assert len(tube_nodes) == 1
+    for tube in tube_nodes:
+        assert tube['type'] == 'stream'
+        assert not tube.hasAttribute('initiator')
+        assert tube['service'] == 'newecho'
+        assert not tube.hasAttribute('stream-id')
+        assert not tube.hasAttribute('dbus-name')
+        assert tube['id'] == str(stream_tube_id)
+
+    params = {}
+    parameter_nodes = xpath.queryForNodes('/tube/parameters/parameter', tube)
+    for node in parameter_nodes:
+        assert node['name'] not in params
+        params[node['name']] = (node['type'], str(node))
+    assert params == {'foo': ('str', 'bar')}
+
+    chan_iface.Close()
+    q.expect_many(
+        EventPattern('dbus-signal', signal='Closed'),
+        EventPattern('dbus-signal', signal='ChannelClosed'))
 
     # OK, we're done
     conn.Disconnect()

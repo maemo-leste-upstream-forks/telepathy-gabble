@@ -58,6 +58,7 @@ enum
   PROP_SENDERS,
   PROP_STATE,
   PROP_DISPOSITION,
+  PROP_LOCALLY_CREATED,
   LAST_PROPERTY
 };
 
@@ -80,6 +81,7 @@ struct _GabbleJingleContentPrivate
   gboolean transport_ready;
 
   guint timer_id;
+  guint gtalk4_event_id;
 
   gboolean dispose_has_run;
 };
@@ -109,6 +111,7 @@ gabble_jingle_content_init (GabbleJingleContent *obj)
   priv->media_ready = FALSE;
   priv->transport_ready = FALSE;
   priv->timer_id = 0;
+  priv->gtalk4_event_id = 0;
   priv->dispose_has_run = FALSE;
 
   obj->conn = NULL;
@@ -127,7 +130,20 @@ gabble_jingle_content_dispose (GObject *object)
   DEBUG ("dispose called");
   priv->dispose_has_run = TRUE;
 
-  g_assert (priv->timer_id == 0);
+  /* If we're in the middle of content-add/-accept when the session is
+   * terminated, we'll get disposed without being explicitly removed from
+   * the session. So, remove the timer here. */
+  if (priv->timer_id != 0)
+    {
+      g_source_remove (priv->timer_id);
+      priv->timer_id = 0;
+    }
+
+  if (priv->gtalk4_event_id != 0)
+    {
+      g_source_remove (priv->gtalk4_event_id);
+      priv->gtalk4_event_id = 0;
+    }
 
   g_free (priv->name);
   priv->name = NULL;
@@ -182,6 +198,9 @@ gabble_jingle_content_get_property (GObject *object,
     case PROP_DISPOSITION:
       g_value_set_string (value, priv->disposition);
       break;
+    case PROP_LOCALLY_CREATED:
+      g_value_set_boolean (value, priv->created_by_us);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -217,7 +236,7 @@ gabble_jingle_content_set_property (GObject *object,
 
       if (priv->transport_ns != NULL)
         {
-          GType transport_type = GPOINTER_TO_INT (
+          GType transport_type = GPOINTER_TO_SIZE (
               g_hash_table_lookup (self->conn->jingle_factory->transports,
                   priv->transport_ns));
 
@@ -336,6 +355,14 @@ gabble_jingle_content_class_init (GabbleJingleContentClass *cls)
                                     G_PARAM_STATIC_BLURB);
   g_object_class_install_property (object_class, PROP_DISPOSITION, param_spec);
 
+  param_spec = g_param_spec_boolean ("locally-created", "Locally created",
+                                     "True if the content was created by the "
+                                     "local client.",
+                                     FALSE,
+                                     G_PARAM_READABLE |
+                                     G_PARAM_STATIC_NAME |
+                                     G_PARAM_STATIC_BLURB);
+  g_object_class_install_property (object_class, PROP_LOCALLY_CREATED, param_spec);
 
   /* signal definitions */
 
@@ -480,7 +507,7 @@ gabble_jingle_content_parse_add (GabbleJingleContent *c,
 
           dialect = JINGLE_DIALECT_GTALK3;
           g_object_set (c->session, "dialect", JINGLE_DIALECT_GTALK3, NULL);
-          transport_type = GPOINTER_TO_INT (
+          transport_type = GPOINTER_TO_SIZE (
               g_hash_table_lookup (c->conn->jingle_factory->transports, ""));
           priv->transport_ns = g_strdup ("");
         }
@@ -499,7 +526,7 @@ gabble_jingle_content_parse_add (GabbleJingleContent *c,
     {
       const gchar *ns = lm_message_node_get_namespace (trans_node);
 
-      transport_type = GPOINTER_TO_INT (
+      transport_type = GPOINTER_TO_SIZE (
           g_hash_table_lookup (c->conn->jingle_factory->transports, ns));
 
       if (transport_type == 0)
@@ -566,7 +593,7 @@ gabble_jingle_content_parse_add (GabbleJingleContent *c,
    * the transport type? */
   if (dialect == JINGLE_DIALECT_GTALK4)
     {
-      g_idle_add (send_gtalk4_transport_accept, c);
+      priv->gtalk4_event_id = g_idle_add (send_gtalk4_transport_accept, c);
     }
 
   return;
