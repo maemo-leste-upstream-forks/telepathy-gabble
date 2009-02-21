@@ -5,6 +5,9 @@ import dbus
 
 from servicetest import call_async, EventPattern, tp_name_prefix, EventProtocolClientFactory
 from gabbletest import exec_test, make_result_iq, acknowledge_iq
+from constants import *
+import ns
+import tubetestutil as t
 
 from twisted.words.xish import domish, xpath
 from twisted.internet import reactor
@@ -16,13 +19,6 @@ sample_parameters = dbus.Dictionary({
     'u': dbus.UInt32(123),
     'i': dbus.Int32(-123),
     }, signature='sv')
-
-NS_TUBES = 'http://telepathy.freedesktop.org/xmpp/tubes'
-NS_SI = 'http://jabber.org/protocol/si'
-NS_FEATURE_NEG = 'http://jabber.org/protocol/feature-neg'
-NS_IBB = 'http://jabber.org/protocol/ibb'
-NS_MUC_BYTESTREAM = 'http://telepathy.freedesktop.org/xmpp/protocol/muc-bytestream'
-NS_X_DATA = 'jabber:x:data'
 
 def test(q, bus, conn, stream):
     conn.Connect()
@@ -94,7 +90,7 @@ def test(q, bus, conn, stream):
     item = x.addElement('item')
     item['affiliation'] = 'owner'
     item['role'] = 'moderator'
-    tubes = presence.addElement((NS_TUBES, 'tubes'))
+    tubes = presence.addElement((ns.TUBES, 'tubes'))
     tube = tubes.addElement((None, 'tube'))
     tube['type'] = 'dbus'
     tube['service'] = 'org.telepathy.freedesktop.test'
@@ -151,15 +147,12 @@ def test(q, bus, conn, stream):
     q.expect('dbus-signal', signal='NewTube',
         args=[tube_id, bob_handle, 0, 'org.telepathy.freedesktop.test', sample_parameters, 0])
 
+    expected_tube = (tube_id, bob_handle, TUBE_TYPE_DBUS,
+        'org.telepathy.freedesktop.test', sample_parameters,
+        TUBE_STATE_LOCAL_PENDING)
     tubes = tubes_iface.ListTubes(byte_arrays=True)
-    assert tubes == [(
-        tube_id,
-        bob_handle,
-        0,      # D-Bus
-        'org.telepathy.freedesktop.test',
-        sample_parameters,
-        0,      # local pending
-        )]
+    assert len(tubes) == 1, unwrap(tubes)
+    t.check_tube_in_tubes(expected_tube, tubes)
 
     # reject the tube
     tubes_iface.CloseTube(tube_id)

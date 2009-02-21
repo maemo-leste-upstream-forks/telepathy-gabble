@@ -81,6 +81,13 @@ G_DEFINE_TYPE_WITH_CODE (GabbleTubeStream, gabble_tube_stream, G_TYPE_OBJECT,
     G_IMPLEMENT_INTERFACE (TP_TYPE_EXPORTABLE_CHANNEL, NULL);
     G_IMPLEMENT_INTERFACE (TP_TYPE_CHANNEL_IFACE, NULL));
 
+static const gchar * const gabble_tube_stream_channel_allowed_properties[] = {
+    TP_IFACE_CHANNEL ".TargetHandle",
+    TP_IFACE_CHANNEL ".TargetID",
+    GABBLE_IFACE_CHANNEL_TYPE_STREAM_TUBE ".Service",
+    NULL
+};
+
 static const gchar *gabble_tube_stream_interfaces[] = {
     TP_IFACE_CHANNEL_INTERFACE_GROUP,
     /* If more interfaces are added, either keep Group as the first, or change
@@ -138,6 +145,7 @@ enum
   PROP_INITIATOR_HANDLE,
   PROP_INITIATOR_ID,
   PROP_SUPPORTED_SOCKET_TYPES,
+  PROP_MUC,
   LAST_PROPERTY
 };
 
@@ -183,6 +191,7 @@ struct _GabbleTubeStreamPrivate
 
   /* listen for connections from local applications */
   GibberListener *local_listener;
+  GabbleMucChannel *muc;
 
   gboolean closed;
 
@@ -829,6 +838,11 @@ gabble_tube_stream_dispose (GObject *object)
       priv->local_listener = NULL;
     }
 
+  if (priv->muc != NULL)
+    {
+      tp_external_group_mixin_finalize (object);
+    }
+
   priv->dispose_has_run = TRUE;
 
   if (G_OBJECT_CLASS (gabble_tube_stream_parent_class)->dispose)
@@ -937,19 +951,41 @@ gabble_tube_stream_get_property (GObject *object,
         g_value_set_boolean (value, priv->closed);
         break;
       case PROP_CHANNEL_PROPERTIES:
-        g_value_take_boxed (value,
-            tp_dbus_properties_mixin_make_properties_hash (object,
-                TP_IFACE_CHANNEL, "TargetHandle",
-                TP_IFACE_CHANNEL, "TargetHandleType",
-                TP_IFACE_CHANNEL, "ChannelType",
-                TP_IFACE_CHANNEL, "TargetID",
-                TP_IFACE_CHANNEL, "InitiatorHandle",
-                TP_IFACE_CHANNEL, "InitiatorID",
-                TP_IFACE_CHANNEL, "Requested",
-                TP_IFACE_CHANNEL, "Interfaces",
-                GABBLE_IFACE_CHANNEL_TYPE_STREAM_TUBE, "Service",
-                GABBLE_IFACE_CHANNEL_TYPE_STREAM_TUBE, "SupportedSocketTypes",
-                NULL));
+        {
+          GHashTable *properties;
+
+          properties = tp_dbus_properties_mixin_make_properties_hash (object,
+              TP_IFACE_CHANNEL, "TargetHandle",
+              TP_IFACE_CHANNEL, "TargetHandleType",
+              TP_IFACE_CHANNEL, "ChannelType",
+              TP_IFACE_CHANNEL, "TargetID",
+              TP_IFACE_CHANNEL, "InitiatorHandle",
+              TP_IFACE_CHANNEL, "InitiatorID",
+              TP_IFACE_CHANNEL, "Requested",
+              TP_IFACE_CHANNEL, "Interfaces",
+              GABBLE_IFACE_CHANNEL_TYPE_STREAM_TUBE, "Service",
+              GABBLE_IFACE_CHANNEL_TYPE_STREAM_TUBE, "SupportedSocketTypes",
+              NULL);
+
+          if (priv->initiator != priv->self_handle)
+            {
+              /* channel has not been requested so Parameters is immutable */
+              GValue *prop_value = g_slice_new0 (GValue);
+
+              /* FIXME: use tp_dbus_properties_mixin_add_properties once it's
+               * added in tp-glib */
+              tp_dbus_properties_mixin_get (object,
+                  GABBLE_IFACE_CHANNEL_INTERFACE_TUBE, "Parameters",
+                  prop_value, NULL);
+              g_assert (G_IS_VALUE (prop_value));
+
+              g_hash_table_insert (properties,
+                  g_strdup_printf ("%s.%s", GABBLE_IFACE_CHANNEL_INTERFACE_TUBE,
+                    "Parameters"), prop_value);
+            }
+
+          g_value_take_boxed (value, properties);
+        }
         break;
       case PROP_REQUESTED:
         g_value_set_boolean (value,
@@ -980,6 +1016,9 @@ gabble_tube_stream_get_property (GObject *object,
       case PROP_SUPPORTED_SOCKET_TYPES:
         g_value_take_boxed (value,
             gabble_tube_stream_get_supported_socket_types ());
+        break;
+      case PROP_MUC:
+        g_value_set_object (value, priv->muc);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -1055,6 +1094,9 @@ gabble_tube_stream_set_property (GObject *object,
                 g_value_get_pointer (value));
           }
         break;
+      case PROP_MUC:
+        priv->muc = g_value_get_object (value);
+        break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
         break;
@@ -1087,20 +1129,21 @@ gabble_tube_stream_constructor (GType type,
   if (priv->initiator == priv->self_handle)
     {
       /* We initiated this tube */
-      if (priv->handle_type == TP_HANDLE_TYPE_CONTACT)
-        {
-          /* Private tube */
-          priv->state = GABBLE_TUBE_CHANNEL_STATE_NOT_OFFERED;
-        }
-      else
-        {
-          /* Muc tube */
-          priv->state = GABBLE_TUBE_CHANNEL_STATE_OPEN;
-        }
+      priv->state = GABBLE_TUBE_CHANNEL_STATE_NOT_OFFERED;
     }
   else
     {
       priv->state = GABBLE_TUBE_CHANNEL_STATE_LOCAL_PENDING;
+    }
+
+  if (priv->handle_type == TP_HANDLE_TYPE_CONTACT)
+    {
+      g_assert (priv->muc == NULL);
+    }
+  else
+    {
+      g_assert (priv->muc != NULL);
+      tp_external_group_mixin_init (obj, (GObject *) priv->muc);
     }
 
   bus = tp_get_bus ();
@@ -1109,38 +1152,6 @@ gabble_tube_stream_constructor (GType type,
   DEBUG ("Registering at '%s'", priv->object_path);
 
   return obj;
-}
-
-static gboolean
-tube_iface_props_setter (GObject *object,
-                         GQuark interface,
-                         GQuark name,
-                         const GValue *value,
-                         gpointer setter_data,
-                         GError **error)
-{
-  GabbleTubeStream *self = GABBLE_TUBE_STREAM (object);
-  GabbleTubeStreamPrivate *priv = GABBLE_TUBE_STREAM_GET_PRIVATE (self);
-
-  g_return_val_if_fail (interface == GABBLE_IFACE_QUARK_CHANNEL_INTERFACE_TUBE,
-      FALSE);
-
-  if (name != g_quark_from_static_string ("Parameters"))
-    {
-      g_object_set_property (object, setter_data, value);
-      return TRUE;
-    }
-
-  if (priv->state != GABBLE_TUBE_CHANNEL_STATE_NOT_OFFERED)
-  {
-    g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
-        "Can change parameters only if the tube is not offered");
-    return FALSE;
-  }
-
-  g_object_set (self, "parameters", g_value_get_boxed (value), NULL);
-
-  return TRUE;
 }
 
 static void
@@ -1163,7 +1174,7 @@ gabble_tube_stream_class_init (GabbleTubeStreamClass *gabble_tube_stream_class)
       { NULL }
   };
   static TpDBusPropertiesMixinPropImpl tube_iface_props[] = {
-      { "Parameters", "parameters", "parameters" },
+      { "Parameters", "parameters", NULL },
       { "State", "state", NULL },
       { NULL }
   };
@@ -1180,7 +1191,7 @@ gabble_tube_stream_class_init (GabbleTubeStreamClass *gabble_tube_stream_class)
       },
       { GABBLE_IFACE_CHANNEL_INTERFACE_TUBE,
         tp_dbus_properties_mixin_getter_gobject_properties,
-        tube_iface_props_setter,
+        NULL,
         tube_iface_props,
       },
       { NULL }
@@ -1306,6 +1317,15 @@ gabble_tube_stream_class_init (GabbleTubeStreamClass *gabble_tube_stream_class)
       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (object_class, PROP_REQUESTED, param_spec);
 
+  param_spec = g_param_spec_object (
+      "muc",
+      "GabbleMucChannel object",
+      "Gabble text MUC channel corresponding to this Tube channel object, "
+      "if the handle type is ROOM.",
+      GABBLE_TYPE_MUC_CHANNEL,
+      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (object_class, PROP_MUC, param_spec);
+
   signals[OPENED] =
     g_signal_new ("tube-opened",
                   G_OBJECT_CLASS_TYPE (gabble_tube_stream_class),
@@ -1398,7 +1418,8 @@ gabble_tube_stream_new (GabbleConnection *conn,
                         TpHandle initiator,
                         const gchar *service,
                         GHashTable *parameters,
-                        guint id)
+                        guint id,
+                        GabbleMucChannel *muc)
 {
   GabbleTubeStream *obj;
   char *object_path;
@@ -1416,6 +1437,7 @@ gabble_tube_stream_new (GabbleConnection *conn,
       "service", service,
       "parameters", parameters,
       "id", id,
+      "muc", muc,
       NULL);
 
   g_free (object_path);
@@ -1779,13 +1801,9 @@ gabble_tube_stream_check_params (TpSocketAddressType address_type,
     }
 }
 
-/* can be called both from the old tube API and the new tube API */
-gboolean
-gabble_tube_stream_offer (GabbleTubeStream *self,
-                          guint address_type,
-                          const GValue *address, guint access_control,
-                          const GValue *access_control_param,
-                          GError **error)
+static gboolean
+send_tube_offer (GabbleTubeStream *self,
+                 GError **error)
 {
   GabbleTubeStreamPrivate *priv = GABBLE_TUBE_STREAM_GET_PRIVATE (self);
   LmMessageNode *tube_node = NULL;
@@ -1797,7 +1815,7 @@ gabble_tube_stream_offer (GabbleTubeStream *self,
   const gchar *resource;
   gchar *full_jid;
 
-  g_assert (priv->state == GABBLE_TUBE_CHANNEL_STATE_NOT_OFFERED);
+  g_assert (priv->handle_type == TP_HANDLE_TYPE_CONTACT);
 
   contact_repo = tp_base_connection_get_handles (
      (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_CONTACT);
@@ -1863,7 +1881,33 @@ gabble_tube_stream_offer (GabbleTubeStream *self,
     }
 
   lm_message_unref (msg);
-  return result;
+  return TRUE;
+}
+
+/* can be called both from the old tube API and the new tube API */
+gboolean
+gabble_tube_stream_offer (GabbleTubeStream *self,
+                          GError **error)
+{
+  GabbleTubeStreamPrivate *priv = GABBLE_TUBE_STREAM_GET_PRIVATE (self);
+
+  g_assert (priv->state == GABBLE_TUBE_CHANNEL_STATE_NOT_OFFERED);
+
+  if (priv->handle_type == TP_HANDLE_TYPE_CONTACT)
+    {
+      /* 1-1 tube. Send tube offer message */
+      if (!send_tube_offer (self, error))
+        return FALSE;
+    }
+  else
+    {
+      /* muc tube is open as soon it's offered */
+      priv->state = GABBLE_TUBE_CHANNEL_STATE_OPEN;
+      g_signal_emit (G_OBJECT (self), signals[OPENED], 0);
+    }
+
+  g_signal_emit (G_OBJECT (self), signals[OFFERED], 0);
+  return TRUE;
 }
 
 static void
@@ -1942,6 +1986,7 @@ gabble_tube_stream_offer_stream_tube (GabbleSvcChannelTypeStreamTube *iface,
                                       const GValue *address,
                                       guint access_control,
                                       const GValue *access_control_param,
+                                      GHashTable *parameters,
                                       DBusGMethodInvocation *context)
 {
   GabbleTubeStream *self = GABBLE_TUBE_STREAM (iface);
@@ -1976,28 +2021,31 @@ gabble_tube_stream_offer_stream_tube (GabbleSvcChannelTypeStreamTube *iface,
   g_assert (priv->access_control_param == NULL);
   priv->access_control_param = tp_g_value_slice_dup (access_control_param);
 
+  g_object_set (self, "parameters", parameters, NULL);
+
+  if (!gabble_tube_stream_offer (self, &error))
+    {
+      gabble_tube_stream_close (GABBLE_TUBE_IFACE (self), TRUE);
+
+      dbus_g_method_return_error (context, error);
+
+      g_error_free (error);
+      return;
+    }
+
   if (priv->handle_type == TP_HANDLE_TYPE_CONTACT)
     {
-      /* Stream initiation */
-      if (!gabble_tube_stream_offer (self, address_type,
-          address, access_control, access_control_param, &error))
-        {
-          gabble_tube_stream_close (GABBLE_TUBE_IFACE (self), TRUE);
-
-          dbus_g_method_return_error (context, error);
-
-          g_error_free (error);
-          return;
-        }
-
       gabble_svc_channel_interface_tube_emit_tube_channel_state_changed (
           self, GABBLE_TUBE_CHANNEL_STATE_REMOTE_PENDING);
+    }
+  else
+    {
+      gabble_svc_channel_interface_tube_emit_tube_channel_state_changed (
+          self, GABBLE_TUBE_CHANNEL_STATE_OPEN);
     }
 
   g_signal_connect (self, "tube-new-connection",
       G_CALLBACK (stream_unix_tube_new_connection_cb), self);
-
-  g_signal_emit (G_OBJECT (self), signals[OFFERED], 0);
 
   gabble_svc_channel_type_stream_tube_return_from_offer_stream_tube (context);
 }
@@ -2112,6 +2160,12 @@ gabble_tube_stream_get_interfaces (TpSvcChannel *iface,
       tp_svc_channel_return_from_get_interfaces (context,
           gabble_tube_stream_interfaces);
     }
+}
+
+const gchar * const *
+gabble_tube_stream_channel_get_allowed_properties (void)
+{
+  return gabble_tube_stream_channel_allowed_properties;
 }
 
 static void

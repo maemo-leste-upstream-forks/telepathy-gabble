@@ -2,6 +2,7 @@ TWISTED_TESTS = \
 	muc/name-conflict.py \
 	muc/renamed.py \
 	muc/roomlist.py \
+	muc/send-error.py \
 	muc/test-ensure.py \
 	muc/test-muc-alias.py \
 	muc/test-muc-invitation.py \
@@ -36,12 +37,16 @@ TWISTED_TESTS = \
 	text/destroy.py \
 	text/ensure.py \
 	text/respawn.py \
+	text/send-error.py \
+	text/test-chat-state.py \
 	text/test-text-delayed.py \
 	text/test-text-no-body.py \
 	text/test-text.py \
+	tubes/accept-muc-dbus-tube.py \
 	tubes/muc-presence.py \
 	tubes/close-muc-with-closed-tube.py \
 	tubes/crash-on-list-channels.py \
+	tubes/create-invalid-tube-channels.py \
 	tubes/test-get-available-tubes.py \
 	tubes/accept-muc-stream-tube-ibb.py \
 	tubes/accept-private-stream-tube.py \
@@ -50,6 +55,9 @@ TWISTED_TESTS = \
 	tubes/offer-accept-private-stream-tube-si-fallback.py \
 	tubes/offer-muc-dbus-tube.py \
 	tubes/offer-muc-stream-tube-ibb.py \
+	tubes/offer-no-caps.py \
+	tubes/offer-private-dbus-tube-ibb.py \
+	tubes/request-invalid-dbus-tube.py \
 	tubes/ensure-si-tube.py \
 	vcard/test-alias-empty-vcard.py \
 	vcard/test-alias-pep.py \
@@ -67,6 +75,7 @@ TWISTED_TESTS = \
 	jingle/hold-audio.py \
 	jingle/hold-av.py \
 	jingle/payload-types.py \
+	jingle/stream-handler-error.py \
 	jingle/test-content-adding-removal.py \
 	jingle/test-incoming-call.py \
 	jingle/test-incoming-call-reject.py \
@@ -133,6 +142,7 @@ BUILT_SOURCES = config.py
 
 EXTRA_DIST = \
 	$(TWISTED_TESTS) \
+	bytestream.py \
 	config.py \
 	constants.py \
 	gabbletest.py \
@@ -141,7 +151,8 @@ EXTRA_DIST = \
 	jingle/jingletest2.py \
 	ns.py \
 	olpc/util.py \
-	tubes/muctubeutil.py
+	tubes/muctubeutil.py \
+	tubes/tubetestutil.py
 
 noinst_PROGRAMS = \
 	telepathy-gabble-debug

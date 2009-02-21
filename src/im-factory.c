@@ -41,7 +41,7 @@
 #include "debug.h"
 #include "disco.h"
 #include "im-channel.h"
-#include "text-mixin.h"
+#include "message-util.h"
 
 static void channel_manager_iface_init (gpointer, gpointer);
 static void caps_channel_manager_iface_init (gpointer, gpointer);
@@ -222,9 +222,10 @@ im_factory_message_cb (LmMessageHandler *handler,
   GabbleIMChannel *chan;
   gint state;
   TpChannelTextSendError send_error;
+  TpDeliveryStatus delivery_status;
 
-  if (!gabble_text_mixin_parse_incoming_message (message, &from, &stamp,
-        &msgtype, &body, &state, &send_error))
+  if (!gabble_message_util_parse_incoming_message (message, &from, &stamp,
+        &msgtype, &body, &state, &send_error, &delivery_status))
     return LM_HANDLER_RESULT_REMOVE_MESSAGE;
 
   if (body == NULL && state == -1)
@@ -239,7 +240,7 @@ im_factory_message_cb (LmMessageHandler *handler,
       return LM_HANDLER_RESULT_REMOVE_MESSAGE;
     }
 
-  chan = g_hash_table_lookup (priv->channels, GINT_TO_POINTER (handle));
+  chan = g_hash_table_lookup (priv->channels, GUINT_TO_POINTER (handle));
 
   if (chan == NULL)
     {
@@ -280,18 +281,14 @@ im_factory_message_cb (LmMessageHandler *handler,
 
       DEBUG ("got error sending to %s (handle %u), msgtype %u, body:\n%s",
          from, handle, msgtype, body);
-
-      tp_svc_channel_type_text_emit_send_error ((TpSvcChannelTypeText *) chan,
-          send_error, stamp, msgtype, body);
-
-      return LM_HANDLER_RESULT_REMOVE_MESSAGE;
     }
 
-  if (state != -1)
+  if (state != -1 && send_error == GABBLE_TEXT_CHANNEL_SEND_NO_ERROR)
     _gabble_im_channel_state_receive (chan, state);
 
   if (body != NULL)
-    _gabble_im_channel_receive (chan, msgtype, handle, from, stamp, body);
+    _gabble_im_channel_receive (chan, msgtype, handle, from, stamp, body,
+        send_error, delivery_status);
 
   return LM_HANDLER_RESULT_REMOVE_MESSAGE;
 }
@@ -379,7 +376,7 @@ new_im_channel (GabbleImFactory *fac,
 
   g_signal_connect (chan, "closed", (GCallback) im_channel_closed_cb, fac);
 
-  g_hash_table_insert (priv->channels, GINT_TO_POINTER (handle), chan);
+  g_hash_table_insert (priv->channels, GUINT_TO_POINTER (handle), chan);
 
   if (request_token != NULL)
     request_tokens = g_slist_prepend (NULL, request_token);

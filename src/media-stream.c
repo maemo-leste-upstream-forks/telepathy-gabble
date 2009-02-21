@@ -110,10 +110,10 @@ struct _GabbleMediaStreamPrivate
   guint remote_candidate_count;
 
   /* signal handler ID for content REMOVED signal */
-  gboolean removed_id;
+  gulong removed_id;
 
   /* source ID for initial codecs/candidates getter */
-  gboolean initial_getter_id;
+  gulong initial_getter_id;
 
   /* These are really booleans, but gboolean is signed. Thanks, GLib */
   unsigned closed:1;
@@ -220,7 +220,9 @@ gabble_media_stream_constructor (GType type, guint n_props,
       /* MediaStream is created as soon as GabbleJingleContent is
        * created, but we want to let it parse the initiation (if
        * initiated by remote end) before we pick up initial
-       * codecs and candidates. */
+       * codecs and candidates.
+       * FIXME: add API for ordering IQs rather than using g_idle_add.
+       */
       priv->initial_getter_id =
           g_idle_add (_get_initial_codecs_and_candidates, stream);
     }
@@ -481,7 +483,7 @@ gabble_media_stream_class_init (GabbleMediaStreamClass *gabble_media_stream_clas
       MAKE_COMBINED_DIRECTION (TP_MEDIA_STREAM_DIRECTION_BIDIRECTIONAL,
         TP_MEDIA_STREAM_PENDING_LOCAL_SEND |
         TP_MEDIA_STREAM_PENDING_REMOTE_SEND),
-      TP_MEDIA_STREAM_DIRECTION_BIDIRECTIONAL,
+      TP_MEDIA_STREAM_DIRECTION_NONE,
       G_PARAM_CONSTRUCT | G_PARAM_READWRITE | G_PARAM_STATIC_NAME |
       G_PARAM_STATIC_BLURB);
   g_object_class_install_property (object_class, PROP_COMBINED_DIRECTION,
@@ -1257,6 +1259,8 @@ new_remote_candidates_cb (GabbleJingleContent *content,
           1, transports,
           G_MAXUINT);
 
+      g_free (candidate_id);
+
       g_ptr_array_add (candidates, g_value_get_boxed (&candidate));
     }
 
@@ -1511,6 +1515,28 @@ gabble_media_stream_change_direction (GabbleMediaStream *stream,
   return TRUE;
 }
 
+void
+gabble_media_stream_accept_pending_local_send (GabbleMediaStream *stream)
+{
+  CombinedStreamDirection combined_dir = stream->combined_direction;
+  TpMediaStreamDirection current_dir;
+  TpMediaStreamPendingSend pending_send;
+
+  current_dir = COMBINED_DIRECTION_GET_DIRECTION (combined_dir);
+  pending_send = COMBINED_DIRECTION_GET_PENDING_SEND (combined_dir);
+
+  if ((pending_send & TP_MEDIA_STREAM_PENDING_LOCAL_SEND) != 0)
+    {
+      DEBUG ("accepting pending local send on stream %s", stream->name);
+
+      gabble_media_stream_change_direction (stream,
+          current_dir | TP_MEDIA_STREAM_DIRECTION_SEND, NULL);
+    }
+  else
+    {
+      DEBUG ("stream %s not pending local send", stream->name);
+    }
+}
 
 static void
 update_sending (GabbleMediaStream *stream, gboolean start_sending)

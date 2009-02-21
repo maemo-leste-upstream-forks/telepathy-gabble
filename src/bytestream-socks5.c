@@ -39,7 +39,6 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-#include <loudmouth/loudmouth.h>
 #include <telepathy-glib/interfaces.h>
 
 #include <gibber/gibber-transport.h>
@@ -1380,6 +1379,7 @@ gabble_bytestream_socks5_initiate (GabbleBytestreamIface *iface)
           "port", port,
           NULL);
 
+      g_free (ip->data);
       ip = ip->next;
     }
   g_list_free (ips);

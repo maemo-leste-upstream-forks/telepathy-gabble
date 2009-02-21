@@ -73,6 +73,8 @@ libgabble_convenience_la_SOURCES = \
     media-stream.c \
     media-factory.h \
     media-factory.c \
+    message-util.h \
+    message-util.c \
     muc-channel.h \
     muc-channel.c \
     muc-factory.h \
@@ -108,8 +110,6 @@ libgabble_convenience_la_SOURCES = \
     roomlist-channel.c \
     roomlist-manager.h \
     roomlist-manager.c \
-    text-mixin.h \
-    text-mixin.c \
     tube-iface.h \
     tube-iface.c \
     tubes-channel.h \
@@ -167,13 +167,12 @@ $(top_builddir)/lib/gibber/libgibber.la:
 .PHONY: $(top_builddir)/lib/gibber/libgibber.la
 
 gabble-signals-marshal.list: $(libgabble_convenience_la_SOURCES) Makefile.am
-	( cd $(srcdir) && \
+	@( cd $(srcdir) && \
 	sed -n -e 's/.*gabble_marshal_\([[:upper:][:digit:]]*__[[:upper:][:digit:]_]*\).*/\1/p' \
 	$(libgabble_convenience_la_SOURCES) ) \
 	| sed -e 's/__/:/' -e 'y/_/,/' | sort -u > $@.tmp
-	if cmp -s $@.tmp $@; then \
+	@if cmp -s $@.tmp $@; then \
 		rm $@.tmp; \
-		touch $@; \
 	else \
 		mv $@.tmp $@; \
 	fi

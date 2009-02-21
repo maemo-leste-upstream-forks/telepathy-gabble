@@ -45,6 +45,8 @@
 #include "namespaces.h"
 #include "presence-cache.h"
 #include "tubes-channel.h"
+#include "tube-dbus.h"
+#include "tube-stream.h"
 #include "util.h"
 
 static GabbleTubesChannel *new_tubes_channel (GabblePrivateTubesFactory *fac,
@@ -131,21 +133,6 @@ static const gchar * const old_tubes_channel_allowed_properties[] = {
     TP_IFACE_CHANNEL ".TargetID",
     NULL
 };
-static const gchar * const stream_tube_channel_allowed_properties[] = {
-    TP_IFACE_CHANNEL ".TargetHandle",
-    TP_IFACE_CHANNEL ".TargetID",
-    GABBLE_IFACE_CHANNEL_INTERFACE_TUBE ".Parameters",
-    GABBLE_IFACE_CHANNEL_TYPE_STREAM_TUBE ".Service",
-    NULL
-};
-static const gchar * const dbus_tube_channel_allowed_properties[] = {
-    TP_IFACE_CHANNEL ".TargetHandle",
-    TP_IFACE_CHANNEL ".TargetID",
-    GABBLE_IFACE_CHANNEL_INTERFACE_TUBE ".Parameters",
-    GABBLE_IFACE_CHANNEL_TYPE_DBUS_TUBE ".ServiceName",
-    NULL
-};
-
 
 static void
 gabble_private_tubes_factory_init (GabblePrivateTubesFactory *self)
@@ -345,6 +332,7 @@ new_tubes_channel (GabblePrivateTubesFactory *fac,
   TpBaseConnection *conn;
   GabbleTubesChannel *chan;
   char *object_path;
+  gboolean requested;
 
   g_assert (GABBLE_IS_PRIVATE_TUBES_FACTORY (fac));
   g_assert (handle != 0);
@@ -356,12 +344,15 @@ new_tubes_channel (GabblePrivateTubesFactory *fac,
   object_path = g_strdup_printf ("%s/SITubesChannel%u", conn->object_path,
       handle);
 
+  requested = (request_token != NULL);
+
   chan = g_object_new (GABBLE_TYPE_TUBES_CHANNEL,
                        "connection", priv->conn,
                        "object-path", object_path,
                        "handle", handle,
                        "handle-type", TP_HANDLE_TYPE_CONTACT,
                        "initiator-handle", initiator,
+                       "requested", requested,
                        NULL);
 
   DEBUG ("object path %s", object_path);
@@ -438,7 +429,6 @@ add_service_to_array (gchar *service,
     {
         TP_IFACE_CHANNEL ".TargetHandle",
         TP_IFACE_CHANNEL ".TargetID",
-        GABBLE_IFACE_CHANNEL_INTERFACE_TUBE ".Parameters",
         NULL
     };
 
@@ -519,7 +509,7 @@ add_generic_tube_caps (GPtrArray *arr)
 
   dbus_g_type_struct_set (&monster1,
       0, fixed_properties,
-      1, stream_tube_channel_allowed_properties,
+      1, gabble_tube_stream_channel_get_allowed_properties (),
       G_MAXUINT);
 
   g_hash_table_destroy (fixed_properties);
@@ -548,7 +538,7 @@ add_generic_tube_caps (GPtrArray *arr)
 
   dbus_g_type_struct_set (&monster2,
       0, fixed_properties,
-      1, dbus_tube_channel_allowed_properties,
+      1, gabble_tube_dbus_channel_get_allowed_properties (),
       G_MAXUINT);
 
   g_hash_table_destroy (fixed_properties);
@@ -1127,14 +1117,12 @@ gabble_private_tubes_factory_foreach_channel_class (
   g_hash_table_insert (table, TP_IFACE_CHANNEL ".TargetHandleType",
       value);
 
-  func (manager, table, stream_tube_channel_allowed_properties, user_data);
+  func (manager, table, gabble_tube_stream_channel_get_allowed_properties (),
+      user_data);
 
   g_hash_table_destroy (table);
 
   /* 1-1 Channel.Type.DBusTube */
-  /* Channel.Type.DBusTube.DRAFT is not fully implemented yet, so let's
-   * disable this. FIXME: enable this when implemented. */
-#if 0
   table = g_hash_table_new_full (g_str_hash, g_str_equal, NULL,
       (GDestroyNotify) tp_g_value_slice_free);
 
@@ -1148,10 +1136,10 @@ gabble_private_tubes_factory_foreach_channel_class (
   g_hash_table_insert (table, TP_IFACE_CHANNEL ".TargetHandleType",
       value);
 
-  func (manager, table, dbus_tube_channel_allowed_properties, user_data);
+  func (manager, table, gabble_tube_dbus_channel_get_allowed_properties (),
+      user_data);
 
   g_hash_table_destroy (table);
-#endif
 }
 
 
@@ -1174,11 +1162,6 @@ gabble_private_tubes_factory_requestotron (GabblePrivateTubesFactory *self,
   channel_type = tp_asv_get_string (request_properties,
             TP_IFACE_CHANNEL ".ChannelType");
 
-  /* Channel.Type.DBusTube.DRAFT is not fully implemented yet, so let's
-   * disable this. FIXME: enable this when implemented. */
-  if (!tp_strdiff (channel_type, GABBLE_IFACE_CHANNEL_TYPE_DBUS_TUBE))
-    return FALSE;
-
   if (tp_strdiff (channel_type, TP_IFACE_CHANNEL_TYPE_TUBES) &&
       tp_strdiff (channel_type, GABBLE_IFACE_CHANNEL_TYPE_STREAM_TUBE) &&
       tp_strdiff (channel_type, GABBLE_IFACE_CHANNEL_TYPE_DBUS_TUBE))
@@ -1198,7 +1181,7 @@ gabble_private_tubes_factory_requestotron (GabblePrivateTubesFactory *self,
 
       if (tp_channel_manager_asv_has_unknown_properties (request_properties,
               tubes_channel_fixed_properties,
-              stream_tube_channel_allowed_properties,
+              gabble_tube_stream_channel_get_allowed_properties (),
               &error))
         goto error;
 
@@ -1216,10 +1199,11 @@ gabble_private_tubes_factory_requestotron (GabblePrivateTubesFactory *self,
   else if (! tp_strdiff (channel_type, GABBLE_IFACE_CHANNEL_TYPE_DBUS_TUBE))
     {
       const gchar *service;
+      GError *err = NULL;
 
       if (tp_channel_manager_asv_has_unknown_properties (request_properties,
               tubes_channel_fixed_properties,
-              dbus_tube_channel_allowed_properties,
+              gabble_tube_dbus_channel_get_allowed_properties (),
               &error))
         goto error;
 
@@ -1231,6 +1215,15 @@ gabble_private_tubes_factory_requestotron (GabblePrivateTubesFactory *self,
           g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
               "Request does not contain the mandatory property '%s'",
               GABBLE_IFACE_CHANNEL_TYPE_DBUS_TUBE ".ServiceName");
+          goto error;
+        }
+
+      if (!tp_dbus_check_valid_bus_name (service, TP_DBUS_NAME_TYPE_WELL_KNOWN,
+            &err))
+        {
+          g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+              "Invalid ServiceName: %s", err->message);
+          g_error_free (err);
           goto error;
         }
     }
@@ -1360,13 +1353,6 @@ gabble_private_tubes_factory_ensure_channel (TpChannelManager *manager,
 
   return gabble_private_tubes_factory_requestotron (self, request_token,
       request_properties, FALSE);
-}
-
-void
-gabble_private_tubes_factory_tube_created (GabblePrivateTubesFactory *fac,
-                                           GabbleTubeIface *tube)
-{
-  tp_channel_manager_emit_new_channel (fac, TP_EXPORTABLE_CHANNEL (tube), NULL);
 }
 
 static void
