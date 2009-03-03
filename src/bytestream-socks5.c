@@ -713,6 +713,13 @@ socks5_handle_received_data (GabbleBytestreamSocks5 *self,
             lm_message_unref (iq_result);
           }
 
+        if (priv->read_blocked)
+          {
+            DEBUG ("reading has been blocked. Blocking now as the socks5 "
+                "negotiation is done");
+            gibber_transport_block_receiving (priv->transport, TRUE);
+          }
+
         return 2;
 
       case SOCKS5_STATE_AWAITING_AUTH_REQUEST:
@@ -1149,19 +1156,34 @@ socks5_init_reply_cb (GabbleConnection *conn,
 
   if (lm_message_get_sub_type (reply_msg) == LM_MESSAGE_SUB_TYPE_RESULT)
     {
-      /* yeah, stream initiated */
-      DEBUG ("Socks5 stream initiated");
-      g_object_set (self, "state", GABBLE_BYTESTREAM_STATE_OPEN, NULL);
-      /* We can read data from the sock5 socket now */
-      gibber_transport_block_receiving (priv->transport, FALSE);
-    }
-  else
-    {
-      DEBUG ("error during Socks5 initiation");
+      LmMessageNode *query, *streamhost = NULL;
 
-      g_signal_emit_by_name (self, "connection-error");
-      g_object_set (self, "state", GABBLE_BYTESTREAM_STATE_CLOSED, NULL);
+      query = lm_message_node_get_child_with_namespace (reply_msg->node,
+          "query", NS_BYTESTREAMS);
+
+      if (query != NULL)
+        streamhost = lm_message_node_get_child (query, "streamhost-used");
+
+      if (streamhost == NULL)
+        {
+          DEBUG ("no streamhost-used has been defined. Closing the bytestream");
+        }
+      else
+        {
+          /* yeah, stream initiated */
+          DEBUG ("Socks5 stream initiated using stream: %s",
+              lm_message_node_get_attribute (streamhost, "jid"));
+          g_object_set (self, "state", GABBLE_BYTESTREAM_STATE_OPEN, NULL);
+          /* We can read data from the sock5 socket now */
+          gibber_transport_block_receiving (priv->transport, FALSE);
+          return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+        }
     }
+
+  DEBUG ("error during Socks5 initiation");
+
+  g_signal_emit_by_name (self, "connection-error");
+  g_object_set (self, "state", GABBLE_BYTESTREAM_STATE_CLOSED, NULL);
 
   return LM_HANDLER_RESULT_REMOVE_MESSAGE;
 }
@@ -1417,7 +1439,9 @@ gabble_bytestream_socks5_block_reading (GabbleBytestreamIface *iface,
   priv->read_blocked = block;
 
   DEBUG ("%s the transport bytestream", block ? "block": "unblock");
-  gibber_transport_block_receiving (priv->transport, block);
+
+  if (priv->transport != NULL)
+    gibber_transport_block_receiving (priv->transport, block);
 }
 
 static void

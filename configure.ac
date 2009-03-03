@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [7])
-m4_define([gabble_micro_version], [21])
+m4_define([gabble_micro_version], [22])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -26,6 +26,8 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([1.9 -Wno-portability])
 AM_CONFIG_HEADER(config.h)
+
+AC_USE_SYSTEM_EXTENSIONS
 
 dnl check for tools
 AC_PROG_CC
@@ -124,10 +126,33 @@ PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.78])
 AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)
 
-PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.7.23])
+PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.7.24])
 
 AC_SUBST(TP_GLIB_CFLAGS)
 AC_SUBST(TP_GLIB_LIBS)
+
+
+# Needed for hostname resolver
+AC_CHECK_FUNC(res_query, ,
+  [AC_CHECK_LIB(resolv, res_query, [ RESOLV_LIBS="-lresolv" ],
+    [ save_libs="$LIBS"
+      LIBS="-lresolv $LIBS"
+      AC_MSG_CHECKING([for res_query in -lresolv (alternate version)])
+      AC_LINK_IFELSE(
+        [AC_LANG_PROGRAM([[#include <resolv.h>]], [[res_query(0,0,0,0,0)]])],
+        [ AC_MSG_RESULT(yes)
+          LIBS="$save_libs"
+          RESOLV_LIBS="-lresolv"
+        ],
+        [ AC_MSG_RESULT(no)
+          LIBS="$save_libs"
+          AC_CHECK_LIB(bind, res_query,
+            [ RESOLV_LIBS="-lbind" ],
+            [ AC_MSG_ERROR(res_query not found) ] ) ] ) ] )
+  ]
+)
+
+AC_SUBST(RESOLV_LIBS)
 
 dnl Check for code generation tools
 XSLTPROC=
@@ -166,7 +191,7 @@ AC_SUBST(LOUDMOUTH_CFLAGS)
 AC_SUBST(LOUDMOUTH_LIBS)
 
 dnl Check for functions
-AC_CHECK_FUNCS(getifaddrs)
+AC_CHECK_FUNCS(getifaddrs memset select strndup setresuid setreuid strerror)
 
 AC_OUTPUT( Makefile \
            docs/Makefile \

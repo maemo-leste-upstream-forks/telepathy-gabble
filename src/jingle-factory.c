@@ -25,6 +25,7 @@
 #include <string.h>
 #include <glib.h>
 
+#include <lib/gibber/gibber-resolver.h>
 #include <loudmouth/loudmouth.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
@@ -61,8 +62,17 @@ struct _GabbleJingleFactoryPrivate
   GabbleConnection *conn;
   LmMessageHandler *jingle_cb;
   LmMessageHandler *jingle_info_cb;
+  GHashTable *content_types;
+  GHashTable *transports;
   GHashTable *sessions;
+  GibberResolver *resolver;
 
+  gchar *stun_server;
+  guint16 stun_port;
+  gchar *fallback_stun_server;
+  guint16 fallback_stun_port;
+  gchar *relay_token;
+  gboolean get_stun_from_jingle;
   gboolean dispose_has_run;
 };
 
@@ -90,16 +100,110 @@ gabble_jingle_factory_init (GabbleJingleFactory *obj)
   priv->sessions = g_hash_table_new_full (g_str_hash, g_str_equal,
       g_free, g_object_unref);
 
-  obj->transports = g_hash_table_new_full (g_str_hash, g_str_equal,
+  priv->transports = g_hash_table_new_full (g_str_hash, g_str_equal,
       NULL, NULL);
 
-  obj->content_types = g_hash_table_new_full (g_str_hash, g_str_equal,
+  priv->content_types = g_hash_table_new_full (g_str_hash, g_str_equal,
       NULL, NULL);
 
   priv->jingle_cb = NULL;
 
   priv->conn = NULL;
   priv->dispose_has_run = FALSE;
+  priv->resolver = gibber_resolver_get_resolver ();
+}
+
+typedef struct {
+    gchar *stun_server;
+    guint16 stun_port;
+    gboolean fallback;
+} PendingStunServer;
+
+static void
+pending_stun_server_free (gpointer p)
+{
+  PendingStunServer *data = p;
+
+  g_free (data->stun_server);
+  g_slice_free (PendingStunServer, p);
+}
+
+static void
+stun_server_resolved_cb (GibberResolver *resolver,
+                         GList *entries,
+                         GError *error,
+                         gpointer user_data,
+                         GObject *object)
+{
+  GabbleJingleFactory *self = GABBLE_JINGLE_FACTORY (object);
+  PendingStunServer *data = user_data;
+  GibberResolverAddrInfo *info;
+  GError *e = NULL;
+  gchar *stun_server;
+
+  if (error != NULL)
+    {
+      DEBUG ("Failed to resolve STUN server %s:%u: %s",
+          data->stun_server, data->stun_port, error->message);
+      return;
+    }
+
+  if (entries == NULL)
+    {
+      DEBUG ("No results for STUN server %s:%u",
+          data->stun_server, data->stun_port);
+      return;
+    }
+
+  info = entries->data;
+
+  if (!gibber_resolver_sockaddr_to_str ((struct sockaddr *) &(info->sockaddr),
+        info->sockaddr_len, &stun_server, NULL, &e))
+    {
+      DEBUG ("Couldn't convert resolved address of %s to string: %s",
+          data->stun_server, e->message);
+      g_error_free (e);
+      return;
+    }
+
+  DEBUG ("Resolved STUN server %s:%u to %s:%u", data->stun_server,
+      data->stun_port, stun_server, data->stun_port);
+
+  if (data->fallback)
+    {
+      g_free (self->priv->fallback_stun_server);
+      self->priv->fallback_stun_server = stun_server;
+      self->priv->fallback_stun_port = data->stun_port;
+    }
+  else
+    {
+      g_free (self->priv->stun_server);
+      self->priv->stun_server = stun_server;
+      self->priv->stun_port = data->stun_port;
+    }
+}
+
+static void
+take_stun_server (GabbleJingleFactory *self,
+                  gchar *stun_server,
+                  guint16 stun_port,
+                  gboolean fallback)
+{
+  PendingStunServer *data = g_slice_new0 (PendingStunServer);
+
+  if (stun_server == NULL)
+    return;
+
+  DEBUG ("Resolving %s STUN server %s:%u",
+      fallback ? "fallback" : "primary", stun_server, stun_port);
+  data->stun_server = stun_server;
+  data->stun_port = stun_port;
+  data->fallback = fallback;
+
+  gibber_resolver_addrinfo (self->priv->resolver, stun_server, NULL,
+      AF_INET, SOCK_DGRAM, IPPROTO_UDP, 0,
+      stun_server_resolved_cb, data, pending_stun_server_free,
+      G_OBJECT (self));
 }
 
 /*
@@ -150,7 +254,7 @@ jingle_info_cb (LmMessageHandler *handler,
       return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
     }
 
-  if (fac->get_stun_from_jingle)
+  if (fac->priv->get_stun_from_jingle)
     node = lm_message_node_get_child (query_node, "stun");
   else
     node = NULL;
@@ -162,22 +266,20 @@ jingle_info_cb (LmMessageHandler *handler,
       if (node != NULL)
         {
           const gchar *server;
-          const gchar *port;
+          const gchar *port_attr;
+          guint port = GABBLE_PARAMS_DEFAULT_STUN_PORT;
 
           server = lm_message_node_get_attribute (node, "host");
-          port = lm_message_node_get_attribute (node, "udp");
+          port_attr = lm_message_node_get_attribute (node, "udp");
 
-          if (server != NULL)
-            {
-              DEBUG ("jingle info: got stun server %s", server);
-              g_free (fac->stun_server);
-              fac->stun_server = g_strdup (server);
-            }
+          if (port_attr != NULL)
+            port = atoi (port_attr);
 
-          if (port != NULL)
+          if (server != NULL && port > 0 && port <= G_MAXUINT16)
             {
-              DEBUG ("jingle info: got stun port %s", port);
-              fac->stun_port = atoi (port);
+              DEBUG ("jingle info: got stun server %s, port %u", server,
+                  port);
+              take_stun_server (fac, g_strdup (server), port, FALSE);
             }
         }
     }
@@ -197,8 +299,8 @@ jingle_info_cb (LmMessageHandler *handler,
           if (token != NULL)
             {
               DEBUG ("jingle info: got relay token %s", token);
-              g_free (fac->relay_token);
-              fac->relay_token = g_strdup (token);
+              g_free (fac->priv->relay_token);
+              fac->priv->relay_token = g_strdup (token);
             }
         }
     }
@@ -255,14 +357,15 @@ gabble_jingle_factory_dispose (GObject *object)
   g_hash_table_destroy (priv->sessions);
   priv->sessions = NULL;
 
-  g_hash_table_destroy (fac->content_types);
-  fac->content_types = NULL;
+  g_hash_table_destroy (priv->content_types);
+  priv->content_types = NULL;
 
-  g_hash_table_destroy (fac->transports);
-  fac->transports = NULL;
+  g_hash_table_destroy (priv->transports);
+  priv->transports = NULL;
 
-  g_free (fac->stun_server);
-  g_free (fac->relay_token);
+  g_free (fac->priv->stun_server);
+  g_free (fac->priv->fallback_stun_server);
+  g_free (fac->priv->relay_token);
 
   if (G_OBJECT_CLASS (gabble_jingle_factory_parent_class)->dispose)
     G_OBJECT_CLASS (gabble_jingle_factory_parent_class)->dispose (object);
@@ -402,13 +505,21 @@ connection_status_changed_cb (GabbleConnection *conn,
 
           if (stun_server == NULL)
             {
-              self->get_stun_from_jingle = TRUE;
+              self->priv->get_stun_from_jingle = TRUE;
             }
           else
             {
-              g_free (self->stun_server);
-              self->stun_server = stun_server;
-              self->stun_port = stun_port;
+              take_stun_server (self, stun_server, stun_port, FALSE);
+            }
+
+          g_object_get (priv->conn,
+              "fallback-stun-server", &stun_server,
+              "fallback-stun-port", &stun_port,
+              NULL);
+
+          if (stun_server != NULL)
+            {
+              take_stun_server (self, stun_server, stun_port, TRUE);
             }
 
           if (priv->conn->features &
@@ -579,13 +690,8 @@ create_session (GabbleJingleFactory *fac,
       local_initiator = TRUE;
     }
 
-  sess = g_object_new (GABBLE_TYPE_JINGLE_SESSION,
-                       "session-id", sid,
-                       "connection", priv->conn,
-                       "local-initiator", local_initiator,
-                       "peer", peer,
-                       "peer-resource", peer_resource,
-                       NULL);
+  sess = gabble_jingle_session_new (priv->conn, sid, local_initiator, peer,
+      peer_resource);
 
   g_signal_connect (sess, "terminated",
     (GCallback) session_terminated_cb, fac);
@@ -603,19 +709,42 @@ gabble_jingle_factory_create_session (GabbleJingleFactory *fac,
 }
 
 void
-gabble_jingle_factory_register_transport (GabbleJingleFactory *factory,
-    gchar *namespace, GType transport_type)
+gabble_jingle_factory_register_transport (GabbleJingleFactory *self,
+                                          gchar *xmlns,
+                                          GType transport_type)
 {
-  g_hash_table_insert (factory->transports, namespace,
+  g_return_if_fail (g_type_is_a (transport_type,
+        GABBLE_TYPE_JINGLE_TRANSPORT_IFACE));
+
+  g_hash_table_insert (self->priv->transports, xmlns,
       GSIZE_TO_POINTER (transport_type));
 }
 
-void
-gabble_jingle_factory_register_content_type (GabbleJingleFactory *factory,
-    gchar *namespace, GType content_type)
+GType
+gabble_jingle_factory_lookup_transport (GabbleJingleFactory *self,
+                                        const gchar *xmlns)
 {
-  g_hash_table_insert (factory->content_types, namespace,
+  return GPOINTER_TO_SIZE (g_hash_table_lookup (self->priv->transports,
+        xmlns));
+}
+
+void
+gabble_jingle_factory_register_content_type (GabbleJingleFactory *self,
+                                             gchar *xmlns,
+                                             GType content_type)
+{
+  g_return_if_fail (g_type_is_a (content_type, GABBLE_TYPE_JINGLE_CONTENT));
+
+  g_hash_table_insert (self->priv->content_types, xmlns,
       GSIZE_TO_POINTER (content_type));
+}
+
+GType
+gabble_jingle_factory_lookup_content_type (GabbleJingleFactory *self,
+                                           const gchar *xmlns)
+{
+  return GPOINTER_TO_SIZE (g_hash_table_lookup (self->priv->content_types,
+        xmlns));
 }
 
 static void
@@ -630,3 +759,37 @@ session_terminated_cb (GabbleJingleSession *session,
   _jingle_factory_unregister_session (factory, sid);
 }
 
+const gchar *
+gabble_jingle_factory_get_google_relay_token (GabbleJingleFactory *self)
+{
+  return self->priv->relay_token;
+}
+
+gboolean
+gabble_jingle_factory_get_stun_server (GabbleJingleFactory *self,
+                                       gchar **stun_server,
+                                       guint *stun_port)
+{
+  if (self->priv->stun_server == NULL || self->priv->stun_port == 0)
+    {
+      if (self->priv->fallback_stun_server == NULL ||
+          self->priv->fallback_stun_port == 0)
+        return FALSE;
+
+      if (stun_server != NULL)
+        *stun_server = g_strdup (self->priv->fallback_stun_server);
+
+      if (stun_port != NULL)
+        *stun_port = self->priv->fallback_stun_port;
+
+      return TRUE;
+    }
+
+  if (stun_server != NULL)
+    *stun_server = g_strdup (self->priv->stun_server);
+
+  if (stun_port != NULL)
+    *stun_port = self->priv->stun_port;
+
+  return TRUE;
+}
