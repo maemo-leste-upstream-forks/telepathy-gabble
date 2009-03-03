@@ -66,7 +66,6 @@ struct _GabbleJingleContentPrivate
 {
   gchar *name;
   gchar *creator;
-  gboolean created_by_initiator;
   gboolean created_by_us;
   JingleContentState state;
   JingleContentSenders senders;
@@ -106,7 +105,6 @@ gabble_jingle_content_init (GabbleJingleContent *obj)
   obj->priv = priv;
 
   priv->state = JINGLE_CONTENT_STATE_EMPTY;
-  priv->created_by_initiator = TRUE;
   priv->created_by_us = TRUE;
   priv->media_ready = FALSE;
   priv->transport_ready = FALSE;
@@ -236,14 +234,13 @@ gabble_jingle_content_set_property (GObject *object,
 
       if (priv->transport_ns != NULL)
         {
-          GType transport_type = GPOINTER_TO_SIZE (
-              g_hash_table_lookup (self->conn->jingle_factory->transports,
-                  priv->transport_ns));
+          GType transport_type = gabble_jingle_factory_lookup_transport (
+              self->conn->jingle_factory, priv->transport_ns);
 
           g_assert (transport_type != 0);
 
-          priv->transport = g_object_new (transport_type,
-              "content", self, "transport-ns", priv->transport_ns, NULL);
+          priv->transport = gabble_jingle_transport_iface_new (transport_type,
+              self, priv->transport_ns);
 
           g_signal_connect (priv->transport, "new-candidates",
               (GCallback) new_transport_candidates_cb, self);
@@ -507,8 +504,8 @@ gabble_jingle_content_parse_add (GabbleJingleContent *c,
 
           dialect = JINGLE_DIALECT_GTALK3;
           g_object_set (c->session, "dialect", JINGLE_DIALECT_GTALK3, NULL);
-          transport_type = GPOINTER_TO_SIZE (
-              g_hash_table_lookup (c->conn->jingle_factory->transports, ""));
+          transport_type = gabble_jingle_factory_lookup_transport (
+              c->conn->jingle_factory, "");
           priv->transport_ns = g_strdup ("");
         }
     }
@@ -526,8 +523,8 @@ gabble_jingle_content_parse_add (GabbleJingleContent *c,
     {
       const gchar *ns = lm_message_node_get_namespace (trans_node);
 
-      transport_type = GPOINTER_TO_SIZE (
-          g_hash_table_lookup (c->conn->jingle_factory->transports, ns));
+      transport_type = gabble_jingle_factory_lookup_transport (
+          c->conn->jingle_factory, ns);
 
       if (transport_type == 0)
         {
@@ -539,7 +536,6 @@ gabble_jingle_content_parse_add (GabbleJingleContent *c,
     }
 
   priv->created_by_us = FALSE;
-  priv->created_by_initiator = (!tp_strdiff (creator, "initiator"));
   priv->senders = parse_senders (senders);
   if (priv->senders == JINGLE_CONTENT_SENDERS_NONE)
     {
@@ -559,10 +555,8 @@ gabble_jingle_content_parse_add (GabbleJingleContent *c,
 
   DEBUG ("content creating new transport type %s", g_type_name (transport_type));
 
-  trans = g_object_new (transport_type,
-                       "content", c,
-                       "transport-ns", priv->transport_ns,
-                       NULL);
+  trans = gabble_jingle_transport_iface_new (transport_type,
+      c, priv->transport_ns);
 
   g_signal_connect (trans, "new-candidates",
       (GCallback) new_transport_candidates_cb, c);
@@ -647,6 +641,10 @@ gabble_jingle_content_parse_accept (GabbleJingleContent *c,
   if (*error != NULL)
       return;
 
+  if (priv->timer_id != 0)
+      g_source_remove (priv->timer_id);
+  priv->timer_id = 0;
+
   priv->state = JINGLE_CONTENT_STATE_ACKNOWLEDGED;
   g_object_notify ((GObject *) c, "state");
 }
@@ -674,12 +672,21 @@ gabble_jingle_content_produce_node (GabbleJingleContent *c,
     }
   else
     {
+      gboolean session_created_by_us;
+
       content_node = lm_message_node_add_child (parent, "content", NULL);
       lm_message_node_set_attributes (content_node,
-          "creator", priv->created_by_initiator ? "initiator" : "responder",
           "name", priv->name,
           "senders", produce_senders (priv->senders),
           NULL);
+
+      g_object_get (c->session, "local-initiator", &session_created_by_us,
+        NULL);
+
+      if (priv->created_by_us == session_created_by_us)
+        lm_message_node_set_attribute (content_node, "creator", "initiator");
+      else
+        lm_message_node_set_attribute (content_node, "creator", "responder");
     }
 
   if (!full)
