@@ -50,8 +50,10 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
+am__DEPENDENCIES_1 =
 libgabble_convenience_la_DEPENDENCIES =  \
-	$(top_builddir)/extensions/libgabble-extensions.la
+	$(top_builddir)/extensions/libgabble-extensions.la \
+	$(top_builddir)/lib/gibber/libgibber.la $(am__DEPENDENCIES_1)
 am_libgabble_convenience_la_OBJECTS = base64.lo bytestream-factory.lo \
 	bytestream-ibb.lo bytestream-iface.lo bytestream-muc.lo \
 	bytestream-multiple.lo bytestream-socks5.lo capabilities.lo \
@@ -80,13 +82,10 @@ libexecPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(libexec_PROGRAMS) $(noinst_PROGRAMS)
 am_telepathy_gabble_OBJECTS = main.$(OBJEXT)
 telepathy_gabble_OBJECTS = $(am_telepathy_gabble_OBJECTS)
-am__DEPENDENCIES_1 =
-telepathy_gabble_DEPENDENCIES = libgabble-convenience.la \
-	$(top_builddir)/lib/gibber/libgibber.la $(am__DEPENDENCIES_1)
+telepathy_gabble_DEPENDENCIES = libgabble-convenience.la
 am_write_mgr_file_OBJECTS = write-mgr-file.$(OBJEXT)
 write_mgr_file_OBJECTS = $(am_write_mgr_file_OBJECTS)
-write_mgr_file_DEPENDENCIES = libgabble-convenience.la \
-	$(top_builddir)/lib/gibber/libgibber.la $(am__DEPENDENCIES_1)
+write_mgr_file_DEPENDENCIES = libgabble-convenience.la
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -176,6 +175,8 @@ RESOLV_LIBS = @RESOLV_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SOUP_CFLAGS = @SOUP_CFLAGS@
+SOUP_LIBS = @SOUP_LIBS@
 STRIP = @STRIP@
 TEST_PYTHON = @TEST_PYTHON@
 TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
@@ -357,16 +358,15 @@ libgabble_convenience_la_SOURCES = \
     vcard-manager.c
 
 libgabble_convenience_la_LIBADD = \
-   $(top_builddir)/extensions/libgabble-extensions.la
+   $(top_builddir)/extensions/libgabble-extensions.la \
+   $(top_builddir)/lib/gibber/libgibber.la \
+   $(ALL_LIBS)
 
 nodist_libgabble_convenience_la_SOURCES = \
     $(BUILT_SOURCES)
 
 write_mgr_file_SOURCES = write-mgr-file.c
-write_mgr_file_LDADD = libgabble-convenience.la \
-		       $(top_builddir)/lib/gibber/libgibber.la \
-		       $(ALL_LIBS)
-
+write_mgr_file_LDADD = libgabble-convenience.la
 telepathy_gabble_SOURCES = \
     main.c
 
@@ -376,17 +376,17 @@ check_c_sources = \
     $(telepathy_gabble_SOURCES) \
     $(write_mgr_file_SOURCES)
 
-telepathy_gabble_LDADD = libgabble-convenience.la \
-			 $(top_builddir)/lib/gibber/libgibber.la \
-			 $(ALL_LIBS)
-
+telepathy_gabble_LDADD = libgabble-convenience.la
 noinst_LTLIBRARIES = libgabble-convenience.la
 AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @LOUDMOUTH_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
+	    @SOUP_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib
 
-ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @LOUDMOUTH_LIBS@ @TP_GLIB_LIBS@
+ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @LOUDMOUTH_LIBS@ @TP_GLIB_LIBS@ \
+	    @SOUP_LIBS@
+
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 

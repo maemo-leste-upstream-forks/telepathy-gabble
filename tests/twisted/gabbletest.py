@@ -57,13 +57,15 @@ def request_muc_handle(q, conn, stream, muc_jid):
     event = q.expect('dbus-return', method='RequestHandles')
     return event.value[0][0]
 
-def make_muc_presence(affiliation, role, muc_jid, alias):
+def make_muc_presence(affiliation, role, muc_jid, alias, jid=None):
     presence = domish.Element((None, 'presence'))
     presence['from'] = '%s/%s' % (muc_jid, alias)
     x = presence.addElement((ns.MUC_USER, 'x'))
     item = x.addElement('item')
     item['affiliation'] = affiliation
     item['role'] = role
+    if jid is not None:
+        item['jid'] = jid
     return presence
 
 def sync_stream(q, stream):
@@ -513,3 +515,21 @@ def elem_iq(server, type, **kw):
             iq[k] = v
 
     return iq
+
+def make_presence(_from, to='test@localhost', type=None, status=None, caps=None):
+    presence = domish.Element((None, 'presence'))
+    presence['from'] = _from
+    presence['to'] = to
+
+    if type is not None:
+        presence['type'] = type
+
+    if status is not None:
+        presence.addElement('status', content=status)
+
+    if caps is not None:
+        cel = presence.addElement(('http://jabber.org/protocol/caps', 'c'))
+        for key,value in caps.items():
+            cel[key] = value
+
+    return presence

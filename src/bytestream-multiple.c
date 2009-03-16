@@ -75,6 +75,7 @@ struct _GabbleBytestreamMultiplePrivate
   /* List of (gchar *) containing the NS of a stream method */
   GList *fallback_stream_methods;
   GabbleBytestreamIface *active_bytestream;
+  gboolean read_blocked;
 
   gboolean dispose_has_run;
 };
@@ -493,6 +494,15 @@ bytestream_state_changed_cb (GabbleBytestreamIface *bytestream,
 }
 
 static void
+bytestream_write_blocked_cb (GabbleBytestreamIface *bytestream,
+                             gboolean blocked,
+                             gpointer self)
+{
+  /* Forward signal */
+  g_signal_emit_by_name (G_OBJECT (self), "write-blocked", blocked);
+}
+
+static void
 bytestream_connection_error_cb (GabbleBytestreamIface *failed,
                                 gpointer user_data)
 {
@@ -511,6 +521,8 @@ bytestream_connection_error_cb (GabbleBytestreamIface *failed,
       bytestream_data_received_cb, self);
   g_signal_handlers_disconnect_by_func (failed,
       bytestream_state_changed_cb, self);
+  g_signal_handlers_disconnect_by_func (failed,
+      bytestream_write_blocked_cb, self);
 
   /* We don't have to unref it because the reference is kept by the
    * factory */
@@ -551,12 +563,18 @@ bytestream_activate_next (GabbleBytestreamMultiple *self)
 
   g_free (stream_method);
 
+  /* block the new bytestream if needed */
+  gabble_bytestream_iface_block_reading (priv->active_bytestream,
+      priv->read_blocked);
+
   g_signal_connect (priv->active_bytestream, "connection-error",
       G_CALLBACK (bytestream_connection_error_cb), self);
   g_signal_connect (priv->active_bytestream, "data-received",
       G_CALLBACK (bytestream_data_received_cb), self);
   g_signal_connect (priv->active_bytestream, "state-changed",
       G_CALLBACK (bytestream_state_changed_cb), self);
+  g_signal_connect (priv->active_bytestream, "write-blocked",
+      G_CALLBACK (bytestream_write_blocked_cb), self);
 }
 
 /*
@@ -597,6 +615,23 @@ gabble_bytestream_multiple_has_stream_method (GabbleBytestreamMultiple *self)
 }
 
 static void
+gabble_bytestream_multiple_block_reading (GabbleBytestreamIface *iface,
+                                          gboolean block)
+{
+  GabbleBytestreamMultiple *self = GABBLE_BYTESTREAM_MULTIPLE (iface);
+  GabbleBytestreamMultiplePrivate *priv =
+    GABBLE_BYTESTREAM_MULTIPLE_GET_PRIVATE (self);
+
+  if (priv->read_blocked == block)
+    return;
+
+  priv->read_blocked = block;
+
+  g_assert (priv->active_bytestream != NULL);
+  gabble_bytestream_iface_block_reading (priv->active_bytestream, block);
+}
+
+static void
 bytestream_iface_init (gpointer g_iface,
                        gpointer iface_data)
 {
@@ -606,4 +641,5 @@ bytestream_iface_init (gpointer g_iface,
   klass->send = gabble_bytestream_multiple_send;
   klass->close = gabble_bytestream_multiple_close;
   klass->accept = gabble_bytestream_multiple_accept;
+  klass->block_reading = gabble_bytestream_multiple_block_reading;
 }
