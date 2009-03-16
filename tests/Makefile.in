@@ -53,35 +53,34 @@ CONFIG_CLEAN_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
 test_base64_SOURCES = test-base64.c
 test_base64_OBJECTS = test-base64.$(OBJEXT)
-am__DEPENDENCIES_1 =
+test_base64_LDADD = $(LDADD)
 test_base64_DEPENDENCIES =  \
-	$(top_builddir)/src/libgabble-convenience.la \
-	$(top_builddir)/lib/gibber/libgibber.la $(am__DEPENDENCIES_1)
+	$(top_builddir)/src/libgabble-convenience.la
 test_dtube_unique_names_SOURCES = test-dtube-unique-names.c
 test_dtube_unique_names_OBJECTS = test-dtube-unique-names.$(OBJEXT)
+test_dtube_unique_names_LDADD = $(LDADD)
 test_dtube_unique_names_DEPENDENCIES =  \
-	$(top_builddir)/src/libgabble-convenience.la \
-	$(top_builddir)/lib/gibber/libgibber.la $(am__DEPENDENCIES_1)
+	$(top_builddir)/src/libgabble-convenience.la
 test_handles_SOURCES = test-handles.c
 test_handles_OBJECTS = test-handles.$(OBJEXT)
+test_handles_LDADD = $(LDADD)
 test_handles_DEPENDENCIES =  \
-	$(top_builddir)/src/libgabble-convenience.la \
-	$(top_builddir)/lib/gibber/libgibber.la $(am__DEPENDENCIES_1)
+	$(top_builddir)/src/libgabble-convenience.la
 test_jid_decode_SOURCES = test-jid-decode.c
 test_jid_decode_OBJECTS = test-jid-decode.$(OBJEXT)
+test_jid_decode_LDADD = $(LDADD)
 test_jid_decode_DEPENDENCIES =  \
-	$(top_builddir)/src/libgabble-convenience.la \
-	$(top_builddir)/lib/gibber/libgibber.la $(am__DEPENDENCIES_1)
+	$(top_builddir)/src/libgabble-convenience.la
 test_parse_message_SOURCES = test-parse-message.c
 test_parse_message_OBJECTS = test-parse-message.$(OBJEXT)
+test_parse_message_LDADD = $(LDADD)
 test_parse_message_DEPENDENCIES =  \
-	$(top_builddir)/src/libgabble-convenience.la \
-	$(top_builddir)/lib/gibber/libgibber.la $(am__DEPENDENCIES_1)
+	$(top_builddir)/src/libgabble-convenience.la
 test_presence_SOURCES = test-presence.c
 test_presence_OBJECTS = test-presence.$(OBJEXT)
+test_presence_LDADD = $(LDADD)
 test_presence_DEPENDENCIES =  \
-	$(top_builddir)/src/libgabble-convenience.la \
-	$(top_builddir)/lib/gibber/libgibber.la $(am__DEPENDENCIES_1)
+	$(top_builddir)/src/libgabble-convenience.la
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -180,6 +179,8 @@ RESOLV_LIBS = @RESOLV_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SOUP_CFLAGS = @SOUP_CFLAGS@
+SOUP_LIBS = @SOUP_LIBS@
 STRIP = @STRIP@
 TEST_PYTHON = @TEST_PYTHON@
 TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
@@ -240,41 +241,11 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @WANT_TWISTED_TESTS_TRUE@CHECKTWISTED = twisted
 SUBDIRS = $(CHECKTWISTED)
-test_presence_LDADD = \
-    $(top_builddir)/src/libgabble-convenience.la \
-    $(top_builddir)/lib/gibber/libgibber.la \
-    $(ALL_LIBS)
-
-test_base64_LDADD = \
-    $(top_builddir)/src/libgabble-convenience.la \
-    $(top_builddir)/lib/gibber/libgibber.la \
-    $(ALL_LIBS)
-
-test_handles_LDADD = \
-    $(top_builddir)/src/libgabble-convenience.la \
-    $(top_builddir)/lib/gibber/libgibber.la \
-    $(ALL_LIBS)
-
-test_jid_decode_LDADD = \
-    $(top_builddir)/src/libgabble-convenience.la \
-    $(top_builddir)/lib/gibber/libgibber.la \
-    $(ALL_LIBS)
-
-test_parse_message_LDADD = \
-    $(top_builddir)/src/libgabble-convenience.la \
-    $(top_builddir)/lib/gibber/libgibber.la \
-    $(ALL_LIBS)
-
-test_dtube_unique_names_LDADD = \
-    $(top_builddir)/src/libgabble-convenience.la \
-    $(top_builddir)/lib/gibber/libgibber.la \
-    $(ALL_LIBS)
-
+LDADD = $(top_builddir)/src/libgabble-convenience.la
 AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @LOUDMOUTH_CFLAGS@ \
     @TP_GLIB_CFLAGS@ \
     -I $(top_srcdir) -I $(top_builddir)
 
-ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @LOUDMOUTH_LIBS@ @TP_GLIB_LIBS@
 TESTS = $(noinst_PROGRAMS)
 check_c_sources = \
 	$(dbus_test_sources) \

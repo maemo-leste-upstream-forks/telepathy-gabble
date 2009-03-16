@@ -5,13 +5,14 @@ from dbus.connection import Connection
 from dbus.lowlevel import SignalMessage
 
 from servicetest import call_async, EventPattern, unwrap, watch_tube_signals
-from gabbletest import make_result_iq, sync_stream
+from gabbletest import sync_stream, make_presence
 import constants as cs
 import tubetestutil as t
 
-from twisted.words.xish import domish, xpath
+from twisted.words.xish import xpath
 import ns
 from bytestream import create_from_si_offer
+from caps_helper import make_caps_disco_reply
 
 sample_parameters = dbus.Dictionary({
     's': 'hello',
@@ -19,31 +20,6 @@ sample_parameters = dbus.Dictionary({
     'u': dbus.UInt32(123),
     'i': dbus.Int32(-123),
     }, signature='sv')
-
-# FIXME: stolen from jingletest.py. Should be shared by all tests
-def make_presence(fromjid, tojid, caps=None):
-    el = domish.Element(('jabber:client', 'presence',))
-    el['from'] = fromjid
-    el['to'] = tojid
-
-    if caps:
-        cel = domish.Element(('http://jabber.org/protocol/caps', 'c'))
-        for key,value in caps.items():
-            cel[key] = value
-        el.addChild(cel)
-
-    return el
-
-def make_caps_disco_reply(stream, req, features):
-    iq = make_result_iq(stream, req)
-    query = iq.firstChildElement()
-
-    for f in features:
-        el = domish.Element((None, 'feature'))
-        el['var'] = f
-        query.addChild(el)
-
-    return iq
 
 def alice_accepts_tube(q, stream, iq_event, dbus_tube_id, bytestream_cls):
     iq = iq_event.stanza
@@ -186,11 +162,10 @@ def offer_old_dbus_tube(q, bus, conn, stream, self_handle, alice_handle, bytestr
 
 
 def offer_new_dbus_tube(q, bus, conn, stream, self_handle, alice_handle, bytestream_cls):
-    requestotron = dbus.Interface(conn, cs.CONN_IFACE_REQUESTS)
 
     # Offer a tube to Alice (new API)
 
-    call_async(q, requestotron, 'CreateChannel',
+    call_async(q, conn.Requests, 'CreateChannel',
             {cs.CHANNEL_TYPE: cs.CHANNEL_TYPE_DBUS_TUBE,
              cs.TARGET_HANDLE_TYPE: cs.HT_CONTACT,
              cs.TARGET_ID: 'alice@localhost',
@@ -303,7 +278,7 @@ def test(q, bus, conn, stream, bytestream_cls):
     # send Alice's presence
     caps =  { 'ext': '', 'ver': '0.0.0',
         'node': 'http://example.com/fake-client0' }
-    presence = make_presence('alice@localhost/Test', 'test@localhost', caps)
+    presence = make_presence('alice@localhost/Test', caps=caps)
     stream.send(presence)
 
     _, disco_event = q.expect_many(

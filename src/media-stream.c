@@ -46,6 +46,7 @@
 #include "jingle-media-rtp.h"
 #include "media-channel.h"
 #include "namespaces.h"
+#include "util.h"
 
 static void stream_handler_iface_init (gpointer, gpointer);
 static void dbus_properties_iface_init (gpointer, gpointer);
@@ -108,13 +109,15 @@ struct _GabbleMediaStreamPrivate
   GValue native_codecs;     /* intersected codec list */
   GValue native_candidates;
 
+  /* Whether we're updating, as opposed to discovering, remote codecs.
+   * Changes SupportedCodecs/Error to no-ops.
+   */
+  gboolean updating_remote_codecs;
+
   GValue remote_codecs;
   GValue remote_candidates;
 
   guint remote_candidate_count;
-
-  /* signal handler ID for content REMOVED signal */
-  gulong removed_id;
 
   /* source ID for initial codecs/candidates getter */
   gulong initial_getter_id;
@@ -122,6 +125,8 @@ struct _GabbleMediaStreamPrivate
   gchar *nat_traversal;
   /* GPtrArray(GValueArray(STRING, UINT)) */
   GPtrArray *stun_servers;
+  /* GPtrArray(GHashTable(string => GValue)) */
+  GPtrArray *relay_info;
 
   /* These are really booleans, but gboolean is signed. Thanks, GLib */
   unsigned closed:1;
@@ -131,8 +136,6 @@ struct _GabbleMediaStreamPrivate
   unsigned sending:1;
   unsigned created_locally:1;
 };
-
-#define GABBLE_MEDIA_STREAM_GET_PRIVATE(obj) ((obj)->priv)
 
 static void push_remote_codecs (GabbleMediaStream *stream);
 static void push_remote_candidates (GabbleMediaStream *stream);
@@ -157,9 +160,18 @@ gabble_media_stream_new (const gchar *object_path,
                          GabbleJingleContent *content,
                          const gchar *name,
                          guint id,
-                         const gchar *nat_traversal)
+                         const gchar *nat_traversal,
+                         const GPtrArray *relay_info)
 {
+  GPtrArray *empty = NULL;
+
   g_return_val_if_fail (GABBLE_IS_JINGLE_MEDIA_RTP (content), NULL);
+
+  if (relay_info == NULL)
+    {
+      empty = g_ptr_array_sized_new (0);
+      relay_info = empty;
+    }
 
   return g_object_new (GABBLE_TYPE_MEDIA_STREAM,
       "object-path", object_path,
@@ -167,7 +179,11 @@ gabble_media_stream_new (const gchar *object_path,
       "name", name,
       "id", id,
       "nat-traversal", nat_traversal,
+      "relay-info", relay_info,
       NULL);
+
+  if (empty != NULL)
+    g_ptr_array_free (empty, TRUE);
 }
 
 TpMediaStreamType
@@ -205,13 +221,15 @@ gabble_media_stream_init (GabbleMediaStream *self)
       dbus_g_type_specialized_construct (candidate_list_type));
 
   priv->stun_servers = g_ptr_array_sized_new (1);
+
+  priv->updating_remote_codecs = FALSE;
 }
 
 static gboolean
 _get_initial_codecs_and_candidates (gpointer user_data)
 {
   GabbleMediaStream *stream = GABBLE_MEDIA_STREAM (user_data);
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  GabbleMediaStreamPrivate *priv = stream->priv;
 
   priv->initial_getter_id = 0;
 
@@ -245,7 +263,7 @@ gabble_media_stream_constructor (GType type, guint n_props,
   obj = G_OBJECT_CLASS (gabble_media_stream_parent_class)->
            constructor (type, n_props, props);
   stream = GABBLE_MEDIA_STREAM (obj);
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  priv = stream->priv;
 
   g_assert (priv->content != NULL);
 
@@ -305,7 +323,7 @@ gabble_media_stream_get_property (GObject    *object,
                                   GParamSpec *pspec)
 {
   GabbleMediaStream *stream = GABBLE_MEDIA_STREAM (object);
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  GabbleMediaStreamPrivate *priv = stream->priv;
 
   switch (property_id) {
     case PROP_OBJECT_PATH:
@@ -348,8 +366,7 @@ gabble_media_stream_get_property (GObject    *object,
       g_value_set_boolean (value, priv->created_locally);
       break;
     case PROP_RELAY_INFO:
-      /* a stub implementation, for now */
-      g_value_take_boxed (value, g_ptr_array_sized_new (0));
+      g_value_set_boxed (value, priv->relay_info);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -364,7 +381,7 @@ gabble_media_stream_set_property (GObject      *object,
                                   GParamSpec   *pspec)
 {
   GabbleMediaStream *stream = GABBLE_MEDIA_STREAM (object);
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  GabbleMediaStreamPrivate *priv = stream->priv;
 
   switch (property_id) {
     case PROP_OBJECT_PATH:
@@ -395,12 +412,14 @@ gabble_media_stream_set_property (GObject      *object,
         }
       break;
     case PROP_COMBINED_DIRECTION:
+      DEBUG ("changing combined direction from %u to %u",
+          stream->combined_direction, g_value_get_uint (value));
       stream->combined_direction = g_value_get_uint (value);
       break;
     case PROP_CONTENT:
       g_assert (priv->content == NULL);
 
-      priv->content = g_value_get_object (value);
+      priv->content = g_value_dup_object (value);
 
         {
           guint jtype;
@@ -420,26 +439,31 @@ gabble_media_stream_set_property (GObject      *object,
         }
 
       DEBUG ("%p: connecting to content %p signals", stream, priv->content);
-      g_signal_connect (priv->content, "new-candidates",
-          (GCallback) new_remote_candidates_cb, stream);
+
+      gabble_signal_connect_weak (priv->content, "new-candidates",
+          (GCallback) new_remote_candidates_cb, object);
 
       /* we need this also, if we're the initiator of the stream
        * (so remote codecs arrive later) */
-      g_signal_connect (priv->content, "remote-codecs",
-          (GCallback) new_remote_codecs_cb, stream);
+      gabble_signal_connect_weak (priv->content, "remote-codecs",
+          (GCallback) new_remote_codecs_cb, object);
 
-      g_signal_connect (priv->content, "notify::state",
-          (GCallback) content_state_changed_cb, stream);
+      gabble_signal_connect_weak (priv->content, "notify::state",
+          (GCallback) content_state_changed_cb, object);
 
-      g_signal_connect (priv->content, "notify::senders",
-          (GCallback) content_senders_changed_cb, stream);
+      gabble_signal_connect_weak (priv->content, "notify::senders",
+          (GCallback) content_senders_changed_cb, object);
 
-      priv->removed_id = g_signal_connect (priv->content, "removed",
-          (GCallback) content_removed_cb, stream);
+      gabble_signal_connect_weak (priv->content, "removed",
+          (GCallback) content_removed_cb, object);
       break;
     case PROP_NAT_TRAVERSAL:
       g_assert (priv->nat_traversal == NULL);
       priv->nat_traversal = g_value_dup_string (value);
+      break;
+    case PROP_RELAY_INFO:
+      g_assert (priv->relay_info == NULL);
+      priv->relay_info = g_value_dup_boxed (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -577,7 +601,7 @@ gabble_media_stream_class_init (GabbleMediaStreamClass *gabble_media_stream_clas
   param_spec = g_param_spec_boxed ("relay-info", "Relay info",
       "Array of mappings containing relay server information",
       TP_ARRAY_TYPE_STRING_VARIANT_MAP_LIST,
-      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (object_class, PROP_RELAY_INFO, param_spec);
 
   param_spec = g_param_spec_string ("nat-traversal", "NAT traversal",
@@ -649,7 +673,7 @@ void
 gabble_media_stream_dispose (GObject *object)
 {
   GabbleMediaStream *self = GABBLE_MEDIA_STREAM (object);
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (self);
+  GabbleMediaStreamPrivate *priv = self->priv;
 
   DEBUG ("called");
 
@@ -668,13 +692,8 @@ gabble_media_stream_dispose (GObject *object)
 
   priv->dispose_has_run = TRUE;
 
-  /* If content wasn't removed already, it will emit REMOVED signal
-   * later on. We don't want to catch that. */
-  if (priv->removed_id)
-    {
-      g_signal_handler_disconnect (priv->content, priv->removed_id);
-      priv->removed_id = 0;
-    }
+  g_object_unref (priv->content);
+  priv->content = NULL;
 
   if (G_OBJECT_CLASS (gabble_media_stream_parent_class)->dispose)
     G_OBJECT_CLASS (gabble_media_stream_parent_class)->dispose (object);
@@ -684,10 +703,17 @@ void
 gabble_media_stream_finalize (GObject *object)
 {
   GabbleMediaStream *self = GABBLE_MEDIA_STREAM (object);
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (self);
+  GabbleMediaStreamPrivate *priv = self->priv;
 
   g_free (priv->object_path);
   g_free (priv->nat_traversal);
+
+  /* FIXME: use correct macro when available */
+  if (priv->stun_servers != NULL)
+    g_boxed_free (tp_type_dbus_array_su (), priv->stun_servers);
+
+  if (priv->relay_info != NULL)
+    g_boxed_free (TP_ARRAY_TYPE_STRING_VARIANT_MAP_LIST, priv->relay_info);
 
   g_value_unset (&priv->native_codecs);
   g_value_unset (&priv->native_candidates);
@@ -714,7 +740,7 @@ gabble_media_stream_codec_choice (TpSvcMediaStreamHandler *iface,
 
   g_assert (GABBLE_IS_MEDIA_STREAM (self));
 
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (self);
+  priv = self->priv;
 
   tp_svc_media_stream_handler_return_from_codec_choice (context);
 }
@@ -730,7 +756,7 @@ gabble_media_stream_error (GabbleMediaStream *self,
 
   g_assert (GABBLE_IS_MEDIA_STREAM (self));
 
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (self);
+  priv = self->priv;
 
   DEBUG ( "Media.StreamHandler::Error called, error %u (%s) -- emitting signal",
       errno, message);
@@ -754,9 +780,15 @@ gabble_media_stream_error_async (TpSvcMediaStreamHandler *iface,
                                  DBusGMethodInvocation *context)
 {
   GabbleMediaStream *self = GABBLE_MEDIA_STREAM (iface);
+  GabbleMediaStreamPrivate *priv = self->priv;
   GError *error = NULL;
 
-  if (gabble_media_stream_error (self, errno, message, &error))
+  /* description-info is purely advisory; if the streaming implementation
+   * doesn't like the new codec parameters, we don't want to terminate the
+   * session. So we don't error out the media stream in that case.
+   */
+  if (priv->updating_remote_codecs ||
+      gabble_media_stream_error (self, errno, message, &error))
     {
       tp_svc_media_stream_handler_return_from_error (context);
     }
@@ -796,7 +828,7 @@ gabble_media_stream_hold_state (TpSvcMediaStreamHandler *iface,
                                 DBusGMethodInvocation *context)
 {
   GabbleMediaStream *self = GABBLE_MEDIA_STREAM (iface);
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (self);
+  GabbleMediaStreamPrivate *priv = self->priv;
 
   DEBUG ("%p: %s", self, hold_state ? "held" : "unheld");
   priv->local_hold = hold_state;
@@ -819,7 +851,7 @@ gabble_media_stream_unhold_failure (TpSvcMediaStreamHandler *iface,
                                     DBusGMethodInvocation *context)
 {
   GabbleMediaStream *self = GABBLE_MEDIA_STREAM (iface);
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (self);
+  GabbleMediaStreamPrivate *priv = self->priv;
 
   DEBUG ("%p", self);
 
@@ -847,7 +879,7 @@ gabble_media_stream_native_candidates_prepared (TpSvcMediaStreamHandler *iface,
 
   g_assert (GABBLE_IS_MEDIA_STREAM (self));
 
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (self);
+  priv = self->priv;
 
   tp_svc_media_stream_handler_return_from_native_candidates_prepared (context);
 }
@@ -870,7 +902,7 @@ gabble_media_stream_new_active_candidate_pair (TpSvcMediaStreamHandler *iface,
 
   g_assert (GABBLE_IS_MEDIA_STREAM (self));
 
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (self);
+  priv = self->priv;
 
   g_signal_emit (self, signals[NEW_ACTIVE_CANDIDATE_PAIR], 0,
                  native_candidate_id, remote_candidate_id);
@@ -906,7 +938,7 @@ gabble_media_stream_new_native_candidate (TpSvcMediaStreamHandler *iface,
 
   g_assert (GABBLE_IS_MEDIA_STREAM (self));
 
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (self);
+  priv = self->priv;
 
   g_object_get (priv->content->session, "state", &state, NULL);
 
@@ -1042,7 +1074,7 @@ gabble_media_stream_ready (TpSvcMediaStreamHandler *iface,
 
   g_assert (GABBLE_IS_MEDIA_STREAM (self));
 
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (self);
+  priv = self->priv;
 
   DEBUG ("ready called");
 
@@ -1064,33 +1096,15 @@ gabble_media_stream_ready (TpSvcMediaStreamHandler *iface,
   gabble_media_stream_set_local_codecs (iface, codecs, context);
 }
 
-static void
-pass_local_codecs (GabbleMediaStream *stream, const GPtrArray *codecs,
-    gboolean intersection)
+static gboolean
+pass_local_codecs (GabbleMediaStream *stream,
+                   const GPtrArray *codecs,
+                   GError **error)
 {
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  GabbleMediaStreamPrivate *priv = stream->priv;
   GList *li = NULL;
   JingleCodec *c;
   guint i;
-
-  /* if content is created by us, we want all the codecs, else we want the
-   * intersection. */
-  if (gabble_jingle_content_is_created_by_us (priv->content))
-    {
-      if (intersection)
-        {
-          DEBUG ("we already sent our codecs, ignoring codec intersection");
-          return;
-        }
-    }
-  else
-    {
-      if (!intersection)
-        {
-          DEBUG ("ignoring local codecs, waiting for codec intersection");
-          return;
-        }
-    }
 
   DEBUG ("putting list of %d supported codecs from stream-engine into cache",
       codecs->len);
@@ -1124,7 +1138,8 @@ pass_local_codecs (GabbleMediaStream *stream, const GPtrArray *codecs,
       li = g_list_append (li, c);
     }
 
-  jingle_media_rtp_set_local_codecs (GABBLE_JINGLE_MEDIA_RTP (priv->content), li);
+  return jingle_media_rtp_set_local_codecs (
+      GABBLE_JINGLE_MEDIA_RTP (priv->content), li, error);
 }
 
 /**
@@ -1139,8 +1154,26 @@ gabble_media_stream_set_local_codecs (TpSvcMediaStreamHandler *iface,
                                       DBusGMethodInvocation *context)
 {
   GabbleMediaStream *self = GABBLE_MEDIA_STREAM (iface);
+  GError *error = NULL;
 
-  pass_local_codecs (self, codecs, FALSE);
+  DEBUG ("called");
+
+  if (gabble_jingle_content_is_created_by_us (self->priv->content))
+    {
+      if (!pass_local_codecs (self, codecs, &error))
+        {
+          DEBUG ("failed: %s", error->message);
+
+          dbus_g_method_return_error (context, error);
+          g_error_free (error);
+          return;
+        }
+    }
+  else
+    {
+      DEBUG ("ignoring local codecs, waiting for codec intersection");
+    }
+
   tp_svc_media_stream_handler_return_from_set_local_codecs (context);
 }
 
@@ -1156,7 +1189,7 @@ gabble_media_stream_stream_state (TpSvcMediaStreamHandler *iface,
                                   DBusGMethodInvocation *context)
 {
   GabbleMediaStream *self = GABBLE_MEDIA_STREAM (iface);
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (self);
+  GabbleMediaStreamPrivate *priv = self->priv;
   JingleTransportState ts = JINGLE_TRANSPORT_STATE_DISCONNECTED;
 
   switch (connection_state) {
@@ -1194,10 +1227,75 @@ gabble_media_stream_supported_codecs (TpSvcMediaStreamHandler *iface,
                                       DBusGMethodInvocation *context)
 {
   GabbleMediaStream *self = GABBLE_MEDIA_STREAM (iface);
+  GabbleMediaStreamPrivate *priv = self->priv;
+  GError *error = NULL;
 
-  pass_local_codecs (self, codecs, TRUE);
-  g_signal_emit (self, signals[SUPPORTED_CODECS], 0, codecs);
+  DEBUG ("called");
+
+  /* We don't need to do anything in response to the streaming implementation
+   * deciding it likes the new codec paramaters.
+   */
+  if (!priv->updating_remote_codecs)
+    {
+      if (gabble_jingle_content_is_created_by_us (self->priv->content))
+        {
+          DEBUG ("we already sent our codecs, ignoring codec intersection");
+        }
+      else
+        {
+          if (!pass_local_codecs (self, codecs, &error))
+            {
+              DEBUG ("failed: %s", error->message);
+
+              dbus_g_method_return_error (context, error);
+              g_error_free (error);
+              return;
+            }
+
+          g_signal_emit (self, signals[SUPPORTED_CODECS], 0, codecs);
+        }
+    }
+
   tp_svc_media_stream_handler_return_from_supported_codecs (context);
+}
+
+/**
+ * gabble_media_stream_codecs_updated
+ *
+ * Implements D-Bus method CodecsUpdated
+ * on interface org.freedesktop.Telepathy.Media.StreamHandler
+ */
+static void
+gabble_media_stream_codecs_updated (TpSvcMediaStreamHandler *iface,
+                                    const GPtrArray *codecs,
+                                    DBusGMethodInvocation *context)
+{
+  GabbleMediaStream *self = GABBLE_MEDIA_STREAM (iface);
+  gboolean codecs_set =
+      (g_value_get_boxed (&self->priv->native_codecs) != NULL);
+  GError *error = NULL;
+
+  if (!codecs_set)
+    {
+      GError e = { TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+          "CodecsUpdated may only be called once an initial set of codecs "
+          "has been set" };
+
+      dbus_g_method_return_error (context, &e);
+      return;
+    }
+
+  if (pass_local_codecs (self, codecs, &error))
+    {
+      tp_svc_media_stream_handler_return_from_codecs_updated (context);
+    }
+  else
+    {
+      DEBUG ("failed: %s", error->message);
+
+      dbus_g_method_return_error (context, error);
+      g_error_free (error);
+    }
 }
 
 void
@@ -1207,7 +1305,7 @@ _gabble_media_stream_close (GabbleMediaStream *stream)
 
   g_assert (GABBLE_IS_MEDIA_STREAM (stream));
 
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  priv = stream->priv;
 
   if (!priv->closed)
     {
@@ -1220,7 +1318,7 @@ static void
 new_remote_codecs_cb (GabbleJingleContent *content,
     GList *clist, GabbleMediaStream *stream)
 {
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  GabbleMediaStreamPrivate *priv;
   GList *li;
   GPtrArray *codecs;
   GType codec_struct_type = TP_STRUCT_TYPE_MEDIA_STREAM_HANDLER_CODEC;
@@ -1229,11 +1327,21 @@ new_remote_codecs_cb (GabbleJingleContent *content,
 
   g_assert (GABBLE_IS_MEDIA_STREAM (stream));
 
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  priv = stream->priv;
 
   codecs = g_value_get_boxed (&priv->remote_codecs);
 
-  g_assert (codecs->len == 0);
+  /* If the codecs have already been set, this means the peer is updating their
+   * parameters. XEP-0167 says that description-info is advisory, so regardless
+   * of whether the streaming implementation calls SupportedCodecs or Error we
+   * don't want to do anything. So, set a flag to indicate that we've entered
+   * this situation.
+   */
+  if (codecs->len != 0)
+    {
+      priv->updating_remote_codecs = TRUE;
+      g_value_reset (&priv->remote_codecs);
+    }
 
   for (li = clist; li; li = li->next)
     {
@@ -1276,7 +1384,7 @@ push_remote_codecs (GabbleMediaStream *stream)
 
   g_assert (GABBLE_IS_MEDIA_STREAM (stream));
 
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  priv = stream->priv;
 
   if (!priv->ready)
     return;
@@ -1298,7 +1406,7 @@ static void
 new_remote_candidates_cb (GabbleJingleContent *content,
     GList *clist, GabbleMediaStream *stream)
 {
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  GabbleMediaStreamPrivate *priv = stream->priv;
   GPtrArray *candidates;
   GList *li;
 
@@ -1361,7 +1469,7 @@ content_state_changed_cb (GabbleJingleContent *c,
                           GParamSpec *pspec,
                           GabbleMediaStream *stream)
 {
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  GabbleMediaStreamPrivate *priv = stream->priv;
   JingleContentState state;
 
   g_object_get (c, "state", &state, NULL);
@@ -1399,7 +1507,7 @@ push_remote_candidates (GabbleMediaStream *stream)
 
   g_assert (GABBLE_IS_MEDIA_STREAM (stream));
 
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  priv = stream->priv;
 
   candidates = g_value_get_boxed (&priv->remote_candidates);
 
@@ -1434,7 +1542,7 @@ push_playing (GabbleMediaStream *stream)
 
   g_assert (GABBLE_IS_MEDIA_STREAM (stream));
 
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  priv = stream->priv;
 
   if (!priv->ready)
     return;
@@ -1453,7 +1561,7 @@ push_sending (GabbleMediaStream *stream)
 
   g_assert (GABBLE_IS_MEDIA_STREAM (stream));
 
-  priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  priv = stream->priv;
 
   if (!priv->ready)
     return;
@@ -1538,7 +1646,7 @@ gboolean
 gabble_media_stream_change_direction (GabbleMediaStream *stream,
     guint requested_dir, GError **error)
 {
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  GabbleMediaStreamPrivate *priv = stream->priv;
   CombinedStreamDirection new_combined_dir;
   TpMediaStreamDirection current_dir;
   TpMediaStreamPendingSend pending_send;
@@ -1579,6 +1687,8 @@ gabble_media_stream_change_direction (GabbleMediaStream *stream,
 
       update_sending (stream, start_sending);
     }
+
+  DEBUG ("current_dir: %u, requested_dir: %u", current_dir, requested_dir);
 
   /* short-circuit sending a request if we're not asking for anything new */
   if (current_dir == requested_dir)
@@ -1642,7 +1752,7 @@ gabble_media_stream_accept_pending_local_send (GabbleMediaStream *stream)
 static void
 update_sending (GabbleMediaStream *stream, gboolean start_sending)
 {
-  GabbleMediaStreamPrivate *priv = GABBLE_MEDIA_STREAM_GET_PRIVATE (stream);
+  GabbleMediaStreamPrivate *priv = stream->priv;
   gboolean new_sending;
 
   new_sending =
@@ -1677,6 +1787,7 @@ stream_handler_iface_init (gpointer g_iface, gpointer iface_data)
   IMPLEMENT(stream_state,);
   IMPLEMENT(supported_codecs,);
   IMPLEMENT(unhold_failure,);
+  IMPLEMENT(codecs_updated,);
 #undef IMPLEMENT
 }
 

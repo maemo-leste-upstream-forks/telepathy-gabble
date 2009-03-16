@@ -1,5 +1,7 @@
 import base64
 import sha
+import sys
+import random
 
 from twisted.internet.protocol import Factory, Protocol
 from twisted.internet import reactor
@@ -8,8 +10,13 @@ from twisted.words.xish import xpath, domish
 from twisted.internet.error import CannotListenError
 
 from servicetest import Event, EventPattern
-from gabbletest import acknowledge_iq, sync_stream, make_result_iq
+from gabbletest import acknowledge_iq, sync_stream, make_result_iq, elem, elem_iq
 import ns
+
+def wait_events(q, expected, my_event):
+    tmp = expected + [my_event]
+    events = q.expect_many(*tmp)
+    return events[:-1], events[-1]
 
 def create_from_si_offer(stream, q, bytestream_cls, iq, initiator):
     si_nodes = xpath.queryForNodes('/iq/si', iq)
@@ -45,7 +52,7 @@ class Bytestream(object):
         self.target = target
         self.initiated = initiated
 
-    def open_bytestream(self, expected=None):
+    def open_bytestream(self, expected_before=[], expected_after=[]):
         raise NotImplemented
 
     def send_data(self, data):
@@ -57,7 +64,7 @@ class Bytestream(object):
     def wait_bytestream_open(self):
         raise NotImplemented
 
-    def get_data(self):
+    def get_data(self, size=0):
         raise NotImplemented
 
     def wait_bytestream_closed(self):
@@ -161,20 +168,26 @@ class BytestreamS5B(Bytestream):
         # FIXME: This is wrong. Change once SOCKS5 is fixed
         self.transport.write('\x05\x00') #version 5, ok
 
-    def _socks5_expect_connection(self, expected):
-        if expected is not None:
-            event, _ = self.q.expect_many(expected,
-                EventPattern('s5b-connected'))
-        else:
-            event = None
-            self.q.expect('s5b-connected')
+    def _check_s5b_reply(self, iq):
+        streamhost = xpath.queryForNodes('/iq/query/streamhost-used', iq)[0]
+        assert streamhost['jid'] == self.initiator
+
+    def _socks5_expect_connection(self, expected_before, expected_after):
+        events_before, _ = wait_events(self.q, expected_before,
+            EventPattern('s5b-connected'))
 
         self._wait_auth_request()
         self._send_auth_reply()
         self._wait_connect_cmd()
         self._send_connect_reply()
 
-        return event
+        # wait for S5B IQ reply
+        events_after, e = wait_events(self.q, expected_after,
+            EventPattern('stream-iq', iq_type='result', to=self.initiator))
+
+        self._check_s5b_reply(e.stanza)
+
+        return events_before, events_after
 
     def _listen_socks5(self):
         for port in range(5000,5100):
@@ -187,7 +200,7 @@ class BytestreamS5B(Bytestream):
 
         assert False, "Can't find a free port"
 
-    def open_bytestream(self, expected=None):
+    def open_bytestream(self, expected_before=[], expected_after=[]):
         port = self._listen_socks5()
 
         self._send_socks5_init([
@@ -200,7 +213,7 @@ class BytestreamS5B(Bytestream):
             ('Not me', '127.0.0.1', port),
             ])
 
-        return self._socks5_expect_connection(expected)
+        return self._socks5_expect_connection(expected_before, expected_after)
 
     def send_data(self, data):
         self.transport.write(data)
@@ -269,9 +282,17 @@ class BytestreamS5B(Bytestream):
 
         self._send_socks5_reply(id, jid)
 
-    def get_data(self):
-       e = self.q.expect('s5b-data-received', transport=self.transport)
-       return e.data
+    def get_data(self, size=0):
+        binary = ''
+        received = False
+        while not received:
+            e = self.q.expect('s5b-data-received', transport=self.transport)
+            binary += e.data
+
+            if len(binary) >= size or size == 0:
+                received = True
+
+        return binary
 
     def wait_bytestream_closed(self):
         self.q.expect('s5b-connection-lost')
@@ -351,12 +372,24 @@ class BytestreamIBB(Bytestream):
     def get_ns(self):
         return ns.IBB
 
-    def open_bytestream(self, expected=None):
+    def open_bytestream(self, expected_before=[], expected_after=[]):
         # open IBB bytestream
-        send_ibb_open(self.stream, self.initiator, self.target, self.stream_id, 4096)
+        iq = IQ(self.stream, 'set')
+        iq['to'] = self.target
+        iq['from'] = self.initiator
+        open = iq.addElement((ns.IBB, 'open'))
+        open['sid'] = self.stream_id
+        # set a ridiculously small block size to stress test IBB buffering
+        open['block-size'] = '1'
+        self.stream.send(iq)
 
-        if expected is not None:
-            return self.q.expect_many(expected)[0]
+        events_before = self.q.expect_many(*expected_before)
+        events_after = self.q.expect_many(*expected_after)
+
+        return events_before, events_after
+
+    def _send(self, from_, to, data):
+        raise NotImplemented
 
     def send_data(self, data):
         if self.initiated:
@@ -366,25 +399,43 @@ class BytestreamIBB(Bytestream):
             from_ = self.target
             to = self.initiator
 
-        send_ibb_msg_data(self.stream, from_, to, self.stream_id,
-            self.seq, data)
-
+        self._send(from_, to, data)
         self.seq += 1
 
     def wait_bytestream_open(self):
         # Wait IBB open iq
         event = self.q.expect('stream-iq', iq_type='set')
-        sid = parse_ibb_open(event.stanza)
-        assert sid == self.stream_id
+        open = xpath.queryForNodes('/iq/open', event.stanza)[0]
+        assert open.uri == ns.IBB
+        assert open['sid'] == self.stream_id
 
         # open IBB bytestream
         acknowledge_iq(self.stream, event.stanza)
 
-    def get_data(self):
-        # wait for IBB stanzas
-        ibb_event = self.q.expect('stream-message')
-        sid, binary = parse_ibb_msg_data(ibb_event.stanza)
-        assert sid == self.stream_id
+    def get_data(self, size=0):
+        # wait for IBB stanza. Gabble always uses IQ
+
+        binary = ''
+        received = False
+        while not received:
+            ibb_event = self.q.expect('stream-iq', query_ns=ns.IBB)
+
+            data_nodes = xpath.queryForNodes('/iq/data[@xmlns="%s"]' % ns.IBB,
+                ibb_event.stanza)
+            assert data_nodes is not None
+            assert len(data_nodes) == 1
+            ibb_data = data_nodes[0]
+            binary += base64.b64decode(str(ibb_data))
+
+            assert ibb_data['sid'] == self.stream_id
+
+            # ack the IQ
+            result = make_result_iq(self.stream, ibb_event.stanza)
+            result.send()
+
+            if len(binary) >= size or size == 0:
+                received = True
+
         return binary
 
     def wait_bytestream_closed(self):
@@ -393,39 +444,37 @@ class BytestreamIBB(Bytestream):
         # sender finish to send the file and so close the bytestream
         acknowledge_iq(self.stream, close_event.stanza)
 
-def send_ibb_open(stream, from_, to, sid, block_size):
-    iq = IQ(stream, 'set')
-    iq['to'] = to
-    iq['from'] = from_
-    open = iq.addElement((ns.IBB, 'open'))
-    open['sid'] = sid
-    open['block-size'] = str(block_size)
-    stream.send(iq)
+class BytestreamIBBMsg(BytestreamIBB):
+    def _send(self, from_, to, data):
+        message = domish.Element(('jabber:client', 'message'))
+        message['to'] = to
+        message['from'] = from_
+        data_node = message.addElement((ns.IBB, 'data'))
+        data_node['sid'] = self.stream_id
+        data_node['seq'] = str(self.seq)
+        data_node.addContent(base64.b64encode(data))
+        self.stream.send(message)
 
-def parse_ibb_open(iq):
-    open = xpath.queryForNodes('/iq/open', iq)[0]
-    assert open.uri == ns.IBB
-    return open['sid']
+    def _wait_data_event(self):
+        ibb_event = self.q.expect('stream-message')
 
-def send_ibb_msg_data(stream, from_, to, sid, seq, data):
-    message = domish.Element(('jabber:client', 'message'))
-    message['to'] = to
-    message['from'] = from_
-    data_node = message.addElement((ns.IBB, 'data'))
-    data_node['sid'] = sid
-    data_node['seq'] = str(seq)
-    data_node.addContent(base64.b64encode(data))
-    stream.send(message)
+        data_nodes = xpath.queryForNodes('/message/data[@xmlns="%s"]' % ns.IBB,
+            ibb_event.stanza)
+        assert data_nodes is not None
+        assert len(data_nodes) == 1
+        ibb_data = data_nodes[0]
+        assert ibb_data['sid'] == self.stream_id
+        return str(ibb_data), ibb_data['sid']
 
-def parse_ibb_msg_data(message):
-    data_nodes = xpath.queryForNodes('/message/data[@xmlns="%s"]' % ns.IBB,
-        message)
-    assert data_nodes is not None
-    assert len(data_nodes) == 1
-    ibb_data = data_nodes[0]
-    binary = base64.b64decode(str(ibb_data))
+class BytestreamIBBIQ(BytestreamIBB):
+    def _send(self, from_, to, data):
+        id = random.randint(0, sys.maxint)
 
-    return ibb_data['sid'], binary
+        iq = elem_iq(self.stream, 'set', to=to, from_=from_, to=to, id=str(id))(
+            elem('data', xmlns=ns.IBB, sid=self.stream_id, seq=str(self.seq))(
+                (unicode(base64.b64encode(data)))))
+
+        self.stream.send(iq)
 
 ##### SI Fallback (Gabble specific extension) #####
 
@@ -436,7 +485,7 @@ class BytestreamSIFallback(Bytestream):
         self.socks5 = BytestreamS5B(stream, q, sid, initiator, target,
             initiated)
 
-        self.ibb = BytestreamIBB(stream, q, sid, initiator, target,
+        self.ibb = BytestreamIBBMsg(stream, q, sid, initiator, target,
             initiated)
 
         self.used = self.ibb
@@ -465,7 +514,7 @@ class BytestreamSIFallback(Bytestream):
         assert str(value[0]) == self.socks5.get_ns()
         assert str(value[1]) == self.ibb.get_ns()
 
-    def open_bytestream(self, expected=None):
+    def open_bytestream(self, expected_before=[], expected_after=[]):
         # first propose to peer to connect using SOCKS5
         # We set an invalid IP so that won't work
         self.socks5._send_socks5_init([
@@ -473,24 +522,21 @@ class BytestreamSIFallback(Bytestream):
             (self.initiator, 'invalid.invalid', 12345),
             ])
 
-        if expected is not None:
-            event, iq_event = self.q.expect_many(expected,
-                EventPattern('stream-iq', iq_type='error', to=self.initiator))
-        else:
-            event = None
-            iq_event = self.q.expect('stream-iq', iq_type='error', to=self.initiator)
+        events_before, iq_event = wait_events(self.q, expected_before,
+            EventPattern('stream-iq', iq_type='error', to=self.initiator))
 
         self.socks5.check_error_stanza(iq_event.stanza)
 
         # socks5 failed, let's try IBB
-        self.ibb.open_bytestream()
-        return event
+        _, events_after = self.ibb.open_bytestream([], expected_after)
+
+        return events_before, events_after
 
     def send_data(self, data):
         self.used.send_data(data)
 
-    def get_data(self):
-        return self.used.get_data()
+    def get_data(self, size=0):
+        return self.used.get_data(size)
 
     def create_si_reply(self, iq):
         result = make_result_iq(self.stream, iq)
