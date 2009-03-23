@@ -204,7 +204,9 @@ def test(q, bus, conn, stream, bytestream_cls):
     assert muc_stream_node is not None
     assert muc_stream_node['tube'] == str(stream_tube_id)
 
-    result, si = bytestream.create_si_reply(event.stanza)
+    # set the real jid of the target as 'to' because the XMPP server changes
+    # it when delivering the IQ
+    result, si = bytestream.create_si_reply(event.stanza, 'test@localhost/Resource')
     si.addElement((ns.TUBES, 'tube'))
     stream.send(result)
 

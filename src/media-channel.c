@@ -152,6 +152,9 @@ struct _GabbleMediaChannelPrivate
   /* list of PendingStreamRequest* in no particular order */
   GList *pending_stream_requests;
 
+  /* list of StreamCreationData* in no particular order */
+  GList *stream_creation_datas;
+
   guint next_stream_id;
 
   TpLocalHoldState hold_state;
@@ -202,6 +205,7 @@ static void create_stream_from_content (GabbleMediaChannel *chan,
     GabbleJingleContent *c);
 static gboolean contact_is_media_capable (GabbleMediaChannel *chan, TpHandle peer,
     gboolean *wait);
+static void stream_creation_data_cancel (gpointer p, gpointer unused);
 
 static void
 _create_streams (GabbleMediaChannel *chan)
@@ -734,6 +738,11 @@ gabble_media_channel_dispose (GObject *object)
   DEBUG ("called");
 
   priv->dispose_has_run = TRUE;
+
+  /* StreamCreationData * holds a reference to the media channel; thus, we
+   * shouldn't be disposed till they've all gone away.
+   */
+  g_assert (priv->stream_creation_datas == NULL);
 
   if (priv->delayed_request_streams != NULL)
     {
@@ -1697,7 +1706,7 @@ delay_stream_request (GabbleMediaChannel *chan,
   ctx->chan = chan;
   ctx->contact_handle = contact_handle;
   ctx->context = context;
-  ctx->types = g_array_sized_new (FALSE, FALSE, sizeof(guint), types->len);
+  ctx->types = g_array_sized_new (FALSE, FALSE, sizeof (guint), types->len);
   g_array_append_vals (ctx->types, types->data, types->len);
 
   if (disco_in_progress)
@@ -2050,6 +2059,10 @@ session_terminated_cb (GabbleJingleSession *session,
   tp_group_mixin_change_flags ((GObject *) channel,
       TP_CHANNEL_GROUP_FLAG_CAN_ADD,
       TP_CHANNEL_GROUP_FLAG_CAN_REMOVE);
+
+  /* Ignore any Google relay session responses we're waiting for. */
+  g_list_foreach (priv->stream_creation_datas, stream_creation_data_cancel,
+      NULL);
 
   /* any contents that we were waiting for have now lost */
   g_list_foreach (priv->pending_stream_requests,
@@ -2548,9 +2561,19 @@ typedef struct {
 } StreamCreationData;
 
 static void
+stream_creation_data_cancel (gpointer p,
+                             gpointer unused)
+{
+  StreamCreationData *d = p;
+
+  d->content = NULL;
+}
+
+static void
 stream_creation_data_free (gpointer p)
 {
   StreamCreationData *d = p;
+  GabbleMediaChannelPrivate *priv = d->self->priv;
 
   g_free (d->name);
   g_free (d->nat_traversal);
@@ -2560,6 +2583,8 @@ stream_creation_data_free (gpointer p)
       g_signal_handler_disconnect (d->content, d->removed_id);
       g_object_unref (d->content);
     }
+
+  priv->stream_creation_datas = g_list_remove (priv->stream_creation_datas, d);
 
   g_object_unref (d->self);
   g_slice_free (StreamCreationData, d);
@@ -2675,6 +2700,9 @@ create_stream_from_content (GabbleMediaChannel *self,
       g_idle_add_full (G_PRIORITY_DEFAULT, construct_stream_later_cb,
           d, stream_creation_data_free);
     }
+
+  self->priv->stream_creation_datas = g_list_prepend (
+      self->priv->stream_creation_datas, d);
 }
 
 static void
