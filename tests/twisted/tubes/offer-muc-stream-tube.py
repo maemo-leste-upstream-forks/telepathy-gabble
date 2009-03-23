@@ -148,9 +148,11 @@ def test(q, bus, conn, stream, bytestream_cls):
 
     # The CM is the server, so fake a client wanting to talk to it
     bytestream = bytestream_cls(stream, q, 'alpha', 'chat@conf.localhost/bob',
-        'test@localhost/Resource', True)
+        'chat@conf.localhost/test', True)
 
-    iq, si = bytestream.create_si_offer(ns.TUBES)
+    # set the real jid of the target as 'to' because the XMPP server changes
+    # it when delivering the IQ
+    iq, si = bytestream.create_si_offer(ns.TUBES, 'test@localhost/Resource')
 
     stream_node = si.addElement((ns.TUBES, 'muc-stream'))
     stream_node['tube'] = str(stream_tube_id)

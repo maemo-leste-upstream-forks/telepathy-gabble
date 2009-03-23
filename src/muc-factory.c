@@ -344,7 +344,7 @@ muc_ready_cb (GabbleMucChannel *text_chan,
       /* Announce text and tubes text_chan together */
       GHashTable *channels;
 
-      channels = g_hash_table_new(g_direct_hash, g_direct_equal);
+      channels = g_hash_table_new (g_direct_hash, g_direct_equal);
       g_hash_table_insert (channels, text_chan, requests_satisfied_text);
       g_hash_table_insert (channels, tubes_chan, requests_satisfied_tubes);
 
@@ -790,7 +790,7 @@ muc_factory_message_cb (LmMessageHandler *handler,
   TpHandleRepoIface *room_repo = tp_base_connection_get_handles (conn,
       TP_HANDLE_TYPE_ROOM);
 
-  const gchar *from, *body, *subject;
+  const gchar *from, *body, *subject, *id;
   time_t stamp;
   TpChannelTextMessageType msgtype;
   TpHandleRepoIface *handle_source;
@@ -804,7 +804,7 @@ muc_factory_message_cb (LmMessageHandler *handler,
   LmMessageNode *subj_node;
 
   if (!gabble_message_util_parse_incoming_message (message, &from, &stamp,
-        &msgtype, &body, &state, &send_error, &delivery_status))
+        &msgtype, &id, &body, &state, &send_error, &delivery_status))
     return LM_HANDLER_RESULT_REMOVE_MESSAGE;
 
   if (conn_olpc_process_activity_properties_message (priv->conn, message,
@@ -878,7 +878,7 @@ muc_factory_message_cb (LmMessageHandler *handler,
 
   if (body != NULL)
     _gabble_muc_channel_receive (chan, msgtype, handle_type, handle, stamp,
-        body, message, send_error, delivery_status);
+        id, body, message, send_error, delivery_status);
 
   if (send_error == GABBLE_TEXT_CHANNEL_SEND_NO_ERROR)
     {

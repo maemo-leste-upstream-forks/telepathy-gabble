@@ -121,6 +121,7 @@ enum
   PROP_INITIATOR_ID,
   PROP_CHANNEL_DESTROYED,
   PROP_CHANNEL_PROPERTIES,
+  PROP_SELF_JID,
   LAST_PROPERTY
 };
 
@@ -875,6 +876,9 @@ gabble_muc_channel_get_property (GObject    *object,
               TP_IFACE_CHANNEL, "Interfaces",
               NULL));
       break;
+    case PROP_SELF_JID:
+      g_value_set_string (value, priv->self_jid->str);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -1052,6 +1056,13 @@ gabble_muc_channel_class_init (GabbleMucChannelClass *gabble_muc_channel_class)
       NULL,
       G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (object_class, PROP_INVITATION_MESSAGE,
+      param_spec);
+
+  param_spec = g_param_spec_string ("self-jid", "Our self JID",
+      "Our self muc jid in this room",
+      NULL,
+      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (object_class, PROP_SELF_JID,
       param_spec);
 
   signals[READY] =
@@ -2327,6 +2338,7 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
                              TpHandleType sender_handle_type,
                              TpHandle sender,
                              time_t timestamp,
+                             const gchar *id,
                              const gchar *text,
                              LmMessage *msg,
                              TpChannelTextSendError send_error,
@@ -2387,12 +2399,17 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
   if (timestamp != 0)
     tp_message_set_uint64 (message, 0, "message-sent", timestamp);
 
+  if (id != NULL)
+    tp_message_set_string (message, 0, "message-token", id);
+
   /* Body */
   tp_message_set_string (message, 1, "content-type", "text/plain");
   tp_message_set_string (message, 1, "content", text);
 
   if (is_error || is_echo)
     {
+      gchar *tmp;
+
       /* Error reports and echos of our own messages are represented as
        * delivery reports.
        */
@@ -2401,9 +2418,16 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
       TpDeliveryStatus status =
           is_error ? error_status : TP_DELIVERY_STATUS_DELIVERED;
 
+      tmp = gabble_generate_id ();
+      tp_message_set_string (delivery_report, 0, "message-token", tmp);
+      g_free (tmp);
+
       tp_message_set_uint32 (delivery_report, 0, "message-type",
           TP_CHANNEL_TEXT_MESSAGE_TYPE_DELIVERY_REPORT);
       tp_message_set_uint32 (delivery_report, 0, "delivery-status", status);
+
+      if (id != NULL)
+        tp_message_set_string (delivery_report, 0, "delivery-token", id);
 
       if (is_error)
         tp_message_set_uint32 (delivery_report, 0, "delivery-error",
@@ -2434,6 +2458,14 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
       if (timestamp != 0)
         tp_message_set_boolean (message, 0, "scrollback", TRUE);
 
+      if (id == NULL)
+        {
+          gchar *tmp = gabble_generate_id ();
+
+          tp_message_set_string (message, 0, "message-token", tmp);
+          g_free (tmp);
+        }
+
       tp_message_mixin_take_received (G_OBJECT (chan), message);
     }
 }
@@ -2449,11 +2481,8 @@ _gabble_muc_channel_state_receive (GabbleMucChannel *chan,
                                    guint state,
                                    guint from_handle)
 {
-  GabbleMucChannelPrivate *priv;
-
   g_assert (state < NUM_TP_CHANNEL_CHAT_STATES);
   g_assert (GABBLE_IS_MUC_CHANNEL (chan));
-  priv = GABBLE_MUC_CHANNEL_GET_PRIVATE (chan);
 
   tp_svc_channel_interface_chat_state_emit_chat_state_changed (chan,
       from_handle, state);
