@@ -58,6 +58,7 @@ TWISTED_TESTS = \
 	tubes/offer-private-stream-tube.py \
 	tubes/request-invalid-dbus-tube.py \
 	tubes/test-get-available-tubes.py \
+	tubes/test-socks5-muc.py \
 	vcard/test-alias-empty-vcard.py \
 	vcard/test-alias-pep.py \
 	vcard/test-alias.py \
@@ -75,6 +76,7 @@ TWISTED_TESTS = \
 	jingle/hold-av.py \
 	jingle/stun-server.py \
 	jingle/outgoing-many-streams.py \
+	jingle/outgoing-not-answered.py \
 	jingle/payload-types.py \
 	jingle/stream-handler-error.py \
 	jingle/test-content-adding-removal.py \
@@ -92,6 +94,17 @@ TWISTED_TESTS = \
 	jingle/test-content-complex.py \
 	jingle/test-wait-for-caps.py \
 	jingle/test-wait-for-caps-incomplete.py \
+	file-transfer/test-receive-file-and-close-socket-while-receiving.py \
+	file-transfer/test-receive-file-and-disconnect.py \
+	file-transfer/test-receive-file-and-sender-disconnect-while-pending.py \
+	file-transfer/test-receive-file-and-sender-disconnect-while-transfering.py \
+	file-transfer/test-receive-file-decline.py \
+	file-transfer/test-receive-file.py \
+	file-transfer/test-send-file-and-cancel-immediately.py \
+	file-transfer/test-send-file-declined.py \
+	file-transfer/test-send-file-provide-immediately.py \
+	file-transfer/test-send-file-to-unknown-contact.py \
+	file-transfer/test-send-file-wait-to-provide.py \
 	test-capabilities.py \
 	test-caps-cache.py \
 	test-caps-hash.py \
@@ -103,6 +116,7 @@ TWISTED_TESTS = \
 	connect/test-nonblocking-tls.py \
 	test-disco.py \
 	test-disco-no-reply.py \
+	test-fallback-socks5-proxy.py \
 	test-register.py \
 	test-set-status-idempotence.py \
         test-location.py
@@ -155,7 +169,8 @@ EXTRA_DIST = \
 	ns.py \
 	olpc/util.py \
 	tubes/muctubeutil.py \
-	tubes/tubetestutil.py
+	tubes/tubetestutil.py \
+	file-transfer/file_transfer_helper.py
 
 noinst_PROGRAMS = \
 	telepathy-gabble-debug

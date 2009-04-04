@@ -1,3 +1,1876 @@
+commit 7dcefeb6693049250d84214f32097af08f2aa116
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 18:20:42 2009 +0100
+
+    version 0.7.25
+
+ configure.ac |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 5bc242785cc34830e172d9d13c9f9c609e17c41c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 18:19:52 2009 +0100
+
+    prepare NEWS for 0.7.25 release
+
+ NEWS |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
+
+commit e2fd26d7a7f81e6ea3679539d6effaa926ea9453
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 18:23:07 2009 +0100
+
+    pass tar-ustar to AM_INIT_AUTOMAKE so distcheck doesn't cry about long filenames
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 8ea8d348e3b195847165fb46ec99e892a00ddeca
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 17:04:02 2009 +0100
+
+    run FT tests with BytestreamS5BRelay and BytestreamS5BRelayBugged
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   15 ++++++++++-----
+ 1 files changed, 10 insertions(+), 5 deletions(-)
+
+commit dad0018a61ba0a58d1990d7cbcba3390464c420a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 16:53:12 2009 +0100
+
+    BytestreamS5BRelay.wait_bytestream_closed: wait for events if needed
+
+ tests/twisted/bytestream.py |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 1e397a2b114a16bb8d1d7195e51eaf272dc2abc2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 15:29:00 2009 +0100
+
+    file_transfer_helper: break race when calling bytestream.wait_bytestream_closed()
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
+
+commit c5c9e38f3b5e663c579721eb7b51a7373774369a
+Merge: 56c4721... 566c5f9...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 16:47:13 2009 +0100
+
+    Merge branch 'file-transfer+news' into file-transfer
+
+commit 56c4721f5bdc5097385194b5f054c5cc698a73c3
+Merge: e1a691a... cc3bcab...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 16:47:07 2009 +0100
+
+    Merge branch 'master' into file-transfer
+    
+    Conflicts:
+    	tests/twisted/constants.py
+
+commit cc3bcab9323097cc5d3565dd22e6deab8807a63d
+Merge: 3eb9cbe... 2b55a38...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 16:34:27 2009 +0100
+
+    Merge branch 'socks5+relay'
+
+commit 2b55a38ea62d4d08b029ece1594e23658d885b99
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 16:07:13 2009 +0100
+
+    upgrade NEWS
+
+ NEWS |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 6ee634a3115db575bcb7da6020edaa72ad110e1d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 16:05:47 2009 +0100
+
+    dump tp-glib dep to 0.7.29
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 566c5f993253d18ad2e689d599f6c3043abec897
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 15:42:23 2009 +0100
+
+    warn empathy users about the FT crash with old versions
+
+ NEWS |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 3eb9cbed64492c99182f50565b3023f2bd7d21ae
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 15:27:11 2009 +0100
+
+    bytestream.py: wait_bytestream_closed can take a list of events as optionnal arg
+
+ tests/twisted/bytestream.py |   18 +++++++++++-------
+ 1 files changed, 11 insertions(+), 7 deletions(-)
+
+commit e1a691aca32bfc8c342c251d910f4e66a6b52d5d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 11:42:00 2009 +0000
+
+    TP_SOCKET_ADDRESS_TYPE_UNIX address is supposed to be an 'ay' not a string
+
+ src/ft-channel.c                                   |   16 +++++++++++-----
+ .../twisted/file-transfer/file_transfer_helper.py  |    6 ++++--
+ 2 files changed, 15 insertions(+), 7 deletions(-)
+
+commit 422bf22ac021fc7d94a1dc21bd2cc95948ef72f9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 11:29:06 2009 +0000
+
+    we only support TP_SOCKET_ACCESS_CONTROL_LOCALHOST with inet sockets atm
+
+ src/ft-channel.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit e37a6a224467d539be16efc44b33c920a82464ab
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 11:27:09 2009 +0000
+
+    remove fixed FIXME
+
+ src/ft-channel.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 7619f58f291891402c498e12bf3c511d6471bd1b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 11:22:46 2009 +0000
+
+    add IPv6 sockets support
+
+ src/ft-channel.c                                   |   32 ++++++++++++++++++++
+ .../twisted/file-transfer/file_transfer_helper.py  |   11 +++++--
+ 2 files changed, 40 insertions(+), 3 deletions(-)
+
+commit 74f4f6546758026ae6a40d50c4a10d0c22d168ef
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 11:15:02 2009 +0000
+
+    run FT tests using SOCKET_ADDRESS_TYPE_IPV4 too
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    5 ++++-
+ ...eceive-file-and-close-socket-while-receiving.py |    2 +-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 3a26af0821da1a5c33e7c37192c2f07f1e0ac5f0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 11:14:19 2009 +0000
+
+    setup_local_socket: implement TP_SOCKET_ADDRESS_TYPE_IPV4
+
+ src/ft-channel.c |   25 +++++++++++++++++++++++++
+ 1 files changed, 25 insertions(+), 0 deletions(-)
+
+commit bb9fd71dc06ac39b461b4109e341fe7cd4172c76
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 11:13:05 2009 +0000
+
+    test-receive-file-and-disconnect.py: use self.create_socket()
+
+ .../test-receive-file-and-disconnect.py            |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit f918cd89d911c5acb6f68c927c1731a5920c2832
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 11:04:48 2009 +0000
+
+    replace priv->socket_path by a GValue priv->socket_address so we can store different kind of address
+
+ src/ft-channel.c |   80 +++++++++++++++++++++++++++--------------------------
+ 1 files changed, 41 insertions(+), 39 deletions(-)
+
+commit 0352dd1a04ed408626f48e2a31e3405775f4b55d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 10:55:10 2009 +0000
+
+    add address type and access control args to setup_local_socket
+
+ src/ft-channel.c |   46 +++++++++++++++++++++++++++++++++-------------
+ 1 files changed, 33 insertions(+), 13 deletions(-)
+
+commit 39c425b9812624c720a360a642924746e513b600
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 10:42:33 2009 +0000
+
+    add SOCKET_ADDRESS_TYPE_IPV4 to AvailableSocketTypes
+
+ src/ft-channel.c                                   |   18 +++++++++++++-----
+ .../twisted/file-transfer/file_transfer_helper.py  |    8 ++++++--
+ 2 files changed, 19 insertions(+), 7 deletions(-)
+
+commit 3b9356a38553324f6c10e16e030b5f762cb8303b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 10:37:35 2009 +0000
+
+    add self.create_socket()
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+commit 1c7b7fea9abe17f2ddafb86c839af2362faa4bfd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 10:34:21 2009 +0000
+
+    add address_type, access_control and access_control_param args to FT tests
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   27 +++++++++++--------
+ .../test-send-file-to-unknown-contact.py           |    4 +-
+ .../test-send-file-wait-to-provide.py              |    4 +-
+ 3 files changed, 20 insertions(+), 15 deletions(-)
+
+commit 1fb108e36ad5c21bf136d24c5e24c006b9f2b107
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 12:56:57 2009 +0100
+
+    upgrade NEWS
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 6a7bf602bc8bc866e765faa13d37e53e0011f0aa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 3 12:51:01 2009 +0100
+
+    gabble_ft_manager_handle_si_request: initialize the struct tm
+    
+    Thanks strptime...
+
+ src/ft-manager.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit af0d17219daf6b30dd1177ad9e21a76c83e70858
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 2 18:41:28 2009 +0100
+
+    don't explode if mkdtemp failed
+
+ src/ft-channel.c |   10 ++++++++--
+ src/ft-manager.c |    2 +-
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
+commit 110ace5e337f54beaeee9748dd60daa48e3a2889
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 2 18:18:10 2009 +0100
+
+    Remove trailing \s from C code.
+    
+    This isn't Python!
+
+ src/ft-channel.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 52b07d04008d265d776981fe8b15a4333a5409df
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 25 10:47:17 2009 +0000
+
+    Remove Salut references from FT tests
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    4 ++--
+ ...eceive-file-and-close-socket-while-receiving.py |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit cd0d3a25a4f2069d0520c1d1a2e3cb2103deef16
+Merge: 05ce1b8... 10d392d...
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 2 17:11:13 2009 +0100
+
+    Merge branch 'dance-into-the-fire'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 10d392d852a853d5790a7840f94ee9da3cb6e236
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 31 19:46:07 2009 +0100
+
+    Don't assert when someone sends a session-info.
+    
+    Whoops.
+
+ src/jingle-session.c |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
+
+commit 489afac6572d41e3680f1b8dfcb079370b7a2c16
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 31 19:36:49 2009 +0100
+
+    unknown-session is-a item-not-found not bad-request
+
+ src/error.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit be476be30775cd8b927e6a9aad0a28526e25a829
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 31 19:36:32 2009 +0100
+
+    Add tie-break and unsupported-info Jingle errors
+
+ src/error.c |   20 ++++++++++++++++++++
+ src/error.h |    2 ++
+ 2 files changed, 22 insertions(+), 0 deletions(-)
+
+commit bfb5b9de4bafca56db52653d827b9f040f0c1edf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 31 19:30:04 2009 +0100
+
+    Remove Jingle errors no longer in the Jingle XEP
+    
+    These were neither sent nor explicitly consumed by Gabble; the only
+    impact is that some debugging messages might be less specific when
+    receiving them.
+
+ src/error.c |   20 --------------------
+ src/error.h |    2 --
+ 2 files changed, 0 insertions(+), 22 deletions(-)
+
+commit 2e4c57f4463f13e6e789f7676646b84d54286a2b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 31 19:18:22 2009 +0100
+
+    Correct indentation and style of jingle_state_machine_dance
+
+ src/jingle-session.c |   18 ++++++++++--------
+ 1 files changed, 10 insertions(+), 8 deletions(-)
+
+commit 05ce1b89914d0ebf69febf1ad849961b911317dc
+Merge: c5d2a11... 80664d4...
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 31 18:05:28 2009 +0100
+
+    Merge branch 'tests'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+    Reviewed-by: Dafydd Harries <dafydd.harries@collabora.co.uk>
+
+commit 80664d4e3d7c4ce5e8d7c08aba30dd856aec6fa6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 31 18:00:17 2009 +0100
+
+    Use request_muc_handle in test-muc-properties
+
+ tests/twisted/muc/test-muc-properties.py |   19 +++++--------------
+ 1 files changed, 5 insertions(+), 14 deletions(-)
+
+commit e2ff16e212852f2be1e83d0abe9e50551f7c68aa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 31 17:56:31 2009 +0100
+
+    Don't expect unobservable MembersChanged signals.
+    
+    MembersChanged signals fired before RequestChannel has returned or
+    NewChannel[s] are emitted are not observable by well-behaved Telepathy
+    clients.
+    
+    This has the side-effect of removing a
+        q.expect('dbus-*')
+        q.expect('stream-*')
+    race from this test.
+
+ tests/twisted/muc/test-muc-properties.py |    6 +-----
+ 1 files changed, 1 insertions(+), 5 deletions(-)
+
+commit c5d2a119b1174f3c77ef2e630392a9b0fd01b4c5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 31 14:40:34 2009 +0100
+
+    send-error.py: old_received has been replaced by received
+
+ tests/twisted/muc/send-error.py |   10 ++++------
+ 1 files changed, 4 insertions(+), 6 deletions(-)
+
+commit d4d3266accefc8ca267dc32f184409e9868b3f5f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 31 14:36:36 2009 +0100
+
+    olpc/util.py: raise ValueError instead of PropertyTypeError which actually doesn't exist
+
+ tests/twisted/olpc/util.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 06d4c3319d62a53594cd3a0065fed59b95ca8c65
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Tue Mar 31 16:33:43 2009 +0300
+
+    remove v1 test API
+
+ tests/twisted/gabbletest.py  |   72 --------------------
+ tests/twisted/servicetest.py |  147 ------------------------------------------
+ 2 files changed, 0 insertions(+), 219 deletions(-)
+
+commit 2329e42058ebdb69eebb9ee59296372ee84bf594
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Tue Mar 31 16:33:20 2009 +0300
+
+    remove unused imports in OLPC tests
+
+ tests/twisted/olpc/change-notifications.py        |    8 ++------
+ tests/twisted/olpc/current-activity.py            |    5 +----
+ tests/twisted/olpc/gadget-invite.py               |    5 ++---
+ tests/twisted/olpc/gadget-publish.py              |    8 ++------
+ tests/twisted/olpc/gadget-restarted.py            |    6 ++----
+ tests/twisted/olpc/olpc-activity-search.py        |    5 ++---
+ tests/twisted/olpc/olpc-buddy-search.py           |    2 +-
+ tests/twisted/olpc/olpc-muc-invitation.py         |    2 +-
+ tests/twisted/olpc/olpc-muc-prop-change.py        |    2 +-
+ tests/twisted/olpc/test-olpc-bundle.py            |    2 +-
+ tests/twisted/olpc/test-olpc-set-props-preload.py |    3 +--
+ tests/twisted/olpc/util.py                        |    2 +-
+ tests/twisted/olpc/view-presence.py               |    6 ++----
+ 13 files changed, 19 insertions(+), 37 deletions(-)
+
+commit 2e43c827ba858521970307a88ee50d2ce1987440
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Tue Mar 31 16:33:02 2009 +0300
+
+    remove unused imports in MUC tests
+
+ tests/twisted/muc/name-conflict.py       |    2 +-
+ tests/twisted/muc/renamed.py             |    7 ++-----
+ tests/twisted/muc/roomlist.py            |    6 ++----
+ tests/twisted/muc/send-error.py          |    2 --
+ tests/twisted/muc/test-ensure.py         |    8 ++------
+ tests/twisted/muc/test-muc-alias.py      |    4 ----
+ tests/twisted/muc/test-muc-invitation.py |    2 +-
+ tests/twisted/muc/test-muc-ownership.py  |    6 ++----
+ 8 files changed, 10 insertions(+), 27 deletions(-)
+
+commit 3b7d38fd9f5f6aae434d6fa222c18cb1ae4091a1
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Tue Mar 31 15:32:26 2009 +0300
+
+    test-text.py: take advantage of wrap_channel()
+
+ tests/twisted/text/test-text.py |   21 ++++++++-------------
+ 1 files changed, 8 insertions(+), 13 deletions(-)
+
+commit f70e5bc56160fc6b91c092392029f7876a941885
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Tue Mar 31 15:31:45 2009 +0300
+
+    port test-muc-properties.py to new test API
+
+ tests/twisted/muc/test-muc-properties.py |  143 ++++++++++++------------------
+ 1 files changed, 55 insertions(+), 88 deletions(-)
+
+commit 44cf435711f79b89ef56889a1eaae9c939650b9a
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Fri Mar 27 13:03:19 2009 -0400
+
+    add wrap_channel()
+
+ tests/twisted/servicetest.py |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+commit e322fbc96a5dfea28a7474cecfd8eaa295955309
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Fri Mar 27 12:53:42 2009 -0400
+
+    factor out connection wrapping
+
+ tests/twisted/servicetest.py |   16 +++++++++-------
+ 1 files changed, 9 insertions(+), 7 deletions(-)
+
+commit eda9dd8dd26b66fd5a90ed7e8fc408020b1774da
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Thu Mar 12 21:55:56 2009 +0200
+
+    add D-Bus/Telepathy properties interfaces to ProxyWrapper
+
+ tests/twisted/servicetest.py |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit e24b8ec2780d402627257fcd6c06b1492f0d01f9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 31 14:17:10 2009 +0100
+
+    fix leak in gabble_media_stream_new
+
+ src/media-stream.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit ab47eb1428c615192aa7e16dbe87b1c46f1bd8eb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 16:25:24 2009 +0100
+
+    gabble_ft_manager_foreach_channel_class: use new tp_g_value_slice_new_* helpers
+
+ src/ft-manager.c |   11 ++++-------
+ 1 files changed, 4 insertions(+), 7 deletions(-)
+
+commit 43742a5eedc21597b50992dfd99e1b4b14c51bef
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 16:23:26 2009 +0100
+
+    add a second FT channel class adversting we support MD5 hashes
+
+ src/ft-manager.c                                   |   13 ++++++++++++-
+ .../twisted/file-transfer/file_transfer_helper.py  |   13 +++++++++++--
+ 2 files changed, 23 insertions(+), 3 deletions(-)
+
+commit e7b6832b32c2fa4892fa565150b323d963cc6716
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 15:29:10 2009 +0100
+
+    get_local_unix_socket_path: use the channel path to generate the socket path
+
+ src/ft-channel.c |   23 ++++++++++-------------
+ 1 files changed, 10 insertions(+), 13 deletions(-)
+
+commit 260c64111c61442a8f6fd606b5091b14898e9b82
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 15:19:32 2009 +0100
+
+    remove temporary directory
+
+ src/ft-manager.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 0549fe9b30f3bb74310618771dd420816d548bc6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 15:16:06 2009 +0100
+
+    gabble_file_transfer_channel_finalize: remove UNIX socket
+
+ src/ft-channel.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
+
+commit 263d7a8697706b40769a15e8be2448e8ea358422
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 15:09:20 2009 +0100
+
+    get_local_unix_socket_path: use gabble_ft_manager_get_tmp_dir
+
+ src/ft-channel.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 6bafd3095e5478040b335beb27caea6e92086364
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 15:08:51 2009 +0100
+
+    add gabble_ft_manager_get_tmp_dir
+
+ src/ft-manager.c |   23 ++++++++++++++++++++++-
+ src/ft-manager.h |    2 ++
+ 2 files changed, 24 insertions(+), 1 deletions(-)
+
+commit 9cfdc4041df5fbb8fc6f605a20b557f26df5c334
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 14:17:28 2009 +0100
+
+    use gabble_signal_connect_weak when connecting the closed signal on the channel
+
+ src/ft-manager.c |   15 ++++++++-------
+ 1 files changed, 8 insertions(+), 7 deletions(-)
+
+commit 1a54cff1b389cb835fcfd7e5e7cc03fe386affd3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 13:14:00 2009 +0100
+
+    rename file-transfer-channel.[ch] to ft-channel.[ch]
+
+ src/Makefile.am             |    4 +-
+ src/file-transfer-channel.c | 1666 -------------------------------------------
+ src/file-transfer-channel.h |   78 --
+ src/ft-channel.c            | 1666 +++++++++++++++++++++++++++++++++++++++++++
+ src/ft-channel.h            |   78 ++
+ src/ft-manager.c            |    2 +-
+ 6 files changed, 1747 insertions(+), 1747 deletions(-)
+
+commit 450a555f418cd5e81d1f217f0edff037dad4a228
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 13:03:11 2009 +0100
+
+    use FT channel properties constants
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   71 +++++++++-----------
+ 1 files changed, 33 insertions(+), 38 deletions(-)
+
+commit 086c8656747a1ec2eea22566e19adc7c8b239967
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 12:58:50 2009 +0100
+
+    constants.py: add FileTransfer channel properties
+
+ tests/twisted/constants.py |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+commit 030966e7988e9d3ef692cc07e826f2a3ccd2a32a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 12:46:15 2009 +0100
+
+    use constants.py in FT tests
+
+ .../twisted/file-transfer/file_transfer_helper.py  |  208 ++++++++------------
+ ...eceive-file-and-close-socket-while-receiving.py |    6 +-
+ ...ive-file-and-sender-disconnect-while-pending.py |   11 +-
+ ...file-and-sender-disconnect-while-transfering.py |    8 +-
+ .../file-transfer/test-receive-file-decline.py     |    8 +-
+ .../test-send-file-and-cancel-immediately.py       |    8 +-
+ .../file-transfer/test-send-file-declined.py       |   10 +-
+ .../test-send-file-provide-immediately.py          |   12 +-
+ .../test-send-file-to-unknown-contact.py           |    4 +-
+ .../test-send-file-wait-to-provide.py              |   17 +-
+ 10 files changed, 127 insertions(+), 165 deletions(-)
+
+commit ebf3df3e8c1000dcc431fb793465111b19bca0d5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 12:44:20 2009 +0100
+
+    constants.py: add FT related constants
+
+ tests/twisted/constants.py |   20 ++++++++++++++++++++
+ 1 files changed, 20 insertions(+), 0 deletions(-)
+
+commit 6fb94ff174024d08db5ac1e45fddac5dd28aa5de
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 12:22:41 2009 +0100
+
+    we can't create FT channel using RequestChannel
+    
+    We can't pass mandatory properties to RequestChannel so there is no
+    point to pretend that we support it.
+
+ src/ft-manager.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 23474a965ec6ffdd026f0d1cdf5f50f43d34b6cb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 12:18:48 2009 +0100
+
+    inline file_channel_closed inside file_channel_closed_cb
+
+ src/ft-manager.c |   17 +++++------------
+ 1 files changed, 5 insertions(+), 12 deletions(-)
+
+commit 2453bef337f372d9a1abc84e1d2ce163bd8546f0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 12:17:29 2009 +0100
+
+    if gabble_file_transfer_channel_offer_file fails the channel has not been added to the list yet so we can unref it directly
+
+ src/ft-manager.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
+
+commit 5cf4312a89356b83afd14144f5ea68726d457093
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 11:54:30 2009 +0100
+
+    file_channel_closed: improve debug msg
+
+ src/ft-manager.c |   14 ++++++++++----
+ 1 files changed, 10 insertions(+), 4 deletions(-)
+
+commit 90d32da0564112488c2bbd1a0944e118adbcaa6d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 11:49:40 2009 +0100
+
+    gabble_ft_manager_iface_foreach_one: value is never supposed to be NULL
+
+ src/ft-manager.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+commit ae90dee54afb0390ce8e712083763941a622e598
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 11:48:53 2009 +0100
+
+    style fixes
+
+ src/ft-manager.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+commit 4ff2585f362fbbf0ee6a8cec6b2876bd811a87e6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 11:34:35 2009 +0100
+
+    gabble_ft_manager_new is supposed to be just a wrapper around g_object_new
+
+ src/ft-manager.c |   68 ++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 files changed, 61 insertions(+), 7 deletions(-)
+
+commit 15286dad852397643a483b82c24e5806fe2f289e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 11:27:44 2009 +0100
+
+    ft-manager: remove GET_PRIVATE macro
+
+ src/ft-manager.c |   52 +++++++++++++++++++---------------------------------
+ src/ft-manager.h |    3 +++
+ 2 files changed, 22 insertions(+), 33 deletions(-)
+
+commit e1113a5fefb060b806bf0f2e34e12fbd520feed1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 11:17:34 2009 +0100
+
+    gabble_file_transfer_channel_provide_file: remove useless pointer
+
+ src/file-transfer-channel.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 6f441982432cfb80c094241d03eb91d5ea8b8ce5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 11:10:41 2009 +0100
+
+    constants.py: add Offline error
+
+ tests/twisted/constants.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 5f2b74aa5eb8bb41d8401cd0a82da4e50a568d21
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 11:13:10 2009 +0100
+
+    raise NotCapable error when trying to send a file who doesn't advertise the FT capa
+
+ src/file-transfer-channel.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 738747e50b06ce491ef937fc8cf29dd4ec779435
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 11:11:29 2009 +0100
+
+    raise Offline error when trying to send a file to an offline contact
+
+ src/file-transfer-channel.c                        |    2 +-
+ .../test-send-file-to-unknown-contact.py           |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 08a4029e42aedc227f740aae936de58e763a2ac4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 11:10:41 2009 +0100
+
+    constants.py: add Offline error
+
+ tests/twisted/constants.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 20804caa549f2aa116ca554eb281af04af52d35c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 11:04:14 2009 +0100
+
+    use G_PARAM_STATIC_STRINGS
+
+ src/file-transfer-channel.c |   62 +++++++++++-------------------------------
+ 1 files changed, 16 insertions(+), 46 deletions(-)
+
+commit a0323f83feb8f9988cdbe2c3b6fae312608dc90e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 11:00:05 2009 +0100
+
+    use TP_HASH_TYPE_SUPPORTED_SOCKET_MAP
+
+ src/file-transfer-channel.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 0e38b4f9d5e441951930b5ddd63f0f196b9c125a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 10:57:50 2009 +0100
+
+    use tp-glib constants in uint properties definitions
+
+ src/file-transfer-channel.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 2b678e72e58a78de0abe40cc3fc96deb701ecfa2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 30 10:48:49 2009 +0100
+
+    NEWS: fallback-socks5-proxy has been renamed to fallback-socks5-proxies
+
+ NEWS |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit d18c252f3052c3d088eedc517232045d6a05db36
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Mar 27 16:17:28 2009 +0000
+
+    FT D-Bus properties have to be read-only
+
+ src/file-transfer-channel.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+commit d1f993b9449a55c24ff77f8c9d843fa691663a14
+Merge: c3a6107... 0ec7452...
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Mar 27 15:27:04 2009 +0000
+
+    Merge branch 'news'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit ab043a0625dfb43c318000ab8452784345a133fd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Mar 27 15:03:04 2009 +0000
+
+    initial-offset property has to be construct-only
+
+ src/file-transfer-channel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 1bad240c1da5b75661338ae407443c1cd5357c2b
+Merge: 377176a... 74cabf8...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Mar 27 14:54:02 2009 +0000
+
+    Merge commit 'wjt/file-transfer' into file-transfer
+
+commit bfc3c2dff190d09c03d5c9c44c46c0939a8f749f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Mar 27 13:45:58 2009 +0000
+
+    remove duplicate proxies from GABBLE_PARAMS_DEFAULT_SOCKS5_PROXIES
+
+ src/connection.h |   15 +++++++++------
+ 1 files changed, 9 insertions(+), 6 deletions(-)
+
+commit c3a610717168017c398b08534b3f1a0f6dc92863
+Merge: c72ec80... a694bb6...
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Mar 27 13:10:40 2009 +0000
+
+    Merge branch 'call-group-change-reasons'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit a694bb62abec4c9647dfbba2017c63ed2422ff50
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Mar 27 11:50:16 2009 +0000
+
+    Add explanatory comment for <reason> processing
+
+ src/jingle-session.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit 1be623fbb0ffe134220adc79d2b6d504d15dcda6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Mar 27 11:41:18 2009 +0000
+
+    Use MEDIA_STREAM_STATE_CONNECTED constant
+
+ tests/twisted/jingle/google-relay.py               |    2 +-
+ tests/twisted/jingle/hold-audio.py                 |    3 ++-
+ tests/twisted/jingle/hold-av.py                    |    6 ++++--
+ tests/twisted/jingle/outgoing-not-answered.py      |    2 +-
+ tests/twisted/jingle/payload-types.py              |    6 +++---
+ tests/twisted/jingle/test-description-info.py      |    4 ++--
+ tests/twisted/jingle/test-dialects-incoming.py     |    2 +-
+ tests/twisted/jingle/test-dialects-outgoing.py     |    4 +++-
+ .../jingle/test-outgoing-call-deprecated.py        |    2 +-
+ .../jingle/test-outgoing-call-deprecated2.py       |    2 +-
+ .../jingle/test-outgoing-call-requestotron.py      |    2 +-
+ tests/twisted/jingle/test-outgoing-call.py         |    2 +-
+ 12 files changed, 21 insertions(+), 16 deletions(-)
+
+commit d10e00e51d6acc6c0b506b888f2fd70c7ed027cb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Mar 27 11:37:53 2009 +0000
+
+    Assert if set_state is incorrectly passed a reason
+
+ src/jingle-session.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 19fafae3b3bd658d0a3adc213b1cbf39915705a8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 17:21:50 2009 +0000
+
+    Test rejecting a call for reason Busy or None
+
+ tests/twisted/jingle/test-incoming-call-reject.py |   57 ++++++++++++++++++---
+ 1 files changed, 50 insertions(+), 7 deletions(-)
+
+commit 5eaf114eda53c04b1517a66ebd2a748e9072530c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 17:20:13 2009 +0000
+
+    Implement RemoveMembersWithReason for media channels
+
+ src/media-channel.c |   12 +++++++-----
+ 1 files changed, 7 insertions(+), 5 deletions(-)
+
+commit d243f656629472dca7054eef69ccb3a952f9531b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 17:13:39 2009 +0000
+
+    Make jingle_session_terminate fail on meaningless reasons
+
+ src/jingle-session.c |   23 +++++++++++++++--------
+ src/jingle-session.h |    4 ++--
+ src/media-channel.c  |    4 ++--
+ 3 files changed, 19 insertions(+), 12 deletions(-)
+
+commit 7a74ea61b76525b4691604b76651190988b5f680
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 16:03:22 2009 +0000
+
+    Port test-incoming-call-reject.py to JingleTest2
+
+ tests/twisted/jingle/test-incoming-call-reject.py |   61 ++++++---------------
+ 1 files changed, 16 insertions(+), 45 deletions(-)
+
+commit e0f75abceca2393c9eb75f4a540b9b3e0bb20fad
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 16:02:17 2009 +0000
+
+    Set event.query to None on empty IQs.
+
+ tests/twisted/gabbletest.py         |    2 ++
+ tests/twisted/jingle/jingletest2.py |    6 +++---
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+commit f4bd266a6b15a118a7fa3fa51ed32ed78fb6a8ba
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 15:54:42 2009 +0000
+
+    Add incoming_call() helper to JingleTest2
+
+ tests/twisted/jingle/jingletest2.py            |   11 +++++++++++
+ tests/twisted/jingle/test-content-complex.py   |   10 +---------
+ tests/twisted/jingle/test-dialects-incoming.py |   10 +---------
+ 3 files changed, 13 insertions(+), 18 deletions(-)
+
+commit 223e4a2628ea5c4716b59d79d471797e1f9bbf59
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 15:46:07 2009 +0000
+
+    Test calls rejected as busy are exposed as such
+
+ tests/twisted/jingle/jingletest2.py                |    8 +++++++-
+ .../twisted/jingle/test-outgoing-call-rejected.py  |   13 ++++++++++++-
+ 2 files changed, 19 insertions(+), 2 deletions(-)
+
+commit 8563f1a7ed2920aa3982427678e17236bd3f8f8a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 15:43:32 2009 +0000
+
+    Propagate session-terminate <reason> to MembersChanged
+
+ src/jingle-session.c |   46 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 44 insertions(+), 2 deletions(-)
+
+commit 5042430f179a81bf10829a7afe495fff8dda5313
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 15:16:14 2009 +0000
+
+    Port test-outgoing-call-rejected.py to JingleTest2
+
+ tests/twisted/jingle/jingletest2.py                |   23 +++++++
+ .../twisted/jingle/test-outgoing-call-rejected.py  |   70 ++++++--------------
+ 2 files changed, 43 insertions(+), 50 deletions(-)
+
+commit 6e4c6c44f40f27b5b186395309f1dcc25a616e14
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 13:27:28 2009 +0000
+
+    Test that unanswered calls timeout with No_Answer
+
+ tests/twisted/Makefile.am                     |    1 +
+ tests/twisted/jingle/outgoing-not-answered.py |   73 +++++++++++++++++++++++++
+ 2 files changed, 74 insertions(+), 0 deletions(-)
+
+commit c62679a24bf9ebb63c9587c650787551126676aa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 13:24:22 2009 +0000
+
+    Include <reason> in session-terminate
+
+ src/jingle-session.c |   43 ++++++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 40 insertions(+), 3 deletions(-)
+
+commit 19c56eab467b87750ab5523d9b5113a94a968797
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 11:31:16 2009 +0000
+
+    Add a helper to run a test on all Jingle dialects
+
+ tests/twisted/jingle/jingletest2.py |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
+
+commit a061e32a887d1a150a54fd0ebeb76d092f801bd0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Mar 23 12:59:45 2009 +0000
+
+    Reduce Jingle session timeout when running tests
+
+ src/jingle-session.c       |   11 ++++++++---
+ src/jingle-session.h       |    2 ++
+ tests/twisted/main-debug.c |    3 +++
+ 3 files changed, 13 insertions(+), 3 deletions(-)
+
+commit 18ae7be7d8ddc7699a8c7bb60fc0a2bc0e81c1db
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Mar 23 12:41:45 2009 +0000
+
+    Propagate reason to JingleSession:terminated
+
+ src/jingle-session.c |   51 ++++++++++++++++++++++++++++++-------------------
+ src/jingle-session.h |    3 +-
+ src/media-channel.c  |    6 +++-
+ 3 files changed, 37 insertions(+), 23 deletions(-)
+
+commit 80f19e82025a0a140b68b9ab69321598f76d5bc7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Mar 23 12:47:56 2009 +0000
+
+    Add reason to JingleSession:terminated signal
+
+ src/jingle-factory.c |   10 ++++++----
+ src/jingle-session.c |    8 +++++---
+ src/media-channel.c  |    5 +++--
+ 3 files changed, 14 insertions(+), 9 deletions(-)
+
+commit 26e4e839e3696e40a4ffacd9dcd7ce5124da69e5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 19 18:18:22 2009 +0200
+
+    Set actor and reason when calls start/are accepted
+
+ src/media-channel.c                            |   14 ++++++++------
+ tests/twisted/jingle/accept-extra-stream.py    |    4 +++-
+ tests/twisted/jingle/google-relay.py           |    4 +++-
+ tests/twisted/jingle/test-content-complex.py   |    3 ++-
+ tests/twisted/jingle/test-description-info.py  |    3 ++-
+ tests/twisted/jingle/test-dialects-incoming.py |    2 +-
+ tests/twisted/jingle/test-incoming-call.py     |    3 ++-
+ tests/twisted/jingle/test-outgoing-call.py     |    3 ++-
+ 8 files changed, 23 insertions(+), 13 deletions(-)
+
+commit e2d91d35b110089e9c8721d676aee71ebe0b4b1c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 19 17:31:58 2009 +0200
+
+    Our LocalPending reason is Invited in incoming calls
+    
+    This changes all the tests, which checked for the wrong reason.
+
+ src/media-channel.c                               |    2 +-
+ tests/twisted/jingle/google-relay.py              |    5 ++-
+ tests/twisted/jingle/stream-handler-error.py      |    5 ++-
+ tests/twisted/jingle/stun-server.py               |    4 ++-
+ tests/twisted/jingle/test-content-complex.py      |    5 ++-
+ tests/twisted/jingle/test-description-info.py     |    5 ++-
+ tests/twisted/jingle/test-dialects-incoming.py    |    4 ++-
+ tests/twisted/jingle/test-incoming-call-reject.py |    5 ++-
+ tests/twisted/jingle/test-incoming-call.py        |   40 ++++++++++++---------
+ 9 files changed, 50 insertions(+), 25 deletions(-)
+
+commit 54dff933640910e06d66f1f549facbeaf18133c4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 19 17:13:09 2009 +0200
+
+    Improve construct-time media channel group flags
+    
+    This is still not correct, hence the FIXME pending more intrusive
+    refactoring.
+
+ src/media-channel.c                        |   32 ++++++++++++++++++++-------
+ tests/twisted/constants.py                 |   14 ++++++++++++
+ tests/twisted/jingle/test-incoming-call.py |   15 +++++++++++++
+ 3 files changed, 52 insertions(+), 9 deletions(-)
+
+commit 21f7f94cfb830b34eebf6d9dd6c82cd564af6202
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 19 16:57:09 2009 +0200
+
+    Let terminated_cb actually remove the member.
+    
+    Also, don't set CanAdd on the channel when we've just removed the peer:
+    we don't actually support adding in that context.
+
+ src/media-channel.c |   29 ++++++++++++-----------------
+ 1 files changed, 12 insertions(+), 17 deletions(-)
+
+commit a6a5c297bdc1947109c58aed43beecc9d3230a03
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 18 15:09:52 2009 +0200
+
+    Use HT_CONTACT and real self_handle in some tests
+
+ tests/twisted/jingle/google-relay.py              |    6 +++---
+ tests/twisted/jingle/test-description-info.py     |    9 +++++----
+ tests/twisted/jingle/test-dialects-incoming.py    |   11 +++++++----
+ tests/twisted/jingle/test-incoming-call-reject.py |    9 ++++++---
+ tests/twisted/jingle/test-outgoing-call.py        |    5 +++--
+ 5 files changed, 24 insertions(+), 16 deletions(-)
+
+commit 3c5d4dc14b04f680420f0ff7d8f1cdc3335b70b6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 18 14:54:41 2009 +0200
+
+    Add GroupChangeReasons to constants.py
+
+ tests/twisted/constants.py |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+commit 5f3612dbdae7dbc3b460049278d64118c500abb0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 18 14:36:02 2009 +0200
+
+    Use Reason_None (not 0) in MediaChannel constructor
+
+ src/media-channel.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 0ec745237b090fa02626dab5894da2b589436fcd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Mar 27 00:14:37 2009 +0000
+
+    Belgians are pairing socks in my living room!
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit c72ec808c4d02a51bf8be324da60d01324b3d2c1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 26 18:27:48 2009 +0000
+
+    Unrace olpc-muc-invitation.py
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+ tests/twisted/olpc/olpc-muc-invitation.py |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
+
+commit 377176aeadf1ddfc0d23b6fe148ca988cc396e71
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 26 17:59:38 2009 +0000
+
+    use errors from constants in FT tests
+
+ ...ive-file-and-sender-disconnect-while-pending.py |    3 ++-
+ .../test-send-file-to-unknown-contact.py           |    3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 5d8635e1e5190028ddafc539f00822d0a47f6205
+Merge: 171aa92... 61faca3...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 26 17:47:36 2009 +0000
+
+    Merge branch 'master' into file-transfer
+
+commit 616a1747debc4c56a36a9d7213d222f68a258b78
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 26 16:15:17 2009 +0000
+
+    set a default value on default-socks5-proxies
+
+ src/connection-manager.c |    6 +++++-
+ src/connection.c         |   11 +++++++++++
+ src/connection.h         |   20 ++++++++++++++++++++
+ 3 files changed, 36 insertions(+), 1 deletions(-)
+
+commit 61faca361c67b335da0129a40a9fdf5a8beaa9d5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 26 17:31:48 2009 +0000
+
+    manager file has to be regenerated when connection.h is modified as that's where default params are defined
+
+ data/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit feea877a731676ca7fe9fb341d88ad7a57184a59
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 25 14:45:05 2009 +0000
+
+    gabble_bytestream_factory_get_socks5_proxies: randomize fallback proxies list
+
+ src/bytestream-factory.c |   28 ++++++++++++++++++++++++++--
+ 1 files changed, 26 insertions(+), 2 deletions(-)
+
+commit 8a28548000a2fffe9940d8a06cddbb4558462b26
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 25 11:56:45 2009 +0000
+
+    change fallback-socks5-proxy to fallback-socks5-proxies
+    
+    By using an 'as' we can define more than one fallback proxy
+
+ src/bytestream-factory.c                    |   17 ++++++++----
+ src/connection-manager.c                    |   24 +++++++++---------
+ src/connection.c                            |   24 +++++++++---------
+ tests/twisted/test-fallback-socks5-proxy.py |   35 +++++++++++++++++----------
+ 4 files changed, 57 insertions(+), 43 deletions(-)
+
+commit 17422dfbbba627c01ec09831661a93c4e2aea233
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 25 11:35:56 2009 +0000
+
+    socks5_proxy_query_reply_cb: prepend fallback proxy from the right list
+
+ src/bytestream-factory.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 57cd1070a8c49cca4936ce7fc8988498a94d4c6d
+Merge: 298a58c... 3a93359...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 26 17:06:12 2009 +0000
+
+    Merge branch 'master' into socks5+relay
+
+commit 3a93359f4aa548f8870246b411f87528a84a0868
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 26 16:59:47 2009 +0000
+
+    write-mgr-file: add support for 'as' defaults
+
+ src/write-mgr-file.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 0e6ac003275d4f4287dc9974677867a25eaafbd3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 26 16:45:18 2009 +0000
+
+    write-mgr-file; properly init D-Bus types
+
+ src/write-mgr-file.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
+
+commit 298a58ca4485fe398ec9cc5807eb4c599c2b381a
+Merge: 1931961... 2c4c02c...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 26 16:36:03 2009 +0000
+
+    Merge branch 'master' into socks5+relay
+
+commit 2c4c02c0554d515735fb6b81e39cb5bc099483e9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 26 16:30:10 2009 +0000
+
+    add gabble_connection_manager_get_protocols() instead of having gabble_protocols extern
+
+ src/connection-manager.c |    8 +++++++-
+ src/connection-manager.h |    4 ++--
+ src/write-mgr-file.c     |    3 ++-
+ 3 files changed, 11 insertions(+), 4 deletions(-)
+
+commit 19319616683dd55de7b2449e734ca4cb3d4fd416
+Merge: 586b7e1... 14ed3c4...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 25 12:54:03 2009 +0000
+
+    Merge branch 'master' into socks5+relay
+
+commit 14ed3c4ca9d4ca27af6b1f0f0a645dadb1799e2c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 25 12:20:41 2009 +0000
+
+    upgrade NEWS
+
+ NEWS |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 63320d75ec90de97eaa537a57dd62845604e776a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 25 12:19:46 2009 +0000
+
+    bump telepathy-glib dep tp 0.7.28
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 48aa3528c7148f2ed4ffe2c003cad5c0a31be9b2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 25 12:18:47 2009 +0000
+
+    test-location.py: use errors from constants
+
+ tests/twisted/test-location.py |   13 ++++---------
+ 1 files changed, 4 insertions(+), 9 deletions(-)
+
+commit 9d3dae40259c3096619323e69012ea68c8a851e6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 25 12:18:25 2009 +0000
+
+    olpc-activity-search.py: use error from constants
+
+ tests/twisted/olpc/olpc-activity-search.py |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 0fcbf652cd38885fd513cce2799afd6ed2e11a1f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 25 12:18:13 2009 +0000
+
+    olpc-buddy-search.py: use error from constants
+
+ tests/twisted/olpc/olpc-buddy-search.py |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 9afc33084cccf44b23d068e41997910a434f2d40
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 25 12:17:42 2009 +0000
+
+    constants.py: add PERMISSION_DENIED
+
+ tests/twisted/constants.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 450fcd7093331984e25c8bb7475f394d3663e835
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 25 12:16:32 2009 +0000
+
+    constants: fix error domain name
+
+ tests/twisted/constants.py |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 74cabf8cc5e37251bbbcb8f72be16510d974b2b6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 24 23:33:42 2009 +0000
+
+    Use correct filename in FT preamble comments
+
+ src/file-transfer-channel.c |    2 +-
+ src/file-transfer-channel.h |    2 +-
+ src/ft-manager.c            |    2 +-
+ src/ft-manager.h            |    2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+commit b3c1ebe2c3b93e4216bc17d7d2ca3a2a263b5ff6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 24 23:30:46 2009 +0000
+
+    Coding style in file-transfer-channel
+    
+    * space between function and (
+    * don't wrap prototypes after return type
+
+ src/file-transfer-channel.c |   16 ++++++----------
+ 1 files changed, 6 insertions(+), 10 deletions(-)
+
+commit 208ecd11c3aba78a2f2b558058f1c686a070ea19
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 24 23:04:23 2009 +0000
+
+    Raise NotImplemented on unknown address types/access-control mechs
+
+ src/file-transfer-channel.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 85267f2d000e7236502e24013c96d627584929bd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 24 23:01:32 2009 +0000
+
+    Ref FT's target and initiator handles
+
+ src/file-transfer-channel.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+commit e3566bfb0e7e68eb152153dd88042fa193aa8b1e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 24 22:54:22 2009 +0000
+
+    Use "%"G_GSIZE_FORMAT not %u for gsize.
+
+ src/file-transfer-channel.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 586b7e1a31ccbde43dc2810260dcdcecb28f9769
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 18:09:19 2009 +0000
+
+    fix typo
+
+ src/bytestream-socks5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 0056e670e5e98a3f5bafb3009a811ed1988328e7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 18:08:45 2009 +0000
+
+    coding style fix
+
+ src/connection-manager.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a6ff149767a575cdfe99c2fe5d28c952b7f3aa73
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 18:05:28 2009 +0000
+
+    test-fallback-socks5-proxy: use conn.Requests
+
+ tests/twisted/test-fallback-socks5-proxy.py |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 5be61400eae334ec3d420028078f0adcbd55dbe4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 18:03:50 2009 +0000
+
+    remove useless comment
+    
+    Was probably coming from the original test
+
+ tests/twisted/test-fallback-socks5-proxy.py |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 443d2b24a04bab66e5f6534e3c203baa1a23bdf1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 18:02:44 2009 +0000
+
+    add some comments
+
+ src/bytestream-socks5.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit ee9f2334762a3da9aeecad8289567529d77190ed
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 18:00:01 2009 +0000
+
+    define SOCKS5_STATE_INITIATOR_OFFER_SENT with the other initiator states
+
+ src/bytestream-socks5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 34d2b57fee89209de28117ccaf67537654fb036c
+Merge: b629d0c... 212793d...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 17:04:30 2009 +0000
+
+    Merge branch 'master' into socks5+relay
+    
+    Conflicts:
+    	NEWS
+    	tests/twisted/bytestream.py
+
+commit b629d0cbd10f9585cd80cd92b0af9b162441c96f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 14:59:45 2009 +0000
+
+    properly cast socks5_proxy_query_reply_cb user_data
+
+ src/bytestream-factory.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 212793d109b8227e371d9a5a60e1cb37945e55fd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 14:52:19 2009 +0000
+
+    get_local_interfaces_ips returns a list containing both type of addresses
+
+ src/bytestream-socks5.c |   40 ++++++++++++++++++++--------------------
+ 1 files changed, 20 insertions(+), 20 deletions(-)
+
+commit 04c0b036e18d6307d3960d14bb8fbb48b6c2dc28
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 18 13:56:54 2009 +0000
+
+    upgrade NEWS
+
+ NEWS |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit dee5abb7d802b1fb1efd75c9f35c6de69cf2e390
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 14:47:33 2009 +0000
+
+    store fallback proxies in a separated list so we can list them after the one discovered on the connection
+
+ src/bytestream-factory.c |   48 +++++++++++++++++++++++++++++++++------------
+ src/bytestream-factory.h |    2 +-
+ src/bytestream-socks5.c  |   12 +++++-----
+ 3 files changed, 42 insertions(+), 20 deletions(-)
+
+commit 46ffc150559bbfdc84c20fac35a6019f46542118
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 14:26:30 2009 +0000
+
+    rename gabble_bytestream_factory_get_socks_proxies to gabble_bytestream_factory_get_socks5_proxies
+
+ src/bytestream-factory.c |    2 +-
+ src/bytestream-factory.h |    2 +-
+ src/bytestream-socks5.c  |    4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 07cd2a934aa798818b607a6048f5f84918697de9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 14:15:15 2009 +0000
+
+    don't add relay as streamhost when we are in a muc
+
+ src/bytestream-socks5.c |   19 ++++++++++++++-----
+ 1 files changed, 14 insertions(+), 5 deletions(-)
+
+commit 96002528d997fa1d6a104862e6000d0f38c0a197
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 14:14:32 2009 +0000
+
+    offer-muc-stream-tube.py: disable SOCKS5 relay tests because proxy can't be used with muc contacts atm
+
+ tests/twisted/tubes/offer-muc-stream-tube.py |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 52d885024c000872c2f5db2087f4b6ad07d0f56f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 14:00:13 2009 +0000
+
+    add test-socks5-muc.py to tests suite
+
+ tests/twisted/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 09367b962b5f9bd59c2d2169d2a856c54a15c65e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 14:00:05 2009 +0000
+
+    add test-socks5-muc.py
+
+ tests/twisted/tubes/test-socks5-muc.py |   83 ++++++++++++++++++++++++++++++++
+ 1 files changed, 83 insertions(+), 0 deletions(-)
+
+commit 99940eabf27c141b49d10945e8d8f8c336ae2dc8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 12:00:08 2009 +0000
+
+    don't offer SOCKS5 relay when trying to establish a bytestream with a muc contact
+
+ src/bytestream-socks5.c |   48 +++++++++++++++++++++++++++++++---------------
+ 1 files changed, 32 insertions(+), 16 deletions(-)
+
+commit 4193a99ef89d0b5701b4bbd21fdb841c9d9ee83e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 11:59:35 2009 +0000
+
+     accept-muc-stream-tube.py: disable SOCKS5 relay tests because proxy can't be used with muc contacts atm
+
+ tests/twisted/tubes/accept-muc-stream-tube.py |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+commit cabace865cb29a711104b8933551e8570be95474
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 11:47:28 2009 +0000
+
+    remove FIXME about proxies as we implement them now
+
+ src/bytestream-socks5.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+commit 8d94a6f07fa33ed66dc1b546d17cb0cff8363893
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Mar 6 16:19:21 2009 +0000
+
+    test-fallback-socks5-proxy.py: use make_presence and make_caps_disco_reply from external modules
+
+ tests/twisted/test-fallback-socks5-proxy.py |   35 ++++-----------------------
+ 1 files changed, 5 insertions(+), 30 deletions(-)
+
+commit 0912a67fedecaf8ec4c33500180ed1ed7ea7f537
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Mar 6 14:32:23 2009 +0000
+
+    add test-fallback-socks5-proxy.py to tests suite
+
+ tests/twisted/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 569a7cd00af6d7d0fe43427982b54f3cab81ca4f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Mar 6 14:32:15 2009 +0000
+
+    add test-fallback-socks5-proxy.py
+
+ tests/twisted/test-fallback-socks5-proxy.py |  104 +++++++++++++++++++++++++++
+ 1 files changed, 104 insertions(+), 0 deletions(-)
+
+commit c6f523e0493ab9e72bbb3c2fb0b7b8ae79bf32ca
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Mar 6 14:31:53 2009 +0000
+
+    query fallback-socks5-proxy if defined
+
+ src/bytestream-factory.c |   52 ++++++++++++++++++++++++++++++++++++++--------
+ 1 files changed, 43 insertions(+), 9 deletions(-)
+
+commit 3af76088ccb1bf238472b120d7728b04579e11f0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Mar 6 14:29:17 2009 +0000
+
+    add fallback-socks5-proxy connection parameter
+
+ src/connection-manager.c |   13 +++++++++++++
+ src/connection.c         |   17 +++++++++++++++++
+ 2 files changed, 30 insertions(+), 0 deletions(-)
+
+commit 0ef3423951594e6e7d382df49c65a693ea9c4883
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 5 11:30:22 2009 +0000
+
+    SOCKS5: fix state check
+
+ src/bytestream-socks5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 746298eb54bb75e8e8e239fce928d10807cc7bc1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 5 11:21:20 2009 +0000
+
+    coding style fix
+
+ src/bytestream-socks5.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 357659361c742582e6f695a8e7b7a6cae7b59e26
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 5 11:19:43 2009 +0000
+
+    add debug msg
+
+ src/bytestream-socks5.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit ac82a10d17d78dbbcd9398ac78db4a517d590c66
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 5 10:21:24 2009 +0000
+
+    factor out some BytestreamS5BRelay methods
+
+ tests/twisted/bytestream.py |   14 ++++++++++----
+ 1 files changed, 10 insertions(+), 4 deletions(-)
+
+commit 11fe4161f628ca93a0e5112c7b884d2134a60a98
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 4 18:19:29 2009 +0000
+
+    run tubes test with BytestreamS5BRelayBugged
+
+ tests/twisted/tubes/tubetestutil.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 9117cdb278f88dbe625327169253f85daaf3432a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 4 18:19:08 2009 +0000
+
+    add BytestreamS5BRelayBugged
+
+ tests/twisted/bytestream.py |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit d79c2d729450a70da05434dca1cdc20160576539
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 4 18:18:53 2009 +0000
+
+    SOCKS5: accept buggy CONNECT reply to interop with bugged ejabberd proxy
+
+ src/bytestream-socks5.c |   76 ++++++++++++++++++++++++++++++++++-------------
+ 1 files changed, 55 insertions(+), 21 deletions(-)
+
+commit 97bbf399417752eba5860ff304d1ca503581efb6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 4 17:08:23 2009 +0000
+
+    fix typo in debug msg
+
+ src/bytestream-socks5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 1f020c7710ebbd599341f719fe82b84234483584
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 4 14:13:14 2009 +0000
+
+    run tube tests with BytestreamS5BRelay
+
+ tests/twisted/tubes/tubetestutil.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit d695c90bc74a06c6d96e9af1ce749b5e384f626a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 4 14:13:04 2009 +0000
+
+    announce a SOCKS proxy in some tube tests
+
+ tests/twisted/tubes/accept-muc-stream-tube.py     |    9 ++++++---
+ tests/twisted/tubes/accept-private-stream-tube.py |    9 ++++++---
+ tests/twisted/tubes/offer-private-dbus-tube.py    |    8 ++++++--
+ 3 files changed, 18 insertions(+), 8 deletions(-)
+
+commit e4f98841e55f197f9c3c2e54cf961022a1067e27
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 4 14:12:23 2009 +0000
+
+    add Initiator side to BytestreamS5BRelay
+
+ tests/twisted/bytestream.py |   52 +++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 52 insertions(+), 0 deletions(-)
+
+commit 25323b4aa81fdbe63042b6106391470e683433c2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 4 14:11:21 2009 +0000
+
+    bytestream.py: add announce_socks5_proxy
+
+ tests/twisted/bytestream.py |   54 ++++++++++++++++++++++++++++++++----------
+ 1 files changed, 41 insertions(+), 13 deletions(-)
+
+commit 3c54b97434efd6f6f1c83f2dd00cf53d9c59d7b3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 4 14:10:06 2009 +0000
+
+    SOCKS5: implement proxy support
+
+ src/bytestream-socks5.c |  323 +++++++++++++++++++++++++++++++++++++++--------
+ 1 files changed, 269 insertions(+), 54 deletions(-)
+
+commit 2344d8a0faa7d80c4760b2f72ec40232bfca7ca3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 4 14:09:14 2009 +0000
+
+    track SOCKS5 proxy available in bytestream-factory and offer API to access to them
+
+ src/bytestream-factory.c |  120 ++++++++++++++++++++++++++++++++++++++++++++++
+ src/bytestream-factory.h |    9 ++++
+ 2 files changed, 129 insertions(+), 0 deletions(-)
+
+commit 292f428ef84e41fbd5b1ef56ef7bde907b1183a9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 17:21:35 2009 +0000
+
+    add BytestreamS5BRelay
+
+ tests/twisted/bytestream.py |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+
+commit 65534755cec0de941c41552eb6ce1cb5d8f6b3b1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 16:57:50 2009 +0000
+
+    wait_bytestream_open: ensure we found one streamhost
+
+ tests/twisted/bytestream.py |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 095d796cf9dbd7f39266d9efdef9648e8807267e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 16:44:33 2009 +0000
+
+    wait_bytestream_open: don't assert if a relay is present in S5B offer
+
+ tests/twisted/bytestream.py |   16 +++++++---------
+ 1 files changed, 7 insertions(+), 9 deletions(-)
+
+commit 737256f8d0437036ffd4453507d66e920fbb5dc2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 18 13:53:07 2009 +0000
+
+    upgrade NEWS
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit c444f4eb49e434287a6e787c6c15492c9810f740
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 11:15:46 2009 +0000
+
+    get_local_interfaces_ips: always discard loopback as we don't care about it for SOCKS5
+
+ src/bytestream-socks5.c |   25 +++++--------------------
+ 1 files changed, 5 insertions(+), 20 deletions(-)
+
+commit 3dfd4632e40691644246ce740ac722c18d064211
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 11:14:04 2009 +0000
+
+    change comment to reflect that get_local_interfaces_ips is not a bare copy from FS any more
+
+ src/bytestream-socks5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit bcea59f1f15c8b40043134f6920c149ba7d16427
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 11:13:27 2009 +0000
+
+    get_local_interfaces_ips: return IP4 and IP6 addresses using 2 different lists so we can list the IP6 ones first
+
+ src/bytestream-socks5.c |   68 +++++++++++++++++++++++++++--------------------
+ 1 files changed, 39 insertions(+), 29 deletions(-)
+
+commit a56b81a61440415d1b2e7ff65797caaf47c5e3e9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 11:12:34 2009 +0000
+
+    wait_bytestream_open: discard non IPv4 address as twisted doesn't support IPv6...
+
+ tests/twisted/bytestream.py |   25 ++++++++++++++++++++-----
+ 1 files changed, 20 insertions(+), 5 deletions(-)
+
+commit de9cfcf84b46c4d4cce39241d79f915c7fc3ff76
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 10:14:05 2009 +0000
+
+    use a GSList to store IP's
+
+ src/bytestream-socks5.c |   24 ++++++++++++------------
+ 1 files changed, 12 insertions(+), 12 deletions(-)
+
+commit 4118dc5e3a9b07ed3ebd0ba7344032e5592d6519
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 10:11:45 2009 +0000
+
+    gabble_bytestream_socks5_initiate: use a for to iterate on the IP's list
+
+ src/bytestream-socks5.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 68f1729ad3e3180743c26b9744c918495eeaeff8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 10:08:28 2009 +0000
+
+    the not getifaddrs version of get_local_interfaces_ips should support IPv6 too
+
+ src/bytestream-socks5.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 4212baeea53496f3fc5a3016130b3ad61b29a44a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 10 15:42:15 2009 +0000
+
+    SOCKS5: list IP6 addresses as well
+
+ src/bytestream-socks5.c |   35 +++++++++++++++++++++++++++++------
+ 1 files changed, 29 insertions(+), 6 deletions(-)
+
+commit f99824a2c5937285094b41c3c29862305773f8a6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 12:14:01 2009 +0000
+
+    test-caps-tubes.py: import constants as cs
+
+ tests/twisted/test-caps-tubes.py |   94 +++++++++++++++++++-------------------
+ 1 files changed, 47 insertions(+), 47 deletions(-)
+
+commit 3f9c8246429ba5436fbd6d7f8c29761fdeadbd5f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 12:10:06 2009 +0000
+
+    test-caps-tubes.py: use new helper code from caps_helper
+
+ tests/twisted/test-caps-tubes.py |   93 ++-----------------------------------
+ 1 files changed, 5 insertions(+), 88 deletions(-)
+
+commit af2ccdd2be28cf301b7a51b90a514e8b75de5e1c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 12:09:03 2009 +0000
+
+    caps_helper: add more helper code from test-caps-tubes.py
+
+ tests/twisted/caps_helper.py |   83 +++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 82 insertions(+), 1 deletions(-)
+
+commit 21cd34240b02a190c57678d5083057420619605c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Mar 23 18:52:58 2009 +0000
+
+    Bump version to 0.7.24.1
+
+ NEWS         |    9 +++++++++
+ configure.ac |    2 +-
+ 2 files changed, 10 insertions(+), 1 deletions(-)
+
 commit c359e294a8914706fae3aed1401da6017de19fc2
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Mon Mar 23 18:09:00 2009 +0000
@@ -97,6 +1970,13 @@ Date:   Mon Mar 16 18:57:04 2009 +0000
  tests/twisted/gabbletest.py |   28 ++++++++++++++++++++++++++++
  1 files changed, 28 insertions(+), 0 deletions(-)
 
+commit 171aa92216b786ebf49d0b91b0a67c0bff8d6991
+Merge: b372433... e23f965...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 23 18:05:27 2009 +0000
+
+    Merge branch 'master' into file-transfer
+
 commit e23f965915dc9c12d1805d8aea6335948cf3fcca
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Mar 23 17:27:58 2009 +0000
@@ -107,7 +1987,7 @@ Date:   Mon Mar 23 17:27:58 2009 +0000
  1 files changed, 12 insertions(+), 9 deletions(-)
 
 commit bc41ad65379702353a6b80cadb9f2d4283f2a5e9
-Merge: a29527d 25dc2ce
+Merge: a29527d... 25dc2ce...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Mar 23 17:26:12 2009 +0000
 
@@ -125,8 +2005,20 @@ Date:   Mon Mar 23 17:19:07 2009 +0000
  src/bytestream-socks5.c |    8 +++++++-
  1 files changed, 7 insertions(+), 1 deletions(-)
 
+commit b372433c374f3944c526f4c3cef709693117e58f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 23 17:19:07 2009 +0000
+
+    socks5_handle_received_data: store the buffer len
+    
+    If something went wront in the data-received callback, the bytestream
+    could be freed and so the priv->read_buffer
+
+ src/bytestream-socks5.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
 commit 25dc2ced0a86231b30e842cd3faa136aa13eca28
-Merge: 31dc7c8 cc98108
+Merge: 31dc7c8... cc98108...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Mon Mar 23 17:05:33 2009 +0000
 
@@ -212,6 +2104,22 @@ Date:   Fri Mar 20 15:43:39 2009 +0200
  tests/twisted/jingle/google-relay.py |    8 ++++----
  1 files changed, 4 insertions(+), 4 deletions(-)
 
+commit e2c620056bc5999537c357ebe8ed39aabc47ed89
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 23 15:50:57 2009 +0000
+
+    close the bytestream AND the local transport when something went wrong
+
+ src/file-transfer-channel.c |   26 +++++++++++++++++++-------
+ 1 files changed, 19 insertions(+), 7 deletions(-)
+
+commit 1b78f9e8005391bbd14c5d1bb50b024bd08d0a22
+Merge: 16d51f6... 049db20...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 23 15:40:32 2009 +0000
+
+    Merge branch 'master' into file-transfer
+
 commit 049db20936d02e24c952f4df9d71fce99f70308a
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Mar 23 14:17:11 2009 +0000
@@ -220,6 +2128,34 @@ Date:   Mon Mar 23 14:17:11 2009 +0000
 
  src/bytestream-socks5.c |   16 ++++++++++++++--
  1 files changed, 14 insertions(+), 2 deletions(-)
+
+commit 16d51f6157cc22e7f7c5928c3f217a28d10bdb1f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 23 12:23:25 2009 +0000
+
+    add test-receive-file-and-close-socket-while-receiving.py
+
+ tests/twisted/Makefile.am                          |    1 +
+ ...eceive-file-and-close-socket-while-receiving.py |   26 ++++++++++++++++++++
+ 2 files changed, 27 insertions(+), 0 deletions(-)
+
+commit e081a6bdb2493c890762a0d5ebaa85a09ad62cf0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 23 12:19:31 2009 +0000
+
+    transport_disconnected_cb: close bytestream if needed
+
+ src/file-transfer-channel.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit f0927fbd1bc371229ef8e17ac852051dfe2aa53a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 15:33:53 2009 +0000
+
+    sync_stream once we sent the contact capabilities
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
 commit bcf438d43d1e2625e9c24d2a15cc91c31919a6ce
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -235,14 +2171,32 @@ Date:   Fri Mar 20 15:11:53 2009 +0200
  tests/twisted/jingle/google-relay.py |   42 +++++++++++++++++++++++++++++-----
  2 files changed, 64 insertions(+), 6 deletions(-)
 
+commit 7b91982fe6ecf4a86290f38e87fe31fd9fb1cf2d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 17 15:34:18 2009 +0000
+
+    gabble_file_transfer_channel_offer_file: pick a resource supporting FT
+
+ src/file-transfer-channel.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
 commit ec8f59ba90bbd6d9627938aa5b3bfb91b9342a54
-Merge: ef6db2f a7aff72
+Merge: ef6db2f... a7aff72...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Thu Mar 19 12:00:41 2009 +0000
 
     Merge branch 'uuid'
     
     Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit e35a1607c826b688d45d1586fefd5bdc9f8f5e64
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 19 10:51:25 2009 +0000
+
+    fix debug messages
+
+ src/file-transfer-channel.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 commit a7aff72bc7f617d5501801f5be2b3dab71b9eedc
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -276,6 +2230,15 @@ Date:   Wed Mar 18 16:40:31 2009 +0000
  src/util.c      |   27 +++++++++++++++++++++++++++
  src/util.h      |    2 ++
  4 files changed, 40 insertions(+), 2 deletions(-)
+
+commit 13dc85dc32c3c274fe2b30da3bf7c59bbd0fc621
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 18 15:42:18 2009 +0000
+
+    pass a 0 offset to AcceptFile
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit ef6db2fb8b80940e5ebcf389e80f3f8f051bafbe
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -385,8 +2348,19 @@ Date:   Wed Mar 18 14:18:13 2009 +0000
  src/tube-dbus.c |    3 ++-
  1 files changed, 2 insertions(+), 1 deletions(-)
 
+commit ca5915d16ca87f8d5e332228e1c0ac7734849d08
+Merge: 10fd4dc... f8f728b...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 17:29:29 2009 +0000
+
+    Merge branch 'socks5' into file-transfer
+    
+    Conflicts:
+    
+    	NEWS
+
 commit f8f728b4e16db990f4563c48a869fd56e0876ba6
-Merge: c1bc9db 9a60bbe
+Merge: c1bc9db... 9a60bbe...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Mar 16 17:25:54 2009 +0000
 
@@ -406,7 +2380,7 @@ Date:   Mon Mar 16 17:20:22 2009 +0000
  1 files changed, 3 insertions(+), 0 deletions(-)
 
 commit 96854518049abdaa5d015bddad3a37592869b4b0
-Merge: cfcf2a7 931f10a
+Merge: cfcf2a7... 931f10a...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Mar 16 17:16:06 2009 +0000
 
@@ -493,6 +2467,35 @@ Date:   Mon Mar 16 17:06:57 2009 +0000
  src/Makefile.am |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
+commit 10fd4dc9d9a154d41f46913ad4716bb6f794d62e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 16:14:04 2009 +0000
+
+    gabble_ft_manager_handle_request: display contact ID instead of his handle in debug msg
+
+ src/ft-manager.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 0732e5561fc718c7d1a8202a1a6d3c01c91dbc0e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 16:12:58 2009 +0000
+
+    gabble_file_transfer_channel_constructor: add a debug msg telling some info about the FT
+
+ src/file-transfer-channel.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit a840a1c235ed3123962338c2871ae0379ad28476
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 16:11:36 2009 +0000
+
+    generate FT channel path in the channel constructor and using its address to ensure it's unique
+
+ src/file-transfer-channel.c |    5 +++--
+ src/file-transfer-channel.h |    2 +-
+ src/ft-manager.c            |   31 ++-----------------------------
+ 3 files changed, 6 insertions(+), 32 deletions(-)
+
 commit 931f10a82722160466a49e8f11d75c427c8a1366
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Mon Mar 16 15:28:53 2009 +0000
@@ -501,6 +2504,18 @@ Date:   Mon Mar 16 15:28:53 2009 +0000
 
  configure.ac |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit da9b753fbda9c1b43ffd1a374c2979bf9cfa1623
+Merge: d57d924... 99db953...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 16 11:33:08 2009 +0000
+
+    Merge branch 'master' into file-transfer
+    
+    Conflicts:
+    
+    	NEWS
+    	tests/twisted/tubes/tubetestutil.py
 
 commit 113bf9551a8f65756325b92c303e4deb7008141c
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -570,7 +2585,7 @@ Date:   Fri Mar 13 18:22:00 2009 +0000
  1 files changed, 15 insertions(+), 21 deletions(-)
 
 commit c1bc9dbd4cb1f9920921336cd5a255d976e6f754
-Merge: 05b8a90 99db953
+Merge: 05b8a90... 99db953...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Fri Mar 13 15:14:16 2009 +0000
 
@@ -618,7 +2633,7 @@ Date:   Fri Mar 13 10:19:55 2009 +0000
  1 files changed, 5 insertions(+), 4 deletions(-)
 
 commit 57ab67458f686de32a5efde7639d6a06f9246257
-Merge: 305cc16 75e0188
+Merge: 305cc16... 75e0188...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Thu Mar 12 20:07:24 2009 +0000
 
@@ -627,7 +2642,7 @@ Date:   Thu Mar 12 20:07:24 2009 +0000
     Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
 
 commit 305cc169bc503736bfa5391b2af3ce46ae98f7f9
-Merge: 435733f 36fd708
+Merge: 435733f... 36fd708...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Thu Mar 12 19:17:35 2009 +0000
 
@@ -674,7 +2689,7 @@ Date:   Thu Mar 12 17:29:22 2009 +0000
  1 files changed, 4 insertions(+), 2 deletions(-)
 
 commit 4d804b4829a9c182588680a1bd62bc4e4cddd44b
-Merge: d67a2f6 3ecb603
+Merge: d67a2f6... 3ecb603...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Mar 12 17:17:21 2009 +0000
 
@@ -1076,7 +3091,7 @@ Date:   Wed Mar 11 14:55:28 2009 +0000
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 commit eb61bc3be627e911b6bb0a3f290ddabbce3e2ea4
-Merge: 60db960 3d416d5
+Merge: 60db960... 3d416d5...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Mar 11 14:36:49 2009 +0000
 
@@ -1116,6 +3131,51 @@ Date:   Wed Mar 11 12:39:02 2009 +0000
 
  tests/twisted/servicetest.py |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit d57d924b040401775e90c6da5da644e941b4b45e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 11 12:29:52 2009 +0000
+
+    gabble_ft_manager_handle_si_request: check if strptime failed
+
+ src/ft-manager.c |   10 +++-------
+ 1 files changed, 3 insertions(+), 7 deletions(-)
+
+commit 516655377649b3a608cdc7ed7c6964824b279d79
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 11 12:22:09 2009 +0000
+
+    test date when reciving a file
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 5700109c08ae092b1b953fa7a9a0984aa8082a4b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 11 12:21:49 2009 +0000
+
+    parse date in FT offer
+
+ src/ft-manager.c |   22 ++++++++++++++++++++--
+ 1 files changed, 20 insertions(+), 2 deletions(-)
+
+commit de041d47bcc36557d9c85348921c852ac456949d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 11 11:53:48 2009 +0000
+
+    check date in FT offer
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 04bca642fce8bf29cbb2a9ad50ae4cce9f5ab96d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 11 11:53:26 2009 +0000
+
+    gabble_file_transfer_channel_offer_file: send date in FT offer
+
+ src/file-transfer-channel.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
 
 commit bd42643d6f9fb24808ed3dc625998e08d590b2f3
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -1195,7 +3255,7 @@ Date:   Wed Mar 11 09:45:45 2009 +0000
  1 files changed, 2 insertions(+), 0 deletions(-)
 
 commit 3d416d5497f798f653279863b1a98554ed07ef49
-Merge: 3dee475 731b3ac
+Merge: 3dee475... 731b3ac...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Mar 10 18:18:26 2009 +0000
 
@@ -1234,8 +3294,18 @@ Date:   Tue Mar 10 18:02:20 2009 +0000
  src/media-channel.c |    8 +++++++-
  1 files changed, 7 insertions(+), 1 deletions(-)
 
+commit 232db1c2ad2a90b42e466204a0e8f178c4afdb70
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 10 17:26:26 2009 +0000
+
+    remove InitialOffset from allowed properties as we don't support it atm
+
+ src/ft-manager.c                                   |    1 -
+ .../twisted/file-transfer/file_transfer_helper.py  |    4 +---
+ 2 files changed, 1 insertions(+), 4 deletions(-)
+
 commit 3dee47538e296a63e05379d703befdc2a8828d70
-Merge: 2af5cf0 e9aa4d8
+Merge: 2af5cf0... e9aa4d8...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Mar 10 13:32:55 2009 +0000
 
@@ -1243,8 +3313,29 @@ Date:   Tue Mar 10 13:32:55 2009 +0000
     
     Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
 
+commit d2e1c8c6c2a67c0217aa0b23a26601140d8e74f0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 10 13:16:59 2009 +0000
+
+    remove useless bytestream import from FT tests
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    4 ++--
+ .../test-receive-file-and-disconnect.py            |    3 +--
+ ...ive-file-and-sender-disconnect-while-pending.py |    3 +--
+ tests/twisted/file-transfer/test-receive-file.py   |    3 +--
+ .../test-send-file-provide-immediately.py          |    2 +-
+ .../test-send-file-wait-to-provide.py              |    2 +-
+ 6 files changed, 7 insertions(+), 10 deletions(-)
+
+commit d208a582a5ce1bece2a98cae95bec081f92cb7c9
+Merge: 30a2024... 60db960...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 10 13:10:20 2009 +0000
+
+    Merge branch 'socks5' into file-transfer
+
 commit 60db960c2da83f7ed8219adaf5e527fa62c07026
-Merge: 3a3c481 2af5cf0
+Merge: 3a3c481... 2af5cf0...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Mar 10 13:04:29 2009 +0000
 
@@ -1341,6 +3432,13 @@ Date:   Mon Mar 9 15:10:42 2009 +0000
  tests/twisted/bytestream.py |   68 +++++++++++++++++--------------------------
  1 files changed, 27 insertions(+), 41 deletions(-)
 
+commit 30a202456aed5f83e658153ba2d138410045c22c
+Merge: 91b4a19... 3a3c481...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 9 14:13:37 2009 +0000
+
+    Merge branch 'socks5' into file-transfer
+
 commit 3a3c4816d29a852fd422efd315b72ed674e38b23
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Mar 9 14:12:45 2009 +0000
@@ -1367,14 +3465,14 @@ Date:   Fri Mar 6 18:07:45 2009 +0000
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit 48754d537f1dd49d81309e78424df0ee893b6d3c
-Merge: 5d37572 fed4184
+Merge: 5d37572... fed4184...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Fri Mar 6 16:13:30 2009 +0000
 
     Merge branch 'master' into socks5
 
 commit fed41842c91422a134ab13002060d97a84772757
-Merge: 67860b7 d79c7ce
+Merge: 67860b7... d79c7ce...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Fri Mar 6 16:04:33 2009 +0000
 
@@ -1565,8 +3663,24 @@ Date:   Thu Mar 5 11:26:32 2009 +0000
  tests/twisted/jingle/test-description-info.py |   21 ++++++++--
  2 files changed, 54 insertions(+), 17 deletions(-)
 
+commit 91b4a190f77b81d587e7f39e4e4720af487e8587
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 5 16:11:29 2009 +0000
+
+    break a race when opening the bytestream
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 1453873cd9ee751a808d28231ffdfd55143bb22c
+Merge: c69f490... 5d37572...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 5 16:02:34 2009 +0000
+
+    Merge branch 'socks5' into file-transfer
+
 commit 5d3757243d7f2b2ce4ca38387d0201ec8a21e3df
-Merge: a88b162 ff36836
+Merge: a88b162... ff36836...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Mar 5 16:01:42 2009 +0000
 
@@ -1577,7 +3691,7 @@ Date:   Thu Mar 5 16:01:42 2009 +0000
     	tests/twisted/bytestream.py
 
 commit ff36836c5d6dac08cc4f7d55ca1b1bfdd06fcf23
-Merge: 8bff54c af693c3
+Merge: 8bff54c... af693c3...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Mar 5 15:41:11 2009 +0000
 
@@ -1603,7 +3717,7 @@ Date:   Thu Mar 5 15:28:55 2009 +0000
  2 files changed, 40 insertions(+), 33 deletions(-)
 
 commit af693c3871c221288750fb80a10f1845ede70245
-Merge: c2c8fbb 2bb6db3
+Merge: c2c8fbb... 2bb6db3...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Mar 4 18:55:02 2009 +0000
 
@@ -1612,7 +3726,7 @@ Date:   Wed Mar 4 18:55:02 2009 +0000
     Reviewed-by: Senko Rasic <senko.rasic@collabora.co.uk>
 
 commit c2c8fbbbfaf6b0a61e7d93bc0923e642e60f51fb
-Merge: 1029dc4 5219ff8
+Merge: 1029dc4... 5219ff8...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Mar 4 14:18:53 2009 +0000
 
@@ -1621,7 +3735,7 @@ Date:   Wed Mar 4 14:18:53 2009 +0000
     Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 
 commit 1029dc459434a6ef22100bdeda3674b84997d1d4
-Merge: 7a541e0 ca58e74
+Merge: 7a541e0... ca58e74...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Mar 4 14:18:14 2009 +0000
 
@@ -1929,14 +4043,23 @@ Date:   Tue Mar 3 17:07:20 2009 +0000
  2 files changed, 1 insertions(+), 5 deletions(-)
 
 commit a88b16252a7ee5fec15f07435d50280bd2485cd7
-Merge: b154dcd 7a541e0
+Merge: b154dcd... 7a541e0...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Mar 3 16:42:35 2009 +0000
 
     Merge branch 'master' into socks5
 
+commit c69f490f4cd42b88d9a155b5852855798d0f270b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 16:04:58 2009 +0000
+
+    file_transfer_helper: wait for the missing bytes if they havel not all been announced
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
 commit 7a541e01e8f731469b40beb83e685150b6fbe5fc
-Merge: 7f1f0ea 3d88f88
+Merge: 7f1f0ea... 3d88f88...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Mar 3 15:50:22 2009 +0000
 
@@ -1987,6 +4110,51 @@ Date:   Tue Mar 3 15:26:30 2009 +0000
  src/bytestream-multiple.c |   23 +++++++++++++++++++++++
  1 files changed, 23 insertions(+), 0 deletions(-)
 
+commit 830c713c1c1b9ed3ea65d99d75c10ed3b0a08b30
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 15:31:33 2009 +0000
+
+    exec_file_transfer_test: use a for
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   14 ++++----------
+ 1 files changed, 4 insertions(+), 10 deletions(-)
+
+commit bf77cf6ffa7c64c631846ef992fcc2ed110f199e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 15:28:38 2009 +0000
+
+    run FT tests with BytestreamSIFallbackS5CannotConnect and BytestreamSIFallbackS5WrongHash
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+commit 67989d190893f5fbab980f50e3297f814365f5d2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 15:26:30 2009 +0000
+
+    bytestream-multiple: implement block_reading
+
+ src/bytestream-multiple.c |   23 +++++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
+
+commit f60d12cb2e0183bcc7a3e30e51e6fe8f68bd3472
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 15:12:05 2009 +0000
+
+    use BytestreamS5B and BytestreamS5BPidgin in FT tests
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 7660494214e624d4c0f6b9e5e630bc28cf38e9bb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 15:09:59 2009 +0000
+
+    file-transfer-channel: connect bytestreams signals using gabble_signal_connect_weak
+
+ src/file-transfer-channel.c |   10 ++++------
+ 1 files changed, 4 insertions(+), 6 deletions(-)
+
 commit 9ffc6ec0dd8c1d7bd51b8fec180c8881175a98b6
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Mar 3 14:47:29 2009 +0000
@@ -1996,8 +4164,51 @@ Date:   Tue Mar 3 14:47:29 2009 +0000
  lib/gibber/gibber-fd-transport.c |    8 +-------
  1 files changed, 1 insertions(+), 7 deletions(-)
 
+commit 39addab489a90046f7dc87b211685d5131ed91bc
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 14:53:04 2009 +0000
+
+    transport_disconnected_cb: set state to cancelled only if the transfer was not completed
+
+ src/file-transfer-channel.c |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
+
+commit ab1a88624d8dc2faf467c95bfae99d0a89c9eab0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 14:50:27 2009 +0000
+
+    block ready from the bytestream with the local socket buffer is not empty
+
+ src/file-transfer-channel.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
+
+commit 152de1e94671f16c709c6fc73da6bed1ad818419
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 14:49:08 2009 +0000
+
+    stop reading on local socket if bytestreams informed us it's blocked on writing
+
+ src/file-transfer-channel.c |   20 ++++++++++++++++++++
+ 1 files changed, 20 insertions(+), 0 deletions(-)
+
+commit c10e65822801ab33554804b26a4e8efdc7d07afe
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 14:47:29 2009 +0000
+
+    gibber-fd-transport: don't close transport when we get HUP as the buffers can be not empty
+
+ lib/gibber/gibber-fd-transport.c |    8 +-------
+ 1 files changed, 1 insertions(+), 7 deletions(-)
+
+commit 1fd1f7ce7a69793b8cad08f0b8936c9bc64bdcac
+Merge: 3ce7320... b154dcd...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 13:33:48 2009 +0000
+
+    Merge branch 'socks5' into file-transfer
+
 commit b154dcd80af232b2a3a9d8f39fadd684019f543f
-Merge: 5cebf7a c16a08e
+Merge: 5cebf7a... c16a08e...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Mar 3 13:32:13 2009 +0000
 
@@ -2016,7 +4227,25 @@ Date:   Tue Mar 3 10:25:39 2009 +0000
  NEWS |    7 +++++++
  1 files changed, 7 insertions(+), 0 deletions(-)
 
+commit 3ce73207eaf00ead5633ab8f26778c30bd1c97dd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 13:23:02 2009 +0000
+
+    file-transfer-channel: use Gibber transports
+
+ src/file-transfer-channel.c |  262 ++++++++++++++++--------------------------
+ 1 files changed, 100 insertions(+), 162 deletions(-)
+
 commit ab27a0a161b827e6c4cf64be7a9801c2becbc326
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 3 10:22:09 2009 +0000
+
+    bytestream-multiple: forward write-blocked signal
+
+ src/bytestream-multiple.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+commit fd4214f61d8d627649ed073f41c509931dcdef0d
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Mar 3 10:22:09 2009 +0000
 
@@ -2274,6 +4503,15 @@ Date:   Sat Jan 24 19:17:44 2009 +0100
  src/media-stream.c     |   26 ++++++++++++++++++++++++++
  5 files changed, 57 insertions(+), 3 deletions(-)
 
+commit 058d93adf6b1274b19c4112c3eb9cabc703fbe33
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 2 18:00:07 2009 +0000
+
+    use new bytestream test API
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   20 +++++++-------------
+ 1 files changed, 7 insertions(+), 13 deletions(-)
+
 commit a153848a8f6363fb87073938b69cb0338546fecf
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Mon Mar 2 17:56:05 2009 +0000
@@ -2283,8 +4521,15 @@ Date:   Mon Mar 2 17:56:05 2009 +0000
  configure.ac |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
+commit 6c037b9d2a5c37e1476c4a5c2f00819f4138082d
+Merge: e28ac7f... 5cebf7a...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Mar 2 17:48:14 2009 +0000
+
+    Merge branch 'socks5' into file-transfer
+
 commit 5cebf7a8d31847bce7219d956cc4784977c168b2
-Merge: f346a3d 94d0414
+Merge: f346a3d... 94d0414...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Mar 2 17:44:48 2009 +0000
 
@@ -2427,7 +4672,7 @@ Date:   Mon Mar 2 15:43:58 2009 +0000
  1 files changed, 19 insertions(+), 11 deletions(-)
 
 commit 1554a599a3a6dc8dcc84a623cbed9ff2e85d6860
-Merge: 19850fe a9588a2
+Merge: 19850fe... a9588a2...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Mar 2 15:33:47 2009 +0000
 
@@ -2438,7 +4683,7 @@ Date:   Mon Mar 2 15:33:47 2009 +0000
     	tests/twisted/bytestream.py
 
 commit a9588a279e9f7b5070b6ca57df95246d033e2aeb
-Merge: b35a94c 00c647b
+Merge: b35a94c... 00c647b...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Mar 2 15:27:05 2009 +0000
 
@@ -2476,7 +4721,7 @@ Date:   Mon Mar 2 14:57:08 2009 +0000
  1 files changed, 3 insertions(+), 5 deletions(-)
 
 commit 3be239760ed5ad09ae67ffd7b0385fc13d7a3411
-Merge: a1a2380 6701846
+Merge: a1a2380... 6701846...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Mar 2 14:37:54 2009 +0000
 
@@ -2511,7 +4756,7 @@ Date:   Mon Mar 2 14:29:38 2009 +0000
  2 files changed, 5 insertions(+), 3 deletions(-)
 
 commit b35a94cc9061e521405a9828aa3960d55ce17335
-Merge: e7bc835 4929d46
+Merge: e7bc835... 4929d46...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Mon Mar 2 14:21:37 2009 +0000
 
@@ -2545,7 +4790,7 @@ Date:   Sun Mar 1 18:24:49 2009 +0000
  10 files changed, 18 insertions(+), 18 deletions(-)
 
 commit 176955f13ada505341378eee6fba06daa41fb367
-Merge: f60ab4d dfedb4a
+Merge: f60ab4d... dfedb4a...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Mar 2 13:12:07 2009 +0000
 
@@ -2707,7 +4952,7 @@ Date:   Mon Mar 2 11:17:55 2009 +0000
  1 files changed, 38 insertions(+), 0 deletions(-)
 
 commit 03b4530fd4358f150392573a718ebbd9696a0452
-Merge: a99e300 4929d46
+Merge: a99e300... 4929d46...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Mar 2 11:06:27 2009 +0000
 
@@ -2796,7 +5041,7 @@ Date:   Sun Mar 1 21:06:41 2009 +0000
  2 files changed, 6 insertions(+), 1 deletions(-)
 
 commit d5bcd9d04dde3346c4b6e4a7fea928919afee686
-Merge: 762f79b d111516
+Merge: 762f79b... d111516...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Sun Mar 1 20:19:15 2009 +0000
 
@@ -2863,7 +5108,7 @@ Date:   Sun Mar 1 12:08:55 2009 +0000
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit 762f79b77b2ba70633e7e27b47604abe9305c346
-Merge: e8d4521 0dded84
+Merge: e8d4521... 0dded84...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Sun Mar 1 14:40:19 2009 +0000
 
@@ -2872,7 +5117,7 @@ Date:   Sun Mar 1 14:40:19 2009 +0000
     Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
 
 commit e8d4521081a3182a031426859bf352bc4b47ad8d
-Merge: 54605f1 5467d73
+Merge: 54605f1... 5467d73...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Sun Mar 1 12:06:54 2009 +0000
 
@@ -3156,7 +5401,7 @@ Date:   Fri Feb 27 12:40:45 2009 +0000
  1 files changed, 10 insertions(+), 8 deletions(-)
 
 commit 54605f10baaf1d42096f102fdfcce3799332e638
-Merge: b6c75e7 6598ba7
+Merge: b6c75e7... 6598ba7...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Fri Feb 27 12:27:51 2009 +0000
 
@@ -3257,7 +5502,7 @@ Date:   Fri Feb 27 12:13:34 2009 +0900
  2 files changed, 3 insertions(+), 2 deletions(-)
 
 commit b8ec1c1d357ddba874ac22c0881e4820d653768e
-Merge: f5ed7c5 9d33052
+Merge: f5ed7c5... 9d33052...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Fri Feb 27 01:36:32 2009 +0000
 
@@ -3265,6 +5510,13 @@ Date:   Fri Feb 27 01:36:32 2009 +0000
     
     Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
     Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit e28ac7f680fb798a13392e19d66cf6d3ee808249
+Merge: 6133c4e... f1ce955...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 26 18:25:12 2009 +0000
+
+    Merge branch 'socks5' into file-transfer
 
 commit f1ce9554043bafe957d0c1c6893b77d6f5a65f76
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -3276,7 +5528,7 @@ Date:   Thu Feb 26 18:25:00 2009 +0000
  1 files changed, 25 insertions(+), 0 deletions(-)
 
 commit d58b905c21642a27597b963b9e4acce7e812b0e2
-Merge: 59f23bc f5ed7c5
+Merge: 59f23bc... f5ed7c5...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Feb 26 18:06:06 2009 +0000
 
@@ -3300,12 +5552,30 @@ Date:   Thu Feb 26 17:45:39 2009 +0000
  src/bytestream-socks5.c |   52 +++++++++++++++++++++++++++++++++++++++++++++++
  1 files changed, 52 insertions(+), 0 deletions(-)
 
+commit 6133c4e42f61d5499ff37b16c0bda1abf517b409
+Merge: ffc3ef6... 7c41832...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 26 17:12:51 2009 +0000
+
+    Merge branch 'socks5' into file-transfer
+    
+    Conflicts:
+    
+    	tests/twisted/ns.py
+
 commit 7c41832c1eeba9269fb4261c8c0d1ad9a2dd58a4
-Merge: 062154c 8ccf323
+Merge: 062154c... 8ccf323...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Feb 26 17:06:15 2009 +0000
 
     Merge branch 'master' into socks5
+
+commit ffc3ef6b28326c47b4424efc3540f1bff4ed753b
+Merge: 02e3b40... 062154c...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 26 15:13:50 2009 +0000
+
+    Merge branch 'socks5+muc-stream-tube-test' into file-transfer+socks5+muc-stream-tube-test
 
 commit 062154c15d44dc9b371e3060d4f3b3e71c0ed01e
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -3335,6 +5605,15 @@ Date:   Thu Feb 26 13:54:49 2009 +0000
 
  src/media-channel.c |   13 ++++++-------
  1 files changed, 6 insertions(+), 7 deletions(-)
+
+commit 02e3b40e26efc8fa0dcb43f365cdc88bed858f3e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 26 13:46:56 2009 +0000
+
+    socks5: check if the connection is actually connected when the target pretends it is
+
+ src/bytestream-socks5.c |   28 ++++++++++++++++++----------
+ 1 files changed, 18 insertions(+), 10 deletions(-)
 
 commit c1a2430cac86092490e07c950a711c5bdfaf4c3a
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -3512,19 +5791,42 @@ Date:   Thu Feb 26 10:51:12 2009 +0000
  src/media-stream.h  |    4 ++++
  3 files changed, 23 insertions(+), 7 deletions(-)
 
+commit e2e7aea908118fa56fb5e398297d9ff72b81f818
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 26 12:34:55 2009 +0000
+
+    gabble_file_transfer_channel_offer_file: don't get the resource if we are sending to a muc jid
+
+ src/file-transfer-channel.c |   44 +++++++++++++++++++++++++++---------------
+ 1 files changed, 28 insertions(+), 16 deletions(-)
+
 commit 8ccf32353ee76554b7e7db8a273f26db57204856
-Merge: a6d1170 51bc17d
+Merge: a6d1170... 51bc17d...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Feb 26 11:59:04 2009 +0000
 
     Merge branch 'master' into muc-stream-tube-test
 
 commit 51bc17d6a9d9682b286189f2b4b69c949cddbae9
-Merge: 29a1be3 1b87ad1
+Merge: 29a1be3... 1b87ad1...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Feb 26 11:58:38 2009 +0000
 
     Merge branch 'tubes-test'
+
+commit 28672c8447d7c3c0532ee831e5b7994067c2b0ac
+Merge: 8cf2d25... 1cd0786...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 26 11:50:00 2009 +0000
+
+    Merge branch 'socks5+muc-stream-tube-test' into file-transfer+socks5+muc-stream-tube-test
+    
+    Conflicts:
+    
+    	src/bytestream-socks5.c
+    	src/tube-stream.c
+    	tests/twisted/bytestream.py
+    	tests/twisted/tubes/offer-accept-private-dbus-stream-tube-socks5.py
 
 commit 1cd07868bd29d9fc75e21f94dd98205322eff00c
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -3899,7 +6201,7 @@ Date:   Wed Feb 25 16:52:37 2009 +0000
  1 files changed, 18 insertions(+), 5 deletions(-)
 
 commit 29a1be38e05382870198f3ad2ec7b54578041e73
-Merge: 2495925 1fd3429
+Merge: 2495925... 1fd3429...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Feb 25 16:45:45 2009 +0000
 
@@ -3982,14 +6284,14 @@ Date:   Wed Feb 25 13:40:33 2009 +0000
  3 files changed, 40 insertions(+), 14 deletions(-)
 
 commit 44226e74ba9f41d5b9d95dd6d4bb23dc5467231e
-Merge: 09e24d3 a6d1170
+Merge: 09e24d3... a6d1170...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Feb 25 15:52:40 2009 +0000
 
     Merge branch 'muc-stream-tube-test' into socks5+muc-stream-tube-test
 
 commit 09e24d351b5a1102438802c7ed5407b887aaf79c
-Merge: f64e8f3 a8d493d
+Merge: f64e8f3... a8d493d...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Feb 25 15:52:21 2009 +0000
 
@@ -4369,6 +6671,60 @@ Date:   Wed Feb 25 11:05:12 2009 +0000
  tests/twisted/bytestream.py |  155 +++++++++++++++++++++++++++++++++++++++++++
  1 files changed, 155 insertions(+), 0 deletions(-)
 
+commit 8cf2d2584967b0713aa1e08ee2361a272073e070
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Feb 25 11:07:22 2009 +0000
+
+    file_transfer_helper.py: Bytestreams objects have been moved to bytestream.py
+
+ .../twisted/file-transfer/file_transfer_helper.py  |  165 +-------------------
+ 1 files changed, 3 insertions(+), 162 deletions(-)
+
+commit 4d71224ce3107a09acc764c901b29eae57687b68
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Feb 25 11:05:12 2009 +0000
+
+    bytestream.py: add Bytestream objects
+
+ tests/twisted/bytestream.py |  155 +++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 155 insertions(+), 0 deletions(-)
+
+commit f38676f1ea4c3c06d7b1df6b03e6bc3ea271328b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Feb 25 11:01:28 2009 +0000
+
+    don't catch InitialOffsetDefined and FileTransferStateChanged in open_bytestream
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   31 ++++---------------
+ 1 files changed, 7 insertions(+), 24 deletions(-)
+
+commit 8cac3deddefc854188af0a1701c32f446be7d851
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Feb 25 10:48:08 2009 +0000
+
+    use self.initiator and self.target instead of passing from/to args to bytestream methods
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   57 ++++++++++----------
+ 1 files changed, 28 insertions(+), 29 deletions(-)
+
+commit eea62b9bb7add47a9156841f7be087e28a6ea63f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Feb 25 10:41:09 2009 +0000
+
+    file_transfer_helper: pass initiator and target when creating the bytestream
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   14 +++++++++-----
+ 1 files changed, 9 insertions(+), 5 deletions(-)
+
+commit de41198eae059f9ece8395d3e98ac80184c3c7c4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Feb 25 10:33:27 2009 +0000
+
+    file_transfer_helper.py: pass the stream-id when creating the bytestream object
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   32 ++++++++++---------
+ 1 files changed, 17 insertions(+), 15 deletions(-)
+
 commit 3ff29f431b453608cc4b68c941b4d894cb3c5f83
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Feb 24 19:00:08 2009 +0000
@@ -4424,7 +6780,7 @@ Date:   Tue Feb 24 17:17:55 2009 +0000
  1 files changed, 10 insertions(+), 10 deletions(-)
 
 commit 3590992bd01b91315da6758e6b3753bfcc81c1d2
-Merge: 490cadb 2495925
+Merge: 490cadb... 2495925...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Feb 24 16:40:22 2009 +0000
 
@@ -4457,6 +6813,42 @@ Date:   Tue Feb 24 16:27:35 2009 +0000
  src/bytestream-socks5.c |   16 ++++++++++++----
  1 files changed, 12 insertions(+), 4 deletions(-)
 
+commit d7f011829f62de4fe91fabcba8e02e60b4db1b4e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 16:35:22 2009 +0000
+
+    fix domain leak
+
+ src/bytestream-socks5.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit dcc8ae9f1997ee49b84af8e70dfdd5c7bc920350
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 16:31:35 2009 +0000
+
+    style fix
+
+ src/bytestream-socks5.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
+
+commit 68e8aad785df7aa1eea1e632c357ede64e5fdc11
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 16:28:04 2009 +0000
+
+    don't test bugged CONNECT cmd as we reject them now
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   52 --------------------
+ 1 files changed, 0 insertions(+), 52 deletions(-)
+
+commit 07f0c7e1cbed50b329daf6a017569193e3e47110
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 16:27:35 2009 +0000
+
+    socks5: reject connection if domain is wrong in CONNECT cmd
+
+ src/bytestream-socks5.c |   16 ++++++++++++----
+ 1 files changed, 12 insertions(+), 4 deletions(-)
+
 commit e88b27801e9e1d1ef63281d1fc1c4558a50a4f9e
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Feb 24 15:50:45 2009 +0000
@@ -4478,6 +6870,53 @@ Date:   Tue Feb 24 15:26:00 2009 +0000
  1 files changed, 9 insertions(+), 6 deletions(-)
 
 commit 55ddf5af2d9d0f8640fde1c82052cdce55896bbd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 14:47:10 2009 +0000
+
+    socks5: display a debug msg if domain is wrong
+
+ src/bytestream-socks5.c |   30 ++++++++++++++++++++++++++----
+ 1 files changed, 26 insertions(+), 4 deletions(-)
+
+commit 9e5e3af11f134d683c9e3d5841d1070e3276f8b8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 15:51:47 2009 +0000
+
+    file_transfer_helper.py: test bugged CONNECT cmd
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   55 +++++++++++++++++++-
+ 1 files changed, 54 insertions(+), 1 deletions(-)
+
+commit 6ced8f4200b05c1e2d8372a870b701f7860e6460
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 15:50:45 2009 +0000
+
+    socks5: accept CONNECT cmd which doesn't contain a valid domain
+
+ src/bytestream-socks5.c |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
+
+commit f14d13bc39020fdc7804ec4ae7437dd4dce0b12d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 15:31:31 2009 +0000
+
+    add BytestreamS5BBugged to simulate Pidgin's buggy SOCKS5 implementation
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   56 ++++++++++++++++++++
+ 1 files changed, 56 insertions(+), 0 deletions(-)
+
+commit f42c8f563d129b5fb5122215693a6939e827a63b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 15:26:00 2009 +0000
+
+    socks5: accept CONNECT reply which doesn't contain a valid domain
+    
+    This is needed to interop with Pidgin
+
+ src/bytestream-socks5.c |   15 +++++++++------
+ 1 files changed, 9 insertions(+), 6 deletions(-)
+
+commit 4c63f2d1b1815626a3eec0e95136a7ff7b63d680
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Feb 24 14:47:10 2009 +0000
 
@@ -4550,14 +6989,68 @@ Date:   Tue Feb 24 11:12:08 2009 +0000
  1 files changed, 7 insertions(+), 1 deletions(-)
 
 commit 24959256cfc85c7b7b2b78ca3de8b5df8b4c17aa
-Merge: 0eee2f5 2d6c9ea
+Merge: 0eee2f5... 2d6c9ea...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Feb 24 14:09:20 2009 +0000
 
     Merge branch 'negotiate-stream'
 
+commit dbe68019d15dd1bf238ca86d6855eb783189b670
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 14:02:13 2009 +0000
+
+    socks5: expect the right CONNECT reply
+
+ src/bytestream-socks5.c |   17 ++++++++++++-----
+ 1 files changed, 12 insertions(+), 5 deletions(-)
+
+commit 8dc86e8e1efe51457ac95d0ff3a9f660af2cc7d1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 13:58:25 2009 +0000
+
+    socks5_expect_connection: send right CONNECT reply
+
+ tests/twisted/bytestream.py |   21 +++++++++++++++++----
+ 1 files changed, 17 insertions(+), 4 deletions(-)
+
+commit e0c0f3d0f21ca10b07bba0e7844610c3e3a7e4c1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 13:14:11 2009 +0000
+
+    bytestream.py: socks5_connect: CONNECT reply is supposed to contain the domain
+
+ tests/twisted/bytestream.py |   17 +++++++++++++----
+ 1 files changed, 13 insertions(+), 4 deletions(-)
+
+commit 190c2c382dd7c3723a6226bbb0299740ff66757c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 13:13:08 2009 +0000
+
+    wait_bytestream_open: fix initiator/receiver
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   16 +++++++++-------
+ 1 files changed, 9 insertions(+), 7 deletions(-)
+
+commit 715b7c469d41a774e23339706245cb68bbabd114
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 12:52:04 2009 +0000
+
+    socks5: CONNECT reply has to contain the atyp domain
+
+ src/bytestream-socks5.c |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
+
+commit ebd01d54acf791148e84ecb5abcfc8843b307391
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 12:47:43 2009 +0000
+
+    socks5: factor out compute_domain
+
+ src/bytestream-socks5.c |   21 +++++++++++++++++----
+ 1 files changed, 17 insertions(+), 4 deletions(-)
+
 commit 0eee2f5f244cb41a0355feec9ccf444938c31f0e
-Merge: 90d4dbd 28aa9e1
+Merge: 90d4dbd... 28aa9e1...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Feb 24 12:23:34 2009 +0000
 
@@ -4565,6 +7058,24 @@ Date:   Tue Feb 24 12:23:34 2009 +0000
     
     Conflicts:
     	configure.ac
+
+commit 5c1fd8cee67938333f291734c6ddd1db91e03cc8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 11:18:47 2009 +0000
+
+    socks5: store self_full_jid in private struct
+
+ src/bytestream-socks5.c |   26 +++++++++++++-------------
+ 1 files changed, 13 insertions(+), 13 deletions(-)
+
+commit 202a13fac3ef0aa9dba31edc04b0b77cdb8427a7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 11:12:08 2009 +0000
+
+    socks5: add some DEBUG msg
+
+ src/bytestream-socks5.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
 
 commit 22fe58fd2bae321cbf8dedd50c2caa0c177ac28d
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -4584,6 +7095,33 @@ Date:   Tue Feb 24 10:22:29 2009 +0000
  src/bytestream-socks5.c |   12 +++++++++++-
  1 files changed, 11 insertions(+), 1 deletions(-)
 
+commit 2f7b0ab0fcde94dafcfbf2f47c27e2b7ec60aa3a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 10:23:37 2009 +0000
+
+    file_transfer_helper.py: check streamhost jid attribute
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 7476e9e43767c6e525c83d0d36ab0d0fb232a7e7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 10:22:58 2009 +0000
+
+    offer-accept-private-dbus-stream-tube-socks5.py: check streamhost jid attribute
+
+ ...offer-accept-private-dbus-stream-tube-socks5.py |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 7196639825b733930cb702057e372251945168c6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Feb 24 10:22:29 2009 +0000
+
+    the jid param in streamhost has to be *our* own jid, not the contact one
+
+ src/bytestream-socks5.c |   12 +++++++++++-
+ 1 files changed, 11 insertions(+), 1 deletions(-)
+
 commit 4f53828af28d35e1ad330403c670c1bac8bb3c98
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Feb 23 18:06:04 2009 +0000
@@ -4592,6 +7130,51 @@ Date:   Mon Feb 23 18:06:04 2009 +0000
 
  src/bytestream-factory.c |    3 ++-
  1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit e47d75c58f27a718dc119223cb4f856da9b5f1ad
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 18:06:04 2009 +0000
+
+    handle_socks5_query_iq: assume mode is 'tcp' is not specified
+
+ src/bytestream-factory.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 5e46be5e6d74464ee7b613975235d74e70bd9122
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 15:56:48 2009 +0000
+
+    bytestream_negotiate_cb: change channel state if bytestream was refused
+
+ src/file-transfer-channel.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 941ae663e32d5ca79e605473737c6cde07b937dd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 15:56:23 2009 +0000
+
+    add test-send-file-to-unknown-contact.py to tests suite
+
+ tests/twisted/Makefile.am |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 93123f44be78af99bbcad637e134207562a17daa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 15:55:55 2009 +0000
+
+    add test-send-file-to-unknown-contact.py
+
+ .../test-send-file-to-unknown-contact.py           |   23 ++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
+
+commit 93860c424016dfc1316dadcc11b9bc70dd60470f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 15:50:34 2009 +0000
+
+    add test-send-file-declined.py
+
+ .../file-transfer/test-send-file-declined.py       |   37 ++++++++++++++++++++
+ 1 files changed, 37 insertions(+), 0 deletions(-)
 
 commit 2d6c9ea2f4bbee1d894f09493cae2e49c18581d9
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -4651,6 +7234,207 @@ Date:   Mon Feb 23 15:20:22 2009 +0000
  src/bytestream-factory.h |    2 +-
  2 files changed, 37 insertions(+), 1 deletions(-)
 
+commit f2a92318af4fd48a2680f0ddd46e24c5a088c403
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 15:21:23 2009 +0000
+
+    file-transfer: pass object argument to gabble_bytestream_factory_negotiate_stream
+
+ src/file-transfer-channel.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 0d24696966a01cf6775b89a3fcc89a6420718a95
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 15:21:05 2009 +0000
+
+    tube-stream: pass object argument to gabble_bytestream_factory_negotiate_stream
+
+ src/tube-stream.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 66bdf5447ed8c22dc6e1e977ad19f90790c0d716
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 15:20:48 2009 +0000
+
+    tube-dbus: pass object argument to gabble_bytestream_factory_negotiate_stream
+
+ src/tube-dbus.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit d067ffdb66ef65e7f75ccb413a3d1afe9642daf4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 15:20:22 2009 +0000
+
+    add object argument to gabble_bytestream_factory_negotiate_stream
+
+ src/bytestream-factory.c |   36 ++++++++++++++++++++++++++++++++++++
+ src/bytestream-factory.h |    2 +-
+ 2 files changed, 37 insertions(+), 1 deletions(-)
+
+commit ba7cfdb183f3f6054dfefb652ecf810f6e5f587b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 15:17:30 2009 +0000
+
+    add test-send-file-and-cancel-immediately.py to tests suite
+
+ tests/twisted/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit d9a7e28a94f7081385302adc77363786470dd9e5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 15:17:07 2009 +0000
+
+    add test-send-file-and-cancel-immediately.py
+
+ .../test-send-file-and-cancel-immediately.py       |   23 ++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
+
+commit e425d33400c839ba8814fd2229356f65fc2433b6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 12:45:43 2009 +0000
+
+    add test-receive-file-decline.py to tests suite
+
+ tests/twisted/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 547bd23a98b5af15f28141fb7be80c7bbc4d9093
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 12:44:53 2009 +0000
+
+    add test-receive-file-decline.py
+
+ .../file-transfer/test-receive-file-decline.py     |   28 ++++++++++++++++++++
+ 1 files changed, 28 insertions(+), 0 deletions(-)
+
+commit aeba5f8b1b2039b76bd423997e8a8c8e1a743a8b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 12:44:37 2009 +0000
+
+    gabble_file_transfer_channel_close: close the bytestream
+
+ src/file-transfer-channel.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 8e21cbc080effe9bdb2be2a77ada0214a71d9a6c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 12:17:59 2009 +0000
+
+    add test-receive-file-and-sender-disconnect-while-transfering.py to tests suite
+
+ tests/twisted/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 8cfa636b22e2a8bba2238e1cd9bfaec897e65465
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 12:17:52 2009 +0000
+
+    add test-receive-file-and-sender-disconnect-while-transfering.py
+
+ ...file-and-sender-disconnect-while-transfering.py |   24 ++++++++++++++++++++
+ 1 files changed, 24 insertions(+), 0 deletions(-)
+
+commit f201f18dec7d4baaefbb8b2784e4941c83ca65aa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 12:16:32 2009 +0000
+
+    use exec_file_transfer_test in all the FT tests
+
+ .../test-receive-file-and-disconnect.py            |    8 +++-----
+ ...ive-file-and-sender-disconnect-while-pending.py |    8 ++------
+ tests/twisted/file-transfer/test-receive-file.py   |    9 +++------
+ .../test-send-file-provide-immediately.py          |    8 ++------
+ .../test-send-file-wait-to-provide.py              |    8 ++------
+ 5 files changed, 12 insertions(+), 29 deletions(-)
+
+commit 9e822f57dcea86ee4d6c59376026a71e23a8bec5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 12:16:15 2009 +0000
+
+    add file_transfer_helper.py
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
+commit 5dfca26853ddfe0c253c4e2a3b06627a420141b6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 12:10:12 2009 +0000
+
+    test-receive-file-and-sender-disconnect-while-pending: check using SOCKS5 too
+
+ ...ive-file-and-sender-disconnect-while-pending.py |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 25594bfb30ab6bfe36fa414ae59763504006944c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 12:09:38 2009 +0000
+
+    test-receive-file-and-sender-disconnect-while-pending: check FileTransferStateChanged args
+
+ ...ive-file-and-sender-disconnect-while-pending.py |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+commit 5b3d0d46780704378966c2666acc94baca1ec258
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 12:08:05 2009 +0000
+
+    connection_presences_updated_cb: change reason is remote stopped
+
+ src/file-transfer-channel.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 60f2eb5c25ff34385333a8d0749d5615280ff99f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 11:59:06 2009 +0000
+
+    add file-transfer/test-receive-file-and-sender-disconnect-while-pending.py to tests suite
+
+ tests/twisted/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit a97b3cdf36fbdf735aa6f6afb78c8180394190dd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 11:58:53 2009 +0000
+
+    add file-transfer/test-receive-file-and-sender-disconnect-while-pending.py
+
+ ...ive-file-and-sender-disconnect-while-pending.py |   36 ++++++++++++++++++++
+ 1 files changed, 36 insertions(+), 0 deletions(-)
+
+commit a4df235603400fcf67e11a3f4ebf091e34e4a7c3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 11:58:33 2009 +0000
+
+    cancel FT if peer disconnects
+
+ src/file-transfer-channel.c |   40 ++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 40 insertions(+), 0 deletions(-)
+
+commit 11497cedcfb9b05fa763c5976d6bd45146f89a24
+Merge: 324d0ba... 90d4dbd...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 11:36:35 2009 +0000
+
+    Merge branch 'master' into file-transfer
+
+commit 324d0baee368df4f014b1893301f3aecaeacbc8e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 11:17:43 2009 +0000
+
+    add test-receive-file-and-disconnect.py to tests suite
+
+ tests/twisted/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit b90f6c75e7056eabae9c2d8678af7686185f418f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 11:17:34 2009 +0000
+
+    add test-receive-file-and-disconnect.py
+
+ .../test-receive-file-and-disconnect.py            |   19 +++++++++++++++++++
+ 1 files changed, 19 insertions(+), 0 deletions(-)
+
 commit 90d4dbdc5914aa9eac9cb5c5f674bfe9290c14c0
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Feb 23 11:08:02 2009 +0000
@@ -4678,6 +7462,91 @@ Date:   Mon Feb 23 10:56:23 2009 +0000
  src/bytestream-socks5.c |   37 ++++++++++++++++++++++++++-----------
  1 files changed, 26 insertions(+), 11 deletions(-)
 
+commit 020422f47afa632aaea20453f707a8951011af5e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 11:01:55 2009 +0000
+
+    file_transfer_helper: use send_socks5_reply
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   10 +++-------
+ 1 files changed, 3 insertions(+), 7 deletions(-)
+
+commit dc8ffe25a355fa500515bdc3792b66899aa80541
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 11:01:33 2009 +0000
+
+    bytestream.py: add send_socks5_reply
+
+ tests/twisted/bytestream.py |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit bcef890baecbb760d9ac2998957d3907d1fe8808
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 10:56:23 2009 +0000
+
+    socks5_init_reply_cb: display streamhost-used in debug msg
+
+ src/bytestream-socks5.c |   37 ++++++++++++++++++++++++++-----------
+ 1 files changed, 26 insertions(+), 11 deletions(-)
+
+commit 221c48c17f639f4c47c3d71d33a753fb8bd417c6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Feb 23 10:31:44 2009 +0000
+
+    file_transfer_helper.py: refactor get_file
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   99 ++++++++------------
+ 1 files changed, 40 insertions(+), 59 deletions(-)
+
+commit d4a2dcea384da56aec175937fe84b3d88a68c605
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 18:02:27 2009 +0000
+
+    test sending side with SOCKS5 too
+
+ .../test-send-file-provide-immediately.py          |    4 +++-
+ .../test-send-file-wait-to-provide.py              |    2 ++
+ 2 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 991c3e75be1730d21de91637c982a94743dfdea5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 18:02:10 2009 +0000
+
+    file_transfer_helper.py: BytestreamS5B: implement sending side methods
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   55 ++++++++++++++++++--
+ 1 files changed, 51 insertions(+), 4 deletions(-)
+
+commit 8515da2e8c9964b45e0f55b67aa3b418ecdad11d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 17:39:30 2009 +0000
+
+    file_transfer_helper.py: move bytestreams at the end of the file
+
+ .../twisted/file-transfer/file_transfer_helper.py  |  232 ++++++++++----------
+ 1 files changed, 116 insertions(+), 116 deletions(-)
+
+commit 4f6feea4bb174127f99af7be4bae97f319b36e1d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 17:38:23 2009 +0000
+
+    store stream_id in bytestream object
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit fa80eaaf5600afee297fd5972013edb87b905af5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 17:34:22 2009 +0000
+
+    create a bytestream test object instead of making test inheriting the kind of bytestream needed
+
+ .../twisted/file-transfer/file_transfer_helper.py  |  197 ++++++++++----------
+ tests/twisted/file-transfer/test-receive-file.py   |    6 +-
+ .../test-send-file-provide-immediately.py          |   12 +-
+ .../test-send-file-wait-to-provide.py              |   16 +-
+ 4 files changed, 119 insertions(+), 112 deletions(-)
+
 commit 514415b44e6c1d75bc413c75860ef9b1de642d4f
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Fri Feb 20 16:31:31 2009 +0000
@@ -4696,8 +7565,51 @@ Date:   Fri Feb 20 16:30:14 2009 +0000
  src/bytestream-socks5.c |    4 +++-
  1 files changed, 3 insertions(+), 1 deletions(-)
 
+commit b51db8caf6e1260fb42869ebdcd5a694274e3c3e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 16:32:40 2009 +0000
+
+    test-receive-file.py: test using ReceiveFileTestS5B as well
+
+ tests/twisted/file-transfer/test-receive-file.py |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 0e493d2eed459c64b5c8581ebc8d8757500d0843
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 16:32:28 2009 +0000
+
+    add ReceiveFileTestS5B
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   27 +++++++++++++++++++-
+ 1 files changed, 26 insertions(+), 1 deletions(-)
+
+commit 5c6e30ec9bb35e2a10cc5b86c1c7b04256a6e591
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 16:31:31 2009 +0000
+
+    socks5: block reading once socks5 negotation is done if bytestream has been blocked
+
+ src/bytestream-socks5.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit 19dca4da304e3275c3d953eeb07725c14e07effd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 16:30:14 2009 +0000
+
+    gabble_bytestream_socks5_block_reading: check if transport is not NULL
+
+ src/bytestream-socks5.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 1dcf892d2a0591cdd9c659d9531ed3d8e5ee0199
+Merge: 821ccef... 41c6870...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 15:41:00 2009 +0000
+
+    Merge branch 'master' into file-transfer
+
 commit 41c6870667a5b8542fff57ad7b24a2201b92af83
-Merge: 9f14dae 56b6046
+Merge: 9f14dae... 56b6046...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Fri Feb 20 15:39:32 2009 +0000
 
@@ -4748,6 +7660,15 @@ Date:   Fri Feb 20 15:05:40 2009 +0000
  src/bytestream-factory.c |   35 ++++++++---------------------------
  1 files changed, 8 insertions(+), 27 deletions(-)
 
+commit 821ccef2463b4ff09810d3f31518018c2d98dd2f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 15:05:40 2009 +0000
+
+    bytestream-factory: use gabble_signal_connect_weak instead of manually disconnect signals
+
+ src/bytestream-factory.c |   35 ++++++++---------------------------
+ 1 files changed, 8 insertions(+), 27 deletions(-)
+
 commit e2b3f9fcda5babb687c34c13110201119524968d
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Feb 19 19:07:40 2009 +0000
@@ -4767,6 +7688,88 @@ Date:   Fri Feb 20 14:43:56 2009 +0000
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit 3c5cc547ca2bc18ddf995cd07f32ff98c6c7a39d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 13:48:05 2009 +0000
+
+    implement gabble_bytestream_ibb_block_reading
+
+ src/bytestream-ibb.c |   78 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 78 insertions(+), 0 deletions(-)
+
+commit be20e2502af62331b32151a0e84f48ed76909ad9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 14:46:31 2009 +0000
+
+    fix a comment
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a6d77cddf749169fac509421dbcdf02fa0a34353
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 14:43:56 2009 +0000
+
+    s/bufferize/buffer
+
+ src/bytestream-ibb.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a85362f9a5eac034964a3c9972d76cd90ed9bdff
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 14:40:54 2009 +0000
+
+    factor out IBB specific test code to SendFileTestIBB
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   45 +++++++++++++-------
+ .../test-send-file-provide-immediately.py          |    8 ++--
+ .../test-send-file-wait-to-provide.py              |   10 ++--
+ 3 files changed, 38 insertions(+), 25 deletions(-)
+
+commit 18961473cc1a9fec65aea96b7cc0e535d2c9b531
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 14:28:48 2009 +0000
+
+    factor out IBB specific test code to ReceiveFileTestIBB
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   54 ++++++++++++++------
+ tests/twisted/file-transfer/test-receive-file.py   |    4 +-
+ 2 files changed, 41 insertions(+), 17 deletions(-)
+
+commit 946356e46eee44e97abc6dc7dab6b2a5a983de11
+Merge: d1ee31f... 70e88b1...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 14:08:01 2009 +0000
+
+    Merge branch 'master' into file-transfer
+
+commit d1ee31f930ea46d58574338d96ae28630fdd1006
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 14:02:16 2009 +0000
+
+    send part of the file before the client connect the socket
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   11 ++++++++---
+ 1 files changed, 8 insertions(+), 3 deletions(-)
+
+commit 2d3099612efb65a147ed6a458ee5d68c717305ac
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 14:01:37 2009 +0000
+
+    block the bytestream while the client is not connected to the socket
+
+ src/file-transfer-channel.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
+commit 0373af5d380c88bd8496ea95e31ffd47d3196fdc
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 14:00:18 2009 +0000
+
+    gabble_file_transfer_channel_offer_file: don't set hash if NULL
+
+ src/file-transfer-channel.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 54837880892ad720d9fdbd90e9a8224517e47615
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Fri Feb 20 13:48:05 2009 +0000
 
@@ -4799,6 +7802,69 @@ Date:   Fri Feb 20 12:22:23 2009 +0000
  lib/gibber/gibber-listener.c |    4 ++--
  1 files changed, 2 insertions(+), 2 deletions(-)
 
+commit 1b2e9c9806f0d5adda0cadf6b775b2f88c5d6f01
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 11:50:48 2009 +0000
+
+    file_transfer_helper.py: bytestream is now accepted directly when AcceptFile is called
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   23 ++++++++++---------
+ 1 files changed, 12 insertions(+), 11 deletions(-)
+
+commit 6f9a7befd6edc33414927560acdc13216041e14a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 11:49:57 2009 +0000
+
+    don't wait that the client connect to accept the bytestream
+
+ src/file-transfer-channel.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 28cd0840b45701699f3169cf961be41afe76895c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 11:27:40 2009 +0000
+
+    fix comment
+
+ src/file-transfer-channel.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit ffca6328555e0212e165c15c9974ee381bc2b518
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 11:26:16 2009 +0000
+
+    check hash value
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+commit 0b7c03708c9211b5a253c6f8653ef98853532e72
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 11:19:11 2009 +0000
+
+    file_transfer_helper.py: remove useless imports
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
+
+commit 3bd0d76816baaa3cf8bcf6d809cab2eb25f6aa26
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 11:18:04 2009 +0000
+
+    file_transfer_helper.py: check mime-type and hash attributes
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+commit 3e736144365a5d94f63603df3cd896816567def1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Feb 20 11:17:40 2009 +0000
+
+    gabble_file_transfer_channel_offer_file: add mime-type and hash attributes
+
+ src/file-transfer-channel.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
 commit 35bb737ca4df10c5fc5a1d087073fc7766ddaffe
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Thu Feb 19 19:34:38 2009 +0000
@@ -4818,6 +7884,53 @@ Date:   Thu Feb 19 19:34:24 2009 +0000
 
  configure.ac |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 7a47ec9275b3e5127d3c94b93a448d401a717e6c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 19:23:48 2009 +0000
+
+    add first file transfer tests to test suite
+
+ tests/twisted/Makefile.am |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 4bc4458f979fbe3b28a0bfcb81672fcfd67edece
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 19:23:30 2009 +0000
+
+    add test-send-file-wait-to-provide.py
+
+ .../test-send-file-wait-to-provide.py              |   43 ++++++++++++++++++++
+ 1 files changed, 43 insertions(+), 0 deletions(-)
+
+commit 50c2ab6a4bf5ee874d781c4be025c4827fe3f8c2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 19:23:19 2009 +0000
+
+    add test-send-file-provide-immediately.py
+
+ .../test-send-file-provide-immediately.py          |   29 ++++++++++++++++++++
+ 1 files changed, 29 insertions(+), 0 deletions(-)
+
+commit d838210e80e702c89b3c1351a554ccf8ecdb661c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 19:23:10 2009 +0000
+
+    add test-receive-file.py
+
+ tests/twisted/file-transfer/test-receive-file.py |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 76565618320b91b0b6227370205acb187a8fdbad
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 19:22:43 2009 +0000
+
+    add file_transfer_helper.py
+    
+    Use only IBB for now
+
+ .../twisted/file-transfer/file_transfer_helper.py  |  440 ++++++++++++++++++++
+ 1 files changed, 440 insertions(+), 0 deletions(-)
 
 commit fa697ba8726c7cd886c2ad3333acabe8b909c964
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -4848,8 +7961,67 @@ Date:   Thu Feb 19 19:12:13 2009 +0000
  NEWS |   13 +++++++------
  1 files changed, 7 insertions(+), 6 deletions(-)
 
+commit 8d6b339e9a7f5c9e0905500d6b16b7db0bdd7baa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 19:21:57 2009 +0000
+
+    bytestream_factory_iq_si_cb: hook SI file transfers
+
+ src/bytestream-factory.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 1fdf5bb51bbcd5b203c4d5564978e837ee63b86b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 19:21:32 2009 +0000
+
+    connection: instantiate the file manager
+
+ src/connection.c |    3 +++
+ src/connection.h |    4 ++++
+ 2 files changed, 7 insertions(+), 0 deletions(-)
+
+commit a9b9b983e559d8d06c668061e1b04a54c6f981dc
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 19:21:07 2009 +0000
+
+    build file-transfer-channel and ft-manager
+
+ src/Makefile.am |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit d7d54d33bc9c54a168bba475b159a35ac285208a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 19:20:39 2009 +0000
+
+    Add ft-manager.[ch]
+
+ src/ft-manager.c |  531 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ft-manager.h |   68 +++++++
+ 2 files changed, 599 insertions(+), 0 deletions(-)
+
+commit f2acdfb14fd2bf61d2c16ad39f06f765e7b07a5d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 19:18:25 2009 +0000
+
+    Add file-transfer-channel.[ch]
+    
+    Far from being perfect but seems to basically work.
+
+ src/file-transfer-channel.c | 1614 +++++++++++++++++++++++++++++++++++++++++++
+ src/file-transfer-channel.h |   78 +++
+ 2 files changed, 1692 insertions(+), 0 deletions(-)
+
+commit b06cbd2ce6710f4d201b3f23952f15ab3bd3c8b6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 19:07:40 2009 +0000
+
+    gabble_bytestream_factory_dispose: disconnect signals on bytestreams
+
+ src/bytestream-factory.c |   19 +++++++++++++++++++
+ 1 files changed, 19 insertions(+), 0 deletions(-)
+
 commit fb53b017f1a512812df965431cc72479a6c2a5dd
-Merge: aada273 f705d1f
+Merge: aada273... f705d1f...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Thu Feb 19 19:00:29 2009 +0000
 
@@ -4905,6 +8077,22 @@ Date:   Thu Feb 19 18:06:55 2009 +0000
  src/media-stream.c  |   22 ++++++++++++++++++++++
  src/media-stream.h  |    1 +
  3 files changed, 27 insertions(+), 0 deletions(-)
+
+commit ca6557a5fa67f35b24923418ff67a0215d3f8746
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 14:17:23 2009 +0000
+
+    bytestream-factory: factor out si_tube_received
+
+ src/bytestream-factory.c |  117 ++++++++++++++++++++++++++--------------------
+ 1 files changed, 67 insertions(+), 50 deletions(-)
+
+commit 578220de741776d206d31afff17ebfc68be41dc9
+Merge: f5e6b7f... b07cf1d...
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Feb 19 13:21:58 2009 +0000
+
+    Merge branch 'master' into file-transfer
 
 commit b07cf1d58be1a6b94019d310102f797012f7e30f
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -5015,14 +8203,14 @@ Date:   Thu Feb 19 11:57:15 2009 +0000
  1 files changed, 23 insertions(+), 0 deletions(-)
 
 commit 691e979b00a6d3b165f081d6e8314041bad69994
-Merge: 62abc6d 1c591a9
+Merge: 62abc6d... 1c591a9...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Feb 19 11:58:49 2009 +0000
 
     Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble
 
 commit 1c591a9507c3eb7a6abe0d9c9f155b731b60b4b9
-Merge: 19ab3cb 94128f9
+Merge: 19ab3cb... 94128f9...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Thu Feb 19 11:46:19 2009 +0000
 
@@ -5270,6 +8458,53 @@ Date:   Wed Feb 18 16:09:20 2009 +0000
  tests/twisted/tubes/tubetestutil.py                |   14 ++++++++++++++
  3 files changed, 21 insertions(+), 21 deletions(-)
 
+commit f5e6b7fc90c38818ad341ba087c164fba25db57e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Feb 18 15:57:30 2009 +0000
+
+    announce PRESENCE_CAP_SI_FILE_TRANSFER in our capa
+
+ src/capabilities.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 43804120dacd00ee1e38d86fa630b996fab3842c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Feb 18 15:56:51 2009 +0000
+
+    add PRESENCE_CAP_SI_FILE_TRANSFER
+
+ src/presence-cache.c |    2 ++
+ src/types.h          |    2 +-
+ 2 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 7b5877b3a2bbd885d89ebc5e72e4984943f5deea
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Feb 18 15:55:54 2009 +0000
+
+    namespaces.h: add NS_FILE_TRANSFER
+
+ src/namespaces.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 1c33b18ef95fc905391bfcf547449914b83c082c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Feb 18 15:50:19 2009 +0000
+
+    ns.py: add FILE_TRANSFER
+
+ tests/twisted/ns.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit fa315408cef6ed6a2f70d2c9215e6cb3ab02c970
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Feb 18 10:59:54 2009 +0000
+
+    add file-transfer debug flag
+
+ src/debug.c |    1 +
+ src/debug.h |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+
 commit 3b7e6a533124cfc129d93fa089c04d81de0f3cba
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Tue Feb 17 11:05:53 2009 +0200
@@ -5293,7 +8528,7 @@ Date:   Tue Feb 17 11:41:15 2009 +0200
  1 files changed, 8 insertions(+), 2 deletions(-)
 
 commit 7011e6cfdf29f2313feec0f765ed2c4b18e93f76
-Merge: 7094f10 46cf8ff
+Merge: 7094f10... 46cf8ff...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Tue Feb 17 12:13:29 2009 +0000
 
@@ -5302,7 +8537,7 @@ Date:   Tue Feb 17 12:13:29 2009 +0000
     Reviewed-by: Senko Rasic <senko.rasic@collabora.co.uk>
 
 commit 7094f10efd457a5bf4438f45988ca388015c5ed9
-Merge: 89a7fac bc93a0a
+Merge: 89a7fac... bc93a0a...
 Author: Senko Rasic <senko.rasic@collabora.co.uk>
 Date:   Tue Feb 17 13:08:40 2009 +0100
 
@@ -5389,7 +8624,7 @@ Date:   Fri Feb 13 16:02:58 2009 +0000
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit d1ae16c67486bd51b8130961599ec5ea922365ba
-Merge: f1ff350 4d28b83
+Merge: f1ff350... 4d28b83...
 Author: Senko Rasic <senko.rasic@collabora.co.uk>
 Date:   Fri Feb 13 16:55:13 2009 +0100
 
@@ -5450,7 +8685,7 @@ Date:   Thu Feb 12 16:56:14 2009 +0100
  1 files changed, 5 insertions(+), 1 deletions(-)
 
 commit 5772bdb4997774618d4799483a0788c354cedc01
-Merge: bdaf4c6 45ff4fc
+Merge: bdaf4c6... 45ff4fc...
 Author: Senko Rasic <senko@tachyon.lan>
 Date:   Thu Feb 12 12:41:50 2009 +0100
 
@@ -5468,7 +8703,7 @@ Date:   Wed Feb 11 14:54:29 2009 +0100
  3 files changed, 18 insertions(+), 4 deletions(-)
 
 commit bdaf4c6a47def7b4c0a29ecc347d7a23bdf23dff
-Merge: ece2e85 3765364
+Merge: ece2e85... 3765364...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Feb 11 13:45:22 2009 +0000
 
@@ -5799,7 +9034,7 @@ Date:   Tue Feb 10 11:03:34 2009 +0200
  1 files changed, 1 insertions(+), 0 deletions(-)
 
 commit f806b9828d3362cd4b479948754531b216212b0a
-Merge: 5b5de1f 1babfb0
+Merge: 5b5de1f... 1babfb0...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Feb 9 14:44:48 2009 +0000
 
@@ -5921,7 +9156,7 @@ Date:   Fri Feb 6 17:09:00 2009 +0100
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit 1a3729a2f5a0e1fd76814bd849369d5ece337329
-Merge: f0d6e83 10a5b32
+Merge: f0d6e83... 10a5b32...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Feb 5 14:04:18 2009 +0000
 
@@ -6288,14 +9523,14 @@ Date:   Wed Feb 4 14:10:07 2009 +0000
  1 files changed, 3 insertions(+), 0 deletions(-)
 
 commit 31a7e424d8e96368bfcf86ef26bc2cba35a37cfc
-Merge: 9e89639 655e7d1
+Merge: 9e89639... 655e7d1...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Feb 5 12:31:56 2009 +0000
 
     Merge commit 'wjt/test-cleanup'
 
 commit 9e89639954b3e194e080f054f92efc5b17b06f68
-Merge: 1493e4e d3e17b0
+Merge: 1493e4e... d3e17b0...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Thu Feb 5 10:56:27 2009 +0000
 
@@ -6388,7 +9623,7 @@ Date:   Wed Feb 4 16:39:53 2009 +0000
  1 files changed, 4 insertions(+), 1 deletions(-)
 
 commit 1493e4e447996321e273903bb390104663f1a1c9
-Merge: 45c597a bfe2160
+Merge: 45c597a... bfe2160...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Wed Feb 4 16:13:58 2009 +0000
 
@@ -6492,7 +9727,7 @@ Date:   Tue Feb 3 14:41:03 2009 +0000
  1 files changed, 15 insertions(+), 0 deletions(-)
 
 commit 50c48774551a9a5181ac1dc74c64239826ed7b7d
-Merge: ed497fd b5cd1ce
+Merge: ed497fd... b5cd1ce...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Tue Feb 3 14:23:49 2009 +0000
 
@@ -6508,7 +9743,7 @@ Date:   Tue Feb 3 14:00:06 2009 +0000
  1 files changed, 7 insertions(+), 0 deletions(-)
 
 commit 223d919d01fe8f33bce78d31b76b844c5e3e220b
-Merge: ddaeb5a 6c04b00
+Merge: ddaeb5a... 6c04b00...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Tue Feb 3 11:51:40 2009 +0000
 
@@ -8091,7 +11326,7 @@ Date:   Mon Feb 2 14:58:35 2009 +0000
  1 files changed, 15 insertions(+), 0 deletions(-)
 
 commit 2aa5bcb2baa4bbe1c5a883d51855534c728b8fc8
-Merge: 794f86f 705fab0
+Merge: 794f86f... 705fab0...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Feb 2 14:50:12 2009 +0000
 
@@ -8100,7 +11335,7 @@ Date:   Mon Feb 2 14:50:12 2009 +0000
     Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
 
 commit 794f86f383435edfccd1b04033158e2d5b931632
-Merge: 6f41a4c 5509cbb
+Merge: 6f41a4c... 5509cbb...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Feb 2 14:37:18 2009 +0000
 
@@ -9152,7 +12387,7 @@ Date:   Tue Jan 27 16:43:12 2009 +0000
  1 files changed, 2 insertions(+), 0 deletions(-)
 
 commit 466d428a8ad82d1a2c1ee8cd9ceb7ce3f2b9d064
-Merge: 77db359 04891ac
+Merge: 77db359... 04891ac...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Jan 27 14:12:08 2009 +0000
 
@@ -9687,7 +12922,7 @@ Date:   Mon Jan 12 11:47:03 2009 +0000
  1 files changed, 16 insertions(+), 16 deletions(-)
 
 commit 6e950160d75316b0d9f095dd0acd3234e18ebbb7
-Merge: 77d9d39 5166e88
+Merge: 77d9d39... 5166e88...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Jan 12 11:14:30 2009 +0000
 
@@ -9758,7 +12993,7 @@ Date:   Fri Jan 9 15:54:14 2009 +0000
  1 files changed, 2 insertions(+), 0 deletions(-)
 
 commit af2f8a6ad3bd6ead1f55c40dfd05a0c8ba2ba99f
-Merge: c8b4411 25e7835
+Merge: c8b4411... 25e7835...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Jan 7 16:32:00 2009 +0000
 
@@ -9837,7 +13072,7 @@ Date:   Tue Jan 6 18:18:36 2009 +0000
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit 124c9cf28caf9b7b55c4b7eee297b53afd28e729
-Merge: 79425e0 102b010
+Merge: 79425e0... 102b010...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Jan 6 18:11:25 2009 +0000
 
@@ -9889,14 +13124,14 @@ Date:   Tue Jan 6 17:15:41 2009 +0000
  1 files changed, 4 insertions(+), 0 deletions(-)
 
 commit b3159304a020201243544ead062b0af4814d70dd
-Merge: 1b9abbd 5d48b18
+Merge: 1b9abbd... 5d48b18...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Jan 6 16:38:42 2009 +0000
 
     Merge branch 'bytestream-multi'
 
 commit 1b9abbdcb5190ec36e01da1d20cd0adbd6971c2c
-Merge: ed7a13c bf3c983
+Merge: ed7a13c... bf3c983...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Jan 6 16:38:25 2009 +0000
 
@@ -9912,14 +13147,14 @@ Date:   Mon Jan 5 17:39:44 2009 +0000
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit 5d48b181343776c08f27cf5398ada9d33210d731
-Merge: 4e0cdcc bf3c983
+Merge: 4e0cdcc... bf3c983...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Jan 5 11:50:39 2009 +0000
 
     Merge branch 'sock5' into bytestream-multi
 
 commit bf3c9830c5c2c670dec74b7945e5a8a287a52ef0
-Merge: f7b0320 19d44d8
+Merge: f7b0320... 19d44d8...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Jan 5 11:03:43 2009 +0000
 
@@ -9970,14 +13205,14 @@ Date:   Fri Jan 2 13:31:24 2009 +0000
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit 4e0cdcc7e10ed1c1d1ef5963aa54cf0788f429ab
-Merge: 969755c f7b0320
+Merge: 969755c... f7b0320...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Dec 23 17:06:28 2008 +0100
 
     Merge branch 'sock5' into si-fallback
 
 commit f7b03208f323ee8e0d9bd8eae8139b135882158e
-Merge: 66e7a13 db01f9c
+Merge: 66e7a13... db01f9c...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Dec 23 17:06:09 2008 +0100
 
@@ -9993,14 +13228,14 @@ Date:   Tue Dec 23 17:04:29 2008 +0100
  1 files changed, 1 insertions(+), 0 deletions(-)
 
 commit 969755c2ba2ecc649cdfe7e5c71ab9619de6750f
-Merge: 99aa045 66e7a13
+Merge: 99aa045... 66e7a13...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Dec 23 17:00:30 2008 +0100
 
     Merge branch 'sock5' into si-fallback
 
 commit 66e7a134a658b36e11dd538557c7d2d3f1d40ffa
-Merge: 356057f 45ede60
+Merge: 356057f... 45ede60...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Dec 23 16:58:54 2008 +0100
 
@@ -10080,7 +13315,7 @@ Date:   Thu Dec 18 17:02:32 2008 +0000
  1 files changed, 8 insertions(+), 0 deletions(-)
 
 commit 10faa72c524ed3c2ad1362f5124c89464ec9e364
-Merge: 58cc78a 6f8331f
+Merge: 58cc78a... 6f8331f...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Dec 18 16:55:18 2008 +0000
 
@@ -10092,7 +13327,7 @@ Date:   Thu Dec 18 16:55:18 2008 +0000
     	src/bytestream-socks5.c
 
 commit 6f8331f008a1d8cfc32ee19ce9f3b4f2bf5e79c8
-Merge: 62e881c 0f1ce5a
+Merge: 62e881c... 0f1ce5a...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Dec 18 15:59:20 2008 +0000
 
@@ -10113,7 +13348,7 @@ Date:   Thu Dec 18 15:53:09 2008 +0000
  2 files changed, 50 insertions(+), 2 deletions(-)
 
 commit 4ad8cd7ddadee6c300f50baf6d295b1d5140cca6
-Merge: b38478f 3ac69cb
+Merge: b38478f... 3ac69cb...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Dec 18 15:31:18 2008 +0000
 
@@ -10183,7 +13418,7 @@ Date:   Thu Dec 18 11:55:23 2008 +0000
  1 files changed, 3 insertions(+), 3 deletions(-)
 
 commit 3ac69cb65a6cc09a643680c4f7dbcc0235316334
-Merge: c97adae ab957c4
+Merge: c97adae... ab957c4...
 Author: Senko Rasic <senko.rasic@collabora.co.uk>
 Date:   Wed Dec 17 19:49:52 2008 +0100
 
@@ -10202,21 +13437,21 @@ Date:   Wed Dec 17 18:38:03 2008 +0000
  1 files changed, 1 insertions(+), 3 deletions(-)
 
 commit e84b38984d5549f1705f47f4acfa6bac73fcbb1b
-Merge: 07abbeb cc0c086
+Merge: 07abbeb... cc0c086...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Dec 17 17:45:15 2008 +0000
 
     Merge branch 'sock5+transport' into sock5
 
 commit 07abbeb7bf28cb445fc03038c86e296cfcae1701
-Merge: b5be29e e5e64f0
+Merge: b5be29e... e5e64f0...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Dec 17 17:45:05 2008 +0000
 
     Merge branch 'master' into sock5
 
 commit e5e64f0cf8d350aac999c05637356c25622c4436
-Merge: 317eae6 03cd6c6
+Merge: 317eae6... 03cd6c6...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Dec 17 17:38:17 2008 +0000
 
@@ -10286,7 +13521,7 @@ Date:   Wed Dec 17 16:27:37 2008 +0000
  1 files changed, 1 insertions(+), 0 deletions(-)
 
 commit 317eae63ed9f7fad866ed1d7323260172c6d3a3d
-Merge: 8a3071e afddeb6
+Merge: 8a3071e... afddeb6...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Dec 17 16:17:48 2008 +0000
 
@@ -10438,7 +13673,7 @@ Date:   Mon Dec 15 18:01:07 2008 +0000
  1 files changed, 2 insertions(+), 30 deletions(-)
 
 commit 8f353fc53d71797e0673f8a73a1b66d80a54ec36
-Merge: b5be29e d87fd2b
+Merge: b5be29e... d87fd2b...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Dec 15 17:54:59 2008 +0000
 
@@ -10690,7 +13925,7 @@ Date:   Sat Dec 13 17:38:51 2008 +0000
  1 files changed, 7 insertions(+), 7 deletions(-)
 
 commit ab3bc9c6afc55e0fdac638926ee43cfb135925b9
-Merge: fce6ba1 9b35aec
+Merge: fce6ba1... 9b35aec...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Sun Dec 14 00:38:44 2008 +0000
 
@@ -10715,7 +13950,7 @@ Date:   Thu Dec 11 18:06:08 2008 +0000
  1 files changed, 3 insertions(+), 0 deletions(-)
 
 commit 846bc5884263fab1331fe05ceba7fdf326173c4d
-Merge: 930198b 2c33597
+Merge: 930198b... 2c33597...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Dec 11 16:48:22 2008 +0000
 
@@ -11038,7 +14273,7 @@ Date:   Wed Dec 10 11:28:44 2008 +0000
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 commit cd7a11c02867b83168b1a5e95e1c848dafa72375
-Merge: 5ec17d4 6b4966a
+Merge: 5ec17d4... 6b4966a...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Dec 10 11:28:10 2008 +0000
 
@@ -11186,7 +14421,7 @@ Date:   Sun Dec 7 20:59:25 2008 +0000
  4 files changed, 18 insertions(+), 71 deletions(-)
 
 commit b4c8c0c7fc6aa1f9f32b4fee024d01899d62ae72
-Merge: 5a9c36e 930198b
+Merge: 5a9c36e... 930198b...
 Author: Marco Barisione <marco@barisione.org>
 Date:   Sun Dec 7 20:47:29 2008 +0000
 
@@ -11211,14 +14446,14 @@ Date:   Sun Dec 7 18:42:20 2008 +0000
  1 files changed, 0 insertions(+), 2 deletions(-)
 
 commit 56ae544404157f6774c38202f39b8d37746686c8
-Merge: 2991ad1 640eef6
+Merge: 2991ad1... 640eef6...
 Author: Marco Barisione <marco@barisione.org>
 Date:   Sun Dec 7 18:31:55 2008 +0000
 
     Merge branch 'socks5-bytestreams' into si-fallback
 
 commit 640eef6a3a1a158f042b4324967a7eea0f94cb42
-Merge: da7068c f8cf995
+Merge: da7068c... f8cf995...
 Author: Marco Barisione <marco@barisione.org>
 Date:   Sun Dec 7 18:31:07 2008 +0000
 
@@ -11258,14 +14493,14 @@ Date:   Sun Dec 7 18:04:23 2008 +0000
  1 files changed, 2 insertions(+), 0 deletions(-)
 
 commit f8cf99589c5205ff11f47b11616405858316c9d2
-Merge: b2e9757 1d060a2
+Merge: b2e9757... 1d060a2...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Fri Dec 5 16:29:12 2008 +0000
 
     Merge branch 'master' into alban-enhanced-caps-with-complex-types
 
 commit 1d060a217f21719780236b7d793898537b41cf07
-Merge: 6b88a52 0900abe
+Merge: 6b88a52... 0900abe...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Fri Dec 5 16:25:03 2008 +0000
 
@@ -11299,7 +14534,7 @@ Date:   Fri Dec 5 15:48:13 2008 +0000
  1 files changed, 4 insertions(+), 4 deletions(-)
 
 commit b90bd2c2bb5a399783ff0193f543facb2dde8f02
-Merge: 11fdd81 89252dd
+Merge: 11fdd81... 89252dd...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Fri Dec 5 15:25:06 2008 +0000
 
@@ -11339,7 +14574,7 @@ Date:   Fri Dec 5 14:25:56 2008 +0000
  1 files changed, 20 insertions(+), 3 deletions(-)
 
 commit dbe867256cc820f30d6bc42664388d6629d5c16b
-Merge: 37d5999 da7068c
+Merge: 37d5999... da7068c...
 Author: Marco Barisione <marco@barisione.org>
 Date:   Fri Dec 5 12:56:31 2008 +0000
 
@@ -11350,7 +14585,7 @@ Date:   Fri Dec 5 12:56:31 2008 +0000
     	src/bytestream-socks5.c
 
 commit da7068c1e53d8b3e0aa67e704deee7794908fa8c
-Merge: 35dc2a1 89252dd
+Merge: 35dc2a1... 89252dd...
 Author: Marco Barisione <marco@barisione.org>
 Date:   Fri Dec 5 12:22:48 2008 +0000
 
@@ -11422,7 +14657,7 @@ Date:   Fri Dec 5 09:32:21 2008 +0100
  2 files changed, 84 insertions(+), 0 deletions(-)
 
 commit 323ecc04fce334fe48640e4a6c386196107c9b2d
-Merge: 483ca5a e672a2c
+Merge: 483ca5a... e672a2c...
 Author: Senko Rasic <senko.rasic@collabora.co.uk>
 Date:   Fri Dec 5 09:00:43 2008 +0100
 
@@ -11433,7 +14668,7 @@ Date:   Fri Dec 5 09:00:43 2008 +0100
     	src/presence-cache.c
 
 commit 89252dda5c729060db03b3af957c492d51a92a86
-Merge: e672a2c 98ba9fa
+Merge: e672a2c... 98ba9fa...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Dec 4 21:37:07 2008 +0000
 
@@ -11460,7 +14695,7 @@ Date:   Thu Dec 4 15:03:34 2008 -0500
  1 files changed, 0 insertions(+), 6 deletions(-)
 
 commit 35dc2a1d7c3718bd53154b6c1c58203824cc1500
-Merge: bf00411 2d5c231
+Merge: bf00411... 2d5c231...
 Author: Marco Barisione <marco@barisione.org>
 Date:   Thu Dec 4 18:21:04 2008 +0000
 
@@ -11693,7 +14928,7 @@ Date:   Mon Dec 1 17:53:32 2008 +0000
  1 files changed, 0 insertions(+), 1 deletions(-)
 
 commit 0d2f9af03279865f0c1b2b193cdafc82f17e0e97
-Merge: 3210adf dcafb9e
+Merge: 3210adf... dcafb9e...
 Author: Senko Rasic <senko.rasic@collabora.co.uk>
 Date:   Mon Dec 1 16:46:45 2008 +0100
 
@@ -11774,7 +15009,7 @@ Date:   Mon Dec 1 12:43:43 2008 +0000
  1 files changed, 22 insertions(+), 22 deletions(-)
 
 commit e07ada18ea94981b2e61857f743d816c8272c21f
-Merge: df4d5ab dcafb9e
+Merge: df4d5ab... dcafb9e...
 Author: Marco Barisione <marco@barisione.org>
 Date:   Mon Dec 1 11:47:42 2008 +0000
 
@@ -11855,7 +15090,7 @@ Date:   Thu Nov 27 13:37:40 2008 +0000
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 commit 37d59998d6378164017d0a046f7931d0c8fa8016
-Merge: 257dfbd df4d5ab
+Merge: 257dfbd... df4d5ab...
 Author: Marco Barisione <marco@barisione.org>
 Date:   Fri Nov 21 19:08:14 2008 +0000
 
@@ -11876,7 +15111,7 @@ Date:   Fri Nov 21 19:04:08 2008 +0000
  2 files changed, 62 insertions(+), 32 deletions(-)
 
 commit 463240cb12e6328e644b0c3a8bbdaf666bb064ba
-Merge: d99a856 99d02ac
+Merge: d99a856... 99d02ac...
 Author: Marco Barisione <marco@barisione.org>
 Date:   Fri Nov 21 16:21:50 2008 +0000
 
@@ -11980,7 +15215,7 @@ Date:   Tue Nov 18 20:18:57 2008 +0000
  1 files changed, 39 insertions(+), 47 deletions(-)
 
 commit 43f32e85786e3db622b82d931a987e7af86fcc92
-Merge: 653b291 183766c
+Merge: 653b291... 183766c...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Tue Nov 18 20:18:09 2008 +0000
 
@@ -12017,7 +15252,7 @@ Date:   Tue Nov 18 16:40:33 2008 +0000
  2 files changed, 8 insertions(+), 2 deletions(-)
 
 commit 6a9297f28cf496352a457f251627c33876f98e59
-Merge: 9c1db1a 99d02ac
+Merge: 9c1db1a... 99d02ac...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Tue Nov 18 16:00:24 2008 +0000
 
@@ -12090,7 +15325,7 @@ Date:   Fri Nov 14 14:29:48 2008 +0100
  1 files changed, 8 insertions(+), 7 deletions(-)
 
 commit 1f29a13f8d09dfe702695d7bca7cd3dc3fb0b607
-Merge: 51eb40a 99d02ac
+Merge: 51eb40a... 99d02ac...
 Author: Senko Rasic <senko.rasic@collabora.co.uk>
 Date:   Fri Nov 14 13:21:19 2008 +0100
 
@@ -12255,7 +15490,7 @@ Date:   Wed Nov 12 15:41:30 2008 +0000
  1 files changed, 2 insertions(+), 4 deletions(-)
 
 commit f4dbdeadb62386856cb39e9c982b41b5eccbcf0e
-Merge: 898f904 0d53c3e
+Merge: 898f904... 0d53c3e...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Wed Nov 12 15:21:46 2008 +0000
 
@@ -12529,7 +15764,7 @@ Date:   Mon Nov 10 14:53:08 2008 +0000
  1 files changed, 1 insertions(+), 5 deletions(-)
 
 commit 76e37b75629cda586eab3fbfa2efef2e0824d95c
-Merge: 2a39510 334a12f
+Merge: 2a39510... 334a12f...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Mon Nov 10 12:28:23 2008 +0000
 
@@ -12667,7 +15902,7 @@ Date:   Fri Nov 7 17:30:21 2008 +0000
  1 files changed, 8 insertions(+), 2 deletions(-)
 
 commit fe77f6fa27c805b9aa0cbbc55e799553a1aaa5b0
-Merge: a646843 334a12f
+Merge: a646843... 334a12f...
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Fri Nov 7 16:58:58 2008 +0100
 
@@ -12702,7 +15937,7 @@ Date:   Fri Nov 7 12:53:57 2008 +0100
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit c83eaf6cc3db5ba1f6145f33782b15b7269592c7
-Merge: c3d2888 334a12f
+Merge: c3d2888... 334a12f...
 Author: Marco Barisione <marco@barisione.org>
 Date:   Fri Nov 7 11:33:17 2008 +0000
 
@@ -12806,7 +16041,7 @@ Date:   Thu Nov 6 09:53:36 2008 +0000
  2 files changed, 16 insertions(+), 4 deletions(-)
 
 commit 413ef7e44b8c00ed94f0bea77173cb80abe5d8e8
-Merge: 31246e1 4367222
+Merge: 31246e1... 4367222...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Thu Nov 6 09:40:19 2008 +0000
 
@@ -12898,7 +16133,7 @@ Date:   Thu Nov 6 00:09:18 2008 +0100
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 commit c9d7f246d6e7e1419830921cabb5fa3657f85106
-Merge: 28d2e6b 8e1c9f8
+Merge: 28d2e6b... 8e1c9f8...
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Wed Nov 5 23:42:56 2008 +0100
 
@@ -13250,7 +16485,7 @@ Date:   Tue Nov 4 15:01:34 2008 -0500
  1 files changed, 9 insertions(+), 2 deletions(-)
 
 commit 80e0881cbd981dec4937fef076c4efa14fb77940
-Merge: 01d1aa2 904bb6b
+Merge: 01d1aa2... 904bb6b...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Tue Nov 4 18:24:36 2008 +0000
 
@@ -13330,7 +16565,7 @@ Date:   Tue Nov 4 17:26:21 2008 +0000
  1 files changed, 13 insertions(+), 2 deletions(-)
 
 commit 9362b01a5f4fc99084d54ffc5cb8dffe99c1a1b7
-Merge: 088b165 a9d523d
+Merge: 088b165... a9d523d...
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Tue Nov 4 18:25:07 2008 +0100
 
@@ -13347,7 +16582,7 @@ Date:   Tue Nov 4 18:23:59 2008 +0100
  2 files changed, 4 insertions(+), 1 deletions(-)
 
 commit a9d523da53eb9730ac30e9de6e4edf06b5e4f31b
-Merge: ce81797 89642f5
+Merge: ce81797... 89642f5...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Nov 4 17:22:00 2008 +0000
 
@@ -13533,7 +16768,7 @@ Date:   Thu Oct 30 15:19:49 2008 +0000
  1 files changed, 0 insertions(+), 5 deletions(-)
 
 commit 904bb6b1c1bf5b47ba62d0e1165a7af4f3725ee1
-Merge: 22876b3 666ec38
+Merge: 22876b3... 666ec38...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Nov 4 10:22:45 2008 +0000
 
@@ -13616,7 +16851,7 @@ Date:   Tue Nov 4 09:56:53 2008 +0100
  10 files changed, 20 insertions(+), 20 deletions(-)
 
 commit 2a395100c5f528ea81c3efd66d6c86abe81632da
-Merge: a968f76 22876b3
+Merge: a968f76... 22876b3...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Mon Nov 3 19:24:14 2008 +0000
 
@@ -13632,7 +16867,7 @@ Date:   Mon Nov 3 19:14:44 2008 +0000
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 commit e1d4d07834e4078dacdf624510e58a5c5b992ea9
-Merge: 3a75959 d0a66d6
+Merge: 3a75959... d0a66d6...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Mon Nov 3 19:08:53 2008 +0000
 
@@ -13720,7 +16955,7 @@ Date:   Mon Nov 3 18:21:34 2008 +0000
  1 files changed, 12 insertions(+), 4 deletions(-)
 
 commit 7475a6bba58d4667d4a925e86fa2cc1be6b56cae
-Merge: 3925134 3a75959
+Merge: 3925134... 3a75959...
 Author: Marco Barisione <marco@barisione.org>
 Date:   Mon Nov 3 18:07:20 2008 +0000
 
@@ -13920,7 +17155,7 @@ Date:   Sun Nov 2 17:46:35 2008 +0000
  2 files changed, 67 insertions(+), 14 deletions(-)
 
 commit 8e301baaf3522b48c653fa18c6e8902fac4b39b5
-Merge: 48e7dcf 3a75959
+Merge: 48e7dcf... 3a75959...
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Sat Nov 1 12:30:57 2008 +0100
 
@@ -14139,7 +17374,7 @@ Date:   Thu Oct 30 11:33:30 2008 +0000
  2 files changed, 80 insertions(+), 0 deletions(-)
 
 commit c2365bcfd0a738aaf91360e6282e87228ecf9882
-Merge: 92036f8 675e409
+Merge: 92036f8... 675e409...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Wed Oct 29 14:16:54 2008 +0000
 
@@ -14174,14 +17409,14 @@ Date:   Tue Oct 28 18:10:33 2008 +0000
  1 files changed, 0 insertions(+), 3 deletions(-)
 
 commit a968f760d0d9ea3858279490def0767434b54a82
-Merge: 7f1dacd 9faed8a
+Merge: 7f1dacd... 9faed8a...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Tue Oct 28 15:15:38 2008 +0000
 
     Merge branch 'alban-request-tube-channel' into alban-enhanced-caps-with-complex-types
 
 commit ce853e30fa0e654c22890773f38a21a3edf95087
-Merge: 9f56ff8 96e93d9
+Merge: 9f56ff8... 96e93d9...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Tue Oct 28 15:10:06 2008 +0000
 
@@ -14373,14 +17608,14 @@ Date:   Tue Oct 28 14:44:48 2008 +0000
  1 files changed, 1 insertions(+), 3 deletions(-)
 
 commit 96e93d9a9205e66ce78ed657c75f954f41b3e2c6
-Merge: ce70934 0c60528
+Merge: ce70934... 0c60528...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Oct 28 14:33:25 2008 +0000
 
     Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble
 
 commit 7f1dacd36aeb753a2e41988f6333c164b1c51965
-Merge: 2883f77 4f5474e
+Merge: 2883f77... 4f5474e...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Tue Oct 28 14:30:26 2008 +0000
 
@@ -14391,7 +17626,7 @@ Date:   Tue Oct 28 14:30:26 2008 +0000
     	extensions/Channel_Interface_Tube.xml
 
 commit 0c605289189c7d9b9a439861c83d37388d4581ea
-Merge: 119605c e9c43e0
+Merge: 119605c... e9c43e0...
 Author: Dafydd Harries <daf@rhydd.org>
 Date:   Tue Oct 28 13:35:13 2008 +0000
 
@@ -14420,14 +17655,14 @@ Date:   Tue Oct 28 12:57:43 2008 +0000
  2 files changed, 24 insertions(+), 0 deletions(-)
 
 commit 6ef9c8eda65f79168063687d563c5f23fe86324d
-Merge: eca4235 119605c
+Merge: eca4235... 119605c...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Tue Oct 28 11:20:42 2008 +0000
 
     Merge branch 'master' into alban-request-tube-channel
 
 commit 76948d58bc0838504a335e61cdb52bf08c8e9cc3
-Merge: 7ecd3f7 119605c
+Merge: 7ecd3f7... 119605c...
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Mon Oct 27 22:30:29 2008 +0100
 
@@ -14801,7 +18036,7 @@ Date:   Fri Oct 24 13:23:00 2008 +0100
  2 files changed, 25 insertions(+), 0 deletions(-)
 
 commit 2883f77e1264733f9b22ec44c12e458226971660
-Merge: 593429c 8697f4f
+Merge: 593429c... 8697f4f...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Thu Oct 23 16:48:20 2008 -0400
 
@@ -14812,7 +18047,7 @@ Date:   Thu Oct 23 16:48:20 2008 -0400
     	src/presence-cache.h
 
 commit 8697f4f564f07fb6d7fc34de315cc5befc4b3d64
-Merge: 9114fd8 299cf44
+Merge: 9114fd8... 299cf44...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Thu Oct 23 16:45:45 2008 -0400
 
@@ -14828,7 +18063,7 @@ Date:   Thu Oct 23 16:16:45 2008 -0400
  1 files changed, 0 insertions(+), 7 deletions(-)
 
 commit 575591ff8b763bfc28b3ddf886e1161d70299005
-Merge: 8ea2ba6 9114fd8
+Merge: 8ea2ba6... 9114fd8...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Thu Oct 23 16:16:29 2008 -0400
 
@@ -15099,7 +18334,7 @@ Date:   Wed Oct 15 16:45:06 2008 +0100
  6 files changed, 242 insertions(+), 2 deletions(-)
 
 commit a42142f4f46b4abbbc765c45bb0adb1b5f08308b
-Merge: 0043df2 b74b501
+Merge: 0043df2... b74b501...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Wed Oct 22 16:45:59 2008 -0400
 
@@ -15112,21 +18347,21 @@ Date:   Wed Oct 22 16:45:59 2008 -0400
     	tests/twisted/tubes/test-si-tubes.py
 
 commit fce6ba1a6a5e36e5d201efc28dc4ff0ca0d87212
-Merge: d7a3f90 b74b501
+Merge: d7a3f90... b74b501...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Wed Oct 22 15:52:02 2008 -0400
 
     Merge branch 'master' into alban-xmpp-spec-tube-caps
 
 commit b74b5012b8762b13761b24f75f616043ff1220f9
-Merge: 47a667e be0bec5
+Merge: 47a667e... be0bec5...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Oct 22 16:44:38 2008 +0100
 
     Merge commit 'upstream/master'
 
 commit 7241ed29190bea6c1f1ebc9169c66157fd761c4c
-Merge: 75eeaad be0bec5
+Merge: 75eeaad... be0bec5...
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Wed Oct 22 16:55:14 2008 +0200
 
@@ -15143,14 +18378,14 @@ Date:   Wed Oct 22 15:40:39 2008 +0100
  2 files changed, 10 insertions(+), 8 deletions(-)
 
 commit be0bec5e0bdf2d2388be40a685ab41df6aea0c0e
-Merge: 051770c b04d0d5
+Merge: 051770c... b04d0d5...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Wed Oct 22 09:08:01 2008 -0400
 
     Merge branch 'master' into alban-bug13891
 
 commit b04d0d5106af976549795d5964bc1c77c083942d
-Merge: df6ad72 df39cd7
+Merge: df6ad72... df39cd7...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Oct 22 12:44:54 2008 +0100
 
@@ -15233,14 +18468,14 @@ Date:   Wed Oct 22 12:33:23 2008 +0100
  1 files changed, 10 insertions(+), 0 deletions(-)
 
 commit 6e50fa0269dc1b02d2c3f4dbbdf6e543149dc996
-Merge: 8a24c91 4231766
+Merge: 8a24c91... 4231766...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Wed Oct 22 12:31:08 2008 +0100
 
     Merge branch 'ns'
 
 commit 8ea2ba6eecb69144ff53f228859027289e940123
-Merge: 6736fcc 8a24c91
+Merge: 6736fcc... 8a24c91...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Tue Oct 21 11:43:24 2008 -0400
 
@@ -15256,7 +18491,7 @@ Date:   Tue Oct 21 11:10:37 2008 -0400
  1 files changed, 3 insertions(+), 2 deletions(-)
 
 commit f4e737ebdbda23b3284c8bf4125b14b1913982ea
-Merge: dd5efa0 8a24c91
+Merge: dd5efa0... 8a24c91...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Tue Oct 21 10:51:58 2008 -0400
 
@@ -15308,7 +18543,7 @@ Date:   Tue Oct 21 16:35:04 2008 +0200
  1 files changed, 13 insertions(+), 5 deletions(-)
 
 commit dab5836ad05c90149a8c6d8a7a39449b6aa69a08
-Merge: f21b845 10d4222
+Merge: f21b845... 10d4222...
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Tue Oct 21 15:24:55 2008 +0200
 
@@ -15324,7 +18559,7 @@ Date:   Tue Oct 21 15:24:55 2008 +0200
     	tests/twisted/jingle/test-incoming-call.py
 
 commit 10d4222dd53edf086f59fbe8b086913700bc51c3
-Merge: 872f88b 30573b7
+Merge: 872f88b... 30573b7...
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Tue Oct 21 09:15:56 2008 +0200
 
@@ -15422,7 +18657,7 @@ Date:   Tue Oct 21 09:01:16 2008 +0200
  5 files changed, 309 insertions(+), 30 deletions(-)
 
 commit 6736fcc525d7a2e27a0bfa66881ae3dede53dfdf
-Merge: 16f7a8d f21b845
+Merge: 16f7a8d... f21b845...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Mon Oct 20 12:28:47 2008 -0400
 
@@ -15618,7 +18853,7 @@ Date:   Fri Oct 17 18:05:51 2008 -0400
  1 files changed, 2 insertions(+), 0 deletions(-)
 
 commit f2ff7025de6acde996925938ab4ac20bf5a8c7e7
-Merge: f5494d0 a4a4577
+Merge: f5494d0... a4a4577...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Fri Oct 17 17:54:00 2008 -0400
 
@@ -15659,7 +18894,7 @@ Date:   Fri Oct 17 15:50:42 2008 -0400
  1 files changed, 3 insertions(+), 1 deletions(-)
 
 commit 956f207c43efcfc51d48d67488811a17849cc2cc
-Merge: 8e388d7 595b855
+Merge: 8e388d7... 595b855...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Fri Oct 17 15:43:36 2008 -0400
 
@@ -15675,7 +18910,7 @@ Date:   Fri Oct 17 15:37:45 2008 -0400
  1 files changed, 2 insertions(+), 1 deletions(-)
 
 commit 8e388d74e69ae0190ad2986dcc45d61a4aeb6979
-Merge: 1ccaf87 5cd2a90
+Merge: 1ccaf87... 5cd2a90...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Fri Oct 17 15:20:56 2008 -0400
 
@@ -16560,7 +19795,7 @@ Date:   Tue Oct 14 18:15:40 2008 +0100
  28 files changed, 123 insertions(+), 414 deletions(-)
 
 commit 5ccbeffaae28e61546b4ee56f2eb5e5ea9aecb16
-Merge: acdd2f0 6c4b6ee
+Merge: acdd2f0... 6c4b6ee...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Oct 14 17:27:54 2008 +0100
 
@@ -16718,7 +19953,7 @@ Date:   Tue Oct 14 15:51:48 2008 +0200
  8 files changed, 188 insertions(+), 61 deletions(-)
 
 commit c8df361154fb570ea6a7260ea03682598728b5bc
-Merge: 200043c 2750609
+Merge: 200043c... 2750609...
 Author: Senko Rasic <senko@phyrexia.lan>
 Date:   Mon Oct 13 19:37:19 2008 +0200
 
@@ -16855,7 +20090,7 @@ Date:   Mon Oct 13 11:43:30 2008 +0100
  2 files changed, 21 insertions(+), 24 deletions(-)
 
 commit 291e274f5fe4c3dbf5e4f405a59af88cfa3ce876
-Merge: 3cee405 6ed9547
+Merge: 3cee405... 6ed9547...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Fri Oct 10 11:56:13 2008 +0100
 
@@ -16933,14 +20168,14 @@ Date:   Wed Oct 8 11:30:59 2008 +0100
  5 files changed, 136 insertions(+), 110 deletions(-)
 
 commit 924abfeee339dbb497c73abac85754ee46ddda5b
-Merge: 0872440 6a49b76
+Merge: 0872440... 6a49b76...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Mon Oct 6 18:50:06 2008 +0100
 
     Merge branch 'master' into alban-enhanced-caps-merging-attempt
 
 commit 6a49b768eaa42b5dc0ceac875a4a9ecfc380c8d5
-Merge: 0a6a0ad 49024ff
+Merge: 0a6a0ad... 49024ff...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Mon Oct 6 16:40:58 2008 +0100
 
@@ -17065,7 +20300,7 @@ Date:   Tue Sep 30 14:43:25 2008 +0100
  11 files changed, 85 insertions(+), 85 deletions(-)
 
 commit e40172c623ed0458faac01f8545a8edd7621d1bd
-Merge: d1d2756 2a4dbfc
+Merge: d1d2756... 2a4dbfc...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Sep 30 14:33:24 2008 +0100
 
@@ -17141,7 +20376,7 @@ Date:   Mon Sep 29 18:25:26 2008 +0100
  1 files changed, 1 insertions(+), 0 deletions(-)
 
 commit ac19d9f77b844aabf17485466b2042c1601f7dd5
-Merge: b4c4d84 d1d2756
+Merge: b4c4d84... d1d2756...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Tue Sep 30 10:58:24 2008 +0100
 
@@ -17257,7 +20492,7 @@ Date:   Fri Sep 26 20:25:47 2008 +0100
  2 files changed, 2 insertions(+), 24 deletions(-)
 
 commit 4a3665c9942e171b860ba19ee76e7b184870780c
-Merge: 2c97b3b 164e487
+Merge: 2c97b3b... 164e487...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Fri Sep 26 20:15:06 2008 +0100
 
@@ -17268,7 +20503,7 @@ Date:   Fri Sep 26 20:15:06 2008 +0100
     	tests/twisted/Makefile.am
 
 commit b4c4d8409adfd03b84ac0a9c14717653575f55d5
-Merge: 144baeb 2c97b3b
+Merge: 144baeb... 2c97b3b...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Fri Sep 26 20:03:55 2008 +0100
 
@@ -17632,7 +20867,7 @@ Date:   Wed Sep 10 16:24:49 2008 +0100
  1 files changed, 6 insertions(+), 0 deletions(-)
 
 commit 696eb50f6589ce241d756ba52f08151166b1a610
-Merge: 8eb489e 7d0652e
+Merge: 8eb489e... 7d0652e...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Thu Sep 25 11:14:33 2008 +0100
 
@@ -17771,14 +21006,14 @@ Date:   Tue Sep 23 12:22:16 2008 +0100
  1 files changed, 76 insertions(+), 23 deletions(-)
 
 commit 10ba609ada73ab2185f4a5f5ff4416f259d224f1
-Merge: f4e1306 8054460
+Merge: f4e1306... 8054460...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Tue Sep 23 11:28:43 2008 +0100
 
     Merge branch 'master' into alban-enhanced-caps-merging-attempt
 
 commit 8054460868a54d6cca6d6e4d73fa2522ffdfeab8
-Merge: 129896a 04ce81b
+Merge: 129896a... 04ce81b...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Tue Sep 23 11:01:53 2008 +0100
 
@@ -17845,21 +21080,21 @@ Date:   Mon Sep 22 18:05:34 2008 +0100
  5 files changed, 114 insertions(+), 114 deletions(-)
 
 commit f4e130653906587f21bd8f2b57432781a739f3ed
-Merge: 172a017 53cf2b0
+Merge: 172a017... 53cf2b0...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Mon Sep 22 18:14:48 2008 +0100
 
     Merge commit 'wjt/wjt-enhanced-caps-merged-again' into alban-enhanced-caps-merging-attempt
 
 commit 172a017fb58d5bbb8d60ed754e1ec30b3addb048
-Merge: d031ab0 33fd627
+Merge: d031ab0... 33fd627...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Mon Sep 22 18:04:02 2008 +0100
 
     Merge commit 'wjt/requestotron' into alban-enhanced-caps-merging-attempt
 
 commit d031ab053b13692745fdc9206663bdf6ea2208d6
-Merge: ffb437b 129896a
+Merge: ffb437b... 129896a...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Mon Sep 22 17:54:57 2008 +0100
 
@@ -17908,14 +21143,14 @@ Date:   Fri Sep 19 17:18:33 2008 +0100
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 commit 4a56e5804bdf78a6b693928a3c8d60cf1dc0015f
-Merge: d74f367 fd3cf54
+Merge: d74f367... fd3cf54...
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Fri Sep 19 17:00:05 2008 +0100
 
     Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble
 
 commit c752ca83c17f9c977925dd7ce3c7b45a97504ae7
-Merge: ffb437b afc3146
+Merge: ffb437b... afc3146...
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Fri Sep 19 16:36:51 2008 +0100
 
@@ -18251,7 +21486,7 @@ Date:   Fri Sep 12 11:54:19 2008 +0100
  11 files changed, 25 insertions(+), 25 deletions(-)
 
 commit b80beaf86216ae83b77256171613f727a618b5d3
-Merge: f4d0efc e6f08ae
+Merge: f4d0efc... e6f08ae...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Fri Sep 12 11:53:34 2008 +0100
 
@@ -18659,7 +21894,7 @@ Date:   Thu Sep 11 13:22:37 2008 +0100
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 commit f3d15720dc3c79f0c9cbd633aa5f39f3031901d0
-Merge: 1151b7e 184aaca
+Merge: 1151b7e... 184aaca...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Thu Sep 11 12:40:45 2008 +0100
 
@@ -21245,7 +24480,7 @@ Date:   Thu Aug 28 16:19:34 2008 +0100
  1 files changed, 0 insertions(+), 1 deletions(-)
 
 commit d39f2185b17bb9bc3f90a246d60cdc4b762b3712
-Merge: 079d40c 98e1b36
+Merge: 079d40c... 98e1b36...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Thu Aug 28 14:41:00 2008 +0100
 
@@ -21261,7 +24496,7 @@ Date:   Tue Aug 26 18:17:13 2008 +0100
  1 files changed, 0 insertions(+), 1 deletions(-)
 
 commit 079d40cddfe7f34ff542a418b83bae2d41c22076
-Merge: 90772f6 8cc1dbd
+Merge: 90772f6... 8cc1dbd...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Mon Aug 25 10:54:28 2008 +0100
 
@@ -21313,7 +24548,7 @@ Date:   Thu Aug 21 16:47:38 2008 +0100
  1 files changed, 28 insertions(+), 24 deletions(-)
 
 commit 410a64ed7847d1bdf7b242be4d8e628693989ac0
-Merge: d45f48b 848de0a
+Merge: d45f48b... 848de0a...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Thu Aug 21 16:41:53 2008 +0100
 
@@ -21454,7 +24689,7 @@ Date:   Fri Aug 1 15:48:45 2008 +0000
  1 files changed, 341 insertions(+), 20 deletions(-)
 
 commit 1eb942a1479a6bc906effbb795d2e2b58cd5af56
-Merge: 2ae8ce8 ea8b503
+Merge: 2ae8ce8... ea8b503...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Thu Aug 21 14:15:00 2008 +0100
 
@@ -21488,14 +24723,14 @@ Date:   Thu Aug 21 14:11:56 2008 +0100
  1 files changed, 29 insertions(+), 25 deletions(-)
 
 commit ea8b503268b89cea6ad8aa52b64ecaf4529e804e
-Merge: c898c4c 94b859e
+Merge: c898c4c... 94b859e...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Thu Aug 21 14:00:51 2008 +0100
 
     Merge branch 'trivia'
 
 commit c898c4c387e5974243d867bf6a1428805fa9211d
-Merge: 85ff202 7b8abe8
+Merge: 85ff202... 7b8abe8...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Thu Aug 21 13:58:52 2008 +0100
 
@@ -21570,14 +24805,14 @@ Date:   Thu Aug 21 12:46:13 2008 +0100
  1 files changed, 1 insertions(+), 3 deletions(-)
 
 commit 15f1b7933d1b457664ccfe0f85a7cae973e45412
-Merge: 476fd03 6a89b3f
+Merge: 476fd03... 6a89b3f...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 19:32:14 2008 +0100
 
     Merge branch 'master' into requestotron/1-1-tubes
 
 commit 6a89b3f2f94f79a607a1fd4cf667c692f76824e0
-Merge: 5190c7b 6d52ca7
+Merge: 5190c7b... 6d52ca7...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 18:41:13 2008 +0100
 
@@ -21602,14 +24837,14 @@ Date:   Wed Aug 20 18:36:20 2008 +0100
  1 files changed, 23 insertions(+), 2 deletions(-)
 
 commit 5190c7bf2b68fa5763ec5604af37adad90fa632f
-Merge: 37ea35e c44b5a9
+Merge: 37ea35e... c44b5a9...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 17:40:04 2008 +0100
 
     Merge branch 'master' into requestotron/requestables
 
 commit c44b5a956c8a009db317305dfdbf2cd360e6e3fa
-Merge: 1f9ef1c 69469b9
+Merge: 1f9ef1c... 69469b9...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 17:37:54 2008 +0100
 
@@ -21711,7 +24946,7 @@ Date:   Wed Aug 20 14:10:11 2008 +0100
  1 files changed, 1 insertions(+), 3 deletions(-)
 
 commit 2c2952a2f99da1d8abcff6d8349bff31d55097ab
-Merge: 34456a5 476fd03
+Merge: 34456a5... 476fd03...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Wed Aug 20 14:02:55 2008 +0100
 
@@ -21768,7 +25003,7 @@ Date:   Wed Aug 20 13:20:58 2008 +0100
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 commit 0e6dda4ad5dd283350c2b52734b57ec3026011db
-Merge: 3842f85 bbedbdf
+Merge: 3842f85... bbedbdf...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 13:10:48 2008 +0100
 
@@ -21788,14 +25023,14 @@ Date:   Wed Aug 20 13:07:54 2008 +0100
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 commit b450db6d0fec529bcb502db7eedbfe1cc07da5e9
-Merge: 408f22b 37ea35e
+Merge: 408f22b... 37ea35e...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 13:04:31 2008 +0100
 
     Merge branch 'requestotron/requestables' into requestotron/muc
 
 commit 6d52ca7b4a9e77a035868a52e48f271d9c349b74
-Merge: b03cd35 37ea35e
+Merge: b03cd35... 37ea35e...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 13:01:57 2008 +0100
 
@@ -21820,7 +25055,7 @@ Date:   Wed Aug 20 13:00:57 2008 +0100
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 commit 37ea35edf74463e83fdc779f492533fffa492ff1
-Merge: 4e0ebab 5b5d110
+Merge: 4e0ebab... 5b5d110...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 12:58:09 2008 +0100
 
@@ -21837,63 +25072,63 @@ Date:   Wed Aug 20 12:56:27 2008 +0100
  2 files changed, 2 insertions(+), 4 deletions(-)
 
 commit 808947d21d7cf15834eec21f3d1eb4f85a03f7dc
-Merge: 4b86bfe 408f22b
+Merge: 4b86bfe... 408f22b...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Wed Aug 20 12:35:41 2008 +0100
 
     Merge commit 'smcv/requestotron/muc' into alban-request-tube-channel
 
 commit 4b86bfe2238eac24e91da4924afb56af56ea47f7
-Merge: cace605 3842f85
+Merge: cace605... 3842f85...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Wed Aug 20 12:35:29 2008 +0100
 
     Merge commit 'smcv/requestotron/1-1-tubes' into alban-request-tube-channel
 
 commit 3842f85c981dfbf1a4d88f8a34c2d8cbc39f2a94
-Merge: 4a6d168 4e0ebab
+Merge: 4a6d168... 4e0ebab...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 12:33:26 2008 +0100
 
     Merge branch 'requestotron/requestables' into requestotron/1-1-tubes
 
 commit 408f22b0deeb67a6a1091c59b5a98c9ddafaca8a
-Merge: 2692ccc 4e0ebab
+Merge: 2692ccc... 4e0ebab...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 12:33:11 2008 +0100
 
     Merge branch 'requestotron/requestables' into requestotron/muc
 
 commit b03cd3597ec985d1eede2805945a44acfd7d9795
-Merge: d284529 4e0ebab
+Merge: d284529... 4e0ebab...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 12:33:04 2008 +0100
 
     Merge branch 'requestotron/requestables' into requestotron/im
 
 commit 4e0ebab8d473410472de0571b118a4182a2cce3b
-Merge: ef5811d 2fdbead
+Merge: ef5811d... 2fdbead...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 12:32:47 2008 +0100
 
     Merge branch 'requestotron/dualmode' into requestotron/requestables
 
 commit 2fdbeadf720ee683d62de4a4975c4e489ea082d1
-Merge: be42c24 e70499c
+Merge: be42c24... e70499c...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 12:32:31 2008 +0100
 
     Merge commit 'origin/master' into requestotron/dualmode
 
 commit 1f9ef1c010b3bb8292e9ab6fbe22ca92fae8339c
-Merge: 9fc4d03 e70499c
+Merge: 9fc4d03... e70499c...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Wed Aug 20 12:32:14 2008 +0100
 
     Merge commit 'origin/master' into requestotron/conn-requests
 
 commit cace6054f21f6913cc5ca18e752d7f04835bfaaa
-Merge: 6c84152 2692ccc
+Merge: 6c84152... 2692ccc...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Wed Aug 20 12:23:27 2008 +0100
 
@@ -21904,7 +25139,7 @@ Date:   Wed Aug 20 12:23:27 2008 +0100
     	src/connection.c
 
 commit 6c841525009d56a49f736d3d21691ab0f7318b23
-Merge: 51c888a 4a6d168
+Merge: 51c888a... 4a6d168...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Wed Aug 20 12:21:16 2008 +0100
 
@@ -21919,7 +25154,7 @@ Date:   Wed Aug 20 12:21:16 2008 +0100
     	tests/twisted/tubes/test-si-tubes.py
 
 commit 51c888ab27286298c9ff7493df71a58513da0455
-Merge: e84c6a7 e70499c
+Merge: e84c6a7... e70499c...
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   Wed Aug 20 11:17:52 2008 +0100
 
@@ -22001,28 +25236,28 @@ Date:   Tue Aug 19 19:21:18 2008 +0100
  1 files changed, 7 insertions(+), 1 deletions(-)
 
 commit beb2c8f9ece82e8022b6301f8294fbda3e57e0a2
-Merge: 683580f 93eed77
+Merge: 683580f... 93eed77...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Aug 19 18:52:47 2008 +0100
 
     Merge branch 'targetid'
 
 commit 683580fe3869c69eda2c75ef79f60554581f3997
-Merge: 570c706 d588f2c
+Merge: 570c706... d588f2c...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Aug 19 18:51:15 2008 +0100
 
     Merge commit 'sjoerd/inspectotron'
 
 commit 93eed7744315ff0f5a67640dde0da749292d13ce
-Merge: ea0c16c 570c706
+Merge: ea0c16c... 570c706...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Aug 19 16:56:01 2008 +0100
 
     Merge branch 'master' into targetid
 
 commit 570c7063a917d5f7f34fbbe6863de736e458ca9f
-Merge: dd00bd9 27d8e6f
+Merge: dd00bd9... 27d8e6f...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Aug 19 16:55:30 2008 +0100
 
@@ -22041,7 +25276,7 @@ Date:   Tue Aug 19 16:52:56 2008 +0100
  0 files changed, 0 insertions(+), 0 deletions(-)
 
 commit ea0c16c143464e824ff9a953058d5adffd157787
-Merge: 608cc44 dd00bd9
+Merge: 608cc44... dd00bd9...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Tue Aug 19 16:52:33 2008 +0100
 
@@ -22117,14 +25352,14 @@ Date:   Mon Aug 18 21:07:05 2008 +0100
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 commit dd00bd965ea2e5e7306d1bd07e24162aaf844a09
-Merge: c5d21e0 a2304d6
+Merge: c5d21e0... a2304d6...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Aug 18 20:13:29 2008 +0100
 
     Merge commit 'alban/alban-trivial'
 
 commit d588f2c11f9a9201debe91fee2566e75b104a709
-Merge: 015fa72 c5d21e0
+Merge: 015fa72... c5d21e0...
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   Mon Aug 18 19:05:11 2008 +0100
 
@@ -22271,7 +25506,7 @@ Date:   Mon Aug 18 15:54:58 2008 +0100
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 commit 4a6d16808fb68afc6904a2fcfb2bb05d90f9d894
-Merge: 8b9bed0 ef5811d
+Merge: 8b9bed0... ef5811d...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Aug 18 15:43:28 2008 +0100
 
@@ -22289,35 +25524,35 @@ Date:   Mon Aug 18 15:35:45 2008 +0100
  3 files changed, 40 insertions(+), 1 deletions(-)
 
 commit 2692cccd3989367ba405fd93d997def016fda3c7
-Merge: 27f4c62 ef5811d
+Merge: 27f4c62... ef5811d...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Aug 18 15:00:44 2008 +0100
 
     Merge branch 'requestotron/requestables' into requestotron/muc
 
 commit d2845295f4ae7360bd761e10abee11a4f63a01a7
-Merge: 924375b ef5811d
+Merge: 924375b... ef5811d...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Aug 18 14:59:13 2008 +0100
 
     Merge branch 'requestotron/requestables' into requestotron/im
 
 commit ef5811d3fb157316ec18aab231c254dd214a7ad3
-Merge: c32db1b be42c24
+Merge: c32db1b... be42c24...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Aug 18 14:56:41 2008 +0100
 
     Merge branch 'requestotron/dualmode' into requestotron/requestables
 
 commit be42c24d750b921e89d467373f07c793c5b65647
-Merge: fd8e584 9fc4d03
+Merge: fd8e584... 9fc4d03...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Aug 18 14:38:16 2008 +0100
 
     Merge branch 'requestotron/conn-requests' into requestotron/dualmode
 
 commit 9fc4d03b89e67715c5816eeced67f3a010a9acbb
-Merge: b22ab67 c5d21e0
+Merge: b22ab67... c5d21e0...
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   Mon Aug 18 14:34:27 2008 +0100
 
