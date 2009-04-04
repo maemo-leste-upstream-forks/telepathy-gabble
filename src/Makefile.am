@@ -49,6 +49,10 @@ libgabble_convenience_la_SOURCES = \
     disco.c \
     error.c \
     error.h \
+    ft-channel.c \
+    ft-channel.h \
+    ft-manager.c \
+    ft-manager.h \
     gabble.c \
     gabble.h \
     im-channel.h \

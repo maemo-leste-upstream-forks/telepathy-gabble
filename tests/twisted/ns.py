@@ -5,6 +5,7 @@ CAPS = "http://jabber.org/protocol/caps"
 DISCO_INFO = "http://jabber.org/protocol/disco#info"
 DISCO_ITEMS = "http://jabber.org/protocol/disco#items"
 FEATURE_NEG = 'http://jabber.org/protocol/feature-neg'
+FILE_TRANSFER = 'http://jabber.org/protocol/si/profile/file-transfer'
 GOOGLE_JINGLE_INFO = 'google:jingleinfo'
 GOOGLE_P2P = "http://www.google.com/transport/p2p"
 GOOGLE_ROSTER = 'google:roster'
