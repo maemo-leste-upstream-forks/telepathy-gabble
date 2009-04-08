@@ -80,10 +80,7 @@ G_DEFINE_TYPE_WITH_CODE (GabbleMediaChannel, gabble_media_channel,
     G_IMPLEMENT_INTERFACE (TP_TYPE_CHANNEL_IFACE, NULL));
 
 static const gchar *gabble_media_channel_interfaces[] = {
-    /* FIXME: our implementation of CallState is a stub, so it doesn't
-    appear in GetInterfaces' output to avoid confusing clients
     TP_IFACE_CHANNEL_INTERFACE_CALL_STATE,
-    */
     TP_IFACE_CHANNEL_INTERFACE_GROUP,
     TP_IFACE_CHANNEL_INTERFACE_HOLD,
     TP_IFACE_CHANNEL_INTERFACE_MEDIA_SIGNALLING,
@@ -160,6 +157,11 @@ struct _GabbleMediaChannelPrivate
   TpLocalHoldState hold_state;
   TpLocalHoldStateReason hold_state_reason;
 
+  /* The "most held" of all associated contents' current states, which is what
+   * we present on CallState.
+   */
+  JingleRtpRemoteState remote_state;
+
   GPtrArray *delayed_request_streams;
 
   /* These are really booleans, but gboolean is signed. Thanks, GLib */
@@ -205,7 +207,7 @@ static void session_new_content_cb (GabbleJingleSession *session,
 static void create_stream_from_content (GabbleMediaChannel *chan,
     GabbleJingleContent *c);
 static gboolean contact_is_media_capable (GabbleMediaChannel *chan, TpHandle peer,
-    gboolean *wait);
+    gboolean *wait, GError **error);
 static void stream_creation_data_cancel (gpointer p, gpointer unused);
 
 static void
@@ -1504,14 +1506,8 @@ _gabble_media_channel_request_contents (GabbleMediaChannel *chan,
   g_object_get (priv->session, "peer", &peer,
       "peer-resource", &peer_resource, NULL);
 
-  if (!contact_is_media_capable (chan, peer, NULL))
-    {
-      DEBUG ("peer has no a/v capabilities");
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
-          "member has no audio/video capabilities");
-
-      return FALSE;
-    }
+  if (!contact_is_media_capable (chan, peer, NULL, error))
+    return FALSE;
 
   want_audio = want_video = FALSE;
 
@@ -1587,11 +1583,8 @@ _gabble_media_channel_request_contents (GabbleMediaChannel *chan,
 
       if (peer_resource == NULL)
         {
-          DEBUG ("contact doesn't have a resource with suitable capabilities");
-
-          g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+          g_set_error (error, TP_ERRORS, TP_ERROR_NOT_CAPABLE,
               "member does not have the desired audio/video capabilities");
-
           return FALSE;
         }
 
@@ -1780,27 +1773,20 @@ gabble_media_channel_request_streams (TpSvcChannelTypeStreamedMedia *iface,
     goto error;
 
   /* If we know the caps haven't arrived yet, delay stream creation
-   * and check again later */
-  if (!contact_is_media_capable (self, contact_handle, &wait))
+   * and check again later. Else, give up. */
+  if (!contact_is_media_capable (self, contact_handle, &wait, &error))
     {
       if (wait)
         {
           DEBUG ("Delaying RequestStreams until we get all caps from contact");
           delay_stream_request (self, iface, contact_handle, types, context,
               TRUE);
+          g_error_free (error);
           return;
         }
 
-      /* if we're unsure about the offlineness of the contact, wait a bit */
-      if (gabble_presence_cache_is_unsure (priv->conn->presence_cache))
-        {
-          DEBUG ("Delaying RequestStreams because we're unsure about them");
-          delay_stream_request (self, iface, contact_handle, types, context,
-              FALSE);
-          return;
-        }
+      goto error;
     }
-
 
   if (priv->session == NULL)
     {
@@ -1834,32 +1820,39 @@ gabble_media_channel_request_streams (TpSvcChannelTypeStreamedMedia *iface,
   return;
 
 error:
+  DEBUG ("returning error %u: %s", error->code, error->message);
   dbus_g_method_return_error (context, error);
   g_error_free (error);
 }
 
 
 static gboolean
-contact_is_media_capable (GabbleMediaChannel *chan, TpHandle peer, gboolean *wait)
+contact_is_media_capable (GabbleMediaChannel *chan,
+    TpHandle peer,
+    gboolean *wait,
+    GError **error)
 {
   GabbleMediaChannelPrivate *priv = chan->priv;
   GabblePresence *presence;
   GabblePresenceCapabilities caps;
-#ifdef ENABLE_DEBUG
   TpBaseConnection *conn = (TpBaseConnection *) priv->conn;
   TpHandleRepoIface *contact_handles = tp_base_connection_get_handles (
       conn, TP_HANDLE_TYPE_CONTACT);
-#endif
-
-  if (wait != NULL)
-    *wait = FALSE;
+  gboolean wait_ = FALSE;
 
   if (gabble_presence_cache_caps_pending (priv->conn->presence_cache, peer))
     {
       DEBUG ("caps are pending for peer %u", peer);
-      if (wait != NULL)
-        *wait = TRUE;
+      wait_ = TRUE;
     }
+  else if (gabble_presence_cache_is_unsure (priv->conn->presence_cache))
+    {
+      DEBUG ("presence cache is still unsure (interested in handle %u)", peer);
+      wait_ = TRUE;
+    }
+
+  if (wait != NULL)
+    *wait = wait_;
 
   caps = PRESENCE_CAP_GOOGLE_VOICE | PRESENCE_CAP_JINGLE_RTP |
     PRESENCE_CAP_JINGLE_DESCRIPTION_AUDIO | PRESENCE_CAP_JINGLE_DESCRIPTION_VIDEO;
@@ -1868,14 +1861,16 @@ contact_is_media_capable (GabbleMediaChannel *chan, TpHandle peer, gboolean *wai
 
   if (presence == NULL)
     {
-      DEBUG ("contact %d (%s) has no presence available", peer,
+      g_set_error (error, TP_ERRORS, TP_ERROR_OFFLINE,
+          "contact %d (%s) has no presence available", peer,
           tp_handle_inspect (contact_handles, peer));
       return FALSE;
     }
 
   if ((presence->caps & caps) == 0)
     {
-      DEBUG ("contact %d (%s) doesn't have sufficient media caps", peer,
+      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_CAPABLE,
+          "contact %d (%s) doesn't have sufficient media caps", peer,
           tp_handle_inspect (contact_handles, peer));
       return FALSE;
     }
@@ -1896,6 +1891,7 @@ _gabble_media_channel_add_member (GObject *obj,
   /* did we create this channel? */
   if (priv->creator == mixin->self_handle)
     {
+      GError *error_ = NULL;
       TpIntSet *set;
       gboolean wait;
 
@@ -1919,18 +1915,17 @@ _gabble_media_channel_add_member (GObject *obj,
       /* We can't delay the request at this time, but if there's a chance
        * the caps might be available later, we'll add the contact and
        * hope for the best. */
-      if (!contact_is_media_capable (chan, handle, &wait))
+      if (!contact_is_media_capable (chan, handle, &wait, &error_))
         {
-          if (wait ||
-              gabble_presence_cache_is_unsure (priv->conn->presence_cache))
+          if (wait)
             {
               DEBUG ("contact %u caps still pending, adding anyways", handle);
+              g_error_free (error_);
             }
           else
             {
-              g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
-                  "handle %u cannot be added: has no media capabilities",
-                  handle);
+              DEBUG ("%u: %s", error_->code, error_->message);
+              g_propagate_error (error, error_);
               return FALSE;
             }
         }
@@ -2176,26 +2171,14 @@ session_state_changed_cb (GabbleJingleSession *session,
 static void
 inform_peer_of_unhold (GabbleMediaChannel *self)
 {
-  /* FIXME: when we upgrade to current Jingle, signal to the peer that
-   * we've taken them off hold, via a session-info message;
-   * ignore success or failure, since there's nothing we could really
-   * do differently, and the message is only advisory.
-   *
-   * For now, we don't signal the unhold in the XMPP stream */
-  DEBUG ("TODO: tell peer we've taken them off hold");
+  gabble_jingle_session_send_held (self->priv->session, FALSE);
 }
 
 
 static void
 inform_peer_of_hold (GabbleMediaChannel *self)
 {
-  /* FIXME: when we upgrade to current Jingle, signal to the peer that
-   * we're putting them on hold, via a session-info message;
-   * ignore success or failure, since there's nothing we could really
-   * do differently, and the message is only advisory.
-   *
-   * For now, we don't signal the hold in the XMPP stream */
-  DEBUG ("TODO: tell peer we're putting them on hold");
+  gabble_jingle_session_send_held (self->priv->session, TRUE);
 }
 
 
@@ -2278,9 +2261,6 @@ stream_hold_state_changed (GabbleMediaStream *stream G_GNUC_UNUSED,
            * state already, so nothing to signal */
           return;
         }
-
-      /* Tell the peer what's happened */
-      inform_peer_of_unhold (self);
     }
   else
     {
@@ -2311,6 +2291,9 @@ stream_hold_state_changed (GabbleMediaStream *stream G_GNUC_UNUSED,
           priv->hold_state = TP_LOCAL_HOLD_STATE_UNHELD;
           priv->hold_state_reason = TP_LOCAL_HOLD_STATE_REASON_NONE;
         }
+
+      /* Tell the peer what's happened */
+      inform_peer_of_unhold (self);
     }
 
   tp_svc_channel_interface_hold_emit_hold_state_changed (self,
@@ -2441,6 +2424,86 @@ stream_direction_changed_cb (GabbleMediaStream *stream,
       chan, id, direction, pending_send);
 }
 
+static TpChannelCallStateFlags
+jingle_remote_state_to_csf (JingleRtpRemoteState state)
+{
+  switch (state)
+    {
+    case JINGLE_RTP_REMOTE_STATE_ACTIVE:
+    /* FIXME: we should be able to expose <mute/> through CallState */
+    case JINGLE_RTP_REMOTE_STATE_MUTE:
+      return 0;
+    case JINGLE_RTP_REMOTE_STATE_RINGING:
+      return TP_CHANNEL_CALL_STATE_RINGING;
+    case JINGLE_RTP_REMOTE_STATE_HOLD:
+      return TP_CHANNEL_CALL_STATE_HELD;
+    default:
+      g_assert_not_reached ();
+    }
+}
+
+static void
+remote_state_changed_cb (GabbleJingleMediaRtp *rtp,
+    GParamSpec *pspec G_GNUC_UNUSED,
+    GabbleMediaChannel *self)
+{
+  GabbleMediaChannelPrivate *priv = self->priv;
+  JingleRtpRemoteState state = gabble_jingle_media_rtp_get_remote_state (rtp);
+  TpChannelCallStateFlags csf = 0;
+
+  DEBUG ("Content %p's state changed to %u (current channel state: %u)", rtp,
+      state, priv->remote_state);
+
+  if (state == priv->remote_state)
+    {
+      DEBUG ("already in that state");
+      return;
+    }
+
+  if (state > priv->remote_state)
+    {
+      /* If this content's state is "more held" than the current aggregated level,
+       * move up to it.
+       */
+      DEBUG ("%u is more held than %u, moving up", state, priv->remote_state);
+      priv->remote_state = state;
+    }
+  else
+    {
+      /* This content is now less held than the current aggregated level; we
+       * need to recalculate the highest hold level and see if it's changed.
+       */
+      guint i = 0;
+
+      DEBUG ("%u less held than %u; recalculating", state, priv->remote_state);
+      state = JINGLE_RTP_REMOTE_STATE_ACTIVE;
+
+      for (i = 0; i < priv->streams->len; i++)
+        {
+          GabbleJingleMediaRtp *c = gabble_media_stream_get_content (
+                g_ptr_array_index (priv->streams, i));
+          JingleRtpRemoteState s = gabble_jingle_media_rtp_get_remote_state (c);
+
+          state = MAX (state, s);
+          DEBUG ("%p in state %u; high water mark %u", c, s, state);
+        }
+
+      if (priv->remote_state == state)
+        {
+          DEBUG ("no change");
+          return;
+        }
+
+      priv->remote_state = state;
+    }
+
+  csf = jingle_remote_state_to_csf (priv->remote_state);
+  DEBUG ("emitting CallStateChanged(%u, %u) (JingleRtpRemoteState %u)",
+      priv->session->peer, csf, priv->remote_state);
+  tp_svc_channel_interface_call_state_emit_call_state_changed (self,
+      priv->session->peer, csf);
+}
+
 #define GTALK_CAPS \
   ( PRESENCE_CAP_GOOGLE_VOICE )
 
@@ -2540,6 +2603,14 @@ construct_stream (GabbleMediaChannel *chan,
       (GCallback) stream_direction_changed_cb, chan_o);
   gabble_signal_connect_weak (stream, "notify::local-hold",
       (GCallback) stream_hold_state_changed, chan_o);
+
+  /* While we're here, watch the active/mute/held state of the corresponding
+   * content so we can keep the call state up to date, and call the callback
+   * once to pick up the current state of this content.
+   */
+  gabble_signal_connect_weak (c, "notify::remote-state",
+      (GCallback) remote_state_changed_cb, chan_o);
+  remote_state_changed_cb (GABBLE_JINGLE_MEDIA_RTP (c), NULL, chan);
 
   /* emit StreamAdded */
   mtype = gabble_media_stream_get_media_type (stream);
@@ -2762,12 +2833,18 @@ static void
 gabble_media_channel_get_call_states (TpSvcChannelInterfaceCallState *iface,
                                       DBusGMethodInvocation *context)
 {
-  GHashTable *states;
+  GabbleMediaChannel *self = (GabbleMediaChannel *) iface;
+  GabbleMediaChannelPrivate *priv = self->priv;
+  JingleRtpRemoteState state = priv->remote_state;
+  GHashTable *states = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-  /* stub implementation: nobody has any call-state flags */
-  states = g_hash_table_new (g_direct_hash, g_direct_equal);
+  if (state != JINGLE_RTP_REMOTE_STATE_ACTIVE)
+    g_hash_table_insert (states, GUINT_TO_POINTER (priv->session->peer),
+        GUINT_TO_POINTER (jingle_remote_state_to_csf (state)));
+
   tp_svc_channel_interface_call_state_return_from_get_call_states (context,
       states);
+
   g_hash_table_destroy (states);
 }
 
@@ -2804,7 +2881,10 @@ gabble_media_channel_request_hold (TpSvcChannelInterfaceHold *iface,
           return;
         }
 
-      inform_peer_of_hold (self);
+      if (priv->hold_state == TP_LOCAL_HOLD_STATE_UNHELD)
+        {
+          inform_peer_of_hold (self);
+        }
 
       priv->hold_state = TP_LOCAL_HOLD_STATE_PENDING_HOLD;
     }

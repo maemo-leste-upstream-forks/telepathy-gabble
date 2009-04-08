@@ -36,13 +36,16 @@ def make_result_iq(stream, iq):
 def acknowledge_iq(stream, iq):
     stream.send(make_result_iq(stream, iq))
 
-def send_error_reply(stream, iq):
+def send_error_reply(stream, iq, error_stanza=None):
     result = IQ(stream, "error")
     result["id"] = iq["id"]
     query = iq.firstChildElement()
 
     if query:
         result.addElement((query.uri, query.name))
+
+    if error_stanza:
+        result.addChild(error_stanza)
 
     stream.send(result)
 
@@ -198,6 +201,7 @@ def make_stream_event(type, stanza):
 def make_iq_event(iq):
     event = make_stream_event('stream-iq', iq)
     event.iq_type = iq.getAttribute("type")
+    event.iq_id = iq.getAttribute("id")
     query = iq.firstChildElement()
 
     if query:

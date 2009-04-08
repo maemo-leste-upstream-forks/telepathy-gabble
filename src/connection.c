@@ -590,8 +590,15 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
           conn_location_properties_setter,
           location_props,
         },
+        { TP_IFACE_CONNECTION_INTERFACE_AVATARS,
+          conn_avatars_properties_getter,
+          NULL,
+          NULL,
+        },
         { NULL }
   };
+
+  prop_interfaces[2].props = conn_avatars_properties;
 
   DEBUG("Initializing (GabbleConnectionClass *)%p", gabble_connection_class);
 
@@ -1832,7 +1839,7 @@ registration_finished_cb (GabbleRegister *reg,
 
       tp_base_connection_change_status ((TpBaseConnection *) conn,
           TP_CONNECTION_STATUS_DISCONNECTED,
-          (err_code == TP_ERROR_INVALID_ARGUMENT) ?
+          (err_code == TP_ERROR_NOT_YOURS) ?
             TP_CONNECTION_STATUS_REASON_NAME_IN_USE :
             TP_CONNECTION_STATUS_REASON_AUTHENTICATION_FAILED);
     }
