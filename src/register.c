@@ -217,7 +217,7 @@ set_reply_cb (GabbleConnection *conn,
           error = gabble_xmpp_error_from_node (node, NULL);
           if (error == XMPP_ERROR_CONFLICT)
             {
-              code = TP_ERROR_INVALID_ARGUMENT;
+              code = TP_ERROR_NOT_YOURS;
             }
 
           g_string_append_printf (msg, ": %s",
@@ -271,6 +271,13 @@ get_reply_cb (GabbleConnection *conn,
 
   if (!lm_message_node_get_child (query_node, "password"))
     goto ERROR_MALFORMED_REPLY;
+
+  /* FIXME: "The requesting entity MUST provide information for all of the
+   *        elements (other than <instructions/>) contained in the IQ result."
+   *        What should we do if the IQ contains <email/> or something else
+   *        that we can't provide? Currently we just submit the form anyway and
+   *        hope for the best.
+   */
 
   /* craft a reply */
   msg = lm_message_new_with_sub_type (NULL, LM_MESSAGE_TYPE_IQ,
