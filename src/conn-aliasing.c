@@ -150,8 +150,9 @@ aliases_request_try_return (AliasesRequest *request)
   if (request->pending_vcard_requests == 0 &&
       request->pending_pep_requests == 0)
     {
-      /* FIXME: I'm not entirely sure why gcc warns without this cast from
-       * (gchar **) to (const gchar **) */
+      /* Cast to (const gchar **) necessary because no-one understands 'const'
+       * in C.
+       */
       tp_svc_connection_interface_aliasing_return_from_request_aliases (
           request->request_call, (const gchar **)request->aliases);
       return TRUE;
@@ -773,6 +774,23 @@ OUT:
   g_free (alias);
 }
 
+static void
+set_or_clear (gchar **target,
+    gchar *source)
+{
+  if (target != NULL)
+    *target = source;
+  else
+    g_free (source);
+}
+
+static void
+maybe_set (gchar **target,
+    const gchar *source)
+{
+  if (target != NULL)
+    *target = g_strdup (source);
+}
 
 GabbleConnectionAliasSource
 _gabble_connection_get_cached_alias (GabbleConnection *conn,
@@ -782,10 +800,9 @@ _gabble_connection_get_cached_alias (GabbleConnection *conn,
   TpBaseConnection *base = (TpBaseConnection *) conn;
   TpHandleRepoIface *contact_handles = tp_base_connection_get_handles (base,
       TP_HANDLE_TYPE_CONTACT);
-  GabbleConnectionAliasSource ret = GABBLE_CONNECTION_ALIAS_NONE;
   GabblePresence *pres;
-  const gchar *tmp;
-  gchar *user = NULL, *resource = NULL;
+  const gchar *tmp, *jid;
+  gchar *resource = NULL;
 
   g_return_val_if_fail (NULL != conn, GABBLE_CONNECTION_ALIAS_NONE);
   g_return_val_if_fail (GABBLE_IS_CONNECTION (conn), GABBLE_CONNECTION_ALIAS_NONE);
@@ -795,35 +812,23 @@ _gabble_connection_get_cached_alias (GabbleConnection *conn,
   tmp = gabble_roster_handle_get_name (conn->roster, handle);
   if (NULL != tmp)
     {
-      ret = GABBLE_CONNECTION_ALIAS_FROM_ROSTER;
-
-      if (NULL != alias)
-        *alias = g_strdup (tmp);
-
-      goto OUT;
+      maybe_set (alias, tmp);
+      return GABBLE_CONNECTION_ALIAS_FROM_ROSTER;
     }
 
   tmp = tp_handle_get_qdata (contact_handles, handle,
       gabble_conn_aliasing_pep_alias_quark ());
   if (tmp != NULL && tmp != NO_ALIAS)
     {
-      ret = GABBLE_CONNECTION_ALIAS_FROM_PRESENCE;
-
-      if (NULL != alias)
-        *alias = g_strdup (tmp);
-
-      goto OUT;
+      maybe_set (alias, tmp);
+      return GABBLE_CONNECTION_ALIAS_FROM_PRESENCE;
     }
 
   pres = gabble_presence_cache_get (conn->presence_cache, handle);
   if (NULL != pres && NULL != pres->nickname)
     {
-      ret = GABBLE_CONNECTION_ALIAS_FROM_PRESENCE;
-
-      if (NULL != alias)
-        *alias = g_strdup (pres->nickname);
-
-      goto OUT;
+      maybe_set (alias, pres->nickname);
+      return GABBLE_CONNECTION_ALIAS_FROM_PRESENCE;
     }
 
   /* XXX: should this be more important than the ones from presence? */
@@ -838,66 +843,34 @@ _gabble_connection_get_cached_alias (GabbleConnection *conn,
 
       if (cm_alias != NULL)
         {
-          ret = GABBLE_CONNECTION_ALIAS_FROM_CONNMGR;
-
-          if (NULL != alias)
-            *alias = cm_alias;
-          else
-            g_free (cm_alias);
-
-          goto OUT;
+          set_or_clear (alias, cm_alias);
+          return GABBLE_CONNECTION_ALIAS_FROM_CONNMGR;
         }
     }
 
-  tmp = tp_handle_inspect (contact_handles, handle);
-  g_assert (NULL != tmp);
+  jid = tp_handle_inspect (contact_handles, handle);
+  g_assert (NULL != jid);
 
-  gabble_decode_jid (tmp, &user, NULL, &resource);
+  gabble_decode_jid (jid, NULL, NULL, &resource);
 
   /* MUC handles have the nickname in the resource */
   if (NULL != resource)
     {
-      ret = GABBLE_CONNECTION_ALIAS_FROM_MUC_RESOURCE;
-
-      if (NULL != alias)
-        {
-          *alias = resource;
-          resource = NULL;
-        }
-
-      goto OUT;
+      set_or_clear (alias, resource);
+      return GABBLE_CONNECTION_ALIAS_FROM_MUC_RESOURCE;
     }
 
   /* if we've seen a nickname in their vCard, use that */
   tmp = gabble_vcard_manager_get_cached_alias (conn->vcard_manager, handle);
   if (NULL != tmp)
     {
-      ret = GABBLE_CONNECTION_ALIAS_FROM_VCARD;
-
-      if (NULL != alias)
-        *alias = g_strdup (tmp);
-
-      goto OUT;
+      maybe_set (alias, tmp);
+      return GABBLE_CONNECTION_ALIAS_FROM_VCARD;
     }
 
-  /* otherwise just take their local part */
-  if (NULL != user)
-    {
-      ret = GABBLE_CONNECTION_ALIAS_FROM_JID;
-
-      if (NULL != alias)
-        {
-          *alias = user;
-          user = NULL;
-        }
-
-      goto OUT;
-    }
-
-OUT:
-  g_free (user);
-  g_free (resource);
-  return ret;
+  /* otherwise just take their jid */
+  maybe_set (alias, jid);
+  return GABBLE_CONNECTION_ALIAS_FROM_JID;
 }
 
 static void

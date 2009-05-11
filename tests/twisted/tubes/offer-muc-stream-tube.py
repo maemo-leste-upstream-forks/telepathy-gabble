@@ -5,8 +5,9 @@ import os
 
 import dbus
 
-from servicetest import call_async, EventPattern, EventProtocolFactory, unwrap
-from gabbletest import make_result_iq, acknowledge_iq, make_muc_presence
+from servicetest import call_async, EventPattern, unwrap,\
+    assertContains
+from gabbletest import acknowledge_iq, make_muc_presence
 import constants as cs
 import ns
 import tubetestutil as t
@@ -23,24 +24,45 @@ sample_parameters = dbus.Dictionary({
     'i': dbus.Int32(-123),
     }, signature='sv')
 
-def set_up_listener_socket(q, path):
-    factory = EventProtocolFactory(q)
-    full_path = os.getcwd() + path
-    try:
-        os.remove(full_path)
-    except OSError, e:
-        if e.errno != errno.ENOENT:
-            raise
-    reactor.listenUNIX(full_path, factory)
-    return full_path
+def connect_to_tube(stream, q, bytestream_cls, muc, stream_tube_id):
+    # The CM is the server, so fake a client wanting to talk to it
+    bytestream = bytestream_cls(stream, q, 'alpha', '%s/bob' % muc,
+        '%s/test' % muc, True)
 
-def test(q, bus, conn, stream, bytestream_cls):
+    # set the real jid of the target as 'to' because the XMPP server changes
+    # it when delivering the IQ
+    iq, si = bytestream.create_si_offer(ns.TUBES, 'test@localhost/Resource')
+
+    stream_node = si.addElement((ns.TUBES, 'muc-stream'))
+    stream_node['tube'] = str(stream_tube_id)
+    stream.send(iq)
+
+    return bytestream
+
+def use_tube(q, bytestream, protocol):
+    # have the fake client open the stream
+    bytestream.open_bytestream()
+
+    # have the fake client send us some data
+    bytestream.send_data('hello initiator')
+
+    # the server reply
+    event = q.expect('socket-data', data='hello initiator', protocol=protocol)
+    data = 'hello joiner'
+    protocol.sendData(data)
+
+    # we receive server's data
+    binary = bytestream.get_data(len(data))
+    assert binary == data, binary
+
+
+def test(q, bus, conn, stream, bytestream_cls,
+       address_type, access_control, access_control_param):
     if bytestream_cls in [BytestreamS5BRelay, BytestreamS5BRelayBugged]:
         # disable SOCKS5 relay tests because proxy can't be used with muc
         # contacts atm
         return
 
-    srv_path = set_up_listener_socket(q, '/stream')
     conn.Connect()
 
     _, iq_event = q.expect_many(
@@ -62,9 +84,12 @@ def test(q, bus, conn, stream, bytestream_cls):
 
     bob_handle = conn.RequestHandles(cs.HT_CONTACT, ['chat@conf.localhost/bob'])[0]
 
+    address = t.create_server(q, address_type)
+
     # offer stream tube (old API) using an Unix socket
     call_async(q, tubes_iface, 'OfferStreamTube',
-        'echo', sample_parameters, 0, dbus.ByteArray(srv_path), 0, "")
+        'echo', sample_parameters, address_type, address,
+        access_control, access_control_param)
 
     new_tube_event, stream_event, _, new_channels_event = q.expect_many(
         EventPattern('dbus-signal', signal='NewTube'),
@@ -152,49 +177,25 @@ def test(q, bus, conn, stream, bytestream_cls):
     # FIXME: if we use an unknown JID here, everything fails
     # (the code uses lookup where it should use ensure)
 
-    # The CM is the server, so fake a client wanting to talk to it
-    bytestream = bytestream_cls(stream, q, 'alpha', 'chat@conf.localhost/bob',
-        'chat@conf.localhost/test', True)
+    bytestream = connect_to_tube(stream, q, bytestream_cls, 'chat@conf.localhost', stream_tube_id)
 
-    # set the real jid of the target as 'to' because the XMPP server changes
-    # it when delivering the IQ
-    iq, si = bytestream.create_si_offer(ns.TUBES, 'test@localhost/Resource')
-
-    stream_node = si.addElement((ns.TUBES, 'muc-stream'))
-    stream_node['tube'] = str(stream_tube_id)
-
-    stream.send(iq)
-
-    event = q.expect('socket-connected')
-    protocol = event.protocol
-
-    iq_event, _ = q.expect_many(
+    iq_event, socket_event, _ = q.expect_many(
         EventPattern('stream-iq', iq_type='result'),
+        EventPattern('socket-connected'),
         EventPattern('dbus-signal', signal='StreamTubeNewConnection',
-            args=[stream_tube_id, bob_handle]))
+            args=[stream_tube_id, bob_handle], interface=cs.CHANNEL_TYPE_TUBES))
+
+    protocol = socket_event.protocol
 
     # handle iq_event
     bytestream.check_si_reply(iq_event.stanza)
     tube = xpath.queryForNodes('/iq//si/tube[@xmlns="%s"]' % ns.TUBES, iq_event.stanza)
     assert len(tube) == 1
 
-    # have the fake client open the stream
-    bytestream.open_bytestream()
-
-    # have the fake client send us some data
-    bytestream.send_data('hello initiator')
-
-    # the server reply
-    event = q.expect('socket-data', data='hello initiator', protocol=protocol)
-    data = 'hello joiner'
-    protocol.sendData(data)
-
-    # we receive server's data
-    binary = bytestream.get_data(len(data))
-    assert binary == data, binary
+    use_tube(q, bytestream, protocol)
 
     # offer a stream tube to another room (new API)
-    srv_path = set_up_listener_socket(q, '/stream2')
+    address = t.create_server(q, address_type)
 
     call_async(q, conn.Requests, 'CreateChannel',
             {cs.CHANNEL_TYPE: cs.CHANNEL_TYPE_STREAM_TUBE,
@@ -251,6 +252,11 @@ def test(q, bus, conn, stream, bytestream_cls):
     assert prop[cs.TARGET_ID] == 'chat2@conf.localhost'
     assert prop[cs.STREAM_TUBE_SERVICE] == 'newecho'
 
+    # check that the tube channel is in the channels list
+    all_channels = conn.Get(cs.CONN_IFACE_REQUESTS, 'Channels',
+        dbus_interface=cs.PROPERTIES_IFACE, byte_arrays=True)
+    assertContains((path, prop), all_channels)
+
     tube_chan = bus.get_object(conn.bus_name, path)
     stream_tube_iface = dbus.Interface(tube_chan, cs.CHANNEL_TYPE_STREAM_TUBE)
     chan_iface = dbus.Interface(tube_chan, cs.CHANNEL)
@@ -259,14 +265,12 @@ def test(q, bus, conn, stream, bytestream_cls):
     assert tube_props['State'] == cs.TUBE_CHANNEL_STATE_NOT_OFFERED
 
     # offer the tube
-    call_async(q, stream_tube_iface, 'OfferStreamTube',
-        cs.SOCKET_ADDRESS_TYPE_UNIX, dbus.ByteArray(srv_path), cs.SOCKET_ACCESS_CONTROL_LOCALHOST, "",
-        {'foo': 'bar'})
+    call_async(q, stream_tube_iface, 'Offer', address_type, address, access_control, {'foo': 'bar'})
 
     new_tube_event, stream_event, _, status_event = q.expect_many(
         EventPattern('dbus-signal', signal='NewTube'),
         EventPattern('stream-presence', to='chat2@conf.localhost/test'),
-        EventPattern('dbus-return', method='OfferStreamTube'),
+        EventPattern('dbus-return', method='Offer'),
         EventPattern('dbus-signal', signal='TubeChannelStateChanged', args=[cs.TUBE_CHANNEL_STATE_OPEN]))
 
     tube_self_handle = tube_chan.GetSelfHandle(dbus_interface=cs.CHANNEL_IFACE_GROUP)
@@ -308,6 +312,29 @@ def test(q, bus, conn, stream, bytestream_cls):
         params[node['name']] = (node['type'], str(node))
     assert params == {'foo': ('str', 'bar')}
 
+    bob_handle = conn.RequestHandles(cs.HT_CONTACT, ['chat2@conf.localhost/bob'])[0]
+
+    bytestream = connect_to_tube(stream, q, bytestream_cls, 'chat2@conf.localhost', stream_tube_id)
+
+    iq_event, socket_event, conn_event = q.expect_many(
+        EventPattern('stream-iq', iq_type='result'),
+        EventPattern('socket-connected'),
+        EventPattern('dbus-signal', signal='NewConnection',
+            interface=cs.CHANNEL_TYPE_STREAM_TUBE))
+
+    handle, access = conn_event.args
+    assert handle == bob_handle
+
+    protocol = socket_event.protocol
+    t.check_new_connection_access(access_control, access, protocol)
+
+    # handle iq_event
+    bytestream.check_si_reply(iq_event.stanza)
+    tube = xpath.queryForNodes('/iq//si/tube[@xmlns="%s"]' % ns.TUBES, iq_event.stanza)
+    assert len(tube) == 1
+
+    use_tube(q, bytestream, protocol)
+
     chan_iface.Close()
     q.expect_many(
         EventPattern('dbus-signal', signal='Closed'),
@@ -319,4 +346,4 @@ def test(q, bus, conn, stream, bytestream_cls):
     q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
 
 if __name__ == '__main__':
-    t.exec_tube_test(test)
+    t.exec_stream_tube_test(test)

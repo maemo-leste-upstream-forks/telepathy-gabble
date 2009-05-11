@@ -4,7 +4,7 @@ from servicetest import call_async, EventPattern
 from gabbletest import exec_test, acknowledge_iq, make_muc_presence
 import constants as c
 
-from twisted.words.xish import domish, xpath
+from twisted.words.xish import xpath
 import ns
 
 from mucutil import join_muc_and_check
@@ -69,10 +69,10 @@ def test(q, bus, conn, stream):
     dbus_names = tube_chan.Get(c.CHANNEL_TYPE_DBUS_TUBE, 'DBusNames', dbus_interface=c.PROPERTIES_IFACE)
     assert dbus_names == {bob_handle: bob_bus_name}
 
-    call_async(q, dbus_tube_iface, 'AcceptDBusTube')
+    call_async(q, dbus_tube_iface, 'Accept')
 
     return_event, names_changed, presence_event = q.expect_many(
-        EventPattern('dbus-return', method='AcceptDBusTube'),
+        EventPattern('dbus-return', method='Accept'),
         EventPattern('dbus-signal', signal='DBusNamesChanged', interface=c.CHANNEL_TYPE_DBUS_TUBE),
         EventPattern('stream-presence', to='chat@conf.localhost/test'))
 

@@ -41,7 +41,7 @@ import constants as cs
 from caps_helper import compute_caps_hash, text_fixed_properties,\
     text_allowed_properties, stream_tube_fixed_properties, stream_tube_allowed_properties,\
     dbus_tube_fixed_properties, dbus_tube_allowed_properties, receive_presence_and_ask_caps,\
-    caps_contain
+    caps_contain, ft_fixed_properties, ft_allowed_properties
 import ns
 
 specialized_tube_allowed_properties = dbus.Array([cs.TARGET_HANDLE,
@@ -72,7 +72,7 @@ go_fixed_properties = dbus.Dictionary({
 
 def test_tube_caps_from_contact(q, bus, conn, stream, contact, contact_handle, client):
 
-    conn_caps_iface = dbus.Interface(conn, cs.CONN_IFACE_CONTACT_CAPA)
+    conn_caps_iface = dbus.Interface(conn, cs.CONN_IFACE_CONTACT_CAPS)
     conn_contacts_iface = dbus.Interface(conn, cs.CONN_IFACE_CONTACTS)
 
     # send presence with no tube cap
@@ -108,8 +108,8 @@ def test_tube_caps_from_contact(q, bus, conn, stream, contact, contact_handle, c
     assert caps == basic_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [contact_handle][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [contact_handle][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[contact_handle], \
                                     caps_via_contacts_iface
 
@@ -151,8 +151,8 @@ def test_tube_caps_from_contact(q, bus, conn, stream, contact, contact_handle, c
     assert caps == generic_tubes_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [contact_handle][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [contact_handle][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[contact_handle], \
                                     caps_via_contacts_iface
 
@@ -196,8 +196,8 @@ def test_tube_caps_from_contact(q, bus, conn, stream, contact, contact_handle, c
     assert caps == daap_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [contact_handle][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [contact_handle][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[contact_handle], \
                                     caps_via_contacts_iface
 
@@ -240,8 +240,8 @@ def test_tube_caps_from_contact(q, bus, conn, stream, contact, contact_handle, c
     assert caps == xiangqi_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [contact_handle][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [contact_handle][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[contact_handle], \
                                     caps_via_contacts_iface
 
@@ -288,8 +288,8 @@ def test_tube_caps_from_contact(q, bus, conn, stream, contact, contact_handle, c
     assert caps == daap_xiangqi_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [contact_handle][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [contact_handle][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[contact_handle], \
                                     caps_via_contacts_iface
 
@@ -343,8 +343,8 @@ def test_tube_caps_from_contact(q, bus, conn, stream, contact, contact_handle, c
     assert caps == all_tubes_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [contact_handle][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [contact_handle][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[contact_handle], \
                                     caps_via_contacts_iface
 
@@ -377,8 +377,8 @@ def test_tube_caps_from_contact(q, bus, conn, stream, contact, contact_handle, c
     assert caps == daap_xiangqi_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [contact_handle][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [contact_handle], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [contact_handle][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[contact_handle], \
                                     caps_via_contacts_iface
 
@@ -386,23 +386,27 @@ def test_tube_caps_to_contact(q, bus, conn, stream):
     basic_caps = dbus.Dictionary({1:
         [(text_fixed_properties, text_allowed_properties),
          (stream_tube_fixed_properties, stream_tube_allowed_properties),
-         (dbus_tube_fixed_properties, dbus_tube_allowed_properties)]})
+         (dbus_tube_fixed_properties, dbus_tube_allowed_properties),
+         (ft_fixed_properties, ft_allowed_properties)]})
     daap_caps = dbus.Dictionary({1:
         [(text_fixed_properties, text_allowed_properties),
         (stream_tube_fixed_properties, stream_tube_allowed_properties),
         (dbus_tube_fixed_properties, dbus_tube_allowed_properties),
-        (daap_fixed_properties, specialized_tube_allowed_properties)]})
+        (daap_fixed_properties, specialized_tube_allowed_properties),
+        (ft_fixed_properties, ft_allowed_properties)]})
     xiangqi_caps = dbus.Dictionary({1:
         [(text_fixed_properties, text_allowed_properties),
         (stream_tube_fixed_properties, stream_tube_allowed_properties),
         (dbus_tube_fixed_properties, dbus_tube_allowed_properties),
-        (xiangqi_fixed_properties, specialized_tube_allowed_properties)]})
+        (xiangqi_fixed_properties, specialized_tube_allowed_properties),
+        (ft_fixed_properties, ft_allowed_properties)]})
     daap_xiangqi_caps = dbus.Dictionary({1:
         [(text_fixed_properties, text_allowed_properties),
         (stream_tube_fixed_properties, stream_tube_allowed_properties),
         (dbus_tube_fixed_properties, dbus_tube_allowed_properties),
         (daap_fixed_properties, specialized_tube_allowed_properties),
-        (xiangqi_fixed_properties, specialized_tube_allowed_properties)]})
+        (xiangqi_fixed_properties, specialized_tube_allowed_properties),
+        (ft_fixed_properties, ft_allowed_properties)]})
     all_tubes_caps = dbus.Dictionary({1:
         [(text_fixed_properties, text_allowed_properties),
         (stream_tube_fixed_properties, stream_tube_allowed_properties),
@@ -410,9 +414,10 @@ def test_tube_caps_to_contact(q, bus, conn, stream):
         (daap_fixed_properties, specialized_tube_allowed_properties),
         (http_fixed_properties, specialized_tube_allowed_properties),
         (xiangqi_fixed_properties, specialized_tube_allowed_properties),
-        (go_fixed_properties, specialized_tube_allowed_properties)]})
+        (go_fixed_properties, specialized_tube_allowed_properties),
+        (ft_fixed_properties, ft_allowed_properties)]})
 
-    conn_caps_iface = dbus.Interface(conn, cs.CONN_IFACE_CONTACT_CAPA)
+    conn_caps_iface = dbus.Interface(conn, cs.CONN_IFACE_CONTACT_CAPS)
     conn_contacts_iface = dbus.Interface(conn, cs.CONN_IFACE_CONTACTS)
 
     # Check our own caps
@@ -420,8 +425,8 @@ def test_tube_caps_to_contact(q, bus, conn, stream):
     assert caps == basic_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [1], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [1][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [1], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [1][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[1], caps_via_contacts_iface
 
     # Advertise nothing
@@ -433,8 +438,8 @@ def test_tube_caps_to_contact(q, bus, conn, stream):
     assert caps == basic_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [1], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [1][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [1], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [1][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[1], caps_via_contacts_iface
 
     sync_stream(q, stream)
@@ -459,8 +464,8 @@ def test_tube_caps_to_contact(q, bus, conn, stream):
     assert caps == daap_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [1], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [1][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [1], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [1][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[1], caps_via_contacts_iface
 
     # Advertise xiangqi
@@ -483,8 +488,8 @@ def test_tube_caps_to_contact(q, bus, conn, stream):
     assert caps == xiangqi_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [1], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [1][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [1], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [1][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[1], caps_via_contacts_iface
 
     # Advertise daap + xiangqi
@@ -507,8 +512,8 @@ def test_tube_caps_to_contact(q, bus, conn, stream):
     assert caps == daap_xiangqi_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [1], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [1][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [1], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [1][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[1], caps_via_contacts_iface
 
     # Advertise 4 tubes
@@ -532,8 +537,8 @@ def test_tube_caps_to_contact(q, bus, conn, stream):
     assert caps == all_tubes_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [1], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [1][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [1], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [1][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[1], caps_via_contacts_iface
 
     # Advertise daap + xiangqi
@@ -556,8 +561,8 @@ def test_tube_caps_to_contact(q, bus, conn, stream):
     assert caps == daap_xiangqi_caps, caps
     # check the Contacts interface give the same caps
     caps_via_contacts_iface = conn_contacts_iface.GetContactAttributes(
-            [1], [cs.CONN_IFACE_CONTACT_CAPA], False) \
-            [1][cs.CONN_IFACE_CONTACT_CAPA + '/caps']
+            [1], [cs.CONN_IFACE_CONTACT_CAPS], False) \
+            [1][cs.CONN_IFACE_CONTACT_CAPS + '/caps']
     assert caps_via_contacts_iface == caps[1], caps_via_contacts_iface
 
 

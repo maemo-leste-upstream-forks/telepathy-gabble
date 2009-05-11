@@ -690,7 +690,6 @@ static void
 _each_content_remove (GabbleJingleSession *sess, GabbleJingleContent *c,
     LmMessageNode *content_node, GError **error)
 {
-  GabbleJingleSessionPrivate *priv = sess->priv;
   const gchar *name = lm_message_node_get_attribute (content_node, "name");
 
   if (c == NULL)
@@ -698,14 +697,6 @@ _each_content_remove (GabbleJingleSession *sess, GabbleJingleContent *c,
       SET_BAD_REQ ("content called \"%s\" doesn't exist", name);
       return;
     }
-
-  /* FIXME: do we treat this as a session terminate instead of error? */
-  if (g_hash_table_size (priv->contents) == 1)
-    {
-      SET_BAD_REQ ("unable to remove the last content in a session");
-      return;
-    }
-
   gabble_jingle_content_remove (c, FALSE);
 }
 
@@ -835,15 +826,7 @@ static void
 on_content_remove (GabbleJingleSession *sess, LmMessageNode *node,
     GError **error)
 {
-  GabbleJingleSessionPrivate *priv = sess->priv;
-
   _foreach_content (sess, node, _each_content_remove, error);
-
-  if (g_hash_table_size (priv->contents) == 0)
-    {
-      gabble_jingle_session_terminate (sess,
-          TP_CHANNEL_GROUP_CHANGE_REASON_NONE, NULL);
-    }
 }
 
 static void
@@ -1397,7 +1380,7 @@ _map_initial_contents (GabbleJingleSession *sess, ContentMapperFunc mapper,
 
   for (li = contents; li; li = li->next)
     {
-      const gchar *disposition;
+      gchar *disposition;
       GabbleJingleContent *c = GABBLE_JINGLE_CONTENT (li->data);
 
       g_object_get (c, "disposition", &disposition, NULL);
@@ -1406,6 +1389,8 @@ _map_initial_contents (GabbleJingleSession *sess, ContentMapperFunc mapper,
         {
           mapper (sess, c, user_data);
         }
+
+      g_free (disposition);
     }
 
   g_list_free (contents);
@@ -1456,73 +1441,71 @@ _fill_content (GabbleJingleSession *sess,
     }
 }
 
-struct jingle_reply_ctx {
-  JingleReplyHandler handler;
-  gpointer user_data;
-};
-
 static LmHandlerResult
 _process_reply (GabbleConnection *conn,
-    LmMessage *sent, LmMessage *reply, GObject *obj, gpointer user_data)
+    LmMessage *sent,
+    LmMessage *reply,
+    GObject *obj,
+    gpointer cb_)
 {
-  GabbleJingleSession *sess = GABBLE_JINGLE_SESSION (obj);
-  struct jingle_reply_ctx *ctx = user_data;
+  JingleReplyHandler cb = cb_;
 
-  if (lm_message_get_sub_type (reply) == LM_MESSAGE_SUB_TYPE_RESULT)
-    {
-      ctx->handler (sess, TRUE, reply, ctx->user_data);
-    }
-  else
-    {
-      ctx->handler (sess, FALSE, reply, ctx->user_data);
-    }
+  cb (obj, (lm_message_get_sub_type (reply) == LM_MESSAGE_SUB_TYPE_RESULT),
+      reply);
 
-  g_free (ctx);
   return LM_HANDLER_RESULT_REMOVE_MESSAGE;
 }
 
+/**
+ * gabble_jingle_session_send:
+ * @sess: a session
+ * @msg: a stanza, of which this function will take ownership
+ * @cb: callback for the IQ reply, or %NULL to ignore the reply
+ * @weak_object: an object to pass to @cb, or %NULL
+ *
+ * Sends an IQ, optionally calling @cb for the reply. If @weak_object is not
+ * NULL, @cb will only be called if @weak_object is still alive.
+ */
 void
-gabble_jingle_session_send (GabbleJingleSession *sess, LmMessage *msg,
-    JingleReplyHandler cb, gpointer user_data)
+gabble_jingle_session_send (GabbleJingleSession *sess,
+    LmMessage *msg,
+    JingleReplyHandler cb,
+    GObject *weak_object)
 {
-  GabbleJingleSessionPrivate *priv = sess->priv;
-
   if (cb != NULL)
-    {
-      struct jingle_reply_ctx *ctx = g_new0 (struct jingle_reply_ctx, 1);
-
-      ctx->handler = cb;
-      ctx->user_data = user_data;
-
-      _gabble_connection_send_with_reply (priv->conn, msg,
-          _process_reply, G_OBJECT (sess), ctx, NULL);
-    }
+    _gabble_connection_send_with_reply (sess->priv->conn, msg,
+        _process_reply, weak_object, cb, NULL);
   else
-    {
-      _gabble_connection_send (priv->conn, msg, NULL);
-    }
+    _gabble_connection_send_with_reply (sess->priv->conn, msg,
+        NULL, NULL, NULL, NULL);
 
   lm_message_unref (msg);
 }
 
 static void
-_on_initiate_reply (GabbleJingleSession *sess, gboolean success,
-    LmMessage *reply, gpointer user_data)
+_on_initiate_reply (GObject *sess_as_obj,
+    gboolean success,
+    LmMessage *reply)
 {
+  GabbleJingleSession *sess = GABBLE_JINGLE_SESSION (sess_as_obj);
+
   if (success)
-      set_state (sess, JS_STATE_PENDING_INITIATED, 0);
+    set_state (sess, JS_STATE_PENDING_INITIATED, 0);
   else
-      set_state (sess, JS_STATE_ENDED, TP_CHANNEL_GROUP_CHANGE_REASON_NONE);
+    set_state (sess, JS_STATE_ENDED, TP_CHANNEL_GROUP_CHANGE_REASON_NONE);
 }
 
 static void
-_on_accept_reply (GabbleJingleSession *sess, gboolean success,
-    LmMessage *reply, gpointer user_data)
+_on_accept_reply (GObject *sess_as_obj,
+    gboolean success,
+    LmMessage *reply)
 {
+  GabbleJingleSession *sess = GABBLE_JINGLE_SESSION (sess_as_obj);
+
   if (success)
-      set_state (sess, JS_STATE_ACTIVE, 0);
+    set_state (sess, JS_STATE_ACTIVE, 0);
   else
-      set_state (sess, JS_STATE_ENDED, TP_CHANNEL_GROUP_CHANGE_REASON_NONE);
+    set_state (sess, JS_STATE_ENDED, TP_CHANNEL_GROUP_CHANGE_REASON_NONE);
 }
 
 static gboolean
@@ -1590,7 +1573,7 @@ try_session_initiate_or_accept (GabbleJingleSession *sess)
 
   msg = gabble_jingle_session_new_message (sess, action, &sess_node);
   _map_initial_contents (sess, _fill_content, sess_node);
-  gabble_jingle_session_send (sess, msg, handler, NULL);
+  gabble_jingle_session_send (sess, msg, handler, (GObject *) sess);
   set_state (sess, new_state, 0);
 
   /* now all initial contents can transmit their candidates */
@@ -1810,6 +1793,8 @@ gabble_jingle_session_add_content (GabbleJingleSession *sess, JingleMediaType mt
 
   c = create_content (sess, content_type, mtype,
       content_ns, transport_ns, name, NULL, NULL);
+
+  g_free (name);
 
   return c;
 }

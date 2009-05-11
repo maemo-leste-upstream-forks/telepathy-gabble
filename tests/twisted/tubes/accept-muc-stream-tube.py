@@ -9,7 +9,7 @@ import ns
 import tubetestutil as t
 from bytestream import create_from_si_offer, announce_socks5_proxy, BytestreamS5BRelay, BytestreamS5BRelayBugged
 
-from twisted.words.xish import domish, xpath
+from twisted.words.xish import xpath
 from twisted.internet import reactor
 
 sample_parameters = dbus.Dictionary({
@@ -19,7 +19,8 @@ sample_parameters = dbus.Dictionary({
     'i': dbus.Int32(-123),
     }, signature='sv')
 
-def test(q, bus, conn, stream, bytestream_cls):
+def test(q, bus, conn, stream, bytestream_cls,
+        address_type, access_control, access_control_param):
     if bytestream_cls in [BytestreamS5BRelay, BytestreamS5BRelayBugged]:
         # disable SOCKS5 relay tests because proxy can't be used with muc
         # contacts atm
@@ -181,40 +182,38 @@ def test(q, bus, conn, stream, bytestream_cls):
     assert tube_props['State'] == cs.TUBE_CHANNEL_STATE_LOCAL_PENDING
 
     # Accept the tube
-    call_async(q, tubes_iface, 'AcceptStreamTube', stream_tube_id, 0, 0, '',
-            byte_arrays=True)
+    call_async(q, tubes_iface, 'AcceptStreamTube', stream_tube_id,
+        address_type, access_control, access_control_param, byte_arrays=True)
 
     accept_return_event, _ = q.expect_many(
         EventPattern('dbus-return', method='AcceptStreamTube'),
         EventPattern('dbus-signal', signal='TubeStateChanged',
             args=[stream_tube_id, 2]))
 
-    unix_socket_adr = accept_return_event.value[0]
+    address = accept_return_event.value[0]
+    t.connect_socket(q, address_type, address)
+    socket_event, si_event = q.expect_many(
+        EventPattern('socket-connected'),
+        # expect SI request
+        EventPattern('stream-iq', to='chat@conf.localhost/bob', query_ns=ns.SI,
+            query_name='si'))
+    protocol = socket_event.protocol
 
-    factory = EventProtocolClientFactory(q)
-    reactor.connectUNIX(unix_socket_adr, factory)
-
-    event = q.expect('socket-connected')
-    protocol = event.protocol
     protocol.sendData("hello initiator")
 
-    # expect SI request
-    event = q.expect('stream-iq', to='chat@conf.localhost/bob', query_ns=ns.SI,
-        query_name='si')
-
-    bytestream, profile = create_from_si_offer(stream, q, bytestream_cls, event.stanza,
+    bytestream, profile = create_from_si_offer(stream, q, bytestream_cls, si_event.stanza,
             'chat@conf.localhost/test')
 
     assert profile == ns.TUBES
 
     muc_stream_node = xpath.queryForNodes('/iq/si/muc-stream[@xmlns="%s"]' %
-        ns.TUBES, event.stanza)[0]
+        ns.TUBES, si_event.stanza)[0]
     assert muc_stream_node is not None
     assert muc_stream_node['tube'] == str(stream_tube_id)
 
     # set the real jid of the target as 'to' because the XMPP server changes
     # it when delivering the IQ
-    result, si = bytestream.create_si_reply(event.stanza, 'test@localhost/Resource')
+    result, si = bytestream.create_si_reply(si_event.stanza, 'test@localhost/Resource')
     si.addElement((ns.TUBES, 'tube'))
     stream.send(result)
 
@@ -236,4 +235,4 @@ def test(q, bus, conn, stream, bytestream_cls):
         EventPattern('dbus-signal', signal='StatusChanged', args=[2, 1]))
 
 if __name__ == '__main__':
-    t.exec_tube_test(test)
+    t.exec_stream_tube_test(test)

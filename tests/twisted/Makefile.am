@@ -71,31 +71,29 @@ TWISTED_TESTS = \
 	vcard/test-set-alias.py \
 	vcard/test-vcard-cache.py \
 	vcard/test-vcard-race.py \
+	vcard/update-rejected.py \
 	jingle/accept-extra-stream.py \
 	jingle/call-state.py \
 	jingle/google-relay.py \
 	jingle/hold-audio.py \
 	jingle/hold-av.py \
+	jingle/incoming-basics.py \
+	jingle/initial-audio-video.py \
 	jingle/stun-server.py \
+	jingle/outgoing-basics.py \
+	jingle/outgoing-ensure.py \
 	jingle/outgoing-many-streams.py \
 	jingle/outgoing-not-answered.py \
 	jingle/payload-types.py \
 	jingle/stream-handler-error.py \
 	jingle/test-content-adding-removal.py \
 	jingle/test-description-info.py \
-	jingle/test-incoming-call.py \
 	jingle/test-incoming-call-reject.py \
-	jingle/test-outgoing-call.py \
-	jingle/test-outgoing-call-deprecated.py \
-	jingle/test-outgoing-call-deprecated2.py \
-	jingle/test-outgoing-call-requestotron.py \
 	jingle/test-outgoing-call-rejected.py \
-	jingle/test-outgoing-call-ensure.py \
-	jingle/test-dialects-incoming.py \
-	jingle/test-dialects-outgoing.py \
 	jingle/test-content-complex.py \
 	jingle/test-wait-for-caps.py \
 	jingle/test-wait-for-caps-incomplete.py \
+	file-transfer/test-caps-file-transfer.py \
 	file-transfer/test-receive-file-and-close-socket-while-receiving.py \
 	file-transfer/test-receive-file-and-disconnect.py \
 	file-transfer/test-receive-file-and-sender-disconnect-while-pending.py \

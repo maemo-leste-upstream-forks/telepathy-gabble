@@ -23,8 +23,6 @@ def props(ct, extra=None):
     return ret
 
 def test(q, bus, conn, stream):
-    echo_path = t.set_up_echo("")
-
     conn.Connect()
 
     _, vcard_event, roster_event = q.expect_many(
@@ -81,8 +79,10 @@ def test(q, bus, conn, stream):
     e = q.expect('dbus-error', method='OfferDBusTube').error
     assert e.get_dbus_name() == cs.NOT_AVAILABLE, e.get_dbus_name()
 
+    address = t.create_server(q, cs.SOCKET_ADDRESS_TYPE_UNIX)
+
     call_async(q, tubes, 'OfferStreamTube', 'echo', {},
-        cs.SOCKET_ADDRESS_TYPE_UNIX, dbus.ByteArray(echo_path),
+        cs.SOCKET_ADDRESS_TYPE_UNIX, address,
         cs.SOCKET_ACCESS_CONTROL_LOCALHOST, "")
     e = q.expect('dbus-error', method='OfferStreamTube').error
     assert e.get_dbus_name() == cs.NOT_AVAILABLE, e.get_dbus_name()
@@ -94,17 +94,17 @@ def test(q, bus, conn, stream):
         {cs.STREAM_TUBE_SERVICE: "newecho"}))
     st_chan = bus.get_object(conn.bus_name, st_path)
     st = dbus.Interface(st_chan, cs.CHANNEL_TYPE_STREAM_TUBE)
-    call_async(q, st, 'OfferStreamTube', cs.SOCKET_ADDRESS_TYPE_UNIX,
-        dbus.ByteArray(echo_path), cs.SOCKET_ACCESS_CONTROL_LOCALHOST, "", {})
-    e = q.expect('dbus-error', method='OfferStreamTube').error
+    call_async(q, st, 'Offer', cs.SOCKET_ADDRESS_TYPE_UNIX,
+        address, cs.SOCKET_ACCESS_CONTROL_LOCALHOST, {})
+    e = q.expect('dbus-error', method='Offer').error
     assert e.get_dbus_name() == cs.NOT_AVAILABLE, e.get_dbus_name()
 
     dt_path, _ = requests.CreateChannel(props(cs.CHANNEL_TYPE_DBUS_TUBE,
         { cs.DBUS_TUBE_SERVICE_NAME: "com.newecho" }))
     dt_chan = bus.get_object(conn.bus_name, dt_path)
     dt = dbus.Interface(dt_chan, cs.CHANNEL_TYPE_DBUS_TUBE)
-    call_async(q, dt, 'OfferDBusTube', {})
-    e = q.expect('dbus-error', method='OfferDBusTube').error
+    call_async(q, dt, 'Offer', {})
+    e = q.expect('dbus-error', method='Offer').error
     assert e.get_dbus_name() == cs.NOT_AVAILABLE, e.get_dbus_name()
 
     conn.Disconnect()

@@ -1,3 +1,2199 @@
+commit ce3a82e5b30ca17e5b83cbc700062f9795b1e45a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 7 15:29:39 2009 +0100
+
+    Version 0.7.27
+
+ configure.ac |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 1140eee86cdd874d2a33db6767bce31716f3cf80
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 7 15:28:58 2009 +0100
+
+    Release name, date, and English corrections in NEWS
+
+ NEWS |   16 ++++++++++------
+ 1 files changed, 10 insertions(+), 6 deletions(-)
+
+commit 5948c41b2eedd30a77b3088caea3607438792bd9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 7 15:26:34 2009 +0100
+
+    More NEWS for 0.7.27
+
+ NEWS |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+
+commit 3bd147f4572f1bd523d89ce1fa7b400497554c3b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed May 6 17:55:35 2009 +0100
+
+    Don't assert when there is no update method, wjt will probably fix it rsn
+
+ src/caps-channel-manager.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+commit 01baa94c0ec2e87931d0253b4d7afa68cd07bb50
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed May 6 17:47:05 2009 +0100
+
+    Don't crash if the per channel manager caps aren't initialized
+
+ src/ft-manager.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 6479c9ab2404174ef84907a56ee6a8d325775023
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 1 11:07:06 2009 +0100
+
+    Remove unused MediaStream signals
+    
+    These haven't had anything attached to them since September 2006...
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+ src/media-stream.c |   62 +--------------------------------------------------
+ 1 files changed, 2 insertions(+), 60 deletions(-)
+
+commit abb6e26ee9fca8f7cc396ad0a0199ad0d7c6c2ae
+Merge: 8d43f4b b6c67fa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 6 13:54:05 2009 +0100
+
+    Merge branch 'early-description-info'
+
+commit b6c67fa6f501f35240a0560c2c4ce61c069d0f57
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 1 10:25:57 2009 +0100
+
+    Explain why SupportedCodecs is called redundantly
+
+ src/media-stream.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 8d43f4bafcd1f34f84644393d49e738f05daa2b1
+Merge: 084bb4d 8e9587f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 6 13:45:05 2009 +0100
+
+    Merge branch 'jingle-content-lifecycle'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Dafydd Harries <dafydd.harries@collabora.co.uk>
+
+commit 084bb4d59812d6786054c029c1a44c0484070908
+Merge: 729db9c d82da40
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 6 13:32:06 2009 +0100
+
+    Merge branch 'trivia'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 8e9587facf8bf5cd486b1807b9410e998b0d258d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 6 12:09:28 2009 +0100
+
+    Document that JingleContent:removed => "drop refs"
+
+ src/jingle-content.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 36e24987527be9be5e7a2c71bbd344ff58be4424
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 6 12:00:44 2009 +0100
+
+    Explain a surprising g_object_unref
+
+ src/media-channel.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 729db9c584de41ac464834973bfb532f0c1f4070
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 5 18:39:04 2009 +0100
+
+    use python2.6 for tests if available
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 4e49501bf9bada7011b1c9dfab5c5f53b1b7456b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 5 18:24:15 2009 +0100
+
+    test-avatar-async.py: use hashlib instead of the sha module
+
+ tests/twisted/vcard/test-avatar-async.py |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit cb10a4bf57e9bc4ab6fc9239aff6b5b1267ce274
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 5 18:22:22 2009 +0100
+
+    bytestream.py: use hashlib instead of the sha module
+
+ tests/twisted/bytestream.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 17c9967b51b53ea8009660a0cc3ad98c9b937373
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 5 18:21:35 2009 +0100
+
+    file_transfer_helper: use hashlib instead of the md5 module
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
+
+commit a00c160bfbab15c9d2e2bcc0309b201354777513
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 5 18:19:16 2009 +0100
+
+    gabbletest: use hashlib instead of the deprecated sha module
+    
+    This is fine as twisted tests already depend on python >= 2.5
+
+ tests/twisted/gabbletest.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 9699ad500cc1e50a45b1c738c08e80e4f3f18f55
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 5 18:24:39 2009 +0100
+
+    remove redundant argument in elem_iq call
+
+ tests/twisted/bytestream.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit f1d5d93d981b5532328357ecec51259b40655cc1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 30 14:24:21 2009 +0100
+
+    offer-private-stream-tube: check NewConnection access_control_param
+
+ tests/twisted/tubes/offer-private-stream-tube.py |   25 +++++++++++++++-------
+ 1 files changed, 17 insertions(+), 8 deletions(-)
+
+commit 066c2c4bdb953f8fab6a91000ac6c5c0c824bef8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 30 13:57:45 2009 +0100
+
+    Echo(Factory) is now a subclass of EventProtocol(Factory)
+    
+    So test can access to the protocol too if needed.
+
+ tests/twisted/tubes/tubetestutil.py |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
+
+commit 99fffe4053846f152202b1d5dab42ac8e12c0748
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 30 13:57:05 2009 +0100
+
+    EventProtocolFactory: add _create_protocol() method so subclass can easy override it
+
+ tests/twisted/servicetest.py |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 7d2d77d262a02c4af357a10816513cb46acd59d2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 30 13:15:20 2009 +0100
+
+    offer-muc-stream-tube.py: check NewConnection arg using check_new_connection_access
+
+ tests/twisted/tubes/offer-muc-stream-tube.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit cb52504b4f2e1eef85c037d85e33e54acb52020d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 30 13:14:44 2009 +0100
+
+    tubetestutil: add check_new_connection_access
+
+ tests/twisted/tubes/tubetestutil.py |   15 ++++++++++++++-
+ 1 files changed, 14 insertions(+), 1 deletions(-)
+
+commit eb4454c5ec37c8fad30c61497e617e36e745d3ee
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 5 11:01:13 2009 +0100
+
+    tube-stream: disconnect the signal on the transport connected signal
+    
+    It is not disconnected with the existing
+    g_signal_handlers_disconnect_matched call as it doesn't have the self
+    pointer as user_data.
+
+ src/tube-stream.c |   24 ++++++++++++++++++------
+ 1 files changed, 18 insertions(+), 6 deletions(-)
+
+commit cc7d79a12c847cac13c09fd23efa92cd19fc6cc0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 5 10:49:35 2009 +0100
+
+    indentation fix
+
+ src/tube-stream.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 0e98f407ac77147d41e3bf36e972a0e4d31cbdd3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 30 13:02:10 2009 +0100
+
+    tube-stream: fire NewConnection once the transport is connected
+    
+    Transport have to be connected to allow us to get access control param
+    from it (as the source port).
+
+ src/tube-stream.c |   96 +++++++++++++++++++++++++++++++++++++++++++----------
+ 1 files changed, 78 insertions(+), 18 deletions(-)
+
+commit 354f35a9ae40108a89004312845f758db73c6ba1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 1 10:20:51 2009 +0100
+
+    Add regression test for early description-info
+
+ tests/twisted/jingle/test-description-info.py |   25 ++++++++++++++++++++++---
+ 1 files changed, 22 insertions(+), 3 deletions(-)
+
+commit 6e4a1b58181e9ce54040f7c1b64fb60a0004517c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 30 20:13:30 2009 +0100
+
+    React to SupportedCodecs once when necessary.
+    
+    For streams that we add, we never need to do anything in response to
+    SupportedCodecs. For streams that the peer adds, we need to send an
+    intersection exactly once.
+    
+    Previously, the latter was mis-implemented as "ignore calls to
+    SupportedCodecs once the peer has sent us description-info". This worked
+    fine except when the peer sent description-info before we sent our
+    intersection.
+
+ src/media-stream.c |   66 ++++++++++++++++++++++------------------------------
+ 1 files changed, 28 insertions(+), 38 deletions(-)
+
+commit 10c81144abc24d2e7d9680e824c24fa17b33f002
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 30 19:22:43 2009 +0100
+
+    Don't prematurely clear remote codec list
+    
+    Clearing remote_codecs after emitting SetRemoteCodecs defeated the check
+    in new_remote_codecs_cb checking whether the new codes are an update or
+    not (they always appeared not to be).
+
+ src/media-stream.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+commit b42a630ae79f2e15103ab4eb85c0350722d50554
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 30 19:21:27 2009 +0100
+
+    Correctly empty remote codec list on update
+    
+    Previously it was just freed, rather than being replaced by the empty
+    list.
+
+ src/media-stream.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 105f3d96a4cb3c0928516a912e00b07b7f169221
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 30 17:22:36 2009 +0100
+
+    Tidy test-description-info a bit.
+
+ tests/twisted/jingle/test-description-info.py |   39 ++++--------------------
+ 1 files changed, 7 insertions(+), 32 deletions(-)
+
+commit d82da404bf8be2547aae5513645802cd915f8856
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 1 21:08:01 2009 +0100
+
+    Fix comments about (const gchar **) cast
+    
+    We *are* sure. :-)
+
+ src/conn-aliasing.c |    5 +++--
+ src/conn-avatars.c  |   10 ++++++----
+ 2 files changed, 9 insertions(+), 6 deletions(-)
+
+commit fff3dca60c2091710391d423fff25a0b7dd1b9c1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 1 21:03:19 2009 +0100
+
+    'deny' is NotImplemented on !GTalk.
+    
+    By the definitions of NotImplemented and NotAvailable for CreateChannel,
+    the former is certainly the right error.
+
+ src/roster.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit eb94da8c4690128de1a0205f5ce948da3c0551c7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 1 16:00:22 2009 +0100
+
+    Remove unused variable from OfferFile
+
+ src/ft-channel.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 0c908a0fc6aad20a687bf11b7085a0b586805441
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 1 15:54:58 2009 +0100
+
+    Fix accidental switch fallthrough
+
+ src/jingle-media-rtp.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit d146dcb54df5dbf65e1295ffeb07f3ef647fb879
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 30 14:29:10 2009 +0100
+
+    accept-muc-stream-tube: break a race
+
+ tests/twisted/tubes/accept-muc-stream-tube.py |   19 ++++++++++---------
+ 1 files changed, 10 insertions(+), 9 deletions(-)
+
+commit eb259a2b9a1301cc6d755007646668adb22347a4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 15:07:47 2009 +0100
+
+    tube-stream: always fire NewConnection signal
+    
+    There is no point to fire this signal only when the tube has been
+    offered using the new API.
+
+ src/tube-stream.c |   31 +++++++++++--------------------
+ 1 files changed, 11 insertions(+), 20 deletions(-)
+
+commit d44e4f503473d7a24032a6c4630692bf75e59846
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 15:00:18 2009 +0100
+
+    sync to latest tube API draft
+    
+    org.freedesktop.Telepathy.Channel.Type.StreamTube.DRAFT.Offer() doesn't
+    have a access_control_param any more.
+
+ extensions/Channel_Type_Stream_Tube.xml          |   20 ++++++++++++++------
+ src/tube-stream.c                                |   12 +++++++-----
+ tests/twisted/tubes/offer-muc-stream-tube.py     |    7 +++----
+ tests/twisted/tubes/offer-no-caps.py             |    2 +-
+ tests/twisted/tubes/offer-private-stream-tube.py |    9 ++++-----
+ 5 files changed, 29 insertions(+), 21 deletions(-)
+
+commit 3d4e682493fa4369ef05dfd623c644ab49c424c9
+Merge: 4626619 018496d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 4 16:21:11 2009 +0100
+
+    Merge branch 'tube-tests'
+
+commit 018496dbbeed27c7518ff8799e3a74739bcce113
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 4 16:17:28 2009 +0100
+
+    exec_stream_tube_test: make one exec_tube_test call per type of socket
+    
+    So it's easier to catch the bugged type if a test fails.
+
+ tests/twisted/tubes/tubetestutil.py |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 4626619ee025e06fb278ee5df928673e0854990f
+Merge: 6cf3670 2b89aca
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 4 16:13:48 2009 +0100
+
+    Merge branch 'tube-tests'
+
+commit 2b89acafbb569fd8b2b8a7497e3799beb23d8eff
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 4 16:13:03 2009 +0100
+
+    tubetestutil.py: fix typo
+
+ tests/twisted/tubes/tubetestutil.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6cf36704acb35f96edf72d858ae322ecc03cc22c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 30 11:03:34 2009 +0100
+
+    sync gibber from Salut
+
+ lib/gibber/gibber-fd-transport.c |   29 ++++++++++++++++++++++++++---
+ lib/gibber/gibber-transport.c    |   12 ++++++++++++
+ lib/gibber/gibber-transport.h    |    8 +++++++-
+ 3 files changed, 45 insertions(+), 4 deletions(-)
+
+commit d78f4c636c2eb2249ce92b7b0bab05d3c4640cc4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 29 17:58:48 2009 +0100
+
+    Ensure 'removed' is emitted for removed contents.
+    
+    Previously, if Gabble sent a content-remove, then received an incoming
+    one for the same content, and didn't get an ack for the one it sent
+    before the content was destroyed, 'removed' wouldn't be emitted. It's
+    easier to reason about the lifetime of a content if 'removed' is always
+    emitted.
+
+ src/jingle-content.c |   22 ++++++++++------------
+ 1 files changed, 10 insertions(+), 12 deletions(-)
+
+commit c067b5d41f2bc73638cf41660697fa2204259995
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 29 17:57:03 2009 +0100
+
+    Meaningfully test a content-remove collision.
+    
+    The comment on the previous incarnation is wrong. Gabble *shouldn't*
+    ignore the incoming content-remove and send its own. But since it hasn't
+    received it when RemoveStreams is called, it will send its own.
+
+ tests/twisted/jingle/test-content-complex.py |   23 +++++++++++++----------
+ 1 files changed, 13 insertions(+), 10 deletions(-)
+
+commit 60af0886e3c564327a8b59c31d4aaa9e12a0923e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 29 17:25:30 2009 +0100
+
+    Don't leak streams on SessionHandler.Error()
+
+ src/media-channel.c                          |    2 ++
+ tests/twisted/jingle/stream-handler-error.py |   25 +++++++++++++++----------
+ 2 files changed, 17 insertions(+), 10 deletions(-)
+
+commit b661326c386310caaf5f8ede730aa91b525b15e7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 29 16:27:15 2009 +0100
+
+    Test content-remove ack arriving after terminate.
+
+ .../twisted/jingle/test-content-adding-removal.py  |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
+
+commit 4588c41cbe926b097659722ae8fa95cf72c74f4c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 29 15:56:50 2009 +0100
+
+    Fix some JingleContent reference leaks.
+    
+    g_object_get()-ing refs the returned object. I decided it was cleaner to
+    use gabble_media_stream_get_content() (which doesn't ref the content)
+    anyway.
+
+ src/media-channel.c |   27 +++++++++++++++++----------
+ 1 files changed, 17 insertions(+), 10 deletions(-)
+
+commit 52938bfadf0c65486eb3ba8d17a2b3cd1074793b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 29 14:59:12 2009 +0100
+
+    Unleak a JingleContent ref
+
+ src/media-channel.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 1ae623974dc628f7aee1f413f6fd68f2bcd8c1e7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 29 14:58:23 2009 +0100
+
+    Include object address in JingleContent debug messages
+
+ src/jingle-content.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+commit f83071a7d8759ca70d6ffb19e3bd67d797deedf4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Apr 27 17:43:47 2009 +0100
+
+    Simplify gabble_jingle_session_send, fixing a leak
+    
+    Previously, gabble_jingle_session_send passed the JingleSession as the
+    weak object to _gabble_connection_send_with_reply. This worked, but
+    meant that the jingle_reply_ctx was leaked for IQs that didn't return
+    before the session was terminated.
+    
+    By removing some unused generality from the callbacks, the context
+    struct was removed completely. Now the weak object is supplied by the
+    caller; since only two callers actually use the IQ reply, this wasn't
+    invasive to fix.
+
+ src/jingle-content.c |   13 +++----
+ src/jingle-session.c |   83 ++++++++++++++++++++++++--------------------------
+ src/jingle-session.h |   10 +++--
+ 3 files changed, 52 insertions(+), 54 deletions(-)
+
+commit d9ae717023dc5c8b8c488492c8e8c8984dc42ee6
+Merge: e79dbaf b0b23c3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 30 15:20:25 2009 +0100
+
+    Merge branch 'jingle-compliance'
+
+commit e79dbaf5a235a7673b1a3eaa5d5342a14399439c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 12:48:53 2009 +0100
+
+    Document the JINGLE_DIALECTS environment variable
+
+ tests/README |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+commit 1071eaec0c70d62aa1c938ef2620af98e793222e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 12:33:58 2009 +0100
+
+    Add ability to only test certian jingle dialects
+    
+    test_all_dialects now checks the JINGLE_DIALECTS environment variable to decide
+    which dialects to test. If it's not set all dialects will be tested. When set
+    it should be a list of dialects seperated by commas. Current supported dialects
+    are jingle015, jingle031, gtalk03 and gtalk04.
+
+ tests/twisted/jingle/jingletest2.py |   19 +++++++++++++++----
+ 1 files changed, 15 insertions(+), 4 deletions(-)
+
+commit 69c4d13f4b178349b99cd0317a4a18a59c4d363c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Apr 29 16:32:16 2009 +0100
+
+    query jingle dialect features not families
+    
+    if we want to know if a specific dialect supports video, ask if it
+    supports video instead of asking if it's part of a certain dialect family
+
+ tests/twisted/jingle/hold-av.py             |    2 +-
+ tests/twisted/jingle/initial-audio-video.py |    6 +++---
+ tests/twisted/jingle/jingletest2.py         |   15 +++++++--------
+ 3 files changed, 11 insertions(+), 12 deletions(-)
+
+commit b0b23c34690da242e11b4a708340588772d90ca1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Apr 20 09:48:13 2009 +0100
+
+    Return <unknown-session/> for unknown sessions.
+
+ src/jingle-factory.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b0b22d4d417287f1563f0fd0e0d0055d8402098b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Apr 18 13:57:31 2009 +0100
+
+    Respond to removal of last content with terminate
+    
+    XEP-0166 says (in a footnote!) that if your peer sends a content-remove
+    that leaves the session empty, you should send a session-terminate.
+    
+    Making this work is a matter of deleting some code guarding against it
+    happening, and then deleting some other code (which never ran because of
+    the aforementioned guard) which was intended to implement it, but in
+    fact was redundant and crashed if allowed to run because the same "no
+    more contents ⇒ terminate" logic is also in content_removed_cb (which is
+    responsible for terminating the session rather than sending a
+    content-remove for the last content).
+    
+    Deleting code is good, right?
+
+ src/jingle-session.c                               |   17 -----------
+ .../twisted/jingle/test-content-adding-removal.py  |   30 +++++++++++++++++--
+ 2 files changed, 26 insertions(+), 21 deletions(-)
+
+commit 0047120bbda2eb9aa45beec4b5c4f30339d50ad9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Apr 18 13:32:07 2009 +0100
+
+    Port test-content-adding-removal to jingletest2
+
+ .../twisted/jingle/test-content-adding-removal.py  |  149 +++++++-------------
+ 1 files changed, 54 insertions(+), 95 deletions(-)
+
+commit 3a1150fa3804fee9c501ea438532264cbf14fbf4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 18:45:40 2009 +0100
+
+    run stream tube tests with IPv4 as socket type
+
+ tests/twisted/tubes/tubetestutil.py |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit d3a51afd8a89361bcbbe6c28bd63f42ca3fd5cb1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 18:45:17 2009 +0100
+
+    offer-private-stream-tube.py: use new set_up_echo
+
+ tests/twisted/tubes/offer-private-stream-tube.py |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 7d502d65aecb5cc071c0e321ae4a2a5a2a88cf20
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 18:44:56 2009 +0100
+
+    tubetestutil: re-implement set_up_echo using create_server
+
+ tests/twisted/tubes/tubetestutil.py |   13 +++----------
+ 1 files changed, 3 insertions(+), 10 deletions(-)
+
+commit bb574baef66e35407a5023b9793590385ea1c1c7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 18:44:11 2009 +0100
+
+    offer-muc-stream-tube.py: use create_server
+
+ tests/twisted/tubes/offer-muc-stream-tube.py |   22 ++++++----------------
+ 1 files changed, 6 insertions(+), 16 deletions(-)
+
+commit 3648bad38759f33bbb23608b1d607607900cd4ed
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 18:43:30 2009 +0100
+
+    offer-no-caps.py: use create_server
+
+ tests/twisted/tubes/offer-no-caps.py |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit cf7d50277790184b0c7b3a86dc379f8d30eb247f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 18:43:02 2009 +0100
+
+    tubetestutil: add create_server
+
+ tests/twisted/tubes/tubetestutil.py |   29 ++++++++++++++++++++++++++++-
+ 1 files changed, 28 insertions(+), 1 deletions(-)
+
+commit 4fddc278bf56c505c0a56f774e32afab58846445
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 18:42:20 2009 +0100
+
+    ensure-si-tube.py: no need to set up echo
+
+ tests/twisted/tubes/ensure-si-tube.py |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit d4d127ce775bd03c41472367c3695367d27a1991
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 17:40:41 2009 +0100
+
+    accept-private-stream-tube: use connect_socket
+
+ tests/twisted/tubes/accept-private-stream-tube.py |   17 +++++------------
+ 1 files changed, 5 insertions(+), 12 deletions(-)
+
+commit 7bb01d124bb6bd1058999e6e38750f0c04bccc1c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 17:40:23 2009 +0100
+
+    accept-muc-stream-tube.py: use connect_socket
+
+ tests/twisted/tubes/accept-muc-stream-tube.py |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
+
+commit 188e9b4454568d475a9a866941defcc359bd9e72
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 17:39:37 2009 +0100
+
+    tubetestutil: add connect_socket
+
+ tests/twisted/tubes/tubetestutil.py |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
+
+commit 5be7684585e6edf5b4c02ae21f668f57d3a9b3d5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 17:21:27 2009 +0100
+
+    run stream tube tests using exec_stream_tube_test
+    
+    Stream tube tests now get the address type, access control and access
+    control param as parameters.
+
+ tests/twisted/tubes/accept-muc-stream-tube.py     |    9 +++--
+ tests/twisted/tubes/accept-private-stream-tube.py |   35 +++++++++-----------
+ tests/twisted/tubes/offer-muc-stream-tube.py      |   10 +++--
+ tests/twisted/tubes/offer-private-stream-tube.py  |   11 ++++--
+ tests/twisted/tubes/tubetestutil.py               |    6 ++-
+ 5 files changed, 38 insertions(+), 33 deletions(-)
+
+commit 93e601d6ab292946734c4eed3bdab3bff74998cd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 16:32:53 2009 +0100
+
+    test-get-available-tubes.py: use assert* helpers
+
+ tests/twisted/tubes/test-get-available-tubes.py |   25 ++++++++++++-----------
+ 1 files changed, 13 insertions(+), 12 deletions(-)
+
+commit b55986bda1a585465136c12ff7b1b99d7660d81c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 16:15:00 2009 +0100
+
+    test-get-available-tubes.py: test using new API too
+
+ tests/twisted/tubes/test-get-available-tubes.py |   18 +++++++++++++++---
+ 1 files changed, 15 insertions(+), 3 deletions(-)
+
+commit 3369476fe9e12ccaadfeb92a1db8515b53d2fb03
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 16:05:04 2009 +0100
+
+    test-get-available-tubes.py: use more constants
+
+ tests/twisted/tubes/test-get-available-tubes.py |   23 +++++++++++------------
+ 1 files changed, 11 insertions(+), 12 deletions(-)
+
+commit 50c88a6881999146c203417bd2008e0fb6292b0e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 12:32:20 2009 +0100
+
+    NEWS: document tube API change
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 48d3f5de3bd39c51d927925c6908d5d9ee6b12c4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 12:24:42 2009 +0100
+
+    Sync with latest tube spec DRAFT
+    
+    {Offer,Accept}{DBus,Stream}Tube methods and the StreamTubeNewConnection
+    signal have been renamed.
+
+ extensions/Channel_Interface_Tube.xml             |   16 ++++----
+ extensions/Channel_Type_DBus_Tube.xml             |    8 ++--
+ extensions/Channel_Type_Stream_Tube.xml           |   16 ++++----
+ src/tube-dbus.c                                   |   30 +++++++-------
+ src/tube-stream.c                                 |   46 ++++++++++----------
+ tests/twisted/test-fallback-socks5-proxy.py       |    2 +-
+ tests/twisted/tubes/accept-muc-dbus-tube.py       |    4 +-
+ tests/twisted/tubes/accept-private-dbus-tube.py   |    4 +-
+ tests/twisted/tubes/accept-private-stream-tube.py |   16 ++++----
+ tests/twisted/tubes/offer-muc-dbus-tube.py        |    4 +-
+ tests/twisted/tubes/offer-muc-stream-tube.py      |    6 +-
+ tests/twisted/tubes/offer-no-caps.py              |    8 ++--
+ tests/twisted/tubes/offer-private-dbus-tube.py    |    4 +-
+ tests/twisted/tubes/offer-private-stream-tube.py  |    4 +-
+ 14 files changed, 84 insertions(+), 84 deletions(-)
+
+commit 654246b152e630dae459b76be4fca0472e3a7e56
+Merge: 147fa58 fc2a2e9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 28 14:13:03 2009 +0100
+
+    Merge branch 'full-jid-as-fallback-alias'
+    
+    Fixes fd.o#21295.
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit fc2a2e9dad0c857debe22a21e9325befccf42a0f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 28 14:11:20 2009 +0100
+
+    Explain using local part as MUC Resource
+
+ src/muc-channel.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 147fa5834680583da510f6d77a5e241b840acc4a
+Merge: 481acb3 5d0a31b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 28 14:02:06 2009 +0100
+
+    Merge branch 'no-avatar-for-you'
+    
+    Fixes fd.o#20422.
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 481acb3e9b846423410d7d679142f569739b3792
+Merge: 4cc2eae 507aee1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 28 13:43:21 2009 +0100
+
+    Merge branch 'connection-errors'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 4cc2eaec55a292996cc4dae141abfd797607e7e5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Apr 24 15:13:51 2009 +0100
+
+    Avoid "unknown IQ" messages for Jingle responses
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+ src/jingle-session.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit d2cf2a7ee663e37ad72b7facda3db349918728a9
+Merge: c8d2033 360dd3f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 28 11:26:25 2009 +0100
+
+    Merge branch 'registration'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 5d0a31bbb6fe26c6d06aae28ab70839282d8dab3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 17 19:58:45 2009 +0000
+
+    Test that RequestAvatar throws the correct error
+
+ tests/twisted/vcard/test-vcard-cache.py |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 0b67ad6cd1ab71ffd248ca43a3fd4b9ef21000d5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 17 19:58:20 2009 +0000
+
+    Map vCard/XMPP error to Tp error from RequestAvatar
+
+ src/conn-avatars.c |   20 +++++++++++++++++++-
+ 1 files changed, 19 insertions(+), 1 deletions(-)
+
+commit ffa1fd5d4b89a2d7c2aa440dd3e19d9cce42ad99
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 17 18:59:32 2009 +0000
+
+    Test SetAvatar's error when server rejects avatar
+
+ tests/twisted/Makefile.am              |    1 +
+ tests/twisted/vcard/update-rejected.py |   42 ++++++++++++++++++++++++++++++++
+ 2 files changed, 43 insertions(+), 0 deletions(-)
+
+commit dbd1c114525345f4e4a2e7728f2a4f7c04c7c93a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 17 18:58:54 2009 +0000
+
+    SetAvatar: map XMPP/vCard error to TpError
+
+ src/conn-avatars.c |   14 +++++++++++++-
+ 1 files changed, 13 insertions(+), 1 deletions(-)
+
+commit 507aee11e8d1fb2878a20e6135995986481972c9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 16 14:12:30 2009 +0100
+
+    Expose <host-unknown> during login as Auth_Failed
+
+ src/connection.c                   |   38 +++++++++++++++++++++++++----------
+ tests/twisted/connect/test-fail.py |   29 +++++++++++++++++++++++++++
+ 2 files changed, 56 insertions(+), 11 deletions(-)
+
+commit 4335304b13513598b68289d3d2b85f683e8ded17
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 16 14:12:20 2009 +0100
+
+    Allow tests to specify a custom authenticator
+
+ tests/twisted/gabbletest.py |   17 +++++++++++------
+ 1 files changed, 11 insertions(+), 6 deletions(-)
+
+commit ff91e6b685114be45b65f8072907bacbf15137dd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 16 13:42:56 2009 +0100
+
+    Test disconnecting on <conflict/>
+
+ tests/twisted/connect/test-fail.py |   33 ++++++++++++++++++++++++++-------
+ tests/twisted/ns.py                |    1 +
+ 2 files changed, 27 insertions(+), 7 deletions(-)
+
+commit 7e17e527dca7488b4a1084a5f8bee31f61b2ac96
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 16 13:16:44 2009 +0100
+
+    Prevent LmConn disconnection callback firing twice
+    
+    This currently wouldn't happen, because Gabble happens to only react to
+    stream errors that Loudmouth ignores.
+
+ src/connection.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit fc118d2c72af22749ac30486817101bab0d7fd19
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Apr 25 11:39:08 2009 +0100
+
+    Simplify _gabble_connection_get_cached_alias
+
+ src/conn-aliasing.c |   83 +++++++++++++++++++--------------------------------
+ 1 files changed, 31 insertions(+), 52 deletions(-)
+
+commit f037aaec82215f95bdfaa8c1682cf69aae8d286e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Apr 25 11:27:16 2009 +0100
+
+    Make GetAliases etc fall back to the full JID
+    
+    Previously, Gabble fell back to the local part of the JID; if the
+    contact is foo@bar.com, it would default their alias to "foo". But this
+    is in violation of the spec, which says CMs should "[fall] back on the
+    handle name if [no alias] is present".
+    
+    Gabble's old behaviour was slightly nicer on UIs that just want to show
+    something to the user, but make it impossible for UIs to tell whether a
+    contact actually has an alias or not. The real fix here is to separate
+    aliases into petnames and nicknames, but for now this makes Gabble
+    spec-compliant.
+
+ src/conn-aliasing.c                           |   27 +++++++++---------------
+ src/muc-channel.c                             |   15 +++++++++++++-
+ tests/twisted/vcard/test-alias-empty-vcard.py |    4 +-
+ tests/twisted/vcard/test-vcard-cache.py       |    4 +-
+ 4 files changed, 28 insertions(+), 22 deletions(-)
+
+commit c8d203395c85b727a50e9d9092afde8d6c7d6081
+Merge: 24e0819 ee41d8e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 22 16:44:11 2009 +0100
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble
+
+commit 24e08191ab9a346d96ad2bf5f781a8c141e045c6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 22 16:40:13 2009 +0100
+
+    offer-muc-stream-tube: use the new API tube too
+
+ tests/twisted/tubes/offer-muc-stream-tube.py |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
+
+commit 9b3aaf5d7bb53a3ae41ca080bf2251f8a49e4a1a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 22 16:13:42 2009 +0100
+
+    offer-muc-stream-tube.py: factor out connect_to_tube and use_tube
+
+ tests/twisted/tubes/offer-muc-stream-tube.py |   68 ++++++++++++++-----------
+ 1 files changed, 38 insertions(+), 30 deletions(-)
+
+commit a839e74cbede50ea90be5f7fa50835504892a425
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 22 16:03:24 2009 +0100
+
+    offer-muc-stream-tube.py: explicitely catch the old StreamTubeNewConnection signal
+
+ tests/twisted/tubes/offer-muc-stream-tube.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ee41d8ef67a1e40ace213c59c84c410290da18b8
+Merge: 858635b 8b80687
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 22 15:12:11 2009 +0100
+
+    Merge branch 'jingle-test-sanity'
+    
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+    Reviewed-by: Dafydd Harries <dafydd.harries@collabora.co.uk>
+
+commit 8b806875d5c799cb68ad3690673a4f6777e61e9a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 22 15:10:13 2009 +0100
+
+    Summarize the various outgoing call APIs.
+
+ tests/twisted/jingle/outgoing-basics.py |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
+
+commit 3b41a605f5225246932b67726d7308720204f7cd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 22 13:22:59 2009 +0100
+
+    Just check that InitialAudio/Video are in RCC
+    
+    A more thorough check is now in outgoing-basics; the previous check here
+    would break whenever we add more allowed properties, which is bad.
+
+ tests/twisted/jingle/initial-audio-video.py |   15 +++++++--------
+ 1 files changed, 7 insertions(+), 8 deletions(-)
+
+commit 37d20789a9d229ff8b6a2888e2109f804e687fb5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 22 13:10:54 2009 +0100
+
+    Sanity-check StreamedMedia RequestableChannelClasses
+
+ tests/twisted/jingle/outgoing-basics.py |   27 +++++++++++++++++++++++++++
+ 1 files changed, 27 insertions(+), 0 deletions(-)
+
+commit b7ba81c02675a0b09aede86507d22a6054a7ad1b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 22 12:37:21 2009 +0100
+
+    Rename test-incoming-call to incoming-basics.
+    
+    This matches outgoing-basics.
+
+ tests/twisted/Makefile.am                  |    2 +-
+ tests/twisted/jingle/incoming-basics.py    |  163 ++++++++++++++++++++++++++++
+ tests/twisted/jingle/test-incoming-call.py |  163 ----------------------------
+ 3 files changed, 164 insertions(+), 164 deletions(-)
+
+commit b46329c582932687c1c94523c30b03dc9de6048b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 22 12:33:21 2009 +0100
+
+    test-dialects-incoming was subsumed by test-incoming-call
+
+ tests/twisted/Makefile.am                      |    1 -
+ tests/twisted/jingle/test-dialects-incoming.py |  107 ------------------------
+ 2 files changed, 0 insertions(+), 108 deletions(-)
+
+commit 1c460aa792ae6531c87bc666b461075d44859234
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 22 12:31:12 2009 +0100
+
+    Make test-incoming-call test all dialects.
+    
+    It tested one dialect much more thoroughly than does
+    test-dialects-incoming.
+
+ tests/twisted/jingle/test-incoming-call.py |   77 ++++++++++-----------------
+ 1 files changed, 29 insertions(+), 48 deletions(-)
+
+commit 05d7da0cd80e12788277518a8f4950bd98c3112a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 21 18:40:53 2009 +0100
+
+    Rename test-outgoing-call-ensure to outgoing-ensure
+    
+    (Following the gradual move towards losing the redundant 'test-' prefix,
+    and to vaguely suggest that it's been audited.)
+
+ tests/twisted/Makefile.am                         |    2 +-
+ tests/twisted/jingle/outgoing-ensure.py           |  149 +++++++++++++++++++++
+ tests/twisted/jingle/test-outgoing-call-ensure.py |  149 ---------------------
+ 3 files changed, 150 insertions(+), 150 deletions(-)
+
+commit 6affbb266226326b5a6381bd42cb3449af10ead2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 21 18:40:08 2009 +0100
+
+    Tidy up test-outgoing-call-ensure
+
+ tests/twisted/jingle/test-outgoing-call-ensure.py |  123 ++++++++-------------
+ 1 files changed, 47 insertions(+), 76 deletions(-)
+
+commit e1df99d904ec7ea741b3c85b1162e33b8340c044
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 21 18:25:53 2009 +0100
+
+    Use wrap_channel in jingle/outgoing-basics.py
+
+ tests/twisted/jingle/outgoing-basics.py |   33 +++++++++++++-----------------
+ 1 files changed, 14 insertions(+), 19 deletions(-)
+
+commit 4ff1877c6fb044c260db938b89b0e9e785ba0134
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 21 18:21:28 2009 +0100
+
+    Rename test-dialects-outgoing to outgoing-basics.
+    
+    All other remaining outgoing call tests test particular scenarios,
+    rather than the basics of the call-requesting API. This seems like a
+    better name.
+
+ tests/twisted/Makefile.am                      |    2 +-
+ tests/twisted/jingle/outgoing-basics.py        |  264 ++++++++++++++++++++++++
+ tests/twisted/jingle/test-dialects-outgoing.py |  264 ------------------------
+ 3 files changed, 265 insertions(+), 265 deletions(-)
+
+commit 85408fa4191c6f5b77740d3a08636d6b39b808ee
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 21 18:18:34 2009 +0100
+
+    Absorb outgoing-call-requestotron into dialects-outgoing
+
+ tests/twisted/Makefile.am                          |    1 -
+ tests/twisted/jingle/test-dialects-outgoing.py     |   70 +++++--
+ .../jingle/test-outgoing-call-requestotron.py      |  205 --------------------
+ 3 files changed, 53 insertions(+), 223 deletions(-)
+
+commit 5b6398c5a151eb5291e94e6e325128db1722f673
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 21 17:46:24 2009 +0100
+
+    Test all RequestChannel variants in test-dialects-outgoing
+
+ tests/twisted/Makefile.am                          |    2 -
+ tests/twisted/jingle/test-dialects-outgoing.py     |   94 ++++++++++++++----
+ .../jingle/test-outgoing-call-deprecated.py        |  105 --------------------
+ .../jingle/test-outgoing-call-deprecated2.py       |  105 --------------------
+ 4 files changed, 74 insertions(+), 232 deletions(-)
+
+commit 4e22f6ba70d684b2c1631e32808497563798ff17
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 21 17:15:49 2009 +0100
+
+    Absorb test-outgoing-call into test-dialects-outgoing
+    
+    It's stupid to have two tests testing roughly the same things
+
+ tests/twisted/Makefile.am                      |    1 -
+ tests/twisted/constants.py                     |    1 +
+ tests/twisted/jingle/test-dialects-outgoing.py |  124 ++++++++++++----
+ tests/twisted/jingle/test-outgoing-call.py     |  182 ------------------------
+ 4 files changed, 95 insertions(+), 213 deletions(-)
+
+commit 50a873587dce78bae933d39cf05b8acc82ebe0d0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 21 16:53:53 2009 +0100
+
+    Expunge expect_racy from the test suite.
+
+ tests/twisted/jingle/test-dialects-incoming.py |   17 +++++++++--------
+ tests/twisted/jingle/test-dialects-outgoing.py |   17 ++++++++---------
+ tests/twisted/servicetest.py                   |   19 -------------------
+ 3 files changed, 17 insertions(+), 36 deletions(-)
+
+commit 98a984fe9fe6c55a1a42b90192b3ade2c426e1d4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 21 16:40:18 2009 +0100
+
+    Remove spurious comment
+
+ tests/twisted/jingle/test-dialects-incoming.py |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+commit 858635b03327a0579ed444bb1f5b260fea03833e
+Merge: 0b4e269 739cd04
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Apr 21 16:08:17 2009 +0100
+
+    Merge branch 'socks5-proxies'
+
+commit 0b4e269ca547cc91a452035aca11bb3e37e47120
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Sat Apr 18 23:04:40 2009 +0100
+
+    Keep QUIET_GEN in tools/shave.mk and include that in the appropriate Makefiles.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ data/Makefile.am       |    2 +-
+ docs/Makefile.am       |    2 +-
+ extensions/Makefile.am |    2 +-
+ lib/gibber/Makefile.am |    2 +-
+ src/Makefile.am        |    2 +-
+ tools/Makefile.am      |    3 ++-
+ tools/shave.mk         |    1 +
+ 7 files changed, 8 insertions(+), 6 deletions(-)
+
+commit 03e8dea50c77083934aa4c5da7503af3a301ca15
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Sun Feb 22 16:53:33 2009 +0000
+
+    Converted gabble to use shave and make make output legible.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ .gitignore             |    2 +
+ configure.ac           |    6 +++-
+ data/Makefile.am       |    6 ++-
+ docs/Makefile.am       |    6 ++-
+ extensions/Makefile.am |   20 +++++++-----
+ lib/gibber/Makefile.am |   12 ++++---
+ m4/Makefile.am         |    3 +-
+ m4/shave.m4            |   77 ++++++++++++++++++++++++++++++++++++++++++++++
+ shave-libtool.in       |   69 +++++++++++++++++++++++++++++++++++++++++
+ shave.in               |   79 ++++++++++++++++++++++++++++++++++++++++++++++++
+ src/Makefile.am        |   12 ++++---
+ tools/Makefile.am      |    6 ++-
+ 12 files changed, 271 insertions(+), 27 deletions(-)
+
+commit c872b2b5430682c8c0a2782af6fa6a7f7b5e64e5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 21 14:39:32 2009 +0100
+
+    Include StreamedMedia.FUTURE in EXTRA_DIST
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+ extensions/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 739cd047ca67fc8d6f9414434b67ed829bd0078f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Apr 21 13:52:45 2009 +0100
+
+    add a timer when querying proxies so we'll query more if needed
+
+ src/bytestream-factory.c |   30 ++++++++++++++++++++++++++++++
+ 1 files changed, 30 insertions(+), 0 deletions(-)
+
+commit 23a5800f1f215fdcaa47de9457ac85a32fd8af33
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Apr 21 13:21:55 2009 +0100
+
+    bytestream-factory: only query few SOCKS5 proxies instead of the whole list
+
+ src/bytestream-factory.c |  116 +++++++++++++++++++++++++++++++++-------------
+ 1 files changed, 83 insertions(+), 33 deletions(-)
+
+commit 8a5e41f86bb2d0618ab60d67d447427490f0533b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Apr 21 11:20:50 2009 +0100
+
+    factor out randomize_g_slist
+
+ src/bytestream-factory.c |   53 +++++++++++++++++++++++++--------------------
+ 1 files changed, 29 insertions(+), 24 deletions(-)
+
+commit af5c74b1b40aea2e713dabb0346f0ab12ba45db8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Apr 20 14:45:47 2009 +0100
+
+    remove bugged proxies from GABBLE_PARAMS_DEFAULT_SOCKS5_PROXIES
+    
+    127.0.0.1 is actually not a great address for a proxy
+
+ src/connection.h |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit eba71303a66688da9207f8f84b1dfa72d7541b28
+Merge: 95b1646 e631b72
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Apr 20 13:59:40 2009 +0100
+
+    Merge branch 'the-daily-valgrind'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit e631b7273fc0d2cfbdabe4d3079c972eec2567fa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 20:32:01 2009 +0100
+
+    Increase Jingle timeout in tests.
+    
+    This works around spurious failures when Valgrind. (The timeout should
+    go away at some point anyway...)
+
+ tests/twisted/main-debug.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 60ffef45aab19f07a98300fd01d63a7832707419
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 20:27:02 2009 +0100
+
+    Unrace test-outgoing-call.py
+
+ tests/twisted/jingle/test-outgoing-call.py |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+commit 2dd0cc5b4d65c78cfc73985bfb3977a21e8c9a0f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 20:17:38 2009 +0100
+
+    Unrace jingle/accept-extra-stream.py
+
+ tests/twisted/jingle/accept-extra-stream.py |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+commit e9d61baf8e80f7bd079365a8671e3853e557c2aa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 20:04:28 2009 +0100
+
+    Don't leak Jingle content and session names
+
+ src/jingle-factory.c |   20 +++++++++++---------
+ src/jingle-session.c |    2 ++
+ 2 files changed, 13 insertions(+), 9 deletions(-)
+
+commit f244a45035ee68670e09a59e049e05487f039733
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 17:51:08 2009 +0100
+
+    Separate destroying and removing _delayed_request_streams_ctx
+    
+    Disposing a media channel destroys all the delayed request streams. We
+    don't want that to modify the GPtrArray while we're iterating it.
+
+ src/media-channel.c |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
+
+commit e8cc868ae7d2f72ee68b97daba8b267db4db728e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 17:34:16 2009 +0100
+
+    Don't lazily alloc/eagerly free delayed_request_streams
+    
+    This adds complexity for no gain.
+
+ src/media-channel.c |   12 +++---------
+ 1 files changed, 3 insertions(+), 9 deletions(-)
+
+commit 36759632d4827ec6177cd2b341bdad05e1401a7b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 17:34:04 2009 +0100
+
+    Fix a couple of leaks.
+
+ src/jingle-session.c |    4 +++-
+ src/media-channel.c  |    2 ++
+ 2 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 360dd3fa46e731879143d8a56efabad0665f0306
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Apr 17 11:20:22 2009 +0100
+
+    Not needing username or password to register is weird
+
+ src/register.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 161a5445ac7170218e40be845e946430195141f5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Apr 17 11:19:28 2009 +0100
+
+    Simplify registration's get_reply_cb
+
+ src/register.c |   37 ++++++++++++++-----------------------
+ 1 files changed, 14 insertions(+), 23 deletions(-)
+
+commit 31adcf17f087cebd3a059fe1c7ee7d21b9ba7609
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Apr 17 11:01:50 2009 +0100
+
+    Don't try to submit incomplete registration forms
+    
+    Previously Gabble violated a MUST in XEP 0077 by not caring if it was
+    supposed to provide <email/> or other information.
+
+ src/register.c                 |   46 +++++++++++++++++++++++----------------
+ tests/twisted/test-register.py |   26 +++++++++++-----------
+ 2 files changed, 40 insertions(+), 32 deletions(-)
+
+commit 95b16460b75c26ab4f364bbaa8107bdfd8ad2be0
+Merge: 3cd0440 d0a96dd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 17 14:58:40 2009 +0100
+
+    Merge branch 'master' into file-transfer+capability
+    
+    Conflicts:
+    	NEWS
+
+commit 3cd04405f7add28db12fbd0f86f3790b2d42c70b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 17 14:51:36 2009 +0100
+
+    ft-manager: probably cast the caps stored in per_channel_manager_caps
+
+ src/ft-manager.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit d0a96dda742d5acd73b2e5c255b0c2efa3c09a4d
+Merge: e495824 e9e5c34
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Apr 17 14:33:01 2009 +0100
+
+    Merge branch 'file-transfer+resume'
+
+commit e495824cae4f0575c1e583ef0e59b8c51b99590e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 16 15:44:57 2009 +0100
+
+    bytestream_factory_iq_si_cb: initialize self_jid so world won't explode if we got an error before it got a value
+
+ src/bytestream-factory.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a41b0771f1d54afa7dc201020148d65dce058b16
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 16 10:17:48 2009 +0100
+
+    explain gthread dep in NEWS
+
+ NEWS |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 7633016b57ee7cdfdf35b59bea0c706da89e90cb
+Author: Brian Pepple <bpepple@fedoraproject.org>
+Date:   Sun Mar 29 17:20:59 2009 -0400
+
+    Require gthread for g_thread_init() (needed by libsoup)
+    
+    We need to initialize threads for libsoup's benefit. fixes fd.o #20937
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6f6de29a98c9233fbfedf9171de415dc3a2743a3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 15 17:53:55 2009 +0100
+
+    use assertContains
+
+ tests/twisted/tubes/offer-muc-dbus-tube.py     |    4 ++--
+ tests/twisted/tubes/offer-muc-stream-tube.py   |    5 +++--
+ tests/twisted/tubes/offer-private-dbus-tube.py |    5 +++--
+ tests/twisted/tubes/tubetestutil.py            |    4 ++--
+ 4 files changed, 10 insertions(+), 8 deletions(-)
+
+commit 37edaab6c696c67d5cee02f2f338cd745b7e253d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 15 17:49:10 2009 +0100
+
+    s/Salut/Gabble
+
+ src/muc-factory.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit d00cc254a3e17c2a6b03b2e15fbd2268718602ea
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 15 17:47:39 2009 +0100
+
+    upgrade NEWS
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit b226fabae9fb916d8a8540346853cd5cb31745ed
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 15 17:42:17 2009 +0100
+
+    offer-private-dbus-tube.py: check that newly announced channels are in Requests's channels property
+
+ tests/twisted/tubes/offer-private-dbus-tube.py |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit a0275b65ff1d067d8629217170b51df257840aa0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 15 17:34:48 2009 +0100
+
+    offer-muc-{dbus,stream}-tube.py: check if the channel is in Requests's Channels property
+
+ tests/twisted/tubes/offer-muc-dbus-tube.py   |    5 +++++
+ tests/twisted/tubes/offer-muc-stream-tube.py |    5 +++++
+ 2 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 76f70aa9fb4da8786bbd8defbb51d08fd88e5be3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 15 17:34:14 2009 +0100
+
+    check_NewChannels_signal: check if the channel is in Requests's Channels property
+
+ tests/twisted/tubes/offer-private-stream-tube.py |    6 +++---
+ tests/twisted/tubes/tubetestutil.py              |    7 ++++++-
+ 2 files changed, 9 insertions(+), 4 deletions(-)
+
+commit ed88d6d5ed51ea9820d1e728c5cd4c12e27f4027
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 15 17:28:42 2009 +0100
+
+    gabble_muc_factory_foreach_channel: include tube channels as well
+
+ src/muc-factory.c |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
+
+commit 7ba550963e656dd426d679aecaf20dcfa2abe647
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 15 17:26:57 2009 +0100
+
+    don't skip D-Bus tubes in gabble_tubes_channel_foreach
+    
+    they are now ported to the new API so they should be included
+
+ src/tubes-channel.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit e8aa7b5c89b3be6cd4bae53c455795201cbf4611
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 15 16:57:12 2009 +0100
+
+    constants.py: add BUDDY_INFO and ACTIVITY_PROPERTIES
+
+ tests/twisted/constants.py |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 23146622fbb55699d86981aa041174187383dd5d
+Merge: dfb5420 8ad16fc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 16:28:18 2009 +0100
+
+    Merge branch 'initial-audio-video'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit dfb54205466c9fe2a23f5d182f35268b624019ed
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Apr 10 16:33:15 2009 +0100
+
+    Unleak GetSessionHandlers
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ src/media-channel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 06df6a4c5521c0a4cc2193afbc05c937a3c71257
+Merge: 76faacb d84c077
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 16:18:16 2009 +0100
+
+    Merge branch 'split-media-channel'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 76faacb3217c1fa5b6948025fa8c72c8a359cc90
+Merge: 20f288d 4a5502a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 16:17:51 2009 +0100
+
+    Merge branch 'many-ways-to-skin-a-call'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 20f288d45ef958bc9c2170c9845e1e74a01bf064
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 15 15:59:20 2009 +0100
+
+    constants.py: add CONN_IFACE_SIMPLE_PRESENCE
+
+ tests/twisted/constants.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 8ad16fcc54baa91b1b63765f1bbe2ffccc591daa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 15:29:57 2009 +0100
+
+    Extract InitialAudio/Video from initial streams
+
+ src/media-channel.c                         |   38 ++++++++++++++++++++++++---
+ src/media-factory.c                         |    1 -
+ tests/twisted/jingle/initial-audio-video.py |   37 ++++++++++++++++++++++++--
+ 3 files changed, 68 insertions(+), 8 deletions(-)
+
+commit 2f823bf60cadb1c98d2a3a815fa0e444b4e055a7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 15:06:39 2009 +0100
+
+    Remove unnecessary prototypes
+
+ src/media-factory.c |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
+
+commit f7fc766ccc5427f154bb363cdd60e86e8401f94b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 14:16:55 2009 +0100
+
+    Extend incoming_call to do video calls.
+
+ tests/twisted/jingle/jingletest2.py |   24 ++++++++++++++++++++----
+ 1 files changed, 20 insertions(+), 4 deletions(-)
+
+commit 47ee57ec52477699273b1fbb0bb57bf7fac584e4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 15 12:41:18 2009 +0100
+
+    Check that InitialA/V yield correct StreamHandlers
+
+ tests/twisted/jingle/initial-audio-video.py |   62 ++++++++++++++++++++++----
+ 1 files changed, 52 insertions(+), 10 deletions(-)
+
+commit ce15533d3ce33c387003e35d93178a3c179fd776
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 14 18:11:11 2009 +0100
+
+    Create initial streams as per request
+
+ src/media-channel.c |   66 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/media-channel.h |    5 ++++
+ src/media-factory.c |   61 +++++++++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 127 insertions(+), 5 deletions(-)
+
+commit b2efe99bce14ef04ad52b286608801ff0e17ce91
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 14 18:10:46 2009 +0100
+
+    Don't expect InitialVideo to work on GTalk
+    
+    Instead, expect it to fail the channel creation with NotCapable.
+
+ tests/twisted/constants.py                  |    1 +
+ tests/twisted/jingle/initial-audio-video.py |   35 ++++++++++++++++----------
+ 2 files changed, 22 insertions(+), 14 deletions(-)
+
+commit 0a267d89fdde716d4c977f1c65758eff621cba38
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 14 18:09:24 2009 +0100
+
+    Don't forbid session-initiate for no InitialA/V
+    
+    This check was wrong anyway: session-initiate is never sent until the
+    stream handlers are ready etc etc.
+
+ tests/twisted/jingle/initial-audio-video.py |    6 +-----
+ 1 files changed, 1 insertions(+), 5 deletions(-)
+
+commit fbb9e7d6d167e6a97a5fc4ded954059858e2b824
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 14 14:57:35 2009 +0100
+
+    Abstract success/failure callbacks in _delayed_request_streams_ctx
+
+ src/media-channel.c |  109 +++++++++++++++++++++++++++++++-------------------
+ 1 files changed, 67 insertions(+), 42 deletions(-)
+
+commit 9ce8f3a56c6db3c405b6a4a0fa474b4874beb1eb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Apr 13 15:41:44 2009 +0100
+
+    Abstract success/failure callbacks in PendingStreamRequest
+
+ src/media-channel.c |   31 ++++++++++++++++++++++---------
+ 1 files changed, 22 insertions(+), 9 deletions(-)
+
+commit 62d3483fd7879ee6b69385d7d551be3f5b70e136
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Apr 10 16:55:46 2009 +0100
+
+    Pass InitialAudio/Video from request to channel
+
+ src/media-factory.c                         |   31 +++++++++++++----
+ tests/twisted/jingle/initial-audio-video.py |   47 ++++++++++++++++++++++----
+ 2 files changed, 62 insertions(+), 16 deletions(-)
+
+commit b036f855013aa63c5cf3c58559ed2d27d412e786
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 17:20:26 2009 +0100
+
+    Implement and announce InitialAudio/Video props
+
+ src/media-channel-internal.h                |    3 ++
+ src/media-channel.c                         |   44 +++++++++++++++++++++++++++
+ tests/twisted/jingle/initial-audio-video.py |   31 ++++++++++++++++++-
+ 3 files changed, 77 insertions(+), 1 deletions(-)
+
+commit 21672e29e5a94c478276f4bf8c6b75af36435a97
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 14:20:05 2009 +0100
+
+    Allow InitialAudio/Video properties
+
+ src/media-factory.c                         |    4 ++++
+ tests/twisted/Makefile.am                   |    1 +
+ tests/twisted/constants.py                  |    3 +++
+ tests/twisted/jingle/initial-audio-video.py |   27 +++++++++++++++++++++++++++
+ 4 files changed, 35 insertions(+), 0 deletions(-)
+
+commit 190cfe24ec422e21987c574ee5762d96d622628a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 13:13:32 2009 +0100
+
+    Import StreamedMedia.FUTURE spec.
+
+ extensions/Channel_Type_Streamed_Media_Future.xml |  151 +++++++++++++++++++++
+ extensions/all.xml                                |    1 +
+ 2 files changed, 152 insertions(+), 0 deletions(-)
+
+commit d84c077ab319b4b72a1a85985b05e86812d88981
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 14 12:30:40 2009 +0100
+
+    Remove MediaFactory property from MediaChannel.
+    
+    It wasn't used: everything just gets the factory from the connection,
+    which is fine.
+
+ src/media-channel-internal.h |    2 --
+ src/media-channel.c          |   13 -------------
+ src/media-factory.c          |    1 -
+ 3 files changed, 0 insertions(+), 16 deletions(-)
+
+commit ad4985585cbc2983eb6d1ff839ddebe059ae8e83
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 14 12:28:53 2009 +0100
+
+    Move CallState code to media-channel-hold.c
+
+ src/media-channel-hold.c     |  173 +++++++++++++++++++++++++++++++++++++-----
+ src/media-channel-internal.h |    9 ++-
+ src/media-channel.c          |  125 +-----------------------------
+ 3 files changed, 163 insertions(+), 144 deletions(-)
+
+commit 9cfe28b8e451e1be649cc86eaa3a20c255a49993
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 14 12:13:12 2009 +0100
+
+    Inline inform_peer_of_[un]hold
+    
+    They're called exactly once, and add nothing.
+
+ src/media-channel-hold.c |   17 ++---------------
+ 1 files changed, 2 insertions(+), 15 deletions(-)
+
+commit e9e5c34dffe8a8f58f94e0bb6c71065850f061aa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Apr 14 12:11:15 2009 +0100
+
+    upgrade NEWS
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 6b2111b158811e93076161353147b3f873e8d8be
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 14 12:11:03 2009 +0100
+
+    Split Hold implementation to a separate source file.
+
+ src/Makefile.am              |    2 +
+ src/media-channel-hold.c     |  312 ++++++++++++++++++++++++++++++++++++++++++
+ src/media-channel-internal.h |   84 +++++++++++
+ src/media-channel.c          |  306 +----------------------------------------
+ 4 files changed, 403 insertions(+), 301 deletions(-)
+
+commit 3d7a40c27b940b1989591cb78d5e9043a2c8556e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 19 11:34:52 2009 +0000
+
+    implement and test resume on the sending side
+
+ src/ft-channel.c                                   |   23 +++++++++++++++++++-
+ .../twisted/file-transfer/file_transfer_helper.py  |   14 +++++++----
+ .../test-send-file-provide-immediately.py          |    3 +-
+ .../test-send-file-wait-to-provide.py              |    3 +-
+ 4 files changed, 33 insertions(+), 10 deletions(-)
+
+commit 8607c6ca1bf0ae01467b5fdd41c13e7a6e31c05f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 19 10:38:33 2009 +0000
+
+    check that gabble supports range FT
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 9f235c53ac894de6df0ab1256371c29e7e0c415b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Mar 19 10:38:14 2009 +0000
+
+    gabble_file_transfer_channel_offer_file: claim we support range FT
+
+ src/ft-channel.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 5833d016476c9aef047fd2fda606958c5a981a43
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 18 17:56:23 2009 +0000
+
+    pass file args to FT tests so we can easily test resume
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   21 +++++++++++++------
+ .../test-send-file-to-unknown-contact.py           |    4 +-
+ .../test-send-file-wait-to-provide.py              |    4 +-
+ 3 files changed, 18 insertions(+), 11 deletions(-)
+
+commit 4f70e3959696434ea5b4ae28082365bbff8202fe
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 18 17:49:23 2009 +0000
+
+    file_transfer_helper.py: support offset when testing receiving file
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   28 ++++++++++++-------
+ 1 files changed, 18 insertions(+), 10 deletions(-)
+
+commit 6be0c96ccb072c4d9a668781e5d2166d7a3a0ec4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 18 17:41:37 2009 +0000
+
+    add the offset when checking if the transfer is complete
+
+ src/ft-channel.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+commit 19a2f28a8af606a8a61aa11cb7522f19906886b9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 18 17:39:02 2009 +0000
+
+    set offset in SI reply if the sender supports it
+
+ src/ft-channel.c |   43 +++++++++++++++++++++++++++++++++++++++----
+ 1 files changed, 39 insertions(+), 4 deletions(-)
+
+commit 9bdde1a3553ba56954ba0a19fefebcff1e0549ff
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 18 17:37:15 2009 +0000
+
+    add 'resume-supported' property to FT channel
+
+ src/ft-channel.c |   21 ++++++++++++++++++++-
+ src/ft-channel.h |    2 +-
+ src/ft-manager.c |    8 +++++---
+ 3 files changed, 26 insertions(+), 5 deletions(-)
+
+commit f929a3b462efd82b1ab23de30f479c8456da1b7b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Mar 18 17:35:59 2009 +0000
+
+    fix indent
+
+ src/ft-channel.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ac2eb6abb3f5569c761e0682abb51aba711f821a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Apr 14 12:10:31 2009 +0100
+
+    upgrade NEWS
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 2b92db1a843f3da06067866ffa99c66848a22d63
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 13:08:55 2009 +0000
+
+    add test-caps-file-transfer.py to tests suite
+
+ tests/twisted/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 0f8e4dd916251268a994bea8f0560f946859948d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 13:08:48 2009 +0000
+
+    add test-caps-file-transfer.py
+
+ .../file-transfer/test-caps-file-transfer.py       |  137 ++++++++++++++++++++
+ 1 files changed, 137 insertions(+), 0 deletions(-)
+
+commit 3964c00804ac43a30f25a479b1645e38a216e053
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 13:07:53 2009 +0000
+
+    test-caps-tubes.py: FT is now announced too
+
+ tests/twisted/test-caps-tubes.py |   17 +++++++++++------
+ 1 files changed, 11 insertions(+), 6 deletions(-)
+
+commit 6e02ca91e435ca744b7e8fe0d0f3472c12a7b640
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 13:00:11 2009 +0000
+
+    caps_helper.py: add ft_{fixed,allowed}_properties
+
+ tests/twisted/caps_helper.py |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
+
+commit 9c50eef3f80da52bb80f7b891f476d4bddc833fa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Mar 24 12:00:54 2009 +0000
+
+    ft-manager: implement ContactCapability
+
+ src/ft-manager.c |  131 +++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 130 insertions(+), 1 deletions(-)
+
+commit f9537587acd3e58ce7f231dc4dbca6e03ab5f884
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Apr 14 12:04:33 2009 +0100
+
+    start NEWS for 0.7.27
+
+ NEWS |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit 2b2c43614dd7abf44a8cdada06a7fb80ddee0337
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Apr 13 12:32:05 2009 +0100
+
+    pass an empty array as fallback-socks5-proxies in tests
+    
+    This is to avoid flooding debug output with lot of IQ stanzas (b.fd.o
+
+ tests/twisted/gabbletest.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 4a5502a33c31459aeb99ba366c3228f0852256a7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Apr 10 15:29:04 2009 +0100
+
+    Test removing self-handle before Google relays arrive
+
+ tests/twisted/jingle/google-relay.py |   30 ++++++++++++++++++++++--------
+ 1 files changed, 22 insertions(+), 8 deletions(-)
+
+commit 824ccc0e21566697c64dc6935366be19990bb8ae
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Apr 10 15:27:44 2009 +0100
+
+    Simplify gabble_media_channel_remove_member
+    
+    Fixes fd.o#20578 (Can't cancel outgoing calls by removing self-handle
+    until streaming implementation has called Ready).
+
+ src/media-channel.c |   36 +++++++++++++++++++++---------------
+ 1 files changed, 21 insertions(+), 15 deletions(-)
+
+commit 040c0cc42eaad1fc6fc1e2e2fbf26708bf4c6127
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Apr 10 15:26:11 2009 +0100
+
+    Unrace jingle/test-outgoing-call-requestotron.py
+
+ .../jingle/test-outgoing-call-requestotron.py      |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit 39d472edad2a8efab3fc60b58d7bce2da810dd43
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Apr 10 15:22:53 2009 +0100
+
+    Unrace jingle/google-relay.py
+
+ tests/twisted/jingle/google-relay.py |   13 +++++++------
+ 1 files changed, 7 insertions(+), 6 deletions(-)
+
+commit 1c6e465b60078412cd5dba6751a99c98c9227f3d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Apr 10 13:00:57 2009 +0100
+
+    Improve group checks in Create(StreamedMedia) test
+
+ .../jingle/test-outgoing-call-requestotron.py      |   31 ++++++++++++++++----
+ 1 files changed, 25 insertions(+), 6 deletions(-)
+
+commit 7dfe0c79e1f6c1016679d7a263bd47aeeef8c464
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 19:41:01 2009 +0100
+
+    Remove most group flags from media channels
+    
+    Removing the peer (to rescind the invitation or end the call) is wrong;
+    you should be closing the channel or removing yourself. As a result,
+    almost all the flag changes can go away, with the exception of having
+    CanAdd around until AddMembers/RequestStreams is called if a client is
+    using the request-anonymous-channel calling pattern.
+
+ src/media-channel.c |   50 +++++++++++++++-----------------------------------
+ 1 files changed, 15 insertions(+), 35 deletions(-)
+
+commit b37cd150378a820e095ce309a716220ac7b7676a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 19:31:23 2009 +0100
+
+    Allow self-removal from media channels.
+    
+    This actually already worked in most cases, because the Can_Remove flag
+    is (erroneously) set.
+
+ src/media-channel.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 3238184b84570e7012af9b3de86a25f5fae2bc05
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 19:06:40 2009 +0100
+
+    assertEquals etc.-ify test-outgoing-call-requestotron
+
+ .../jingle/test-outgoing-call-requestotron.py      |  120 +++++++++----------
+ tests/twisted/servicetest.py                       |    3 +
+ 2 files changed, 60 insertions(+), 63 deletions(-)
+
+commit 686b28c94c7e65ee90fc40916ea0fe13f2db57a6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 18:46:06 2009 +0100
+
+    Simplify gabble_media_channel_close
+
+ src/media-channel.c |   22 +++++++---------------
+ 1 files changed, 7 insertions(+), 15 deletions(-)
+
+commit 5b75bb49882110799a3ce67879ee72e549f6d14c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 18:41:40 2009 +0100
+
+    Correct comment on gabble_media_channel_close_async
+
+ src/media-channel.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 874669086144ec1c6fe0ae9c3e49879b9c3a3994
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 18:41:31 2009 +0100
+
+    Don't export gabble_media_channel_close
+
+ src/media-channel.c |    3 ++-
+ src/media-channel.h |    2 --
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+commit c63c2d50cb958a40c442a94eb4dc9ed3168e42d4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 18:39:16 2009 +0100
+
+    MediaChannel: delete phantom function prototypes
+
+ src/media-channel.h |   17 -----------------
+ 1 files changed, 0 insertions(+), 17 deletions(-)
+
+commit a6c87d6a4d127d6c89b97a69acbc9c11e17e08e7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 18:35:33 2009 +0100
+
+    MediaChannel: Use tp_intset_new_containing
+
+ src/media-channel.c |   28 ++++++----------------------
+ 1 files changed, 6 insertions(+), 22 deletions(-)
+
+commit d76df8bdae161201765af455f25299cc6b741fed
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 18:30:06 2009 +0100
+
+    Clarify what adding peer means.
+
+ src/media-channel.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit dc0a6d772cb9c7d517cef38fe58bb9afd8d8ad69
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 18:28:06 2009 +0100
+
+    Don't export gabble_media_channel_add_member
+
+ src/media-channel.c |   16 ++++++++++------
+ src/media-channel.h |    6 ------
+ 2 files changed, 10 insertions(+), 12 deletions(-)
+
+commit 41ab4315d271b2b925d8a82dc068010bf6d5a57b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 18:25:57 2009 +0100
+
+    Refactor adding Jingle peer to remote-pending early
+
+ src/media-channel.c |   59 ++++++++++++++++++++++++++++++++++++++------------
+ src/media-factory.c |   25 +++++++-------------
+ 2 files changed, 54 insertions(+), 30 deletions(-)
+
+commit 16bef8088acfb1b7a6b7bc662c85e1ea5ee69ff3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 13:12:39 2009 +0100
+
+    Include a priv pointer in GabbleMediaFactory
+
+ src/media-factory.c |   30 ++++++++++++++----------------
+ src/media-factory.h |    3 +++
+ 2 files changed, 17 insertions(+), 16 deletions(-)
+
+commit 021a26139d501c3e95bc00b58281e3557cff5846
+Merge: 7758580 0f6d90b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 9 13:19:54 2009 +0100
+
+    Merge commit 'daf/tests'
+    
+    Conflicts:
+    	tests/twisted/constants.py
+    
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 0f6d90b775dc0b999ec219b777bad437427a37ca
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Apr 8 22:17:29 2009 +0100
+
+    make jingle/test-outgoing-call.py use assertion helpers
+
+ tests/twisted/jingle/test-outgoing-call.py |  123 +++++++++++++---------------
+ 1 files changed, 56 insertions(+), 67 deletions(-)
+
+commit e693d1780fe6bad298765ba3bd29efde941ddbb1
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Apr 8 22:16:57 2009 +0100
+
+    add assertion helpers to servicetest.py
+
+ tests/twisted/servicetest.py |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit c2dd22aa36747ee4c122c97f09a6d2e495221fcd
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Apr 8 19:00:49 2009 +0100
+
+    make more use of constants.py in tests
+    
+    Also other small cleanups.
+
+ tests/twisted/constants.py                         |   14 +++-
+ tests/twisted/jingle/google-relay.py               |   18 ++---
+ tests/twisted/jingle/hold-audio.py                 |    1 -
+ tests/twisted/jingle/hold-av.py                    |    1 -
+ tests/twisted/jingle/payload-types.py              |    6 +-
+ tests/twisted/jingle/stun-server.py                |    3 +-
+ .../twisted/jingle/test-content-adding-removal.py  |    6 +-
+ tests/twisted/jingle/test-content-complex.py       |    2 +-
+ tests/twisted/jingle/test-dialects-outgoing.py     |    6 +-
+ tests/twisted/jingle/test-incoming-call.py         |    7 +-
+ .../jingle/test-outgoing-call-deprecated.py        |    9 +--
+ .../jingle/test-outgoing-call-deprecated2.py       |    8 +--
+ tests/twisted/jingle/test-outgoing-call-ensure.py  |   78 ++++++++------------
+ .../jingle/test-outgoing-call-requestotron.py      |   50 +++++--------
+ tests/twisted/jingle/test-outgoing-call.py         |   49 +++++--------
+ tests/twisted/muc/send-error.py                    |    6 +-
+ tests/twisted/muc/test-ensure.py                   |   29 +++----
+ tests/twisted/muc/test-muc-invitation.py           |    9 +-
+ tests/twisted/muc/test-muc-ownership.py            |   34 +++-----
+ tests/twisted/muc/test-muc-properties.py           |    4 +-
+ tests/twisted/muc/test-muc.py                      |   31 +++-----
+ tests/twisted/olpc/gadget-invite.py                |    7 +-
+ tests/twisted/olpc/gadget-restarted.py             |    3 +-
+ tests/twisted/olpc/olpc-activity-search.py         |   29 +++----
+ tests/twisted/olpc/olpc-buddy-search.py            |   19 ++---
+ tests/twisted/olpc/olpc-muc-invitation.py          |    9 +-
+ tests/twisted/olpc/olpc-muc-prop-change.py         |    7 +-
+ tests/twisted/olpc/util.py                         |    7 +-
+ tests/twisted/olpc/view-presence.py                |    5 +-
+ tests/twisted/roster/ensure.py                     |   26 +++----
+ tests/twisted/roster/groups-12791.py               |   24 ++----
+ tests/twisted/roster/groups.py                     |   27 +++----
+ tests/twisted/roster/request-group-after-roster.py |   20 ++---
+ .../twisted/roster/request-group-before-roster.py  |   12 +--
+ tests/twisted/roster/test-google-roster.py         |    6 +-
+ tests/twisted/roster/test-roster-item-deletion.py  |    7 +-
+ tests/twisted/roster/test-roster-subscribe.py      |    6 +-
+ tests/twisted/roster/test-roster.py                |   25 +++----
+ tests/twisted/roster/test-save-alias-to-roster.py  |    6 +-
+ tests/twisted/test-capabilities.py                 |   33 ++++----
+ tests/twisted/test-caps-cache.py                   |    9 +--
+ tests/twisted/test-caps-hash.py                    |   21 ++---
+ tests/twisted/text/destroy.py                      |   45 ++++-------
+ tests/twisted/text/ensure.py                       |   62 ++++++----------
+ tests/twisted/text/initiate-requestotron.py        |   53 +++++---------
+ tests/twisted/text/initiate.py                     |   18 ++---
+ tests/twisted/text/respawn.py                      |   57 ++++++---------
+ tests/twisted/text/send-error.py                   |   40 +++-------
+ tests/twisted/text/test-chat-state.py              |   18 ++---
+ tests/twisted/text/test-text-delayed.py            |    8 +-
+ tests/twisted/text/test-text-no-body.py            |    6 +-
+ tests/twisted/text/test-text.py                    |   17 ++--
+ tests/twisted/tubes/close-muc-with-closed-tube.py  |   23 +++---
+ tests/twisted/tubes/crash-on-list-channels.py      |    9 +-
+ .../twisted/tubes/create-invalid-tube-channels.py  |    7 +-
+ tests/twisted/tubes/ensure-si-tube.py              |   29 +++----
+ tests/twisted/tubes/request-invalid-dbus-tube.py   |    2 +-
+ tests/twisted/tubes/test-get-available-tubes.py    |    6 +-
+ 58 files changed, 443 insertions(+), 636 deletions(-)
+
+commit 7758580abd368aee4832c12d3fe33e923a06d289
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 8 18:57:50 2009 +0100
+
+    Bump nano version to 0.7.26.1
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 073e5f8dbfe7a0db57ab8022265c422a8cecc9b4
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Wed Apr 8 17:36:13 2009 +0100
@@ -118,6 +2314,74 @@ Date:   Wed Apr 8 16:28:20 2009 +0100
  tests/twisted/constants.py |   19 +++++++++++++++++++
  1 files changed, 19 insertions(+), 0 deletions(-)
 
+commit ff9658cab958b25b6230834355d1aeb688140ea1
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Apr 8 12:09:13 2009 +0100
+
+    clean up pyflakes warnings in tests
+
+ tests/twisted/bytestream.py                        |    3 +-
+ tests/twisted/connect/test-nonblocking-tls.py      |    8 +-
+ tests/twisted/connect/test-twice.py                |   10 +--
+ .../twisted/file-transfer/file_transfer_helper.py  |   16 ++--
+ ...eceive-file-and-close-socket-while-receiving.py |    1 -
+ .../test-receive-file-and-disconnect.py            |    1 -
+ tests/twisted/gabbletest.py                        |    1 -
+ tests/twisted/jingle/call-state.py                 |    6 +-
+ tests/twisted/jingle/google-relay.py               |    1 -
+ tests/twisted/jingle/hold-audio.py                 |    1 -
+ tests/twisted/jingle/hold-av.py                    |    8 +--
+ tests/twisted/jingle/jingletest2.py                |   12 ++--
+ tests/twisted/jingle/outgoing-many-streams.py      |   13 ++--
+ tests/twisted/jingle/payload-types.py              |   13 +--
+ tests/twisted/jingle/stream-handler-error.py       |    2 +-
+ tests/twisted/jingle/stun-server.py                |   27 +++---
+ .../twisted/jingle/test-content-adding-removal.py  |   35 +++----
+ tests/twisted/jingle/test-content-complex.py       |   11 +--
+ tests/twisted/jingle/test-description-info.py      |   15 ++--
+ tests/twisted/jingle/test-dialects-incoming.py     |   12 +--
+ tests/twisted/jingle/test-dialects-outgoing.py     |    9 +--
+ tests/twisted/jingle/test-incoming-call.py         |   12 +--
+ .../jingle/test-outgoing-call-deprecated.py        |    5 +-
+ .../jingle/test-outgoing-call-deprecated2.py       |    9 +-
+ tests/twisted/jingle/test-outgoing-call-ensure.py  |   13 +--
+ .../twisted/jingle/test-outgoing-call-rejected.py  |    3 +-
+ .../jingle/test-outgoing-call-requestotron.py      |   12 +--
+ tests/twisted/jingle/test-outgoing-call.py         |   13 +--
+ tests/twisted/presence/presence.py                 |    4 +-
+ tests/twisted/roster/ensure.py                     |   18 ++---
+ tests/twisted/roster/request-group-after-roster.py |   13 +--
+ .../twisted/roster/request-group-before-roster.py  |    2 -
+ tests/twisted/roster/test-google-roster.py         |    5 +-
+ tests/twisted/roster/test-roster-item-deletion.py  |    2 +-
+ tests/twisted/test-capabilities.py                 |    2 -
+ tests/twisted/test-caps-cache.py                   |    5 +-
+ tests/twisted/test-caps-hash.py                    |    3 +-
+ tests/twisted/test-disco-no-reply.py               |    2 -
+ tests/twisted/test-location.py                     |    2 +-
+ tests/twisted/text/ensure.py                       |    2 -
+ tests/twisted/text/initiate-requestotron.py        |    2 -
+ tests/twisted/text/send-error.py                   |    2 -
+ tests/twisted/text/test-chat-state.py              |    2 -
+ tests/twisted/text/test-text-delayed.py            |    4 +-
+ tests/twisted/tubes/accept-muc-dbus-tube.py        |    2 +-
+ tests/twisted/tubes/accept-muc-stream-tube.py      |    2 +-
+ tests/twisted/tubes/close-muc-with-closed-tube.py  |   13 +--
+ tests/twisted/tubes/crash-on-list-channels.py      |    6 +-
+ .../twisted/tubes/create-invalid-tube-channels.py  |   23 +++---
+ tests/twisted/tubes/ensure-si-tube.py              |   13 +---
+ tests/twisted/tubes/muctubeutil.py                 |    4 +-
+ tests/twisted/tubes/offer-muc-dbus-tube.py         |   92 ++++++++++----------
+ tests/twisted/tubes/offer-muc-stream-tube.py       |    2 +-
+ tests/twisted/tubes/offer-private-stream-tube.py   |    2 +-
+ tests/twisted/tubes/request-invalid-dbus-tube.py   |   12 ++--
+ tests/twisted/tubes/test-get-available-tubes.py    |    6 +-
+ tests/twisted/tubes/tubetestutil.py                |   96 +++++++++++---------
+ tests/twisted/vcard/test-avatar-retrieved.py       |    1 -
+ tests/twisted/vcard/test-save-alias-to-vcard.py    |    6 +-
+ tests/twisted/vcard/test-vcard-race.py             |    8 +-
+ 60 files changed, 262 insertions(+), 368 deletions(-)
+
 commit 26a438f8b098b9392772fefc690793d020828952
 Merge: c09bd7d f814631
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -135,6 +2399,43 @@ Date:   Tue Apr 7 18:37:03 2009 +0100
 
  src/media-channel.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 7a85e547c8dcfc48ecc1096719776583899d3fbe
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Tue Apr 7 17:21:48 2009 +0100
+
+    add HT_CONTACT_LIST and HT_GROUP to constants.py
+
+ tests/twisted/constants.py |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 9db4997d8fd079000cdb9ab989428455f763207b
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Tue Apr 7 17:15:26 2009 +0100
+
+    port test-content-complex.py to test_dialects()
+
+ tests/twisted/jingle/test-content-complex.py |   13 +++----------
+ 1 files changed, 3 insertions(+), 10 deletions(-)
+
+commit 912afa72573a6ae50a510c3f8014600123d8f79f
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Tue Apr 7 17:14:45 2009 +0100
+
+    port tests to test_all_dialects()
+
+ tests/twisted/jingle/test-dialects-incoming.py |   14 +-------------
+ tests/twisted/jingle/test-dialects-outgoing.py |   18 ++----------------
+ 2 files changed, 3 insertions(+), 29 deletions(-)
+
+commit 1d983e7554d9b44d767b3eed06f49b209af5441e
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Tue Apr 7 17:13:17 2009 +0100
+
+    factor test_dialects() out of test_all_dialects()
+
+ tests/twisted/jingle/jingletest2.py |   23 ++++++++---------------
+ 1 files changed, 8 insertions(+), 15 deletions(-)
 
 commit 599b6d8fd931ccd8c171139b0e7d3436ac87361a
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -155,6 +2456,16 @@ Date:   Tue Apr 7 16:33:49 2009 +0100
 
  src/media-channel.c |   47 ++++++++++++++++++++++++-----------------------
  1 files changed, 24 insertions(+), 23 deletions(-)
+
+commit bf876652a3252d136b61e474a0664a3d8c841cca
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Tue Apr 7 15:37:57 2009 +0100
+
+    s/_CAPA/_CAPS/ for taste purposes
+
+ tests/twisted/constants.py       |    2 +-
+ tests/twisted/test-caps-tubes.py |   60 +++++++++++++++++++-------------------
+ 2 files changed, 31 insertions(+), 31 deletions(-)
 
 commit c09bd7d88537acc053e219fc23073df80e6ab551
 Merge: 0e3ba89 c05a2d2
