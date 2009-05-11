@@ -13,6 +13,7 @@ from gabbletest import sync_stream, exec_test
 from servicetest import EventPattern
 import dbus
 import ns
+import os
 
 class JingleProtocol:
     """
@@ -25,8 +26,8 @@ class JingleProtocol:
 
     def _simple_xml(self, node):
         "Construct domish.Element tree from tree of tuples"
-        name, ns, attribs, children = node
-        el = domish.Element((ns, name))
+        name, namespace, attribs, children = node
+        el = domish.Element((namespace, name))
         for key, val in attribs.items():
             el[key] = val
         for c in children:
@@ -110,8 +111,8 @@ class JingleProtocol:
     def extract_session_id(self, query):
         return query['sid']
 
-    def is_gtalk(self):
-        return False
+    def can_do_video(self):
+        return True
 
     def is_modern_jingle(self):
         return False
@@ -156,7 +157,6 @@ class GtalkProtocol03(JingleProtocol):
 
     def Description(self, type, children):
         return ('description', 'http://www.google.com/session/phone', {}, children)
-
     def match_jingle_action(self, q, action):
         action = self._action_map(action)
         return q is not None and q.name == 'session' and q['type'] == action
@@ -168,8 +168,8 @@ class GtalkProtocol03(JingleProtocol):
     def extract_session_id(self, query):
         return query['id']
 
-    def is_gtalk(self):
-        return True
+    def can_do_video(self):
+        return False
 
 class GtalkProtocol04(JingleProtocol):
     features = [ 'http://www.google.com/xmpp/protocol/voice/v1',
@@ -213,8 +213,8 @@ class GtalkProtocol04(JingleProtocol):
     def extract_session_id(self, query):
         return query['id']
 
-    def is_gtalk(self):
-        return True
+    def can_do_video(self):
+        return False
 
 class JingleProtocol015(JingleProtocol):
     features = [ 'http://www.google.com/transport/p2p',
@@ -238,12 +238,12 @@ class JingleProtocol015(JingleProtocol):
 
     def Description(self, type, children):
         if type == 'audio':
-            ns = 'http://jabber.org/protocol/jingle/description/audio'
+            namespace = 'http://jabber.org/protocol/jingle/description/audio'
         elif type == 'video':
-            ns = 'http://jabber.org/protocol/jingle/description/video'
+            namespace = 'http://jabber.org/protocol/jingle/description/video'
         else:
-            ns = 'unexistent-namespace'
-        return ('description', ns, { 'type': type }, children)
+            namespace = 'unexistent-namespace'
+        return ('description', namespace, { 'type': type }, children)
 
 class JingleProtocol031(JingleProtocol):
     features = [ 'urn:xmpp:jingle:0', 'urn:xmpp:jingle:apps:rtp:0',
@@ -353,15 +353,31 @@ class JingleTest2:
         # Force Gabble to process the caps before doing any more Jingling
         sync_stream(self.q, self.stream)
 
-    def incoming_call(self):
+    def incoming_call(self, audio=True, video=False):
+        assert audio or video
+
         jp = self.jp
-        node = jp.SetIq(self.peer, self.jid, [
-            jp.Jingle(self.sid, self.peer, 'session-initiate', [
+        contents = []
+        if audio:
+            contents.append(
                 jp.Content('stream1', 'initiator', 'both', [
                     jp.Description('audio', [
                         jp.PayloadType(name, str(rate), str(id)) for
                             (name, id, rate) in self.audio_codecs ]),
-                jp.TransportGoogleP2P() ]) ]) ])
+                    jp.TransportGoogleP2P() ])
+                )
+        if video:
+            assert jp.can_do_video()
+            contents.append(
+                jp.Content('stream2', 'initiator', 'both', [
+                    jp.Description('video', [
+                        jp.PayloadType(name, str(rate), str(id)) for
+                            (name, id, rate) in self.video_codecs ]),
+                    jp.TransportGoogleP2P() ])
+                )
+        node = jp.SetIq(self.peer, self.jid, [
+            jp.Jingle(self.sid, self.peer, 'session-initiate', contents),
+            ])
         self.stream.send(jp.xml(node))
 
     def set_sid_from_initiate(self, query):
@@ -455,20 +471,23 @@ class JingleTest2:
                 in enumerate(self.remote_transports) ],
             signature='(usuussduss)')
 
+def test_dialects(f, dialects):
+    for dialect in dialects:
+        exec_test(
+            lambda q, bus, conn, stream: f(dialect(), q, bus, conn, stream))
+
 def test_all_dialects(f):
-    def test015(q, bus, conn, stream):
-        f(JingleProtocol015(), q, bus, conn, stream)
+    dialectmap = { "jingle015": JingleProtocol015,
+        "jingle031": JingleProtocol031,
+        "gtalk03": GtalkProtocol03,
+        "gtalk04":  GtalkProtocol04
+    }
+    dialects = []
 
-    def test031(q, bus, conn, stream):
-        f(JingleProtocol031(),q, bus, conn, stream)
-
-    def testg3(q, bus, conn, stream):
-        f(GtalkProtocol03(), q, bus, conn, stream)
-
-    def testg4(q, bus, conn, stream):
-        f(GtalkProtocol04(), q, bus, conn, stream)
-
-    exec_test(testg3)
-    exec_test(testg4)
-    exec_test(test015)
-    exec_test(test031)
+    jd = os.getenv("JINGLE_DIALECTS")
+    if jd == None:
+        dialects = dialectmap.values()
+    else:
+        for d in jd.split (','):
+            dialects.append(dialectmap[d])
+    test_dialects(f,  dialects)

@@ -1,5 +1,5 @@
 import base64
-import sha
+import hashlib
 import sys
 import random
 import socket
@@ -11,8 +11,7 @@ from twisted.words.xish import xpath, domish
 from twisted.internet.error import CannotListenError
 
 from servicetest import Event, EventPattern
-from gabbletest import acknowledge_iq, sync_stream, make_result_iq, elem_iq,\
-    elem
+from gabbletest import acknowledge_iq, make_result_iq, elem_iq, elem
 import ns
 
 def wait_events(q, expected, my_event):
@@ -220,7 +219,7 @@ class BytestreamS5B(Bytestream):
     def _compute_hash_domain(self):
         # sha-1(sid + initiator + target)
         unhashed_domain = self.stream_id + self.initiator + self.target
-        return sha.new(unhashed_domain).hexdigest()
+        return hashlib.sha1(unhashed_domain).hexdigest()
 
     def _wait_connect_cmd(self):
         event = self.q.expect('s5b-data-received', transport=self.transport)
@@ -695,7 +694,7 @@ class BytestreamIBBIQ(BytestreamIBB):
     def _send(self, from_, to, data):
         id = random.randint(0, sys.maxint)
 
-        iq = elem_iq(self.stream, 'set', to=to, from_=from_, to=to, id=str(id))(
+        iq = elem_iq(self.stream, 'set', from_=from_, to=to, id=str(id))(
             elem('data', xmlns=ns.IBB, sid=self.stream_id, seq=str(self.seq))(
                 (unicode(base64.b64encode(data)))))
 

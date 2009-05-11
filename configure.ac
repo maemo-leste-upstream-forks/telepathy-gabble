@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [7])
-m4_define([gabble_micro_version], [26])
+m4_define([gabble_micro_version], [27])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -110,7 +110,7 @@ AC_SUBST(HANDLE_LEAK_DEBUG_CFLAGS)
 AC_SUBST([ENABLE_CODING_STYLE_CHECKS])
 
 dnl Check for Glib
-PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.16, gobject-2.0 >= 2.16])
+PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >= 2.16])
 
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
@@ -171,7 +171,7 @@ fi
 
 # Check for a Python >= 2.5 with Twisted, to run the tests
 AC_MSG_CHECKING([for Python >= 2.5 with Twisted and XMPP protocol support])
-for TEST_PYTHON in python2.5 python2.6 python; do
+for TEST_PYTHON in python2.6 python2.5 python; do
   if $TEST_PYTHON -c "from sys import version_info; import dbus, dbus.mainloop.glib; raise SystemExit(version_info < (2, 5, 0, 'final', 0))" >/dev/null 2>&1; then
     if $TEST_PYTHON -c "import twisted.words.xish.domish, twisted.words.protocols.jabber, twisted.internet.reactor" >/dev/null 2>&1; then
       AC_MSG_RESULT([$TEST_PYTHON])
@@ -206,6 +206,8 @@ fi
 
 AC_CHECK_FUNCS(getifaddrs memset select strndup setresuid setreuid strerror)
 
+SHAVE_INIT(.)
+
 AC_OUTPUT( Makefile \
            docs/Makefile \
            extensions/Makefile \
@@ -217,5 +219,7 @@ AC_OUTPUT( Makefile \
            tests/twisted/Makefile \
            tests/twisted/tools/Makefile \
            lib/Makefile \
-           lib/gibber/Makefile
+           lib/gibber/Makefile \
+           shave \
+           shave-libtool
 )

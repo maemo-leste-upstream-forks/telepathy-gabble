@@ -63,10 +63,6 @@ G_DEFINE_TYPE_WITH_CODE(GabbleMediaStream,
 /* signal enum */
 enum
 {
-    DESTROY,
-    NEW_ACTIVE_CANDIDATE_PAIR,
-    NEW_NATIVE_CANDIDATE,
-    SUPPORTED_CODECS,
     ERROR,
     UNHOLD_FAILED,
 
@@ -109,10 +105,10 @@ struct _GabbleMediaStreamPrivate
   GValue native_codecs;     /* intersected codec list */
   GValue native_candidates;
 
-  /* Whether we're updating, as opposed to discovering, remote codecs.
-   * Changes SupportedCodecs/Error to no-ops.
+  /* Whether we're waiting for a codec intersection from the streaming
+   * implementation. If FALSE, SupportedCodecs is a no-op.
    */
-  gboolean updating_remote_codecs;
+  gboolean awaiting_intersection;
 
   GValue remote_codecs;
   GValue remote_candidates;
@@ -228,8 +224,6 @@ gabble_media_stream_init (GabbleMediaStream *self)
       dbus_g_type_specialized_construct (candidate_list_type));
 
   priv->stun_servers = g_ptr_array_sized_new (1);
-
-  priv->updating_remote_codecs = FALSE;
 }
 
 static gboolean
@@ -318,6 +312,10 @@ gabble_media_stream_constructor (GType type, guint n_props,
       g_object_set (stream, "combined-direction",
           MAKE_COMBINED_DIRECTION (TP_MEDIA_STREAM_DIRECTION_BIDIRECTIONAL,
             0), NULL);
+    }
+  else
+    {
+      priv->awaiting_intersection = TRUE;
     }
 
   return obj;
@@ -489,10 +487,6 @@ gabble_media_stream_class_init (GabbleMediaStreamClass *gabble_media_stream_clas
 {
   GObjectClass *object_class = G_OBJECT_CLASS (gabble_media_stream_class);
   GParamSpec *param_spec;
-  GType transport_list_type =
-      TP_ARRAY_TYPE_MEDIA_STREAM_HANDLER_TRANSPORT_LIST;
-  GType codec_list_type =
-      TP_ARRAY_TYPE_MEDIA_STREAM_HANDLER_CODEC_LIST;
 
   g_type_class_add_private (gabble_media_stream_class,
       sizeof (GabbleMediaStreamPrivate));
@@ -628,42 +622,6 @@ gabble_media_stream_class_init (GabbleMediaStreamClass *gabble_media_stream_clas
 
   /* signals not exported by D-Bus interface */
 
-  signals[DESTROY] =
-    g_signal_new ("destroy",
-                  G_OBJECT_CLASS_TYPE (gabble_media_stream_class),
-                  G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
-                  0,
-                  NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
-                  G_TYPE_NONE, 0);
-
-  signals[NEW_ACTIVE_CANDIDATE_PAIR] =
-    g_signal_new ("new-active-candidate-pair",
-                  G_OBJECT_CLASS_TYPE (gabble_media_stream_class),
-                  G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
-                  0,
-                  NULL, NULL,
-                  gabble_marshal_VOID__STRING_STRING,
-                  G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
-
-  signals[NEW_NATIVE_CANDIDATE] =
-    g_signal_new ("new-native-candidate",
-                  G_OBJECT_CLASS_TYPE (gabble_media_stream_class),
-                  G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
-                  0,
-                  NULL, NULL,
-                  gabble_marshal_VOID__STRING_BOXED,
-                  G_TYPE_NONE, 2, G_TYPE_STRING, transport_list_type);
-
-  signals[SUPPORTED_CODECS] =
-    g_signal_new ("supported-codecs",
-                  G_OBJECT_CLASS_TYPE (gabble_media_stream_class),
-                  G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
-                  0,
-                  NULL, NULL,
-                  g_cclosure_marshal_VOID__BOXED,
-                  G_TYPE_NONE, 1, codec_list_type);
-
   signals[ERROR] =
     g_signal_new ("error",
                   G_OBJECT_CLASS_TYPE (gabble_media_stream_class),
@@ -697,8 +655,6 @@ gabble_media_stream_dispose (GObject *object)
     }
 
   _gabble_media_stream_close (self);
-
-  g_signal_emit (self, signals[DESTROY], 0);
 
   priv->dispose_has_run = TRUE;
 
@@ -790,15 +746,9 @@ gabble_media_stream_error_async (TpSvcMediaStreamHandler *iface,
                                  DBusGMethodInvocation *context)
 {
   GabbleMediaStream *self = GABBLE_MEDIA_STREAM (iface);
-  GabbleMediaStreamPrivate *priv = self->priv;
   GError *error = NULL;
 
-  /* description-info is purely advisory; if the streaming implementation
-   * doesn't like the new codec parameters, we don't want to terminate the
-   * session. So we don't error out the media stream in that case.
-   */
-  if (priv->updating_remote_codecs ||
-      gabble_media_stream_error (self, errno, message, &error))
+  if (gabble_media_stream_error (self, errno, message, &error))
     {
       tp_svc_media_stream_handler_return_from_error (context);
     }
@@ -907,15 +857,8 @@ gabble_media_stream_new_active_candidate_pair (TpSvcMediaStreamHandler *iface,
                                                const gchar *remote_candidate_id,
                                                DBusGMethodInvocation *context)
 {
-  GabbleMediaStream *self = GABBLE_MEDIA_STREAM (iface);
-  GabbleMediaStreamPrivate *priv;
-
-  g_assert (GABBLE_IS_MEDIA_STREAM (self));
-
-  priv = self->priv;
-
-  g_signal_emit (self, signals[NEW_ACTIVE_CANDIDATE_PAIR], 0,
-                 native_candidate_id, remote_candidate_id);
+  DEBUG ("called (%s, %s); this is a no-op on Jingle", native_candidate_id,
+      remote_candidate_id);
 
   tp_svc_media_stream_handler_return_from_new_active_candidate_pair (context);
 }
@@ -1058,9 +1001,6 @@ gabble_media_stream_new_native_candidate (TpSvcMediaStreamHandler *iface,
 
   li = g_list_prepend (NULL, c);
   gabble_jingle_content_add_candidates (priv->content, li);
-
-  g_signal_emit (self, signals[NEW_NATIVE_CANDIDATE], 0,
-                 candidate_id, transports);
 
   tp_svc_media_stream_handler_return_from_new_native_candidate (context);
 }
@@ -1242,28 +1182,29 @@ gabble_media_stream_supported_codecs (TpSvcMediaStreamHandler *iface,
 
   DEBUG ("called");
 
-  /* We don't need to do anything in response to the streaming implementation
-   * deciding it likes the new codec paramaters.
-   */
-  if (!priv->updating_remote_codecs)
+  if (priv->awaiting_intersection)
     {
-      if (gabble_jingle_content_is_created_by_us (self->priv->content))
+      if (!pass_local_codecs (self, codecs, &error))
         {
-          DEBUG ("we already sent our codecs, ignoring codec intersection");
-        }
-      else
-        {
-          if (!pass_local_codecs (self, codecs, &error))
-            {
-              DEBUG ("failed: %s", error->message);
+          DEBUG ("failed: %s", error->message);
 
-              dbus_g_method_return_error (context, error);
-              g_error_free (error);
-              return;
-            }
-
-          g_signal_emit (self, signals[SUPPORTED_CODECS], 0, codecs);
+          dbus_g_method_return_error (context, error);
+          g_error_free (error);
+          return;
         }
+
+      priv->awaiting_intersection = FALSE;
+    }
+  else
+    {
+      /* If we created the stream, we don't need to send the intersection. If
+       * we didn't create it, but have already sent the intersection once, we
+       * don't need to send it again. In either case, extra calls to
+       * SupportedCodecs are in response to an incoming description-info, which
+       * can only change parameters and which XEP-0167 §10 says is purely
+       * advisory.
+       */
+      DEBUG ("we already sent, or don't need to send, our codecs");
     }
 
   tp_svc_media_stream_handler_return_from_supported_codecs (context);
@@ -1341,16 +1282,15 @@ new_remote_codecs_cb (GabbleJingleContent *content,
 
   codecs = g_value_get_boxed (&priv->remote_codecs);
 
-  /* If the codecs have already been set, this means the peer is updating their
-   * parameters. XEP-0167 says that description-info is advisory, so regardless
-   * of whether the streaming implementation calls SupportedCodecs or Error we
-   * don't want to do anything. So, set a flag to indicate that we've entered
-   * this situation.
-   */
   if (codecs->len != 0)
     {
-      priv->updating_remote_codecs = TRUE;
+      /* We already had some codecs; let's free the old list and make a new,
+       * empty one to fill in.
+       */
       g_value_reset (&priv->remote_codecs);
+      codecs = dbus_g_type_specialized_construct (
+          TP_ARRAY_TYPE_MEDIA_STREAM_HANDLER_CODEC_LIST);
+      g_value_take_boxed (&priv->remote_codecs, codecs);
     }
 
   for (li = clist; li; li = li->next)
@@ -1389,8 +1329,6 @@ push_remote_codecs (GabbleMediaStream *stream)
 {
   GabbleMediaStreamPrivate *priv;
   GPtrArray *codecs;
-  GType codec_list_type =
-      TP_ARRAY_TYPE_MEDIA_STREAM_HANDLER_CODEC_LIST;
 
   g_assert (GABBLE_IS_MEDIA_STREAM (stream));
 
@@ -1407,9 +1345,6 @@ push_remote_codecs (GabbleMediaStream *stream)
                    codecs->len);
 
   tp_svc_media_stream_handler_emit_set_remote_codecs (stream, codecs);
-
-  g_value_take_boxed (&priv->remote_codecs,
-      dbus_g_type_specialized_construct (codec_list_type));
 }
 
 static void

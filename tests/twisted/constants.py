@@ -4,17 +4,27 @@ Some handy constants for other tests to share and enjoy.
 
 from dbus import PROPERTIES_IFACE
 
+HT_NONE = 0
 HT_CONTACT = 1
 HT_ROOM = 2
+HT_CONTACT_LIST = 3
+HT_GROUP = 4
 
 CHANNEL = "org.freedesktop.Telepathy.Channel"
+
+CHANNEL_IFACE_CALL_STATE = CHANNEL + ".Interface.CallState"
+CHANNEL_IFACE_CHAT_STATE = CHANNEL + '.Interface.ChatState'
+CHANNEL_IFACE_DESTROYABLE = CHANNEL + ".Interface.Destroyable"
 CHANNEL_IFACE_GROUP = CHANNEL + ".Interface.Group"
 CHANNEL_IFACE_HOLD = CHANNEL + ".Interface.Hold"
 CHANNEL_IFACE_MEDIA_SIGNALLING = CHANNEL + ".Interface.MediaSignalling"
-CHANNEL_IFACE_CALL_STATE = CHANNEL + ".Interface.CallState"
+CHANNEL_IFACE_MESSAGES = CHANNEL + ".Interface.Messages"
+CHANNEL_IFACE_PASSWORD = CHANNEL + ".Interface.Password"
+CHANNEL_IFACE_TUBE = CHANNEL + ".Interface.Tube.DRAFT"
+
+CHANNEL_TYPE_CONTACT_LIST = CHANNEL + ".Type.ContactList"
 CHANNEL_TYPE_TEXT = CHANNEL + ".Type.Text"
 CHANNEL_TYPE_TUBES = CHANNEL + ".Type.Tubes"
-CHANNEL_IFACE_TUBE = CHANNEL + ".Interface.Tube.DRAFT"
 CHANNEL_TYPE_STREAM_TUBE = CHANNEL + ".Type.StreamTube.DRAFT"
 CHANNEL_TYPE_DBUS_TUBE = CHANNEL + ".Type.DBusTube.DRAFT"
 CHANNEL_TYPE_STREAMED_MEDIA = CHANNEL + ".Type.StreamedMedia"
@@ -34,11 +44,18 @@ INITIATOR_HANDLE = CHANNEL + '.InitiatorHandle'
 INITIATOR_ID = CHANNEL + '.InitiatorID'
 INTERFACES = CHANNEL + '.Interfaces'
 
+INITIAL_AUDIO = CHANNEL_TYPE_STREAMED_MEDIA + '.FUTURE.InitialAudio'
+INITIAL_VIDEO = CHANNEL_TYPE_STREAMED_MEDIA + '.FUTURE.InitialVideo'
+
 CONN = "org.freedesktop.Telepathy.Connection"
 CONN_IFACE_AVATARS = CONN + '.Interface.Avatars'
+CONN_IFACE_CAPS = CONN + '.Interface.Capabilities'
 CONN_IFACE_CONTACTS = CONN + '.Interface.Contacts'
-CONN_IFACE_CONTACT_CAPA = CONN + '.Interface.ContactCapabilities.DRAFT'
+CONN_IFACE_CONTACT_CAPS = CONN + '.Interface.ContactCapabilities.DRAFT'
+CONN_IFACE_SIMPLE_PRESENCE = CONN + '.Interface.SimplePresence'
 CONN_IFACE_REQUESTS = CONN + '.Interface.Requests'
+
+STREAM_HANDLER = 'org.freedesktop.Telepathy.Media.StreamHandler'
 
 ERROR = 'org.freedesktop.Telepathy.Error'
 INVALID_ARGUMENT = ERROR + '.InvalidArgument'
@@ -46,6 +63,7 @@ NOT_IMPLEMENTED = ERROR + '.NotImplemented'
 NOT_AVAILABLE = ERROR + '.NotAvailable'
 PERMISSION_DENIED = ERROR + '.PermissionDenied'
 OFFLINE = ERROR + '.Offline'
+NOT_CAPABLE = ERROR + '.NotCapable'
 
 TUBE_PARAMETERS = CHANNEL_IFACE_TUBE + '.Parameters'
 TUBE_STATE = CHANNEL_IFACE_TUBE + '.State'
@@ -189,3 +207,6 @@ CSR_CERT_HOSTNAME_MISMATCH = 10
 CSR_CERT_FINGERPRINT_MISMATCH = 11
 CSR_CERT_SELF_SIGNED = 12
 CSR_CERT_OTHER_ERROR = 13
+
+BUDDY_INFO = 'org.laptop.Telepathy.BuddyInfo'
+ACTIVITY_PROPERTIES = 'org.laptop.Telepathy.ActivityProperties'

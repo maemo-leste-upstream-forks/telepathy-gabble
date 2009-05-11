@@ -200,8 +200,16 @@ struct _GabbleTubeStreamPrivate
 
 #define GABBLE_TUBE_STREAM_GET_PRIVATE(obj) ((obj)->priv)
 
+typedef struct
+{
+  GabbleTubeStream *self;
+  TpHandle contact;
+} transport_connected_data;
+
 static void data_received_cb (GabbleBytestreamIface *ibb, TpHandle sender,
     GString *data, gpointer user_data);
+static void transport_connected_cb (GibberTransport *transport,
+    transport_connected_data *data);
 
 static void
 generate_ascii_string (guint len,
@@ -266,6 +274,11 @@ remove_transport (GabbleTubeStream *self,
   DEBUG ("disconnect and remove transport");
   g_signal_handlers_disconnect_matched (transport, G_SIGNAL_MATCH_DATA,
       0, 0, NULL, NULL, self);
+  /* The callback on the "connected" signal doesn't match the above
+   * disconnection as it receives a transport_connected_data as user_data
+   * and not the self pointer. */
+  g_signal_handlers_disconnect_matched (transport, G_SIGNAL_MATCH_FUNC,
+      0, 0, NULL, G_CALLBACK (transport_connected_cb), NULL);
 
   gibber_transport_disconnect (transport);
 
@@ -549,9 +562,54 @@ local_new_connection_cb (GibberListener *listener,
     }
 }
 
-static gboolean
+static transport_connected_data *
+transport_connected_data_new (GabbleTubeStream *self,
+    TpHandle contact)
+{
+  transport_connected_data *data = g_slice_new (transport_connected_data);
+  data->self = self;
+  data->contact = contact;
+  return data;
+}
+
+static void
+transport_connected_data_free (transport_connected_data *data)
+{
+  g_slice_free (transport_connected_data, data);
+}
+
+static void
+fire_new_connection (GabbleTubeStream *self,
+    GibberTransport *transport,
+    TpHandle contact)
+{
+  GValue access_control_param = {0,};
+
+  /* set a dummy value */
+  /* FIXME: this param doesn't have a meaningful value with
+   * the Localhost access control which is the only one currently
+   * implemented. We should set a not-dummy value when we'll implement
+   * other access control mechanismes. */
+  g_value_init (&access_control_param, G_TYPE_INT);
+  g_value_set_int (&access_control_param, 0);
+
+  /* fire NewConnection D-Bus signal */
+  gabble_svc_channel_type_stream_tube_emit_new_connection (self,
+      contact, &access_control_param);
+  g_value_unset (&access_control_param);
+}
+
+static void
+transport_connected_cb (GibberTransport *transport,
+    transport_connected_data *data)
+{
+  fire_new_connection (data->self, transport, data->contact);
+}
+
+static GibberTransport *
 new_connection_to_socket (GabbleTubeStream *self,
-                          GabbleBytestreamIface *bytestream)
+                          GabbleBytestreamIface *bytestream,
+                          TpHandle contact)
 {
   GabbleTubeStreamPrivate *priv = GABBLE_TUBE_STREAM_GET_PRIVATE (self);
   GibberTransport *transport;
@@ -606,7 +664,8 @@ new_connection_to_socket (GabbleTubeStream *self,
       G_CALLBACK (extra_bytestream_state_changed_cb), self);
 
   g_object_unref (transport);
-  return TRUE;
+
+  return transport;
 }
 
 static gboolean
@@ -757,8 +816,13 @@ close_each_extra_bytestream (gpointer key,
    * called */
   g_signal_handlers_disconnect_matched (bytestream, G_SIGNAL_MATCH_DATA,
       0, 0, NULL, NULL, self);
- g_signal_handlers_disconnect_matched (transport, G_SIGNAL_MATCH_DATA,
+  g_signal_handlers_disconnect_matched (transport, G_SIGNAL_MATCH_DATA,
       0, 0, NULL, NULL, self);
+  /* The callback on the "connected" signal doesn't match the above
+   * disconnection as it receives a transport_connected_data as user_data
+   * and not the self pointer. */
+  g_signal_handlers_disconnect_matched (transport, G_SIGNAL_MATCH_FUNC,
+      0, 0, NULL, G_CALLBACK (transport_connected_cb), NULL);
 
   gabble_bytestream_iface_close (bytestream, NULL);
   gibber_transport_disconnect (transport);
@@ -1555,6 +1619,8 @@ gabble_tube_stream_add_bytestream (GabbleTubeIface *tube,
 {
   GabbleTubeStream *self = GABBLE_TUBE_STREAM (tube);
   GabbleTubeStreamPrivate *priv = GABBLE_TUBE_STREAM_GET_PRIVATE (self);
+  TpHandle contact;
+  GibberTransport *transport;
 
   if (priv->initiator != priv->self_handle)
     {
@@ -1565,11 +1631,12 @@ gabble_tube_stream_add_bytestream (GabbleTubeIface *tube,
       return;
     }
 
-  /* New bytestream, let's connect to the socket */
-  if (new_connection_to_socket (self, bytestream))
-    {
-      TpHandle contact;
+  g_object_get (bytestream, "peer-handle", &contact, NULL);
 
+  /* New bytestream, let's connect to the socket */
+  transport = new_connection_to_socket (self, bytestream, contact);
+  if (transport != NULL)
+    {
       if (priv->state == GABBLE_TUBE_CHANNEL_STATE_REMOTE_PENDING)
         {
           DEBUG ("Received first connection. Tube is now open");
@@ -1585,9 +1652,25 @@ gabble_tube_stream_add_bytestream (GabbleTubeIface *tube,
 
       gabble_bytestream_iface_accept (bytestream, augment_si_accept_iq, self);
 
-      g_object_get (bytestream, "peer-handle", &contact, NULL);
-
       g_signal_emit (G_OBJECT (self), signals[NEW_CONNECTION], 0, contact);
+
+      if (gibber_transport_get_state (transport) == GIBBER_TRANSPORT_CONNECTED)
+        {
+          fire_new_connection (self, transport, contact);
+        }
+      else
+        {
+          /* NewConnection will be fired once the transport is connected.
+           * We can't get access_control_param (as the source port for example)
+           * until it's connected. */
+          transport_connected_data *data;
+
+          data = transport_connected_data_new (self, contact);
+
+          g_signal_connect_data (transport, "connected",
+              G_CALLBACK (transport_connected_cb), data,
+              (GClosureNotify) transport_connected_data_free, 0);
+        }
     }
   else
     {
@@ -1944,32 +2027,19 @@ gabble_tube_stream_get_supported_socket_types (void)
   return ret;
 }
 
-/* Callback plugged only if the tube has been offered with the new
- * Channel.Type.StreamTube API. */
-static void
-stream_unix_tube_new_connection_cb (GabbleTubeStream *self,
-                                    guint contact,
-                                    gpointer user_data)
-{
-  gabble_svc_channel_type_stream_tube_emit_stream_tube_new_connection (self,
-      contact);
-}
-
-
 /**
- * gabble_tube_stream_offer_stream_tube
+ * gabble_tube_stream_offer_async
  *
- * Implements D-Bus method OfferStreamTube
+ * Implements D-Bus method Offer
  * on org.freedesktop.Telepathy.Channel.Type.StreamTube
  */
 static void
-gabble_tube_stream_offer_stream_tube (GabbleSvcChannelTypeStreamTube *iface,
-                                      guint address_type,
-                                      const GValue *address,
-                                      guint access_control,
-                                      const GValue *access_control_param,
-                                      GHashTable *parameters,
-                                      DBusGMethodInvocation *context)
+gabble_tube_stream_offer_async (GabbleSvcChannelTypeStreamTube *iface,
+    guint address_type,
+    const GValue *address,
+    guint access_control,
+    GHashTable *parameters,
+    DBusGMethodInvocation *context)
 {
   GabbleTubeStream *self = GABBLE_TUBE_STREAM (iface);
   GabbleTubeStreamPrivate *priv = GABBLE_TUBE_STREAM_GET_PRIVATE (self);
@@ -1985,7 +2055,7 @@ gabble_tube_stream_offer_stream_tube (GabbleSvcChannelTypeStreamTube *iface,
     }
 
   if (!gabble_tube_stream_check_params (address_type, address,
-        access_control, access_control_param, &error))
+        access_control, NULL, &error))
     {
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -2000,8 +2070,6 @@ gabble_tube_stream_offer_stream_tube (GabbleSvcChannelTypeStreamTube *iface,
   priv->address = tp_g_value_slice_dup (address);
   g_assert (priv->access_control == TP_SOCKET_ACCESS_CONTROL_LOCALHOST);
   priv->access_control = access_control;
-  g_assert (priv->access_control_param == NULL);
-  priv->access_control_param = tp_g_value_slice_dup (access_control_param);
 
   g_object_set (self, "parameters", parameters, NULL);
 
@@ -2026,24 +2094,21 @@ gabble_tube_stream_offer_stream_tube (GabbleSvcChannelTypeStreamTube *iface,
           self, GABBLE_TUBE_CHANNEL_STATE_OPEN);
     }
 
-  g_signal_connect (self, "tube-new-connection",
-      G_CALLBACK (stream_unix_tube_new_connection_cb), self);
-
-  gabble_svc_channel_type_stream_tube_return_from_offer_stream_tube (context);
+  gabble_svc_channel_type_stream_tube_return_from_offer (context);
 }
 
 /**
- * gabble_tube_stream_accept_stream_tube
+ * gabble_tube_stream_accept_async
  *
- * Implements D-Bus method AcceptStreamTube
+ * Implements D-Bus method Accept
  * on org.freedesktop.Telepathy.Channel.Type.StreamTube
  */
 static void
-gabble_tube_stream_accept_stream_tube (GabbleSvcChannelTypeStreamTube *iface,
-                                       guint address_type,
-                                       guint access_control,
-                                       const GValue *access_control_param,
-                                       DBusGMethodInvocation *context)
+gabble_tube_stream_accept_async (GabbleSvcChannelTypeStreamTube *iface,
+    guint address_type,
+    guint access_control,
+    const GValue *access_control_param,
+    DBusGMethodInvocation *context)
 {
   GabbleTubeStream *self = GABBLE_TUBE_STREAM (iface);
   GabbleTubeStreamPrivate *priv = GABBLE_TUBE_STREAM_GET_PRIVATE (self);
@@ -2069,7 +2134,7 @@ gabble_tube_stream_accept_stream_tube (GabbleSvcChannelTypeStreamTube *iface,
     gabble_muc_channel_send_presence (self->muc, NULL);
 #endif
 
-  gabble_svc_channel_type_stream_tube_return_from_accept_stream_tube (context,
+  gabble_svc_channel_type_stream_tube_return_from_accept (context,
       priv->address);
 }
 
@@ -2183,9 +2248,9 @@ streamtube_iface_init (gpointer g_iface,
   GabbleSvcChannelTypeStreamTubeClass *klass =
       (GabbleSvcChannelTypeStreamTubeClass *) g_iface;
 
-#define IMPLEMENT(x) gabble_svc_channel_type_stream_tube_implement_##x (\
-    klass, gabble_tube_stream_##x)
-  IMPLEMENT(offer_stream_tube);
-  IMPLEMENT(accept_stream_tube);
+#define IMPLEMENT(x, suffix) gabble_svc_channel_type_stream_tube_implement_##x (\
+    klass, gabble_tube_stream_##x##suffix)
+  IMPLEMENT(offer,_async);
+  IMPLEMENT(accept,_async);
 #undef IMPLEMENT
 }

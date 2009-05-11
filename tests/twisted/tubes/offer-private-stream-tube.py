@@ -3,7 +3,7 @@
 import dbus
 
 from servicetest import call_async, EventPattern, sync_dbus
-from gabbletest import acknowledge_iq, sync_stream, exec_test
+from gabbletest import acknowledge_iq, sync_stream
 import constants as cs
 import ns
 import tubetestutil as t
@@ -39,9 +39,10 @@ def contact_offer_dbus_tube(bytestream, tube_id):
 
     bytestream.stream.send(iq)
 
-def test(q, bus, conn, stream, bytestream_cls):
-    echo_path = t.set_up_echo("")
-    echo2_path = t.set_up_echo("2")
+def test(q, bus, conn, stream, bytestream_cls,
+        address_type, access_control, access_control_param):
+    address1 = t.set_up_echo(q, address_type)
+    address2 = t.set_up_echo(q, address_type)
 
     t.check_conn_properties(q, conn)
 
@@ -115,7 +116,7 @@ def test(q, bus, conn, stream, bytestream_cls):
 
     t.check_NewChannel_signal(old_sig.args, cs.CHANNEL_TYPE_TUBES, chan_path,
             bob_handle, True)
-    t.check_NewChannels_signal(new_sig.args, cs.CHANNEL_TYPE_TUBES, chan_path,
+    t.check_NewChannels_signal(conn, new_sig.args, cs.CHANNEL_TYPE_TUBES, chan_path,
             bob_handle, 'bob@localhost', self_handle)
     old_tubes_channel_properties = new_sig.args[0][0]
 
@@ -162,7 +163,7 @@ def test(q, bus, conn, stream, bytestream_cls):
 
     t.check_NewChannel_signal(old_sig.args, cs.CHANNEL_TYPE_STREAM_TUBE,
             new_chan_path, bob_handle, True)
-    t.check_NewChannels_signal(new_sig.args, cs.CHANNEL_TYPE_STREAM_TUBE,
+    t.check_NewChannels_signal(conn, new_sig.args, cs.CHANNEL_TYPE_STREAM_TUBE,
             new_chan_path, bob_handle, 'bob@localhost', self_handle)
     stream_tube_channel_properties = new_sig.args[0][0]
     assert cs.TUBE_STATE not in stream_tube_channel_properties
@@ -179,7 +180,8 @@ def test(q, bus, conn, stream, bytestream_cls):
 
     # Create another tube using old API
     call_async(q, tubes_iface, 'OfferStreamTube',
-        'echo', sample_parameters, 0, dbus.ByteArray(echo_path), 0, "")
+        'echo', sample_parameters, address_type, address1,
+        access_control, access_control_param)
 
     event, return_event, new_chan, new_chans = q.expect_many(
         EventPattern('stream-message'),
@@ -215,7 +217,7 @@ def test(q, bus, conn, stream, bytestream_cls):
     # the tube channel (new API) is announced
     t.check_NewChannel_signal(new_chan.args, cs.CHANNEL_TYPE_STREAM_TUBE,
         None, bob_handle, False)
-    t.check_NewChannels_signal(new_chans.args, cs.CHANNEL_TYPE_STREAM_TUBE,
+    t.check_NewChannels_signal(conn, new_chans.args, cs.CHANNEL_TYPE_STREAM_TUBE,
         new_chan.args[0], bob_handle, "bob@localhost", self_handle)
 
     props = new_chans.args[0][0][1]
@@ -258,8 +260,7 @@ def test(q, bus, conn, stream, bytestream_cls):
             cs.TUBE_CHANNEL_STATE_REMOTE_PENDING)
 
     # Offer the first tube created (new API)
-    call_async(q, new_tube_iface, 'OfferStreamTube',
-        0, dbus.ByteArray(echo2_path), 0, "", new_sample_parameters)
+    call_async(q, new_tube_iface, 'Offer', address_type, address2, access_control, new_sample_parameters)
 
     msg_event, new_tube_sig, state_event = q.expect_many(
         EventPattern('stream-message'),
@@ -325,18 +326,24 @@ def test(q, bus, conn, stream, bytestream_cls):
     stream_node['tube'] = str(stream_tube_id)
     stream.send(iq)
 
-    si_reply_event, _ = q.expect_many(
+    si_reply_event, _, _, new_conn_event, socket_event = q.expect_many(
             EventPattern('stream-iq', iq_type='result'),
             EventPattern('dbus-signal', signal='TubeStateChanged',
-                args=[stream_tube_id, cs.TUBE_STATE_OPEN]))
+                args=[stream_tube_id, cs.TUBE_STATE_OPEN]),
+            EventPattern('dbus-signal', signal='StreamTubeNewConnection',
+                args=[stream_tube_id, bob_handle]),
+            EventPattern('dbus-signal', signal='NewConnection'),
+            EventPattern('socket-connected'))
 
     bytestream1.check_si_reply(si_reply_event.stanza)
     tube = xpath.queryForNodes('/iq/si/tube[@xmlns="%s"]' % ns.TUBES,
         si_reply_event.stanza)
     assert len(tube) == 1
 
-    q.expect('dbus-signal', signal='StreamTubeNewConnection',
-        args=[stream_tube_id, bob_handle])
+    handle, access = new_conn_event.args
+    assert handle == bob_handle
+    protocol = socket_event.protocol
+    t.check_new_connection_access(access_control, access, protocol)
 
     expected_tube = (stream_tube_id, self_handle, cs.TUBE_TYPE_STREAM, 'echo',
         sample_parameters, cs.TUBE_STATE_OPEN)
@@ -353,18 +360,22 @@ def test(q, bus, conn, stream, bytestream_cls):
     stream_node['tube'] = str(new_stream_tube_id)
     stream.send(iq)
 
-    si_reply_event, _ = q.expect_many(
+    si_reply_event, _, new_conn_event, socket_event = q.expect_many(
             EventPattern('stream-iq', iq_type='result'),
             EventPattern('dbus-signal', signal='TubeChannelStateChanged',
-                args=[cs.TUBE_STATE_OPEN]))
+                args=[cs.TUBE_STATE_OPEN]),
+            EventPattern('dbus-signal', signal='NewConnection'),
+            EventPattern('socket-connected'))
 
     bytestream2.check_si_reply(si_reply_event.stanza)
     tube = xpath.queryForNodes('/iq/si/tube[@xmlns="%s"]' % ns.TUBES,
         si_reply_event.stanza)
     assert len(tube) == 1
 
-    q.expect('dbus-signal', signal='StreamTubeNewConnection',
-        args=[bob_handle])
+    handle, access = new_conn_event.args
+    assert handle == bob_handle
+    protocol = socket_event.protocol
+    t.check_new_connection_access(access_control, access, protocol)
 
     expected_tube = (new_stream_tube_id, self_handle, cs.TUBE_TYPE_STREAM,
         'newecho', new_sample_parameters, cs.TUBE_STATE_OPEN)
@@ -396,4 +407,4 @@ def test(q, bus, conn, stream, bytestream_cls):
     q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
 
 if __name__ == '__main__':
-    t.exec_tube_test(test)
+    t.exec_stream_tube_test(test)

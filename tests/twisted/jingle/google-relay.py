@@ -10,7 +10,6 @@ import jingletest
 import gabbletest
 import constants as cs
 import dbus
-import time
 import BaseHTTPServer
 
 http_req = 0
@@ -68,7 +67,10 @@ magic_cookie=MMMMMMMM
 """ % (http_req, http_req))
         http_req += 1
 
-def test(q, bus, conn, stream, incoming=True, too_slow=False):
+TOO_SLOW_CLOSE = 1
+TOO_SLOW_REMOVE_SELF = 2
+
+def test(q, bus, conn, stream, incoming=True, too_slow=None):
     jt = jingletest.JingleTest(stream, 'test@localhost', 'foo@bar.com/Foo')
 
     # If we need to override remote caps, feats, codecs or caps,
@@ -77,20 +79,21 @@ def test(q, bus, conn, stream, incoming=True, too_slow=False):
     # Connecting
     conn.Connect()
 
-    q.expect_many(
+    ji_event = q.expect_many(
             EventPattern('dbus-signal', signal='StatusChanged', args=[1, 1]),
             EventPattern('stream-authenticated'),
             EventPattern('dbus-signal', signal='PresenceUpdate',
                 args=[{1L: (0L, {u'available': {}})}]),
             EventPattern('dbus-signal', signal='StatusChanged', args=[0, 1]),
-            )
+
+            # See: http://code.google.com/apis/talk/jep_extensions/jingleinfo.html
+            EventPattern('stream-iq', query_ns='google:jingleinfo',
+                to='test@localhost'),
+            )[-1]
 
     httpd = BaseHTTPServer.HTTPServer(('127.0.0.1', 0), HTTPHandler)
 
-    # See: http://code.google.com/apis/talk/jep_extensions/jingleinfo.html
-    event = q.expect('stream-iq', query_ns='google:jingleinfo',
-            to='test@localhost')
-    jingleinfo = make_result_iq(stream, event.stanza)
+    jingleinfo = make_result_iq(stream, ji_event.stanza)
     stun = jingleinfo.firstChildElement().addElement('stun')
     server = stun.addElement('server')
     server['host'] = 'resolves-to-1.2.3.4'
@@ -141,7 +144,7 @@ def test(q, bus, conn, stream, incoming=True, too_slow=False):
     # Force Gabble to process the capabilities
     sync_stream(q, stream)
 
-    remote_handle = conn.RequestHandles(1, ["foo@bar.com/Foo"])[0]
+    remote_handle = conn.RequestHandles(cs.HT_CONTACT, ["foo@bar.com/Foo"])[0]
 
     if incoming:
         # Remote end calls us
@@ -162,11 +165,9 @@ def test(q, bus, conn, stream, incoming=True, too_slow=False):
             'Channel.Interface.Group')
     else:
         call_async(q, conn.Requests, 'CreateChannel',
-                { 'org.freedesktop.Telepathy.Channel.ChannelType':
-                    'org.freedesktop.Telepathy.Channel.Type.StreamedMedia',
-                  'org.freedesktop.Telepathy.Channel.TargetHandleType': 1,
-                  'org.freedesktop.Telepathy.Channel.TargetHandle':
-                    remote_handle,
+                { cs.CHANNEL_TYPE: cs.CHANNEL_TYPE_STREAMED_MEDIA,
+                  cs.TARGET_HANDLE_TYPE: cs.HT_CONTACT,
+                  cs.TARGET_HANDLE: remote_handle,
                   })
         ret, old_sig, new_sig = q.expect_many(
             EventPattern('dbus-return', method='CreateChannel'),
@@ -184,8 +185,8 @@ def test(q, bus, conn, stream, incoming=True, too_slow=False):
     e = q.expect('dbus-signal', signal='NewSessionHandler')
     assert e.args[1] == 'rtp'
 
-    if too_slow:
-        test_too_slow(q, bus, conn, stream, httpd, media_chan)
+    if too_slow is not None:
+        test_too_slow(q, bus, conn, stream, httpd, media_chan, too_slow)
         return
 
     # In response to the streams call, we now have two HTTP requests
@@ -205,17 +206,15 @@ def test(q, bus, conn, stream, incoming=True, too_slow=False):
 
     # Exercise channel properties
     channel_props = media_chan.GetAll(
-            'org.freedesktop.Telepathy.Channel',
-            dbus_interface=dbus.PROPERTIES_IFACE)
+        cs.CHANNEL, dbus_interface=dbus.PROPERTIES_IFACE)
     assert channel_props['TargetHandle'] == remote_handle
-    assert channel_props['TargetHandleType'] == 1
+    assert channel_props['TargetHandleType'] == cs.HT_CONTACT
     assert channel_props['TargetID'] == 'foo@bar.com'
     assert channel_props['Requested'] == (not incoming)
 
     # The new API for STUN servers etc.
     sh_props = stream_handler.GetAll(
-            'org.freedesktop.Telepathy.Media.StreamHandler',
-            dbus_interface=dbus.PROPERTIES_IFACE)
+        cs.STREAM_HANDLER, dbus_interface=dbus.PROPERTIES_IFACE)
 
     assert sh_props['NATTraversal'] == 'gtalk-p2p'
     assert sh_props['CreatedLocally'] == (not incoming)
@@ -312,14 +311,19 @@ def test(q, bus, conn, stream, incoming=True, too_slow=False):
     conn.Disconnect()
     q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
 
-def test_too_slow(q, bus, conn, stream, httpd, media_chan):
+def test_too_slow(q, bus, conn, stream, httpd, media_chan, too_slow):
     """
     Regression test for a bug where if the channel was closed before the HTTP
     responses arrived, the responses finally arriving crashed Gabble.
     """
 
-    # User gets bored, and closes the channel.
-    call_async(q, media_chan, 'Close', dbus_interface=cs.CHANNEL)
+    # User gets bored, and ends the call.
+    if too_slow == TOO_SLOW_CLOSE:
+        call_async(q, media_chan, 'Close', dbus_interface=cs.CHANNEL)
+    elif too_slow == TOO_SLOW_REMOVE_SELF:
+        media_chan.RemoveMembers([conn.GetSelfHandle()], "",
+            dbus_interface=cs.CHANNEL_IFACE_GROUP)
+
     q.expect('dbus-signal', signal='Closed')
 
     # Now Google answers!
@@ -339,8 +343,14 @@ if __name__ == '__main__':
     exec_test(lambda q, b, c, s: test(q, b, c, s, incoming=False),
             protocol=GoogleXmlStream)
     exec_test(lambda q, b, c, s: test(q, b, c, s, incoming=True,
-                                      too_slow=True),
+                                      too_slow=TOO_SLOW_CLOSE),
             protocol=GoogleXmlStream)
     exec_test(lambda q, b, c, s: test(q, b, c, s, incoming=False,
-                                      too_slow=True),
+                                      too_slow=TOO_SLOW_CLOSE),
+            protocol=GoogleXmlStream)
+    exec_test(lambda q, b, c, s: test(q, b, c, s, incoming=True,
+                                      too_slow=TOO_SLOW_REMOVE_SELF),
+            protocol=GoogleXmlStream)
+    exec_test(lambda q, b, c, s: test(q, b, c, s, incoming=False,
+                                      too_slow=TOO_SLOW_REMOVE_SELF),
             protocol=GoogleXmlStream)

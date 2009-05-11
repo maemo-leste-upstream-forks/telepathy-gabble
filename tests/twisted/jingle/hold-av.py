@@ -2,12 +2,8 @@
 Test the Hold API.
 """
 
-from gabbletest import exec_test, make_result_iq, acknowledge_iq, sync_stream
-from servicetest import make_channel_proxy, unwrap, tp_path_prefix, \
-        call_async, EventPattern
-import gabbletest
-import dbus
-import time
+from gabbletest import make_result_iq, sync_stream
+from servicetest import make_channel_proxy, call_async, EventPattern
 
 import constants as cs
 
@@ -20,7 +16,6 @@ def test(jp, q, bus, conn, stream):
 
     self_handle = conn.GetSelfHandle()
     handle = conn.RequestHandles(cs.HT_CONTACT, [jt.peer])[0]
-
     path = conn.RequestChannel(cs.CHANNEL_TYPE_STREAMED_MEDIA,
         cs.HT_CONTACT, handle, True)
 
@@ -32,7 +27,7 @@ def test(jp, q, bus, conn, stream):
     call_async(q, media_iface, 'RequestStreams', handle,
         [cs.MEDIA_STREAM_TYPE_AUDIO, cs.MEDIA_STREAM_TYPE_VIDEO])
 
-    if jp.is_gtalk():
+    if not jp.can_do_video():
         # Video on GTalk? Not so much.
         e = q.expect('dbus-error', method='RequestStreams')
         # The spec and implemention say this should be NotAvailable, but wjt

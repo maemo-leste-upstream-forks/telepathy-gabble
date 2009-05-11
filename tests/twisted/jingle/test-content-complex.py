@@ -2,17 +2,13 @@
 Test everything related to contents
 """
 
-from gabbletest import exec_test, make_result_iq, sync_stream, exec_tests
-from servicetest import make_channel_proxy, unwrap, tp_path_prefix, \
-        EventPattern
-import gabbletest
-import dbus
-import time
-from twisted.words.xish import xpath
-
-from jingletest2 import *
-
+from gabbletest import sync_stream
+from servicetest import make_channel_proxy, tp_path_prefix
 import constants as cs
+from jingletest2 import (
+    JingleTest2, JingleProtocol015, JingleProtocol031, test_dialects)
+
+from twisted.words.xish import xpath
 
 def worker(jp, q, bus, conn, stream):
 
@@ -162,7 +158,7 @@ def worker(jp, q, bus, conn, stream):
 
     # Gabble removes the stream
     q.expect('dbus-signal', signal='StreamRemoved',
-        interface='org.freedesktop.Telepathy.Channel.Type.StreamedMedia')
+        interface=cs.CHANNEL_TYPE_STREAMED_MEDIA)
 
 
     # We try to make the request again, and succeed
@@ -188,26 +184,28 @@ def worker(jp, q, bus, conn, stream):
     # We get remote codecs
     e = q.expect('dbus-signal', signal='SetRemoteCodecs')
 
-    # Now, both we and remote peer try to remove the content simultaneously
+    # Now, both we and remote peer try to remove the content simultaneously:
+    # Telepathy client calls RemoveStreams...
     media_iface.RemoveStreams([id3])
+
+    # ...so Gabble sends a content-remove...
+    e = q.expect('stream-iq', iq_type='set', predicate=lambda x:
+        xpath.queryForNodes("/iq/jingle[@action='content-remove']",
+            x.stanza))
+
+    # ...but before it's acked the peer sends its own content-remove...
     node = jp.SetIq(jt2.peer, jt2.jid, [
         jp.Jingle(jt2.sid, jt2.peer, 'content-remove', [
             jp.Content(c['name'], c['creator'], c['senders'], []) ]) ])
     stream.send(jp.xml(node))
 
-    # Gabble should ignore our content-remove and send it's own
-    # (fixme: this could be racy)
-    e = q.expect('stream-iq', iq_type='set', predicate=lambda x:
-        xpath.queryForNodes("/iq/jingle[@action='content-remove']",
-            x.stanza))
+    # ...and we don't want Gabble to break when that happens.
+    sync_stream(q, stream)
 
     # Now we want to remove the first stream
     media_iface.RemoveStreams([id1])
 
-    # The remote peer still hasn't ackd the first stream removal, but since
-    # gabble knows no streams will be left after the removal completes,
-    # it will just terminate the session.
-
+    # Since this is the last stream, Gabble will just terminate the session.
     e = q.expect('stream-iq', iq_type='set', predicate=lambda x:
         xpath.queryForNodes("/iq/jingle[@action='session-terminate']",
             x.stanza))
@@ -218,13 +216,6 @@ def worker(jp, q, bus, conn, stream):
     return True
 
 
-def test015(q, bus, conn, stream):
-    return worker(JingleProtocol015(), q, bus, conn, stream)
-
-def test031(q, bus, conn, stream):
-    return worker(JingleProtocol031(),q, bus, conn, stream)
-
 if __name__ == '__main__':
-    exec_test(test015)
-    exec_test(test031)
+    test_dialects(worker, [JingleProtocol015, JingleProtocol031])
 

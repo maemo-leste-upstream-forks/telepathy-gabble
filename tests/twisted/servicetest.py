@@ -72,7 +72,6 @@ class BaseEventQueue:
 
     def __init__(self, timeout=None):
         self.verbose = False
-        self.past_events = []
         self.forbidden_events = set()
 
         if timeout is None:
@@ -83,22 +82,6 @@ class BaseEventQueue:
     def log(self, s):
         if self.verbose:
             print s
-
-    def flush_past_events(self):
-        self.past_events = []
-
-    def expect_racy(self, type, **kw):
-        pattern = EventPattern(type, **kw)
-
-        for event in self.past_events:
-            if pattern.match(event):
-                self.log('past event handled')
-                map(self.log, format_event(event))
-                self.log('')
-                self.past_events.remove(event)
-                return event
-
-        return self.expect(type, **kw)
 
     def forbid_events(self, patterns):
         """
@@ -139,7 +122,6 @@ class BaseEventQueue:
                 self.log('')
                 return event
 
-            self.past_events.append(event)
             self.log('not handled')
             self.log('')
 
@@ -160,7 +142,6 @@ class BaseEventQueue:
                     ret[i] = event
                     break
             else:
-                self.past_events.append(event)
                 self.log('not handled')
                 self.log('')
 
@@ -380,8 +361,11 @@ class EventProtocolFactory(Factory):
     def __init__(self, queue):
         self.queue = queue
 
+    def _create_protocol(self):
+        return EventProtocol(self.queue)
+
     def buildProtocol(self, addr):
-        proto =  EventProtocol(self.queue)
+        proto = self._create_protocol()
         self.queue.handle_event(Event('socket-connected', protocol=proto))
         return proto
 
@@ -399,6 +383,19 @@ def watch_tube_signals(q, tube):
     tube.add_signal_receiver(got_signal_cb,
         path_keyword='path', member_keyword='member',
         byte_arrays=True)
+
+def assertEquals(expected, value):
+    assert expected == value, "expected: %r; got: %r" % (expected, value)
+
+def assertContains(element, value):
+    assert element in value, "expected: %r in %r" % (element, value)
+
+def assertDoesNotContain(element, value):
+    assert element not in value, "expected: %r not in %r" % (element, value)
+
+def assertLength(length, value):
+    assert len(value) == length, \
+        "expected: length %d, got length %d (%r)" % (length, len(value), value)
 
 if __name__ == '__main__':
     unittest.main()
