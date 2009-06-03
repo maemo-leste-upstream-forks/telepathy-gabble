@@ -10,7 +10,11 @@ import sys
 import random
 
 import ns
+import constants as cs
 import servicetest
+from servicetest import (
+    assertEquals, assertLength, assertContains, wrap_channel, EventPattern,
+    )
 import twisted
 from twisted.words.xish import domish, xpath
 from twisted.words.protocols.jabber.client import IQ
@@ -84,9 +88,10 @@ def sync_stream(q, stream):
 class JabberAuthenticator(xmlstream.Authenticator):
     "Trivial XML stream authenticator that accepts one username/digest pair."
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, resource=None):
         self.username = username
         self.password = password
+        self.resource = resource
         xmlstream.Authenticator.__init__(self)
 
     # Patch in fix from http://twistedmatrix.com/trac/changeset/23418.
@@ -134,7 +139,9 @@ class JabberAuthenticator(xmlstream.Authenticator):
         assert map(str, digest) == [expect]
 
         resource = xpath.queryForNodes('/iq/query/resource', iq)
-        assert map(str, resource) == ['Resource']
+        assertLength(1, resource)
+        if self.resource is not None:
+            assertEquals(self.resource, str(resource[0]))
 
         result = IQ(self.xmlstream, "result")
         result["id"] = iq["id"]
@@ -143,10 +150,11 @@ class JabberAuthenticator(xmlstream.Authenticator):
 
 
 class XmppAuthenticator(xmlstream.Authenticator):
-    def __init__(self, username, password):
+    def __init__(self, username, password, resource=None):
         xmlstream.Authenticator.__init__(self)
         self.username = username
         self.password = password
+        self.resource = resource
         self.authenticated = False
 
     def streamStarted(self, root=None):
@@ -182,12 +190,16 @@ class XmppAuthenticator(xmlstream.Authenticator):
         self.authenticated = True
 
     def bindIq(self, iq):
-        assert xpath.queryForString('/iq/bind/resource', iq) == 'Resource'
+        resource = xpath.queryForString('/iq/bind/resource', iq)
+        if self.resource is not None:
+            assertEquals(self.resource, resource)
+        else:
+            assert resource is not None
 
         result = IQ(self.xmlstream, "result")
         result["id"] = iq["id"]
         bind = result.addElement((NS_XMPP_BIND, 'bind'))
-        jid = bind.addElement('jid', content='test@localhost/Resource')
+        jid = bind.addElement('jid', content=('test@localhost/%s' % resource))
         self.xmlstream.send(result)
 
         self.xmlstream.dispatch(self.xmlstream, xmlstream.STREAM_AUTHD_EVENT)
@@ -301,11 +313,11 @@ def make_connection(bus, event_func, params=None):
     return servicetest.make_connection(bus, event_func, 'gabble', 'jabber',
         default_params)
 
-def make_stream(event_func, authenticator=None, protocol=None, port=4242):
+def make_stream(event_func, authenticator=None, protocol=None, port=4242, resource=None):
     # set up Jabber server
 
     if authenticator is None:
-        authenticator = JabberAuthenticator('test', 'pass')
+        authenticator = JabberAuthenticator('test', 'pass', resource=resource)
 
     if protocol is None:
         protocol = JabberXmlStream
@@ -357,8 +369,9 @@ def exec_test_deferred (funs, params, protocol=None, timeout=None,
 
     bus = dbus.SessionBus()
     # conn = make_connection(bus, queue.append, params)
+    resource = params.get('resource') if params is not None else None
     (stream, port) = make_stream(queue.append, protocol=protocol,
-        authenticator=authenticator)
+        authenticator=authenticator, resource=resource)
 
     error = None
 
@@ -500,3 +513,67 @@ def make_presence(_from, to='test@localhost', type=None, status=None, caps=None)
             cel[key] = value
 
     return presence
+
+def expect_list_channel(q, bus, conn, name, contacts):
+    return expect_contact_list_channel(q, bus, conn, cs.HT_LIST, name,
+        contacts)
+
+def expect_group_channel(q, bus, conn, name, contacts):
+    return expect_contact_list_channel(q, bus, conn, cs.HT_GROUP, name,
+        contacts)
+
+def expect_contact_list_channel(q, bus, conn, ht, name, contacts):
+    """
+    Expects NewChannel and NewChannels signals for the
+    contact list with handle type 'ht' and ID 'name', and checks that its
+    members are exactly 'contacts'. Returns a proxy for the channel.
+    """
+
+    old_signal, new_signal = q.expect_many(
+            EventPattern('dbus-signal', signal='NewChannel'),
+            EventPattern('dbus-signal', signal='NewChannels'),
+            )
+
+    path, type, handle_type, handle, suppress_handler = old_signal.args
+
+    assertEquals(cs.CHANNEL_TYPE_CONTACT_LIST, type)
+    assertEquals(name, conn.InspectHandles(handle_type, [handle])[0])
+
+    chan = wrap_channel(bus.get_object(conn.bus_name, path),
+        cs.CHANNEL_TYPE_CONTACT_LIST)
+    members = chan.Group.GetMembers()
+
+    assertEquals(contacts, conn.InspectHandles(cs.HT_CONTACT, members))
+
+    # NB. comma: we're unpacking args. Thython!
+    info, = new_signal.args
+    assertLength(1, info) # one channel
+    path_, emitted_props = info[0]
+
+    assertEquals(path_, path)
+
+    assertEquals(cs.CHANNEL_TYPE_CONTACT_LIST, emitted_props[cs.CHANNEL_TYPE])
+    assertEquals(ht, emitted_props[cs.TARGET_HANDLE_TYPE])
+    assertEquals(handle, emitted_props[cs.TARGET_HANDLE])
+
+    channel_props = chan.Properties.GetAll(cs.CHANNEL)
+    assertEquals(handle, channel_props.get('TargetHandle'))
+    assertEquals(ht, channel_props.get('TargetHandleType'))
+    assertEquals(cs.CHANNEL_TYPE_CONTACT_LIST, channel_props.get('ChannelType'))
+    assertContains(cs.CHANNEL_IFACE_GROUP, channel_props.get('Interfaces'))
+    assertEquals(name, channel_props['TargetID'])
+    assertEquals(False, channel_props['Requested'])
+    assertEquals('', channel_props['InitiatorID'])
+    assertEquals(0, channel_props['InitiatorHandle'])
+
+    group_props = chan.Properties.GetAll(cs.CHANNEL_IFACE_GROUP)
+    assertContains('HandleOwners', group_props)
+    assertContains('Members', group_props)
+    assertEquals(members, group_props['Members'])
+    assertContains('LocalPendingMembers', group_props)
+    assertEquals([], group_props['LocalPendingMembers'])
+    assertContains('RemotePendingMembers', group_props)
+    assertEquals([], group_props['RemotePendingMembers'])
+    assertContains('GroupFlags', group_props)
+
+    return chan

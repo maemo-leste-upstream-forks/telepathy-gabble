@@ -100,8 +100,6 @@ gibber_fd_transport_init (GibberFdTransport *self)
 
 static void gibber_fd_transport_dispose (GObject *object);
 static void gibber_fd_transport_finalize (GObject *object);
-static GibberFdIOResult gibber_fd_transport_read (GibberFdTransport *transport,
-    GIOChannel *channel, GError **error);
 static GibberFdIOResult gibber_fd_transport_write (
    GibberFdTransport *fd_transport, GIOChannel *channel, const guint8 *data,
    int len, gsize *written, GError **error);
@@ -386,7 +384,7 @@ gibber_fd_transport_write (GibberFdTransport *fd_transport,
 
 #define BUFSIZE 1024
 
-static GibberFdIOResult
+GibberFdIOResult
 gibber_fd_transport_read (GibberFdTransport *transport,
     GIOChannel *channel, GError **error)
 {
@@ -519,8 +517,12 @@ gibber_fd_transport_block_receiving (GibberTransport *transport,
   else if (!block && priv->watch_in == 0)
     {
       DEBUG ("unblock receiving from the transport");
-      priv->watch_in = g_io_add_watch (priv->channel, G_IO_IN,
-          _channel_io_in, self);
+      if (priv->channel != NULL)
+        {
+          priv->watch_in = g_io_add_watch (priv->channel, G_IO_IN,
+              _channel_io_in, self);
+        }
+      /* else the transport isn't connected yet */
     }
 
   priv->receiving_blocked = block;

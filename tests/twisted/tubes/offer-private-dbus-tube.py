@@ -162,7 +162,8 @@ def offer_old_dbus_tube(q, bus, conn, stream, self_handle, alice_handle, bytestr
     q.expect('dbus-signal', signal='Closed')
 
 
-def offer_new_dbus_tube(q, bus, conn, stream, self_handle, alice_handle, bytestream_cls):
+def offer_new_dbus_tube(q, bus, conn, stream, self_handle, alice_handle,
+    bytestream_cls, access_control):
 
     # Offer a tube to Alice (new API)
 
@@ -189,6 +190,8 @@ def offer_new_dbus_tube(q, bus, conn, stream, self_handle, alice_handle, bytestr
     assert tube_props[cs.INITIATOR_HANDLE] == self_handle
     assert tube_props[cs.INITIATOR_ID] == "test@localhost"
     assert tube_props[cs.DBUS_TUBE_SERVICE_NAME] == 'com.example.TestCase'
+    assert tube_props[cs.DBUS_TUBE_SUPPORTED_ACCESS_CONTROLS] == [cs.SOCKET_ACCESS_CONTROL_CREDENTIALS,
+        cs.SOCKET_ACCESS_CONTROL_LOCALHOST]
     assert cs.DBUS_TUBE_DBUS_NAMES not in tube_props
     assert cs.TUBE_PARAMETERS not in tube_props
     assert cs.TUBE_STATE not in tube_props
@@ -244,7 +247,7 @@ def offer_new_dbus_tube(q, bus, conn, stream, self_handle, alice_handle, bytestr
     # IQ be sent to Alice. We sync the stream to ensure the IQ would have
     # arrived if it had been sent.
     sync_stream(q, stream)
-    call_async(q, dbus_tube_iface, 'Offer', sample_parameters)
+    call_async(q, dbus_tube_iface, 'Offer', sample_parameters, access_control)
     offer_return_event, iq_event, new_tube_event, state_event = q.expect_many(
         EventPattern('dbus-return', method='Offer'),
         EventPattern('stream-iq', to='alice@localhost/Test'),
@@ -273,7 +276,7 @@ def offer_new_dbus_tube(q, bus, conn, stream, self_handle, alice_handle, bytestr
         EventPattern('dbus-signal', signal='Closed'),
         EventPattern('dbus-signal', signal='ChannelClosed'))
 
-def test(q, bus, conn, stream, bytestream_cls):
+def test(q, bus, conn, stream, bytestream_cls, access_control):
     conn.Connect()
 
     _, disco_event = q.expect_many(
@@ -306,11 +309,11 @@ def test(q, bus, conn, stream, bytestream_cls):
     sync_stream(q, stream)
 
     offer_old_dbus_tube(q, bus, conn, stream, self_handle, alice_handle, bytestream_cls)
-    offer_new_dbus_tube(q, bus, conn, stream, self_handle, alice_handle, bytestream_cls)
+    offer_new_dbus_tube(q, bus, conn, stream, self_handle, alice_handle, bytestream_cls, access_control)
 
     # OK, we're done
     conn.Disconnect()
     q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
 
 if __name__ == '__main__':
-    t.exec_tube_test(test)
+    t.exec_dbus_tube_test(test)

@@ -6,7 +6,9 @@ import dbus
 
 from gabbletest import make_result_iq
 from servicetest import (
-    make_channel_proxy, unwrap, tp_path_prefix, EventPattern)
+    make_channel_proxy, unwrap, tp_path_prefix, EventPattern,
+    assertEquals,
+    )
 from jingletest2 import JingleTest2, test_all_dialects
 import constants as cs
 
@@ -22,10 +24,17 @@ def test(jp, q, bus, conn, stream):
     # Remote end calls us
     jt.incoming_call()
 
+    # If this is a Jingle dialect that supports it, Gabble should send a
+    # <ringing/> notification when it gets the session-initiate until Telepathy
+    # has a way for the UI to do this.
+    # https://bugs.freedesktop.org/show_bug.cgi?id=21964
+    ringing_event = jp.rtp_info_event_list("ringing")
+
     nc, e = q.expect_many(
         EventPattern('dbus-signal', signal='NewChannel'),
         EventPattern('dbus-signal', signal='NewSessionHandler'),
-        )
+        *ringing_event
+        )[0:2]
     path, ct, ht, h, _ = nc.args
 
     assert ct == cs.CHANNEL_TYPE_STREAMED_MEDIA, ct
@@ -122,9 +131,8 @@ def test(jp, q, bus, conn, stream):
     stream_handler.SupportedCodecs(jt.get_audio_codecs_dbus())
 
     # peer gets the transport
-    e = q.expect('stream-iq')
-    assert jp.match_jingle_action(e.query, 'transport-info')
-    assert e.query['initiator'] == 'foo@bar.com/Foo'
+    e = q.expect('stream-iq', predicate=jp.action_predicate('transport-info'))
+    assertEquals('foo@bar.com/Foo', e.query['initiator'])
 
     stream.send(make_result_iq(stream, e.stanza))
 
@@ -144,6 +152,15 @@ def test(jp, q, bus, conn, stream):
         EventPattern('dbus-signal', signal='StreamDirectionChanged',
             args=[stream_id, cs.MEDIA_STREAM_DIRECTION_BIDIRECTIONAL, 0]),
         )
+
+    stream.send(make_result_iq(stream, acc.stanza))
+
+    # Also, if this is a Jingle dialect that supports it, Gabble should send an
+    # <active/> notification when the session-accept is acked (until the
+    # Telepathy spec lets the UI say it's not ringing any more).
+    active_event = jp.rtp_info_event("active")
+    if active_event is not None:
+        q.expect_many(active_event)
 
     # we are now both in members
     members = media_chan.GetMembers()

@@ -163,6 +163,7 @@ gabble_media_channel_init (GabbleMediaChannel *self)
 
   priv->next_stream_id = 1;
   priv->delayed_request_streams = g_ptr_array_sized_new (1);
+  priv->streams = g_ptr_array_sized_new (1);
 
   /* initialize properties mixin */
   tp_properties_mixin_init (G_OBJECT (self), G_STRUCT_OFFSET (
@@ -243,9 +244,9 @@ _latch_to_session (GabbleMediaChannel *chan)
   g_signal_connect (priv->session, "terminated",
                     (GCallback) session_terminated_cb, chan);
 
-  g_assert (priv->streams == NULL);
+  gabble_media_channel_hold_latch_to_session (chan);
 
-  priv->streams = g_ptr_array_sized_new (1);
+  g_assert (priv->streams->len == 0);
 
   tp_svc_channel_interface_media_signalling_emit_new_session_handler (
       G_OBJECT (chan), priv->object_path, "rtp");
@@ -838,16 +839,18 @@ gabble_media_channel_dispose (GObject *object)
       priv->initial_peer = 0;
     }
 
-  /** In this we set the state to ENDED, then the callback unrefs
-   * the session
-   */
-
   if (!priv->closed)
     gabble_media_channel_close (self);
 
   g_assert (priv->closed);
   g_assert (priv->session == NULL);
-  g_assert (priv->streams == NULL);
+
+  /* All of the streams should have closed in response to the contents being
+   * removed when the call ended.
+   */
+  g_assert (priv->streams->len == 0);
+  g_ptr_array_free (priv->streams, TRUE);
+  priv->streams = NULL;
 
   if (G_OBJECT_CLASS (gabble_media_channel_parent_class)->dispose)
     G_OBJECT_CLASS (gabble_media_channel_parent_class)->dispose (object);
@@ -1006,7 +1009,13 @@ gabble_media_channel_get_session_handlers (TpSvcChannelInterfaceMediaSignalling 
   g_ptr_array_free (ret, TRUE);
 }
 
-
+/**
+ * make_stream_list:
+ *
+ * Creates an array of MediaStreamInfo structs.
+ *
+ * Precondition: priv->session is non-NULL.
+ */
 static GPtrArray *
 make_stream_list (GabbleMediaChannel *self,
                   guint len,
@@ -1016,6 +1025,8 @@ make_stream_list (GabbleMediaChannel *self,
   GPtrArray *ret;
   guint i;
   GType info_type = TP_STRUCT_TYPE_MEDIA_STREAM_INFO;
+
+  g_assert (priv->session != NULL);
 
   ret = g_ptr_array_sized_new (len);
 
@@ -1074,7 +1085,8 @@ gabble_media_channel_list_streams (TpSvcChannelTypeStreamedMedia *iface,
 
   priv = self->priv;
 
-  /* no session yet? return an empty array */
+  /* If the session has not yet started, or has ended, return an empty array.
+   */
   if (priv->session == NULL)
     {
       ret = g_ptr_array_new ();
@@ -1092,7 +1104,9 @@ gabble_media_channel_list_streams (TpSvcChannelTypeStreamedMedia *iface,
 
 
 static GabbleMediaStream *
-_find_stream_by_id (GabbleMediaChannel *chan, guint stream_id)
+_find_stream_by_id (GabbleMediaChannel *chan,
+    guint stream_id,
+    GError **error)
 {
   GabbleMediaChannelPrivate *priv;
   guint i;
@@ -1111,6 +1125,8 @@ _find_stream_by_id (GabbleMediaChannel *chan, guint stream_id)
         return stream;
     }
 
+  g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      "given stream id %u does not exist", stream_id);
   return NULL;
 }
 
@@ -1146,13 +1162,10 @@ gabble_media_channel_remove_streams (TpSvcChannelTypeStreamedMedia *iface,
       GabbleMediaStream *stream;
       guint j;
 
-      stream = _find_stream_by_id (obj, id);
+      stream = _find_stream_by_id (obj, id, &error);
+
       if (stream == NULL)
-        {
-          g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
-              "given stream id %u does not exist", id);
-          goto OUT;
-        }
+        goto OUT;
 
       /* make sure we don't allow the client to repeatedly remove the same
       stream */
@@ -1234,11 +1247,10 @@ gabble_media_channel_request_stream_direction (TpSvcChannelTypeStreamedMedia *if
       return;
     }
 
-  stream = _find_stream_by_id (self, stream_id);
+  stream = _find_stream_by_id (self, stream_id, &error);
+
   if (stream == NULL)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
-          "given stream id %u does not exist", stream_id);
       dbus_g_method_return_error (context, error);
       g_error_free (error);
       return;
@@ -1769,7 +1781,11 @@ capabilities_discovered_cb (GabblePresenceCache *cache,
                             TpHandle handle,
                             struct _delayed_request_streams_ctx *ctx)
 {
-  /* If there are more cache caps pending, wait for them. */
+  /* If this isn't the contact we're waiting for, ignore the signal. */
+  if (ctx->contact_handle != handle)
+    return;
+
+  /* If there are more cache caps pending for this contact, wait for them. */
   if (gabble_presence_cache_caps_pending (cache, handle))
     return;
 
@@ -2178,6 +2194,26 @@ gabble_media_channel_remove_member (GObject *obj,
   return TRUE;
 }
 
+/**
+ * copy_stream_list:
+ *
+ * Returns a copy of priv->streams. This is used when applying a function to
+ * all streams that could result in them being closed, to avoid stream_close_cb
+ * modifying the list being iterated.
+ */
+static GPtrArray *
+copy_stream_list (GabbleMediaChannel *channel)
+{
+  GabbleMediaChannelPrivate *priv = channel->priv;
+  guint i;
+  GPtrArray *ret = g_ptr_array_sized_new (priv->streams->len);
+
+  for (i = 0; i < priv->streams->len; i++)
+    g_ptr_array_add (ret, g_ptr_array_index (priv->streams, i));
+
+  return ret;
+}
+
 static void
 session_terminated_cb (GabbleJingleSession *session,
                        gboolean local_terminator,
@@ -2225,19 +2261,16 @@ session_terminated_cb (GabbleJingleSession *session,
   g_list_free (priv->pending_stream_requests);
   priv->pending_stream_requests = NULL;
 
-  /* unref streams */
-  if (priv->streams != NULL)
-    {
-      GPtrArray *tmp = priv->streams;
+  {
+    GPtrArray *tmp = copy_stream_list (channel);
 
-      DEBUG ("unreffing streams");
+    g_ptr_array_foreach (tmp, (GFunc) gabble_media_stream_close, NULL);
 
-      /* move priv->streams aside so that the stream_close_cb
-       * doesn't double unref */
-      priv->streams = NULL;
-      g_ptr_array_foreach (tmp, (GFunc) g_object_unref, NULL);
-      g_ptr_array_free (tmp, TRUE);
-    }
+    /* All the streams should have closed. */
+    g_assert (priv->streams->len == 0);
+
+    g_ptr_array_free (tmp, TRUE);
+  }
 
   /* remove the session */
   g_object_unref (priv->session);
@@ -2318,14 +2351,13 @@ stream_close_cb (GabbleMediaStream *stream,
 
   tp_svc_channel_type_streamed_media_emit_stream_removed (chan, id);
 
-  if (priv->streams != NULL)
-    {
-      g_ptr_array_remove (priv->streams, stream);
+  if (g_ptr_array_remove (priv->streams, stream))
+    g_object_unref (stream);
+  else
+    g_warning ("stream %p (%s) removed, but it wasn't in priv->streams!",
+        stream, stream->name);
 
-      gabble_media_channel_hold_stream_closed (chan, stream);
-
-      g_object_unref (stream);
-    }
+  gabble_media_channel_hold_stream_closed (chan, stream);
 }
 
 static void
@@ -2441,6 +2473,8 @@ construct_stream (GabbleMediaChannel *chan,
   TpMediaStreamType mtype;
   guint id;
   gchar *object_path;
+  gboolean local_hold = (priv->hold_state == TP_LOCAL_HOLD_STATE_HELD ||
+      priv->hold_state == TP_LOCAL_HOLD_STATE_PENDING_HOLD);
 
   id = priv->next_stream_id++;
 
@@ -2448,7 +2482,7 @@ construct_stream (GabbleMediaChannel *chan,
       priv->object_path, id);
 
   stream = gabble_media_stream_new (object_path, c, name, id,
-      nat_traversal, relays);
+      nat_traversal, relays, local_hold);
 
   DEBUG ("%p: created new MediaStream %p for content '%s'", chan, stream, name);
 
@@ -2740,9 +2774,27 @@ gabble_media_channel_ready (TpSvcMediaSessionHandler *iface,
   GabbleMediaChannel *self = GABBLE_MEDIA_CHANNEL (iface);
   GabbleMediaChannelPrivate *priv = self->priv;
 
+  if (priv->session == NULL)
+    {
+      /* This could also be because someone called Ready() before the
+       * SessionHandler was announced. But the fact that the SessionHandler is
+       * actually also the Channel, and thus this method is available before
+       * NewSessionHandler is emitted, is an implementation detail. So the
+       * error message describes the only legitimate situation in which this
+       * could arise.
+       */
+      GError e = { TP_ERRORS, TP_ERROR_NOT_AVAILABLE, "call has already ended" };
+
+      DEBUG ("no session, returning an error.");
+      dbus_g_method_return_error (context, &e);
+      return;
+    }
+
   if (!priv->ready)
     {
       guint i;
+
+      DEBUG ("emitting NewStreamHandler for each stream");
 
       priv->ready = TRUE;
 
@@ -2769,11 +2821,24 @@ gabble_media_channel_error (TpSvcMediaSessionHandler *iface,
 
   priv = self->priv;
 
+  if (priv->session == NULL)
+    {
+      /* This could also be because someone called Error() before the
+       * SessionHandler was announced. But the fact that the SessionHandler is
+       * actually also the Channel, and thus this method is available before
+       * NewSessionHandler is emitted, is an implementation detail. So the
+       * error message describes the only legitimate situation in which this
+       * could arise.
+       */
+      GError e = { TP_ERRORS, TP_ERROR_NOT_AVAILABLE, "call has already ended" };
+
+      DEBUG ("no session, returning an error.");
+      dbus_g_method_return_error (context, &e);
+      return;
+    }
+
   DEBUG ("Media.SessionHandler::Error called, error %u (%s) -- "
       "emitting error on each stream", errno, message);
-
-  /* priv->session should be valid throghout SessionHandle D-Bus object life */
-  g_assert (priv->session != NULL);
 
   g_object_get (priv->session, "state", &state, NULL);
 
@@ -2791,24 +2856,18 @@ gabble_media_channel_error (TpSvcMediaSessionHandler *iface,
       return;
     }
 
-  g_assert (priv->streams != NULL);
-
   /* Calling gabble_media_stream_error () on all the streams will ultimately
    * cause them all to emit 'closed'. In response to 'closed', stream_close_cb
-   * normally unrefs them, and removes them from priv->streams. We're iterating
-   * across priv->streams here, so we don't want it to be modified from
-   * underneath us. So, we move it aside, and unref each stream here.
+   * unrefs them, and removes them from priv->streams. So, we copy the stream
+   * list to avoid it being modified from underneath us.
    */
-  tmp = priv->streams;
-  priv->streams = NULL;
+  tmp = copy_stream_list (self);
 
   for (i = 0; i < tmp->len; i++)
     {
       GabbleMediaStream *stream = g_ptr_array_index (tmp, i);
 
       gabble_media_stream_error (stream, errno, message, NULL);
-
-      g_object_unref (stream);
     }
 
   g_ptr_array_free (tmp, TRUE);

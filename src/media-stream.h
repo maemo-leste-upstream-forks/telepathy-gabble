@@ -88,15 +88,19 @@ GType gabble_media_stream_get_type (void);
 gboolean gabble_media_stream_error (GabbleMediaStream *self, guint errno,
     const gchar *message, GError **error);
 
-void _gabble_media_stream_close (GabbleMediaStream *close);
+void gabble_media_stream_close (GabbleMediaStream *close);
 void gabble_media_stream_hold (GabbleMediaStream *stream, gboolean hold);
 gboolean gabble_media_stream_change_direction (GabbleMediaStream *stream,
     guint requested_dir, GError **error);
 void gabble_media_stream_accept_pending_local_send (GabbleMediaStream *stream);
 
 GabbleMediaStream *gabble_media_stream_new (const gchar *object_path,
-    GabbleJingleContent *content, const gchar *name, guint id,
-    const gchar *nat_traversal, const GPtrArray *relays);
+    GabbleJingleContent *content,
+    const gchar *name,
+    guint id,
+    const gchar *nat_traversal,
+    const GPtrArray *relay_info,
+    gboolean local_hold);
 TpMediaStreamType gabble_media_stream_get_media_type (GabbleMediaStream *self);
 
 GabbleJingleMediaRtp *gabble_media_stream_get_content (GabbleMediaStream *self);

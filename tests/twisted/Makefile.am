@@ -26,6 +26,7 @@ TWISTED_TESTS = \
 	roster/ensure.py \
 	roster/groups.py \
 	roster/groups-12791.py \
+	roster/removed-from-rp-subscribe.py \
 	roster/request-group-before-roster.py \
 	roster/request-group-after-roster.py \
 	roster/test-google-roster.py \
@@ -79,6 +80,7 @@ TWISTED_TESTS = \
 	jingle/hold-av.py \
 	jingle/incoming-basics.py \
 	jingle/initial-audio-video.py \
+	jingle/misuse.py \
 	jingle/stun-server.py \
 	jingle/outgoing-basics.py \
 	jingle/outgoing-ensure.py \
@@ -110,6 +112,7 @@ TWISTED_TESTS = \
 	test-caps-hash.py \
 	test-caps-tubes.py \
 	caps_helper.py \
+	connect/multiple-times-to-same-account.py \
 	connect/test-fail.py \
 	connect/test-success.py \
 	connect/test-twice.py \

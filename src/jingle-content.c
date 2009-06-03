@@ -657,11 +657,21 @@ void
 gabble_jingle_content_parse_description_info (GabbleJingleContent *c,
     LmMessageNode *content_node, GError **error)
 {
+  GabbleJingleContentPrivate *priv = c->priv;
   LmMessageNode *desc_node;
   desc_node = lm_message_node_get_child_any_ns (content_node, "description");
   if (desc_node == NULL)
     {
       SET_BAD_REQ ("invalid description-info action");
+      return;
+    }
+
+  if (priv->created_by_us && priv->state < JINGLE_CONTENT_STATE_ACKNOWLEDGED)
+    {
+      /* The stream was created by us and the other side didn't acknowledge it
+       * yet, thus we don't have their codec information, thus the
+       * description-info isn't meaningful and can be ignored */
+      DEBUG ("Ignoring description-info as we didn't receive the codecs yet");
       return;
     }
 
@@ -871,12 +881,17 @@ _maybe_ready (GabbleJingleContent *self)
     }
 }
 
-
-static void
-send_description_info (GabbleJingleContent *self)
+void
+gabble_jingle_content_maybe_send_description (GabbleJingleContent *self)
 {
+  GabbleJingleContentPrivate *priv = self->priv;
   LmMessage *msg;
   LmMessageNode *sess_node;
+
+  /* If we didn't send the content yet there is no reason to send a
+   * description-info to update it */
+  if (priv->state < JINGLE_CONTENT_STATE_SENT)
+    return;
 
   msg = gabble_jingle_session_new_message (self->session,
       JINGLE_ACTION_DESCRIPTION_INFO, &sess_node);
@@ -900,13 +915,6 @@ _gabble_jingle_content_set_media_ready (GabbleJingleContent *self)
 {
   GabbleJingleContentPrivate *priv = self->priv;
 
-  /* If media was already ready, media info was changed and we need to
-   * push description-info action to the peer. */
-  if (priv->media_ready == TRUE)
-    {
-      send_description_info (self);
-      return;
-    }
 
   priv->media_ready = TRUE;
 
@@ -1031,39 +1039,6 @@ gboolean
 gabble_jingle_content_is_created_by_us (GabbleJingleContent *c)
 {
   return c->priv->created_by_us;
-}
-
-/**
- * gabble_jingle_content_handle_info:
- * @self: a jingle content
- * @session_info_payload: a child node of a <jingle action='session-info'>
- *                        stanza
- * @handled: a location at which to store whether this content handled the
- *           payload
- * @error: a location at which to store an error if the content handled the
- *         payload, but it was malformed.
- *
- * Returns: %FALSE if handling @session_info_payload caused an error; %TRUE if
- *          it was handled successfully or not handled.
- */
-gboolean
-gabble_jingle_content_handle_info (GabbleJingleContent *self,
-    LmMessageNode *session_info_payload,
-    gboolean *handled,
-    GError **error)
-{
-  GabbleJingleContentHandleInfoFunc f =
-      GABBLE_JINGLE_CONTENT_GET_CLASS (self)->handle_info;
-
-  if (f == NULL)
-    {
-      *handled = FALSE;
-      return TRUE;
-    }
-  else
-    {
-      return f (self, session_info_payload, handled, error);
-    }
 }
 
 const gchar *

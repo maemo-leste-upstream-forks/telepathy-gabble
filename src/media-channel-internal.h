@@ -42,7 +42,7 @@ struct _GabbleMediaChannelPrivate
 
   GabbleJingleSession *session;
 
-  /* array of referenced GabbleMediaStream* */
+  /* array of referenced GabbleMediaStream*.  Always non-NULL. */
   GPtrArray *streams;
   /* list of PendingStreamRequest* in no particular order */
   GList *pending_stream_requests;
@@ -55,10 +55,7 @@ struct _GabbleMediaChannelPrivate
   TpLocalHoldState hold_state;
   TpLocalHoldStateReason hold_state_reason;
 
-  /* The "most held" of all associated contents' current states, which is what
-   * we present on CallState.
-   */
-  JingleRtpRemoteState remote_state;
+  TpChannelCallStateFlags call_state;
 
   GPtrArray *delayed_request_streams;
 
@@ -70,6 +67,8 @@ struct _GabbleMediaChannelPrivate
   unsigned closed:1;
   unsigned dispose_has_run:1;
 };
+
+void gabble_media_channel_hold_latch_to_session (GabbleMediaChannel *chan);
 
 void gabble_media_channel_hold_new_stream (GabbleMediaChannel *chan,
     GabbleMediaStream *stream,

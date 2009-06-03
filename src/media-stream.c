@@ -148,8 +148,8 @@ static void content_state_changed_cb (GabbleJingleContent *c,
      GParamSpec *pspec, GabbleMediaStream *stream);
 static void content_senders_changed_cb (GabbleJingleContent *c,
      GParamSpec *pspec, GabbleMediaStream *stream);
-static void remote_state_changed_cb (GabbleJingleMediaRtp *rtp,
-    GParamSpec *pspec, GabbleMediaStream *stream);
+static void remote_state_changed_cb (GabbleJingleSession *session,
+    GabbleMediaStream *stream);
 static void content_removed_cb (GabbleJingleContent *content,
       GabbleMediaStream *stream);
 static void update_direction (GabbleMediaStream *stream, GabbleJingleContent *c);
@@ -157,11 +157,12 @@ static void update_sending (GabbleMediaStream *stream, gboolean start_sending);
 
 GabbleMediaStream *
 gabble_media_stream_new (const gchar *object_path,
-                         GabbleJingleContent *content,
-                         const gchar *name,
-                         guint id,
-                         const gchar *nat_traversal,
-                         const GPtrArray *relay_info)
+    GabbleJingleContent *content,
+    const gchar *name,
+    guint id,
+    const gchar *nat_traversal,
+    const GPtrArray *relay_info,
+    gboolean local_hold)
 {
   GPtrArray *empty = NULL;
   GabbleMediaStream *result;
@@ -181,6 +182,7 @@ gabble_media_stream_new (const gchar *object_path,
       "id", id,
       "nat-traversal", nat_traversal,
       "relay-info", relay_info,
+      "local-hold", local_hold,
       NULL);
 
   if (empty != NULL)
@@ -459,8 +461,8 @@ gabble_media_stream_set_property (GObject      *object,
       gabble_signal_connect_weak (priv->content, "notify::senders",
           (GCallback) content_senders_changed_cb, object);
 
-      gabble_signal_connect_weak (priv->content, "notify::remote-state",
-          (GCallback) remote_state_changed_cb, object);
+      gabble_signal_connect_weak (priv->content->session,
+          "remote-state-changed", (GCallback) remote_state_changed_cb, object);
 
       gabble_signal_connect_weak (priv->content, "removed",
           (GCallback) content_removed_cb, object);
@@ -472,6 +474,9 @@ gabble_media_stream_set_property (GObject      *object,
     case PROP_RELAY_INFO:
       g_assert (priv->relay_info == NULL);
       priv->relay_info = g_value_dup_boxed (value);
+      break;
+    case PROP_LOCAL_HOLD:
+      priv->local_hold = g_value_get_boolean (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -582,7 +587,7 @@ gabble_media_stream_class_init (GabbleMediaStreamClass *gabble_media_stream_clas
 
   param_spec = g_param_spec_boolean ("local-hold", "Local hold?",
       "True if resources used for this stream have been freed.", FALSE,
-      G_PARAM_READABLE |
+      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
       G_PARAM_STATIC_NAME | G_PARAM_STATIC_BLURB | G_PARAM_STATIC_NICK);
   g_object_class_install_property (object_class, PROP_LOCAL_HOLD, param_spec);
 
@@ -654,7 +659,7 @@ gabble_media_stream_dispose (GObject *object)
       priv->initial_getter_id = 0;
     }
 
-  _gabble_media_stream_close (self);
+  gabble_media_stream_close (self);
 
   priv->dispose_has_run = TRUE;
 
@@ -1036,6 +1041,13 @@ gabble_media_stream_ready (TpSvcMediaStreamHandler *iface,
       push_remote_candidates (self);
       push_playing (self);
       push_sending (self);
+
+      /* If a new stream is added while the call's on hold, it will have
+       * local_hold set at construct time. So once tp-fs has called Ready(), we
+       * should let it know this stream's on hold.
+       */
+      if (priv->local_hold)
+        gabble_media_stream_hold (self, priv->local_hold);
     }
   else
     {
@@ -1049,6 +1061,7 @@ gabble_media_stream_ready (TpSvcMediaStreamHandler *iface,
 static gboolean
 pass_local_codecs (GabbleMediaStream *stream,
                    const GPtrArray *codecs,
+                   gboolean ready,
                    GError **error)
 {
   GabbleMediaStreamPrivate *priv = stream->priv;
@@ -1089,7 +1102,7 @@ pass_local_codecs (GabbleMediaStream *stream,
     }
 
   return jingle_media_rtp_set_local_codecs (
-      GABBLE_JINGLE_MEDIA_RTP (priv->content), li, error);
+      GABBLE_JINGLE_MEDIA_RTP (priv->content), li, ready, error);
 }
 
 /**
@@ -1110,7 +1123,8 @@ gabble_media_stream_set_local_codecs (TpSvcMediaStreamHandler *iface,
 
   if (gabble_jingle_content_is_created_by_us (self->priv->content))
     {
-      if (!pass_local_codecs (self, codecs, &error))
+      if (!pass_local_codecs (self, codecs, self->priv->created_locally,
+          &error))
         {
           DEBUG ("failed: %s", error->message);
 
@@ -1184,7 +1198,7 @@ gabble_media_stream_supported_codecs (TpSvcMediaStreamHandler *iface,
 
   if (priv->awaiting_intersection)
     {
-      if (!pass_local_codecs (self, codecs, &error))
+      if (!pass_local_codecs (self, codecs, TRUE, &error))
         {
           DEBUG ("failed: %s", error->message);
 
@@ -1236,7 +1250,16 @@ gabble_media_stream_codecs_updated (TpSvcMediaStreamHandler *iface,
       return;
     }
 
-  if (pass_local_codecs (self, codecs, &error))
+  if (self->priv->awaiting_intersection)
+    {
+      /* When awaiting an intersection the initial set of codecs should be set
+       * by calling SupportedCodecs as that is the canonical set of codecs,
+       * updates are only meaningful afterwards */
+      tp_svc_media_stream_handler_return_from_codecs_updated (context);
+      return;
+    }
+
+  if (pass_local_codecs (self, codecs, self->priv->created_locally, &error))
     {
       tp_svc_media_stream_handler_return_from_codecs_updated (context);
     }
@@ -1250,7 +1273,7 @@ gabble_media_stream_codecs_updated (TpSvcMediaStreamHandler *iface,
 }
 
 void
-_gabble_media_stream_close (GabbleMediaStream *stream)
+gabble_media_stream_close (GabbleMediaStream *stream)
 {
   GabbleMediaStreamPrivate *priv;
 
@@ -1584,15 +1607,13 @@ content_senders_changed_cb (GabbleJingleContent *c,
 }
 
 static void
-remote_state_changed_cb (GabbleJingleMediaRtp *rtp,
-    GParamSpec *pspec,
+remote_state_changed_cb (GabbleJingleSession *session,
     GabbleMediaStream *stream)
 {
   GabbleMediaStreamPrivate *priv = stream->priv;
-  JingleRtpRemoteState state = gabble_jingle_media_rtp_get_remote_state (rtp);
   gboolean old_hold = priv->on_hold;
 
-  priv->on_hold = (state == JINGLE_RTP_REMOTE_STATE_HOLD);
+  priv->on_hold = gabble_jingle_session_get_remote_hold (session);
 
   if (old_hold != priv->on_hold)
     push_sending (stream);
@@ -1601,7 +1622,7 @@ remote_state_changed_cb (GabbleJingleMediaRtp *rtp,
 static void
 content_removed_cb (GabbleJingleContent *content, GabbleMediaStream *stream)
 {
-  _gabble_media_stream_close (stream);
+  gabble_media_stream_close (stream);
 }
 
 

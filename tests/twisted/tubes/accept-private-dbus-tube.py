@@ -2,7 +2,7 @@
 
 import dbus
 
-from servicetest import call_async, EventPattern, sync_dbus
+from servicetest import call_async, EventPattern, sync_dbus, assertEquals
 from gabbletest import acknowledge_iq, sync_stream
 import constants as cs
 import ns
@@ -25,7 +25,7 @@ def contact_offer_dbus_tube(bytestream, tube_id):
 
     bytestream.stream.send(iq)
 
-def test(q, bus, conn, stream, bytestream_cls):
+def test(q, bus, conn, stream, bytestream_cls, access_control):
     t.check_conn_properties(q, conn)
 
     conn.Connect()
@@ -34,7 +34,7 @@ def test(q, bus, conn, stream, bytestream_cls):
         EventPattern('dbus-signal', signal='StatusChanged', args=[0, 1]),
         EventPattern('stream-iq', to=None, query_ns='vcard-temp',
             query_name='vCard'),
-        EventPattern('stream-iq', query_ns='jabber:iq:roster'))
+        EventPattern('stream-iq', query_ns=ns.ROSTER))
 
     self_handle = conn.GetSelfHandle()
 
@@ -150,6 +150,8 @@ def test(q, bus, conn, stream, bytestream_cls):
     assert props[cs.TARGET_ID] == 'bob@localhost'
     assert props[cs.DBUS_TUBE_SERVICE_NAME] == 'com.example.TestCase2'
     assert props[cs.TUBE_PARAMETERS] == {'login': 'TEST'}
+    assert props[cs.DBUS_TUBE_SUPPORTED_ACCESS_CONTROLS] == [cs.SOCKET_ACCESS_CONTROL_CREDENTIALS,
+        cs.SOCKET_ACCESS_CONTROL_LOCALHOST]
     assert cs.TUBE_STATE not in props
 
     tube_chan = bus.get_object(conn.bus_name, path)
@@ -159,8 +161,16 @@ def test(q, bus, conn, stream, bytestream_cls):
     status = tube_chan.Get(cs.CHANNEL_IFACE_TUBE, 'State', dbus_interface=cs.PROPERTIES_IFACE)
     assert status == cs.TUBE_STATE_LOCAL_PENDING
 
+    # try to accept using a wrong access control
+    try:
+        dbus_tube_iface.Accept(cs.SOCKET_ACCESS_CONTROL_PORT)
+    except dbus.DBusException, e:
+        assertEquals(e.get_dbus_name(), cs.INVALID_ARGUMENT)
+    else:
+        assert False
+
     # accept the tube (new API)
-    call_async(q, dbus_tube_iface, 'Accept')
+    call_async(q, dbus_tube_iface, 'Accept', access_control)
 
     # Init the bytestream
     events, state_event = bytestream.open_bytestream(
@@ -193,4 +203,4 @@ def test(q, bus, conn, stream, bytestream_cls):
     q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
 
 if __name__ == '__main__':
-    t.exec_tube_test(test)
+    t.exec_dbus_tube_test(test)
