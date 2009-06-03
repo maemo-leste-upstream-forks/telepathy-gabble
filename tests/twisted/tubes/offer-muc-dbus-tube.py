@@ -6,7 +6,7 @@ import dbus
 from dbus.connection import Connection
 from dbus.lowlevel import SignalMessage
 
-from servicetest import call_async, EventPattern, assertContains
+from servicetest import call_async, EventPattern, assertContains, assertEquals
 from gabbletest import exec_test, acknowledge_iq, elem
 import ns
 import constants as cs
@@ -87,7 +87,7 @@ def fire_signal_on_tube(q, tube, chatroom, dbus_stream_id, my_bus_name):
     # being in the message somewhere
     assert my_bus_name in binary
 
-def test(q, bus, conn, stream):
+def test(q, bus, conn, stream, access_control):
     conn.Connect()
 
     _, iq_event = q.expect_many(
@@ -230,6 +230,8 @@ def test(q, bus, conn, stream):
     assert prop[cs.TARGET_HANDLE_TYPE] == cs.HT_ROOM
     assert prop[cs.TARGET_ID] == 'chat2@conf.localhost'
     assert prop[cs.DBUS_TUBE_SERVICE_NAME] == 'com.example.TestCase'
+    assert prop[cs.DBUS_TUBE_SUPPORTED_ACCESS_CONTROLS] == [cs.SOCKET_ACCESS_CONTROL_CREDENTIALS,
+        cs.SOCKET_ACCESS_CONTROL_LOCALHOST]
 
     # check that the tube channel is in the channels list
     all_channels = conn.Get(cs.CONN_IFACE_REQUESTS, 'Channels',
@@ -244,8 +246,16 @@ def test(q, bus, conn, stream):
 
     assert tube_props['State'] == cs.TUBE_CHANNEL_STATE_NOT_OFFERED
 
+    # try to offer using a wrong access control
+    try:
+        dbus_tube_iface.Offer(sample_parameters, cs.SOCKET_ACCESS_CONTROL_PORT)
+    except dbus.DBusException, e:
+        assertEquals(e.get_dbus_name(), cs.INVALID_ARGUMENT)
+    else:
+        assert False
+
     # offer the tube
-    call_async(q, dbus_tube_iface, 'Offer', sample_parameters)
+    call_async(q, dbus_tube_iface, 'Offer', sample_parameters, access_control)
 
     new_tube_event, presence_event, return_event, status_event, dbus_changed_event = q.expect_many(
         EventPattern('dbus-signal', signal='NewTube'),
@@ -339,4 +349,8 @@ def test(q, bus, conn, stream):
     q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
 
 if __name__ == '__main__':
-    exec_test(test)
+    # We can't use t.exec_dbus_tube_test() as we can use only the muc bytestream
+    exec_test(lambda q, bus, conn, stream:
+        test(q, bus, conn, stream, cs.SOCKET_ACCESS_CONTROL_CREDENTIALS))
+    exec_test(lambda q, bus, conn, stream:
+        test(q, bus, conn, stream, cs.SOCKET_ACCESS_CONTROL_LOCALHOST))

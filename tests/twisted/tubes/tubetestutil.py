@@ -4,18 +4,21 @@ Helper functions for writing tubes tests
 
 import errno
 import os
+import socket
 
 import dbus
 
 from servicetest import unwrap, assertContains, EventProtocolClientFactory,\
-    EventProtocolFactory, assertEquals, EventProtocol
+    EventProtocolFactory, assertEquals, EventProtocol, EventPattern
 from gabbletest import exec_test
 import constants as cs
 import bytestream
+import ns
 
 from twisted.internet import reactor
 from twisted.internet.protocol import Factory, Protocol
 from twisted.internet.error import CannotListenError
+from twisted.internet import tcp
 
 def check_tube_in_tubes(tube, tubes):
     """
@@ -207,36 +210,65 @@ class Echo(EventProtocol):
     """
     A trivial protocol that just echoes back whatever you send it, in lowercase.
     """
+    def __init__(self, queue=None, block_reading=False):
+        EventProtocol.__init__(self, queue, block_reading)
+
+        self.echoed = True
+
     def dataReceived(self, data):
         EventProtocol.dataReceived(self, data)
 
-        self.transport.write(data.lower())
+        if self.echoed:
+            self.transport.write(data.lower())
 
 class EchoFactory(EventProtocolFactory):
     def _create_protocol(self):
-        return Echo(self.queue)
+        return Echo(self.queue, self.block_reading)
 
-def set_up_echo(q, address_type):
+def set_up_echo(q, address_type, block_reading=False):
     """
     Sets up an instance of Echo listening on a socket of type @address_type
     """
-    factory = EchoFactory(q)
+    factory = EchoFactory(q, block_reading)
     return create_server(q, address_type, factory)
 
-def connect_socket(q, address_type, address):
+# Twisted doesn't set the REUSEADDR option on client sockets.
+# As we need this option to be able to bind successively on the same port
+# during the tests, we define our own client and connector to be able to set
+# this option.
+class MyTCPClient(tcp.Client):
+    def createInternetSocket(self):
+        s = tcp.Client.createInternetSocket(self)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        return s
+
+class MyTCPConnector(tcp.Connector):
+    def _makeTransport(self):
+        return MyTCPClient(self.host, self.port, self.bindAddress, self, self.reactor)
+
+def connect_socket(q, address_type, address, access_control, access_control_param):
     factory = EventProtocolClientFactory(q)
     if address_type == cs.SOCKET_ADDRESS_TYPE_UNIX:
         reactor.connectUNIX(address, factory)
     elif address_type == cs.SOCKET_ADDRESS_TYPE_IPV4:
         ip, port = address
         assert port > 0
-        reactor.connectTCP(ip, port, factory)
+
+        if access_control == cs.SOCKET_ACCESS_CONTROL_PORT:
+            # connect from the ip/port specified
+            # This means the test will fail if the port is already binded. It
+            # would be better to bind the port before connecting but that's
+            # not easily doable with twisted...
+            c = MyTCPConnector(ip, port, factory, 30, access_control_param, reactor)
+            c.connect()
+        else:
+            reactor.connectTCP(ip, port, factory)
     else:
         assert False
 
-def create_server(q, address_type, factory=None):
+def create_server(q, address_type, factory=None, block_reading=False):
     if factory is None:
-        factory = EventProtocolFactory(q)
+        factory = EventProtocolFactory(q, block_reading)
     if address_type == cs.SOCKET_ADDRESS_TYPE_UNIX:
         path = os.getcwd() + '/stream'
         try:
@@ -260,7 +292,7 @@ def create_server(q, address_type, factory=None):
     else:
         assert False
 
-def check_new_connection_access(access_control, access_control_param, protocol):
+def check_new_connection_access(q, access_control, access_control_param, protocol):
     if access_control == cs.SOCKET_ACCESS_CONTROL_LOCALHOST:
         # nothing to check
         return
@@ -269,8 +301,48 @@ def check_new_connection_access(access_control, access_control_param, protocol):
         address = protocol.transport.getPeer()
         assertEquals(ip, address.host)
         assertEquals(port, address.port)
+    elif access_control == cs.SOCKET_ACCESS_CONTROL_CREDENTIALS:
+        byte = access_control_param
+
+        e = q.expect('socket-data', protocol=protocol)
+        assert ord(e.data) == byte
+
+        # FIXME: check if credentials are actually passed. This is actually
+        # really hard to test because Python doesn't implement recvmsg().
+        # Twisted's transport abstraction doesn't help either.
+        # Credentials passing is tested in Gibber's tests so not testing it
+        # here is actually not that bad.
     else:
         assert False
+
+
+def connect_to_cm_socket(q, to, address_type, address, access_control,
+    access_control_param):
+
+    connect_socket(q, address_type, address, access_control, access_control_param)
+
+    if access_control == cs.SOCKET_ACCESS_CONTROL_CREDENTIALS:
+        socket_event = q.expect('socket-connected')
+
+        # socket is connected. Let's send our credentials (the byte is
+        # meaningless)
+        socket_event.protocol.sendData('a')
+
+        # once credentials have been sent, Gabble sends SI request
+        si_event, sig = q.expect_many(
+            EventPattern('stream-iq', to=to, query_ns=ns.SI, query_name='si'),
+            EventPattern('dbus-signal', signal='NewLocalConnection'))
+
+    else:
+        socket_event, si_event, sig = q.expect_many(
+            EventPattern('socket-connected'),
+            # expect SI request
+            EventPattern('stream-iq', to=to, query_ns=ns.SI, query_name='si'),
+            EventPattern('dbus-signal', signal='NewLocalConnection'))
+
+    connection_id = sig.args[0]
+    assert connection_id != 0
+    return socket_event, si_event, connection_id
 
 def exec_tube_test(test, *args):
     for bytestream_cls in [
@@ -287,3 +359,9 @@ def exec_tube_test(test, *args):
 def exec_stream_tube_test(test):
     exec_tube_test(test, cs.SOCKET_ADDRESS_TYPE_UNIX, cs.SOCKET_ACCESS_CONTROL_LOCALHOST, "")
     exec_tube_test(test, cs.SOCKET_ADDRESS_TYPE_IPV4, cs.SOCKET_ACCESS_CONTROL_LOCALHOST, "")
+    exec_tube_test(test, cs.SOCKET_ADDRESS_TYPE_UNIX, cs.SOCKET_ACCESS_CONTROL_CREDENTIALS, dbus.Byte(77))
+    exec_tube_test(test, cs.SOCKET_ADDRESS_TYPE_IPV4, cs.SOCKET_ACCESS_CONTROL_PORT, ('127.0.0.1', dbus.UInt16(8631)))
+
+def exec_dbus_tube_test(test):
+    exec_tube_test(test, cs.SOCKET_ACCESS_CONTROL_CREDENTIALS)
+    exec_tube_test(test, cs.SOCKET_ACCESS_CONTROL_LOCALHOST)

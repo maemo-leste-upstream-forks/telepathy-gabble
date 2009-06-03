@@ -1,3 +1,58 @@
+telepathy-gabble 0.7.28 (2009-06-01)
+====================================
+
+The "npc1 becomes vampire/communist" release.
+
+Dependencies:
+
+* telepathy-glib >= 0.7.31 is now required as Gabble implements the
+  new tube API.
+
+Enhancements:
+
+* Implement the Credentials access control with UNIX sockets in stream tubes.
+
+* Implement the Port access control with Inet4 and Inet6 sockets in stream
+  tubes.
+
+* Implement the final, stable new API for tubes. The NewConnection signal has
+  been renamed to NewRemoteConnection and now has a Connection_ID argument.  The
+  StreamTube channel type now implements the NewLocalConnection and
+  ConnectionClosed signals.  DBusTube.{Offer,Accept} now have an access_control
+  argument; Gabble implements Credentials and Localhost.
+
+* In StreamTube, UNIX sockets created with the Localhost access control are
+  usable by any user of the system.
+
+* When no resource is explicitly specified, Gabble will now use a randomized
+  resource ("Telepathy.[random numbers]") rather than just "Telepathy". This
+  helps users who don't know anything about XMPP to be able to connect from
+  multiple Telepathy-powered clients at once. (fd.o #21297)
+
+* Gabble now implements the 'stored' contact list, added in telepathy-spec
+  0.17.12. It no longer implements the 'known' list, which was never standard;
+  we don't think this will break clients, since other CMs (such as
+  telepathy-haze) never implemented 'known'. (fd.o #19901)
+
+* Incoming call state notifications (ringing, on hold, etc.) are now handled in
+  line with the latest draft of XEP-0167. (fd.o #21836)
+
+Fixes:
+
+* fd.o #21684: Don't crash in SessionHandler.Ready() if streams is NULL
+
+* fd.o #21817: Sometimes crashes upon receiving an empty <nick/> update.
+
+* fd.o #21547: Contacts removed from roster stay on subscribe:remote-pending.
+  It's conceivable that this fix could cause regressions, since the bug was
+  introduced while working around some GTalk roster bugs. As discussed on the
+  fd.o bug, the bug being worked around appeared to be to do with roster
+  updates when a contact accepts your subscription. That workaround has not
+  been removed, so with any luck this should be okay.
+
+* fd.o #21878: Adding a new stream while a call's on hold makes it fall back to
+  Pending Hold.
+
 telepathy-gabble 0.7.27 (2009-05-07)
 ====================================
 

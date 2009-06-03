@@ -5,8 +5,7 @@ import os
 
 import dbus
 
-from servicetest import call_async, EventPattern, unwrap,\
-    assertContains
+from servicetest import call_async, EventPattern, unwrap, assertContains, assertEquals
 from gabbletest import acknowledge_iq, make_muc_presence
 import constants as cs
 import ns
@@ -39,7 +38,7 @@ def connect_to_tube(stream, q, bytestream_cls, muc, stream_tube_id):
 
     return bytestream
 
-def use_tube(q, bytestream, protocol):
+def use_tube(q, bytestream, protocol, conn_id):
     # have the fake client open the stream
     bytestream.open_bytestream()
 
@@ -55,6 +54,11 @@ def use_tube(q, bytestream, protocol):
     binary = bytestream.get_data(len(data))
     assert binary == data, binary
 
+    # peer closes the bytestream
+    bytestream.close()
+    e = q.expect('dbus-signal', signal='ConnectionClosed')
+    assertEquals(conn_id, e.args[0])
+    assertEquals(cs.CONNECTION_LOST, e.args[1])
 
 def test(q, bus, conn, stream, bytestream_cls,
        address_type, access_control, access_control_param):
@@ -179,11 +183,13 @@ def test(q, bus, conn, stream, bytestream_cls,
 
     bytestream = connect_to_tube(stream, q, bytestream_cls, 'chat@conf.localhost', stream_tube_id)
 
-    iq_event, socket_event, _ = q.expect_many(
+    iq_event, socket_event, _, conn_event = q.expect_many(
         EventPattern('stream-iq', iq_type='result'),
         EventPattern('socket-connected'),
         EventPattern('dbus-signal', signal='StreamTubeNewConnection',
-            args=[stream_tube_id, bob_handle], interface=cs.CHANNEL_TYPE_TUBES))
+            args=[stream_tube_id, bob_handle], interface=cs.CHANNEL_TYPE_TUBES),
+        EventPattern('dbus-signal', signal='NewRemoteConnection',
+            interface=cs.CHANNEL_TYPE_STREAM_TUBE))
 
     protocol = socket_event.protocol
 
@@ -192,10 +198,13 @@ def test(q, bus, conn, stream, bytestream_cls,
     tube = xpath.queryForNodes('/iq//si/tube[@xmlns="%s"]' % ns.TUBES, iq_event.stanza)
     assert len(tube) == 1
 
-    use_tube(q, bytestream, protocol)
+    handle, access, conn_id = conn_event.args
+    assert handle == bob_handle
+
+    use_tube(q, bytestream, protocol, conn_id)
 
     # offer a stream tube to another room (new API)
-    address = t.create_server(q, address_type)
+    address = t.create_server(q, address_type, block_reading=True)
 
     call_async(q, conn.Requests, 'CreateChannel',
             {cs.CHANNEL_TYPE: cs.CHANNEL_TYPE_STREAM_TUBE,
@@ -319,21 +328,23 @@ def test(q, bus, conn, stream, bytestream_cls,
     iq_event, socket_event, conn_event = q.expect_many(
         EventPattern('stream-iq', iq_type='result'),
         EventPattern('socket-connected'),
-        EventPattern('dbus-signal', signal='NewConnection',
+        EventPattern('dbus-signal', signal='NewRemoteConnection',
             interface=cs.CHANNEL_TYPE_STREAM_TUBE))
 
-    handle, access = conn_event.args
+    handle, access, conn_id = conn_event.args
     assert handle == bob_handle
 
     protocol = socket_event.protocol
-    t.check_new_connection_access(access_control, access, protocol)
+    # start to read from the transport so we can read the control byte
+    protocol.transport.startReading()
+    t.check_new_connection_access(q, access_control, access, protocol)
 
     # handle iq_event
     bytestream.check_si_reply(iq_event.stanza)
     tube = xpath.queryForNodes('/iq//si/tube[@xmlns="%s"]' % ns.TUBES, iq_event.stanza)
     assert len(tube) == 1
 
-    use_tube(q, bytestream, protocol)
+    use_tube(q, bytestream, protocol, conn_id)
 
     chan_iface.Close()
     q.expect_many(

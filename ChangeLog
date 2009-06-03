@@ -1,3 +1,1853 @@
+commit 0b743c4f26ca109b97882731f0b01a48a06a8d19
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 1 18:36:42 2009 +0100
+
+    version 0.7.28
+
+ NEWS         |   18 +++++++++++-------
+ configure.ac |    4 ++--
+ 2 files changed, 13 insertions(+), 9 deletions(-)
+
+commit 67336c81bd9690b2a06e9b4aa2efc5ba015e8ec6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 29 18:15:11 2009 +0100
+
+    Don't assume session is non-NULL in GetCallState
+    
+    If GetCallState() is called before RequestStreams() and friends,
+    there'll be no JingleSession for the channel, so we need to check if it
+    exists yet before dereferencing it.
+    
+    It's valid to omit participants whose call state is 0, and if there's no
+    session we might not know who the peer is yet anyway (if the
+    RequestChannel(0) calling convention's in use).
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+ src/media-channel-hold.c           |    5 +++--
+ tests/twisted/jingle/call-state.py |    4 ++++
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+commit 7fe79e84b0b7aec972d80375a3dd301213bceab0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jun 1 12:14:59 2009 +0100
+
+    gibber_fd_transport_block_receiving; don't crash when trying to unblock a not yet connected transport
+
+ lib/gibber/gibber-fd-transport.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+commit 663914069fcdda92abe60af09c233e2ade7719cb
+Merge: 73cf45f 5e844c0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 29 11:44:13 2009 +0100
+
+    Merge branch 'fake-incoming-ringing-on-old-jingle'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 73cf45f3a9de3f1f84ab98b936725b2649fbe261
+Merge: 06a3ff3 e616465
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 29 11:43:35 2009 +0100
+
+    Merge branch 'send-ringing'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 5e844c084478be47b1c0e2e85245d5f88d724a25
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 27 14:46:04 2009 +0100
+
+    Fake Ringing states on old Jingle dialects
+
+ src/jingle-session.c               |   27 +++++++-
+ tests/twisted/jingle/call-state.py |  139 +++++++++++++++++++-----------------
+ 2 files changed, 99 insertions(+), 67 deletions(-)
+
+commit e616465c10597286a8e63eb3f114dc0dbb3dcf7c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 27 16:15:24 2009 +0100
+
+    Send <unhold/> not <active/>
+    
+    The <ringing/>, <hold/>, and <mute/> states in jingle-rtp are
+    orthogonal. <hold/> and <mute/> have inverses, <unhold/> and <unmute/>;
+    <active/> cancels out all states. Previously, Gabble only ever sent
+    <hold/>, so using <active/> to unset it was okay. But if you hold and
+    unhold a call before answering it, the ringing state (which we now send)
+    shouldn't be removed (as it would be by sending <active/>).
+
+ src/jingle-session.c               |    2 +-
+ tests/twisted/jingle/hold-audio.py |   30 +++++++++++++++---------------
+ tests/twisted/jingle/hold-av.py    |   36 ++++++++++++++++++------------------
+ 3 files changed, 34 insertions(+), 34 deletions(-)
+
+commit 9f037c6f3936549993f5c0133e3479177c0508b4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 27 15:37:34 2009 +0100
+
+    Send <ringing> and <active> on -initiate and -accept
+    
+    For now, the UI doesn't have any way to tell the CM that it's ringing.
+    So Gabble sends <ringing/> when it gets a session-initiate, and
+    <active/> when it gets an ack for its session-accept.
+
+ src/jingle-session.c                    |   11 +++++++++--
+ tests/twisted/jingle/incoming-basics.py |   18 +++++++++++++++++-
+ 2 files changed, 26 insertions(+), 3 deletions(-)
+
+commit f8e7e117158c2256953f815f737d1674ebb3160d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 27 15:29:14 2009 +0100
+
+    Generalize gabble_jingle_session_send_held
+
+ src/jingle-session.c |   20 ++++++++++++++------
+ 1 files changed, 14 insertions(+), 6 deletions(-)
+
+commit 58957a9c3473803801c38d8d92d1ad6cb276f010
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 27 15:10:53 2009 +0100
+
+    Generalize <hold>/<active> event pattern functions
+    
+    I'm about to make a test check that Gabble sends <ringing/> and
+    <active/> using these generalized helpers.
+
+ tests/twisted/jingle/hold-audio.py  |    4 ++--
+ tests/twisted/jingle/hold-av.py     |    4 ++--
+ tests/twisted/jingle/jingletest2.py |   10 +++++-----
+ 3 files changed, 9 insertions(+), 9 deletions(-)
+
+commit 06a3ff371b683867b7eda0c41bf7fe73beab24ac
+Merge: bb3c7fe 5aa5e7a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 29 11:25:54 2009 +0100
+
+    Merge branch 'test-tidying'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit bb3c7fe1fa9450c2361c20a699b15af49b76fef5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 12:34:08 2009 +0100
+
+    NEWS: document latest tube changes
+
+ NEWS |   12 ++++++++++--
+ 1 files changed, 10 insertions(+), 2 deletions(-)
+
+commit 28bcde7267a761473d572882a181bce84dab7eed
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 28 10:35:06 2009 +0100
+
+    use TP_ERROR_STR_* constants from tp-glib
+
+ src/tube-stream.c |   15 ++++-----------
+ 1 files changed, 4 insertions(+), 11 deletions(-)
+
+commit 9f520d416d230f4dc1a6588546c6e29de09aed7b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 14:38:03 2009 +0100
+
+    constants: new tube API is now stable
+
+ tests/twisted/constants.py |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 49247bf3f301036ebd9bbd9e04cd13031068a0f5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 13:40:16 2009 +0100
+
+    use tp-glib instead of extensions to implement tube new API
+
+ src/muc-factory.c           |   20 +++++-----
+ src/private-tubes-factory.c |   44 +++++++++++-----------
+ src/tube-dbus.c             |   64 +++++++++++++++++-----------------
+ src/tube-stream.c           |   82 +++++++++++++++++++++---------------------
+ src/tubes-channel.c         |   14 ++++----
+ 5 files changed, 112 insertions(+), 112 deletions(-)
+
+commit 1b77e86250775562b132a96fefe34ff7ec0b24c3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 28 10:30:23 2009 +0100
+
+    bump tp-glib to 0.7.31 as we need it for tube new API
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit aee4931a87cd810d3bb3d5d16bb901c4298b768d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 13:21:22 2009 +0100
+
+    stop generating code for tube new API
+
+ extensions/Channel_Interface_Tube.xml   |  256 ---------------------------
+ extensions/Channel_Type_DBus_Tube.xml   |  190 --------------------
+ extensions/Channel_Type_Stream_Tube.xml |  288 -------------------------------
+ extensions/Makefile.am                  |    3 -
+ extensions/all.xml                      |    4 -
+ 5 files changed, 0 insertions(+), 741 deletions(-)
+
+commit 4bb75ff2997b34436943b9c6c69fe3be67e4dfea
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 11:23:55 2009 +0100
+
+    chmod 777 stream tube UNIX socket for AccessControlLocalhost
+
+ src/tube-stream.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit e6ecb72be4ac348673c4aa5aedd16619f1826274
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 28 11:42:21 2009 +0100
+
+    correctly use assertEquals
+
+ tests/twisted/tubes/accept-muc-stream-tube.py     |   17 ++++++++---------
+ tests/twisted/tubes/accept-private-stream-tube.py |   16 ++++++++--------
+ tests/twisted/tubes/offer-muc-stream-tube.py      |    9 ++++-----
+ tests/twisted/tubes/offer-private-stream-tube.py  |    8 ++++----
+ 4 files changed, 24 insertions(+), 26 deletions(-)
+
+commit e9f1caca691de6e47538842b48b4fdbeb0e2a0d9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 25 17:30:43 2009 +0100
+
+    update stream tube tests to deal with the debug_msg arg of the ConnectionClosed signal
+
+ tests/twisted/tubes/accept-muc-stream-tube.py     |   19 +++++++++++++------
+ tests/twisted/tubes/accept-private-stream-tube.py |   16 +++++++++++-----
+ tests/twisted/tubes/offer-muc-stream-tube.py      |    6 ++++--
+ tests/twisted/tubes/offer-private-stream-tube.py  |    6 ++++--
+ 4 files changed, 32 insertions(+), 15 deletions(-)
+
+commit 5f3ebc0cf82c350b058349e2ab63b7f2b74ebcd9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 25 17:07:53 2009 +0100
+
+    ConnectionClosed signal now has a debug_msg arg
+
+ src/tube-stream.c |   16 ++++++++++------
+ 1 files changed, 10 insertions(+), 6 deletions(-)
+
+commit c0c2d9c612331e1e394c553e39fd112eedd31e98
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 11:18:02 2009 +0100
+
+    sync with latest tube DRAFT
+
+ extensions/Channel_Interface_Tube.xml   |  182 ++++++++++++++++++++++++------
+ extensions/Channel_Type_Stream_Tube.xml |   40 ++++++-
+ 2 files changed, 178 insertions(+), 44 deletions(-)
+
+commit 531f6a8c08f261ba84af552b1c9ba79291c440ae
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 11:17:51 2009 +0100
+
+    extensions/all.xml: add Handle_Type
+
+ extensions/all.xml |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 5aa5e7ac3675afbefcd3655cc69106f5921778c1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 27 16:23:05 2009 +0100
+
+    Move test-suite-only function to clarify comment
+    
+    Putting the definition at the end of the file makes the comment less
+    misleading, as it made it look like all the following functions were
+    test-suite-only.
+
+ src/jingle-session.c |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 488dce59ee5c99f4e9903f58253f195a50343914
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 27 16:07:45 2009 +0100
+
+    Fix some races in Jingle tests
+    
+    These were occasionally catching IQ acks and things rather than the
+    events they intended to catch.
+
+ tests/twisted/jingle/accept-extra-stream.py  |   26 ++++++++++++--------------
+ tests/twisted/jingle/incoming-basics.py      |    9 +++++----
+ tests/twisted/jingle/test-content-complex.py |   10 ++++------
+ 3 files changed, 21 insertions(+), 24 deletions(-)
+
+commit 4b6d6e32fa61d6f60a1de81406c2f60e117810ec
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 27 15:59:01 2009 +0100
+
+    Add a curried version of match_jingle_action
+    
+    jp.action_predicate('session-initiate') can be used directly as the
+    predicate of an EventPattern, rather than needing something like
+    lambda e: jp.match_jingle_action(e, 'session-initiate')
+
+ tests/twisted/jingle/jingletest2.py |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit c6543bd68a42d8355bd5386211c8980a60f900f7
+Author: Pierre-Luc Beaudoin <pierre-luc.beaudoin@collabora.co.uk>
+Date:   Tue May 26 18:57:33 2009 -0400
+
+    Report an error if gabble can't publish location to a non PEP capable server
+
+ src/conn-location.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit 6a45489e9f28875b2b326efcc62dafed36fd1d61
+Author: Pierre-Luc Beaudoin <pierre-luc.beaudoin@collabora.co.uk>
+Date:   Tue May 26 18:25:10 2009 -0400
+
+    Always advertise Location.DRAFT
+    
+    Even if a server does not support PEP the user can receive notifications
+    for geolocation of other users from other servers.
+
+ src/connection.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 7799f557e46281591658ae5e8d03234ff680f09a
+Author: Pierre-Luc Beaudoin <pierre-luc.beaudoin@collabora.co.uk>
+Date:   Tue May 26 15:59:01 2009 -0400
+
+    Convert timestamps <-> iso8601 using glib function
+    
+    Now that we use glib functions for all these conversions,
+    we can stop including time.h
+
+ src/conn-location.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 882b562f66aaa41a8502cb26c8715db14938d587
+Author: Pierre-Luc Beaudoin <pierre-luc.beaudoin@collabora.co.uk>
+Date:   Tue May 26 15:19:02 2009 -0400
+
+    Fix a timezone issue with regards to the received time from the server.
+    
+    The time is always UTC.
+
+ src/conn-location.c |   10 ++++------
+ 1 files changed, 4 insertions(+), 6 deletions(-)
+
+commit edec34a273ed532b2bd4424d980565cbf1f122a9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 26 12:48:56 2009 +0100
+
+    NEWS for just-merged fixes
+
+ NEWS |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+commit a751c83a857fb4c1529b82b840b04e6cdd5a0a3f
+Merge: d042e01 3dd3b63
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 26 12:43:35 2009 +0100
+
+    Merge branch 'remove-from-rp-subscribe'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 3dd3b63884c325404352cd4c9bf42af340b2eda7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 1 20:53:04 2009 +0100
+
+    Add a regression test.
+
+ tests/twisted/Makefile.am                         |    1 +
+ tests/twisted/roster/removed-from-rp-subscribe.py |  100 +++++++++++++++++++++
+ 2 files changed, 101 insertions(+), 0 deletions(-)
+
+commit 2c820b740ea9a68d8cf64844d7dbfbb26a4e4244
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 1 20:45:13 2009 +0100
+
+    Don't ignore subscription='remove' if remote-pending
+    
+    In response to subscription='none' or subscription='from', the contact
+    is only removed from 'subscribe' if they're not remote pending., with
+    the explanation 'presence="unsubscribed" does that'. From my reading of
+    the RFC, that makes sense.
+    
+    But I think the same guard for subscription='remove' makes no sense at
+    all: they're being removed entirely from the roster, so clearly we're
+    cancelling the subscription request.
+
+ src/roster.c |   12 ++----------
+ 1 files changed, 2 insertions(+), 10 deletions(-)
+
+commit d042e01c0c132691829b1389558e74973d0401cb
+Merge: 014da0b ffd77ab
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 26 12:29:30 2009 +0100
+
+    Merge branch 'stream-added-on-hold'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 014da0b020e6d3fa01afb984f9cc14e82d9a2dca
+Merge: e1d9e60 381d450
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 26 12:20:15 2009 +0100
+
+    Merge branch 'refactor-hold'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit e1d9e6035f0aec090ed73e05b64752d49577e036
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 11:42:57 2009 +0100
+
+    test-fallback-socks5-proxy.py: fix DBusTube.Offer() call
+
+ tests/twisted/test-fallback-socks5-proxy.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 55848acadab742281be524caf8b946836e51b6f0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 11:11:39 2009 +0100
+
+    run D-Bus tube tests with the Localhost access control
+
+ tests/twisted/tubes/accept-muc-dbus-tube.py |    2 ++
+ tests/twisted/tubes/offer-muc-dbus-tube.py  |    2 ++
+ tests/twisted/tubes/tubetestutil.py         |    1 +
+ 3 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 6a7ec7429f0f6fd2ac3952beb7de040a63be908d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 11:11:20 2009 +0100
+
+    tube-dbus: implement Localhost access control
+
+ src/tube-dbus.c |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
+
+commit 6e814c97a20fb575da34acb22d5f495101fed5f0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 10:59:16 2009 +0100
+
+    add LocalHost to SupportedAccessControls
+
+ src/tube-dbus.c                                 |    2 ++
+ tests/twisted/tubes/accept-muc-dbus-tube.py     |    3 ++-
+ tests/twisted/tubes/accept-private-dbus-tube.py |    3 ++-
+ tests/twisted/tubes/offer-muc-dbus-tube.py      |    3 ++-
+ tests/twisted/tubes/offer-private-dbus-tube.py  |    3 ++-
+ 5 files changed, 10 insertions(+), 4 deletions(-)
+
+commit 5effe14e52bdff3a2831e0fc4aa8d4d10c0cd0b2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 10:38:35 2009 +0100
+
+    tube-dbus: add priv->access_control
+
+ src/tube-dbus.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit d33ebec9c088fa60b681f59bf99ed27fda0a63d6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 26 10:30:12 2009 +0100
+
+    add an access_control param to D-Bus tube tests
+
+ tests/twisted/tubes/accept-muc-dbus-tube.py     |    8 +++++---
+ tests/twisted/tubes/accept-private-dbus-tube.py |    6 +++---
+ tests/twisted/tubes/offer-muc-dbus-tube.py      |    8 +++++---
+ tests/twisted/tubes/offer-private-dbus-tube.py  |   11 ++++++-----
+ tests/twisted/tubes/tubetestutil.py             |    3 +++
+ 5 files changed, 22 insertions(+), 14 deletions(-)
+
+commit 9e624e4276e5e7afa5c1d72d001138d0d209c952
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 25 18:44:20 2009 +0100
+
+    check value of the SupportedAccessControls property
+
+ tests/twisted/constants.py                      |    1 +
+ tests/twisted/tubes/accept-muc-dbus-tube.py     |    1 +
+ tests/twisted/tubes/accept-private-dbus-tube.py |    1 +
+ tests/twisted/tubes/offer-muc-dbus-tube.py      |    1 +
+ tests/twisted/tubes/offer-private-dbus-tube.py  |    1 +
+ 5 files changed, 5 insertions(+), 0 deletions(-)
+
+commit c434c56bfa4897631a0fd0c96be0cae2b7d1809c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 25 18:44:12 2009 +0100
+
+    tube-dbus: implement SupportedAccessControls property
+
+ src/tube-dbus.c |   25 +++++++++++++++++++++++++
+ 1 files changed, 25 insertions(+), 0 deletions(-)
+
+commit 73735eec05462d00c763ab3674a1082627566e36
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 25 18:03:41 2009 +0100
+
+    check if Gabble raises the right error if we pass an invalid access_control to Offer/Accept
+
+ tests/twisted/tubes/accept-private-dbus-tube.py |   10 +++++++++-
+ tests/twisted/tubes/offer-muc-dbus-tube.py      |   10 +++++++++-
+ 2 files changed, 18 insertions(+), 2 deletions(-)
+
+commit c0f34b865b3a9c7592c63adec7a33628ae266e4d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 25 18:03:21 2009 +0100
+
+    tube-dbus: check if access_control passed to Offer/Accept is valid
+
+ src/tube-dbus.c |   33 +++++++++++++++++++++++++++++++++
+ 1 files changed, 33 insertions(+), 0 deletions(-)
+
+commit ec08d2175eb8c3146d64f7efa01cc5488b937eb0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 25 17:40:36 2009 +0100
+
+    DBusTube.{Offer,Accept} now have an access_control argument
+
+ src/tube-dbus.c                                 |    2 ++
+ tests/twisted/tubes/accept-muc-dbus-tube.py     |    2 +-
+ tests/twisted/tubes/accept-private-dbus-tube.py |    2 +-
+ tests/twisted/tubes/offer-muc-dbus-tube.py      |    2 +-
+ tests/twisted/tubes/offer-no-caps.py            |    2 +-
+ tests/twisted/tubes/offer-private-dbus-tube.py  |    2 +-
+ 6 files changed, 7 insertions(+), 5 deletions(-)
+
+commit 50aafad080bd56197590f817b04a6d30ffc6b370
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 25 17:09:55 2009 +0100
+
+    sync with latest tube DRAFT
+
+ extensions/Channel_Type_DBus_Tube.xml |   39 +++++++++++++++++++++++++++-----
+ 1 files changed, 33 insertions(+), 6 deletions(-)
+
+commit ffd77ab0b51653e17154ceb8883feb23571ce8a7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 22 16:22:55 2009 +0100
+
+    Apply current held-ness to new streams
+    
+    Fixes fd.o #21878.
+
+ src/media-channel.c             |    4 +-
+ src/media-stream.c              |   24 ++++++++---
+ src/media-stream.h              |    8 +++-
+ tests/twisted/jingle/hold-av.py |   84 ++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 110 insertions(+), 10 deletions(-)
+
+commit 84dc5eec4511ce39eb4bd24b7cc15774e1731fa6
+Merge: 5a17e13 e9a2537
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri May 22 14:22:04 2009 +0100
+
+    Merge branch 'tube-signals'
+
+commit e9a2537816b0c3f2c18af22c7d5a046cabe00199
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri May 22 11:55:25 2009 +0100
+
+    fire_connection_closed: no-op instead of asserting if the signal has
+    already been fired
+
+ src/tube-stream.c |   24 ++++++------------------
+ 1 files changed, 6 insertions(+), 18 deletions(-)
+
+commit 5a17e139f6dcb3de92403b02994047f9010e59b9
+Merge: fec464f 887837f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 22 11:54:15 2009 +0100
+
+    Merge branch 'stored-list'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 390d1655d6520b980862cf0de38f6a81bc92610e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 21 15:53:03 2009 +0100
+
+    NEWS: document API changes
+
+ NEWS |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit c0a870328de135a2d17ce8f778b2675edfbf633b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 21 10:29:26 2009 +0100
+
+    test that ConnectionClosed is fired when tube is closed
+
+ tests/twisted/tubes/accept-private-stream-tube.py |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 322b00385de6e3d3d2403a1db06c469af9622644
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 21 10:29:03 2009 +0100
+
+    fire ConnectionClosed with existing connections when the tube is closed
+
+ src/tube-stream.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 0b2c566d0419d0852bc64d5f8b5f45f0ce7649a9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed May 20 18:02:26 2009 +0100
+
+    test ConnectionClosed signal with Cancelled
+
+ tests/twisted/tubes/accept-muc-stream-tube.py |   47 +++++++++++++++++-------
+ 1 files changed, 33 insertions(+), 14 deletions(-)
+
+commit 4358383edfd06da69f118e75d7aeb38c6b538427
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed May 20 18:01:54 2009 +0100
+
+    tube-stream: fire ConnectionClosed with Cancelled error if transport is disconnected
+
+ src/tube-stream.c |   48 ++++++++++++++++++++++++++++++++++++------------
+ 1 files changed, 36 insertions(+), 12 deletions(-)
+
+commit c08774146bc8043c08a538b77da3c19fb5830cc3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed May 20 17:55:59 2009 +0100
+
+    constants.py: add Cancelled error
+
+ tests/twisted/constants.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 3cea6d6a8e5a61ee70ce38aa9203dc20f6367dc2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed May 20 14:20:41 2009 +0100
+
+    test ConnectionClosed signal with ConnectionRefused
+
+ tests/twisted/tubes/accept-muc-stream-tube.py     |   10 +++++++++-
+ tests/twisted/tubes/accept-private-stream-tube.py |   10 +++++++++-
+ 2 files changed, 18 insertions(+), 2 deletions(-)
+
+commit f18b551103ee6675a771999c2a33bb77c972df98
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed May 20 15:06:29 2009 +0100
+
+    fire ConnectionClosed when connection is refused
+
+ src/tube-stream.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit a43a06cf273f6b3d6521d221c78f4ce1c299cd3f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed May 20 14:58:44 2009 +0100
+
+    test ConnectionClosed signal with ConnectionLost
+
+ tests/twisted/tubes/accept-muc-stream-tube.py     |    4 ++++
+ tests/twisted/tubes/accept-private-stream-tube.py |   16 ++++++++++------
+ tests/twisted/tubes/offer-muc-stream-tube.py      |   20 ++++++++++++++------
+ tests/twisted/tubes/offer-private-stream-tube.py  |    6 +++++-
+ 4 files changed, 33 insertions(+), 13 deletions(-)
+
+commit 4fe8e285e3906921cac1f3b0f94559cd7a86725c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed May 20 15:05:56 2009 +0100
+
+    fire ConnectionClosed when connection is lost
+
+ src/tube-stream.c |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
+
+commit 33b86ab97b461da40cbb9694b13dc70094040297
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed May 20 11:16:01 2009 +0100
+
+    constants.py: add CONNECTION_{REFUSED,FAILED,LOST}
+
+ tests/twisted/constants.py |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 4e86936dca363c1a94c50b87cbc67f18b765422d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed May 20 10:22:42 2009 +0100
+
+    check that NewLocalConnection is fired
+
+ tests/twisted/tubes/accept-muc-stream-tube.py     |    2 +-
+ tests/twisted/tubes/accept-private-stream-tube.py |    2 +-
+ tests/twisted/tubes/tubetestutil.py               |   13 +++++++++----
+ 3 files changed, 11 insertions(+), 6 deletions(-)
+
+commit 61cf477c22909486f64dde55aa0138ea98831460
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed May 20 10:17:39 2009 +0100
+
+    fire NewLocalConnection
+
+ src/tube-stream.c |   20 ++++++++++++++++++++
+ 1 files changed, 20 insertions(+), 0 deletions(-)
+
+commit 06c89ed99aba8da0cc2c005a150bd90ce924a6a1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 19 17:22:04 2009 +0100
+
+    tube-stream: associate an ID with each incoming connection
+
+ src/tube-stream.c |   40 ++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 38 insertions(+), 2 deletions(-)
+
+commit 993e553a96235a818827b0c0a7d2fe58b0ba7175
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 19 17:03:04 2009 +0100
+
+    NewConnection has been renamed NewRemoteConnection
+
+ src/tube-stream.c                                |   11 ++++++-----
+ tests/twisted/tubes/offer-muc-stream-tube.py     |    4 ++--
+ tests/twisted/tubes/offer-private-stream-tube.py |    8 ++++----
+ 3 files changed, 12 insertions(+), 11 deletions(-)
+
+commit 46128d8a25e7d4dcf980095ce7152edbf3c1019b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 19 16:54:42 2009 +0100
+
+    sync to latest tube DRAFT
+
+ extensions/Channel_Interface_Tube.xml   |    2 +-
+ extensions/Channel_Type_DBus_Tube.xml   |    4 +-
+ extensions/Channel_Type_Stream_Tube.xml |   50 +++++++++++++++++++++++++++----
+ 3 files changed, 47 insertions(+), 9 deletions(-)
+
+commit 887837f3a31811d6f9dc0e792b0f9a6b01f0a701
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 21 12:31:29 2009 +0100
+
+    NEWS the known->stored renaming
+
+ NEWS |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit fec464fe983952a47625f54faeb4c2a87d0cba7b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 21 12:24:51 2009 +0100
+
+    tubetestutil.py: set REUSEADDR on client sockets so we can bind the same address successively
+
+ tests/twisted/tubes/tubetestutil.py |   19 ++++++++++++++++++-
+ 1 files changed, 18 insertions(+), 1 deletions(-)
+
+commit 575fabef44cef0b79a2f20b5a2c39c0ff77a40e1
+Merge: 634e384 29098e4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 21 12:28:50 2009 +0100
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/telepathy-gabble
+
+commit 634e3842466348217c0d9f9ab20306a47a9ddb70
+Merge: 3c55b2e 3a1e622
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 21 12:28:41 2009 +0100
+
+    Merge branch 'port-access-control'
+
+commit 1f4187007b150747d0b41bcf25e39dc95ec6c2f3
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Tue Jun 24 12:55:31 2008 +0000
+
+    Rename the known list to the stored list
+    
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+ src/connection.c                                  |    2 +-
+ src/connection.h                                  |    2 +-
+ src/roster-channel.c                              |    6 ++--
+ src/roster.c                                      |   24 ++++++++++----------
+ tests/twisted/roster/groups-12791.py              |    2 +-
+ tests/twisted/roster/groups.py                    |    2 +-
+ tests/twisted/roster/test-google-roster.py        |    2 +-
+ tests/twisted/roster/test-roster-item-deletion.py |    4 +-
+ tests/twisted/roster/test-roster.py               |    2 +-
+ 9 files changed, 23 insertions(+), 23 deletions(-)
+
+commit 3a1e622d5515676e72dbbc332be4326b8f2befa7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 21 12:27:26 2009 +0100
+
+    set_port_access_control_param: port is on 16 bits so we should check that it's not greater than G_MAXUINT16
+
+ src/tube-stream.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 29098e4e4aa137bf0ca6509bc447763fa90a13e3
+Merge: 3c55b2e aa54d57
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 21 12:06:39 2009 +0100
+
+    Merge branch 'tidy-roster-tests'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit aa54d576789e22815289c311ee78a7f5dc45dd37
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 1 19:42:24 2009 +0100
+
+    Define 'jabber:iq:roster' in ns.py
+
+ .../twisted/file-transfer/file_transfer_helper.py  |    2 +-
+ tests/twisted/ns.py                                |    1 +
+ tests/twisted/presence/presence.py                 |    3 ++-
+ tests/twisted/roster/ensure.py                     |    3 ++-
+ tests/twisted/roster/groups-12791.py               |    3 ++-
+ tests/twisted/roster/groups.py                     |    3 ++-
+ tests/twisted/roster/request-group-after-roster.py |    3 ++-
+ .../twisted/roster/request-group-before-roster.py  |    3 ++-
+ tests/twisted/roster/test-google-roster.py         |    7 ++++---
+ tests/twisted/roster/test-roster-item-deletion.py  |    5 +++--
+ tests/twisted/roster/test-roster-subscribe.py      |    5 +++--
+ tests/twisted/roster/test-roster.py                |    3 ++-
+ tests/twisted/roster/test-save-alias-to-roster.py  |    7 ++++---
+ tests/twisted/tubes/accept-private-dbus-tube.py    |    2 +-
+ tests/twisted/tubes/accept-private-stream-tube.py  |    2 +-
+ tests/twisted/tubes/crash-on-list-channels.py      |    2 +-
+ tests/twisted/tubes/ensure-si-tube.py              |    2 +-
+ tests/twisted/tubes/offer-no-caps.py               |    3 ++-
+ tests/twisted/tubes/offer-private-stream-tube.py   |    2 +-
+ tests/twisted/vcard/test-avatar-tokens.py          |    3 ++-
+ 20 files changed, 39 insertions(+), 25 deletions(-)
+
+commit bbbe7f862020dae0f899dc4cdef221c1991e663f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 1 19:26:30 2009 +0100
+
+    It's Handle_Type_List not _Contact_List
+
+ tests/twisted/constants.py  |    2 +-
+ tests/twisted/gabbletest.py |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 8e3d850fe4ddf14ef0f7613743e5d74b43b75c46
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 1 19:25:32 2009 +0100
+
+    Share best version of _expect_contact_list_channel
+
+ tests/twisted/gabbletest.py                       |   69 ++++++++++++++++++++-
+ tests/twisted/roster/groups-12791.py              |   20 +-----
+ tests/twisted/roster/groups.py                    |   43 ++-----------
+ tests/twisted/roster/test-roster-item-deletion.py |   35 +++--------
+ tests/twisted/roster/test-roster.py               |   68 ++------------------
+ 5 files changed, 93 insertions(+), 142 deletions(-)
+
+commit 381d45047c26cdcb814502353b0fa0f7b7b56501
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 21 11:40:57 2009 +0100
+
+    Delete old per-RTP-content state code.
+
+ src/jingle-content.c   |   33 ----------------
+ src/jingle-content.h   |   12 ------
+ src/jingle-media-rtp.c |  100 ------------------------------------------------
+ src/jingle-media-rtp.h |   14 -------
+ 4 files changed, 0 insertions(+), 159 deletions(-)
+
+commit ccb4140e2776510da324baeab59faadded0dd4a5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 21 11:38:23 2009 +0100
+
+    Set individual ringing/hold/mute flags.
+    
+    This embeds some knowledge of RTP into jingle-session.c, but actually
+    there was already some RTP-specific stuff in there, and we already know
+    that needs refactoring out.
+
+ src/jingle-session.c         |  197 ++++++++++++++++++++++++++++++++++++------
+ src/jingle-session.h         |    4 +
+ src/media-channel-hold.c     |  109 ++++++-----------------
+ src/media-channel-internal.h |    7 +-
+ src/media-channel.c          |    2 +
+ src/media-stream.c           |   14 ++--
+ 6 files changed, 214 insertions(+), 119 deletions(-)
+
+commit 3c55b2ef12bff97a610043ac2834dd23f701c027
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed May 20 17:56:40 2009 +0100
+
+    EventProtocol: raise a socket-disconnected event if protocol is disconnected
+
+ tests/twisted/servicetest.py |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 578285fc6febc0507709771fc97a51093ff019bd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 19 16:54:24 2009 +0100
+
+    all.xml: add DBus_Error_Name as external type
+
+ extensions/all.xml |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 02ceb478412346dff5798f0c3a55b253bd426f80
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 5 10:23:05 2009 +0100
+
+    NEWS: we implement the Port access control
+
+ NEWS |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit cbd54ec912f654e22a749263bc7d0b43c5c1aa04
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 30 14:29:33 2009 +0100
+
+    run stream tube tests with access control port
+
+ tests/twisted/tubes/tubetestutil.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit fc910d9135b57d887d680489bad6b4c5c57d10e4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 14 15:50:40 2009 +0100
+
+    connect_socket: set the right source address if access_control is Port
+
+ tests/twisted/tubes/tubetestutil.py |   14 +++++++++++---
+ 1 files changed, 11 insertions(+), 3 deletions(-)
+
+commit f320e119573eab74d6bbc18e0b91fb6c67c1797c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 14 15:51:49 2009 +0100
+
+    check_incoming_connection: check address if access control is Port
+
+ src/tube-stream.c |   56 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 56 insertions(+), 0 deletions(-)
+
+commit 924e023a3d2a56b2907961bc5f2e900043129ec9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 30 13:05:09 2009 +0100
+
+    set the ip and port in NewConnection if access control is port
+
+ src/tube-stream.c |   58 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 58 insertions(+), 0 deletions(-)
+
+commit 8738a29bccf36625f925ed78f4304b171695f283
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Apr 30 12:56:03 2009 +0100
+
+    check_ip_params: check access_control_param in the port case
+
+ src/tube-stream.c |   25 +++++++++++++++++++------
+ 1 files changed, 19 insertions(+), 6 deletions(-)
+
+commit cdfceed4f6a0a2f56304d80c64a4f74a04bfc87a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Apr 29 16:39:00 2009 +0100
+
+    add access control port to SupportedSocketTypes
+
+ src/tube-stream.c                               |    4 ++++
+ tests/twisted/tubes/test-get-available-tubes.py |    6 ++++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+commit f1ce2480c1e587356c44b4fa62a57ca2095cf86b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 21 10:20:35 2009 +0100
+
+    Add separate hold, ringing and mute properties
+    
+    These concepts are now orthogonal at the XMPP level, and the first two
+    apply to the session as a whole, so it makes no sense to combine them
+    into one property on each stream.
+
+ src/jingle-media-rtp.c |   14 ++++++++++++++
+ src/jingle-session.c   |   21 +++++++++++++++++++++
+ 2 files changed, 35 insertions(+), 0 deletions(-)
+
+commit 6fa9b77ac762bf68566ac48139fda715257b706b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 20 19:12:30 2009 +0100
+
+    Test overlapping ringing and hold
+
+ tests/twisted/jingle/call-state.py |   44 ++++++++++++++++++++++++++++++++++++
+ 1 files changed, 44 insertions(+), 0 deletions(-)
+
+commit 2f436eafd9538c023cb75f39dc488271faa9abcc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 20 18:32:31 2009 +0100
+
+    Update incoming <hold/>, etc. to match current XEP-0167
+    
+    <hold/> and <mute/> and <ringing/> are now orthogonal, so saying a
+    stream is muted doesn't mean it's unheld; thus, I had to change the test
+    case.
+
+ src/jingle-media-rtp.c             |   37 ++++++++++++++++++++++------------
+ src/media-channel-hold.c           |   39 +++++++++++++++++------------------
+ src/media-stream.c                 |    2 +-
+ tests/twisted/jingle/call-state.py |   21 ++++++++++++-------
+ 4 files changed, 57 insertions(+), 42 deletions(-)
+
+commit bc986fc72b3a7527839a99bf5bba997d551f47cb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 20 18:22:56 2009 +0100
+
+    XEP-0167 now forbids name='' on <active/>.
+
+ tests/twisted/jingle/call-state.py |   19 -------------------
+ 1 files changed, 0 insertions(+), 19 deletions(-)
+
+commit f87dfec6b0338f6737fe8a41ca1b8fdbd4de0dcb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 20 17:40:03 2009 +0100
+
+    Renumber JingleRtpRemoteState to be flags.
+
+ src/jingle-media-rtp.c |    2 +-
+ src/jingle-media-rtp.h |   10 +++++++---
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+commit 1d8f231ebf92ebc80be87102963a21d49a296343
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed May 20 14:47:58 2009 +0100
+
+    bytestream.py: add a close() method on bytestream objects
+
+ tests/twisted/bytestream.py |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
+
+commit ed6cf7654a08d05e0d7b48c316057469383818a8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 20 10:04:32 2009 +0100
+
+    NEWS fixing crash-on-empty-<nick/>
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 274ecc010775b94feb882f44c78e947aa3163b80
+Merge: e9e92ad fe4db94
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 20 10:03:48 2009 +0100
+
+    Merge branch 'crash-on-no-pep-alias'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit fe4db942ed083740694d256ad194eb73c4937e5b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 20 10:01:50 2009 +0100
+
+    elem() supports from_ as an alias for from
+
+ tests/twisted/vcard/test-alias-pep.py |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit e9e92ad6df67c2a81d771e51c082a8df7e81ac9e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 19 18:18:48 2009 +0100
+
+    NEWS fixing crash on Ready()
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 8b61325f6aa2948f3c095f98bd58ddd5840db651
+Merge: 5354e89 d2479d8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 19 18:06:49 2009 +0100
+
+    Merge branch 'crash-on-ready'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 5354e8974b9e633cc1be0b2e96abe1a5a4851345
+Merge: 3ccabf1 8e6c73a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 19 18:02:35 2009 +0100
+
+    Merge branch 'tidy-caps'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 50b8777dca5e122fac133c13e6eb9a8d88008266
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 19 17:42:29 2009 +0100
+
+    Don't crash on an empty <nick/> node.
+    
+    Fixes fd.o #21817
+
+ src/conn-aliasing.c                   |   15 ++++++++++++---
+ tests/twisted/vcard/test-alias-pep.py |   29 +++++++++++++++++++++++++++--
+ 2 files changed, 39 insertions(+), 5 deletions(-)
+
+commit 8590e062fdbdb84c2341bd93aa9529df3de888cc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 19 16:43:40 2009 +0100
+
+    Constants-ify test-alias-pep
+
+ tests/twisted/ns.py                   |    1 +
+ tests/twisted/vcard/test-alias-pep.py |   26 +++++++++++++++-----------
+ 2 files changed, 16 insertions(+), 11 deletions(-)
+
+commit d2479d86f7ed6a4e0c0dec5dae285adb31115ddf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 11 17:53:30 2009 +0100
+
+    Test calling SessionHandler methods early
+
+ tests/twisted/Makefile.am      |    1 +
+ tests/twisted/jingle/misuse.py |   49 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+), 0 deletions(-)
+
+commit 0342c57910a4c726a886e05e54527e79b4531905
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 11 17:51:40 2009 +0100
+
+    Make SessionHandler.Error() cope with NULL session
+    
+    The assertion was incorrect: the SessionHandler object might stay alive
+    on the bus after the session has died, and is secretly on the bus before
+    the session is born in the first place.
+
+ src/media-channel.c |   19 ++++++++++++++++---
+ 1 files changed, 16 insertions(+), 3 deletions(-)
+
+commit 092e9fe4e8d07d549c382ea16d0439818119802d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 11 17:50:40 2009 +0100
+
+    Make SessionHandler.Ready() fail if session is over
+
+ src/media-channel.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
+
+commit e3d9eaed4bb95c28b5f65dd36e8f6e6354cf5a0c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 11 17:47:35 2009 +0100
+
+    Ensure MediaChannel:streams is always non-NULL
+    
+    This simplifies reasoning about the class, and fixes a bug where calling
+    SessionHandler.Ready() could crash: it iterated priv->streams without
+    checking if it's NULL.
+
+ src/media-channel-internal.h |    2 +-
+ src/media-channel.c          |   77 +++++++++++++++++++++++++-----------------
+ 2 files changed, 47 insertions(+), 32 deletions(-)
+
+commit 263c2814f6bca73eb5ae5eda81e34a219a138ac6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 11 17:37:06 2009 +0100
+
+    Remove _gabble_media_stream_close's underscore
+    
+    It's public, so...
+
+ src/media-stream.c |    6 +++---
+ src/media-stream.h |    2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 4df15ea74fd01ab988efe002fb7be7a19b9ec855
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 11 16:52:37 2009 +0100
+
+    Correct a comment about session being NULL
+
+ src/media-channel.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit a419439e1c48b41bf484dcb082d48688d8707541
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 11 16:43:12 2009 +0100
+
+    make_stream_list requires session != NULL
+
+ src/media-channel.c |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
+
+commit 4aacbdd6f78ee533db35de845075c5bdaa785784
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 11 16:39:02 2009 +0100
+
+    Remove spurious comment
+
+ src/media-channel.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+commit ec7a8020bf4bcdb034b99e0e138e267ca9d51deb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 11 15:43:32 2009 +0100
+
+    Refactor error message into _find_stream_by_id
+
+ src/media-channel.c |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
+
+commit 8e6c73a13f325b53e72477221cef0eb3c9158108
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 13 14:10:12 2009 +0100
+
+    Extract emitting capabilities-update
+
+ src/presence-cache.c |   27 ++++++++++++++++++---------
+ 1 files changed, 18 insertions(+), 9 deletions(-)
+
+commit a60895a80a3815de66ac15fed110ad6984d24e3c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 13 13:51:42 2009 +0100
+
+    Extract emitting capabilities-discovered
+
+ src/presence-cache.c |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
+
+commit fbc72b9b10bb69827f3045d89064491576efc4f5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 13 13:49:45 2009 +0100
+
+    Return early from set_caps_for.
+
+ src/presence-cache.c |   32 ++++++++++++++++----------------
+ 1 files changed, 16 insertions(+), 16 deletions(-)
+
+commit 9b6eed8a08ddf18ee0b20511d08c64d576f90cdf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 12 16:00:52 2009 +0100
+
+    Don't leak jid when re-discoing.
+
+ src/presence-cache.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit df45223369edd6ba1f9ada9717e7c8bdb857fff4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 12 15:35:30 2009 +0100
+
+    Don't pass contact_repo around unnecessarily.
+    
+    I didn't notice that DiscoWaiters know their own repo.
+
+ src/presence-cache.c |   18 ++++++++----------
+ 1 files changed, 8 insertions(+), 10 deletions(-)
+
+commit 388702c79b7767a3876b58437c9a9ed76dc20437
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 12 14:57:26 2009 +0100
+
+    Remove write-only trust_inc variable
+
+ src/presence-cache.c |    8 +++-----
+ 1 files changed, 3 insertions(+), 5 deletions(-)
+
+commit 25e55c1c7467a95afe2eb5a87eb0284127b62043
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 12 14:23:32 2009 +0100
+
+    Refactor satisfy/redisco/keep-waiting loop
+    
+    I believe this logic to be approximately the same. I changed the "enough
+    trust" comparison not to subtract trust_inc. I believe that that was
+    subtracted to compensate for waiter_self being included in
+    disco_waiter_list_get_request_count (), but that's not necessary having
+    already removed waiter_self from waiters. (In fact it was not correct
+    before: waiter_self might already have been removed from waiters,
+    depending on the list's order.)
+
+ src/presence-cache.c |   82 +++++++++++++++++++++++++-------------------------
+ 1 files changed, 41 insertions(+), 41 deletions(-)
+
+commit 6af9a243c7f7733c708746bc414d2d87f4eccc30
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 12 10:09:08 2009 +0100
+
+    Note that we should respect some badly-hashed caps
+
+ src/presence-cache.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 0d6d0aae82d62df28daeb6904d2990dba7f02d08
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 12 10:04:49 2009 +0100
+
+    Extract satisfying a waiter to a function
+
+ src/presence-cache.c |   66 +++++++++++++++++++++++++++++++-------------------
+ 1 files changed, 41 insertions(+), 25 deletions(-)
+
+commit addaddfb7a31463ec86e965579fab7bcfcdd27fc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 12 09:52:58 2009 +0100
+
+    Don't break contact caps on non-SHA-1 hashes
+    
+    XEP-0115 doesn't say that clients have to report SHA-1 hashes, only that
+    they have to understand them. So this would break contact caps for a
+    client which has decided to use SHA-256.
+
+ src/presence-cache.c |   10 ++--------
+ 1 files changed, 2 insertions(+), 8 deletions(-)
+
+commit a1330c2e398a0052a446ea7ce11ba903ac4aa986
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 12 09:44:43 2009 +0100
+
+    Improve debug message for caps hash mismatch
+    
+    Also remove a comment which
+
+ src/presence-cache.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 2c4ce491f264799319ffb1afc95888191d18e034
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 7 11:42:10 2009 +0100
+
+    Remove a now-unused variable
+
+ src/presence-cache.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit ad7b848671cd4a2469da454bdbcfada2f89e91ff
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 6 17:17:51 2009 +0100
+
+    Extract sending more disco requests to a function
+
+ src/presence-cache.c |   42 ++++++++++++++++++++----------------------
+ 1 files changed, 20 insertions(+), 22 deletions(-)
+
+commit 9d5897bcf4f1264896de3d36721068930683a6dc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 6 16:56:50 2009 +0100
+
+    _caps_disco_cb: Extract parsing contact caps
+
+ src/presence-cache.c |   50 +++++++++++++++++++++++++++++---------------------
+ 1 files changed, 29 insertions(+), 21 deletions(-)
+
+commit acc174bf2cddc47772bfd3665162bd24cfe6ea6e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 6 16:50:19 2009 +0100
+
+    Parse caps after sanity-checking
+    
+    This avoids having to free the stuff we just unnecessarily parsed.
+
+ src/presence-cache.c |   35 ++++++++++++++++-------------------
+ 1 files changed, 16 insertions(+), 19 deletions(-)
+
+commit 511b93ef794dbc1ca7bf19329c05b03fe1cd98e6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 6 16:47:23 2009 +0100
+
+    _caps_disco_cb: extract finding matching DiscoWaiter
+
+ src/presence-cache.c |   29 ++++++++++++++++++-----------
+ 1 files changed, 18 insertions(+), 11 deletions(-)
+
+commit 5491fb9ae8f4f96fd2e85b57f7d1c92cb7ab6cac
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 6 11:04:27 2009 +0100
+
+    Refactor retrying on disco failure to a function
+
+ src/presence-cache.c |   93 ++++++++++++++++++++++++++++++-------------------
+ 1 files changed, 57 insertions(+), 36 deletions(-)
+
+commit 514002c8a8624e69f98c2798c81864846989ad49
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 5 19:53:49 2009 +0100
+
+    Reuse caps table when parsing caps
+
+ src/capabilities.c   |   39 +++++++++++++++++++++++++++++++++++++
+ src/capabilities.h   |    2 +
+ src/presence-cache.c |   52 +------------------------------------------------
+ 3 files changed, 43 insertions(+), 50 deletions(-)
+
+commit 006ca729ab84f602738729e2a117274de7c4b592
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 5 18:35:40 2009 +0100
+
+    Add missing caps flags to table in capabilities.c
+
+ src/capabilities.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 3ccabf147a117d9ac555caa86dace1cc062f3d56
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 19 15:50:33 2009 +0100
+
+    NEWS about randomizing resources
+
+ NEWS |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 1667e88002e76a2271e8d98703299f5438bb94f0
+Merge: 70968ab 5bc4b8b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 19 15:45:53 2009 +0100
+
+    Merge branch 'random-resource'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 70968abbb20a5097d03c92c8a3288707bdfe1e2c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 19 14:26:15 2009 +0100
+
+    fix typo in comment
+
+ tests/twisted/tubes/tubetestutil.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit dedc7f672a7a4fc101400091b3f2fd9d48df6fc7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 14 16:47:16 2009 +0100
+
+    NEWS: we implemented the Credentials access control
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit d4745a633d0e91dd7e183072e7fc75aa7810c170
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 14 13:23:50 2009 +0100
+
+    connect_to_cm_socket: the byte sent is meaningless
+
+ tests/twisted/tubes/tubetestutil.py |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit fe89504e59c0dc390c23db082564ee8c845a8743
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 14 13:20:18 2009 +0100
+
+    credentials_received_cb: don't check the received byte
+    
+    The byte is meaningless in the accepting side
+
+ src/tube-stream.c |    9 ---------
+ 1 files changed, 0 insertions(+), 9 deletions(-)
+
+commit 1dd0e0a3dc636f92be1112d8e7e8d16973be1ac0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 14 13:14:58 2009 +0100
+
+    the Credentials access control doesn't have an associated variant
+    
+    After more discussion we decided that the Credentials access control
+    shouldn't have an associated variant as the byte is not part of the
+    access control process.
+
+ src/tube-stream.c |   18 +++---------------
+ 1 files changed, 3 insertions(+), 15 deletions(-)
+
+commit 6e9febda3e974d4487f3cd4a42863152c3f130dc
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 12 17:56:34 2009 +0100
+
+    run stream tube tests with Credentials access control
+
+ tests/twisted/tubes/tubetestutil.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 58874aa098234bb6e696c792d4f7668813f8ab30
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 12 17:56:05 2009 +0100
+
+    accept-muc-stream-tube.py: use connect_to_cm_socket helper
+
+ tests/twisted/tubes/accept-muc-stream-tube.py |   11 ++++-------
+ 1 files changed, 4 insertions(+), 7 deletions(-)
+
+commit be8a4433eb8c8334ba73662e0919a31624830019
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 12 17:55:49 2009 +0100
+
+    accept-private-stream-tube.py: use connect_to_cm_socket helper
+
+ tests/twisted/tubes/accept-private-stream-tube.py |   28 ++++++++++----------
+ 1 files changed, 14 insertions(+), 14 deletions(-)
+
+commit f2ff3d1d4c733ebaa3599c213d52a87527396e27
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 12 17:55:02 2009 +0100
+
+    tubetestutil: add connect_to_cm_socket() helper
+    
+    This function connects to CM's socket and do the needed bits to auth the
+    process according the acces_control mechanism.
+
+ tests/twisted/tubes/tubetestutil.py |   26 +++++++++++++++++++++++++-
+ 1 files changed, 25 insertions(+), 1 deletions(-)
+
+commit d71b5b73af0d59b3b99a7308b9c746624b90c653
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 12 17:14:44 2009 +0100
+
+    tube-stream: check_incoming_connection: check credentials
+
+ src/tube-stream.c |   77 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 75 insertions(+), 2 deletions(-)
+
+commit 750dfef033cc89e2c6b827c5908707c32b2aa458
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 7 15:58:05 2009 +0100
+
+    check_new_connection_access: check cs.SOCKET_ACCESS_CONTROL_CREDENTIALS
+
+ tests/twisted/tubes/tubetestutil.py |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+commit 1afc89bbbab8e17e26152794f131f21dc5449ece
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 7 15:50:18 2009 +0100
+
+    offer-private-stream-tube.py: disable echo before we received the access
+    control byte
+
+ tests/twisted/tubes/offer-private-stream-tube.py |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit c657abbebd0efcc1cded879bc57512f2268fcc9f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 7 15:49:39 2009 +0100
+
+    offer-private-stream-tube.py: block the transport until we check the access control
+
+ tests/twisted/tubes/offer-private-stream-tube.py |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+commit f696c1f5db7e19df568eb8f79aef89f71f985c07
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 7 15:44:53 2009 +0100
+
+    offer-muc-stream-tube: block the transport until we check the access
+    control
+    
+    We need to block it to ensure that the access control byte has not be
+    read yet.
+
+ tests/twisted/tubes/offer-muc-stream-tube.py |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 623a2d9fb5aeb38573948663970a0657f4923e95
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 7 14:37:19 2009 +0100
+
+    tube-stream: fire_new_connection: send credentials if needed
+
+ src/tube-stream.c |   47 ++++++++++++++++++++++++++++++++++++++++-------
+ 1 files changed, 40 insertions(+), 7 deletions(-)
+
+commit 411e4da9c8b808d23da3db767f0badb009367063
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 5 10:12:00 2009 +0100
+
+    check_unix_params: check the credentials param
+
+ src/tube-stream.c |   25 +++++++++++++++++++------
+ 1 files changed, 19 insertions(+), 6 deletions(-)
+
+commit 8c5faf8d5bff722632559788d9d36724e24898f0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 5 10:01:31 2009 +0100
+
+    add credentials access control to SupportedSocketTypes
+
+ src/tube-stream.c                               |    2 ++
+ tests/twisted/tubes/test-get-available-tubes.py |    3 ++-
+ 2 files changed, 4 insertions(+), 1 deletions(-)
+
+commit dffa08f2373ba213769801ba40b1c8520abffa0a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 19 10:17:53 2009 +0100
+
+    sync tube spec with latest DRAFT
+
+ extensions/Channel_Type_Stream_Tube.xml |   30 ++++++++++++++++++++----------
+ 1 files changed, 20 insertions(+), 10 deletions(-)
+
+commit f2dac640b7bcfdf1b62c3761d80e7771274bb782
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri May 15 11:45:03 2009 +0100
+
+    sync Gibber with Salut
+
+ lib/gibber/gibber-fd-transport.c   |    4 +-
+ lib/gibber/gibber-fd-transport.h   |    5 +
+ lib/gibber/gibber-listener.c       |    9 +-
+ lib/gibber/gibber-unix-transport.c |  192 ++++++++++++++++++++++++++++++++++++
+ lib/gibber/gibber-unix-transport.h |   33 ++++++
+ 5 files changed, 237 insertions(+), 6 deletions(-)
+
+commit 5bc4b8b142cec9a296e596ce0e4133b949eca729
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 14 11:34:20 2009 +0100
+
+    Test making two connections to the same account
+    
+    This checks that Gabble correctly picks a random resource.
+
+ tests/twisted/Makefile.am                          |    1 +
+ .../connect/multiple-times-to-same-account.py      |   50 ++++++++++++++++++++
+ 2 files changed, 51 insertions(+), 0 deletions(-)
+
+commit 98aec4bc801971b3e52746c654f6634b4e276a44
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 12 19:01:26 2009 +0100
+
+    Default resource to Telepathy.<random hex>
+    
+    This prevents users who don't know what a resource is being confused
+    when Empathy and their N810 fight for control of foo@bar.com/Telepathy.
+
+ src/connection-manager.c |    3 +--
+ src/connection.c         |   25 ++++++++++++++++++++++---
+ src/connection.h         |    1 -
+ 3 files changed, 23 insertions(+), 6 deletions(-)
+
+commit 59d068ce06cb75e8063450b329bc23a374f06d7c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 14 10:50:25 2009 +0100
+
+    Calling Disconnect twice does not "destroy object"
+
+ tests/twisted/connect/test-nonblocking-tls.py |    3 ---
+ tests/twisted/connect/test-twice.py           |    3 ---
+ 2 files changed, 0 insertions(+), 6 deletions(-)
+
+commit b031c0b5b6212350e19ef3f2fc8e0cb3ed53b269
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 13 18:34:49 2009 +0100
+
+    Don't assume resource='Resource' in Authenticators
+    
+    If 'resource' is set in the connection parameters, then check it's
+    correct in the Authenticators.
+
+ tests/twisted/connect/test-twice.py |    6 ++++--
+ tests/twisted/gabbletest.py         |   26 ++++++++++++++++++--------
+ 2 files changed, 22 insertions(+), 10 deletions(-)
+
+commit 23df289715a6a09fd776a97db99470fa31821b0f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed May 13 10:44:42 2009 +0100
+
+    Explicitly use JINGLE_DIALECT_V032, not default.
+    
+    I think this is clearer, and prevents spurious warnings about the ERROR
+    case falling through.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+ src/jingle-session.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit ae1438ace1ecbb5e25915fefdf3592ae0291e03e
+Merge: 5c7db02 23ab7f9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 12 15:22:41 2009 +0100
+
+    Merge branch 'capabilities-discovered-fixes'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 23ab7f9257e016850614a6c4638ba9259f2ac568
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 12 11:12:02 2009 +0100
+
+    Don't repeat RequestStreams for the wrong handle.
+    
+    This papered over a bug where capabilities-discovered was emitted for
+    the wrong handle, and now is harmless but silly.
+
+ src/media-channel.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 1fc4cb2ec959683f14a8ff1e1706f57ec874b2c9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 12 11:06:04 2009 +0100
+
+    Emit capabilities-discovered for the correct handle.
+    
+    Previously, suppose contacts x and y have the same caps hash, and we
+    discoed x. When x replied, we'd satisfy both waiters, but emit
+    capabilities-discovered(x) for both. This should have made
+    RequestStreams erroneously never terminate in some cases (it's waiting
+    for caps that apparently never arrive) were it not for a bug in its
+    capabilities-discovered callback ...
+
+ src/presence-cache.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5c7db02fecefefc0753f36275f300c9bbc837e3b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue May 12 10:42:49 2009 +0100
+
+    tube-stream: add stub of check_incoming_connection
+
+ src/tube-stream.c |   27 +++++++++++++++++++++++++++
+ 1 files changed, 27 insertions(+), 0 deletions(-)
+
+commit e5c02469448b487f7e4f658a6523cb9c3ad8d43d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon May 11 18:51:47 2009 +0100
+
+    fix typos
+
+ src/jingle-content.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 65bf32aea50cf564657497a9ecafe6f7638c2fed
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon May 11 18:45:47 2009 +0100
+
+    Improve comment
+
+ src/media-stream.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 9b1178ccd192a30467b380ca99e960c5bbef382e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon May 11 18:18:24 2009 +0100
+
+    Ignore description-info before receiving codec data
+
+ src/jingle-content.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 91cce687bcc16542f5410ee1bec537d51e754ef2
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon May 11 18:17:53 2009 +0100
+
+    Correct ordering in debug statement
+
+ src/jingle-media-rtp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 4c09009d31a7d6810d64daca63c6c4fc0db0c9cb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon May 11 18:16:47 2009 +0100
+
+    Only send codec information and description updates if we're really ready
+
+ src/jingle-content.c   |   18 ++++++++----------
+ src/jingle-content.h   |    2 ++
+ src/jingle-media-rtp.c |   25 +++++++++++++++----------
+ src/jingle-media-rtp.h |    2 +-
+ src/media-stream.c     |   17 +++++++++++++----
+ 5 files changed, 39 insertions(+), 25 deletions(-)
+
+commit d6c25bebd8f8fc9706614761a30245a258938c3f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon May 11 17:45:13 2009 +0100
+
+    Test calling CodecsUpdated before SupportedCodecs
+    
+    Older gabble versions were triggered into sending description-info before
+    accepting a call if CodecsUpdated was called before SupportedCodecs
+
+ tests/twisted/jingle/test-description-info.py |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit 06ad739c4779e9cd673d223fb3db620aea9e87ff
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 11 13:14:52 2009 +0100
+
+    file_transfer_helper.py: break a race with the FileTransferStateChanged
+    signal
+    
+    FileTransferStateChanged can be fired during self.bytestream.get_data()
+    if we are receiving data from a socket (SOCKS5). Break a race by
+    not waiting for this signal if it has already been fired while we
+    received the data.
+
+ .../twisted/file-transfer/file_transfer_helper.py  |   25 +++++++++++++++----
+ 1 files changed, 19 insertions(+), 6 deletions(-)
+
+commit 00a9cc75de3f4fded6b68482c4a23cbed04cb774
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 11 12:35:29 2009 +0100
+
+    bytestream_factory_iq_si_cb: explicitely say that ID is a muc one when
+    ensuring its handle
+
+ src/bytestream-factory.c |   24 +++++++++++++++---------
+ 1 files changed, 15 insertions(+), 9 deletions(-)
+
+commit a2f68264b1fc09dc2cbde7cd232068b3f0635755
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 7 18:04:33 2009 +0100
+
+    start dev of 0.7.28
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 70804847864b57506e03a990220d90b7b31a6798
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 7 18:02:18 2009 +0100
+
+    start NEWS for 0.7.28
+
+ NEWS |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit b34f79095598c53173c7062aa7f7ee0b0835c296
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 7 15:42:29 2009 +0100
+
+    pass the queue to check_new_connection_access
+    
+    This will be useful when we'll check the byte control
+
+ tests/twisted/tubes/offer-muc-stream-tube.py     |    2 +-
+ tests/twisted/tubes/offer-private-stream-tube.py |    4 ++--
+ tests/twisted/tubes/tubetestutil.py              |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 42200bb1e5c5223ec992ef84381f02661ccd3aad
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 7 15:38:08 2009 +0100
+
+    add block_reading param to create_server
+
+ tests/twisted/tubes/tubetestutil.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 42ed12e2611d36ec8d68f7e372fb7043c21496a5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 7 15:14:31 2009 +0100
+
+    add echoed attribute to Echo so tests can disable echoing if needed
+
+ tests/twisted/tubes/tubetestutil.py |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
+commit a910197d14aad9639313b085850389af13f7d6d7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu May 7 15:08:03 2009 +0100
+
+    add block_reading optionnal arg to EventProtocol
+    
+    This can be used by tests which want to control when starting to read
+    from the transport.
+
+ tests/twisted/servicetest.py        |   14 +++++++++++---
+ tests/twisted/tubes/tubetestutil.py |    6 +++---
+ 2 files changed, 14 insertions(+), 6 deletions(-)
+
 commit ce3a82e5b30ca17e5b83cbc700062f9795b1e45a
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Thu May 7 15:29:39 2009 +0100

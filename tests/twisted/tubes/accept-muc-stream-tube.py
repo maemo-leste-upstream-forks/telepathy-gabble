@@ -2,8 +2,8 @@
 
 import dbus
 
-from servicetest import call_async, EventPattern, EventProtocolClientFactory, unwrap
-from gabbletest import make_result_iq, acknowledge_iq, make_muc_presence
+from servicetest import call_async, EventPattern, EventProtocolClientFactory, unwrap, assertEquals
+from gabbletest import make_result_iq, acknowledge_iq, make_muc_presence, send_error_reply
 import constants as cs
 import ns
 import tubetestutil as t
@@ -191,33 +191,34 @@ def test(q, bus, conn, stream, bytestream_cls,
             args=[stream_tube_id, 2]))
 
     address = accept_return_event.value[0]
-    t.connect_socket(q, address_type, address)
-    socket_event, si_event = q.expect_many(
-        EventPattern('socket-connected'),
-        # expect SI request
-        EventPattern('stream-iq', to='chat@conf.localhost/bob', query_ns=ns.SI,
-            query_name='si'))
-    protocol = socket_event.protocol
 
+    socket_event, si_event, conn_id = t.connect_to_cm_socket(q, 'chat@conf.localhost/bob',
+        address_type, address, access_control, access_control_param)
+
+    protocol = socket_event.protocol
     protocol.sendData("hello initiator")
 
-    bytestream, profile = create_from_si_offer(stream, q, bytestream_cls, si_event.stanza,
-            'chat@conf.localhost/test')
+    def accept_tube_si_connection():
+        bytestream, profile = create_from_si_offer(stream, q, bytestream_cls, si_event.stanza,
+                'chat@conf.localhost/test')
 
-    assert profile == ns.TUBES
+        assert profile == ns.TUBES
 
-    muc_stream_node = xpath.queryForNodes('/iq/si/muc-stream[@xmlns="%s"]' %
-        ns.TUBES, si_event.stanza)[0]
-    assert muc_stream_node is not None
-    assert muc_stream_node['tube'] == str(stream_tube_id)
+        muc_stream_node = xpath.queryForNodes('/iq/si/muc-stream[@xmlns="%s"]' %
+            ns.TUBES, si_event.stanza)[0]
+        assert muc_stream_node is not None
+        assert muc_stream_node['tube'] == str(stream_tube_id)
 
-    # set the real jid of the target as 'to' because the XMPP server changes
-    # it when delivering the IQ
-    result, si = bytestream.create_si_reply(si_event.stanza, 'test@localhost/Resource')
-    si.addElement((ns.TUBES, 'tube'))
-    stream.send(result)
+        # set the real jid of the target as 'to' because the XMPP server changes
+        # it when delivering the IQ
+        result, si = bytestream.create_si_reply(si_event.stanza, 'test@localhost/Resource')
+        si.addElement((ns.TUBES, 'tube'))
+        stream.send(result)
 
-    bytestream.wait_bytestream_open()
+        bytestream.wait_bytestream_open()
+        return bytestream
+
+    bytestream = accept_tube_si_connection()
 
     binary = bytestream.get_data()
     assert binary == 'hello initiator'
@@ -226,6 +227,39 @@ def test(q, bus, conn, stream, bytestream_cls,
     bytestream.send_data('hi joiner!')
 
     q.expect('socket-data', protocol=protocol, data="hi joiner!")
+
+    # peer closes the bytestream
+    bytestream.close()
+    e = q.expect('dbus-signal', signal='ConnectionClosed')
+    assertEquals(conn_id, e.args[0])
+    assertEquals(cs.CONNECTION_LOST, e.args[1])
+
+    # establish another tube connection
+    socket_event, si_event, conn_id = t.connect_to_cm_socket(q, 'chat@conf.localhost/bob',
+        address_type, address, access_control, access_control_param)
+
+    # bytestream is refused
+    send_error_reply(stream, si_event.stanza)
+    e, _ = q.expect_many(
+        EventPattern('dbus-signal', signal='ConnectionClosed'),
+        EventPattern('socket-disconnected'))
+    assertEquals(conn_id, e.args[0])
+    assertEquals(cs.CONNECTION_REFUSED, e.args[1])
+
+    # establish another tube connection
+    socket_event, si_event, conn_id = t.connect_to_cm_socket(q, 'chat@conf.localhost/bob',
+        address_type, address, access_control, access_control_param)
+
+    protocol = socket_event.protocol
+    bytestream = accept_tube_si_connection()
+
+    # disconnect local socket
+    protocol.transport.loseConnection()
+    e, _ = q.expect_many(
+        EventPattern('dbus-signal', signal='ConnectionClosed'),
+        EventPattern('socket-disconnected'))
+    assertEquals(conn_id, e.args[0])
+    assertEquals(cs.CANCELLED, e.args[1])
 
     # OK, we're done
     conn.Disconnect()

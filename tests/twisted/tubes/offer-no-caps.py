@@ -12,6 +12,7 @@ from gabbletest import exec_test, acknowledge_iq, sync_stream
 
 import constants as cs
 import tubetestutil as t
+import ns
 
 def props(ct, extra=None):
     ret = { cs.TARGET_HANDLE_TYPE: cs.HT_CONTACT,
@@ -29,7 +30,7 @@ def test(q, bus, conn, stream):
         EventPattern('dbus-signal', signal='StatusChanged', args=[0, 1]),
         EventPattern('stream-iq', to=None, query_ns='vcard-temp',
             query_name='vCard'),
-        EventPattern('stream-iq', query_ns='jabber:iq:roster'))
+        EventPattern('stream-iq', query_ns=ns.ROSTER))
 
     acknowledge_iq(stream, vcard_event.stanza)
 
@@ -103,7 +104,7 @@ def test(q, bus, conn, stream):
         { cs.DBUS_TUBE_SERVICE_NAME: "com.newecho" }))
     dt_chan = bus.get_object(conn.bus_name, dt_path)
     dt = dbus.Interface(dt_chan, cs.CHANNEL_TYPE_DBUS_TUBE)
-    call_async(q, dt, 'Offer', {})
+    call_async(q, dt, 'Offer', {}, cs.SOCKET_ACCESS_CONTROL_CREDENTIALS)
     e = q.expect('dbus-error', method='Offer').error
     assert e.get_dbus_name() == cs.NOT_AVAILABLE, e.get_dbus_name()
 

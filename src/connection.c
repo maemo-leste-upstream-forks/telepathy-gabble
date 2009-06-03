@@ -75,6 +75,8 @@
 
 static guint disco_reply_timeout = 5000;
 
+#define DEFAULT_RESOURCE_FORMAT "Telepathy.%x"
+
 static void conn_service_iface_init (gpointer, gpointer);
 static void capabilities_service_iface_init (gpointer, gpointer);
 static void gabble_conn_contact_caps_iface_init (gpointer, gpointer);
@@ -313,6 +315,25 @@ gabble_connection_constructor (GType type,
 }
 
 static void
+gabble_connection_constructed (GObject *object)
+{
+  GabbleConnection *self = GABBLE_CONNECTION (object);
+  GabbleConnectionPrivate *priv = self->priv;
+  void (*chain_up)(GObject *) =
+      G_OBJECT_CLASS (gabble_connection_parent_class)->constructed;
+
+  if (chain_up != NULL)
+    chain_up (object);
+
+  if (priv->resource == NULL)
+    {
+      priv->resource = g_strdup_printf (DEFAULT_RESOURCE_FORMAT,
+          g_random_int ());
+      DEBUG ("defaulted resource to %s", priv->resource);
+    }
+}
+
+static void
 gabble_connection_init (GabbleConnection *self)
 {
   GabbleConnectionPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
@@ -322,9 +343,6 @@ gabble_connection_init (GabbleConnection *self)
 
   self->priv = priv;
   self->lmconn = lm_connection_new (NULL);
-
-  /* Set default parameters for optional parameters */
-  priv->resource = g_strdup (GABBLE_PARAMS_DEFAULT_RESOURCE);
 
   priv->caps_serial = 1;
 }
@@ -521,7 +539,7 @@ static const char *list_handle_strings[] =
 {
     "publish",      /* GABBLE_LIST_HANDLE_PUBLISH */
     "subscribe",    /* GABBLE_LIST_HANDLE_SUBSCRIBE */
-    "known",        /* GABBLE_LIST_HANDLE_KNOWN */
+    "stored",       /* GABBLE_LIST_HANDLE_STORED */
     "deny",         /* GABBLE_LIST_HANDLE_DENY */
     NULL
 };
@@ -569,6 +587,7 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
       TP_IFACE_CONNECTION_INTERFACE_REQUESTS,
       GABBLE_IFACE_OLPC_GADGET,
       GABBLE_IFACE_CONNECTION_INTERFACE_CONTACT_CAPABILITIES,
+      GABBLE_IFACE_CONNECTION_INTERFACE_LOCATION,
       NULL };
   static TpDBusPropertiesMixinPropImpl olpc_gadget_props[] = {
         { "GadgetAvailable", NULL, NULL },
@@ -605,6 +624,7 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
   object_class->get_property = gabble_connection_get_property;
   object_class->set_property = gabble_connection_set_property;
   object_class->constructor = gabble_connection_constructor;
+  object_class->constructed = gabble_connection_constructed;
 
   parent_class->create_handle_repos = _gabble_connection_create_handle_repos;
   parent_class->get_unique_connection_name = gabble_connection_get_unique_name;
@@ -2132,7 +2152,7 @@ connection_disco_cb (GabbleDisco *disco,
     {
       const gchar *ifaces[] = { GABBLE_IFACE_OLPC_BUDDY_INFO,
           GABBLE_IFACE_OLPC_ACTIVITY_PROPERTIES,
-          GABBLE_IFACE_CONNECTION_INTERFACE_LOCATION, NULL };
+          NULL };
 
       tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
     }

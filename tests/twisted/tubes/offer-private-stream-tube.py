@@ -2,7 +2,7 @@
 
 import dbus
 
-from servicetest import call_async, EventPattern, sync_dbus
+from servicetest import call_async, EventPattern, sync_dbus, assertEquals
 from gabbletest import acknowledge_iq, sync_stream
 import constants as cs
 import ns
@@ -41,8 +41,8 @@ def contact_offer_dbus_tube(bytestream, tube_id):
 
 def test(q, bus, conn, stream, bytestream_cls,
         address_type, access_control, access_control_param):
-    address1 = t.set_up_echo(q, address_type)
-    address2 = t.set_up_echo(q, address_type)
+    address1 = t.set_up_echo(q, address_type, True)
+    address2 = t.set_up_echo(q, address_type, True)
 
     t.check_conn_properties(q, conn)
 
@@ -52,7 +52,7 @@ def test(q, bus, conn, stream, bytestream_cls,
         EventPattern('dbus-signal', signal='StatusChanged', args=[0, 1]),
         EventPattern('stream-iq', to=None, query_ns='vcard-temp',
             query_name='vCard'),
-        EventPattern('stream-iq', query_ns='jabber:iq:roster'))
+        EventPattern('stream-iq', query_ns=ns.ROSTER))
 
     self_handle = conn.GetSelfHandle()
 
@@ -332,7 +332,7 @@ def test(q, bus, conn, stream, bytestream_cls,
                 args=[stream_tube_id, cs.TUBE_STATE_OPEN]),
             EventPattern('dbus-signal', signal='StreamTubeNewConnection',
                 args=[stream_tube_id, bob_handle]),
-            EventPattern('dbus-signal', signal='NewConnection'),
+            EventPattern('dbus-signal', signal='NewRemoteConnection'),
             EventPattern('socket-connected'))
 
     bytestream1.check_si_reply(si_reply_event.stanza)
@@ -340,10 +340,16 @@ def test(q, bus, conn, stream, bytestream_cls,
         si_reply_event.stanza)
     assert len(tube) == 1
 
-    handle, access = new_conn_event.args
+    handle, access, id = new_conn_event.args
     assert handle == bob_handle
     protocol = socket_event.protocol
-    t.check_new_connection_access(access_control, access, protocol)
+    # we don't want to echo the access control byte
+    protocol.echoed = False
+
+    # start to read from the transport so we can read the control byte
+    protocol.transport.startReading()
+    t.check_new_connection_access(q, access_control, access, protocol)
+    protocol.echoed = True
 
     expected_tube = (stream_tube_id, self_handle, cs.TUBE_TYPE_STREAM, 'echo',
         sample_parameters, cs.TUBE_STATE_OPEN)
@@ -364,7 +370,7 @@ def test(q, bus, conn, stream, bytestream_cls,
             EventPattern('stream-iq', iq_type='result'),
             EventPattern('dbus-signal', signal='TubeChannelStateChanged',
                 args=[cs.TUBE_STATE_OPEN]),
-            EventPattern('dbus-signal', signal='NewConnection'),
+            EventPattern('dbus-signal', signal='NewRemoteConnection'),
             EventPattern('socket-connected'))
 
     bytestream2.check_si_reply(si_reply_event.stanza)
@@ -372,10 +378,16 @@ def test(q, bus, conn, stream, bytestream_cls,
         si_reply_event.stanza)
     assert len(tube) == 1
 
-    handle, access = new_conn_event.args
+    handle, access, conn_id = new_conn_event.args
     assert handle == bob_handle
     protocol = socket_event.protocol
-    t.check_new_connection_access(access_control, access, protocol)
+    # we don't want to echo the access control byte
+    protocol.echoed = False
+
+    # start to read from the transport so we can read the control byte
+    protocol.transport.startReading()
+    t.check_new_connection_access(q, access_control, access, protocol)
+    protocol.echoed = True
 
     expected_tube = (new_stream_tube_id, self_handle, cs.TUBE_TYPE_STREAM,
         'newecho', new_sample_parameters, cs.TUBE_STATE_OPEN)
@@ -400,6 +412,12 @@ def test(q, bus, conn, stream, bytestream_cls,
 
     binary = bytestream2.get_data(len(data))
     assert binary == data, binary
+
+    # peer closes the bytestream
+    bytestream2.close()
+    e = q.expect('dbus-signal', signal='ConnectionClosed')
+    assertEquals(conn_id, e.args[0])
+    assertEquals(cs.CONNECTION_LOST, e.args[1])
 
     # OK, we're done
     conn.Disconnect()

@@ -1,1 +1,1 @@
-PACKAGE_STRING = "Telepathy Gabble 0.7.27"
+PACKAGE_STRING = "Telepathy Gabble 0.7.28"
