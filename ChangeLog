@@ -1,3 +1,1198 @@
+commit e4d4e7afd0108d7fd5b6bf34d702f0283ff773ad
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 19 11:54:56 2009 +0100
+
+    telepathy-gabble 0.7.29
+
+ NEWS         |    4 ++--
+ configure.ac |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 4c5c8d29a102a7c4c9080d17ebc59283710a13d5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 18 10:39:11 2009 +0100
+
+    NEWS fixing caps from bare jids
+
+ NEWS |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 865ee17833b991e86b1a4ff68875c74884332788
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 17 12:38:10 2009 +0100
+
+    NEWS sid and content namespacing fixes
+
+ NEWS |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit 29132c21e12d48d2fe566abc4af750634603cef3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 19 14:17:17 2009 +0100
+
+    Call GetMessages() on the Debug interface.
+    
+    What was there before worked, but this is more correct.
+
+ tests/twisted/test-debug.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5f19e4ad06514498fc65b66bef04f57f9cc305ac
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 19 14:17:06 2009 +0100
+
+    Skip test-debug.py if debugging is disabled
+
+ tests/twisted/Makefile.am   |    5 +++++
+ tests/twisted/test-debug.py |    5 +++++
+ 2 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 794f8c8714f0b8b7dde301d43ff43dd75ce2d447
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 19 11:34:23 2009 +0100
+
+    Initialize GType in tests.
+    
+    The debugging code now uses GType, so g_type_init (); needs to be called
+    in a few tests.
+
+ tests/test-base64.c        |    4 ++++
+ tests/test-parse-message.c |    4 ++++
+ 2 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 14fac239ea574191452e0b6bbd421b74a78e84d4
+Merge: 5fe2fcb c3d403f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 19 10:23:53 2009 +0100
+
+    Merge branch 'work-around-missing-creator'
+    
+    Reviewed-by: Dafydd Harries <dafydd.harries@collabora.co.uk>
+
+commit c3d403f5f3e95f728a1b5160feaa7b928036709b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 19 10:22:37 2009 +0100
+
+    Document assumptions for missing @creator workaround
+
+ src/jingle-session.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
+
+commit 17694e7a7d8723de48ad6c13f44331632e375c2c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 18 19:21:16 2009 +0100
+
+    Try to pick globally-unique content names.
+    
+    While it's completely correct for the responder to add a stream called
+    'stream1' even though the initiator has a stream called 'stream1'
+    already, it makes the debugging output harder to read, and confuses
+    0.7.16 <= Gabble <= 0.7.28.
+
+ src/jingle-session.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 707828fcc3b05e083d058dda44cc62483586f278
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 18 19:10:29 2009 +0100
+
+    Guess missing content creators for broken Gabbles
+
+ src/jingle-session.c |   23 ++++++++++++++++++++++-
+ 1 files changed, 22 insertions(+), 1 deletions(-)
+
+commit 672276476296616500bd70bb81c1c7ae310683a0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 18 19:10:09 2009 +0100
+
+    Add a cap for Gabbles that don't send creator=''
+
+ src/capabilities.c |   48 +++++++++++++++++++++++++++++++++++++++++++++++-
+ src/types.h        |    1 +
+ 2 files changed, 48 insertions(+), 1 deletions(-)
+
+commit 5fe2fcba580fda7701a7aee7740342cf7f93f16d
+Merge: 27c2831 d991d4f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 18 10:24:49 2009 +0100
+
+    Merge branch 'caps-from-bare-jid'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit d991d4fc303bb78f35b214170e5b4d481257ca43
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 18 10:04:13 2009 +0100
+
+    Correct my atrocious French.
+
+ tests/twisted/test-caps-hash.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5a87a9c6933212aded358c364281c4c085c3b284
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 18 09:54:29 2009 +0100
+
+    Test dataforms and UTF-8 in compute_caps_hash
+    
+    The tests already check that Gabble hashes dataforms in the same way
+    that the test suite does. This adds the dataforms example from XEP-0115
+    to make sure that the test suite's implementation is correct.
+
+ tests/twisted/caps_helper.py |   26 ++++++++++++++++++++++++--
+ 1 files changed, 24 insertions(+), 2 deletions(-)
+
+commit d3f318b4d71907a6492f4b6d607c5510ab6c6857
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 16 22:35:12 2009 +0100
+
+    Don't add resource when rediscoing if it's NULL
+
+ src/presence-cache.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 0b77a0740ebe1964d4a2acef7c82493cb097f2ff
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 16 17:54:14 2009 +0100
+
+    Don't printf ("%s", NULL) for NULL resource/status
+    
+    printf ("%s", NULL); produces "(null)" with glibc, but crashes on
+    Windows.
+
+ src/presence-cache.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 56ed10f0f5a69fb0577481e5fd376660f3856885
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 16 17:42:52 2009 +0100
+
+    Correctly handle caps from bare JIDs.
+
+ src/presence.c                      |   21 +++++++
+ tests/twisted/Makefile.am           |    1 +
+ tests/twisted/caps/from-bare-jid.py |  112 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 134 insertions(+), 0 deletions(-)
+
+commit e35bde7318282ed169ff75a5f9986b4bf9b86b3b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 16 15:46:03 2009 +0100
+
+    Don't guess handles in test-caps-cache
+
+ tests/twisted/test-caps-cache.py |   28 ++++++++++++++--------------
+ 1 files changed, 14 insertions(+), 14 deletions(-)
+
+commit a6c16381ea6f25a724aa050f63b8b2a6cc4634a2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 15 19:22:11 2009 +0100
+
+    Don't hardcode caps hashes in tests
+
+ tests/twisted/caps_helper.py     |   27 ++++++++++-
+ tests/twisted/test-caps-cache.py |   54 ++++++--------------
+ tests/twisted/test-caps-hash.py  |  103 +++++++++++++------------------------
+ 3 files changed, 79 insertions(+), 105 deletions(-)
+
+commit e94e51b400b2b82d75f91f5dd1f9c8cf181bf83c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 15 18:45:11 2009 +0100
+
+    Correctly test non-emission of CapabilitiesChanged
+    
+    This was trying to check that CapabilitiesChanged hadn't been emitted in
+    response to an IQ sent to Gabble. However, the IQ might not have reached
+    Gabble by the time of the assertion unless we sync the stream as well.
+
+ tests/twisted/test-caps-hash.py |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 9852b5d548462440e76d207d6743715805cfb88b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 15 18:30:18 2009 +0100
+
+    tests: Support data forms in compute_caps_hash
+
+ tests/twisted/caps_helper.py                       |   29 +++++++++++++++-----
+ .../file-transfer/test-caps-file-transfer.py       |    4 +-
+ tests/twisted/test-caps-tubes.py                   |    2 +-
+ 3 files changed, 25 insertions(+), 10 deletions(-)
+
+commit 27c28316ae710bca913956c13cbea03bc6a1dbb4
+Merge: ea0dbeb 3a3626b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jun 17 17:51:42 2009 +0100
+
+    Merge branch 'debugger-fix'
+
+commit 3a3626bfb38e1e9a8074a4aad2f22c8dafeb7e39
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 17 12:43:59 2009 +0100
+
+    Fall back to DEBUG for unrecognised log levels
+    
+    Having an assertion here makes me uneasy: it doesn't look like you
+    actually *have* to specify a log level when you call g_log().
+
+ src/debugger.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit ea0dbebcc33dbabcc06cd9a4a3aa1389931f1729
+Merge: e7bd82f 91030a9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 17 12:23:53 2009 +0100
+
+    Merge branch 'namespace-contents-by-creator'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit e7bd82f640f495f9b681494f251d2e76aeaa258f
+Merge: 610cf8e 6842659
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 17 12:23:28 2009 +0100
+
+    Merge branch 'namespace-sid-by-peer'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 91030a9c2c485098af2e8b00c64dacb8db9be805
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 17 12:03:16 2009 +0100
+
+    Include 'creator' in transport-info <content>s
+
+ src/jingle-transport-google.c           |   16 ++++++++++++----
+ tests/twisted/jingle/incoming-basics.py |    4 ++++
+ 2 files changed, 16 insertions(+), 4 deletions(-)
+
+commit 021c85395ed33a587f799c3c35ead49f3231f160
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jun 16 19:49:27 2009 +0100
+
+    Convert GLogLevelFlags to GabbleDebugLevel checking the flag.
+    
+    If the GLib log message level is G_LOG_LEVEL_ERROR, then it is also
+    G_LOG_LEVEL_FATAL, therefore simply checking whether the level is one
+    of the two fails.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debugger.c |   38 ++++++++++++++------------------------
+ 1 files changed, 14 insertions(+), 24 deletions(-)
+
+commit 114cb98100cc42cca563d7081760b01f779dc48b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jun 16 19:40:34 2009 +0100
+
+    Log gabble messages which do not originate from gabble_debug.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/gabble.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 610cf8ec9c77f3a2d648e19581fb7f916bdf7a59
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 16 18:31:24 2009 +0100
+
+    NEWS keepalive-interval
+
+ NEWS |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 642c464129fd106b13dae03ebdd5054670ade5d0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 15 10:58:55 2009 +0100
+
+    Add a keepalive-interval connection parameter.
+    
+    This allows clients to specify the interval between TCP and/or
+    whitespace keepalives (at the whim of Loudmouth) rather than hardcoding
+    the interval to 30 seconds (which is still the default). This might be
+    useful in situations where reducing network activity is more important
+    than realising the network has gone away quickly.
+
+ src/connection-manager.c |    9 +++++++++
+ src/connection.c         |   19 +++++++++++++++++--
+ 2 files changed, 26 insertions(+), 2 deletions(-)
+
+commit 24122c096e396b05aa6436859d45e66f9bdfbbc4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 11 18:01:20 2009 +0100
+
+    Don't leak content name and namespace
+
+ src/jingle-content.c          |    6 ++++++
+ src/jingle-content.h          |    1 +
+ src/jingle-transport-google.c |   10 ++++------
+ 3 files changed, 11 insertions(+), 6 deletions(-)
+
+commit 064dd0d8f741308325bf21b66ed0796c7e4a5785
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 11 17:56:46 2009 +0100
+
+    Don't leak a copy of contents' disposition
+
+ src/jingle-content.c |    6 ++++++
+ src/jingle-content.h |    1 +
+ src/jingle-session.c |   15 ++++++---------
+ 3 files changed, 13 insertions(+), 9 deletions(-)
+
+commit b94fd63fd53140892093f8ffc27b26ea243bbbbc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 11 17:43:55 2009 +0100
+
+    Document test failure when Gabble didn't namespace contents
+
+ tests/twisted/jingle/test-content-complex.py |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
+
+commit cd466987ea6db912db01a1edf4d11778a6cd5f81
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 11 17:32:15 2009 +0100
+
+    Namespace contents by their creator.
+    
+    Fixes fd.o#20763
+
+ src/jingle-session.c |  215 ++++++++++++++++++++++++++++++++-----------------
+ 1 files changed, 140 insertions(+), 75 deletions(-)
+
+commit 9ce2a812afd41fc91e8812f8333ef75ee11cba53
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 11 17:29:29 2009 +0100
+
+    Test that contents are namespaced by their creator
+    
+    Both the initiator and the responder should be able to create a content
+    called 'foo' without issue. test-content-complex didn't test this
+    situation --- it only tested the other party trying to add the same
+    content name twice --- and in fact Gabble's got it wrong since the Great
+    Jingle Refactoring of 2008.
+
+ tests/twisted/jingle/test-content-complex.py |   58 ++++++++++++++++++++-----
+ 1 files changed, 46 insertions(+), 12 deletions(-)
+
+commit ac8626b87664b93885b1e013e8188d587a2a5075
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 11 16:25:33 2009 +0100
+
+    Include 'creator' attribute in <mute/>
+    
+    I noticed today that <mute/> was defined only to take a 'name'
+    attribute, but since content names are (supposed to be) namespaced by
+    creator it needs a 'creator' attribute too, and PSA agrees.
+
+ tests/twisted/jingle/call-state.py |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 6ef562e77bcc6496c59029398cd333c05a6071fd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 11 16:11:23 2009 +0100
+
+    Add _content_creator_is_initiator()
+
+ src/jingle-content.c |   17 +++++++++++------
+ src/jingle-content.h |    1 +
+ 2 files changed, 12 insertions(+), 6 deletions(-)
+
+commit d19ccece5e11885abedf0696148de57d00a6339a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 11 14:01:43 2009 +0100
+
+    Use G_PARAM_STATIC_STRINGS in JingleContent/MediaRtp
+
+ src/jingle-content.c   |   80 ++++++++++++++++-------------------------------
+ src/jingle-media-rtp.c |    3 +-
+ 2 files changed, 28 insertions(+), 55 deletions(-)
+
+commit 53ccdbdbd5fd0812b195523d4d41ff3f2ea46858
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 11 10:37:49 2009 +0100
+
+    Don't leak content's name for GTalk contents
+    
+    g_object_get was putting a freshly-allocated string into 'name', which
+    (since it's a const gchar *) is never freed.
+
+ src/jingle-session.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6842659ac0a66f38b53b9c127520044e5556594f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 10 16:58:18 2009 +0100
+
+    Sessions are guaranteed to have non-0 peer
+
+ src/jingle-session.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
+
+commit fd410e919d9fabffc1005f30a90109b9e15ea274
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 10 15:11:57 2009 +0100
+
+    Namespace Jingle session IDs by peer
+    
+    Previously, Gabble's set of Jingle sessions was keyed only by the
+    session ID, so if two peers happened to choose the same session ID,
+    Gabble got confused.
+    
+    This patch keys the session map by:
+        "<peer's handle>\n<peer's resource>\n<session id>"
+
+ src/jingle-factory.c                         |  177 +++++++++++++------------
+ tests/twisted/jingle/session-id-collision.py |   37 ++++++
+ 2 files changed, 129 insertions(+), 85 deletions(-)
+
+commit 0b03074b92f2d0f7c82808574d98b66bf752a153
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 9 11:45:25 2009 +0100
+
+    Split sending caps out of JingleTest2.prepare()
+
+ tests/twisted/jingle/jingletest2.py |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit c3e65410b2b0d059bdadd5ec80160cb297fd83bb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 10 15:11:39 2009 +0100
+
+    Accessors for JingleSession:sid and :peer-resource
+
+ src/jingle-session.c |   12 ++++++++++++
+ src/jingle-session.h |    3 +++
+ 2 files changed, 15 insertions(+), 0 deletions(-)
+
+commit a73f4bab989029d36bcc5467598d81a106a820e4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 10 14:01:03 2009 +0100
+
+    Don't crash on Jingle IQs with no 'from'
+    
+    Obviously an <iq> without a 'from' attribute is illegal, but LM doesn't
+    actually protect you from this, which made me uneasy.
+
+ src/jingle-factory.c |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
+
+commit 1910837a8314de134c84dbea88e5f1023c284484
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 9 19:06:38 2009 +0100
+
+    Remove the now-unused get_jid_for_contact
+
+ src/jingle-session.c |   37 -------------------------------------
+ 1 files changed, 0 insertions(+), 37 deletions(-)
+
+commit 211d9d7033d8405db06539c04cd60fc5588ee865
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 9 18:57:37 2009 +0100
+
+    Don't require 'initiator' on Jingle stanzas
+    
+    My reading of <http://xmpp.org/extensions/xep-0166.html#def-jingle> is
+    that clients are at liberty to ignore the 'initiator' on
+    session-initiate, and just use the IQ's 'from', and should thereafter
+    ignore 'initiator' anyway.
+
+ src/jingle-session.c |    8 --------
+ 1 files changed, 0 insertions(+), 8 deletions(-)
+
+commit 974478bb157c0f4ea6afdd8095afa3511c2b5faa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 9 18:50:05 2009 +0100
+
+    Set session initiator's jid in constructed
+
+ src/jingle-session.c |   18 +++++-------------
+ 1 files changed, 5 insertions(+), 13 deletions(-)
+
+commit 3e501f5d45a886fa6de8f3a9823092eb8bfed99d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 9 18:01:38 2009 +0100
+
+    Add gabble_connection_get_full_jid()
+
+ src/connection.c |   17 +++++++++++++++++
+ src/connection.h |    2 ++
+ 2 files changed, 19 insertions(+), 0 deletions(-)
+
+commit dfc057c0e7e425015467bb35b46db3a95610b1a6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 9 16:55:25 2009 +0100
+
+    (Re-)build peer's full jid in _constructed
+
+ src/jingle-session.c |   14 +++++++++-----
+ 1 files changed, 9 insertions(+), 5 deletions(-)
+
+commit 7710495b4c6daca16cfb13be32f8d5f8b70d99e1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 9 16:36:32 2009 +0100
+
+    Don't re-set peer & peer_resource in session_parse
+    
+    We now guarantee that these are set at construct time, so there's no
+    need to set them while parsing the session-initiate.
+
+ src/jingle-session.c |   19 +------------------
+ 1 files changed, 1 insertions(+), 18 deletions(-)
+
+commit 4d5b93d2cceb06f67c74a0ae5d06d4082fe17dc1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 9 16:21:09 2009 +0100
+
+    Assert that sessions' peer, resource, sid are set
+    
+    It seems more coherent to ensure that a JingleSession always knows its
+    ID and who it's to, rather than to sometimes set these later.
+
+ src/jingle-factory.c |    3 +++
+ src/jingle-session.c |   15 +++++++--------
+ 2 files changed, 10 insertions(+), 8 deletions(-)
+
+commit 499623ec4971b6103f85f7c782229645d84b7e95
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 9 16:16:36 2009 +0100
+
+    Construct outgoing Jingle sessions with resource
+
+ src/media-channel.c |   38 +++++++++++++++++---------------------
+ 1 files changed, 17 insertions(+), 21 deletions(-)
+
+commit f13474993fdcfc2615a146a29a2d54c97c3d3504
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 9 14:56:22 2009 +0100
+
+    Construct incoming sessions with peer+resource
+
+ src/jingle-factory.c |   55 +++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 52 insertions(+), 3 deletions(-)
+
+commit 6b8e08366b6fc7e1cf80ad36d46d6ac1f541bcd7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 9 14:47:38 2009 +0100
+
+    Ref session peer in jingle_session_constructed.
+
+ src/jingle-session.c |   31 ++++++++++++++++++++++++-------
+ 1 files changed, 24 insertions(+), 7 deletions(-)
+
+commit 26fd5ab9ecf3beb55e13b291bbc46a4907409d52
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 8 16:36:09 2009 +0100
+
+    Use G_PARAM_STATIC_STRINGS in JingleSession
+
+ src/jingle-session.c |   70 ++++++++++++++++---------------------------------
+ 1 files changed, 23 insertions(+), 47 deletions(-)
+
+commit dcfe1c8ebdaf0067563d25d93c3f2f9ebbba3c09
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Jun 10 15:04:07 2009 +0100
+
+    SOCKS5: decrease the connect timeout
+    
+    When users are not on the same network or using IPv6, the direct
+    connection will always fail. Waiting 30 seconds before connecting to a
+    proxy is really long and is perceived by user as a problem in the FT or
+    stream tube. 10 seconds should be more than enough; if the connection
+    took more that 10 sec to establish, you'll probably have trouble to use
+    it any way.
+
+ src/bytestream-socks5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 761b30f86894100eb94b5e928a981140d912e7b4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Wed Jun 10 15:02:06 2009 +0100
+
+    socks5_connect: use the right timeout when waiting for connection
+
+ src/bytestream-socks5.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a55888808ae168dd185f78191986361bddd6b5b1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 10 12:35:50 2009 +0100
+
+    NEWS <gone/> fixes
+
+ NEWS |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit a97f62d1464b5e1fb3129c8383ea2447a69bcfa6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 10 12:30:57 2009 +0100
+
+    NEWS for RemoveMembers([self] ...) working in MUCs
+
+ NEWS |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit a82f2db0671e49bb9b5d57529ec93f40b814f561
+Merge: 5eb776a bfd023f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 10 12:34:24 2009 +0100
+
+    Merge branch 'going-going-gone'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 5eb776ad7be0ecd188bf4c4a75a7e36fbb9fc494
+Merge: 3b22e63 18f3d79
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 10 12:07:02 2009 +0100
+
+    Merge branch 'leave-muc-with-removemembers'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit bfd023f8bce09b392397ef044efdf9fce8abc3e0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 10 12:01:02 2009 +0100
+
+    Remove unnecessary forward declaration.
+    
+    Guillaume pointed out that emit_closed_and_send_gone() is not used
+    before it's defined.
+
+ src/im-channel.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 3b22e632af91dd026c655cbce5f3aed87e1f6c78
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 10 11:50:01 2009 +0100
+
+    NEWS the hold and unknown action crash fixes
+
+ NEWS |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 6035b7ca4ecd84820b06b433a8e9d5c955a481ff
+Merge: 3e90662 4bdd001
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 10 11:38:42 2009 +0100
+
+    Merge branch 'crash-on-unknown-action'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 3e90662d9764e319478335e06584bcdeb333671f
+Merge: 5c35907 64c54f5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 10 11:30:54 2009 +0100
+
+    Merge branch 'hold-before-call-starts'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 5c35907c91889148038124d60460acfd284b51c2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 8 12:23:42 2009 +0100
+
+    Remove workaround for calls' broken group interface
+    
+    Historically, you couldn't end a call by removing the self-handle until
+    you'd sent a session-initiate. That's fixed now, so let's remove the
+    workaround in the test.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+ tests/twisted/jingle/google-relay.py |   39 +++++++++------------------------
+ 1 files changed, 11 insertions(+), 28 deletions(-)
+
+commit 64c54f59124e8d8588e24abee176e690aa7cc9f2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 15:10:57 2009 +0100
+
+    Forbid answering calls you've put on hold.
+    
+    This is hard to represent at the XMPP level: you can't cancel <ringing/>
+    without also cancelling <hold/>. It also doesn't really make any sense.
+    
+    Fixes: fd.o #22031 (although it uses a generic error, rather than a
+    specific one)
+
+ src/media-channel.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+commit e28065ae0a06858413fc24e42c7c0b5b721f1810
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 12:01:13 2009 +0100
+
+    Send <hold/> if necessary after session-initiate
+    
+    If a call is put on hold before it's been initiated, Gabble should send
+    a <hold/> notification when the session-initiate is acked. This patch
+    makes this work both in the case where the GabbleJingleSession already
+    exists (but isn't initiated) when the call is placed on hold, and when
+    the session hasn't even been created yet (by setting the current hold
+    state on the session when it is created).
+
+ src/jingle-factory.c               |   20 +++++--
+ src/jingle-factory.h               |    7 ++-
+ src/jingle-session.c               |   53 ++++++++++++++++-
+ src/jingle-session.h               |   10 ++-
+ src/media-channel-hold.c           |    6 +-
+ src/media-channel.c                |    3 +-
+ tests/twisted/jingle/hold-audio.py |  109 +++++++++++++++++++++++++++++++++--
+ tests/twisted/jingle/hold-av.py    |   21 +++++--
+ 8 files changed, 197 insertions(+), 32 deletions(-)
+
+commit cf086c6a663db8709e2ce06ac87731db95a846cb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 1 16:51:44 2009 +0100
+
+    Move to desired hold state when no streams exist
+    
+    Previously, calling RequestHold(True) while there are no MediaStreams
+    for the channel would wait indefinitely for one of the
+    GabbleMediaStreams' local-hold property to change. Now, rather like in
+    stream_unhold_failed, stream_hold_state_changed() is called immediately
+    to recalculate the call's hold state as a whole.
+    
+    Also, stream_hold_state_changed() previously assumed all_held ⇒
+    any_held; but when you have no streams, all_held ∧ ¬any_held. So we need
+    a fourth block for that case, which moves from any pending state to the
+    corresponding end state.
+
+ src/media-channel-hold.c |   46 +++++++++++++++++++++++++++++++++++++++++-----
+ 1 files changed, 41 insertions(+), 5 deletions(-)
+
+commit fda2566b4fd02a26400f28fabf9f386a4656948e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 1 16:48:59 2009 +0100
+
+    Use switches in Hold state machine
+    
+    I think this is clearer than the chained if-else-if-else-if-else-s used
+    before.
+
+ src/media-channel-hold.c |   56 ++++++++++++++++++++++-----------------------
+ 1 files changed, 27 insertions(+), 29 deletions(-)
+
+commit a862faa0622ab5928657523aecf783462b1a4e16
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 29 20:17:47 2009 +0100
+
+    Don't try to send <(un)hold/> before session exists
+
+ src/media-channel-hold.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 6c15142e62d6169c315f00d9129a7a131901a3fa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 29 20:15:05 2009 +0100
+
+    Replace active with unhold in comments
+
+ tests/twisted/jingle/hold-audio.py |   14 +++++++-------
+ tests/twisted/jingle/hold-av.py    |    2 +-
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+commit fe011de81d58dae3a5e07433c7707788f52b7a1d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 29 20:11:37 2009 +0100
+
+    Forbid the right event when unholding
+    
+    The test was trying to check that Gabble doesn't send <unhold/> before
+    the streaming implementation has successfully reclaimed its resources,
+    but was actually checking that Gabble doesn't send <hold/> before then.
+    Whoops.
+
+ tests/twisted/jingle/hold-audio.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 309c8f6ddb89ed2b587eb5669158afa25ca7b055
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri May 29 18:57:24 2009 +0100
+
+    Port hold tests to wrap_channel
+
+ tests/twisted/jingle/hold-audio.py |   66 ++++++++++++++++----------------
+ tests/twisted/jingle/hold-av.py    |   72 +++++++++++++++++------------------
+ 2 files changed, 68 insertions(+), 70 deletions(-)
+
+commit 0deb0ad1ca19a23c9091a9f9103daf5498d54bac
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 11:13:29 2009 +0100
+
+    Use action_predicate more widely.
+    
+    In some cases, this just makes the test easier to read; in a couple of
+    cases, it replaces "expect an iq; assert it's this jingle action" with
+    "expect this jingle action", which is more correct.
+
+ tests/twisted/jingle/call-state.py                 |    6 ++----
+ tests/twisted/jingle/hold-av.py                    |    3 +--
+ tests/twisted/jingle/incoming-basics.py            |    4 ++--
+ tests/twisted/jingle/initial-audio-video.py        |    4 ++--
+ tests/twisted/jingle/outgoing-basics.py            |    5 ++---
+ tests/twisted/jingle/outgoing-not-answered.py      |    7 +++----
+ .../twisted/jingle/test-content-adding-removal.py  |   16 ++++++----------
+ tests/twisted/jingle/test-description-info.py      |   11 +++++------
+ tests/twisted/jingle/test-incoming-call-reject.py  |    4 ++--
+ .../twisted/jingle/test-outgoing-call-rejected.py  |    3 +--
+ 10 files changed, 26 insertions(+), 37 deletions(-)
+
+commit 34b0a546ba6b7034581682545dee878cdfca0629
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 18:32:33 2009 +0100
+
+    Only send <gone/> if we've sent another state
+    
+    This prevents opening a channel and immediately closing it from sending
+    a spurious <gone/> notification to the peer. Fixes: fd.o#18951.
+
+ src/im-channel.c                      |   32 +++++++++++++----
+ tests/twisted/text/test-chat-state.py |   61 +++++++++++++++++++++++++++-----
+ 2 files changed, 75 insertions(+), 18 deletions(-)
+
+commit 1b3828d3751d8a095ec941b3c36b1aa6e9ca339a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 17:48:00 2009 +0100
+
+    Constantify test-chat-state somewhat
+
+ tests/twisted/constants.py            |    6 ++++++
+ tests/twisted/text/test-chat-state.py |   23 +++++++++--------------
+ 2 files changed, 15 insertions(+), 14 deletions(-)
+
+commit 237fd2c5a5c4414137f2cbcc4984532e35a06846
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 17:28:35 2009 +0100
+
+    Unduplicate emitting Closed and sending <gone/>
+
+ src/im-channel.c |   47 ++++++++++++++++++++---------------------------
+ 1 files changed, 20 insertions(+), 27 deletions(-)
+
+commit 18f3d79aa1fa2f33981fc6a574b8c0fe679a2fe6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 16:19:39 2009 +0100
+
+    Support leaving MUCs with RemoveMembers.
+    
+    This allows you to leave a MUC with a part message. Fixes: fd.o#16886.
+
+ src/muc-channel.c             |   15 +++++++++++++--
+ tests/twisted/muc/test-muc.py |    7 +++++--
+ 2 files changed, 18 insertions(+), 4 deletions(-)
+
+commit 732e327b4851024aa0b9017ab62f0252588fcd7c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 16:14:45 2009 +0100
+
+    Use wrapped channel in test-muc
+
+ tests/twisted/muc/test-muc.py |   20 ++++++++------------
+ 1 files changed, 8 insertions(+), 12 deletions(-)
+
+commit 5c04172ef82481fea32929dc36c2fcbf520d55ba
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 16:10:37 2009 +0100
+
+    Return a wrapped channel from join_muc
+
+ tests/twisted/mucutil.py |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 4bdd001e18834ece694e23a2fc989299a352fb16
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 17:01:11 2009 +0100
+
+    Sanity-check Jingle actions in a few places.
+
+ src/jingle-content.c |    2 +-
+ src/jingle-session.c |   12 +++++++-----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+
+commit 38054275cf64b2e60b20a7fc15fbd904aba5bd3d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 16:59:01 2009 +0100
+
+    Don't crash on unknown incoming Jingle actions.
+    
+    Previously, gabble_jingle_session_parse() called produce_action() (which
+    asserts if you pass it JINGLE_ACTION_UNKNOWN) before checking whether
+    the action is UNKNOWN, with hilarious consequences.
+    
+    Fixes: fd.o#20807
+
+ src/jingle-session.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 51e98d8033c9d4e6b86409352366edc5d46e60ee
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 10:44:28 2009 +0100
+
+    Unrace jingle/incoming-basics
+    
+    We should expect the alleged gtalk4-compatibility transport-accept in
+    response to Gabble receiving a session-initiate, so move it up to the
+    first batch of expectations.
+    
+    Also, picking up the initial StreamDirectionChanged is racy and not
+    generally possible in real clients (because the channel's only just been
+    announced, and might not have been dispatched to them by the time the
+    signal's emitted) so use ListStreams() instead.
+
+ tests/twisted/jingle/incoming-basics.py |   51 +++++++++++++++++--------------
+ 1 files changed, 28 insertions(+), 23 deletions(-)
+
+commit 4a0f98ab5e61772d86ae6346df561d4259eb3cd9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Jun 5 00:20:31 2009 +0100
+
+    Ordered EXTRA_DIST.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ extensions/Makefile.am |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 0bf4209dd1b64e5fc569e833873fe3cf93921359
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Jun 5 00:16:58 2009 +0100
+
+    Define a gabble_debug_free even with no --enable-debug.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debug.h |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 07ec77e932115f84cc92537a83e8d928c0cf5f91
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Jun 5 00:16:36 2009 +0100
+
+    Add Debug.xml to EXTRA_DIST.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ extensions/Makefile.am |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit ea1eadf7c9838bbc81cad026df91e95138ee566c
+Merge: 2844a4d 5d78337
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 4 12:22:08 2009 +0100
+
+    Merge branch 'refactor-caps-tests'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 2844a4da1c356b3d1176a8bacf40acb5d24d754c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Jun 4 00:55:24 2009 +0100
+
+    test-debug.py: Fix to use correct iface and number of NewDebugMessage args.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+ tests/twisted/test-debug.py |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 5d783377a2f1dcd72b1dd68998d199a2a0464e39
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 3 17:58:24 2009 +0100
+
+    Refactor testing outgoing tubes caps
+
+ tests/twisted/test-caps-tubes.py |  227 ++++++++++++++++----------------------
+ 1 files changed, 94 insertions(+), 133 deletions(-)
+
+commit 7fb51a6b369bfcc22829a2b0390440b9e947a15b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 3 15:15:28 2009 +0100
+
+    Refactor testing incoming tubes caps
+
+ tests/twisted/test-caps-tubes.py |  366 +++++++++-----------------------------
+ 1 files changed, 83 insertions(+), 283 deletions(-)
+
+commit beb8fc50851f9d653deb854a056c0d4c7b2c94e6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 3 15:11:36 2009 +0100
+
+    Add ContactCapabilities to test connection proxy
+
+ tests/twisted/servicetest.py |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit fc1e3af34502cc2f8998ee08990b63069c3e2334
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 3 14:16:31 2009 +0100
+
+    Use assertEquals in test-caps-file-transfer
+
+ .../file-transfer/test-caps-file-transfer.py       |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit a71a93144c5b5c2b829da8512c520eedf5104aec
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 3 12:50:52 2009 +0100
+
+    Pretty-print values in assert*
+
+ tests/twisted/servicetest.py |   15 +++++++++++----
+ 1 files changed, 11 insertions(+), 4 deletions(-)
+
+commit 0e054da167caf74ee3bfe948349f9a49a930921c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 3 18:42:03 2009 +0100
+
+    Don't use a va_list twice.
+    
+    Using a va_list twice within one va_start/va_end is not portable. You
+    have to start and end once per use. Here we just construct the formatted
+    message once, which I think is clearer.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+ src/debug.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+commit 05c0d7865af3414f2c29fcbd83e776b4107706eb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 7 19:32:51 2009 +0100
+
+    Unrace offer-muc-stream-tube.py
+    
+    Previously it might send the other members' presence before Gabble's
+    tried to join.
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+ tests/twisted/tubes/offer-muc-stream-tube.py |   24 +++++++++---------------
+ 1 files changed, 9 insertions(+), 15 deletions(-)
+
+commit f7af0795c91c25e00a6a72330ac41640cb4a5dd6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jun 3 14:15:00 2009 +0100
+
+    Updated NEWS.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ NEWS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit aad1c0434e10c90ac428611d864db2af8af2e8f3
+Merge: e571175 116df97
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jun 3 14:10:35 2009 +0100
+
+    Merge branch 'debug'
+
+commit 116df9751bce52cc08419d35a8746e1361adffb0
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jun 3 14:07:58 2009 +0100
+
+    Use g_direct_{hash,equal} instead of creating hash/equal functions for uints.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debug.c |   15 +--------------
+ 1 files changed, 1 insertions(+), 14 deletions(-)
+
+commit 24380712bf2d818948a4541a6ea5ea1bfef729e8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jun 3 13:28:27 2009 +0100
+
+    Use a hash table to contain debug flags.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/connection-manager.c |    9 +++++++++
+ src/debug.c              |   45 ++++++++++++++++++++++++++++++++++++++-------
+ src/debug.h              |    1 +
+ 3 files changed, 48 insertions(+), 7 deletions(-)
+
+commit 3db0d3fef0533eb74395d97121368d5988bd2ef3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jun 3 12:11:13 2009 +0100
+
+    Fix indentation.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debug.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 4ac31661866db63cc3395401d3bec8b91cf57601
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jun 3 12:06:25 2009 +0100
+
+    Added comments as to why the gabble messages shouldn't be sent to the debugger.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/gabble.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 64ce86d89c86206a6ad6470180182230114d61b9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jun 3 11:52:53 2009 +0100
+
+    Removed useless blank lines.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debugger.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 569d0b6c04beb7dceb3e19b1d47e4888818023d8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jun 3 11:51:18 2009 +0100
+
+    Updated function definition style.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debug.c    |    8 ++++----
+ src/debugger.c |   21 ++++++++++++++-------
+ src/gabble.c   |   20 ++++++++++----------
+ 3 files changed, 28 insertions(+), 21 deletions(-)
+
+commit f5e54fca1992021f8a6ecc377f7fe098d88ed03b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jun 3 11:43:56 2009 +0100
+
+    Updated Debug interface.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ extensions/Debug.xml |  140 ++++++++++++++++++++++++++++++++++---------------
+ 1 files changed, 97 insertions(+), 43 deletions(-)
+
+commit e571175a7256d20f8accaed72057a0d74ef2fa2b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 15:25:02 2009 +0100
+
+    Clarify immediate StreamDirectionChanged comment
+    
+    Fixes: fd.o#20841
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ src/media-channel.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit ff1629364f5e0a79bb7c050ef849bc8365e238d5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 2 10:28:28 2009 +0100
+
+    bump version to 0.7.28.1
+
+ NEWS         |    9 +++++++++
+ configure.ac |    2 +-
+ 2 files changed, 10 insertions(+), 1 deletions(-)
+
 commit 0b743c4f26ca109b97882731f0b01a48a06a8d19
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Mon Jun 1 18:36:42 2009 +0100
@@ -3022,6 +4217,157 @@ Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Apr 21 16:08:17 2009 +0100
 
     Merge branch 'socks5-proxies'
+
+commit 248efd034ef4f7bdc44925c35c42ca57340de36d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Apr 20 17:10:15 2009 +0100
+
+    Use generated signal emitting function instead of g_signal_emit_by_name.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debugger.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 25dfaf0e6f83bc44df073a35df8a4a327710e912
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Apr 20 16:53:53 2009 +0100
+
+    Emit new-debug-message with the correct arguments.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debugger.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 1cb9cbeb191b46e1ba26848eb540d2405164aabf
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Sun Apr 19 15:41:34 2009 +0100
+
+    Fix misc. problems and remove some code duplication.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debug.c    |    8 +-------
+ src/debugger.c |    8 ++++----
+ src/debugger.h |    2 +-
+ src/gabble.c   |    3 +--
+ 4 files changed, 7 insertions(+), 14 deletions(-)
+
+commit 0be75822fb642736fb5925fabf264dc1e5c54c30
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Sun Apr 19 15:19:23 2009 +0100
+
+    Split logging to debugger into another function.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debug.c |   30 +++++++++++++++++++++++-------
+ 1 files changed, 23 insertions(+), 7 deletions(-)
+
+commit 2791d4be61a68d96ece1b9e121a8422e55622951
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Sun Apr 19 15:03:32 2009 +0100
+
+    Record all debug messages regardless of the GABBLE_DEBUG environment variable.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debug.c |   42 ++++++++++++++++++++++++++++++++++++------
+ 1 files changed, 36 insertions(+), 6 deletions(-)
+
+commit 018fb0e97d6cc2d6e040552f25a48624554e5c1f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Sun Apr 19 15:03:03 2009 +0100
+
+    Only record in debugger if message is not from gabble.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/gabble.c |   15 ++++++++++-----
+ 1 files changed, 10 insertions(+), 5 deletions(-)
+
+commit bb1a9db6a645df2268caf4959d6e86c88c91e582
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Sun Apr 19 13:52:29 2009 +0100
+
+    Fix indentation.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debugger.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 5fe3c1093a5a582b07a01b21079cbab7645e0643
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Sun Apr 19 13:49:01 2009 +0100
+
+    Split the GLogLevelFlags -> GabbleDebugLevel into another function.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debugger.c |   33 ++++++++++++++++++---------------
+ 1 files changed, 18 insertions(+), 15 deletions(-)
+
+commit a2c7cc90be0d35371bd8d39584c3e2ccee8bfeba
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Sun Apr 19 01:45:16 2009 +0100
+
+    Record log domain and levels and expose them on the Debug interface.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/debugger.c |   44 ++++++++++++++++++++++++++++++++++++++++----
+ src/debugger.h |    6 ++++++
+ src/gabble.c   |   11 +++++++----
+ 3 files changed, 53 insertions(+), 8 deletions(-)
+
+commit 0795f6b65bba59ed0dd5947f5e985f0bf2e762d8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Sun Apr 19 01:42:31 2009 +0100
+
+    Added domain and level to Debug interface.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ extensions/Debug.xml |   45 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 44 insertions(+), 1 deletions(-)
+
+commit 41d6eb2daffe7c2ac60071094c47be082fd6add5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Sun Apr 19 01:34:06 2009 +0100
+
+    Override the default log handler, and change log domain.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ src/Makefile.am |    3 ++-
+ src/gabble.c    |    4 ++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+commit 80624afa19061a682d0223c05b06b400909deb5b
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Fri Apr 10 18:20:45 2009 +0100
+
+    initial implementation of the debug interface
+
+ src/Makefile.am             |    2 +
+ src/debugger.c              |  235 +++++++++++++++++++++++++++++++++++++++++++
+ src/debugger.h              |   82 +++++++++++++++
+ src/gabble.c                |   26 +++++
+ tests/twisted/Makefile.am   |    1 +
+ tests/twisted/test-debug.py |   52 ++++++++++
+ 6 files changed, 398 insertions(+), 0 deletions(-)
+
+commit 6a2e59723659731dcd37cf725d07160908e93cc0
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Fri Apr 10 18:10:24 2009 +0100
+
+    add straw man debug interface
+
+ extensions/Debug.xml |   69 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ extensions/all.xml   |    1 +
+ 2 files changed, 70 insertions(+), 0 deletions(-)
 
 commit 0b4e269ca547cc91a452035aca11bb3e37e47120
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
