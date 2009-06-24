@@ -60,10 +60,10 @@ am_libgabble_convenience_la_OBJECTS = base64.lo bytestream-factory.lo \
 	bytestream-multiple.lo bytestream-socks5.lo capabilities.lo \
 	caps-hash.lo caps-channel-manager.lo conn-aliasing.lo \
 	conn-avatars.lo conn-location.lo conn-olpc.lo conn-presence.lo \
-	connection.lo connection-manager.lo debug.lo disco.lo error.lo \
-	ft-channel.lo ft-manager.lo gabble.lo im-channel.lo \
-	im-factory.lo jingle-content.lo jingle-factory.lo \
-	jingle-media-rtp.lo jingle-session.lo \
+	connection.lo connection-manager.lo debug.lo debugger.lo \
+	disco.lo error.lo ft-channel.lo ft-manager.lo gabble.lo \
+	im-channel.lo im-factory.lo jingle-content.lo \
+	jingle-factory.lo jingle-media-rtp.lo jingle-session.lo \
 	jingle-transport-google.lo jingle-transport-iface.lo \
 	media-channel.lo media-channel-hold.lo media-stream.lo \
 	media-factory.lo message-util.lo muc-channel.lo muc-factory.lo \
@@ -292,6 +292,8 @@ libgabble_convenience_la_SOURCES = \
     connection-manager.c \
     debug.h \
     debug.c \
+    debugger.h \
+    debugger.c \
     disco.h \
     disco.c \
     error.c \
@@ -401,7 +403,8 @@ AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @LOUDMOUTH_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
 	    @SOUP_CFLAGS@ @UUID_CFLAGS@ \
-	    -I $(top_srcdir)/lib -I $(top_builddir)/lib
+	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
+	    -DG_LOG_DOMAIN=\"gabble\"
 
 ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @LOUDMOUTH_LIBS@ @TP_GLIB_LIBS@ \
 	    @SOUP_LIBS@ @UUID_LIBS@
@@ -517,6 +520,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connection-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debugger.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/disco.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ft-channel.Plo@am__quote@
