@@ -536,7 +536,7 @@ void gabble_ft_manager_handle_si_request (GabbleFtManager *self,
 
   desc_node = lm_message_node_get_child (file_node, "desc");
   if (desc_node != NULL)
-    description = desc_node->value;
+    description = lm_message_node_get_value (desc_node);
   else
     description = NULL;
 
@@ -675,12 +675,13 @@ gabble_ft_manager_get_contact_caps (GabbleCapsChannelManager *manager,
 
 static gpointer
 gabble_ft_manager_parse_caps (GabbleCapsChannelManager *manager,
-                              LmMessageNode *children)
+                              LmMessageNode *query_result)
 {
-  LmMessageNode *child;
+  NodeIter i;
 
-  for (child = children; NULL != child; child = child->next)
+  for (i = node_iter (query_result); i; i = node_iter_next (i))
     {
+      LmMessageNode *child = node_iter_data (i);
       const gchar *var;
 
       if (0 != strcmp (child->name, "feature"))

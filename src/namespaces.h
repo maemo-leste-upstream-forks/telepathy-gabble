@@ -34,35 +34,49 @@
 #define NS_GOOGLE_CAPS          "http://www.google.com/xmpp/client/caps"
 #define NS_GOOGLE_FEAT_SESSION  "http://www.google.com/xmpp/protocol/session"
 #define NS_GOOGLE_FEAT_VOICE    "http://www.google.com/xmpp/protocol/voice/v1"
+#define NS_GOOGLE_FEAT_VIDEO    "http://www.google.com/xmpp/protocol/video/v1"
 #define NS_GOOGLE_JINGLE_INFO   "google:jingleinfo"
 #define NS_GOOGLE_ROSTER        "google:roster"
 #define NS_IBB                  "http://jabber.org/protocol/ibb"
-/* XEP-0166 draft v0.15 */
+
+/* Namespaces for XEP-0166 draft v0.15, the most capable Jingle dialect
+ * supported by telepathy-gabble < 0.7.16, including the versions shipped with
+ * Maemo Chinook and Diablo.
+ */
 #define NS_JINGLE015            "http://jabber.org/protocol/jingle"
-/* XEP-0166 draft v0.32 (last call) */
-#define NS_JINGLE032            "urn:xmpp:jingle:0"
-/* Google's Jingle dialect */
-#define NS_GOOGLE_SESSION       "http://www.google.com/session"
-/* Audio capability in Google Jingle dialect */
-#define NS_GOOGLE_SESSION_PHONE "http://www.google.com/session/phone"
-/* XEP-0167 (Jingle RTP) */
-#define NS_JINGLE_RTP           "urn:xmpp:jingle:apps:rtp:0"
-#define NS_JINGLE_RTP_INFO      "urn:xmpp:jingle:apps:rtp:info:1"
+
 /* RTP audio capability in Jingle v0.15 (obsoleted by NS_JINGLE_RTP) */
 #define NS_JINGLE_DESCRIPTION_AUDIO \
   "http://jabber.org/protocol/jingle/description/audio"
 /* RTP video capability in Jingle v0.15 (obsoleted by NS_JINGLE_RTP) */
 #define NS_JINGLE_DESCRIPTION_VIDEO \
   "http://jabber.org/protocol/jingle/description/video"
-#define NS_JINGLE_ERRORS            "http://jabber.org/protocol/jingle#errors"
-/* Jingle ICE-UDP transport */
-#define NS_JINGLE_TRANSPORT_ICE     \
-  "http://jabber.org/protocol/jingle/transport/ice"
+
+/* XEP-0166 draft */
+#define NS_JINGLE032            "urn:xmpp:jingle:1"
+#define NS_JINGLE_ERRORS        "urn:xmpp:jingle:errors:1"
+
+/* XEP-0167 (Jingle RTP) */
+#define NS_JINGLE_RTP           "urn:xmpp:jingle:apps:rtp:1"
+#define NS_JINGLE_RTP_ERRORS    "urn:xmpp:jingle:apps:rtp:errors:1"
+#define NS_JINGLE_RTP_INFO      "urn:xmpp:jingle:apps:rtp:info:1"
+#define NS_JINGLE_RTP_AUDIO     "urn:xmpp:jingle:apps:rtp:audio"
+#define NS_JINGLE_RTP_VIDEO     "urn:xmpp:jingle:apps:rtp:video"
+
+/* Google's Jingle dialect */
+#define NS_GOOGLE_SESSION       "http://www.google.com/session"
+/* Audio capability in Google Jingle dialect */
+#define NS_GOOGLE_SESSION_PHONE "http://www.google.com/session/phone"
+/* Video capability in Google's Jingle dialect */
+#define NS_GOOGLE_SESSION_VIDEO "http://www.google.com/session/video"
+
 /* google-p2p transport */
 #define NS_GOOGLE_TRANSPORT_P2P "http://www.google.com/transport/p2p"
 /* Jingle RAW-UDP transport */
-#define NS_JINGLE_TRANSPORT_RAWUDP \
-  "http://jabber.org/protocol/jingle/transport/rawudp"
+#define NS_JINGLE_TRANSPORT_RAWUDP "urn:xmpp:jingle:transports:raw-udp:0"
+/* Jingle ICE-UDP transport */
+#define NS_JINGLE_TRANSPORT_ICEUDP "urn:xmpp:jingle:transports:ice-udp:0"
+
 #define NS_MUC                  "http://jabber.org/protocol/muc"
 #define NS_MUC_BYTESTREAM       "http://telepathy.freedesktop.org/xmpp/protocol/muc-bytestream"
 #define NS_MUC_USER             "http://jabber.org/protocol/muc#user"

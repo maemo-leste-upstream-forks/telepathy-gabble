@@ -1,3 +1,1521 @@
+commit 248cd70c2956c3ed4c70c1a986f3395171ee1bf2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 16:03:56 2009 +0100
+
+    version 0.7.30
+
+ NEWS         |   12 ++++++++++--
+ configure.ac |    4 ++--
+ 2 files changed, 12 insertions(+), 4 deletions(-)
+
+commit d8fef1b97011b95ad8f3bdf9ebd28036b92078f9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 15:55:54 2009 +0100
+
+    Disable test-vcard-race for the release.
+
+ tests/twisted/vcard/test-vcard-race.py |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 0091ee57dd6a653a4cd53011237af0e2240e86d8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Jun 26 16:49:46 2009 +0100
+
+    lm_message_node_unlink; takes the parent as argument
+    
+    This will allow us to re-implement this function in Wocky-land (Wocky
+    nodes don't have a parent pointer).
+
+ src/util.c          |    7 ++++---
+ src/util.h          |    3 ++-
+ src/vcard-manager.c |    2 +-
+ 3 files changed, 7 insertions(+), 5 deletions(-)
+
+commit 4e58b8a857883cc358f407d7089d8e12463a2461
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jun 29 15:07:49 2009 +0100
+
+    remove gabble_g_value_slice_new_*
+
+ src/util.c |   36 ------------------------------------
+ src/util.h |    5 -----
+ 2 files changed, 0 insertions(+), 41 deletions(-)
+
+commit 31fd82e4469fa7ac10055c52b6f873abbafb4130
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jun 29 15:07:37 2009 +0100
+
+    translate_relay_info: use tp_g_value_slice_new_* instead of the gabble version of those functions
+
+ src/jingle-factory.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+commit e2c68c2511b9254f6b046e282f1cd311ebd2e15b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Jun 26 16:32:14 2009 +0100
+
+    util: remove unused lm_message_node_add_child_node
+
+ src/util.c |   45 ---------------------------------------------
+ src/util.h |    3 ---
+ 2 files changed, 0 insertions(+), 48 deletions(-)
+
+commit 1af3bdb09c7ebc6f5c553db51c20c6b2426d2831
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Jun 26 14:16:20 2009 +0100
+
+    ft-manager.c: use the lm_message_node_get_value accessor
+
+ src/ft-manager.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 95c23f986eec6faf2c1723e0094dcc7ca974150b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Jun 26 14:14:22 2009 +0100
+
+    vcard-manager.c: use the lm_message_node_get_value accessor
+
+ src/vcard-manager.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ac27a574daa0724e1d02569436143f9cc10025c7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Jun 26 14:09:17 2009 +0100
+
+    roster.c: use the lm_message_node_get_value accessor
+
+ src/roster.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit c2ed3bcac1fa82b371629121de5f6b2fc6f408ad
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Jun 26 12:44:32 2009 +0100
+
+    bytestream-socks5.c: use node iterator
+
+ src/bytestream-socks5.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 53902675571cdc1fd0dd55f626d37680197d0b10
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jun 29 10:41:40 2009 +0100
+
+    jingle-transport-rawudp.c: use node iteration wrappers
+
+ src/jingle-transport-rawudp.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit fa64f06ac2888294c336bc67a99a127fa355706a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jun 29 10:41:30 2009 +0100
+
+    jingle-transport-iceudp.c: use node iteration wrappers
+
+ src/jingle-transport-iceudp.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 21a463f98c34ede8abefc02e38fbfcc2ca00c806
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jun 29 10:33:42 2009 +0100
+
+    jingle-transport-google.c: use node iteration wrappers
+
+ src/jingle-transport-google.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit edbd65ff1acb6a00acbb20d5a8e4d1eda77c0269
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Jun 29 10:33:28 2009 +0100
+
+    jingle-media-rtp.c: use node iteration wrappers
+
+ src/jingle-media-rtp.c |   15 +++++++++------
+ 1 files changed, 9 insertions(+), 6 deletions(-)
+
+commit f17a91c51e7663e9a087c633f90e767504ed57e2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Jun 25 16:03:03 2009 +0100
+
+    gabble_caps_channel_manager_parse_capabilities: take the parent node instead of the first children as argument
+    
+    This allows us to use node iteration wrappers in in parse_caps
+    implementations.
+
+ src/caps-channel-manager.c  |    4 ++--
+ src/caps-channel-manager.h  |    2 +-
+ src/ft-manager.c            |    7 ++++---
+ src/presence-cache.c        |    2 +-
+ src/private-tubes-factory.c |    7 ++++---
+ 5 files changed, 12 insertions(+), 10 deletions(-)
+
+commit 2dfacd2db4ddd5b170280035e56695c4c7a68e82
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Jun 25 16:19:54 2009 +0100
+
+    jingle-session: use node iteration wrappers
+
+ src/jingle-session.c |   34 ++++++++++++++++++++--------------
+ 1 files changed, 20 insertions(+), 14 deletions(-)
+
+commit 585dd635c7e392b6a44b9125bb6ac587c0565caf
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Jun 25 15:27:55 2009 +0100
+
+    util.c: use node iteration wrappers
+
+ src/util.c |   29 ++++++++++++++++-------------
+ 1 files changed, 16 insertions(+), 13 deletions(-)
+
+commit 4c039245ae3797e1a76e501a0228cbed934a1685
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Jun 25 15:27:44 2009 +0100
+
+    register.c: use node iteration wrappers
+
+ src/register.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 8617ed1fc6dbd69fc61d44d469ff34e1207fdefb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Jun 25 15:27:11 2009 +0100
+
+    capabilities.c: use node iteration wrappers
+
+ src/capabilities.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 6e239b4bd796f87b09d7d3a2753e7c22cd45af60
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Fri Feb 6 17:17:11 2009 +0100
+
+    src/conn-location.c: use node iteration wrappers
+
+ src/conn-location.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+commit f44e2bd1e3f65f39a4c12200c215e4ddf4485792
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 20:28:45 2008 +0000
+
+    error.c: use node iteration wrappers
+
+ src/error.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 76e2bf7a1c42019ff99c224c2ae507c24a4b73c2
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 20:23:38 2008 +0000
+
+    vcard-manager.c: use node iteration wrappers
+
+ src/vcard-manager.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 1814d88fab3ba5d5fbc194b1de4912d81088d353
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 20:23:02 2008 +0000
+
+    tubes-channel.c: use node iteration wrappers
+
+ src/tubes-channel.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit efad34c4db5567c6be35e78fe7ea3038d439800c
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 20:21:58 2008 +0000
+
+    roster.c: use node iteration functions
+
+ src/roster.c |   15 +++++++--------
+ 1 files changed, 7 insertions(+), 8 deletions(-)
+
+commit a7873ebff3f2c9b42a8c5046943005b3f2413bc0
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 20:21:12 2008 +0000
+
+    pubsub.c: use node iteration wrappers
+
+ src/pubsub.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 09a418da0845c9bc6f4adb116dc5a4ea962c0f3e
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 20:06:34 2008 +0000
+
+    muc-channel.c: use node iteration wrappers
+
+ src/muc-channel.c |   64 ++++++++++++++++++++++++++++++++--------------------
+ 1 files changed, 39 insertions(+), 25 deletions(-)
+
+commit 88b63779f500bc2fe0b7e812d8a6e3aac690388c
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 18:38:42 2008 +0000
+
+    connection.c: use node iteration wrappers
+
+ src/connection.c |   21 ++++++++++++---------
+ 1 files changed, 12 insertions(+), 9 deletions(-)
+
+commit c66b741060c1140b831bbaa06f0a97986cebc310
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 18:37:34 2008 +0000
+
+    conn-olpc.c: port to node iteration wrappers
+
+ src/conn-olpc.c |   58 ++++++++++++++++++++++++++++++++----------------------
+ 1 files changed, 34 insertions(+), 24 deletions(-)
+
+commit 4c22a8ec5b66fbd4e24dfd06c14f3fd3c7a210c6
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 18:37:14 2008 +0000
+
+    conn-aliasing.c: use node iteration wrappers
+
+ src/conn-aliasing.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+commit 01df4af2092b4e623733b56e7a2b720267fe5de8
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 18:36:34 2008 +0000
+
+    caps-hash.c: use node iteration wrappers
+
+ src/caps-hash.c |   27 ++++++++++++++-------------
+ 1 files changed, 14 insertions(+), 13 deletions(-)
+
+commit 63194e989c664c35853d9b03f34391ccd3df640d
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 17:38:45 2008 +0000
+
+    bytestream-factory.c: use node iteration wrappers
+
+ src/bytestream-factory.c |   34 +++++++++++++++++++++-------------
+ 1 files changed, 21 insertions(+), 13 deletions(-)
+
+commit 6a8065c985d8b928e3ffc10c934f036da77ed89c
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 16:20:21 2008 +0000
+
+    disco.c: port to node iteration wrappers
+
+ src/disco.c |   24 ++++++++++++++++--------
+ 1 files changed, 16 insertions(+), 8 deletions(-)
+
+commit 69b4a1bf765877d6cc85a7a8cd01b86fe0dcd86f
+Author: Dafydd Harries <daf@rhydd.org>
+Date:   Wed Dec 3 12:58:19 2008 +0000
+
+    define macros for message node children iteration
+
+ src/util.h |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 8091ae5651033e35e8786f3c482194a66fcdcc7b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 13:16:51 2009 +0100
+
+    Don't send session-info for jingle v0.15
+
+ src/jingle-session.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit f6173354ca9e2441dfa576fa283a53667e390a17
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 12:10:32 2009 +0100
+
+    'keepalive-interval' should be CONSTRUCT not _ONLY
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ src/connection.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 0b9c0676ed012ea650d65e86d1051f1be5e4c277
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 12:07:22 2009 +0100
+
+    GabbleConnection:port should be [1, G_MAXUINT16]
+    
+    GabbleCM checks that the port parameter is nonzero before setting it, so
+    this is safe and correct.
+
+ src/connection.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 351c65e1602114cd550a93e5f14cfb084cb7e204
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 22 11:52:46 2009 +0100
+
+    NEWS port=5222 change
+
+ NEWS |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 79f5ef3c33ca94feed5ed40b8a69f9abc7fff0d9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 19 19:00:34 2009 +0100
+
+    Ignore port=5222 if we think we know better.
+    
+    Previously, if the UI sets port=5222 then Gabble disabled SRV lookups.
+    This turns out not to be great, because if the UI sets port=5222 (which
+    was not the default per Gabble's parameters, it is the spiritual XMPP
+    default port) then it can't connect to any XMPP server that uses an SRV
+    record.
+    
+    While pedantically correct, the previous semantics turn out not to be
+    very helpful. We could go around fixing every account UI that ever gets
+    written, but ignoring 5222 if neither the connect server nor old-ssl
+    were set is more useful behaviour.
+
+ src/connection-manager.c |    2 +-
+ src/connection.c         |   23 +++++++++++++++--------
+ 2 files changed, 16 insertions(+), 9 deletions(-)
+
+commit e2a7dc894a2a84687990253d161e08c1c54cd0fc
+Merge: 85fb14f f524a51
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 12:37:16 2009 +0100
+
+    Merge branch 'jingle-new-transports'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 85fb14f0d16209c21879e9d89914195a41f5a29a
+Merge: 586619f 8c838cb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 12:36:19 2009 +0100
+
+    Merge branch 'jingle-namespaces'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit f524a51ab21bb8938c8163ebe0b697e89f19d00f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 12:17:48 2009 +0100
+
+    Explicitly check 'nat-traversal' property
+    
+    Waiting for a PropertiesChanged notification is racy, and it's wrong
+    anyway: there's no guarantee that the property should *change* to
+    'ice-udp', it should just *be* 'ice-udp'.
+
+ tests/twisted/jingle/test-outgoing-iceudp.py |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+commit e0c4f14b50c5b2653866210c23aaeffb1b2d2c05
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 12:17:09 2009 +0100
+
+    test-outgoing-iceudp: Remove peer's gtalk-p2p cap
+    
+    Since Gabble now prefers gtalk-p2p over iceudp, we need to make the peer
+    incapable of the former to convince Gabble to use the latter.
+
+ tests/twisted/jingle/test-outgoing-iceudp.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit e2e072330ff861bd514c453a9a308e22c8b8e652
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 11:54:29 2009 +0100
+
+    Prefer gtalk-p2p to iceudp
+
+ src/media-channel.c |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
+
+commit 2897591e19a4a871660c5952f31cc299b8f2efe0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 11:44:15 2009 +0100
+
+    gtalk-p2p: Don't special-case sending new local candidates
+    
+    JingleContent now takes care of calling _send_candidates() on the
+    transport after giving it new candidates, if it's appropriate to do so.
+    So the new_local_candidates implementation should just remember the
+    candidates as pending.
+
+ src/jingle-transport-google.c |   26 ++++++--------------------
+ 1 files changed, 6 insertions(+), 20 deletions(-)
+
+commit 3baa6e2187ad05744c4fc88281fd0ae39c80f1ba
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 11:40:42 2009 +0100
+
+    Remove unused variable
+
+ src/jingle-transport-rawudp.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+commit 5af07d52b7a3ffa4d6a461a404a8b0e662508888
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 29 11:39:16 2009 +0100
+
+    Ice: Don't signal empty lists of remote candidates
+
+ src/jingle-transport-iceudp.c |   29 +++++++++++++++++++----------
+ 1 files changed, 19 insertions(+), 10 deletions(-)
+
+commit 7f45b4f1fdfe66394c93347c71f94d2abfab6f53
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sun Jun 28 16:54:22 2009 +0100
+
+    Stringify component before setting it as an attribute
+
+ src/jingle-transport-rawudp.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 610bb0012d942d7cd35059611d54f07b0d403b4b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sun Jun 28 16:43:07 2009 +0100
+
+    RawUDP: Remove unused 'pending_candidates' field.
+    
+    With raw UDP, we only accept one set of local candidates from
+    Telepathy-land, and only send candidates on session-initiate,
+    session-accept, content-add, content-accept. So there's no need to have
+    a concept of pending candidates.
+
+ src/jingle-transport-rawudp.c |   15 +--------------
+ 1 files changed, 1 insertions(+), 14 deletions(-)
+
+commit 88b63d7352ac653229be6950f38133fe374e0c26
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sun Jun 28 16:42:00 2009 +0100
+
+    Correctly send rawudp candidates' id
+
+ src/jingle-transport-rawudp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 0bd7e4b03227445324466113c82420e21c04cbfd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sun Jun 28 16:39:35 2009 +0100
+
+    We don't care about stun vs. local for rawudp candidates
+
+ src/jingle-transport-rawudp.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 0a143fe31bb994a2eed84290f3174fe712356c2b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sun Jun 28 16:37:31 2009 +0100
+
+    Don't fetch "state" property without using it.
+
+ src/jingle-transport-iceudp.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+commit 8198ad4878983cc25f2ef8e60ddcf25e5f7f33e7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sun Jun 28 16:36:51 2009 +0100
+
+    ICE candidates don't have a 'name' attribute.
+
+ src/jingle-transport-iceudp.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit e43fa0f33299bb7d5ead9f281a374983a15d9710
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sun Jun 28 16:36:21 2009 +0100
+
+    Don't assert on unknown candidate types/protocols
+
+ src/jingle-transport-iceudp.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+commit 5c6567333b55ea371815b61eff992d163a6e65e6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sun Jun 28 16:35:36 2009 +0100
+
+    Use candidates' Telepathy IDs as foundation
+    
+    We still generate unique strings for candidates' 'id' attribute.
+
+ src/jingle-transport-iceudp.c |   16 +++++++---------
+ 1 files changed, 7 insertions(+), 9 deletions(-)
+
+commit bc966c18b9ca35189c85a4de17c838bca8e327cd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sun Jun 28 16:25:22 2009 +0100
+
+    Multiply candidate preference by 65536
+    
+    tp-fs divides the priority by 65536 before handing it to the CM (in
+    gtalk-p2p we send a float over the wire), so if we multiply it by 65536
+    we get back to where we started.
+
+ src/jingle-transport-iceudp.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+commit 2ef5311b40bae2b7689630cabcbe89f0ca1cd536
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sun Jun 28 16:23:53 2009 +0100
+
+    Use ice candidates' foundation as candidate_id
+
+ src/jingle-transport-iceudp.c |    9 +++++----
+ src/media-stream.c            |    7 +++++--
+ 2 files changed, 10 insertions(+), 6 deletions(-)
+
+commit a94aa0fddc79bbaf951347074f5f9fa607793136
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sun Jun 28 16:14:20 2009 +0100
+
+    IceUdp: be tolerant of unparseable candidates.
+    
+    If a <transport/> stanza contains candidates that we can't parse, as
+    well as candidates that we can, we should accept the ones we managed to
+    parse rather than rejecting the whole lot.
+
+ src/jingle-transport-iceudp.c |   43 ++++++++++++++++++++---------------------
+ 1 files changed, 21 insertions(+), 22 deletions(-)
+
+commit 40cc47fee86d228c1c53fa0f526caf45f6c49d8e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 17:29:06 2009 +0100
+
+    Let the transport decide if it's ready to accept
+
+ src/jingle-content.c          |   12 +++---------
+ src/jingle-transport-iface.c  |   22 ++++++++++++++++++++++
+ src/jingle-transport-iface.h  |    3 +++
+ src/jingle-transport-rawudp.c |   12 +++++++++++-
+ 4 files changed, 39 insertions(+), 10 deletions(-)
+
+commit 77bfe4546431755207b7d7b1ca9c20893e7ecf40
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 16:39:50 2009 +0100
+
+    Set NATTraversal correctly on streams.
+
+ src/media-channel.c |   49 ++++++++++++++++++++++++++-----------------------
+ 1 files changed, 26 insertions(+), 23 deletions(-)
+
+commit cd496589d348ebc7f7633f1f5694f5f6133fab1b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 16:09:30 2009 +0100
+
+    Only group ICE candidates with the same ufrag
+
+ src/jingle-transport-iceudp.c |   40 ++++++++++++++++++++++++++--------------
+ 1 files changed, 26 insertions(+), 14 deletions(-)
+
+commit 366b0453a877fd724e15a2f208316d8d405a6ada
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 12:28:03 2009 +0100
+
+    Remove error-setting macros from transports
+
+ src/jingle-transport-iceudp.c |    7 ++-----
+ src/jingle-transport-rawudp.c |    7 ++-----
+ 2 files changed, 4 insertions(+), 10 deletions(-)
+
+commit 94b46d8a61969bf395484dd312e57e649233d701
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 12:25:34 2009 +0100
+
+    Remove GET_PRIV macros from {Ice,Raw}Udp
+
+ src/jingle-transport-iceudp.c |   18 ++++++------------
+ src/jingle-transport-rawudp.c |   18 ++++++------------
+ 2 files changed, 12 insertions(+), 24 deletions(-)
+
+commit 3270d213bd0865166448495905c9918c798819ce
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 12:09:08 2009 +0100
+
+    Update Jingle{Content,Session} to new Transport API
+    
+    This ensures that inject_candidates and send_candidates are called at
+    all the appropriate moments, to give the transports the opportunities to
+    do what they need to do. Those appropriate moments are:
+    
+    inject_candidates: when sending session-initiate, session-accept,
+    content-add, content-accept.
+    
+    send_candidates: just after any of the above actions (for transports
+    that never include candidates in the actions and always send
+    transport-info), and when candidates are added for contents which have
+    already been announced.
+
+ src/jingle-content.c |   43 ++++++++++++++++++++++---------------------
+ src/jingle-content.h |    2 ++
+ src/jingle-session.c |    5 ++++-
+ 3 files changed, 28 insertions(+), 22 deletions(-)
+
+commit 764ee086853ad4951b4214b631c8c4c0f784d7a7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 12:06:32 2009 +0100
+
+    Updated RawUdp to implement inject_candidates
+    
+    XEP-0177 says that rawudp candidates MUST/SHOULD be in
+    {add,initiate}/accept, respectively, and says absolutely nothing about
+    transport-info. So we inject our candidates into those messages, and
+    leave _send() unimplemented.
+
+ src/jingle-transport-rawudp.c |   30 ++++++++++++------------------
+ 1 files changed, 12 insertions(+), 18 deletions(-)
+
+commit 1422a769af6158d8a99fb757a3f751664b0afca4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 12:04:44 2009 +0100
+
+    Update IceUdp to implement {inject,send}_candidates
+    
+    IceUdp candidates SHOULD be included in session-initiate,
+    Session-accept, c-add, c-accept where possible, so inject_candidates
+    adds any outstanding candidates to the stanza. send_candidates sends
+    a transport-info if there are any outstanding candidates.
+
+ src/jingle-transport-iceudp.c |   60 +++++++++++++++++++++++++++-------------
+ 1 files changed, 40 insertions(+), 20 deletions(-)
+
+commit 961d90c4535f09d94e2096f2333a756745ba365b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 12:01:00 2009 +0100
+
+    Implement send_candidates in Google transport
+    
+    gtalk-p2p candidates are never included in session/content actions, only
+    in transport-infos.
+
+ src/jingle-transport-google.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+commit d73af34d6c119d88c458fe592425979e62c93a40
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 11:57:24 2009 +0100
+
+    Split transport::produce_node() in two.
+    
+    It turns out not to be enough to have a single method on transports to
+    add a <transport/> stanza to some other action, because for
+    backwards-compatibility with older Gabbles we have to send RTP and RTCP
+    candidates in separate transport-info stanzas, and that knowledge
+    belongs in the gtalkp2p transport rather than anywhere else.
+    
+    So this patch gives transports two methods:
+    
+    * inject_candidates, which should add candidates to the given
+      <transport/> node, assumed to be part of a session-{initiate,accept}
+      or content-{add,accept}; and
+    * send_candidates, which instructs the transport that it should now send
+      any outstanding candidates it may have.
+
+ src/jingle-transport-iface.c |   42 ++++++++++++++++++++++++++++--------------
+ src/jingle-transport-iface.h |   21 ++++++++++++++++-----
+ 2 files changed, 44 insertions(+), 19 deletions(-)
+
+commit 510d2cebbe62980bf7f91f13101294ea8a3bd066
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 11:56:06 2009 +0100
+
+    Correct a typo in _request_contents
+
+ src/media-channel.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 626d1da01bad0c7cbb643ffe361e86dcc0f84ab6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 11:50:19 2009 +0100
+
+    Expect ice-udp candidates in session-initiate.
+    
+    The test previously expected an empty <transport/> stanza in the
+    session-initiate, followed by a transport-info action containing the
+    candidate. This matches gtalk-p2p, and is permitted by XEP-0176, but the
+    latter says the session-initiate SHOULD contain candidates.
+    
+    So, test that the session-initiate contains the candidate we gave
+    Gabble, and also check that Gabble doesn't send a bonus empty
+    transport-info.
+
+ tests/twisted/jingle/test-outgoing-iceudp.py |   24 ++++++++++++++++--------
+ 1 files changed, 16 insertions(+), 8 deletions(-)
+
+commit df08da5a6c806c589710a30ce2620bd9bd1d2b25
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 11:48:08 2009 +0100
+
+    Correct jingle/test-incoming-iceudp
+    
+    - We shouldn't be expecting the 'nat-traversal' tp-property to
+      *change*; rather, we should check it has the right value when the
+      channel is announced.
+    
+    - Check the contents of transport-info and session-accept stanzas
+      slightly.
+    
+    - Import constants, and fix a typo so it works.
+
+ tests/twisted/jingle/test-incoming-iceudp.py |   29 +++++++++++++++++++------
+ 1 files changed, 22 insertions(+), 7 deletions(-)
+
+commit 92d3375c476d5d870bd6e82f139f40ba8eb5dafd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 11:44:32 2009 +0100
+
+    Don't include <transport/> in description-info
+
+ src/jingle-content.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit baa2a8b4349279aa989245e89bc74a8f741e401f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 26 20:38:03 2009 +0100
+
+    Make MediaChannel:nat-traversal a CONSTRUCT property
+    
+    This has the side-effect of it being set to its default value if none is
+    provided.
+
+ src/media-channel.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6d6cd619e92cdb8466dc56283adf9be0aff46e5b
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 12 14:32:12 2009 +0100
+
+    JingleContent: wait with content readiness until we have local candidates
+    
+    This is needed so we can pass them in session-initiate or content-add when
+    using RAW-UDP.
+
+ src/jingle-content.c                               |   40 ++++++++++++++-----
+ .../twisted/jingle/test-content-adding-removal.py  |    1 +
+ 2 files changed, 30 insertions(+), 11 deletions(-)
+
+commit 3c4266972323c49d3486c2681655a241afd3b312
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Feb 18 11:38:31 2009 +0000
+
+    Handle prflx candidates in ice-udp
+
+ src/jingle-transport-iceudp.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit ac9427eaeb501ba63971319ab7159eeb85536ac8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Feb 17 18:13:23 2009 +0000
+
+    Correctly prepend candidates to the list
+
+ src/media-stream.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 52a5e95190f2de44633e6699afdb292864ae176c
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 12 15:13:08 2009 +0100
+
+    JingleTransportRawUdp: remove obsoleted transmit_candidates() method
+
+ src/jingle-transport-rawudp.c |   84 +++++-----------------------------------
+ 1 files changed, 11 insertions(+), 73 deletions(-)
+
+commit 2a6674c150b383acae685e767305b23a8823e8f5
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 12 13:16:15 2009 +0100
+
+    JingleContent: rename transport_ready to transport_connected
+
+ src/jingle-content.c |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
+
+commit d7b828b08d149cd14039705e54a6d1b45e42a1a1
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 12 13:07:47 2009 +0100
+
+    JingleTransportRawUdp: update produce_node() method
+
+ src/jingle-transport-rawudp.c |   20 ++++++++++++--------
+ src/jingle-transport-rawudp.h |    4 ----
+ 2 files changed, 12 insertions(+), 12 deletions(-)
+
+commit e4f5f4372fdfb5d894cc2842ae3775daf954ad33
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 12 12:58:05 2009 +0100
+
+    JingleTransportIceUdp: replace transmit_candidates() with produce_node()
+
+ src/jingle-transport-iceudp.c |  113 ++++++++++-------------------------------
+ 1 files changed, 28 insertions(+), 85 deletions(-)
+
+commit 2759538322b80af733596d59a7ea864afd502455
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 12 12:57:02 2009 +0100
+
+    JingleTransportRawUdp: remove unused retransmit_candidates() method
+
+ src/jingle-transport-rawudp.c |   26 --------------------------
+ 1 files changed, 0 insertions(+), 26 deletions(-)
+
+commit 1d5cf336715c0c1c647398217f8dab60ce6cd7f2
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 12 12:52:23 2009 +0100
+
+    JingleTransportIface: replace retransmit_candidates() with produce_node()
+
+ src/jingle-transport-iface.c |   25 ++++++++++++++-----------
+ src/jingle-transport-iface.h |    9 +++++----
+ 2 files changed, 19 insertions(+), 15 deletions(-)
+
+commit b5ee745a84e2422c9ba9efa5465bc6b8795f0cb1
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 12 10:26:00 2009 +0100
+
+    MediaStream: removed cruft from new_native_candidate method
+
+ src/media-stream.c |  101 +++++++++++++--------------------------------------
+ 1 files changed, 26 insertions(+), 75 deletions(-)
+
+commit c089a831d2c64e3913966e91e1e5b833a996f32c
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 5 15:38:35 2009 +0100
+
+    JingleTransportIface: rename add_candidates() to more descriptive new_local_candidates()
+
+ src/jingle-content.c          |    2 +-
+ src/jingle-transport-google.c |    4 ++--
+ src/jingle-transport-iceudp.c |    4 ++--
+ src/jingle-transport-iface.c  |    4 ++--
+ src/jingle-transport-iface.h  |    4 ++--
+ src/jingle-transport-rawudp.c |    4 ++--
+ 6 files changed, 11 insertions(+), 11 deletions(-)
+
+commit 99194da330d05d5353d8683c7f1a295848ce1f25
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 12 09:57:30 2009 +0100
+
+    JingleTransportRawUdp: produce candidate stanza for all local candidates (needed for RTP+RTCP)
+
+ src/jingle-transport-rawudp.c |   37 +++++++++++++++++--------------------
+ 1 files changed, 17 insertions(+), 20 deletions(-)
+
+commit 68e0af12c24e0d65cbfd8f253c29a582dcd405a6
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 12 09:52:43 2009 +0100
+
+    JingleTransportRawUdp: properly handle incoming RTP+RTCP candidate batch
+
+ src/jingle-transport-rawudp.c |   24 +++++++++---------------
+ 1 files changed, 9 insertions(+), 15 deletions(-)
+
+commit d7b2d2cb4dc492d072443d4951d09cfa2df9b93c
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 12 09:40:01 2009 +0100
+
+    JingleCandidate struct: added "id" field
+
+ src/jingle-content.h          |    8 +++++---
+ src/jingle-transport-google.c |    4 ++--
+ src/jingle-transport-iceudp.c |    4 ++--
+ src/jingle-transport-iface.c  |   26 +++++++++++++++-----------
+ src/jingle-transport-iface.h  |    9 +++++----
+ src/jingle-transport-rawudp.c |    8 ++++----
+ 6 files changed, 33 insertions(+), 26 deletions(-)
+
+commit 4bb6a246570ce9ef45331d36165f3c53e716ecea
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Feb 6 17:55:37 2009 +0100
+
+    JingleTransportIceUdp: send "id" candidate param
+
+ src/jingle-transport-iceudp.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit f5204bd8225d08d7bfd1d9c5fa1c5e6c5c243f67
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Feb 6 13:10:13 2009 +0100
+
+    JingleTransportRawUdp: send component numbers in candidates
+
+ src/jingle-transport-rawudp.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit ad5390709842f65491b5750cfec1ee1d069cf398
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Fri Feb 6 10:51:43 2009 +0100
+
+    include rawudp candidate in session initiate
+
+ src/jingle-content.c          |   16 ++++++++++++++++
+ src/jingle-transport-rawudp.c |   41 +++++++++++++++++++++++++++++++++++++++++
+ src/jingle-transport-rawudp.h |    4 ++++
+ 3 files changed, 61 insertions(+), 0 deletions(-)
+
+commit ffa2c8c283beb8b1928319132212596aab942e66
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 5 19:56:26 2009 +0100
+
+    test incoming calls when ICE-UDP is used
+
+ tests/twisted/Makefile.am                    |    1 +
+ tests/twisted/jingle/test-incoming-iceudp.py |   87 ++++++++++++++++++++++++++
+ 2 files changed, 88 insertions(+), 0 deletions(-)
+
+commit 8652e373a063256cb87bd95cd032a0b2360b7b62
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 5 13:35:22 2009 +0100
+
+    test for outgoing calls using ICE-UDP
+
+ tests/twisted/Makefile.am                    |    1 +
+ tests/twisted/jingle/jingletest2.py          |    4 +
+ tests/twisted/jingle/test-outgoing-iceudp.py |   96 ++++++++++++++++++++++++++
+ tests/twisted/ns.py                          |    1 +
+ 4 files changed, 102 insertions(+), 0 deletions(-)
+
+commit eece27f7f1c73395646d565e31114133d1a515ec
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 5 09:35:19 2009 +0100
+
+    advertise ICE capabilities
+
+ src/capabilities.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit b4d7f67d2acd2b205bf294c72622aaf083bdd70e
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 5 09:31:06 2009 +0100
+
+    MediaChannel: set nat-traversal Tp property appropriately
+
+ src/media-channel.c |   14 +++++++++++++-
+ src/media-factory.c |   22 ++++++++++++++++++++++
+ 2 files changed, 35 insertions(+), 1 deletions(-)
+
+commit 974efc455ef0e8b3727973c9eb5d44745ea28275
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 5 09:29:32 2009 +0100
+
+    JingleSession: when content is removed, check if the session has become ready
+
+ src/jingle-session.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
+
+commit 460491d8f61249592c11820509eddcd4c0fab724
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 5 09:28:28 2009 +0100
+
+    enabled use of JingleTransportIceUdp
+
+ src/capabilities.c   |    2 +-
+ src/jingle-factory.c |    2 ++
+ src/jingle-factory.h |    2 +-
+ src/media-channel.c  |   41 +++++++++++++++++++++++++++++------------
+ src/namespaces.h     |    5 ++---
+ src/types.h          |    3 ++-
+ 6 files changed, 37 insertions(+), 18 deletions(-)
+
+commit 9fc2a16ff0c63071b9e36512b2ed666bab122149
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu Feb 5 09:26:30 2009 +0100
+
+    added ICE-UDP support based on GoogleP2P support code
+
+ src/Makefile.am               |    2 +
+ src/jingle-transport-iceudp.c |  559 +++++++++++++++++++++++++++++++++++++++++
+ src/jingle-transport-iceudp.h |   65 +++++
+ 3 files changed, 626 insertions(+), 0 deletions(-)
+
+commit f555bc2ef3130f24f21f7ebb181fea74f5d9bb86
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 27 21:06:25 2009 +0100
+
+    enable the new rawudp support
+
+ src/capabilities.c   |    3 +--
+ src/jingle-factory.c |    2 ++
+ src/namespaces.h     |    3 +--
+ src/types.h          |    1 +
+ 4 files changed, 5 insertions(+), 4 deletions(-)
+
+commit 02c10453818e37e3eeecf1f8f11e22f528b68e53
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 27 21:03:20 2009 +0100
+
+    JingleContent: added *_get_transport_type() method
+
+ src/jingle-content.c |    6 ++++++
+ src/jingle-content.h |    1 +
+ 2 files changed, 7 insertions(+), 0 deletions(-)
+
+commit 2ac398cf07d31d6910ac6e37da4f053aedc849de
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 27 21:02:20 2009 +0100
+
+    add JingleTransportRawUdp
+
+ src/Makefile.am               |    2 +
+ src/jingle-transport-rawudp.c |  467 +++++++++++++++++++++++++++++++++++++++++
+ src/jingle-transport-rawudp.h |   65 ++++++
+ 3 files changed, 534 insertions(+), 0 deletions(-)
+
+commit 3f2073d1a78c723e9d0fa03cfdb2b355fc8c508a
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Jan 27 21:01:34 2009 +0100
+
+    JingleTransportIface: add *_get_transport_type() method
+
+ src/jingle-transport-google.c |    7 +++++++
+ src/jingle-transport-iface.c  |   10 ++++++++++
+ src/jingle-transport-iface.h  |    2 ++
+ 3 files changed, 19 insertions(+), 0 deletions(-)
+
+commit 8c838cb52372143770c654598753ea74a252079c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Jun 27 13:09:33 2009 +0100
+
+    Revert "Include xmlns on contents"
+    
+    This reverts commit dfce1b44821700212f35951931dd5e6bc1942946, which was
+    completely wrong: <content> stanzas are in the same namespace as their
+    parent <jingle> node, not in the namespace of their <description>.
+    
+    I made this change because the codepath for producing <content>s for the
+    purpose of transport-info actions (which was separate) did so, so that I
+    could delete the redundant path.
+
+ src/jingle-content.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 5aa947b42e2d7b0d065f43e3cb986faabf427a23
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 19:12:56 2009 +0100
+
+    Simplify _pick_best_resource.
+    
+    The previous logic had some ... interesting features, like assuming that
+    anyone who speaks modern Jingle understands audio and video. This is
+    somewhat more straightforward:
+    
+     * Try modern Jingle;
+     * Try Jingle draft 0.15;
+     * Try GTalk 0.3, with video if appropriate;
+     * Try GTalk 0.4.
+
+ src/media-channel.c |   72 ++++++++++++++++++++-------------------------------
+ 1 files changed, 28 insertions(+), 44 deletions(-)
+
+commit 800575f774310117a1534fd954388d60c06c8b9f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 18:57:45 2009 +0100
+
+    Correct bitwise logic in _resource_has_caps ()
+    
+    The existing code returns TRUE if the resource has any of the caps in
+    question, not all of them. This turns out not to be an issue in any
+    code that uses this function, because only one cap is ever passed.
+
+ src/presence.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 58d7a0840eaac9162e9d41feb2499e14a9ff74c9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 18:33:53 2009 +0100
+
+    Actually look for jingle:rtp:{audio,video} caps
+    
+    Previously, Gabble assumed that anyone who could do Jingle RTP could
+    make video calls.
+
+ src/media-channel.c                 |   13 +++++++------
+ tests/twisted/jingle/jingletest2.py |    3 ++-
+ tests/twisted/ns.py                 |    2 ++
+ 3 files changed, 11 insertions(+), 7 deletions(-)
+
+commit 2f8a0726aef443ee8c16747c7821dc405d8907e0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 18:33:37 2009 +0100
+
+    Advertise rtp:{audio,video} caps where appropriate
+
+ src/capabilities.c  |    4 +++-
+ src/media-channel.c |    6 ++++--
+ src/namespaces.h    |    2 ++
+ src/types.h         |    2 ++
+ 4 files changed, 11 insertions(+), 3 deletions(-)
+
+commit c5447da6c35eed9bf543554429285a527b28541e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 13:45:58 2009 +0100
+
+    Bump Jingle namespaces
+    
+    This will not break backwards compatibility with older Gabbles, since
+    they will just fall back to the v0.15 draft of Jingle.
+
+ src/namespaces.h    |    7 ++++---
+ tests/twisted/ns.py |    5 +++--
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+
+commit 644f62c9dc76d3a0c27812c36c3b95cb8f8b7133
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 13:38:11 2009 +0100
+
+    ns.py-ify jingletest2
+
+ tests/twisted/jingle/jingletest2.py |   53 +++++++++++++++-------------------
+ tests/twisted/ns.py                 |   11 ++++++-
+ 2 files changed, 32 insertions(+), 32 deletions(-)
+
+commit 0fe4c0cdd190815741eefa690bb8b0b226ef8c41
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 12:56:17 2009 +0100
+
+    Change Jingle error namespace to current draft.
+    
+    While this will mean that we no longer send errors in the old namespace
+    even when using the draft v0.15 dialect, this doesn't matter in
+    practice: Gabble doesn't actually do anything differently based on the
+    errors it receives.
+
+ src/namespaces.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 3f038e909d7e3ab7f3633c422f31c1dd0024e9e4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 12:51:59 2009 +0100
+
+    Group Jingle dialects in namespaces.h
+
+ src/namespaces.h |   32 +++++++++++++++++++++-----------
+ 1 files changed, 21 insertions(+), 11 deletions(-)
+
+commit 586619f153f9978e25f50cb43a50315f4d7830b2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 17:56:46 2009 +0100
+
+    NEWS for Google Video Chat and fd.o#22369
+
+ NEWS |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 0a35a6b9c9e46038174a1fc582a0bf052957f61f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 17:50:54 2009 +0100
+
+    unrace jingle/google-relay.py
+
+ tests/twisted/jingle/google-relay.py |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+commit 6a135ea2556af429e0394e7cd3af8a2dec4cb8d9
+Merge: 18b2a0b 053c801
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 17:37:08 2009 +0100
+
+    Merge branch 'google-video'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 053c801cc49e9bd77e88b74687e92ceed99bf36e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 15:08:14 2009 +0100
+
+    Use _defines_action() more widely
+
+ src/jingle-content.c |    3 ++-
+ src/jingle-session.c |   10 ++++++----
+ src/jingle-session.h |    3 +++
+ 3 files changed, 11 insertions(+), 5 deletions(-)
+
+commit f671a3851317258485aa2fae569b323d540e9e57
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 15:07:54 2009 +0100
+
+    Unrace jingle/stun-server.py
+
+ tests/twisted/jingle/stun-server.py |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 2678e87fa22985c67d5314a615b404bd2a18e6c7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 12:37:23 2009 +0100
+
+    Allow transport-accept on GTalk4.
+
+ src/jingle-session.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 18b2a0bdcf0a10f86f6fb08e3020fd7c1205686b
+Merge: 49c98f6 a886ef9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 25 12:04:54 2009 +0100
+
+    Merge branch 'reply-to-active-resource'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 042be11cc5caa0ce25cdc48980543c6668865d09
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 23 19:18:54 2009 +0100
+
+    Improve some Jingle error messages
+    
+    It's silly to have more accurate information in a DEBUG message than you
+    send to the peer, for example. Also, kill off the (now-unused) SET_FOO()
+    error-setting macros --- they don't buy anything.
+
+ src/jingle-session.c |   29 ++++++++++++-----------------
+ 1 files changed, 12 insertions(+), 17 deletions(-)
+
+commit 5f6968790b75e8ced03e06d41102e6729a3df53c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 23 19:11:56 2009 +0100
+
+    Remove duplicated "content doesn't exist" checks.
+
+ src/jingle-session.c |   55 ++++++++++++++++---------------------------------
+ 1 files changed, 18 insertions(+), 37 deletions(-)
+
+commit cb6b1e30815cbbab4125ff72cc04db35f68697c5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 23 18:50:52 2009 +0100
+
+    Don't send description-info with old dialects
+
+ src/jingle-content.c |   19 +++++++++++++------
+ 1 files changed, 13 insertions(+), 6 deletions(-)
+
+commit 3956d4f8437eaf14038064e4f4a5041bd8980ec4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 23 18:32:06 2009 +0100
+
+    Add accessor for GabbleJingleSession:dialect
+
+ src/jingle-content.c          |   28 ++++++++--------------------
+ src/jingle-media-rtp.c        |    8 ++------
+ src/jingle-session.c          |    6 ++++++
+ src/jingle-session.h          |    1 +
+ src/jingle-transport-google.c |    4 ++--
+ 5 files changed, 19 insertions(+), 28 deletions(-)
+
+commit 4510df6139f778f8690e1cc3e94f732ad37bb3ee
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 23 17:56:59 2009 +0100
+
+    Incoming GTalk4 calls do need transport-accept
+
+ src/jingle-content.c                    |   10 +++++-----
+ tests/twisted/jingle/incoming-basics.py |    7 +++----
+ 2 files changed, 8 insertions(+), 9 deletions(-)
+
+commit 3b52e944a0648a3d485863b9f1032eb2814e5a45
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 23 17:46:06 2009 +0100
+
+    Only accept actions which exist in the dialect
+
+ src/jingle-session.c |   18 +++++++++++++-----
+ 1 files changed, 13 insertions(+), 5 deletions(-)
+
+commit 5195b19e2739477ee53e195e7ad7d463fa64b8a1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 23 17:36:48 2009 +0100
+
+    Add dialect_defines_action()
+    
+    All the older Jingle dialects define a subset of the actions we support,
+    which are all supported by modern Jingle.
+
+ src/jingle-session.c |   26 ++++++++++++++++++++++++++
+ 1 files changed, 26 insertions(+), 0 deletions(-)
+
+commit 2c119c854b77a1adf2793f82ef444cd327df3f43
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 23 11:20:25 2009 +0100
+
+    Return success from RequestStreams(h, [])
+    
+    If a UI requested a list of no streams, the pending_stream_request would
+    never terminate, as it would be waiting for the "new-content" signal
+    forever.
+    
+    This patch moves the special handling of a request for no streams out of
+    _request_initial_streams() into _request_streams().
+
+ src/media-channel.c |   50 +++++++++++++++++++++++++-------------------------
+ 1 files changed, 25 insertions(+), 25 deletions(-)
+
+commit bf40fd0ed57943aaf2328377d9aa3cc605913d5c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Jun 23 10:53:54 2009 +0100
+
+    Don't leak transport namespace when adding streams
+
+ src/jingle-content.c |    6 ++++++
+ src/jingle-content.h |    1 +
+ src/media-channel.c  |    2 +-
+ 3 files changed, 8 insertions(+), 1 deletions(-)
+
+commit 2a5afbcef88b9d8709e3bf0b51f17abc0ab5c6c6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 22 19:33:09 2009 +0100
+
+    Improve RequestStreams' error in GTalk calls
+    
+    Google Talk calls can now have more than one stream; the point is that
+    they can't change once the call has started. Also, let's not assert that
+    there's only one stream. :-)
+
+ src/media-channel.c |   14 +++-----------
+ 1 files changed, 3 insertions(+), 11 deletions(-)
+
+commit 3d99b4a6cddd0ab503c32b5ff7a761042c7e38a6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 22 19:21:00 2009 +0100
+
+    Don't try to remove contents in GTalk calls
+
+ src/jingle-session.c |    6 +++++
+ src/jingle-session.h |    2 +
+ src/media-channel.c  |   57 ++++++++++++++++++++++++++++++++++++++-----------
+ 3 files changed, 52 insertions(+), 13 deletions(-)
+
+commit 8b5539d6e9ecc7f5039d82b2f7d3273995dea61b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 22 17:39:44 2009 +0100
+
+    Reduce spurious transport-infos
+    
+    Gabble sometimes sent an empty transport-info after session-initiate,
+    and always retransmitted all its candidates after session-accept. This
+    had the same root cause. The intention here was to tell the transport
+    that session-initiate had been sent and so the queued candidates can be
+    sent, but since TRUE was passed to
+    gabble_jingle_transport_iface_retransmit_candidates (), they were all
+    resent.
+    
+    Also, transport-info stanzas were sent even if they contained no
+    candidates; transmit_candidates () now short-circuits if that is the
+    case.
+
+ src/jingle-content.c          |    6 ++++--
+ src/jingle-content.h          |    3 ++-
+ src/jingle-session.c          |    7 ++++---
+ src/jingle-transport-google.c |   10 +++++++---
+ 4 files changed, 17 insertions(+), 9 deletions(-)
+
+commit 78614cb922246014db1414bff2780448d4cc9784
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 22 17:27:09 2009 +0100
+
+    Send rtp and rtcp candidates separately.
+    
+    Older Gabbles reject transport-info stanzas containing non-rtp
+    candidates.
+
+ src/jingle-transport-google.c |   78 +++++++++++++++++++++++++++-------------
+ 1 files changed, 52 insertions(+), 26 deletions(-)
+
+commit f945b1ae56226844866643e822c0b9060cd3fa83
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 22 16:32:14 2009 +0100
+
+    Fix a typo
+
+ src/jingle-transport-google.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 1ade99ab53f2033e2245a184ecf167f96352ed8e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 22 16:25:05 2009 +0100
+
+    Properly ignore transport-info ACKs.
+    
+    We don't need to do anything in response to the peer acking or naking
+    our transport-infos; using _send_with_reply with a NULL callback stops
+    the debugging output being full of spurious "unknown iq" warnings.
+
+ src/jingle-transport-google.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit f9f74b7b2249d8fc134624345c95c4257c6ac072
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 22 16:14:22 2009 +0100
+
+    Remove duplicated <content>-generation code.
+    
+    Fixes fd.o#22236: “gabble_jingle_content_produce_node and
+    transmit_candidates contain similar but subtly-different <content>
+    stanza generators”. The difference mentioned on that bug (whether or not
+    a <transport/> node is added for GTalk3) was fixed in the course of
+    adding Google Video support.
+
+ src/jingle-content.c          |   42 +++++++++++++++++++++++-----------------
+ src/jingle-content.h          |    5 +++-
+ src/jingle-session.c          |    2 +-
+ src/jingle-transport-google.c |   34 +-------------------------------
+ 4 files changed, 31 insertions(+), 52 deletions(-)
+
+commit dfce1b44821700212f35951931dd5e6bc1942946
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 22 13:34:05 2009 +0100
+
+    Include xmlns on contents
+
+ src/jingle-content.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit a23c5547a70c07850d3ca0e21864c70542f445b9
+Merge: 404748b 49c98f6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 22 12:27:48 2009 +0100
+
+    Update 'google-video' to current master
+    
+    Conflicts:
+    	src/jingle-session.c
+    	src/types.h
+    	tests/twisted/jingle/hold-audio.py
+    	tests/twisted/jingle/hold-av.py
+    	tests/twisted/jingle/initial-audio-video.py
+
+commit a886ef942af860ad729bf1497db8d2e61ca93fe6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 19 18:16:23 2009 +0100
+
+    Strip off peer resource on send error.
+    
+    If we try to send an IM to a particular resource and get a send error,
+    Gabble should send future messages to the bare JID until we get a reply
+    from some other resource.
+
+ src/im-channel.c                               |   20 +++++++++++++++-----
+ tests/twisted/text/send-to-correct-resource.py |   20 +++++++++++++++++++-
+ 2 files changed, 34 insertions(+), 6 deletions(-)
+
+commit 0e3af20769700b682f2ed550d5b0ae5d0d6749c8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 19 17:49:02 2009 +0100
+
+    Correctly update peer's full JID on incoming IMs.
+    
+    I inverted the sense of a conditional while Messages-ifying Gabble,
+    breaking the code that sends IMs to the resource that most recently
+    replied.  Fixes fd.o#22369, and adds a regression test.
+
+ src/im-channel.c                               |    2 +-
+ tests/twisted/Makefile.am                      |    1 +
+ tests/twisted/text/send-to-correct-resource.py |   60 ++++++++++++++++++++++++
+ 3 files changed, 62 insertions(+), 1 deletions(-)
+
+commit 49c98f6c2756b042bf25f0baff8590e8b16acfc5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 19 15:44:15 2009 +0100
+
+    Bump version to 0.7.29.1
+
+ NEWS         |    9 +++++++++
+ configure.ac |    2 +-
+ 2 files changed, 10 insertions(+), 1 deletions(-)
+
 commit e4d4e7afd0108d7fd5b6bf34d702f0283ff773ad
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Fri Jun 19 11:54:56 2009 +0100
@@ -1447,6 +2965,251 @@ Date:   Tue May 26 11:17:51 2009 +0100
  extensions/all.xml |    2 ++
  1 files changed, 2 insertions(+), 0 deletions(-)
 
+commit 404748b43092fc009a562b7369cedb04c1afb00d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue May 26 18:54:01 2009 +0100
+
+    Only run tests that add/remove streams on protocols that can do so
+
+ tests/twisted/jingle/hold-av.py     |    3 ++-
+ tests/twisted/jingle/jingletest2.py |    6 ++++++
+ 2 files changed, 8 insertions(+), 1 deletions(-)
+
+commit 0b85f4540e6c95267f4171e885be699edc591bbd
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue May 26 18:45:45 2009 +0100
+
+    Move tests requiring mutable streams into their own function
+
+ tests/twisted/jingle/hold-av.py |  163 ++++++++++++++++++++-------------------
+ 1 files changed, 85 insertions(+), 78 deletions(-)
+
+commit a3aaf7f0b9a2b893fee5c3a203d73500208d6386
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu May 7 16:13:41 2009 +0100
+
+    Google video caps means the contact is video capable
+
+ src/media-channel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit ac3913afcdd76aaf8d7aad6ad933325b2c1d5e8b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed May 6 16:33:10 2009 +0100
+
+    fix trailing space
+
+ src/capabilities.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 8a71861c490053c5bb3f16ec84bf8c0b9e21ee6f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed May 6 11:43:33 2009 +0100
+
+    Support parsing of rtcp candidates
+
+ src/jingle-transport-google.c |   35 +++++++++++++++++++++++++++++++++--
+ 1 files changed, 33 insertions(+), 2 deletions(-)
+
+commit 4dc0f150464a0e4a4263b434e52cd8367da5cdc4
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed May 6 11:42:31 2009 +0100
+
+    wrap a line > 80 chars
+
+ src/jingle-transport-google.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit d905339fb7c56c41494c183faf2c6fd1ce103065
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed May 6 11:42:03 2009 +0100
+
+    Support transmission of rtcp candidates
+
+ src/jingle-transport-google.c |   17 +++++++++++++----
+ 1 files changed, 13 insertions(+), 4 deletions(-)
+
+commit 545ac53762541d109322c064672cd338b9423706
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed May 6 11:00:22 2009 +0100
+
+    Support multiple transport components
+
+ src/media-stream.c |  105 ++++++++++++++++++++++++---------------------------
+ 1 files changed, 49 insertions(+), 56 deletions(-)
+
+commit 64c723923b2e1e6939104faddc99188bc3f4e0e8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed May 6 10:56:20 2009 +0100
+
+    Support receiving candidates for multiple gtalk contents
+
+ src/jingle-session.c |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
+
+commit 3221e815e85a805a46bf69a06d570082f1609115
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed May 6 10:55:09 2009 +0100
+
+    Set dummy width, height and framerate attributes
+
+ src/jingle-media-rtp.c |   34 +++++++++++++++++++++++++---------
+ 1 files changed, 25 insertions(+), 9 deletions(-)
+
+commit 380d5530863e158ffe368e92db3e06128bd391ae
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed May 6 10:39:34 2009 +0100
+
+    Ignore payload-types meant for different media
+    
+    In Gtalk3 the audio and video content description are mixed in the xml tree, so
+    let the content parser for audio ignore the payload-types meant for video and
+    vice versa.
+
+ src/jingle-media-rtp.c |   30 ++++++++++++++++++++++++++++++
+ 1 files changed, 30 insertions(+), 0 deletions(-)
+
+commit 0e3273715bc6f44476f60fe9a06b23c147833b82
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri May 1 11:25:26 2009 +0100
+
+    Detect whether we're talking to a GTalk03 or a GTalk04 client
+
+ src/jingle-session.c |   52 +++++++++++++++++++++++++++++++++++++++++++++----
+ 1 files changed, 47 insertions(+), 5 deletions(-)
+
+commit 143a247247ca5113959a087aae9d3931c6962a95
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri May 1 11:21:27 2009 +0100
+
+    Only get the media type from the description if it's unknown
+
+ src/jingle-media-rtp.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 093172bf7c6e9bac32334859b19204bcf5fb437d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri May 1 11:20:23 2009 +0100
+
+    Allow content names to be overriden in the GTalk dialects
+
+ src/jingle-content.c |   15 ++++++++++-----
+ 1 files changed, 10 insertions(+), 5 deletions(-)
+
+commit f5e345ef86b72f0b76670f2341c9b220a454d0e0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri May 1 11:15:29 2009 +0100
+
+    Assert when we get a content type we don't know
+
+ src/media-channel.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 920a27474c3783d701b19992814883926e5f2879
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 19:31:30 2009 +0100
+
+    In GTalk03 let the session add the description
+    
+    in the GTalk03 dialect the description namespace depends on whether the session
+    does video or not. So pull up adding the description tag into the session for
+    this dialect. Also add a namespace to audio payloads when using this dialect
+
+ src/jingle-media-rtp.c |   65 ++++++++++++++++++++++++++++++++++++-----------
+ src/jingle-session.c   |   33 ++++++++++++++++++++++++
+ 2 files changed, 83 insertions(+), 15 deletions(-)
+
+commit 43c757d04b4ee13ddc88792dc2bdd9f0af33a87d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 19:30:32 2009 +0100
+
+    We can only do GTalk3 video if both audio and video are wanted
+
+ src/media-channel.c |   18 +++++++++++-------
+ 1 files changed, 11 insertions(+), 7 deletions(-)
+
+commit d053f6901bea9de91f9031cf4d9494d13c77893c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 19:30:09 2009 +0100
+
+    Assert that a GTalk 03 video session always has audio codecs
+
+ tests/twisted/jingle/jingletest2.py |   15 +++++++++++++--
+ 1 files changed, 13 insertions(+), 2 deletions(-)
+
+commit a76f3be48621438114dc8d34c70137a2ba3c67f2
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 19:29:41 2009 +0100
+
+    Add google audio/video session namespaces
+
+ tests/twisted/ns.py |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit d4115a0f2be94cb10fbfca5500073cd610ac4d1c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 19:29:24 2009 +0100
+
+    Expect an error if the protocol can't do video only and is requested to do so
+
+ tests/twisted/jingle/initial-audio-video.py |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 732ee4d7c6cfcde3dc0759d861482458ff932d27
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 18:59:29 2009 +0100
+
+    Don't use the same codecs for audio and video in tests
+
+ tests/twisted/jingle/initial-audio-video.py |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
+
+commit cdfbb313c6f72298b3593b2837094825c79922b8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 17:16:17 2009 +0100
+
+    Don't send transport in the GTalk 03 dialect
+
+ src/jingle-content.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+commit a138084d2950f5ba8e2526a812b8cec1f6fb55ae
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 17:12:53 2009 +0100
+
+    Improve selection of the GTalk dialects
+    
+    If a contact only google voice, but not google transport p2p in its
+    capabilities, select the GTalk 03 dialect, if it has both select GTalk 04
+
+ src/media-channel.c |   14 ++++++++++++--
+ 1 files changed, 12 insertions(+), 2 deletions(-)
+
+commit 569a0a8a1701841248a02e521c972f673f9e9b5d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 16:58:39 2009 +0100
+
+    Add basic validation for GTalk03
+
+ tests/twisted/jingle/jingletest2.py |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
+
+commit 5d1c70aebeb5ceea51a0081d67d22b45d4a8a411
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 16:51:42 2009 +0100
+
+    Add a hook to parse and validate all of a session initiate
+
+ tests/twisted/jingle/call-state.py                 |    2 +-
+ tests/twisted/jingle/hold-audio.py                 |    2 +-
+ tests/twisted/jingle/hold-av.py                    |    2 +-
+ tests/twisted/jingle/initial-audio-video.py        |    2 +-
+ tests/twisted/jingle/jingletest2.py                |    7 ++++++-
+ tests/twisted/jingle/outgoing-basics.py            |    2 +-
+ .../twisted/jingle/test-content-adding-removal.py  |    2 +-
+ .../twisted/jingle/test-outgoing-call-rejected.py  |    2 +-
+ 8 files changed, 13 insertions(+), 8 deletions(-)
+
 commit 5aa5e7ac3675afbefcd3655cc69106f5921778c1
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Wed May 27 16:23:05 2009 +0100
@@ -1530,6 +3293,71 @@ Date:   Tue May 26 15:19:02 2009 -0400
 
  src/conn-location.c |   10 ++++------
  1 files changed, 4 insertions(+), 6 deletions(-)
+
+commit 35212400741304aa003ef661bdd75bdccc161aab
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 16:17:19 2009 +0100
+
+    Support dialects that don't have one content per stream
+
+ tests/twisted/jingle/jingletest2.py |   79 +++++++++++++++++++++-------------
+ 1 files changed, 49 insertions(+), 30 deletions(-)
+
+commit 2101ea644170827201c9a4a5d3eaee0d3708fd33
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 16:11:55 2009 +0100
+
+    Add seperate_contents and can_do_video_only dialect features
+    
+    add features to ask the dialect if it can do a video only call and whether its
+    contents are in seperate content trees or if they are all put together like in
+    GTalk 03
+
+ tests/twisted/jingle/initial-audio-video.py |    2 ++
+ tests/twisted/jingle/jingletest2.py         |   13 +++++++++++++
+ 2 files changed, 15 insertions(+), 0 deletions(-)
+
+commit 107f3676bd40739ecbd0a0a45c1d1392c340c7a1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 30 16:13:17 2009 +0100
+
+    Fix typo in children
+
+ tests/twisted/jingle/jingletest2.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit fb681ea35495538fa2b3b1b2534db17a1f866bb4
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Apr 29 17:50:56 2009 +0100
+
+    Add support for google video capabilities
+    
+    support google video capabilities (both recognising and setting them). Like
+    with voice-v1 the google web client doesn't actually asks us about our
+    capabilities but only assumes we can do video if video-v1 is in the ext
+    attribute of our capabilities
+
+ src/capabilities.c     |    1 +
+ src/capabilities.h     |    6 ++++--
+ src/connection.c       |   21 +++++++++++++++++++--
+ src/jingle-media-rtp.c |    5 +++++
+ src/media-channel.c    |   34 ++++++++++++++++++++++++++++++----
+ src/namespaces.h       |    3 +++
+ src/types.h            |    1 +
+ 7 files changed, 63 insertions(+), 8 deletions(-)
+
+commit 4f3ebab4e7d4a90c79a6bd1c615888695d5b2e97
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Apr 29 16:32:16 2009 +0100
+
+    Add GTalk 03 video capabilities
+    
+    add GTAlk dialect 03 video capabilities as that is supported by the Google web
+    client. Also if we want to know if a specific dialect supports video, ask if it
+    supports video not ask if it's part of a certain dialect family
+
+ tests/twisted/jingle/jingletest2.py |   15 ++++++++++-----
+ 1 files changed, 10 insertions(+), 5 deletions(-)
 
 commit edec34a273ed532b2bd4424d980565cbf1f122a9
 Author: Will Thompson <will.thompson@collabora.co.uk>

@@ -36,6 +36,8 @@
 #include "jingle-media-rtp.h"
 #include "jingle-session.h"
 #include "jingle-transport-google.h"
+#include "jingle-transport-rawudp.h"
+#include "jingle-transport-iceudp.h"
 #include "namespaces.h"
 #include "util.h"
 
@@ -526,6 +528,8 @@ gabble_jingle_factory_constructor (GType type,
 
   jingle_media_rtp_register (self);
   jingle_transport_google_register (self);
+  jingle_transport_rawudp_register (self);
+  jingle_transport_iceudp_register (self);
 
   return obj;
 }
@@ -1031,17 +1035,17 @@ translate_relay_info (GPtrArray *relays,
   asv = g_hash_table_new_full (g_str_hash, g_str_equal,
       NULL, (GDestroyNotify) tp_g_value_slice_free);
   g_hash_table_insert (asv, "ip",
-      gabble_g_value_slice_new_string (relay_ip));
+      tp_g_value_slice_new_string (relay_ip));
   g_hash_table_insert (asv, "type",
-      gabble_g_value_slice_new_static_string (static_type));
+      tp_g_value_slice_new_static_string (static_type));
   g_hash_table_insert (asv, "port",
-      gabble_g_value_slice_new_uint (port));
+      tp_g_value_slice_new_uint (port));
   g_hash_table_insert (asv, "username",
-      gabble_g_value_slice_new_string (username));
+      tp_g_value_slice_new_string (username));
   g_hash_table_insert (asv, "password",
-      gabble_g_value_slice_new_string (password));
+      tp_g_value_slice_new_string (password));
   g_hash_table_insert (asv, "component",
-      gabble_g_value_slice_new_uint (component));
+      tp_g_value_slice_new_uint (component));
 
   g_ptr_array_add (relays, asv);
 }

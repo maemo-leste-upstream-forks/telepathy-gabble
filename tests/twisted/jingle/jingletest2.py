@@ -7,7 +7,7 @@
 # This can be used in parallel with the old API, but should
 # obsolete it in time.
 
-from twisted.words.xish import domish
+from twisted.words.xish import domish, xpath
 import random
 from gabbletest import sync_stream, exec_test
 from servicetest import EventPattern
@@ -66,17 +66,17 @@ class JingleProtocol:
         "Creates an error IQ element, and includes the original stanza"
         return self.Iq('error', iq['id'], iq['to'], iq['from'],
             [ iq.firstChildElement(),
-                ('error', None, { 'type': errtype, 'xmlns':
-                    'urn:ietf:params:xml:ns:xmpp-stanzas' }, [ errchild ]) ])
+                ('error', None, { 'type': errtype, 'xmlns': ns.STANZA, },
+                    [ errchild ]) ])
 
     def PayloadType(self, name, rate, id, parameters={}, **kw):
         "Creates a <payload-type> element"
         kw['name'] = name
         kw['rate'] = rate
         kw['id'] = id
-        chrilden = [self.Parameter(name, value)
+        children = [self.Parameter(name, value)
                     for name, value in parameters.iteritems()]
-        return ('payload-type', None, kw, chrilden)
+        return ('payload-type', None, kw, children)
 
     def Parameter(self, name, value):
         "Creates a <parameter> element"
@@ -84,13 +84,17 @@ class JingleProtocol:
 
     def TransportGoogleP2P(self):
         "Creates a <transport> element for Google P2P transport"
-        return ('transport', 'http://www.google.com/transport/p2p', {}, [])
+        return ('transport', ns.GOOGLE_P2P, {}, [])
+
+    def TransportIceUdp(self):
+        "Creates a <transport> element for ICE-UDP transport"
+        return ('transport', ns.JINGLE_TRANSPORT_ICEUDP, {}, [])
 
     def Presence(self, frm, to, caps):
         "Creates <presence> stanza with specified capabilities"
         children = []
         if caps:
-            children = [ ('c', 'http://jabber.org/protocol/caps', caps, []) ]
+            children = [ ('c', ns.CAPS, caps, []) ]
         return ('presence', 'jabber:client', { 'from': frm, 'to': to },
             children)
 
@@ -117,7 +121,19 @@ class JingleProtocol:
     def extract_session_id(self, query):
         return query['sid']
 
+    def validate_session_initiate(self, query):
+        return True
+
     def can_do_video(self):
+        return True
+
+    def can_do_video_only(self):
+        return True
+
+    def seperate_contents(self):
+        return True
+
+    def has_mutable_streams(self):
         return True
 
     def is_modern_jingle(self):
@@ -132,7 +148,7 @@ class JingleProtocol:
 
 
 class GtalkProtocol03(JingleProtocol):
-    features = [ 'http://www.google.com/xmpp/protocol/voice/v1' ]
+    features = [ ns.GOOGLE_FEAT_VOICE, ns.GOOGLE_FEAT_VIDEO ]
 
     def __init__(self):
         JingleProtocol.__init__(self, 'gtalk-v0.3')
@@ -152,8 +168,19 @@ class GtalkProtocol03(JingleProtocol):
 
     def Jingle(self, sid, initiator, action, children):
         action = self._action_map(action)
-        return ('session', 'http://www.google.com/session',
+        return ('session', ns.GOOGLE_SESSION,
             { 'type': action, 'initiator': initiator, 'id': sid }, children)
+
+    def PayloadType(self, name, rate, id, parameters={}, **kw):
+        p = JingleProtocol.PayloadType(self, name, rate, id, parameters,
+            **kw)
+        if "type" in kw:
+            namespaces = { "audio": ns.GOOGLE_SESSION_PHONE,
+                           "video": ns.GOOGLE_SESSION_VIDEO,
+            }
+            p = p[:1] + (namespaces[kw["type"]],) + p[2:]
+
+        return p
 
     # Gtalk has only one content, and <content> node is implicit
     def Content(self, name, creator, senders, children):
@@ -163,7 +190,14 @@ class GtalkProtocol03(JingleProtocol):
         return children[0]
 
     def Description(self, type, children):
-        return ('description', 'http://www.google.com/session/phone', {}, children)
+        if type == 'audio':
+            namespace = ns.GOOGLE_SESSION_PHONE
+        elif type == 'video':
+            namespace = ns.GOOGLE_SESSION_VIDEO
+        else:
+            namespace = 'unexistent-namespace'
+        return ('description', namespace, {}, children)
+
     def match_jingle_action(self, q, action):
         action = self._action_map(action)
         return q is not None and q.name == 'session' and q['type'] == action
@@ -175,12 +209,39 @@ class GtalkProtocol03(JingleProtocol):
     def extract_session_id(self, query):
         return query['id']
 
-    def can_do_video(self):
+    def can_do_video_only(self):
+        return False
+
+    def validate_session_initiate(self, query):
+        assert query['id'] != None
+        # No transport in GTalk03
+        assert xpath.queryForNodes('/session/transport', query) == None
+
+        # Exactly one description in Gtalk03
+        descs = xpath.queryForNodes('/session/description', query)
+        assert len(descs) == 1
+
+        desc = descs[0]
+
+        # the ds is either audio or video
+        assert desc.uri in [ ns.GOOGLE_SESSION_PHONE, ns.GOOGLE_SESSION_VIDEO ]
+
+        if desc.uri == ns.GOOGLE_SESSION_VIDEO:
+            # If it's a video call there should be some audio codecs as well
+            assert xpath.queryForNodes(
+                '/session/description/payload-type[@xmlns="%s"]' %
+                    ns.GOOGLE_SESSION_PHONE, query)
+
+        return True
+
+    def seperate_contents(self):
+        return False
+
+    def has_mutable_streams(self):
         return False
 
 class GtalkProtocol04(JingleProtocol):
-    features = [ 'http://www.google.com/xmpp/protocol/voice/v1',
-          'http://www.google.com/transport/p2p' ]
+    features = [ ns.GOOGLE_FEAT_VOICE, ns.GOOGLE_P2P ]
 
     def __init__(self):
         JingleProtocol.__init__(self, 'gtalk-v0.4')
@@ -203,7 +264,7 @@ class GtalkProtocol04(JingleProtocol):
             children = [ children[0][3][0], children[0][3][1] ]
 
         action = self._action_map(action)
-        return ('session', 'http://www.google.com/session',
+        return ('session', ns.GOOGLE_SESSION,
             { 'type': action, 'initiator': initiator, 'id': sid }, children)
 
     # hacky: parent Jingle node should just pick up our children
@@ -211,7 +272,7 @@ class GtalkProtocol04(JingleProtocol):
         return ('dummy-content', None, {}, children)
 
     def Description(self, type, children):
-        return ('description', 'http://www.google.com/session/phone', {}, children)
+        return ('description', ns.GOOGLE_SESSION_PHONE, {}, children)
 
     def match_jingle_action(self, q, action):
         action = self._action_map(action)
@@ -224,16 +285,14 @@ class GtalkProtocol04(JingleProtocol):
         return False
 
 class JingleProtocol015(JingleProtocol):
-    features = [ 'http://www.google.com/transport/p2p',
-          'http://jabber.org/protocol/jingle',
-          'http://jabber.org/protocol/jingle/description/audio',
-          'http://jabber.org/protocol/jingle/description/video' ]
+    features = [ ns.GOOGLE_P2P, ns.JINGLE_015, ns.JINGLE_015_AUDIO,
+        ns.JINGLE_015_VIDEO ]
 
     def __init__(self):
         JingleProtocol.__init__(self, 'jingle-v0.15')
 
     def Jingle(self, sid, initiator, action, children):
-        return ('jingle', 'http://jabber.org/protocol/jingle',
+        return ('jingle', ns.JINGLE_015,
             { 'action': action, 'initiator': initiator, 'sid': sid }, children)
 
     # Note: senders weren't mandatory in this dialect
@@ -245,22 +304,22 @@ class JingleProtocol015(JingleProtocol):
 
     def Description(self, type, children):
         if type == 'audio':
-            namespace = 'http://jabber.org/protocol/jingle/description/audio'
+            namespace = ns.JINGLE_015_AUDIO
         elif type == 'video':
-            namespace = 'http://jabber.org/protocol/jingle/description/video'
+            namespace = ns.JINGLE_015_VIDEO
         else:
             namespace = 'unexistent-namespace'
         return ('description', namespace, { 'type': type }, children)
 
 class JingleProtocol031(JingleProtocol):
-    features = [ 'urn:xmpp:jingle:0', 'urn:xmpp:jingle:apps:rtp:0',
-          'http://www.google.com/transport/p2p' ]
+    features = [ ns.JINGLE, ns.JINGLE_RTP, ns.JINGLE_RTP_AUDIO,
+        ns.JINGLE_RTP_VIDEO, ns.GOOGLE_P2P ]
 
     def __init__(self):
         JingleProtocol.__init__(self, 'jingle-v0.31')
 
     def Jingle(self, sid, initiator, action, children):
-        return ('jingle', 'urn:xmpp:jingle:0',
+        return ('jingle', ns.JINGLE,
             { 'action': action, 'initiator': initiator, 'sid': sid }, children)
 
     def Content(self, name, creator, senders, children):
@@ -270,8 +329,7 @@ class JingleProtocol031(JingleProtocol):
             { 'name': name, 'creator': creator, 'senders': senders }, children)
 
     def Description(self, type, children):
-        return ('description', 'urn:xmpp:jingle:apps:rtp:0',
-            { 'media': type }, children)
+        return ('description', ns.JINGLE_RTP, { 'media': type }, children)
 
     def is_modern_jingle(self):
         return True
@@ -350,72 +408,81 @@ class JingleTest2:
         self.stream.send(self.jp.xml(
             self.jp.Presence(self.peer, self.jid, self.remote_caps)))
 
-        query_ns = 'http://jabber.org/protocol/disco#info'
         # Gabble doesn't trust it, so makes a disco
-        event = self.q.expect('stream-iq', query_ns=query_ns, to=self.peer)
+        event = self.q.expect('stream-iq', query_ns=ns.DISCO_INFO, to=self.peer)
 
         # jt.send_remote_disco_reply(event.stanza)
         self.stream.send(self.jp.xml(self.jp.ResultIq(self.jid, event.stanza,
-            [ self.jp.Query(None, query_ns,
+            [ self.jp.Query(None, ns.DISCO_INFO,
                 [ self.jp.Feature(x) for x in self.jp.features ]) ]) ))
 
         # Force Gabble to process the caps before doing any more Jingling
         sync_stream(self.q, self.stream)
 
-    def incoming_call(self, audio=True, video=False):
+    def generate_contents (self, audio = True, video = False):
         assert audio or video
 
         jp = self.jp
+
+        assert not video or jp.can_do_video()
+
         contents = []
-        if audio:
-            contents.append(
-                jp.Content('stream1', 'initiator', 'both', [
-                    jp.Description('audio', [
-                        jp.PayloadType(name, str(rate), str(id)) for
+
+        if jp.seperate_contents() or not audio or not video:
+            assert audio or video
+            if audio:
+                contents.append(
+                    jp.Content('stream1', 'initiator', 'both', [
+                        jp.Description('audio', [
+                            jp.PayloadType(name, str(rate), str(id)) for
                             (name, id, rate) in self.audio_codecs ]),
                     jp.TransportGoogleP2P() ])
                 )
-        if video:
-            assert jp.can_do_video()
-            contents.append(
-                jp.Content('stream2', 'initiator', 'both', [
-                    jp.Description('video', [
-                        jp.PayloadType(name, str(rate), str(id)) for
+            if video:
+                contents.append(
+                    jp.Content('stream2', 'initiator', 'both', [
+                        jp.Description('video', [
+                            jp.PayloadType(name, str(rate), str(id)) for
                             (name, id, rate) in self.video_codecs ]),
                     jp.TransportGoogleP2P() ])
                 )
+        else:
+            assert jp.can_do_video()
+            contents.append(
+                jp.Content('stream0', 'initiator', 'both', [
+                    jp.Description('video', [
+                        jp.PayloadType(name, str(rate), str(id)) for
+                            (name, id, rate) in self.video_codecs ] +
+                        [ jp.PayloadType(name, str(rate), str(id),
+                            {}, type = "audio" ) for (name, id, rate, )
+                                in self.audio_codecs ],
+                        ),
+                    jp.TransportGoogleP2P() ])
+             )
+
+        return contents
+
+    def incoming_call(self, audio=True, video=False):
+        jp = self.jp
+        contents = self.generate_contents(audio, video)
+
         node = jp.SetIq(self.peer, self.jid, [
             jp.Jingle(self.sid, self.peer, 'session-initiate', contents),
             ])
         self.stream.send(jp.xml(node))
 
-    def set_sid_from_initiate(self, query):
+    def parse_session_initiate (self, query):
+        # Validate the session initiate and get some useful ifo from it
+        self.jp.validate_session_initiate (query)
         self.sid = self.jp.extract_session_id(query)
 
     def accept(self, with_video=False):
         jp = self.jp
-        audio = [
-            jp.Content('stream1', 'initiator', 'both', [
-                jp.Description('audio', [
-                    jp.PayloadType(name, str(rate), str(id)) for
-                        (name, id, rate) in self.audio_codecs ]),
-                jp.TransportGoogleP2P() ])
-            ]
 
-        if with_video:
-            video = [
-                jp.Content('stream2', 'initiator', 'both', [
-                    jp.Description('video', [
-                        jp.PayloadType(name, str(rate), str(id)) for
-                            (name, id, rate) in self.video_codecs ]),
-                    jp.TransportGoogleP2P() ])
-                ]
-        else:
-            video = []
-
+        contents = self.generate_contents(True, with_video)
         node = jp.SetIq(self.peer, self.jid, [
             jp.Jingle(self.sid, self.peer, 'session-accept',
-                audio + video) ])
+                contents) ])
         self.stream.send(jp.xml(node))
 
     def content_accept(self, query, media):
@@ -424,6 +491,7 @@ class JingleTest2:
         media type.
         """
         jp = self.jp
+        assert jp.seperate_contents()
         c = query.firstChildElement()
 
         if media == 'audio':

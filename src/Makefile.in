@@ -64,7 +64,8 @@ am_libgabble_convenience_la_OBJECTS = base64.lo bytestream-factory.lo \
 	disco.lo error.lo ft-channel.lo ft-manager.lo gabble.lo \
 	im-channel.lo im-factory.lo jingle-content.lo \
 	jingle-factory.lo jingle-media-rtp.lo jingle-session.lo \
-	jingle-transport-google.lo jingle-transport-iface.lo \
+	jingle-transport-google.lo jingle-transport-rawudp.lo \
+	jingle-transport-iceudp.lo jingle-transport-iface.lo \
 	media-channel.lo media-channel-hold.lo media-stream.lo \
 	media-factory.lo message-util.lo muc-channel.lo muc-factory.lo \
 	olpc-activity.lo olpc-activity-view.lo olpc-buddy-view.lo \
@@ -318,6 +319,10 @@ libgabble_convenience_la_SOURCES = \
     jingle-session.c \
     jingle-transport-google.h \
     jingle-transport-google.c \
+    jingle-transport-rawudp.h \
+    jingle-transport-rawudp.c \
+    jingle-transport-iceudp.h \
+    jingle-transport-iceudp.c \
     jingle-transport-iface.h \
     jingle-transport-iface.c \
     media-channel.h \
@@ -534,7 +539,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-media-rtp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-session.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-google.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-iceudp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-iface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-rawudp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/media-channel-hold.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/media-channel.Plo@am__quote@
