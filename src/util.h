@@ -31,6 +31,11 @@
 
 #include "types.h"
 
+typedef LmMessageNode * NodeIter;
+#define node_iter(node) (node->children)
+#define node_iter_next(i) (i->next)
+#define node_iter_data(i) (i)
+
 /* Guarantees that the resulting hash is in lower-case */
 gchar *sha1_hex (const gchar *bytes, guint len);
 
@@ -42,7 +47,8 @@ gchar *gabble_generate_id (void);
 
 void lm_message_node_add_own_nick (LmMessageNode *node,
     GabbleConnection *conn);
-void lm_message_node_unlink (LmMessageNode *orphan);
+void lm_message_node_unlink (LmMessageNode *orphan,
+    LmMessageNode *parent);
 void lm_message_node_steal_children (LmMessageNode *snatcher,
     LmMessageNode *mum);
 gboolean lm_message_node_has_namespace (LmMessageNode *node, const gchar *ns,
@@ -54,9 +60,6 @@ G_GNUC_NULL_TERMINATED LmMessage *lm_message_build (const gchar *to,
 G_GNUC_NULL_TERMINATED LmMessage * lm_message_build_with_sub_type (
     const gchar *to, LmMessageType type, LmMessageSubType sub_type,
     guint spec, ...);
-
-void lm_message_node_add_child_node (LmMessageNode *node,
-    LmMessageNode *child);
 
 /* format: a@b/c */
 void gabble_decode_jid (const gchar *jid, gchar **a, gchar **b, gchar **c);
@@ -85,10 +88,5 @@ lm_iq_message_make_result (LmMessage *iq_message);
 
 void gabble_signal_connect_weak (gpointer instance, const gchar *detailed_signal,
     GCallback c_handler, GObject *user_data);
-
-GValue *gabble_g_value_slice_new_uint (guint n);
-GValue *gabble_g_value_slice_new_string (const gchar *string);
-GValue *gabble_g_value_slice_new_static_string (const gchar *string);
-GValue *gabble_g_value_slice_new_take_string (gchar *string);
 
 #endif /* __GABBLE_UTIL_H__ */

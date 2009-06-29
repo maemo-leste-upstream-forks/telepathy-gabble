@@ -43,14 +43,16 @@ typedef enum {
 } JingleContentState;
 
 struct _JingleCandidate {
+  JingleTransportProtocol protocol;
+  JingleCandidateType type;
+
+  gchar *id;
   gchar *address;
-  int component;
   int port;
+  int component;
   int generation;
 
-  JingleTransportProtocol protocol;
   gdouble preference;
-  JingleCandidateType type;
   gchar *username;
   gchar *password;
   int network;
@@ -100,7 +102,10 @@ void gabble_jingle_content_parse_add (GabbleJingleContent *c,
 void gabble_jingle_content_update_senders (GabbleJingleContent *c,
     LmMessageNode *content_node, GError **error);
 void gabble_jingle_content_produce_node (GabbleJingleContent *c,
-  LmMessageNode *parent, gboolean full);
+    LmMessageNode *parent,
+    gboolean include_description,
+    gboolean include_transport,
+    LmMessageNode **trans_node_out);
 void gabble_jingle_content_parse_accept (GabbleJingleContent *c,
   LmMessageNode *content_node, gboolean google_mode, GError **error);
 
@@ -117,13 +122,18 @@ void gabble_jingle_content_remove (GabbleJingleContent *c, gboolean signal_peer)
 GList *gabble_jingle_content_get_remote_candidates (GabbleJingleContent *c);
 gboolean gabble_jingle_content_change_direction (GabbleJingleContent *c,
     JingleContentSenders senders);
-void gabble_jingle_content_retransmit_candidates (GabbleJingleContent *self);
+void gabble_jingle_content_retransmit_candidates (GabbleJingleContent *self,
+    gboolean all);
+void gabble_jingle_content_inject_candidates (GabbleJingleContent *self,
+    LmMessageNode *transport_node);
 gboolean gabble_jingle_content_is_created_by_us (GabbleJingleContent *c);
 gboolean gabble_jingle_content_creator_is_initiator (GabbleJingleContent *c);
 
 const gchar *gabble_jingle_content_get_name (GabbleJingleContent *self);
 const gchar *gabble_jingle_content_get_ns (GabbleJingleContent *self);
 const gchar *gabble_jingle_content_get_disposition (GabbleJingleContent *self);
+JingleTransportType gabble_jingle_content_get_transport_type (GabbleJingleContent *c);
+const gchar *gabble_jingle_content_get_transport_ns (GabbleJingleContent *self);
 
 void gabble_jingle_content_maybe_send_description (GabbleJingleContent *self);
 

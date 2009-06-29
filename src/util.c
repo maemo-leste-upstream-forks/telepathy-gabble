@@ -124,10 +124,11 @@ lm_message_node_add_own_nick (LmMessageNode *node,
 }
 
 void
-lm_message_node_unlink (LmMessageNode *orphan)
+lm_message_node_unlink (LmMessageNode *orphan,
+    LmMessageNode *parent)
 {
-  if (orphan->parent && orphan == orphan->parent->children)
-    orphan->parent->children = orphan->next;
+  if (parent && orphan == parent->children)
+    parent->children = orphan->next;
   if (orphan->prev)
     orphan->prev->next = orphan->next;
   if (orphan->next)
@@ -138,7 +139,7 @@ void
 lm_message_node_steal_children (LmMessageNode *snatcher,
                                 LmMessageNode *mum)
 {
-  LmMessageNode *baby;
+  NodeIter i;
 
   g_return_if_fail (snatcher->children == NULL);
 
@@ -148,10 +149,11 @@ lm_message_node_steal_children (LmMessageNode *snatcher,
   snatcher->children = mum->children;
   mum->children = NULL;
 
-  for (baby = snatcher->children;
-       baby != NULL;
-       baby = baby->next)
-    baby->parent = snatcher;
+  for (i = node_iter (snatcher); i; i = node_iter_next (i))
+    {
+      LmMessageNode *baby = node_iter_data (i);
+      baby->parent = snatcher;
+    }
 }
 
 /* variant of lm_message_node_get_child() which ignores node namespace
@@ -159,10 +161,12 @@ lm_message_node_steal_children (LmMessageNode *snatcher,
 LmMessageNode *
 lm_message_node_get_child_any_ns (LmMessageNode *node, const gchar *name)
 {
-  LmMessageNode *child;
+  NodeIter i;
 
-  for (child = node->children; child != NULL; child = child->next)
+  for (i = node_iter (node); i; i = node_iter_next (i))
     {
+      LmMessageNode *child = node_iter_data (i);
+
       if (!tp_strdiff (lm_message_node_get_name (child), name))
           return child;
     }
@@ -222,12 +226,11 @@ lm_message_node_get_child_with_namespace (LmMessageNode *node,
                                           const gchar *name,
                                           const gchar *ns)
 {
-  LmMessageNode *tmp;
+  NodeIter i;
 
-  for (tmp = node->children;
-       tmp != NULL;
-       tmp = tmp->next)
+  for (i = node_iter (node); i; i = node_iter_next (i))
     {
+      LmMessageNode *tmp = node_iter_data (i);
       gchar *tag = NULL;
       gboolean found;
 
@@ -257,51 +260,6 @@ lm_message_node_get_child_with_namespace (LmMessageNode *node,
     }
 
   return NULL;
-}
-
-static LmMessageNode *
-message_node_last_child (LmMessageNode *node)
-{
-  LmMessageNode *l;
-
-  g_return_val_if_fail (node != NULL, NULL);
-
-  if (!node->children)
-    {
-      return NULL;
-    }
-
-  l = node->children;
-
-  while (l->next)
-    {
-      l = l->next;
-    }
-
-  return l;
-}
-
-void
-lm_message_node_add_child_node (LmMessageNode *node, LmMessageNode *child)
-{
-  LmMessageNode *prev;
-
-  g_return_if_fail (node != NULL);
-
-  prev = message_node_last_child (node);
-  lm_message_node_ref (child);
-
-  if (prev)
-    {
-      prev->next = child;
-      child->prev = prev;
-    }
-  else
-    {
-      node->children = child;
-    }
-
-  child->parent = node;
 }
 
 /* note: these are only used internally for readability, not part of the API
@@ -695,7 +653,7 @@ lm_message_node_extract_properties (LmMessageNode *node,
                                     const gchar *prop)
 {
   GHashTable *properties;
-  LmMessageNode *child;
+  NodeIter i;
 
   properties = g_hash_table_new_full (g_str_hash, g_str_equal, g_free,
       (GDestroyNotify) tp_g_value_slice_free);
@@ -703,8 +661,9 @@ lm_message_node_extract_properties (LmMessageNode *node,
   if (node == NULL)
     return properties;
 
-  for (child = node->children; child; child = child->next)
+  for (i = node_iter (node); i; i = node_iter_next (i))
     {
+      LmMessageNode *child = node_iter_data (i);
       const gchar *name;
       const gchar *type;
       const gchar *value;
@@ -1041,40 +1000,4 @@ gabble_signal_connect_weak (gpointer instance,
 
   g_object_weak_ref (instance_obj, instance_destroyed_cb, ctx);
   g_object_weak_ref (user_data, user_data_destroyed_cb, ctx);
-}
-
-GValue *
-gabble_g_value_slice_new_uint (guint n)
-{
-  GValue *value = tp_g_value_slice_new (G_TYPE_UINT);
-
-  g_value_set_uint (value, n);
-  return value;
-}
-
-GValue *
-gabble_g_value_slice_new_string (const gchar *string)
-{
-  GValue *value = tp_g_value_slice_new (G_TYPE_STRING);
-
-  g_value_set_string (value, string);
-  return value;
-}
-
-GValue *
-gabble_g_value_slice_new_static_string (const gchar *string)
-{
-  GValue *value = tp_g_value_slice_new (G_TYPE_STRING);
-
-  g_value_set_static_string (value, string);
-  return value;
-}
-
-GValue *
-gabble_g_value_slice_new_take_string (gchar *string)
-{
-  GValue *value = tp_g_value_slice_new (G_TYPE_STRING);
-
-  g_value_take_string (value, string);
-  return value;
 }

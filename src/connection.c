@@ -348,6 +348,7 @@ gabble_connection_init (GabbleConnection *self)
   self->lmconn = lm_connection_new (NULL);
 
   priv->caps_serial = 1;
+  priv->port = 5222;
 }
 
 static void
@@ -664,7 +665,7 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
       g_param_spec_uint (
           "port", "Jabber server port",
           "The port used when establishing a connection.",
-          0, G_MAXUINT16, 0,
+          1, G_MAXUINT16, 5222,
           G_PARAM_CONSTRUCT | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_OLD_SSL,
@@ -814,7 +815,7 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
           "keepalive-interval", "keepalive interval",
           "Seconds between keepalive packets, or 0 to disable",
           0, G_MAXUINT, 30,
-          G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_CONSTRUCT | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gabble_connection_class->properties_class.interfaces = prop_interfaces;
   tp_dbus_properties_mixin_class_init (object_class,
@@ -1339,8 +1340,16 @@ _gabble_connection_connect (TpBaseConnection *base,
   lm_connection_set_jid (conn->lmconn, jid);
   g_free (jid);
 
-  /* override server and port if either was provided */
-  if (priv->connect_server != NULL || priv->port != 0)
+  /* If the UI explicitly specified a port or a server, pass them to Loudmouth
+   * rather than letting it do an SRV lookup.
+   *
+   * If the port is 5222 (the default) then unless the UI also specified a
+   * server or old-style SSL, we ignore it and do an SRV lookup anyway. This
+   * means that UIs that blindly pass the default back to Gabble work
+   * correctly. If the user really did mean 5222, then when the SRV lookup
+   * fails we fall back to that anyway.
+   */
+  if (priv->port != 5222 || priv->connect_server != NULL || priv->old_ssl)
     {
       gchar *server;
 
@@ -1349,13 +1358,11 @@ _gabble_connection_connect (TpBaseConnection *base,
       else
         server = priv->stream_server;
 
-      DEBUG ("disabling SRV because \"server\" or \"port\" parameter "
-          "specified, will connect to %s", server);
+      DEBUG ("disabling SRV because \"server\" or \"old-ssl\" was specified "
+          "or port was not 5222, will connect to %s", server);
 
       lm_connection_set_server (conn->lmconn, server);
-
-      if (priv->port != 0)
-        lm_connection_set_port (conn->lmconn, priv->port);
+      lm_connection_set_port (conn->lmconn, priv->port);
     }
   else
     {
@@ -1513,8 +1520,25 @@ _gabble_connection_signal_own_presence (GabbleConnection *self, GError **error)
 
   /* XEP-0115 deprecates 'ext' feature bundles. But we still need
    * BUNDLE_VOICE_V1 it for backward-compatibility with Gabble 0.2 */
-  if (presence->caps & PRESENCE_CAP_GOOGLE_VOICE)
-    lm_message_node_set_attribute (node, "ext", BUNDLE_VOICE_V1);
+
+  if (presence->caps & (PRESENCE_CAP_GOOGLE_VOICE|PRESENCE_CAP_GOOGLE_VIDEO))
+    {
+      GString *ext = g_string_new ("");
+
+      if (presence->caps & PRESENCE_CAP_GOOGLE_VOICE)
+        g_string_append (ext, BUNDLE_VOICE_V1);
+
+      if (presence->caps & PRESENCE_CAP_GOOGLE_VIDEO)
+        {
+          if (ext->len > 0)
+            g_string_append_c (ext, ' ');
+          g_string_append (ext, BUNDLE_VIDEO_V1);
+        }
+
+      lm_message_node_set_attribute (node, "ext", ext->str);
+
+      g_string_free (ext, TRUE);
+    }
 
   ret = _gabble_connection_send (self, message, error);
 
@@ -2142,26 +2166,28 @@ connection_disco_cb (GabbleDisco *disco,
     }
   else
     {
-      LmMessageNode *iter;
+      NodeIter i;
 
       NODE_DEBUG (result, "got");
 
-      for (iter = result->children; iter != NULL; iter = iter->next)
+      for (i = node_iter (result); i; i = node_iter_next (i))
         {
-          if (0 == strcmp (iter->name, "identity"))
+          LmMessageNode *child = node_iter_data (i);
+
+          if (0 == strcmp (child->name, "identity"))
             {
-              const gchar *category = lm_message_node_get_attribute (iter,
+              const gchar *category = lm_message_node_get_attribute (child,
                   "category");
-              const gchar *type = lm_message_node_get_attribute (iter, "type");
+              const gchar *type = lm_message_node_get_attribute (child, "type");
 
               if (!tp_strdiff (category, "pubsub") &&
                   !tp_strdiff (type, "pep"))
                 /* XXX: should we also check for specific PubSub <feature>s? */
                 conn->features |= GABBLE_CONNECTION_FEATURES_PEP;
             }
-          else if (0 == strcmp (iter->name, "feature"))
+          else if (0 == strcmp (child->name, "feature"))
             {
-              const gchar *var = lm_message_node_get_attribute (iter, "var");
+              const gchar *var = lm_message_node_get_attribute (child, "var");
 
               if (var == NULL)
                 continue;
@@ -3038,9 +3064,9 @@ room_jid_disco_cb (GabbleDisco *disco,
   RoomVerifyBatch *batch = rvctx->batch;
   TpHandleRepoIface *room_handles = tp_base_connection_get_handles (
       (TpBaseConnection *) batch->conn, TP_HANDLE_TYPE_ROOM);
-  LmMessageNode *lm_node;
   gboolean found = FALSE;
   TpHandle handle;
+  NodeIter i;
 
   /* stop the request getting cancelled after it's already finished */
   rvctx->request = NULL;
@@ -3064,8 +3090,9 @@ room_jid_disco_cb (GabbleDisco *disco,
       return;
     }
 
-  for (lm_node = query_result->children; lm_node; lm_node = lm_node->next)
+  for (i = node_iter (query_result); i; i = node_iter_next (i))
     {
+      LmMessageNode *lm_node = node_iter_data (i);
       const gchar *var;
 
       if (tp_strdiff (lm_node->name, "feature"))
