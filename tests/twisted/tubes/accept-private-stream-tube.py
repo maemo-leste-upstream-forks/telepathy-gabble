@@ -11,7 +11,7 @@ Receives several tube offers:
 import dbus
 
 from servicetest import call_async, EventPattern, sync_dbus, assertEquals
-from gabbletest import acknowledge_iq, send_error_reply
+from gabbletest import acknowledge_iq, send_error_reply, make_result_iq
 
 from twisted.words.xish import domish, xpath
 from twisted.internet import reactor
@@ -145,11 +145,11 @@ def test(q, bus, conn, stream, bytestream_cls,
     event = q.expect('stream-iq', iq_type='get',
         query_ns='http://jabber.org/protocol/disco#info',
         to='bob@localhost/Bob')
-    result = event.stanza
-    result['type'] = 'result'
     assert event.query['node'] == \
         'http://example.com/ICantBelieveItsNotTelepathy#1.2.3'
-    feature = event.query.addElement('feature')
+    result = make_result_iq(stream, event.stanza)
+    query = result.firstChildElement()
+    feature = query.addElement('feature')
     feature['var'] = ns.TUBES
     stream.send(result)
 
@@ -290,11 +290,6 @@ def test(q, bus, conn, stream, bytestream_cls,
     q.expect_many(
         EventPattern('dbus-signal', signal='Closed'),
         EventPattern('dbus-signal', signal='ChannelClosed'))
-
-    # OK, we're done
-    conn.Disconnect()
-
-    q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
 
 if __name__ == '__main__':
     t.exec_stream_tube_test(test)

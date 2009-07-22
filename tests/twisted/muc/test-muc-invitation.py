@@ -82,14 +82,22 @@ def test(q, bus, conn, stream):
     assert status
     assert status.children[0] == u'success'
 
+    # We are added as remote pending while joining the room. The inviter (Bob)
+    # is removed for now. It will be re-added with his channel specific handle
+    # once we have joined.
     assert event2.args == ['', [], [bob_handle], [],
-            [room_self_handle], 0, room_self_handle]
+            [room_self_handle], 0, cs.GC_REASON_INVITED]
+
+    # Send presence for Bob's membership of room.
+    stream.send(make_muc_presence('owner', 'moderator', 'chat@conf.localhost', 'bob'))
 
     # Send presence for own membership of room.
     stream.send(make_muc_presence('owner', 'moderator', 'chat@conf.localhost', 'test'))
 
     event = q.expect('dbus-signal', signal='MembersChanged')
-    assert event.args == ['', [room_self_handle], [], [], [], 0, 0]
+
+    room_bob_handle = conn.RequestHandles(cs.HT_CONTACT, ['chat@conf.localhost/bob'])[0]
+    assert event.args == ['', [room_self_handle, room_bob_handle], [], [], [], 0, 0]
 
     # Test sending an invitation
     alice_handle = conn.RequestHandles(1, ['alice@localhost'])[0]
@@ -110,10 +118,6 @@ def test(q, bus, conn, stream):
     reasons = xpath.queryForNodes('/invite/reason', invites[0])
     assert (reasons is not None and len(reasons) == 1), repr(reasons)
     assert str(reasons[0]) == 'I want to test invitations'
-
-    conn.Disconnect()
-
-    q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
 
 if __name__ == '__main__':
     exec_test(test)

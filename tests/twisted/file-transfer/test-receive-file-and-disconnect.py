@@ -6,9 +6,8 @@ class ReceiveFileAndDisconnectTest(ReceiveFileTest):
         s = self.create_socket()
         s.connect(self.address)
 
-        # disconnect
-        self.conn.Disconnect()
-        self.q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
+        # return True so the test will be ended and the connection
+        # disconnected
         return True
 
 if __name__ == '__main__':

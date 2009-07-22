@@ -29,6 +29,9 @@ NS_XMPP_BIND = 'urn:ietf:params:xml:ns:xmpp-bind'
 def make_result_iq(stream, iq):
     result = IQ(stream, "result")
     result["id"] = iq["id"]
+    to = iq.getAttribute('to')
+    if to is not None:
+        result["from"] = to
     query = iq.firstChildElement()
 
     if query:
@@ -43,6 +46,9 @@ def send_error_reply(stream, iq, error_stanza=None):
     result = IQ(stream, "error")
     result["id"] = iq["id"]
     query = iq.firstChildElement()
+    to = iq.getAttribute('to')
+    if to is not None:
+        result["from"] = to
 
     if query:
         result.addElement((query.uri, query.name))
@@ -271,6 +277,7 @@ class BaseXmlStream(xmlstream.XmlStream):
             identity['type'] = 'pep'
 
             iq['type'] = 'result'
+            iq['from'] = iq['to']
             self.send(iq)
 
 class JabberXmlStream(BaseXmlStream):
@@ -280,8 +287,7 @@ class XmppXmlStream(BaseXmlStream):
     version = (1, 0)
 
 class GoogleXmlStream(BaseXmlStream):
-    # ???
-    version = (0, 9)
+    version = (1, 0)
 
     def _cb_disco_iq(self, iq):
         if iq.getAttribute('to') == 'localhost':
@@ -295,6 +301,7 @@ class GoogleXmlStream(BaseXmlStream):
             feature['var'] = ns.GOOGLE_JINGLE_INFO
 
             iq['type'] = 'result'
+            iq['from'] = 'localhost'
             self.send(iq)
 
 def make_connection(bus, event_func, params=None):
@@ -317,10 +324,10 @@ def make_stream(event_func, authenticator=None, protocol=None, port=4242, resour
     # set up Jabber server
 
     if authenticator is None:
-        authenticator = JabberAuthenticator('test', 'pass', resource=resource)
+        authenticator = XmppAuthenticator('test', 'pass', resource=resource)
 
     if protocol is None:
-        protocol = JabberXmlStream
+        protocol = XmppXmlStream
 
     stream = protocol(event_func, authenticator)
     factory = twisted.internet.protocol.Factory()
@@ -352,6 +359,14 @@ def install_colourer():
     sys.stdout = Colourer(sys.stdout, patterns)
     return sys.stdout
 
+def disconnect_conn(q, conn, stream, expected=[]):
+    conn.Disconnect()
+
+    tmp = expected + [EventPattern('dbus-signal', signal='StatusChanged',
+            args=[cs.CONN_STATUS_DISCONNECTED, cs.CSR_REQUESTED])]
+
+    events = q.expect_many(*tmp)
+    return events[:-1]
 
 def exec_test_deferred (funs, params, protocol=None, timeout=None,
                         authenticator=None):
@@ -384,19 +399,19 @@ def exec_test_deferred (funs, params, protocol=None, timeout=None,
         traceback.print_exc()
         error = e
 
+    if colourer:
+      sys.stdout = colourer.fh
+    d = port.stopListening()
+    if error is None:
+        d.addBoth((lambda *args: reactor.crash()))
+    else:
+        # please ignore the POSIX behind the curtain
+        d.addBoth((lambda *args: os._exit(1)))
+
     try:
-        if colourer:
-          sys.stdout = colourer.fh
-        d = port.stopListening()
-        if error is None:
-            d.addBoth((lambda *args: reactor.crash()))
-        else:
-            # please ignore the POSIX behind the curtain
-            d.addBoth((lambda *args: os._exit(1)))
-
-        conn.Disconnect()
-
+        disconnect_conn(queue, conn, stream)
     except dbus.DBusException, e:
+        # Connection has already been disconnected
         pass
 
 def exec_tests(funs, params=None, protocol=None, timeout=None,
@@ -514,19 +529,24 @@ def make_presence(_from, to='test@localhost', type=None, status=None, caps=None)
 
     return presence
 
-def expect_list_channel(q, bus, conn, name, contacts):
+def expect_list_channel(q, bus, conn, name, contacts, lp_contacts=[],
+                        rp_contacts=[]):
     return expect_contact_list_channel(q, bus, conn, cs.HT_LIST, name,
-        contacts)
+        contacts, lp_contacts=lp_contacts, rp_contacts=rp_contacts)
 
-def expect_group_channel(q, bus, conn, name, contacts):
+def expect_group_channel(q, bus, conn, name, contacts, lp_contacts=[],
+                         rp_contacts=[]):
     return expect_contact_list_channel(q, bus, conn, cs.HT_GROUP, name,
-        contacts)
+        contacts, lp_contacts=lp_contacts, rp_contacts=rp_contacts)
 
-def expect_contact_list_channel(q, bus, conn, ht, name, contacts):
+def expect_contact_list_channel(q, bus, conn, ht, name, contacts,
+                                lp_contacts=[], rp_contacts=[]):
     """
     Expects NewChannel and NewChannels signals for the
     contact list with handle type 'ht' and ID 'name', and checks that its
-    members are exactly 'contacts'. Returns a proxy for the channel.
+    members, lp members and rp members are exactly 'contacts', 'lp_contacts'
+    and 'rp_contacts'.
+    Returns a proxy for the channel.
     """
 
     old_signal, new_signal = q.expect_many(
@@ -543,7 +563,11 @@ def expect_contact_list_channel(q, bus, conn, ht, name, contacts):
         cs.CHANNEL_TYPE_CONTACT_LIST)
     members = chan.Group.GetMembers()
 
-    assertEquals(contacts, conn.InspectHandles(cs.HT_CONTACT, members))
+    assertEquals(sorted(contacts),
+        sorted(conn.InspectHandles(cs.HT_CONTACT, members)))
+
+    lp_handles = conn.RequestHandles(cs.HT_CONTACT, lp_contacts)
+    rp_handles = conn.RequestHandles(cs.HT_CONTACT, rp_contacts)
 
     # NB. comma: we're unpacking args. Thython!
     info, = new_signal.args
@@ -571,9 +595,10 @@ def expect_contact_list_channel(q, bus, conn, ht, name, contacts):
     assertContains('Members', group_props)
     assertEquals(members, group_props['Members'])
     assertContains('LocalPendingMembers', group_props)
-    assertEquals([], group_props['LocalPendingMembers'])
+    actual_lp_handles = [x[0] for x in group_props['LocalPendingMembers']]
+    assertEquals(sorted(lp_handles), sorted(actual_lp_handles))
     assertContains('RemotePendingMembers', group_props)
-    assertEquals([], group_props['RemotePendingMembers'])
+    assertEquals(sorted(rp_handles), sorted(group_props['RemotePendingMembers']))
     assertContains('GroupFlags', group_props)
 
     return chan

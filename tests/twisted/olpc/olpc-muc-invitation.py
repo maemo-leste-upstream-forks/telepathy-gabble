@@ -125,7 +125,7 @@ def test(q, bus, conn, stream):
         )
 
     assert event.args == ['', [], [handles['bob']], [],
-            [handles['chat_self']], 0, handles['chat_self']]
+            [handles['chat_self']], 0, cs.GC_REASON_INVITED]
 
     # Send presence for own membership of room.
     stream.send(make_muc_presence('owner', 'moderator', 'chat@conf.localhost', 'test'))
@@ -232,10 +232,6 @@ def test(q, bus, conn, stream):
     chat_handle, props = apc_event.args
     assert chat_handle == handles['chat']
     assert props == {'color': '#f00baa,#f00baa', 'private' : True}
-
-    conn.Disconnect()
-
-    q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
 
 if __name__ == '__main__':
     exec_test(test)

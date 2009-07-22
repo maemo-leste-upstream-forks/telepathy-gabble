@@ -136,7 +136,7 @@ def test(q, bus, conn, stream):
         EventPattern('stream-presence', to='chat@conf.localhost/test'),
         EventPattern('dbus-signal', signal='MembersChanged',
             args=['', [], [bob_handle], [], [room_self_handle],
-                0, room_self_handle])
+                0, cs.GC_REASON_INVITED])
             )
 
     # Send presence for own membership of room.
@@ -395,10 +395,6 @@ def test(q, bus, conn, stream):
 
     properties = xpath.queryForNodes('/activities/properties', activities[0])
     assert properties is None, repr(properties)
-
-    conn.Disconnect()
-
-    q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
 
 if __name__ == '__main__':
     exec_test(test)
