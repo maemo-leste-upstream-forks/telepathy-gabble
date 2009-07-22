@@ -51,7 +51,7 @@ def test(q, bus, conn, stream):
     # send Gabble some XML that will cause an event when processed, and
     # wait for that event (until
     # https://bugs.freedesktop.org/show_bug.cgi?id=15769 is fixed)
-    el = domish.Element(('jabber.client', 'presence'))
+    el = domish.Element(('jabber:client', 'presence'))
     el['from'] = 'bob@example.com/Bar'
     stream.send(el.toXml())
     q.expect('dbus-signal', signal='PresenceUpdate')
@@ -131,14 +131,5 @@ def test(q, bus, conn, stream):
         assert len(parameters) == 1, parameters
         assert parameters['misc'] == 'other', parameters
 
-    # Test completed, close the connection
-
-    conn.Disconnect()
-    q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
-
-    return True
-
-
 if __name__ == '__main__':
     exec_test(test)
-

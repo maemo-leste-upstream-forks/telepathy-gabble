@@ -24,7 +24,7 @@ def test(q, bus, conn, stream):
         jid = iq['to']
         port = proxy_port[jid]
 
-        reply = elem_iq(stream, 'result', id=iq['id'])(
+        reply = elem_iq(stream, 'result', id=iq['id'], from_=jid)(
             elem(ns.BYTESTREAMS, 'query')(
                 elem('streamhost', jid=jid, host='127.0.0.1', port=port)()))
         stream.send(reply)
@@ -76,10 +76,6 @@ def test(q, bus, conn, stream):
             assert node['host'] == '127.0.0.1'
             assert node['port'] == proxy_port.pop(node['jid'])
     assert proxy_port == {}
-
-    conn.Disconnect()
-    q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
-    return True
 
 if __name__ == '__main__':
     exec_test(test, params={'fallback-socks5-proxies':

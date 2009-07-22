@@ -14,6 +14,7 @@ def test(q, bus, conn, stream):
     m = domish.Element((None, 'iq'))
     m['from'] = 'foo@bar.com'
     m['id'] = '1'
+    m['type'] = 'get'
     m.addElement(('http://jabber.org/protocol/disco#info', 'query'))
     stream.send(m)
 
@@ -21,9 +22,5 @@ def test(q, bus, conn, stream):
     elem = event.stanza
     assert elem['id'] == '1'
 
-    conn.Disconnect()
-    q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
-
 if __name__ == '__main__':
     exec_test(test)
-

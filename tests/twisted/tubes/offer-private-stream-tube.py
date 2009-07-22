@@ -3,7 +3,7 @@
 import dbus
 
 from servicetest import call_async, EventPattern, sync_dbus, assertEquals
-from gabbletest import acknowledge_iq, sync_stream
+from gabbletest import acknowledge_iq, sync_stream, make_result_iq
 import constants as cs
 import ns
 import tubetestutil as t
@@ -41,8 +41,8 @@ def contact_offer_dbus_tube(bytestream, tube_id):
 
 def test(q, bus, conn, stream, bytestream_cls,
         address_type, access_control, access_control_param):
-    address1 = t.set_up_echo(q, address_type, True)
-    address2 = t.set_up_echo(q, address_type, True)
+    address1 = t.set_up_echo(q, address_type, True, streamfile='stream')
+    address2 = t.set_up_echo(q, address_type, True, streamfile='stream2')
 
     t.check_conn_properties(q, conn)
 
@@ -81,11 +81,11 @@ def test(q, bus, conn, stream, bytestream_cls,
     event = q.expect('stream-iq', iq_type='get',
         query_ns='http://jabber.org/protocol/disco#info',
         to=bob_full_jid)
-    result = event.stanza
-    result['type'] = 'result'
     assert event.query['node'] == \
         'http://example.com/ICantBelieveItsNotTelepathy#1.2.3'
-    feature = event.query.addElement('feature')
+    result = make_result_iq(stream, event.stanza)
+    query = result.firstChildElement()
+    feature = query.addElement('feature')
     feature['var'] = ns.TUBES
     stream.send(result)
 
@@ -418,11 +418,6 @@ def test(q, bus, conn, stream, bytestream_cls,
     e = q.expect('dbus-signal', signal='ConnectionClosed')
     assertEquals(conn_id, e.args[0])
     assertEquals(cs.CONNECTION_LOST, e.args[1])
-
-    # OK, we're done
-    conn.Disconnect()
-
-    q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
 
 if __name__ == '__main__':
     t.exec_stream_tube_test(test)

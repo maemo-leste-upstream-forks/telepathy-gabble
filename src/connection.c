@@ -20,6 +20,7 @@
 
 #include "config.h"
 #include "connection.h"
+#include "gabble.h"
 
 #include <string.h>
 
@@ -347,6 +348,9 @@ gabble_connection_init (GabbleConnection *self)
   self->priv = priv;
   self->lmconn = lm_connection_new (NULL);
 
+  /* Override LM domain log handler. */
+  gabble_lm_debug ();
+
   priv->caps_serial = 1;
   priv->port = 5222;
 }
@@ -514,6 +518,8 @@ gabble_connection_set_property (GObject      *object,
       priv->fallback_stun_port = g_value_get_uint (value);
       break;
     case PROP_FALLBACK_SOCKS5_PROXIES:
+      if (priv->fallback_socks5_proxies != NULL)
+        g_strfreev (priv->fallback_socks5_proxies);
       priv->fallback_socks5_proxies = g_value_dup_boxed (value);
       break;
     case PROP_KEEPALIVE_INTERVAL:

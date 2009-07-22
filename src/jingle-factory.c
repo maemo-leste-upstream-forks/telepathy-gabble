@@ -235,19 +235,11 @@ take_stun_server (GabbleJingleFactory *self,
       G_OBJECT (self));
 }
 
-/*
- * jingle_info_cb
- *
- * Called by loudmouth when we get an incoming <iq>. This handler
- * is concerned only with Jingle info queries.
- */
+
 static LmHandlerResult
-jingle_info_cb (LmMessageHandler *handler,
-                LmConnection *lmconn,
-                LmMessage *message,
-                gpointer user_data)
+got_jingle_info_stanza (GabbleJingleFactory *fac,
+    LmMessage *message)
 {
-  GabbleJingleFactory *fac = GABBLE_JINGLE_FACTORY (user_data);
   GabbleJingleFactoryPrivate *priv = fac->priv;
   LmMessageSubType sub_type;
   LmMessageNode *query_node, *node;
@@ -404,6 +396,35 @@ jingle_info_cb (LmMessageHandler *handler,
   return LM_HANDLER_RESULT_REMOVE_MESSAGE;
 }
 
+/*
+ * jingle_info_cb
+ *
+ * Called by loudmouth when we get an incoming <iq>. This handler
+ * is concerned only with Jingle info queries.
+ */
+static LmHandlerResult
+jingle_info_cb (LmMessageHandler *handler,
+                LmConnection *lmconn,
+                LmMessage *message,
+                gpointer user_data)
+{
+  GabbleJingleFactory *fac = GABBLE_JINGLE_FACTORY (user_data);
+
+  return got_jingle_info_stanza (fac, message);
+}
+
+static LmHandlerResult
+jingle_info_reply_cb (GabbleConnection *conn,
+    LmMessage *sent_msg,
+    LmMessage *reply_msg,
+    GObject *factory_obj,
+    gpointer user_data)
+{
+  GabbleJingleFactory *fac = GABBLE_JINGLE_FACTORY (factory_obj);
+
+  return got_jingle_info_stanza (fac, reply_msg);
+}
+
 static void
 jingle_info_send_request (GabbleJingleFactory *fac)
 {
@@ -423,7 +444,8 @@ jingle_info_send_request (GabbleJingleFactory *fac)
   node = lm_message_node_add_child (msg->node, "query", NULL);
   lm_message_node_set_attribute (node, "xmlns", NS_GOOGLE_JINGLE_INFO);
 
-  if (!_gabble_connection_send (priv->conn, msg, &error))
+  if (!_gabble_connection_send_with_reply (priv->conn, msg,
+        jingle_info_reply_cb, G_OBJECT (fac), fac, &error))
     {
       DEBUG ("jingle info send failed: %s\n", error->message);
       g_error_free (error);
@@ -445,6 +467,12 @@ gabble_jingle_factory_dispose (GObject *object)
   DEBUG ("dispose called");
   priv->dispose_has_run = TRUE;
 
+  if (priv->soup != NULL)
+    {
+      g_object_unref (priv->soup);
+      priv->soup = NULL;
+    }
+
   g_hash_table_destroy (priv->sessions);
   priv->sessions = NULL;
 
@@ -458,12 +486,6 @@ gabble_jingle_factory_dispose (GObject *object)
   g_free (fac->priv->fallback_stun_server);
   g_free (fac->priv->relay_token);
   g_free (fac->priv->relay_server);
-
-  if (priv->soup != NULL)
-    {
-      g_object_unref (priv->soup);
-      priv->soup = NULL;
-    }
 
   if (G_OBJECT_CLASS (gabble_jingle_factory_parent_class)->dispose)
     G_OBJECT_CLASS (gabble_jingle_factory_parent_class)->dispose (object);
@@ -574,7 +596,6 @@ connection_status_changed_cb (GabbleConnection *conn,
     {
     case TP_CONNECTION_STATUS_CONNECTING:
       g_assert (priv->conn != NULL);
-      g_assert (priv->conn->lmconn != NULL);
 
       g_assert (priv->jingle_cb == NULL);
       g_assert (priv->jingle_info_cb == NULL);
@@ -1182,11 +1203,6 @@ gabble_jingle_factory_create_google_relay_session (
 
   if (priv->soup == NULL)
     {
-      /* libsoup uses glib in multiple threads and don't have this, so we have to
-       * enable it manually here */
-      if (!g_thread_supported ())
-        g_thread_init (NULL);
-
       priv->soup = soup_session_async_new ();
 
       /* If we don't get answer in a few seconds, relay won't do

@@ -144,7 +144,6 @@ def test(jp, q, bus, conn, stream):
     # The rest of the test concerns things we only support in the glorious
     # modern Jingle future.
     if not jp.is_modern_jingle():
-        conn.Disconnect()
         return
 
     # The other person puts us on hold.  Gabble should ack the session-info IQ,
@@ -281,9 +280,5 @@ def test(jp, q, bus, conn, stream):
     chan.Group.RemoveMembers([self_handle], 'closed')
     e = q.expect('dbus-signal', signal='Close') #XXX - match against the path
 
-    conn.Disconnect()
-    q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
-
 if __name__ == '__main__':
     test_all_dialects(test)
-
