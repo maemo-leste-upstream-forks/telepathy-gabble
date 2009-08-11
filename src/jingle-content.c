@@ -82,7 +82,6 @@ struct _GabbleJingleContentPrivate
   /* Whether we have at least one local candidate. */
   gboolean have_local_candidates;
 
-  guint timer_id;
   guint gtalk4_event_id;
 
   gboolean dispose_has_run;
@@ -112,7 +111,6 @@ gabble_jingle_content_init (GabbleJingleContent *obj)
   priv->created_by_us = TRUE;
   priv->media_ready = FALSE;
   priv->have_local_candidates = FALSE;
-  priv->timer_id = 0;
   priv->gtalk4_event_id = 0;
   priv->dispose_has_run = FALSE;
 
@@ -131,15 +129,6 @@ gabble_jingle_content_dispose (GObject *object)
 
   DEBUG ("%p", object);
   priv->dispose_has_run = TRUE;
-
-  /* If we're in the middle of content-add/-accept when the session is
-   * terminated, we'll get disposed without being explicitly removed from
-   * the session. So, remove the timer here. */
-  if (priv->timer_id != 0)
-    {
-      g_source_remove (priv->timer_id);
-      priv->timer_id = 0;
-    }
 
   if (priv->gtalk4_event_id != 0)
     {
@@ -620,10 +609,6 @@ gabble_jingle_content_parse_accept (GabbleJingleContent *c,
   if (*error != NULL)
       return;
 
-  if (priv->timer_id != 0)
-      g_source_remove (priv->timer_id);
-  priv->timer_id = 0;
-
   priv->state = JINGLE_CONTENT_STATE_ACKNOWLEDGED;
   g_object_notify ((GObject *) c, "state");
 }
@@ -787,19 +772,6 @@ gabble_jingle_content_is_ready (GabbleJingleContent *self)
   return FALSE;
 }
 
-static gboolean
-timeout_content (gpointer data)
-{
-  GabbleJingleContent *c = data;
-
-  c->priv->timer_id = 0;
-  DEBUG ("content timed out");
-
-  /* we're handling it as if it were rejected */
-  gabble_jingle_content_remove (c, FALSE);
-  return FALSE;
-}
-
 static void
 send_content_add_or_accept (GabbleJingleContent *self)
 {
@@ -816,10 +788,6 @@ send_content_add_or_accept (GabbleJingleContent *self)
       /* TODO: set a timer for acknowledgement */
       action = JINGLE_ACTION_CONTENT_ADD;
       new_state = JINGLE_CONTENT_STATE_SENT;
-
-      g_assert (priv->timer_id == 0);
-      priv->timer_id = g_timeout_add (DEFAULT_CONTENT_TIMEOUT,
-        timeout_content, self);
     }
   else
     {
@@ -1012,12 +980,6 @@ gabble_jingle_content_remove (GabbleJingleContent *c, gboolean signal_peer)
   LmMessageNode *sess_node;
 
   DEBUG ("called for %p (%s)", c, priv->name);
-
-  if (priv->timer_id != 0)
-    {
-      g_source_remove (priv->timer_id);
-      priv->timer_id = 0;
-    }
 
   /* If we were already signalled and removal is not a side-effect of
    * something else (sesssion termination, or removal by peer),

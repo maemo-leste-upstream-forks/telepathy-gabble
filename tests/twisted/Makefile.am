@@ -1,6 +1,14 @@
 TWISTED_TESTS = \
 	avatar-requirements.py \
+	caps_helper.py \
+	caps/advertise-draft1.py \
+	caps/advertise-legacy.py \
+	caps/caps-cache.py \
 	caps/from-bare-jid.py \
+	caps/hashed-caps.py \
+	caps/initial-caps.py \
+	caps/receive-jingle.py \
+	caps/tube-caps.py \
 	muc/name-conflict.py \
 	muc/renamed.py \
 	muc/roomlist.py \
@@ -63,6 +71,7 @@ TWISTED_TESTS = \
 	tubes/request-invalid-dbus-tube.py \
 	tubes/test-get-available-tubes.py \
 	tubes/test-socks5-muc.py \
+	vcard/overlapping-sets.py \
 	vcard/test-alias-empty-vcard.py \
 	vcard/test-alias-pep.py \
 	vcard/test-alias.py \
@@ -87,7 +96,6 @@ TWISTED_TESTS = \
 	jingle/outgoing-basics.py \
 	jingle/outgoing-ensure.py \
 	jingle/outgoing-many-streams.py \
-	jingle/outgoing-not-answered.py \
 	jingle/payload-types.py \
 	jingle/preload-caps-crash.py \
 	jingle/stream-handler-error.py \
@@ -112,12 +120,7 @@ TWISTED_TESTS = \
 	file-transfer/test-send-file-provide-immediately.py \
 	file-transfer/test-send-file-to-unknown-contact.py \
 	file-transfer/test-send-file-wait-to-provide.py \
-	test-capabilities.py \
-	test-caps-cache.py \
-	test-caps-hash.py \
-	test-caps-tubes.py \
 	test-debug.py \
-	caps_helper.py \
 	connect/multiple-times-to-same-account.py \
 	connect/test-fail.py \
 	connect/test-success.py \
@@ -145,6 +148,7 @@ check-twisted:
 	rm -f tools/core
 	rm -f tools/vgcore.*
 	rm -f tools/gabble-testing.log
+	rm -f tools/strace.log
 	if test -n "$$GABBLE_TEST_REFDBG"; then \
 	  sleep=6; \
         else \
@@ -155,7 +159,7 @@ check-twisted:
 		--config-file=tools/tmp-session-bus.conf \
 		-- $(MAKE) check-TESTS \
 		TESTS="$(TWISTED_TESTS)" \
-		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON)"
+		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON) -u"
 	@if test -e tools/core; then\
 		echo "Core dump exists: tools/core";\
 		exit 1;\

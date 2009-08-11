@@ -5,11 +5,72 @@ import dbus
 
 from twisted.words.xish import domish, xpath
 from gabbletest import make_result_iq
-from servicetest import EventPattern, assertEquals
+from servicetest import EventPattern, assertEquals, assertContains, \
+        assertDoesNotContain
 
 from config import PACKAGE_STRING
 import ns
 import constants as cs
+
+# The caps we always have, regardless of any clients' caps
+FIXED_CAPS = [
+    ns.GOOGLE_FEAT_SESSION,
+    ns.NICK,
+    ns.NICK + '+notify',
+    ns.CHAT_STATES,
+    ns.SI,
+    ns.IBB,
+    ns.BYTESTREAMS,
+    ]
+
+JINGLE_CAPS = [
+    # Jingle dialects
+    ns.JINGLE,
+    ns.JINGLE_015,
+    # Jingle transports
+    ns.JINGLE_TRANSPORT_ICEUDP,
+    ns.JINGLE_TRANSPORT_RAWUDP,
+    ns.GOOGLE_P2P,
+    # Jingle streams
+    ns.GOOGLE_FEAT_VOICE,
+    ns.GOOGLE_FEAT_VIDEO,
+    ns.JINGLE_015_AUDIO,
+    ns.JINGLE_015_VIDEO,
+    ns.JINGLE_RTP,
+    ns.JINGLE_RTP_AUDIO,
+    ns.JINGLE_RTP_VIDEO,
+    ]
+
+VARIABLE_CAPS = (
+    JINGLE_CAPS +
+    [
+    # FIXME: currently we always advertise these, but in future we should
+    # only advertise them if >= 1 client supports them:
+    # ns.FILE_TRANSFER,
+    # ns.TUBES,
+
+    # there is an unlimited set of these; only the ones actually relevant to
+    # the tests so far are shown here
+    ns.TUBES + '/stream#x-abiword',
+    ns.TUBES + '/stream#daap',
+    ns.TUBES + '/stream#http',
+    ns.TUBES + '/dbus#com.example.Go',
+    ns.TUBES + '/dbus#com.example.Xiangqi',
+    ])
+
+def check_caps(namespaces, desired):
+    """Assert that all the FIXED_CAPS are supported, and of the VARIABLE_CAPS,
+    every capability in desired is supported, and every other capability is
+    not.
+    """
+    for c in FIXED_CAPS:
+        assertContains(c, namespaces)
+
+    for c in VARIABLE_CAPS:
+        if c in desired:
+            assertContains(c, namespaces)
+        else:
+            assertDoesNotContain(c, namespaces)
 
 text_fixed_properties = dbus.Dictionary({
     cs.TARGET_HANDLE_TYPE: cs.HT_CONTACT,
@@ -113,16 +174,23 @@ def make_caps_disco_reply(stream, req, features, dataforms={}):
 
     return iq
 
-def receive_presence_and_ask_caps(q, stream):
+def receive_presence_and_ask_caps(q, stream, expect_dbus=True):
     # receive presence stanza
-    event_stream, event_dbus = q.expect_many(
-            EventPattern('stream-presence'),
-            EventPattern('dbus-signal', signal='ContactCapabilitiesChanged')
-        )
-    assert len(event_dbus.args) == 1
-    signaled_caps = event_dbus.args[0]
+    if expect_dbus:
+        presence, event_dbus = q.expect_many(
+                EventPattern('stream-presence'),
+                EventPattern('dbus-signal', signal='ContactCapabilitiesChanged')
+            )
+        assert len(event_dbus.args) == 1
+        signaled_caps = event_dbus.args[0]
+    else:
+        presence = q.expect('stream-presence')
+        signaled_caps = None
 
-    c_nodes = xpath.queryForNodes('/presence/c', event_stream.stanza)
+    return disco_caps(q, stream, presence) + (signaled_caps,)
+
+def disco_caps(q, stream, presence):
+    c_nodes = xpath.queryForNodes('/presence/c', presence.stanza)
     assert c_nodes is not None
     assert len(c_nodes) == 1
     hash = c_nodes[0].attributes['hash']
@@ -144,7 +212,6 @@ def receive_presence_and_ask_caps(q, stream):
 
     # receive caps
     event = q.expect('stream-iq', query_ns=ns.DISCO_INFO)
-    caps_str = str(xpath.queryForNodes('/iq/query/feature', event.stanza))
 
     features = []
     for feature in xpath.queryForNodes('/iq/query/feature', event.stanza):
@@ -153,7 +220,7 @@ def receive_presence_and_ask_caps(q, stream):
     # Check if the hash matches the announced capabilities
     assert ver == compute_caps_hash(['client/pc//%s' % PACKAGE_STRING], features, {})
 
-    return (event, caps_str, signaled_caps)
+    return (event, features)
 
 def caps_contain(event, cap):
     node = xpath.queryForNodes('/iq/query/feature[@var="%s"]'
