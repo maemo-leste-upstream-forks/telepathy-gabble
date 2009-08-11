@@ -1,3 +1,21 @@
+telepathy-gabble 0.7.32 (2009-08-09)
+====================================
+
+The “Leafy Green Fetish” release.
+
+Fixes:
+
+* fd.o #21153: Remove session initiation and content add timeouts from
+  the Jingle code; this should be client policy.
+
+* fd.o #22023: Correctly avoid trying to set your vCard twice at the
+  same time.
+
+* Correctly parse file-transfer timestamps. References fd.o #23168.
+
+* Correctly fall back to stun.collabora.co.uk if neither the user nor
+  the server has any better STUN server suggestions.
+
 telepathy-gabble 0.7.31 (2009-07-22)
 ====================================
 
@@ -39,7 +57,7 @@ Fixes:
   used if a SIP user on sipphone.com calls a SIP URI that looks as though it's
   meant to be a gmail.com JID). (smcv)
 
-* Fix a header guard in debug.h. (Andreas Salomon)
+* Fix a header guard in debug.h. (Andres Salomon)
 
 * Move GThread initialization to the very beginning, since it's meant to be done
   before *any* GLib API usage. (cassidy)
