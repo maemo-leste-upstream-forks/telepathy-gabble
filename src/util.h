@@ -87,9 +87,12 @@ lm_iq_message_make_result (LmMessage *iq_message);
 
 void gabble_signal_connect_weak (gpointer instance, const gchar *detailed_signal,
     GCallback c_handler, GObject *user_data);
+guint gabble_idle_add_weak (GSourceFunc function, GObject *object);
 
 const gchar * lm_message_node_get_attribute_with_namespace (LmMessageNode *node,
     const gchar *attribute,
     const gchar *ns);
+
+GPtrArray *gabble_g_ptr_array_copy (GPtrArray *source);
 
 #endif /* __GABBLE_UTIL_H__ */

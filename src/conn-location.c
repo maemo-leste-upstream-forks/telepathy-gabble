@@ -8,12 +8,72 @@
 
 #define DEBUG_FLAG GABBLE_DEBUG_LOCATION
 
+#include <telepathy-glib/gtypes.h>
+#include <telepathy-glib/interfaces.h>
+
 #include "debug.h"
-#include "extensions/extensions.h"
 #include "namespaces.h"
 #include "pubsub.h"
 #include "presence-cache.h"
 #include "util.h"
+
+typedef struct
+{
+  gchar *xmpp_name;
+  gchar *tp_name;
+  GType type;
+} LocationMapping;
+
+static const LocationMapping mappings[] = {
+  { "alt", "alt", G_TYPE_DOUBLE },
+  { "area", "area", G_TYPE_STRING },
+  { "bearing", "bearing", G_TYPE_DOUBLE },
+  { "building", "building", G_TYPE_STRING },
+  { "country", "country", G_TYPE_STRING },
+  { "description", "description", G_TYPE_STRING },
+  { "error", "error", G_TYPE_DOUBLE },
+  { "floor", "floor", G_TYPE_STRING },
+  { "lat", "lat", G_TYPE_DOUBLE },
+  { "locality", "locality", G_TYPE_STRING },
+  { "lon", "lon", G_TYPE_DOUBLE },
+  { "postalcode", "postalcode", G_TYPE_STRING },
+  { "region", "region", G_TYPE_STRING },
+  { "room", "room", G_TYPE_STRING },
+  { "speed", "speed", G_TYPE_DOUBLE },
+  { "street", "street", G_TYPE_STRING },
+  { "text", "text", G_TYPE_STRING },
+  { "timestamp", "timestamp", G_TYPE_INT64 },
+  { "uri", "uri", G_TYPE_STRING },
+  /* Not (yet?) part of XEP-0080 */
+  { "countrycode", "countrycode", G_TYPE_STRING },
+  /* language is a special case as it's not mapped on a node but on the
+   * xml:lang attribute of the 'geoloc' node. */
+  { NULL, NULL },
+};
+
+static GHashTable *xmpp_to_tp = NULL;
+static GHashTable *tp_to_xmpp = NULL;
+
+static void
+build_mapping_tables (void)
+{
+  guint i;
+
+  if (xmpp_to_tp != NULL)
+    return;
+  g_assert (tp_to_xmpp == NULL);
+
+  xmpp_to_tp = g_hash_table_new (g_str_hash, g_str_equal);
+  tp_to_xmpp = g_hash_table_new (g_str_hash, g_str_equal);
+
+  for (i = 0; mappings[i].xmpp_name != NULL; i++)
+    {
+      g_hash_table_insert (xmpp_to_tp, mappings[i].xmpp_name,
+          (gpointer) &mappings[i]);
+      g_hash_table_insert (tp_to_xmpp, mappings[i].tp_name,
+          (gpointer) &mappings[i]);
+    }
+}
 
 static gboolean update_location_from_msg (GabbleConnection *conn,
     const gchar *from, LmMessage *msg);
@@ -35,8 +95,35 @@ pep_reply_cb (GabbleConnection *conn,
   return LM_HANDLER_RESULT_REMOVE_MESSAGE;
 }
 
+static GHashTable *
+get_cached_location_or_query (GabbleConnection *conn,
+    TpHandle contact,
+    GError **error)
+{
+  TpBaseConnection *base = (TpBaseConnection *) conn;
+  GHashTable *location;
+  const gchar *jid;
+  TpHandleRepoIface *contact_repo;
+
+  contact_repo = tp_base_connection_get_handles (base, TP_HANDLE_TYPE_CONTACT);
+  jid = tp_handle_inspect (contact_repo, contact);
+
+  location = gabble_presence_cache_get_location (conn->presence_cache, contact);
+  if (location != NULL)
+    {
+      DEBUG (" - %s: cached", jid);
+      return location;
+    }
+
+  /* Send a query */
+  if (pubsub_query (conn, jid, NS_GEOLOC, pep_reply_cb, error))
+    DEBUG (" - %s: requested", jid);
+
+  return NULL;
+}
+
 static void
-location_get_locations (GabbleSvcConnectionInterfaceLocation *iface,
+location_get_locations (TpSvcConnectionInterfaceLocation *iface,
                         const GArray *contacts,
                         DBusGMethodInvocation *context)
 {
@@ -46,7 +133,7 @@ location_get_locations (GabbleSvcConnectionInterfaceLocation *iface,
   guint i;
   GError *error = NULL;
   GHashTable *return_locations = g_hash_table_new_full (g_direct_hash,
-      g_direct_equal, NULL, (GDestroyNotify) g_hash_table_destroy);
+      g_direct_equal, NULL, (GDestroyNotify) g_hash_table_unref);
 
   DEBUG ("GetLocation for contacts:");
 
@@ -64,92 +151,110 @@ location_get_locations (GabbleSvcConnectionInterfaceLocation *iface,
       return;
     }
 
-
   for (i = 0; i < contacts->len; i++)
     {
-      TpHandleRepoIface *contact_repo;
-      const gchar *jid;
       GHashTable *location;
       TpHandle contact = g_array_index (contacts, TpHandle, i);
 
-      contact_repo = tp_base_connection_get_handles (base,
-          TP_HANDLE_TYPE_CONTACT);
-      jid = tp_handle_inspect (contact_repo, contact);
-
-      location = gabble_presence_cache_get_location (conn->presence_cache,
-          contact);
-      if (location != NULL)
-        {
-          DEBUG (" - %s: cached", jid);
-          g_hash_table_insert (return_locations, GUINT_TO_POINTER (contact),
-              location);
-        }
-      else if (!pubsub_query (conn, jid, NS_GEOLOC, pep_reply_cb, NULL))
+      location = get_cached_location_or_query (conn, contact, &error);
+      if (error != NULL)
         {
           GError error2 = { TP_ERRORS, TP_ERROR_NETWORK_ERROR,
               "Sending PEP location query failed" };
 
+          DEBUG ("Sending PEP location query failed: %s", error->message);
+          g_error_free (error);
           dbus_g_method_return_error (context, &error2);
           g_hash_table_unref (return_locations);
-
           return;
-        } else
-           DEBUG (" - %s: requested", jid);
+        }
+
+      if (location != NULL)
+        g_hash_table_insert (return_locations, GUINT_TO_POINTER (contact),
+            location);
     }
 
-  gabble_svc_connection_interface_location_return_from_get_locations
+  tp_svc_connection_interface_location_return_from_get_locations
       (context, return_locations);
   g_hash_table_unref (return_locations);
-
 }
 
-static void
-create_msg_foreach (gpointer key,
-                    gpointer value,
-                    gpointer user_data)
+static gboolean
+add_to_geoloc_node (const gchar *tp_name,
+    GValue *value,
+    LmMessageNode *geoloc,
+    GError **err)
 {
-  LmMessageNode *geoloc = (LmMessageNode *) user_data;
+  LocationMapping *mapping;
+  gchar *str = NULL;
+
+  mapping = g_hash_table_lookup (tp_to_xmpp, tp_name);
+  if (mapping == NULL &&
+      tp_strdiff (tp_name, "language"))
+    {
+      DEBUG ("Unknown location key: %s ; skipping", (const gchar *) tp_name);
+      /* We don't raise a D-Bus error if the key is unknown to stay backward
+       * compatible if new keys are added in a future version of the spec. */
+      return TRUE;
+    }
+
+  if (mapping != NULL && G_VALUE_TYPE (value) != mapping->type)
+    {
+#define ERROR_MSG "'%s' is supposed to be of type %s but is %s",\
+          (const char *) tp_name, g_type_name (mapping->type),\
+          G_VALUE_TYPE_NAME (value)
+
+      DEBUG (ERROR_MSG);
+      g_set_error (err, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT, ERROR_MSG);
+#undef ERROR_MSG
+      return FALSE;
+    }
 
   if (G_VALUE_TYPE (value) == G_TYPE_INT64)
     {
       GTimeVal timeval;
-      gchar *str;
 
       timeval.tv_sec = CLAMP (g_value_get_int64 (value), 0, G_MAXLONG);
       timeval.tv_usec = 0;
       str = g_time_val_to_iso8601 (&timeval);
-
-      lm_message_node_add_child (geoloc, key, str);
-      DEBUG ("\t - %s: %s", (gchar *) key, str);
-      g_free (str);
     }
   else if (G_VALUE_TYPE (value) == G_TYPE_DOUBLE)
     {
-      gchar *str;
       str = g_strdup_printf ("%.6f", g_value_get_double (value));
-      lm_message_node_add_child (geoloc, key, str);
-      DEBUG ("\t - %s: %s", (gchar *) key, str);
-      g_free (str);
     }
   else if (G_VALUE_TYPE (value) == G_TYPE_STRING)
     {
-      lm_message_node_add_child (geoloc, key, g_value_get_string (value));
-      DEBUG ("\t - %s: %s", (gchar *) key, g_value_get_string (value));
+      str = g_value_dup_string (value);
+
+      if (!tp_strdiff (tp_name, "language"))
+        {
+          /* Set the xml:lang */
+          lm_message_node_set_attribute (geoloc, "xml:lang", str);
+          g_free (str);
+          return TRUE;
+        }
     }
   else
-    DEBUG ("\t - Unknown key dropped: %s", (gchar *) key);
+    /* Keys and their type have been checked */
+    g_assert_not_reached ();
 
-
+  lm_message_node_add_child (geoloc, mapping->xmpp_name, str);
+  DEBUG ("\t - %s: %s", (gchar *) tp_name, str);
+  g_free (str);
+  return TRUE;
 }
 
 static void
-location_set_location (GabbleSvcConnectionInterfaceLocation *iface,
+location_set_location (TpSvcConnectionInterfaceLocation *iface,
                        GHashTable *location,
                        DBusGMethodInvocation *context)
 {
   GabbleConnection *conn = GABBLE_CONNECTION (iface);
   LmMessage *msg;
   LmMessageNode *geoloc;
+  GHashTableIter iter;
+  gpointer key, value;
+  GError *err = NULL;
 
   TP_BASE_CONNECTION_ERROR_IF_NOT_CONNECTED ((TpBaseConnection *) conn,
     context);
@@ -169,7 +274,18 @@ location_set_location (GabbleSvcConnectionInterfaceLocation *iface,
 
   DEBUG ("SetLocation to");
 
-  g_hash_table_foreach (location, create_msg_foreach, geoloc);
+  build_mapping_tables ();
+  g_hash_table_iter_init (&iter, location);
+  while (g_hash_table_iter_next (&iter, &key, &value))
+    {
+      if (!add_to_geoloc_node ((const gchar *) key, (GValue *) value, geoloc,
+            &err))
+        {
+          dbus_g_method_return_error (context, err);
+          g_error_free (err);
+          goto out;
+        }
+    }
 
   /* XXX: use _ignore_reply */
   if (!_gabble_connection_send (conn, msg, NULL))
@@ -182,15 +298,16 @@ location_set_location (GabbleSvcConnectionInterfaceLocation *iface,
   else
     dbus_g_method_return (context);
 
+out:
   lm_message_unref (msg);
 }
 
 void
 location_iface_init (gpointer g_iface, gpointer iface_data)
 {
-  GabbleSvcConnectionInterfaceLocationClass *klass = g_iface;
+  TpSvcConnectionInterfaceLocationClass *klass = g_iface;
 
-#define IMPLEMENT(x) gabble_svc_connection_interface_location_implement_##x \
+#define IMPLEMENT(x) tp_svc_connection_interface_location_implement_##x \
   (klass, location_##x)
   IMPLEMENT(get_locations);
   IMPLEMENT(set_location);
@@ -258,7 +375,7 @@ conn_location_properties_setter (GObject *object,
   GValue *access_control_type_value;
   TpRichPresenceAccessControlType access_control_type;
   g_return_val_if_fail (interface ==
-      GABBLE_IFACE_QUARK_CONNECTION_INTERFACE_LOCATION, FALSE);
+      TP_IFACE_QUARK_CONNECTION_INTERFACE_LOCATION, FALSE);
 
   /* There is only one property with write access. So TpDBusPropertiesMixin
    * already checked this. */
@@ -298,6 +415,7 @@ update_location_from_msg (GabbleConnection *conn,
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
       (TpBaseConnection *) conn, TP_HANDLE_TYPE_CONTACT);
   NodeIter i;
+  const gchar *lang;
 
   TpHandle contact = tp_handle_lookup (contact_repo, from, NULL, NULL);
 
@@ -307,22 +425,36 @@ update_location_from_msg (GabbleConnection *conn,
 
   DEBUG ("LocationsUpdate for %s:", from);
 
+  lang = lm_message_node_get_attribute (node, "xml:lang");
+  if (lang != NULL)
+    {
+      g_hash_table_insert (location, g_strdup ("language"),
+          tp_g_value_slice_new_string (lang));
+    }
+
+  build_mapping_tables ();
+
   for (i = node_iter (node); i; i = node_iter_next (i))
     {
       LmMessageNode *subloc_node = node_iter_data (i);
       GValue *value = NULL;
-      gchar *key;
+      gchar *xmpp_name;
       const gchar *str;
+      LocationMapping *mapping;
 
-      key = subloc_node->name;
+      xmpp_name = subloc_node->name;
       str = lm_message_node_get_value (subloc_node);
       if (str == NULL)
         continue;
 
-      if ((strcmp (key, "lat") == 0 ||
-           strcmp (key, "lon") == 0 ||
-           strcmp (key, "alt") == 0 ||
-           strcmp (key, "accuracy") == 0))
+      mapping = g_hash_table_lookup (xmpp_to_tp, xmpp_name);
+      if (mapping == NULL)
+        {
+          DEBUG ("Unknown location attribute: %s\n", xmpp_name);
+          continue;
+        }
+
+      if (mapping->type == G_TYPE_DOUBLE)
         {
           gdouble double_value;
           gchar *end;
@@ -332,39 +464,37 @@ update_location_from_msg (GabbleConnection *conn,
           if (end == str)
             continue;
 
-          value = g_slice_new0 (GValue);
-          g_value_init (value, G_TYPE_DOUBLE);
-          g_value_set_double (value, double_value);
-          DEBUG ("\t - %s: %f", key, double_value);
+          value = tp_g_value_slice_new_double (double_value);
+          DEBUG ("\t - %s: %f", xmpp_name, double_value);
         }
-      else if (strcmp (key, "timestamp") == 0)
+      else if (strcmp (xmpp_name, "timestamp") == 0)
         {
           GTimeVal timeval;
           if (g_time_val_from_iso8601 (str, &timeval))
             {
-              value = g_slice_new0 (GValue);
-              g_value_init (value, G_TYPE_INT64);
-              g_value_set_int64 (value, timeval.tv_sec);
-              DEBUG ("\t - %s: %s", key, str);
+              value = tp_g_value_slice_new_int64 (timeval.tv_sec);
+              DEBUG ("\t - %s: %s", xmpp_name, str);
             }
           else
             {
-              DEBUG ("\t - %s: %s: unknown date format", key, str);
+              DEBUG ("\t - %s: %s: unknown date format", xmpp_name, str);
               continue;
             }
         }
+      else if (mapping->type == G_TYPE_STRING)
+        {
+          value = tp_g_value_slice_new_string (str);
+          DEBUG ("\t - %s: %s", xmpp_name, str);
+        }
       else
         {
-          value = g_slice_new0 (GValue);
-          g_value_init (value, G_TYPE_STRING);
-          g_value_set_string (value, str);
-          DEBUG ("\t - %s: %s", key, str);
+          g_assert_not_reached ();
         }
 
-      g_hash_table_insert (location, g_strdup (key), value);
+      g_hash_table_insert (location, g_strdup (mapping->tp_name), value);
     }
 
-  gabble_svc_connection_interface_location_emit_location_updated (conn,
+  tp_svc_connection_interface_location_emit_location_updated (conn,
       contact, location);
   gabble_presence_cache_update_location (conn->presence_cache, contact,
       location);
@@ -389,3 +519,38 @@ geolocation_event_handler (GabbleConnection *conn,
   return update_location_from_msg (conn, from, msg);
 }
 
+static void
+conn_location_fill_contact_attributes (GObject *obj,
+    const GArray *contacts,
+    GHashTable *attributes_hash)
+{
+  guint i;
+  GabbleConnection *self = GABBLE_CONNECTION(obj);
+
+  for (i = 0; i < contacts->len; i++)
+    {
+      TpHandle handle = g_array_index (contacts, TpHandle, i);
+      GHashTable *location;
+
+      location = get_cached_location_or_query (self, handle, NULL);
+      if (location != NULL)
+        {
+          GValue *val = tp_g_value_slice_new_boxed (
+              TP_HASH_TYPE_STRING_VARIANT_MAP, location);
+
+          tp_contacts_mixin_set_contact_attribute (attributes_hash,
+            handle, TP_IFACE_CONNECTION_INTERFACE_LOCATION"/location",
+            val);
+
+          g_hash_table_unref (location);
+        }
+    }
+}
+
+void
+conn_location_init (GabbleConnection *conn)
+{
+  tp_contacts_mixin_add_contact_attributes_iface (G_OBJECT (conn),
+    TP_IFACE_CONNECTION_INTERFACE_LOCATION,
+    conn_location_fill_contact_attributes);
+}

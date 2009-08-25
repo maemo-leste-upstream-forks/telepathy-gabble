@@ -260,7 +260,8 @@ def call_async(test, proxy, method, *args, **kw):
             value=unwrap(ret)))
 
     def error_func(err):
-        test.handle_event(Event('dbus-error', method=method, error=err))
+        test.handle_event(Event('dbus-error', method=method, error=err,
+            name=err.get_dbus_name(), message=err.message))
 
     method_proxy = getattr(proxy, method)
     kw.update({'reply_handler': reply_func, 'error_handler': error_func})
@@ -300,6 +301,7 @@ def wrap_connection(conn):
               'Presence', 'SimplePresence', 'Requests']] +
         [('Peer', 'org.freedesktop.DBus.Peer'),
          ('ContactCapabilities', cs.CONN_IFACE_CONTACT_CAPS),
+         ('Location', cs.CONN_IFACE_LOCATION),
         ]))
 
 def wrap_channel(chan, type_, extra=None):
