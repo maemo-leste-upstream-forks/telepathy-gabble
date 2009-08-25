@@ -1,3 +1,839 @@
+commit 4ebe7488a3084d14aa6ad50d709033ab7681f938
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Aug 20 20:43:17 2009 +0100
+
+    Version 0.8.1
+
+ NEWS         |   18 ++++++++++++++++--
+ configure.ac |    4 ++--
+ 2 files changed, 18 insertions(+), 4 deletions(-)
+
+commit f10fdcc9d8cb410c8a90ed4b36f95bf18c4baf73
+Merge: 0daf412 d1f2d83
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Aug 20 17:59:32 2009 +0100
+
+    Merge branch 'zombie-media-channels' into telepathy-gabble-0.8
+    
+    Reviewed-by: Dafydd Harries <dafydd.harries@collabora.co.uk>
+
+commit d1f2d837345a4a42763c0a1e6fd20118c5c6a24f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Aug 19 16:51:52 2009 +0100
+
+    Yes, this can and does happen.
+
+ src/media-channel.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 4b46720f55ea79e300499a89eb27b578479aa8a4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Aug 19 16:43:07 2009 +0100
+
+    Don't ref media channel when waiting for relay
+    
+    When we look up relay information from Google for new media streams, we
+    use a StreamCreationData * as the user_data for the libsoup HTTP request.
+    You can't cancel those requests, so the StreamCreationData can outlive the
+    call.
+    
+    But currently, it holds a reference to the channel. This means that the
+    media channel can outlive the connection, which is bad for several
+    reasons:
+    
+     * It's still on the bus, so if you make a new connection and it happens
+       to get the same path as the old one, then make a new call which happens
+       to get the same path as this channel, we assert.
+     * When the request does come back (or fails because we destroyed the
+       SoupSession — this happens asynchronously), the channel's disposed. Its
+       dispose() tries to call methods on the GabbleConnection, which is no
+       longer valid, and we crash.
+    
+    Instead, StreamCreationData now takes a weak ref to the channel. If the
+    channel's disposed, that field of the closure is set to NULL; the relevant
+    callbacks react to 'channel' being NULL by doing nothing, just as they do
+    if 'content' is NULL.
+
+ src/media-channel.c |   58 +++++++++++++++++++++++++++++++-------------------
+ 1 files changed, 36 insertions(+), 22 deletions(-)
+
+commit 8b96db03538b110fe0fb3ee19e44bc259a5d621a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Aug 19 16:38:53 2009 +0100
+
+    Hoist definition of StreamCreationData
+    
+    This will be needed to refer to it within _dispose()
+
+ src/media-channel.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+commit 16fbf12e779a523b1c105c31c698403560136c01
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Aug 19 14:13:20 2009 +0100
+
+    Close all media channels on disconnect.
+    
+    Relying on unreffing the channel to make it close is silly, and
+    complicates the code.
+
+ src/media-channel.c |    3 +--
+ src/media-channel.h |    2 ++
+ src/media-factory.c |   36 ++++++++++++------------------------
+ 3 files changed, 15 insertions(+), 26 deletions(-)
+
+commit e7e9fb4e383854a9b1c82bf59d068f16712d8de9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Aug 19 14:13:07 2009 +0100
+
+    Add gabble_g_ptr_array_copy
+
+ src/media-channel.c |    9 +--------
+ src/util.c          |   12 ++++++++++++
+ src/util.h          |    2 ++
+ 3 files changed, 15 insertions(+), 8 deletions(-)
+
+commit 04aead1d58de806cced0a0ce925d1a2c9df11b7c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Aug 19 00:56:14 2009 +0100
+
+    Fix disconnect-before-Google-relay-reply test
+    
+    We do want to check that the Closed signal arrives for the channel when
+    you call Disconnect, because it doesn't in some cases. We also want to
+    check that the channel object actually goes away when you disconnect,
+    because it doesn't in some cases. This smokes out a crash in Gabble, but
+    sadly isn't reliable: libsoup seems to sometimes call HTTP request callbacks
+    as soon as you destroy the session, but other times uses an idle, and we
+    only crash in the latter case.
+
+ tests/twisted/constants.py           |    2 +
+ tests/twisted/jingle/google-relay.py |   42 +++++++++++++++++++++------------
+ 2 files changed, 29 insertions(+), 15 deletions(-)
+
+commit 0daf41225a74a1c1e35807493d748c861c00667b
+Merge: 61ed3d9 77c6dd7
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Aug 20 17:19:35 2009 +0100
+
+    Merge branch 'vcard' into telepathy-gabble-0.8
+    
+    Reviewed-by: Will Thompson
+
+commit 77c6dd7ac90cdf00ba7a92b85ac51c059b44b077
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Aug 20 12:32:22 2009 +0100
+
+    keep a ref to the handle for the lifetime of a PEP request
+    
+    This fixes crashes where the request callback gets run on an invalid handle,
+    which I've seen when the request times out or during connection dispose.
+
+ src/conn-aliasing.c |   29 ++++++++++++++++++++++++++++-
+ 1 files changed, 28 insertions(+), 1 deletions(-)
+
+commit 61ed3d91506218fad05d014e4c68a9791ddb2c00
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Thu Aug 20 11:18:04 2009 +0100
+
+    gabble_jingle_content_parse_add: clarify behaviour of libjingle 0.3 mode
+    
+    When google_mode is TRUE and trans_node is NULL (i.e. the remote party
+    is using libjingle 0.3 or an emulation of it), the transport is implicitly
+    gtalk-p2p, because libjingle 0.3's protocol has no concept of transports.
+    To select this transport, we look up the empty string as a
+    pseudo-namespace in the factory's registry of transport types, which
+    in practice returns GABBLE_TYPE_JINGLE_TRANSPORT_GOOGLE.
+    
+    This results in a coverity false positive a little further down,
+    where we select a transport based on trans_node (assumed to be non-NULL)
+     if transport_type is zero. This is in fact safe, but coverity can't tell
+    that (it can't see that transport_type will be nonzero as a result of the
+    lookup), and it's not immediately obvious to programmers either.
+    
+    To make this clearer, add a check that will, in practice, always succeed
+    (unless we delete the gtalk-p2p code for some strange reason).
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+ src/jingle-content.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit a3786f489a68f6e8781409887cc37ef17748258c
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Wed Aug 19 17:18:50 2009 +0100
+
+    vcard-manager.c: correct assertion about when priv->edits is NULL
+    
+    It previously didn't take into account the fact that it could be non-NULL if
+    there was a SET request in progress.
+
+ src/vcard-manager.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 7623263e62a46108e1c404be72f9e01011ff9b64
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Wed Aug 19 12:30:17 2009 +0100
+
+    Start 0.8.1 development (stable branch)
+
+ NEWS         |    5 +++++
+ configure.ac |    2 +-
+ 2 files changed, 6 insertions(+), 1 deletions(-)
+
+commit 2de06ae280708406e44750513af61af9318d06e5
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 18 16:44:31 2009 +0100
+
+    version 0.8.0
+
+ NEWS         |   17 ++++++++++++++---
+ configure.ac |    6 +++---
+ 2 files changed, 17 insertions(+), 6 deletions(-)
+
+commit 4abc69efd834a5e2dc70ceef8873e4af6af26148
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Aug 17 10:52:40 2009 +0100
+
+    conn-location: no need to include extensions.h any more
+
+ src/conn-location.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit b4aa8781b908ef8e75df82d874fdf2f2da9013e8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Aug 17 10:43:35 2009 +0100
+
+    NEWS: document tp-glib bump version and that Location and Debug are now stable
+
+ NEWS |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 155934e4bb52dda828601669c17dd11529afe824
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Aug 17 10:33:37 2009 +0100
+
+    extension: stop generating code for Location
+
+ extensions/Connection_Interface_Location.xml |  400 --------------------------
+ extensions/Makefile.am                       |    1 -
+ extensions/all.xml                           |    1 -
+ 3 files changed, 0 insertions(+), 402 deletions(-)
+
+commit 315f68bea45000783a4916e468e195d028d56153
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Aug 17 10:40:20 2009 +0100
+
+    Use tp-glib API to implement Location interface
+
+ src/conn-location.c |   19 ++++++++++---------
+ src/connection.c    |    6 +++---
+ 2 files changed, 13 insertions(+), 12 deletions(-)
+
+commit b5b6f2e22ac11803760f92ca71b71f3dc5eeee85
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Aug 17 10:38:49 2009 +0100
+
+    Bump tp-glib dep to 0.7.34. We need it for Location API
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 92b49e253adb1cc57d0c73a7364d4679ff1e3182
+Merge: 0259028 f19ddc0
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Aug 17 19:44:11 2009 +0100
+
+    Merge branch 'vcard'
+    
+    Reviewed-by: Will Thompson
+
+commit f19ddc0be99d7f04ca987173512519e9fe28b0c7
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Aug 17 16:56:04 2009 +0100
+
+    use g_timeout_add_seconds() instead of g_timeout_add() where possible
+
+ src/connection.c           |    2 +-
+ src/disco.c                |    5 ++---
+ src/muc-channel.c          |   11 ++++++-----
+ src/request-pipeline.c     |    4 ++--
+ src/vcard-manager.c        |   14 +++++++-------
+ tests/twisted/main-debug.c |    2 +-
+ 6 files changed, 19 insertions(+), 19 deletions(-)
+
+commit 0259028c08989d8b7ca959e71bd7530f0fe712f3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   Mon Aug 17 12:48:02 2009 +0100
+
+    test-handles: stop exercising handle-holding by clients
+    
+    This is telepathy-glib functionality, not Gabble functionality, so there
+    should be no need for us to test it here (I've copied this test into
+    telepathy-glib and adapted it, instead).
+    
+    This test would also cause a critical warning in a future telepathy-glib,
+    because the bus name we're using is not actually syntactically valid.
+    
+    Reviewed-by: Dafydd Harries <dafydd.harries@collabora.co.uk>
+
+ tests/test-handles.c |   18 ------------------
+ 1 files changed, 0 insertions(+), 18 deletions(-)
+
+commit 52e639f8944b636c843ba7a1fe573a7a0969405a
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Aug 17 16:42:08 2009 +0100
+
+    add test case for vCard get request failing during vCard update
+
+ tests/twisted/Makefile.am                |    1 +
+ tests/twisted/vcard/update-get-failed.py |   40 ++++++++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+), 0 deletions(-)
+
+commit ef8e65f8a15e9f225d8e752064eacae2fee4f2b1
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Aug 17 15:01:28 2009 +0100
+
+    request pipeline: pass in error from result stanza as GError to callback
+    
+    This allows vCard error handling to be greatly simplified.
+
+ src/request-pipeline.c |   16 +++++++++++++++-
+ src/vcard-manager.c    |   45 ++++++---------------------------------------
+ 2 files changed, 21 insertions(+), 40 deletions(-)
+
+commit f0e917a2156dfa837e8621f94de0c152fe49718f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Aug 17 14:57:46 2009 +0100
+
+    replace_reply_cb(): cancel all pending vCard edit requests if there was an error
+    
+    Previously, we only cancelled an edit request if req->set_in_pipeline was set,
+    which was only set when the set request was sent. Hence, if you made a vCard
+    change which depended on a get request that failed, your callback would never
+    be called.
+
+ src/vcard-manager.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 90d108ed24fb7acd6cd4aea0599108942587f041
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Aug 17 14:55:59 2009 +0100
+
+    remove unnecessary cast
+
+ src/vcard-manager.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 97b7358d1ade53189c919de21795f35109fa406f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Aug 17 14:51:58 2009 +0100
+
+    add error name and message to dbus-error event
+
+ tests/twisted/servicetest.py |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 4fa4a37fc1222d6bfc312a575854dc12a6d517dc
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Aug 17 14:07:51 2009 +0100
+
+    remove invalid assertion
+    
+    replace_reply_cb() can be called when we don't have a vCard set request in
+    progress, so it's wrong to assert that priv->edit_pipeline_item is not NULL.
+    Specifically, it's called when a pre-set get request fails.
+
+ src/vcard-manager.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 1b3b75b3905f6074e162812543f1b082089c35a2
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Aug 17 13:39:48 2009 +0100
+
+    _elem_add(): clarify error message
+
+ tests/twisted/gabbletest.py |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit a0e1ddad9446ae472d64ccd3b625b547c311dba0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Aug 17 10:18:30 2009 +0100
+
+    sync Debug interface with undrafted version in spec
+
+ extensions/Debug.xml        |    5 ++---
+ tests/twisted/test-debug.py |    2 +-
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+commit 85ec3c4157337e25ae29b68774c6df99a8a87a08
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 14 18:38:50 2009 +0100
+
+    increase vCard + pipeline timeouts to 3m, and pipeline length to 10
+
+ src/request-pipeline.c |    4 ++--
+ src/vcard-manager.c    |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 5c332eeac0c4d2174a39c2b6c6c1e98d6a2d70d9
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 14 18:36:26 2009 +0100
+
+    use vCard default timeout, not pipeline default timeout, for vCard set requests
+    
+    For consistency.
+
+ src/vcard-manager.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 2d382bce697829c191c966083e9360b84b77f6d5
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 14 18:34:09 2009 +0100
+
+    start request timeout when item is sent, not when it is enqueued
+    
+    This prevents vCard requests getting cancelled before they are sent because
+    items earlier in the queue took too long.
+
+ src/request-pipeline.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 95bba8c6b63a7cba2b57d4b2617217d7a0ea3b56
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 14 18:33:24 2009 +0100
+
+    actually set timeout on new request pipeline items
+
+ src/request-pipeline.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit bdd14973ae4ea4ec3b1b7966a607ceda30282482
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 14 18:31:08 2009 +0100
+
+    hoist timeout_cb definition to avoid forward references later
+
+ src/request-pipeline.c |   50 ++++++++++++++++++++++++------------------------
+ 1 files changed, 25 insertions(+), 25 deletions(-)
+
+commit bd1afa448cd32a9093f28212c97742844586232f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Sun Aug 16 18:23:44 2009 +0100
+
+    sync location interface with undrafted version in spec
+
+ extensions/Connection_Interface_Location.xml |   16 +++++++++++++---
+ tests/twisted/constants.py                   |    2 +-
+ 2 files changed, 14 insertions(+), 4 deletions(-)
+
+commit 25d660ce09ae551d3fbfc0738b7818d244f4dd1e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Aug 14 13:44:28 2009 +0100
+
+    test-location.py: test that location is supported by the Contacts interface
+
+ tests/twisted/test-location.py |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit e93d3212afd7359725ccca1b43c9a1b58b55c818
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Aug 14 13:44:01 2009 +0100
+
+    add support for the 'location' attribute in the Contacts interface
+
+ src/conn-location.c |   37 +++++++++++++++++++++++++++++++++++++
+ src/conn-location.h |    2 ++
+ src/connection.c    |    1 +
+ 3 files changed, 40 insertions(+), 0 deletions(-)
+
+commit 057bd35f0fc085a9751edb4fc9583f90bdad238e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Aug 14 13:51:40 2009 +0100
+
+    location_get_locations: unref the locations hash table when destroying return_locations
+    
+    gabble_presence_cache_get_location returns a reffed location so we
+    should unref it when we are done with it instead of destroying the
+    cached hash table.
+
+ src/conn-location.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6d960d462736b947af755fc4e16e9ac940837d2d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Aug 14 13:25:07 2009 +0100
+
+    conn-location: factor out get_cached_location_or_query
+
+ src/conn-location.c |   56 ++++++++++++++++++++++++++++++++------------------
+ 1 files changed, 36 insertions(+), 20 deletions(-)
+
+commit 573d7a9aa7f1f8f12c8a817e77bc80d7d0e692ee
+Merge: 073c95a ccd94f6
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 14 14:23:26 2009 +0100
+
+    Merge branch 'vcard'
+    
+    Reviewed-by: Will Thompson
+
+commit ccd94f6d22d177a65eef79c744146baeea4a1f87
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 14 14:10:51 2009 +0100
+
+    run all tests with fatal warnings and criticals
+
+ tests/Makefile.am                       |    4 +++-
+ tests/twisted/tools/exec-with-log.sh.in |    2 +-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 6c185081c525e77caf4ca8bb914b5392d1a21431
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 14 14:10:12 2009 +0100
+
+    remove unused variable
+
+ src/util.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+commit 21da3430f8fbb28e6fd7af066f73fbd1dc91dccd
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 14 14:05:45 2009 +0100
+
+    update .gitignore
+
+ .gitignore |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit e2d42b101c1f7900bbd57486f42dae0dc763afff
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 14 13:34:24 2009 +0100
+
+    gabble_idle_add_weak(): don't remove the weak reference twice
+    
+    Also, add a test.
+
+ src/util.c                    |   16 +++++++--
+ tests/Makefile.am             |    1 +
+ tests/test-gabble-idle-weak.c |   77 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 91 insertions(+), 3 deletions(-)
+
+commit 073c95a46e88330fb5dff9587ea62a9e6d012a58
+Merge: a7c8a0b 54c6c27
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Aug 14 12:48:58 2009 +0100
+
+    Merge branch 'location'
+
+commit 2d2df46ad2fd12315af0ad35a3f156c131568851
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Aug 13 19:52:03 2009 +0100
+
+    gabble_idle_add_weak(): don't double-free the context
+    
+    If the object were finalized before the source were removed, the context would
+    be freed twice. I'll get this right one of these patches.
+
+ src/util.c |   11 +++++------
+ 1 files changed, 5 insertions(+), 6 deletions(-)
+
+commit 48dd20292de40e98f677ad116946df4b05342c98
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Aug 13 19:33:27 2009 +0100
+
+    gabble_idle_add_weak(): remove weak ref when object is finalized
+
+ src/util.c |   45 ++++++++++++++++++++++++++++++++++++++-------
+ 1 files changed, 38 insertions(+), 7 deletions(-)
+
+commit ffe8d6659714d5c6dc7330d4f90ed12eccb55d91
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Wed Aug 12 19:14:40 2009 +0100
+
+    request pipeline: cancel idle callback when pipeline is freed
+
+ src/request-pipeline.c |    3 ++-
+ src/util.c             |   21 +++++++++++++++++++++
+ src/util.h             |    1 +
+ 3 files changed, 24 insertions(+), 1 deletions(-)
+
+commit a7c8a0bfdd1a62ae55f5fc1ea384c1bd14f83923
+Merge: d70a8b3 1ef44ec
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Wed Aug 12 16:43:21 2009 +0100
+
+    Merge branch 'tools'
+    
+    Reviewed-by: Will Thompson
+
+commit 1ef44ecb4beafc397feb048e50908ae2bdb8b625
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Wed Aug 12 16:39:00 2009 +0100
+
+    improve log strip regex for pointers
+
+ tools/log-strip.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6fa0233593ca61cea05726eaeecc8be19bc3b0ea
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 11 14:48:06 2009 +0100
+
+    add tool for stripping log files for comparison
+
+ tools/log-strip.py |   25 +++++++++++++++++++++++++
+ 1 files changed, 25 insertions(+), 0 deletions(-)
+
+commit 54c6c274b95b3c8fb4f993f8ffd97368f135eccb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Aug 11 14:41:20 2009 +0100
+
+    test-location.py: use exactly-representable floats
+
+ tests/twisted/test-location.py |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit d70a8b3a9c729035c48ec207073ec6540651ece3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Aug 10 10:22:55 2009 +0100
+
+    jingle/stun-server.py: break race when waiting for the google:jingleinfo IQ
+    
+    Events ordering isn't garantee. Furthermore, just wait for the Connected
+    StatusChanged signal as we don't need the other events.
+
+ tests/twisted/jingle/stun-server.py |   20 +++++++++-----------
+ 1 files changed, 9 insertions(+), 11 deletions(-)
+
+commit 7ee45e0a3c841b9528ebee196d976dfd09e52d49
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Aug 10 10:33:04 2009 +0100
+
+    jingle/payload-types.py: just wait for the Connected StatusChanged
+    
+    We don't care about the other events. Furtermore they were racy as their
+    ordering weren't garantee.
+
+ tests/twisted/jingle/payload-types.py |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
+
+commit fe4c8be42ff2d9fe3b12d3949849f714f8e02e6c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Aug 7 11:55:07 2009 +0100
+
+    test-location.py: test location update
+
+ tests/twisted/test-location.py |   22 +++++++++++++++++++++-
+ 1 files changed, 21 insertions(+), 1 deletions(-)
+
+commit 79b96ae32a046e39deff9ac242bd2089f32f2901
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Aug 7 11:44:52 2009 +0100
+
+    test-location.py: test more location key types
+
+ tests/twisted/test-location.py |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
+
+commit 1d9f414b78146717848d7192170ad01e7b657e3c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Aug 7 11:02:32 2009 +0100
+
+    simplify add_to_geoloc_node
+
+ src/conn-location.c |   22 +++++++---------------
+ 1 files changed, 7 insertions(+), 15 deletions(-)
+
+commit 3de04e162327206c2c6791fdf2c6e8ab6a5f4150
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Aug 7 11:00:06 2009 +0100
+
+    add_to_geoloc_node: we are not supposed to get an untested type at the end of the function
+
+ src/conn-location.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit e1a9efb028418245ddd082c796b48af682017128
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Aug 7 10:58:57 2009 +0100
+
+    SetLocation: raise an error if a valid key has an invalid type
+
+ src/conn-location.c            |   34 +++++++++++++++++++++++-----------
+ tests/twisted/test-location.py |    9 +++++++++
+ 2 files changed, 32 insertions(+), 11 deletions(-)
+
+commit 9aebfcf259fdce64f09bd94208ce91616d14a423
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Aug 7 10:40:22 2009 +0100
+
+    location_set_location: use a hash table iterator
+
+ src/conn-location.c |   15 ++++++++++-----
+ 1 files changed, 10 insertions(+), 5 deletions(-)
+
+commit 5e3c318de706b854349410edd47a9ecb1e840769
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Aug 7 10:33:15 2009 +0100
+
+    create_msg_foreach: discard keys with an invalid type
+
+ src/conn-location.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit c305725c0afbacb22863ed58193ec408acec5007
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 18:21:25 2009 +0100
+
+    update_location_from_msg: use the type from the mapping
+    
+    Also uses tp_g_value_slice_new_* helpers.
+
+ src/conn-location.c |   22 +++++++++-------------
+ 1 files changed, 9 insertions(+), 13 deletions(-)
+
+commit dd8733c1a4c1bf5053ea983545d4ec003d5391b5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 18:17:15 2009 +0100
+
+    test-location.py: test to set an unknown key in the Location dict and XMPP reply
+
+ tests/twisted/test-location.py |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 60112c5a734041d4ea3197c1c3fe97841b9ddfdf
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 18:15:51 2009 +0100
+
+    conn-location.c: add a mapping of location keys to filter actual keys
+
+ src/conn-location.c |  120 ++++++++++++++++++++++++++++++++++++++++++--------
+ 1 files changed, 100 insertions(+), 20 deletions(-)
+
+commit a27b58d9c1df80dc6ad55523a00b437b3a7b44a5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 16:47:14 2009 +0100
+
+    update_location_from_msg: remove accuracy support; it was dropped from the spec for now and current implementation was wrong any way
+
+ src/conn-location.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit c82ab8d5064cc30dbed111f236d81f124d126b3a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 16:34:21 2009 +0100
+
+    test-location.py: make more check when calling GetLocations for the second time
+
+ tests/twisted/test-location.py |   14 +++++++++-----
+ 1 files changed, 9 insertions(+), 5 deletions(-)
+
+commit a2ffade260544879ae1a4dd9f40daf35da596705
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 16:27:12 2009 +0100
+
+    test-location.py: make test clearer and check all the keys of the location dict
+
+ tests/twisted/test-location.py |   25 +++++++++++++++++++------
+ 1 files changed, 19 insertions(+), 6 deletions(-)
+
+commit bc8881210d36fa39740d917a83479ff42b78fb66
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 16:08:25 2009 +0100
+
+    test-location.py: check the value in the set IQ when setting our location
+
+ tests/twisted/test-location.py |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit e1440ab89d499e05eaceea0296f3f7e466d94a66
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 16:02:01 2009 +0100
+
+    test-location.py; remove D-Bus properties hack
+
+ tests/twisted/test-location.py |   23 ++++++++++-------------
+ 1 files changed, 10 insertions(+), 13 deletions(-)
+
+commit 9bb7cbbd2512a588d63258f10b47bbe5c69b8f6b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 15:59:30 2009 +0100
+
+    servicetest.py: wrap_connection: add Location iface
+
+ tests/twisted/servicetest.py   |    1 +
+ tests/twisted/test-location.py |    2 --
+ 2 files changed, 1 insertions(+), 2 deletions(-)
+
+commit cb2745e296b547409f8f55048dc4c925c541c493
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 15:56:11 2009 +0100
+
+    get the language from location updates
+
+ src/conn-location.c            |    8 ++++++++
+ tests/twisted/test-location.py |    6 +++++-
+ 2 files changed, 13 insertions(+), 1 deletions(-)
+
+commit 51ecb9902cc33769c5fdb7f4292bbefe807c277a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 15:46:45 2009 +0100
+
+    test-location.py: use ns.py
+
+ tests/twisted/ns.py            |    1 +
+ tests/twisted/test-location.py |    6 +++---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+commit e0c3a5e03ff08d875a862be8131f0973dd6efc40
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 16:14:07 2009 +0100
+
+    SetLocation: support language attribute
+
+ src/conn-location.c            |   14 ++++++++++++--
+ tests/twisted/test-location.py |   12 ++++++++----
+ 2 files changed, 20 insertions(+), 6 deletions(-)
+
+commit 826734a3300000f475c5ecf9cd301b0b119c6eec
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 15:43:36 2009 +0100
+
+    ns.py: add XML namespace
+
+ tests/twisted/ns.py |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit c1c58d7af1f851694e9abfbc2a57ab1eebda0538
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 15:29:46 2009 +0100
+
+    constants.py: add CONN_IFACE_LOCATION
+
+ tests/twisted/constants.py     |    1 +
+ tests/twisted/test-location.py |   20 +++++++++-----------
+ 2 files changed, 10 insertions(+), 11 deletions(-)
+
+commit 11eb3d9bdf3e48e238e934a7e15bcd3561179943
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Aug 6 15:23:32 2009 +0100
+
+    Connection_Interface_Location.xml: update to latest DRAFT
+
+ extensions/Connection_Interface_Location.xml |  120 +++++++++++++++++++-------
+ 1 files changed, 90 insertions(+), 30 deletions(-)
+
+commit 9e68bc5618451ea1fe6ae1efa514718a20512b78
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sun Aug 9 12:50:00 2009 +0100
+
+    Start 0.7.33 development
+
+ NEWS         |   11 +++++++++++
+ configure.ac |    2 +-
+ 2 files changed, 12 insertions(+), 1 deletions(-)
+
 commit b260efa61f16325ec2a88be083704ba096e98127
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Sun Aug 9 11:09:49 2009 +0100

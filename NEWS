@@ -1,3 +1,49 @@
+telepathy-gabble 0.8.1 (2009-08-20)
+===================================
+
+The “five pounds of cherries and a live beaver” release.
+
+Fixes:
+
+* fd.o#22535: Gabble no longer crashes if you disconnect while it's
+  trying to start a Google relay session for a call. This should have
+  been fixed in 0.7.31, but it's really fixed now. :-) (wjt)
+
+* Fix an occasional crash when PEP requests time out, or are cancelled
+  when you disconnect. (daf)
+
+* Correct an assertion about vCard edits not to fire incorrectly. (daf)
+
+* Clarify some correct-but-confusing behaviour in libjingle 0.3 mode,
+  which fixes a Coverity false-positive. (smcv)
+
+telepathy-gabble 0.8.0 (2009-08-18)
+===================================
+
+The “place a chair facing the oven and sit in it forever” release. This is the
+first release in the 0.8 stable series.
+
+Dependencies:
+
+* telepathy-glib >= 0.7.34 is now required as Gabble implements the
+  Location API.
+
+Enhancements:
+
+* Location and Debug are now implemented as stable interfaces.
+
+* Timeouts are synchronised to the second where possible, leading to fewer
+  wakeups.
+
+Fixes:
+
+* Fix race condition introduced by fix for fd.o #22023.
+
+* Make vCard request less likely to time out.
+
+* Fix a bug where a vCard request failure could cause SetAvatar or SetAliases
+  not to return.
+
 telepathy-gabble 0.7.32 (2009-08-09)
 ====================================
 

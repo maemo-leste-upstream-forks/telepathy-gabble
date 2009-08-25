@@ -74,7 +74,7 @@
 #include "util.h"
 #include "vcard-manager.h"
 
-static guint disco_reply_timeout = 5000;
+static guint disco_reply_timeout = 5;
 
 #define DEFAULT_RESOURCE_FORMAT "Telepathy.%x"
 
@@ -105,7 +105,7 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
       tp_presence_mixin_simple_presence_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_PRESENCE,
       conn_presence_iface_init);
-    G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_CONNECTION_INTERFACE_LOCATION,
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_LOCATION,
       location_iface_init);
     G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_OLPC_BUDDY_INFO,
       olpc_buddy_info_iface_init);
@@ -293,6 +293,7 @@ gabble_connection_constructor (GType type,
   conn_avatars_init (self);
   conn_presence_init (self);
   conn_olpc_activity_properties_init (self);
+  conn_location_init (self);
 
   tp_contacts_mixin_add_contact_attributes_iface (G_OBJECT (self),
       TP_IFACE_CONNECTION_INTERFACE_CAPABILITIES,
@@ -603,7 +604,7 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
       TP_IFACE_CONNECTION_INTERFACE_REQUESTS,
       GABBLE_IFACE_OLPC_GADGET,
       GABBLE_IFACE_CONNECTION_INTERFACE_CONTACT_CAPABILITIES,
-      GABBLE_IFACE_CONNECTION_INTERFACE_LOCATION,
+      TP_IFACE_CONNECTION_INTERFACE_LOCATION,
       NULL };
   static TpDBusPropertiesMixinPropImpl olpc_gadget_props[] = {
         { "GadgetAvailable", NULL, NULL },
@@ -620,7 +621,7 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
           NULL,
           olpc_gadget_props,
         },
-        { GABBLE_IFACE_CONNECTION_INTERFACE_LOCATION,
+        { TP_IFACE_CONNECTION_INTERFACE_LOCATION,
           conn_location_properties_getter,
           conn_location_properties_setter,
           location_props,
