@@ -1,0 +1,48 @@
+From 2305ded1dc04e93b944c95aaabaf5a95efb3302d Mon Sep 17 00:00:00 2001
+From: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date: Fri, 28 Aug 2009 21:14:10 +0100
+Subject: [PATCH] Fix a crash when advertising tube caps without Service{,Name}
+
+---
+ src/private-tubes-factory.c |   22 ++++++++++++++--------
+ 1 files changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/src/private-tubes-factory.c b/src/private-tubes-factory.c
+index 5a10640..42f9d93 100644
+--- a/src/private-tubes-factory.c
++++ b/src/private-tubes-factory.c
+@@ -888,20 +888,26 @@ gabble_private_tubes_factory_add_cap (GabbleCapsChannelManager *manager,
+       Feature *feat = g_new0 (Feature, 1);
+       gchar *service = g_strdup (tp_asv_get_string (cap,
+           TP_IFACE_CHANNEL_TYPE_STREAM_TUBE ".Service"));
+-      feat->feature_type = FEATURE_OPTIONAL;
+-      feat->ns = g_strdup_printf ("%s/stream#%s", NS_TUBES, service);
+-      feat->caps = 0;
+-      g_hash_table_insert (caps->stream_tube_caps, service, feat);
++      if (service != NULL)
++        {
++          feat->feature_type = FEATURE_OPTIONAL;
++          feat->ns = g_strdup_printf ("%s/stream#%s", NS_TUBES, service);
++          feat->caps = 0;
++          g_hash_table_insert (caps->stream_tube_caps, service, feat);
++        }
+     }
+   else if (!tp_strdiff (channel_type, TP_IFACE_CHANNEL_TYPE_DBUS_TUBE))
+     {
+       Feature *feat = g_new0 (Feature, 1);
+       gchar *service = g_strdup (tp_asv_get_string (cap,
+           TP_IFACE_CHANNEL_TYPE_DBUS_TUBE ".ServiceName"));
+-      feat->feature_type = FEATURE_OPTIONAL;
+-      feat->ns = g_strdup_printf ("%s/dbus#%s", NS_TUBES, service);
+-      feat->caps = 0;
+-      g_hash_table_insert (caps->dbus_tube_caps, service, feat);
++      if (service != NULL)
++        {
++          feat->feature_type = FEATURE_OPTIONAL;
++          feat->ns = g_strdup_printf ("%s/dbus#%s", NS_TUBES, service);
++          feat->caps = 0;
++          g_hash_table_insert (caps->dbus_tube_caps, service, feat);
++        }
+     }
+ }
+ 
