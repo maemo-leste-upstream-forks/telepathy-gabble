@@ -1,3 +1,338 @@
+commit 1ef0491531bd3dc93959cce57541de0450da5ab1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Sep 3 19:03:03 2009 +0100
+
+    NEWS for 0.8.2
+
+ NEWS         |   24 ++++++++++++++++++++++++
+ configure.ac |    2 +-
+ 2 files changed, 25 insertions(+), 1 deletions(-)
+
+commit 4148fea49bcc05853364cb6f690a4c8b6dc5866b
+Merge: 9ce93fa 16fb790
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Sep 3 18:03:02 2009 +0100
+
+    Merge branch 'fix-google-video' into telepathy-gabble-0.8
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 9ce93faa9ca821fc03cbff5dc8e196251a6d1e3a
+Merge: 3f2c10b a78f562
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Wed Sep 2 22:51:04 2009 +0100
+
+    Merge branch 'jids' into telepathy-gabble-0.8
+    
+    Reviewed-by: Will Thompson
+
+commit a78f562fa51bdbc7aeed523fd80e46f789fd2f37
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Wed Sep 2 22:46:52 2009 +0100
+
+    make gabble_encode_jid() warn and return NULL if domain is NULL
+
+ src/util.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit e6c7993df6000a891c3daf5ef8292ab5210a52ab
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Wed Aug 26 17:48:36 2009 +0100
+
+    add gabble_encode_jid() and replace ad-hoc string concatentation with calls to it
+
+ src/connection.c |   10 ++++------
+ src/util.c       |   26 ++++++++++++++++++++++++--
+ src/util.h       |    2 ++
+ 3 files changed, 30 insertions(+), 8 deletions(-)
+
+commit 6e540f316c13ceca54bd35cd67966a60d7e8125e
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Wed Aug 26 17:47:28 2009 +0100
+
+    improve comments and error messages
+
+ src/util.c |   14 +++++++++++---
+ 1 files changed, 11 insertions(+), 3 deletions(-)
+
+commit b0e7f813e796ebc4ce09d440490c5855271bc920
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 20:19:28 2009 +0100
+
+    gabble_jid_decode(): fix the case where there is a / before an @
+
+ src/util.c              |   39 +++++++++++++++++++++++----------------
+ tests/test-jid-decode.c |    1 +
+ 2 files changed, 24 insertions(+), 16 deletions(-)
+
+commit e6acd5ccff3185275b1395228d0918131a7a88dd
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 19:30:50 2009 +0100
+
+    gabble_decode_jid(): check for invalid characters in node and domain
+
+ src/util.c              |   34 +++++++++++++++++++++++++++++++++-
+ tests/test-jid-decode.c |    3 +++
+ 2 files changed, 36 insertions(+), 1 deletions(-)
+
+commit d7ab2037bf11d54817aab05c104178ab4438c24b
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 19:12:55 2009 +0100
+
+    tube-dbus.c: assert that resource part of our own JID is not NULL
+
+ src/tube-dbus.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit ba2703b26ea53440713e738d8430a147afe5be2f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 19:11:58 2009 +0100
+
+    style tweaks
+
+ src/connection.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit d7bba4ccf868471d6cef91d9f31e4e95a0758325
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 19:11:11 2009 +0100
+
+    remove checks made redundant by gabble_decode_jid() changes
+    
+    In particular, callers no longer need to check whether returned node and
+    resource strings are empty.
+
+ src/bytestream-factory.c |    4 ++--
+ src/connection.c         |    5 ++---
+ src/util.c               |    5 ++---
+ 3 files changed, 6 insertions(+), 8 deletions(-)
+
+commit 9f759bb06169a83fee3085b48d1631873b43c673
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 19:10:17 2009 +0100
+
+    gabble_decode_jid(): update documentation
+
+ src/util.c |   14 +++++---------
+ 1 files changed, 5 insertions(+), 9 deletions(-)
+
+commit 39cb819dca09c94d454951690113bb5cfec74fd5
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 18:42:13 2009 +0100
+
+    test-jid-decode: add test for case folding
+
+ tests/test-jid-decode.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 8fb4b3c496e1b0c73d96d3e6aea115630819cb83
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 18:35:37 2009 +0100
+
+    test-jid-decode: factor out common code
+
+ tests/test-jid-decode.c |   92 +++++++++--------------------------------------
+ 1 files changed, 17 insertions(+), 75 deletions(-)
+
+commit a90bd4da5ba0b959eb6feb31cca096218fa93dc5
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 18:34:04 2009 +0100
+
+    test-jid-decode: rename server -> domain for consistency
+
+ tests/test-jid-decode.c |   48 +++++++++++++++++++++++-----------------------
+ 1 files changed, 24 insertions(+), 24 deletions(-)
+
+commit 0c1836c1d1e4a301b9d6992969a6433b3d641093
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 18:05:25 2009 +0100
+
+    gabble_decode_jid(): return FALSE if JID components are wrongly empty
+    
+    The domain must always be non-empty. The node must not be empty if there is an
+    '@', and the resource must not be empty if there is a '/'.
+
+ src/util.c              |   13 ++++++++++++-
+ tests/test-jid-decode.c |   38 ++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 48 insertions(+), 3 deletions(-)
+
+commit ff79043aea2601f3f23a9440122d01817d0f1ea6
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 17:42:39 2009 +0100
+
+    make gabble_decode_jid() return a boolean
+    
+    For now, it always returns TRUE. Also, change all callers to check the result.
+
+ src/bytestream-factory.c                           |   27 ++++++++++++++++++-
+ src/conn-aliasing.c                                |    4 +-
+ src/connection.c                                   |    9 +++---
+ src/muc-channel.c                                  |    2 +-
+ src/tube-dbus.c                                    |    7 +++--
+ src/util.c                                         |    8 +++---
+ src/util.h                                         |    4 +-
+ tests/test-jid-decode.c                            |    8 +++---
+ .../twisted/file-transfer/file_transfer_helper.py  |    5 ++-
+ 9 files changed, 49 insertions(+), 25 deletions(-)
+
+commit e694b86ab54fd37404c31c3513b4fe32c53fbb7c
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 16:27:59 2009 +0100
+
+    style tweaks
+
+ src/bytestream-factory.c |   14 +++++++-------
+ src/tube-dbus.c          |    3 +--
+ 2 files changed, 8 insertions(+), 9 deletions(-)
+
+commit 783747e3387d2b6f9861673c69f081999965295e
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Aug 25 16:16:52 2009 +0100
+
+    fix indentation
+
+ src/bytestream-factory.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 7f6cbd62452712b7bc89afeab80d035fe5f2b2d3
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Aug 24 18:39:53 2009 +0100
+
+    remove unused return values from JID decode test
+
+ tests/test-jid-decode.c |   20 ++++++++------------
+ 1 files changed, 8 insertions(+), 12 deletions(-)
+
+commit ea3a1d4bfa39b943f35457695edb041823978b64
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Aug 24 17:42:12 2009 +0100
+
+    gabble_decode_jid(): set out parameters together
+
+ src/util.c |   22 +++++++++++-----------
+ 1 files changed, 11 insertions(+), 11 deletions(-)
+
+commit 48b33362ec02ab7cb71b9f3e03473814e9a1a793
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Aug 24 16:06:05 2009 +0100
+
+    gabble_decode_jid(): make variable naming and docs more consistent with RFC
+
+ src/util.c |   71 ++++++++++++++++++++++++++++++-----------------------------
+ 1 files changed, 36 insertions(+), 35 deletions(-)
+
+commit 16fb7904c242f042e7915ed327596fb1db11786e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Sep 2 12:36:00 2009 +0100
+
+    Parse audio *and* video for accepted Google calls
+
+ src/jingle-session.c |   15 ++++++++++++---
+ 1 files changed, 12 insertions(+), 3 deletions(-)
+
+commit 2d4d8adc1f93d4bc3e4f5ec444ac168ae9e0aa41
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Sep 2 18:51:27 2009 +0100
+
+    Test for SetRemoteCodecs etc. for all streams
+    
+    This catches a bug in our Google Talk interop, where we ignored either
+    the audio or video codecs in their session accept.
+
+ tests/twisted/jingle/initial-audio-video.py |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+
+commit 86685b9e690037b2c47cd2dc4054e3d06b36a2b3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Sep 2 18:12:35 2009 +0100
+
+    Reduce content-naming assumptions in Jingle tests
+    
+    Now that we extract the stream names from session-initiate, let's fill them
+    in in incoming_call() too, and then generate_contents() can use those
+    rather than hard-coding stream1 and stream2.
+
+ tests/twisted/jingle/hold-av.py                    |    2 +-
+ tests/twisted/jingle/jingletest2.py                |   53 ++++++++++---------
+ .../twisted/jingle/test-content-adding-removal.py  |    2 +-
+ tests/twisted/jingle/test-content-complex.py       |    3 +-
+ tests/twisted/jingle/test-description-info.py      |   10 +++-
+ 5 files changed, 38 insertions(+), 32 deletions(-)
+
+commit e7aa0f714815ccabef2c67335fbbdf6f6795768d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Sep 2 17:26:03 2009 +0100
+
+    Tests: extract stream name(s) from session-initiate
+    
+    This also adds some simple tests about the session-initiate that Gabble
+    sends on old-school and current Jingle (but not on GTalk4).
+
+ tests/twisted/jingle/jingletest2.py |   83 ++++++++++++++++++++++++++++++----
+ 1 files changed, 73 insertions(+), 10 deletions(-)
+
+commit 3f2c10b1430bfebff387ccad80a36649ce9819ae
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Aug 28 21:14:10 2009 +0100
+
+    Fix a crash when advertising tube caps without Service{,Name}
+
+ src/private-tubes-factory.c |   22 ++++++++++++++--------
+ 1 files changed, 14 insertions(+), 8 deletions(-)
+
+commit 519ebcd216d9f42cd8b099c45070912617df55eb
+Merge: 4ebe748 c820241
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 28 19:44:14 2009 +0100
+
+    Merge branch 'vcard' into telepathy-gabble-0.8
+    
+    Reviewed-by: Will Thompson
+
+commit c820241718eda7703520a3761ce21af5832d42ae
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 28 19:02:04 2009 +0100
+
+    sync_dbus(): ensure that the proxy has a unique name
+    
+    Otherwise we might service-launch the CM after it's died, which we don't want.
+
+ tests/twisted/servicetest.py |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit c4905aafd56e05ca91235675c8da398932bb6143
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 28 18:10:54 2009 +0100
+
+    vcard-manager.c: don't crash when a set fails and there are edits pending
+
+ src/vcard-manager.c                       |   17 ++++++++++++-
+ tests/twisted/Makefile.am                 |    1 +
+ tests/twisted/vcard/set-set-disconnect.py |   34 +++++++++++++++++++++++++++++
+ 3 files changed, 50 insertions(+), 2 deletions(-)
+
+commit 96e44cc5c8623a0ca113c011af01186911a8007b
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 28 18:09:12 2009 +0100
+
+    make sync_dbus() call Ping() instead of InspectHandles()
+    
+    This means that the CM can be synced with after the connection has been
+    destroyed.
+
+ tests/twisted/servicetest.py |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit 70472f4873cd2223fbee63faa793ae6e03faa0c7
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Aug 28 18:05:15 2009 +0100
+
+    pass bus, not stream, into sync_dbus() call
+
+ tests/twisted/muc/name-conflict.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 4ebe7488a3084d14aa6ad50d709033ab7681f938
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Thu Aug 20 20:43:17 2009 +0100
