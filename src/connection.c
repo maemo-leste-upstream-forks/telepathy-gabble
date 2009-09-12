@@ -336,6 +336,12 @@ gabble_connection_constructed (GObject *object)
           g_random_int ());
       DEBUG ("defaulted resource to %s", priv->resource);
     }
+
+  /* set initial presence */
+  self->self_presence = gabble_presence_new ();
+  g_assert (priv->resource);
+  gabble_presence_update (self->self_presence, priv->resource,
+      GABBLE_PRESENCE_AVAILABLE, NULL, priv->priority);
 }
 
 static void
@@ -480,8 +486,23 @@ gabble_connection_set_property (GObject      *object,
       priv->password = g_value_dup_string (value);
       break;
     case PROP_RESOURCE:
-      g_free (priv->resource);
-      priv->resource = g_value_dup_string (value);
+      if (tp_strdiff (priv->resource, g_value_get_string (value)))
+        {
+          gchar *old_resource = g_strdup (priv->resource);
+          gchar *new_resource = g_value_dup_string (value);
+
+          priv->resource = new_resource;
+
+          /* Add self presence for new resource... */
+          gabble_presence_update (self->self_presence, new_resource,
+              self->self_presence->status, self->self_presence->status_message,
+              priv->priority);
+          /* ...and remove it for the old one. */
+          gabble_presence_update (self->self_presence, old_resource,
+              GABBLE_PRESENCE_OFFLINE, NULL, 0);
+
+          g_free (old_resource);
+        }
       break;
     case PROP_PRIORITY:
       priv->priority = g_value_get_char (value);
@@ -1576,6 +1597,19 @@ _gabble_connection_acknowledge_set_iq (GabbleConnection *conn,
     }
 }
 
+/* Send @message on @self; ignore errors, other than logging @complaint on
+ * failure.
+ */
+static void
+_gabble_connection_send_or_complain (GabbleConnection *self,
+    LmMessage *message,
+    const gchar *complaint)
+{
+  if (!lm_connection_send (self->lmconn, message, NULL))
+    {
+      DEBUG ("%s", complaint);
+    }
+}
 
 /**
  * _gabble_connection_send_iq_error
@@ -1614,6 +1648,17 @@ _gabble_connection_send_iq_error (GabbleConnection *conn,
   _gabble_connection_send (conn, msg, NULL);
 
   lm_message_unref (msg);
+}
+
+static void
+add_feature_node (LmMessageNode *result_query,
+    const gchar *namespace)
+{
+  LmMessageNode *feature_node;
+
+  feature_node = lm_message_node_add_child (result_query, "feature",
+      NULL);
+  lm_message_node_set_attribute (feature_node, "var", namespace);
 }
 
 /**
@@ -1690,32 +1735,30 @@ connection_iq_disco_cb (LmMessageHandler *handler,
 
   caps_hash = caps_hash_compute_from_self_presence (self);
 
-  if (NULL == node ||
-      !tp_strdiff (suffix, BUNDLE_VOICE_V1) ||
-      !tp_strdiff (suffix, caps_hash))
+  if (node == NULL || !tp_strdiff (suffix, caps_hash))
     {
       for (i = features; NULL != i; i = i->next)
         {
           const Feature *feature = (const Feature *) i->data;
-          LmMessageNode *feature_node;
 
-          /* When BUNDLE_VOICE_V1 is requested, only send the bundle */
-          if (!tp_strdiff (suffix, BUNDLE_VOICE_V1) &&
-              feature->feature_type != FEATURE_BUNDLE_COMPAT)
-            continue;
-
-          /* otherwise (no node or hash), put all features */
-          feature_node = lm_message_node_add_child (result_query, "feature",
-              NULL);
-          lm_message_node_set_attribute (feature_node, "var", feature->ns);
+          add_feature_node (result_query, feature->ns);
         }
 
       NODE_DEBUG (result_iq, "sending disco response");
-
-      if (!lm_connection_send (self->lmconn, result, NULL))
-        {
-          DEBUG ("sending disco response failed");
-        }
+      _gabble_connection_send_or_complain (self, result,
+          "sending disco response failed");
+    }
+  else if (!tp_strdiff (suffix, BUNDLE_VOICE_V1))
+    {
+      add_feature_node (result_query, NS_GOOGLE_FEAT_VOICE);
+      _gabble_connection_send_or_complain (self, result,
+          "sending disco response failed");
+    }
+  else if (!tp_strdiff (suffix, BUNDLE_VIDEO_V1))
+    {
+      add_feature_node (result_query, NS_GOOGLE_FEAT_VIDEO);
+      _gabble_connection_send_or_complain (self, result,
+          "sending disco response failed");
     }
   else
     {
@@ -2098,11 +2141,6 @@ connection_auth_cb (LmConnection *lmconn,
     }
 
   DEBUG ("Created self handle %d, our JID is %s", base->self_handle, jid);
-
-  /* set initial presence */
-  conn->self_presence = gabble_presence_new ();
-  gabble_presence_update (conn->self_presence, priv->resource,
-      GABBLE_PRESENCE_AVAILABLE, NULL, priv->priority);
 
   /* set initial capabilities */
   gabble_presence_set_capabilities (conn->self_presence, priv->resource,
