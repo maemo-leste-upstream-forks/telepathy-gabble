@@ -4,6 +4,8 @@ TWISTED_TESTS = \
 	caps/advertise-draft1.py \
 	caps/advertise-legacy.py \
 	caps/caps-cache.py \
+	caps/compat-bundles.py \
+	caps/double-disco.py \
 	caps/from-bare-jid.py \
 	caps/hashed-caps.py \
 	caps/initial-caps.py \
@@ -31,6 +33,7 @@ TWISTED_TESTS = \
 	olpc/gadget-publish.py \
 	olpc/gadget-restarted.py \
 	olpc/view-presence.py \
+	presence/initial-presence.py \
 	presence/presence.py \
 	roster/ensure.py \
 	roster/groups.py \
@@ -80,6 +83,7 @@ TWISTED_TESTS = \
 	vcard/test-avatar.py \
 	vcard/test-avatar-retrieved.py \
 	vcard/test-avatar-tokens.py \
+        vcard/test-avatar-multiple-resources.py \
 	vcard/test-save-alias-to-vcard.py \
 	vcard/test-set-alias.py \
 	vcard/test-vcard-cache.py \
