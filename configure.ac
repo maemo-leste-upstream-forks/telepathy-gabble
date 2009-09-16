@@ -8,8 +8,8 @@ AC_PREREQ([2.59])
 #   set gabble_nano_version to 0.
 
 m4_define([gabble_major_version], [0])
-m4_define([gabble_minor_version], [8])
-m4_define([gabble_micro_version], [3])
+m4_define([gabble_minor_version], [9])
+m4_define([gabble_micro_version], [0])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -126,7 +126,7 @@ PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.78])
 AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)
 
-PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.7.34])
+PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.7.37])
 
 AC_SUBST(TP_GLIB_CFLAGS)
 AC_SUBST(TP_GLIB_LIBS)
@@ -174,10 +174,31 @@ AC_MSG_RESULT([$TEST_PYTHON])
 AC_SUBST(TEST_PYTHON)
 AM_CONDITIONAL([WANT_TWISTED_TESTS], test false != "$TEST_PYTHON")
 
-dnl Check for Loudmouth
-PKG_CHECK_MODULES(LOUDMOUTH, loudmouth-1.0 >= 1.3.2)
-AC_SUBST(LOUDMOUTH_CFLAGS)
-AC_SUBST(LOUDMOUTH_LIBS)
+# Always build Wocky with GTK doc support as we need it when doing "make check"
+# We have to run Wocky's configure *before* looking for it with PKG_CHECK_MODULES so wocky-uninstalled.pc has been generated
+echo "== Configuring embedded Wocky instance =="
+AS_MKDIR_P(["$ac_top_build_prefix"lib/ext/wocky])
+origdir=`pwd`
+
+AC_ARG_ENABLE(wocky-gtk-doc,
+  AC_HELP_STRING([--enable-wocky-gtk-doc],[compile wocky with gtk-doc enabled]),
+    enable_wocky_gtk_doc=$enableval, enable_wocky_gtk_doc=no )
+
+confcmd="$origdir"/"$srcdir"/lib/ext/wocky/configure
+if test x$enable_wocky_gtk_doc != xno; then
+  confcmd="$confcmd --enable-gtk-doc"
+fi
+cd "$ac_top_build_prefix"lib/ext/wocky && echo "running $confcmd" &&
+  $confcmd ||
+  AC_MSG_ERROR([Failed to configure embedded Wocky tree])
+cd "$origdir"
+
+dnl Check for Wocky
+# re-enable once Wocky has been released as a lib
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:"$ac_top_build_prefix"lib/ext/wocky/wocky
+PKG_CHECK_MODULES(WOCKY, wocky >= 0.0.0)
+AC_SUBST(WOCKY_CFLAGS)
+AC_SUBST(WOCKY_LIBS)
 
 dnl Check for libsoup
 PKG_CHECK_MODULES(SOUP, libsoup-2.4)
@@ -208,7 +229,9 @@ AC_OUTPUT( Makefile \
            tests/twisted/Makefile \
            tests/twisted/tools/Makefile \
            lib/Makefile \
+           lib/ext/Makefile \
            lib/gibber/Makefile \
+           lib/loudmouth/Makefile \
            shave \
            shave-libtool
 )

@@ -1,2 +1,2 @@
-PACKAGE_STRING = "Telepathy Gabble 0.8.3"
+PACKAGE_STRING = "Telepathy Gabble 0.9.0"
 DEBUGGING = False

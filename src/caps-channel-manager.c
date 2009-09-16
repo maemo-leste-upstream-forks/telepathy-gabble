@@ -60,10 +60,11 @@ gabble_caps_channel_manager_get_type (void)
 
 /* Virtual-method wrappers */
 
-void gabble_caps_channel_manager_get_contact_capabilities (
+void
+gabble_caps_channel_manager_get_contact_capabilities (
     GabbleCapsChannelManager *caps_manager,
-    GabbleConnection *conn,
     TpHandle handle,
+    const GabbleCapabilitySet *caps,
     GPtrArray *arr)
 {
   GabbleCapsChannelManagerIface *iface =
@@ -72,125 +73,40 @@ void gabble_caps_channel_manager_get_contact_capabilities (
 
   if (method != NULL)
     {
-      method (caps_manager, conn, handle, arr);
+      method (caps_manager, handle, caps, arr);
     }
   /* ... else assume there is not caps for this kind of channels */
 }
 
-void gabble_caps_channel_manager_get_feature_list (
-    GabbleCapsChannelManager *caps_manager,
-    gpointer specific_caps,
-    GSList **features)
-{
-  GabbleCapsChannelManagerIface *iface =
-    GABBLE_CAPS_CHANNEL_MANAGER_GET_INTERFACE (caps_manager);
-  GabbleCapsChannelManagerGetFeatureListFunc method = iface->get_feature_list;
-
-  if (method != NULL)
-    {
-      method (caps_manager, specific_caps, features);
-    }
-  /* ... else nothing to do */
-}
-
-gpointer gabble_caps_channel_manager_parse_capabilities (
-    GabbleCapsChannelManager *caps_manager,
-    LmMessageNode *query_result)
-{
-  GabbleCapsChannelManagerIface *iface =
-    GABBLE_CAPS_CHANNEL_MANAGER_GET_INTERFACE (caps_manager);
-  GabbleCapsChannelManagerParseCapsFunc method = iface->parse_caps;
-
-  if (method != NULL)
-    {
-      return method (caps_manager, query_result);
-    }
-  /* ... else assume there is not caps for this kind of channels */
-  return NULL;
-}
-
-void gabble_caps_channel_manager_free_capabilities (
-    GabbleCapsChannelManager *caps_manager,
-    gpointer specific_caps)
-{
-  GabbleCapsChannelManagerIface *iface =
-    GABBLE_CAPS_CHANNEL_MANAGER_GET_INTERFACE (caps_manager);
-  GabbleCapsChannelManagerFreeCapsFunc method = iface->free_caps;
-
-  if (method != NULL)
-    {
-      method (caps_manager, specific_caps);
-    }
-  /* ... else assume there is no need to free */
-}
-
-void gabble_caps_channel_manager_copy_capabilities (
-    GabbleCapsChannelManager *caps_manager,
-    gpointer *specific_caps_out,
-    gpointer specific_caps_in)
-{
-  GabbleCapsChannelManagerIface *iface =
-    GABBLE_CAPS_CHANNEL_MANAGER_GET_INTERFACE (caps_manager);
-  GabbleCapsChannelManagerCopyCapsFunc method = iface->copy_caps;
-
-  if (method != NULL)
-    {
-      method (caps_manager, specific_caps_out, specific_caps_in);
-    }
-  else
-    *specific_caps_out = NULL;
-}
-
-void gabble_caps_channel_manager_update_capabilities (
-    GabbleCapsChannelManager *caps_manager,
-    gpointer specific_caps_out,
-    gpointer specific_caps_in)
-{
-  GabbleCapsChannelManagerIface *iface =
-    GABBLE_CAPS_CHANNEL_MANAGER_GET_INTERFACE (caps_manager);
-  GabbleCapsChannelManagerUpdateCapsFunc method = iface->update_caps;
-
-  /* cannot be called if not implemented */
-  if (method != NULL)
-    method (caps_manager, specific_caps_out, specific_caps_in);
-  else
-    DEBUG (":'( No caps update function");
-}
-
-gboolean gabble_caps_channel_manager_capabilities_diff (
-    GabbleCapsChannelManager *caps_manager,
-    TpHandle handle,
-    gpointer specific_old_caps,
-    gpointer specific_new_caps)
-{
-  GabbleCapsChannelManagerIface *iface =
-    GABBLE_CAPS_CHANNEL_MANAGER_GET_INTERFACE (caps_manager);
-  GabbleCapsChannelManagerCapsDiffFunc method = iface->caps_diff;
-
-  if (method != NULL)
-    {
-      return method (caps_manager, handle, specific_old_caps,
-          specific_new_caps);
-    }
-  /* ... else, nothing to do */
-  return FALSE;
-}
-
+/**
+ * gabble_caps_channel_manager_represent_client:
+ * @self: a channel manager
+ * @client_name: the name of the client, for any debug messages
+ * @filters: the channel classes accepted by the client, as an array of
+ *  GHashTable with string keys and GValue values
+ * @cap_tokens: the handler capability tokens supported by the client
+ * @cap_set: a set into which to merge additional XMPP capabilities
+ *
+ * Convert the capabilities of a Telepathy client into XMPP capabilities to be
+ * advertised.
+ *
+ * (The actual XMPP capabilities advertised will be the union of the XMPP
+ * capabilities of every installed client.)
+ */
 void
-gabble_caps_channel_manager_add_capability (
+gabble_caps_channel_manager_represent_client (
     GabbleCapsChannelManager *caps_manager,
-    GabbleConnection *conn,
-    TpHandle handle,
-    GHashTable *cap)
+    const gchar *client_name,
+    const GPtrArray *filters,
+    const gchar * const *cap_tokens,
+    GabbleCapabilitySet *cap_set)
 {
   GabbleCapsChannelManagerIface *iface =
     GABBLE_CAPS_CHANNEL_MANAGER_GET_INTERFACE (caps_manager);
-  GabbleCapsChannelManagerAddCapFunc method = iface->add_cap;
+  GabbleCapsChannelManagerRepresentClientFunc method = iface->represent_client;
 
   if (method != NULL)
     {
-      method (caps_manager, conn, handle, cap);
+      method (caps_manager, client_name, filters, cap_tokens, cap_set);
     }
-  /* ... else, nothing to do */
 }
-

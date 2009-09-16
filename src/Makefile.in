@@ -58,15 +58,17 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libgabble_convenience_la_DEPENDENCIES =  \
 	$(top_builddir)/extensions/libgabble-extensions.la \
-	$(top_builddir)/lib/gibber/libgibber.la $(am__DEPENDENCIES_1)
-am_libgabble_convenience_la_OBJECTS = base64.lo bytestream-factory.lo \
-	bytestream-ibb.lo bytestream-iface.lo bytestream-muc.lo \
-	bytestream-multiple.lo bytestream-socks5.lo capabilities.lo \
-	caps-hash.lo caps-channel-manager.lo conn-aliasing.lo \
-	conn-avatars.lo conn-location.lo conn-olpc.lo conn-presence.lo \
-	connection.lo connection-manager.lo debug.lo debugger.lo \
-	disco.lo error.lo ft-channel.lo ft-manager.lo gabble.lo \
-	im-channel.lo im-factory.lo jingle-content.lo \
+	$(top_builddir)/lib/gibber/libgibber.la \
+	$(top_builddir)/lib/loudmouth/libloudmouth.la \
+	$(am__DEPENDENCIES_1)
+am_libgabble_convenience_la_OBJECTS = base64.lo base-channel.lo \
+	bytestream-factory.lo bytestream-ibb.lo bytestream-iface.lo \
+	bytestream-muc.lo bytestream-multiple.lo bytestream-socks5.lo \
+	capabilities.lo caps-hash.lo caps-channel-manager.lo \
+	conn-aliasing.lo conn-avatars.lo conn-location.lo conn-olpc.lo \
+	conn-presence.lo connection.lo connection-manager.lo debug.lo \
+	debugger.lo disco.lo error.lo ft-channel.lo ft-manager.lo \
+	gabble.lo im-channel.lo im-factory.lo jingle-content.lo \
 	jingle-factory.lo jingle-media-rtp.lo jingle-session.lo \
 	jingle-transport-google.lo jingle-transport-rawudp.lo \
 	jingle-transport-iceudp.lo jingle-transport-iface.lo \
@@ -76,9 +78,9 @@ am_libgabble_convenience_la_OBJECTS = base64.lo bytestream-factory.lo \
 	olpc-gadget-manager.lo olpc-view.lo pubsub.lo presence.lo \
 	presence-cache.lo private-tubes-factory.lo register.lo \
 	request-pipeline.lo roster.lo roster-channel.lo \
-	roomlist-channel.lo roomlist-manager.lo tube-iface.lo \
-	tubes-channel.lo tube-dbus.lo tube-stream.lo util.lo \
-	vcard-manager.lo
+	roomlist-channel.lo roomlist-manager.lo search-channel.lo \
+	search-manager.lo tube-iface.lo tubes-channel.lo tube-dbus.lo \
+	tube-stream.lo util.lo vcard-manager.lo
 am__objects_1 = gabble-signals-marshal.lo
 nodist_libgabble_convenience_la_OBJECTS = $(am__objects_1)
 libgabble_convenience_la_OBJECTS =  \
@@ -161,8 +163,6 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
-LOUDMOUTH_CFLAGS = @LOUDMOUTH_CFLAGS@
-LOUDMOUTH_LIBS = @LOUDMOUTH_LIBS@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEFLAGS = @MAKEFLAGS@
 MAKEINFO = @MAKEINFO@
@@ -205,6 +205,8 @@ V = @V@
 VERSION = @VERSION@
 WANT_TWISTED_TESTS_FALSE = @WANT_TWISTED_TESTS_FALSE@
 WANT_TWISTED_TESTS_TRUE = @WANT_TWISTED_TESTS_TRUE@
+WOCKY_CFLAGS = @WOCKY_CFLAGS@
+WOCKY_LIBS = @WOCKY_LIBS@
 XSLTPROC = @XSLTPROC@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -266,6 +268,8 @@ CLEANFILES = $(BUILT_SOURCES)
 libgabble_convenience_la_SOURCES = \
     base64.h \
     base64.c \
+    base-channel.h \
+    base-channel.c \
     bytestream-factory.h \
     bytestream-factory.c \
     bytestream-ibb.h \
@@ -377,6 +381,10 @@ libgabble_convenience_la_SOURCES = \
     roomlist-channel.c \
     roomlist-manager.h \
     roomlist-manager.c \
+    search-channel.h \
+    search-channel.c \
+    search-manager.h \
+    search-manager.c \
     tube-iface.h \
     tube-iface.c \
     tubes-channel.h \
@@ -394,6 +402,7 @@ libgabble_convenience_la_SOURCES = \
 libgabble_convenience_la_LIBADD = \
    $(top_builddir)/extensions/libgabble-extensions.la \
    $(top_builddir)/lib/gibber/libgibber.la \
+   $(top_builddir)/lib/loudmouth/libloudmouth.la \
    $(ALL_LIBS)
 
 nodist_libgabble_convenience_la_SOURCES = \
@@ -412,13 +421,13 @@ check_c_sources = \
 telepathy_gabble_LDADD = libgabble-convenience.la
 noinst_LTLIBRARIES = libgabble-convenience.la
 AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
-	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @LOUDMOUTH_CFLAGS@ \
+	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
 	    @SOUP_CFLAGS@ @UUID_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
 	    -DG_LOG_DOMAIN=\"gabble\"
 
-ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @LOUDMOUTH_LIBS@ @TP_GLIB_LIBS@ \
+ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
 	    @SOUP_LIBS@ @UUID_LIBS@
 
 all: $(BUILT_SOURCES)
@@ -514,6 +523,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bytestream-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bytestream-ibb.Plo@am__quote@
@@ -572,6 +582,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roomlist-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roster-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roster.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/search-channel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/search-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-dbus.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-iface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-stream.Plo@am__quote@

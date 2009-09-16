@@ -13,6 +13,8 @@ noinst_PROGRAMS = write-mgr-file
 libgabble_convenience_la_SOURCES = \
     base64.h \
     base64.c \
+    base-channel.h \
+    base-channel.c \
     bytestream-factory.h \
     bytestream-factory.c \
     bytestream-ibb.h \
@@ -124,6 +126,10 @@ libgabble_convenience_la_SOURCES = \
     roomlist-channel.c \
     roomlist-manager.h \
     roomlist-manager.c \
+    search-channel.h \
+    search-channel.c \
+    search-manager.h \
+    search-manager.c \
     tube-iface.h \
     tube-iface.c \
     tubes-channel.h \
@@ -141,6 +147,7 @@ libgabble_convenience_la_SOURCES = \
 libgabble_convenience_la_LIBADD = \
    $(top_builddir)/extensions/libgabble-extensions.la \
    $(top_builddir)/lib/gibber/libgibber.la \
+   $(top_builddir)/lib/loudmouth/libloudmouth.la \
    $(ALL_LIBS)
 
 nodist_libgabble_convenience_la_SOURCES = \
@@ -165,13 +172,13 @@ telepathy_gabble_LDADD = libgabble-convenience.la
 noinst_LTLIBRARIES = libgabble-convenience.la
 
 AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
-	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @LOUDMOUTH_CFLAGS@ \
+	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
 	    @SOUP_CFLAGS@ @UUID_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
 	    -DG_LOG_DOMAIN=\"gabble\"
 
-ALL_LIBS =  @DBUS_LIBS@ @GLIB_LIBS@ @LOUDMOUTH_LIBS@ @TP_GLIB_LIBS@ \
+ALL_LIBS =  @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
 	    @SOUP_LIBS@ @UUID_LIBS@
 
 # build gibber first

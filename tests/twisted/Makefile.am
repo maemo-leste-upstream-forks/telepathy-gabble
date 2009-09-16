@@ -1,7 +1,7 @@
 TWISTED_TESTS = \
 	avatar-requirements.py \
 	caps_helper.py \
-	caps/advertise-draft1.py \
+	caps/advertise-contact-caps.py \
 	caps/advertise-legacy.py \
 	caps/caps-cache.py \
 	caps/compat-bundles.py \
@@ -46,6 +46,10 @@ TWISTED_TESTS = \
 	roster/test-roster-item-deletion.py \
 	roster/test-roster-subscribe.py \
 	roster/test-save-alias-to-roster.py \
+	search/ceci-nest-pas-un-serveur.py \
+	search/extended.py \
+	search/no-server-property.py \
+	search/unextended.py \
 	text/initiate.py \
 	text/initiate-requestotron.py \
 	text/destroy.py \
@@ -127,17 +131,20 @@ TWISTED_TESTS = \
 	file-transfer/test-send-file-to-unknown-contact.py \
 	file-transfer/test-send-file-wait-to-provide.py \
 	test-debug.py \
+	connect/disconnect-timeout.py \
 	connect/multiple-times-to-same-account.py \
 	connect/test-fail.py \
 	connect/test-success.py \
 	connect/test-twice.py \
 	connect/test-nonblocking-tls.py \
+	connect/stream-closed.py \
 	test-disco.py \
 	test-disco-no-reply.py \
 	test-fallback-socks5-proxy.py \
 	test-register.py \
 	test-set-status-idempotence.py \
-        test-location.py
+        test-location.py \
+	pubsub.py
 
 TESTS =
 
@@ -195,6 +202,7 @@ EXTRA_DIST = \
 	olpc/util.py \
 	tubes/muctubeutil.py \
 	tubes/tubetestutil.py \
+	search/search_helper.py \
 	file-transfer/file_transfer_helper.py
 
 noinst_PROGRAMS = \
@@ -210,11 +218,12 @@ telepathy_gabble_debug_LDADD = \
     $(top_builddir)/lib/gibber/libgibber.la \
     $(ALL_LIBS)
 
-AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @LOUDMOUTH_CFLAGS@ \
+AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
     @TP_GLIB_CFLAGS@ \
     -I $(top_srcdir)/src -I $(top_builddir)/src \
+     -I $(top_srcdir)/lib -I $(top_builddir)/lib \
     -I $(top_srcdir) -I $(top_builddir)
-ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @LOUDMOUTH_LIBS@ @TP_GLIB_LIBS@
+ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@
 
 CLEANFILES = gabble-[1-9]*.log *.pyc */*.pyc config.py
 

@@ -1,0 +1,331 @@
+<refentry id="WockyBareContact">
+<refmeta>
+<refentrytitle role="top_of_page" id="WockyBareContact.top_of_page">WockyBareContact</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>WOCKY Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>WockyBareContact</refname>
+<refpurpose>Wrapper around a roster item.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="WockyBareContact.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;wocky/wocky-bare-contact.h&gt;
+
+                    <link linkend="WockyBareContact-struct">WockyBareContact</link>;
+                    <link linkend="WockyBareContactClass">WockyBareContactClass</link>;
+<link linkend="WockyBareContact">WockyBareContact</link> *  <link linkend="wocky-bare-contact-new">wocky_bare_contact_new</link>              (const <link linkend="gchar">gchar</link> *jid);
+const <link linkend="gchar">gchar</link> *       <link linkend="wocky-bare-contact-get-jid">wocky_bare_contact_get_jid</link>          (<link linkend="WockyBareContact">WockyBareContact</link> *contact);
+const <link linkend="gchar">gchar</link> *       <link linkend="wocky-bare-contact-get-name">wocky_bare_contact_get_name</link>         (<link linkend="WockyBareContact">WockyBareContact</link> *contact);
+<link linkend="void">void</link>                <link linkend="wocky-bare-contact-set-name">wocky_bare_contact_set_name</link>         (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         const <link linkend="gchar">gchar</link> *name);
+<link linkend="WockyRosterSubscriptionFlags">WockyRosterSubscriptionFlags</link>  <link linkend="wocky-bare-contact-get-subscription">wocky_bare_contact_get_subscription</link>
+                                                        (<link linkend="WockyBareContact">WockyBareContact</link> *contact);
+<link linkend="void">void</link>                <link linkend="wocky-bare-contact-set-subscription">wocky_bare_contact_set_subscription</link> (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         <link linkend="WockyRosterSubscriptionFlags">WockyRosterSubscriptionFlags</link> subscription);
+<link linkend="void">void</link>                <link linkend="wocky-bare-contact-set-groups">wocky_bare_contact_set_groups</link>       (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         <link linkend="gchar">gchar</link> **groups);
+<link linkend="gboolean">gboolean</link>            <link linkend="wocky-bare-contact-equal">wocky_bare_contact_equal</link>            (<link linkend="WockyBareContact">WockyBareContact</link> *a,
+                                                         <link linkend="WockyBareContact">WockyBareContact</link> *b);
+<link linkend="void">void</link>                <link linkend="wocky-bare-contact-add-group">wocky_bare_contact_add_group</link>        (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         const <link linkend="gchar">gchar</link> *group);
+<link linkend="WockyBareContact">WockyBareContact</link> *  <link linkend="wocky-bare-contact-copy">wocky_bare_contact_copy</link>             (<link linkend="WockyBareContact">WockyBareContact</link> *contact);
+<link linkend="void">void</link>                <link linkend="wocky-bare-contact-debug-print">wocky_bare_contact_debug_print</link>      (<link linkend="WockyBareContact">WockyBareContact</link> *contact);
+<link linkend="gboolean">gboolean</link>            <link linkend="wocky-bare-contact-in-group">wocky_bare_contact_in_group</link>         (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         const <link linkend="gchar">gchar</link> *group);
+<link linkend="void">void</link>                <link linkend="wocky-bare-contact-remove-group">wocky_bare_contact_remove_group</link>     (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         const <link linkend="gchar">gchar</link> *group);
+<link linkend="void">void</link>                <link linkend="wocky-bare-contact-add-resource">wocky_bare_contact_add_resource</link>     (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         <link linkend="WockyResourceContact">WockyResourceContact</link> *resource);
+<link linkend="GSList">GSList</link> *            <link linkend="wocky-bare-contact-get-resources">wocky_bare_contact_get_resources</link>    (<link linkend="WockyBareContact">WockyBareContact</link> *contact);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 id="WockyBareContact.object-hierarchy" role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="WockyContact">WockyContact</link>
+         +----WockyBareContact
+</synopsis>
+</refsect1>
+
+
+
+
+
+<refsect1 id="WockyBareContact.properties" role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+  &quot;<link linkend="WockyBareContact--groups">groups</link>&quot;                   <link linkend="GStrv">GStrv</link>*                : Read / Write / Construct
+  &quot;<link linkend="WockyBareContact--jid">jid</link>&quot;                      <link linkend="gchar">gchar</link>*                : Read / Write / Construct Only
+  &quot;<link linkend="WockyBareContact--name">name</link>&quot;                     <link linkend="gchar">gchar</link>*                : Read / Write / Construct
+  &quot;<link linkend="WockyBareContact--subscription">subscription</link>&quot;             <link linkend="guint">guint</link>                 : Read / Write / Construct
+</synopsis>
+</refsect1>
+
+
+
+<refsect1 id="WockyBareContact.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+Stores information regarding a roster item and provides a higher level API
+for altering its details.</para>
+<para>
+</para>
+</refsect1>
+
+<refsect1 id="WockyBareContact.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="WockyBareContact-struct" role="struct">
+<title>WockyBareContact</title>
+<indexterm zone="WockyBareContact-struct"><primary sortas="WockyBareContact">WockyBareContact</primary></indexterm><programlisting>typedef struct _WockyBareContact WockyBareContact;</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="WockyBareContactClass" role="struct">
+<title>WockyBareContactClass</title>
+<indexterm zone="WockyBareContactClass"><primary sortas="WockyBareContactClass">WockyBareContactClass</primary></indexterm><programlisting>typedef struct {
+  WockyContactClass parent_class;
+} WockyBareContactClass;
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="wocky-bare-contact-new" role="function">
+<title>wocky_bare_contact_new ()</title>
+<indexterm zone="wocky-bare-contact-new"><primary sortas="wocky_bare_contact_new">wocky_bare_contact_new</primary></indexterm><programlisting><link linkend="WockyBareContact">WockyBareContact</link> *  wocky_bare_contact_new              (const <link linkend="gchar">gchar</link> *jid);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>jid</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-get-jid" role="function">
+<title>wocky_bare_contact_get_jid ()</title>
+<indexterm zone="wocky-bare-contact-get-jid"><primary sortas="wocky_bare_contact_get_jid">wocky_bare_contact_get_jid</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link> *       wocky_bare_contact_get_jid          (<link linkend="WockyBareContact">WockyBareContact</link> *contact);</programlisting>
+<para>
+<!-- --></para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="WockyBareContact"><type>WockyBareContact</type></link> instance
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <parameter>contact</parameter>'s JID.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-get-name" role="function">
+<title>wocky_bare_contact_get_name ()</title>
+<indexterm zone="wocky-bare-contact-get-name"><primary sortas="wocky_bare_contact_get_name">wocky_bare_contact_get_name</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link> *       wocky_bare_contact_get_name         (<link linkend="WockyBareContact">WockyBareContact</link> *contact);</programlisting>
+<para>
+<!-- --></para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara> <link linkend="WockyBareContact"><type>WockyBareContact</type></link> instance
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <parameter>contact</parameter>'s name
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-set-name" role="function">
+<title>wocky_bare_contact_set_name ()</title>
+<indexterm zone="wocky-bare-contact-set-name"><primary sortas="wocky_bare_contact_set_name">wocky_bare_contact_set_name</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_bare_contact_set_name         (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         const <link linkend="gchar">gchar</link> *name);</programlisting>
+<para>
+Sets <parameter>contact</parameter>'s name to <parameter>name</parameter>.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="WockyBareContact"><type>WockyBareContact</type></link> instance
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&#160;:</term>
+<listitem><simpara> the name to set <parameter>contact</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-get-subscription" role="function">
+<title>wocky_bare_contact_get_subscription ()</title>
+<indexterm zone="wocky-bare-contact-get-subscription"><primary sortas="wocky_bare_contact_get_subscription">wocky_bare_contact_get_subscription</primary></indexterm><programlisting><link linkend="WockyRosterSubscriptionFlags">WockyRosterSubscriptionFlags</link>  wocky_bare_contact_get_subscription
+                                                        (<link linkend="WockyBareContact">WockyBareContact</link> *contact);</programlisting>
+<para>
+<!-- --></para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="WockyBareContact"><type>WockyBareContact</type></link> instance
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <parameter>contact</parameter>'s subscription.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-set-subscription" role="function">
+<title>wocky_bare_contact_set_subscription ()</title>
+<indexterm zone="wocky-bare-contact-set-subscription"><primary sortas="wocky_bare_contact_set_subscription">wocky_bare_contact_set_subscription</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_bare_contact_set_subscription (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         <link linkend="WockyRosterSubscriptionFlags">WockyRosterSubscriptionFlags</link> subscription);</programlisting>
+<para>
+Sets the subscription of <parameter>contact</parameter>.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="WockyBareContact"><type>WockyBareContact</type></link> instance
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>subscription</parameter>&#160;:</term>
+<listitem><simpara> the new subscription type
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-set-groups" role="function">
+<title>wocky_bare_contact_set_groups ()</title>
+<indexterm zone="wocky-bare-contact-set-groups"><primary sortas="wocky_bare_contact_set_groups">wocky_bare_contact_set_groups</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_bare_contact_set_groups       (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         <link linkend="gchar">gchar</link> **groups);</programlisting>
+<para>
+Sets <parameter>contact</parameter>'s groups.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="WockyBareContact"><type>WockyBareContact</type></link> instance
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>groups</parameter>&#160;:</term>
+<listitem><simpara> a list of groups
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-equal" role="function">
+<title>wocky_bare_contact_equal ()</title>
+<indexterm zone="wocky-bare-contact-equal"><primary sortas="wocky_bare_contact_equal">wocky_bare_contact_equal</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_bare_contact_equal            (<link linkend="WockyBareContact">WockyBareContact</link> *a,
+                                                         <link linkend="WockyBareContact">WockyBareContact</link> *b);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>a</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-add-group" role="function">
+<title>wocky_bare_contact_add_group ()</title>
+<indexterm zone="wocky-bare-contact-add-group"><primary sortas="wocky_bare_contact_add_group">wocky_bare_contact_add_group</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_bare_contact_add_group        (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         const <link linkend="gchar">gchar</link> *group);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>group</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-copy" role="function">
+<title>wocky_bare_contact_copy ()</title>
+<indexterm zone="wocky-bare-contact-copy"><primary sortas="wocky_bare_contact_copy">wocky_bare_contact_copy</primary></indexterm><programlisting><link linkend="WockyBareContact">WockyBareContact</link> *  wocky_bare_contact_copy             (<link linkend="WockyBareContact">WockyBareContact</link> *contact);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-debug-print" role="function">
+<title>wocky_bare_contact_debug_print ()</title>
+<indexterm zone="wocky-bare-contact-debug-print"><primary sortas="wocky_bare_contact_debug_print">wocky_bare_contact_debug_print</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_bare_contact_debug_print      (<link linkend="WockyBareContact">WockyBareContact</link> *contact);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-in-group" role="function">
+<title>wocky_bare_contact_in_group ()</title>
+<indexterm zone="wocky-bare-contact-in-group"><primary sortas="wocky_bare_contact_in_group">wocky_bare_contact_in_group</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_bare_contact_in_group         (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         const <link linkend="gchar">gchar</link> *group);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>group</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-remove-group" role="function">
+<title>wocky_bare_contact_remove_group ()</title>
+<indexterm zone="wocky-bare-contact-remove-group"><primary sortas="wocky_bare_contact_remove_group">wocky_bare_contact_remove_group</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_bare_contact_remove_group     (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         const <link linkend="gchar">gchar</link> *group);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>group</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-add-resource" role="function">
+<title>wocky_bare_contact_add_resource ()</title>
+<indexterm zone="wocky-bare-contact-add-resource"><primary sortas="wocky_bare_contact_add_resource">wocky_bare_contact_add_resource</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_bare_contact_add_resource     (<link linkend="WockyBareContact">WockyBareContact</link> *contact,
+                                                         <link linkend="WockyResourceContact">WockyResourceContact</link> *resource);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>resource</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-bare-contact-get-resources" role="function">
+<title>wocky_bare_contact_get_resources ()</title>
+<indexterm zone="wocky-bare-contact-get-resources"><primary sortas="wocky_bare_contact_get_resources">wocky_bare_contact_get_resources</primary></indexterm><programlisting><link linkend="GSList">GSList</link> *            wocky_bare_contact_get_resources    (<link linkend="WockyBareContact">WockyBareContact</link> *contact);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1 id="WockyBareContact.property-details" role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2 id="WockyBareContact--groups" role="property"><title>The <literal>&quot;groups&quot;</literal> property</title>
+<indexterm zone="WockyBareContact--groups"><primary sortas="WockyBareContact:groups">WockyBareContact:groups</primary></indexterm><programlisting>  &quot;groups&quot;                   <link linkend="GStrv">GStrv</link>*                : Read / Write / Construct</programlisting>
+<para>
+A list of the contact's groups, according to the roster.</para>
+<para>
+</para></refsect2>
+<refsect2 id="WockyBareContact--jid" role="property"><title>The <literal>&quot;jid&quot;</literal> property</title>
+<indexterm zone="WockyBareContact--jid"><primary sortas="WockyBareContact:jid">WockyBareContact:jid</primary></indexterm><programlisting>  &quot;jid&quot;                      <link linkend="gchar">gchar</link>*                : Read / Write / Construct Only</programlisting>
+<para>
+The contact's bare JID, according to the roster.</para>
+<para>
+</para><para>Default value: ""</para>
+</refsect2>
+<refsect2 id="WockyBareContact--name" role="property"><title>The <literal>&quot;name&quot;</literal> property</title>
+<indexterm zone="WockyBareContact--name"><primary sortas="WockyBareContact:name">WockyBareContact:name</primary></indexterm><programlisting>  &quot;name&quot;                     <link linkend="gchar">gchar</link>*                : Read / Write / Construct</programlisting>
+<para>
+The contact's name, according to the roster.</para>
+<para>
+</para><para>Default value: ""</para>
+</refsect2>
+<refsect2 id="WockyBareContact--subscription" role="property"><title>The <literal>&quot;subscription&quot;</literal> property</title>
+<indexterm zone="WockyBareContact--subscription"><primary sortas="WockyBareContact:subscription">WockyBareContact:subscription</primary></indexterm><programlisting>  &quot;subscription&quot;             <link linkend="guint">guint</link>                 : Read / Write / Construct</programlisting>
+<para>
+The subscription type of the contact, according to the roster.</para>
+<para>
+</para><para>Allowed values: &lt;= 3</para>
+<para>Default value: 0</para>
+</refsect2>
+</refsect1>
+
+
+
+
+</refentry>
