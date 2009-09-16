@@ -8,12 +8,13 @@ import os
 import hashlib
 import sys
 import random
+import traceback
 
 import ns
 import constants as cs
 import servicetest
 from servicetest import (
-    assertEquals, assertLength, assertContains, wrap_channel, EventPattern,
+    assertEquals, assertLength, assertContains, wrap_channel, EventPattern, call_async
     )
 import twisted
 from twisted.words.xish import domish, xpath
@@ -280,6 +281,12 @@ class BaseXmlStream(xmlstream.XmlStream):
             iq['from'] = iq['to']
             self.send(iq)
 
+    def onDocumentEnd(self):
+        self.event_func(servicetest.Event('stream-closed'))
+        # We don't chain up XmlStream.onDocumentEnd() because it will
+        # disconnect the TCP connection making tests as
+        # connect/disconnect-timeout.py not working
+
 class JabberXmlStream(BaseXmlStream):
     version = (0, 9)
 
@@ -335,47 +342,27 @@ def make_stream(event_func, authenticator=None, protocol=None, port=4242, resour
     port = reactor.listenTCP(port, factory)
     return (stream, port)
 
-def install_colourer():
-    def red(s):
-        return '\x1b[31m%s\x1b[0m' % s
-
-    def green(s):
-        return '\x1b[32m%s\x1b[0m' % s
-
-    patterns = {
-        'handled': green,
-        'not handled': red,
-        }
-
-    class Colourer:
-        def __init__(self, fh, patterns):
-            self.fh = fh
-            self.patterns = patterns
-
-        def write(self, s):
-            f = self.patterns.get(s, lambda x: x)
-            self.fh.write(f(s))
-
-    sys.stdout = Colourer(sys.stdout, patterns)
-    return sys.stdout
-
 def disconnect_conn(q, conn, stream, expected=[]):
-    conn.Disconnect()
+    call_async(q, conn, 'Disconnect')
 
-    tmp = expected + [EventPattern('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_DISCONNECTED, cs.CSR_REQUESTED])]
+    tmp = expected + [
+        EventPattern('dbus-signal', signal='StatusChanged', args=[cs.CONN_STATUS_DISCONNECTED, cs.CSR_REQUESTED]),
+        EventPattern('stream-closed')]
 
     events = q.expect_many(*tmp)
-    return events[:-1]
 
-def exec_test_deferred(funs, params, protocol=None, timeout=None,
+    stream.sendFooter()
+    q.expect('dbus-return', method='Disconnect')
+    return events[:-2]
+
+def exec_test_deferred(fun, params, protocol=None, timeout=None,
                         authenticator=None):
     # hack to ease debugging
     domish.Element.__repr__ = domish.Element.toXml
     colourer = None
 
     if sys.stdout.isatty():
-        colourer = install_colourer()
+        colourer = servicetest.install_colourer()
 
     queue = servicetest.IteratingEventQueue(timeout)
     queue.verbose = (
@@ -383,7 +370,7 @@ def exec_test_deferred(funs, params, protocol=None, timeout=None,
         or '-v' in sys.argv)
 
     bus = dbus.SessionBus()
-    # conn = make_connection(bus, queue.append, params)
+    conn = make_connection(bus, queue.append, params)
     resource = params.get('resource') if params is not None else None
     (stream, port) = make_stream(queue.append, protocol=protocol,
         authenticator=authenticator, resource=resource)
@@ -391,11 +378,8 @@ def exec_test_deferred(funs, params, protocol=None, timeout=None,
     error = None
 
     try:
-        for f in funs:
-            conn = make_connection(bus, queue.append, params)
-            f(queue, bus, conn, stream)
+        fun(queue, bus, conn, stream)
     except Exception, e:
-        import traceback
         traceback.print_exc()
         error = e
 
@@ -410,21 +394,26 @@ def exec_test_deferred(funs, params, protocol=None, timeout=None,
         # please ignore the POSIX behind the curtain
         d.addBoth((lambda *args: os._exit(1)))
 
-    try:
-        disconnect_conn(queue, conn, stream)
-    except dbus.DBusException, e:
-        # Connection has already been disconnected
-        pass
+    # Does the Connection object still exist?
+    if not bus.name_has_owner(conn.object.bus_name):
+        # Connection has already been disconnected and destroyed
+        return
 
-def exec_tests(funs, params=None, protocol=None, timeout=None,
-               authenticator=None):
-    reactor.callWhenRunning(
-        exec_test_deferred, funs, params, protocol, timeout, authenticator)
-    reactor.run()
+    try:
+        if conn.GetStatus() == cs.CONN_STATUS_CONNECTED:
+            # Connection is connected, properly disconnect it
+            disconnect_conn(queue, conn, stream)
+        else:
+            # Connection is not connected, call Disconnect() to destroy it
+            conn.Disconnect()
+    except dbus.DBusException, e:
+        pass
 
 def exec_test(fun, params=None, protocol=None, timeout=None,
               authenticator=None):
-  exec_tests([fun], params, protocol, timeout, authenticator)
+    reactor.callWhenRunning(
+        exec_test_deferred, fun, params, protocol, timeout, authenticator)
+    reactor.run()
 
 # Useful routines for server-side vCard handling
 current_vcard = domish.Element(('vcard-temp', 'vCard'))

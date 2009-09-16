@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <wocky/wocky-utils.h>
 #include <telepathy-glib/handle-repo-dynamic.h>
 
 #ifdef HAVE_UUID
@@ -127,20 +128,13 @@ void
 lm_message_node_unlink (LmMessageNode *orphan,
     LmMessageNode *parent)
 {
-  if (parent && orphan == parent->children)
-    parent->children = orphan->next;
-  if (orphan->prev)
-    orphan->prev->next = orphan->next;
-  if (orphan->next)
-    orphan->next->prev = orphan->prev;
+  parent->children = g_slist_remove (parent->children, orphan);
 }
 
 void
 lm_message_node_steal_children (LmMessageNode *snatcher,
                                 LmMessageNode *mum)
 {
-  NodeIter i;
-
   g_return_if_fail (snatcher->children == NULL);
 
   if (mum->children == NULL)
@@ -148,12 +142,6 @@ lm_message_node_steal_children (LmMessageNode *snatcher,
 
   snatcher->children = mum->children;
   mum->children = NULL;
-
-  for (i = node_iter (snatcher); i; i = node_iter_next (i))
-    {
-      LmMessageNode *baby = node_iter_data (i);
-      baby->parent = snatcher;
-    }
 }
 
 /* variant of lm_message_node_get_child() which ignores node namespace
@@ -174,53 +162,16 @@ lm_message_node_get_child_any_ns (LmMessageNode *node, const gchar *name)
   return NULL;
 }
 
-static const gchar *
-find_namespace_of_prefix (LmMessageNode *node,
-    const gchar *prefix)
-{
-  gchar *attr = g_strdup_printf ("xmlns:%s", prefix);
-  const gchar *node_ns = NULL;
-
-  /* find the namespace in this node or its parents */
-  for (; (node != NULL) && (node_ns == NULL); node = node->parent)
-    {
-      node_ns = lm_message_node_get_attribute (node, attr);
-    }
-
-  g_free (attr);
-  return node_ns;
-}
-
 const gchar *
 lm_message_node_get_namespace (LmMessageNode *node)
 {
-  const gchar *node_ns = NULL;
-  gchar *x = strchr (node->name, ':');
-
-  if (x != NULL)
-    {
-      gchar *prefix = g_strndup (node->name, (x - node->name));
-
-      node_ns = find_namespace_of_prefix (node, prefix);
-      g_free (prefix);
-    }
-  else
-    {
-      node_ns = lm_message_node_get_attribute (node, "xmlns");
-    }
-
-  return node_ns;
+  return wocky_xmpp_node_get_ns (node);
 }
 
 const gchar *
 lm_message_node_get_name (LmMessageNode *node)
 {
-  gchar *x = strchr (node->name, ':');
-
-  if (x != NULL)
-    return x + 1;
-  else
-    return node->name;
+  return node->name;
 }
 
 gboolean
@@ -236,37 +187,20 @@ lm_message_node_get_child_with_namespace (LmMessageNode *node,
                                           const gchar *name,
                                           const gchar *ns)
 {
+  LmMessageNode *found;
   NodeIter i;
+
+  found = wocky_xmpp_node_get_child_ns (node, name, ns);
+  if (found != NULL)
+    return found;
 
   for (i = node_iter (node); i; i = node_iter_next (i))
     {
-      LmMessageNode *tmp = node_iter_data (i);
-      gchar *tag = NULL;
-      gboolean found;
+      LmMessageNode *child = node_iter_data (i);
 
-      if (tp_strdiff (tmp->name, name))
-        {
-          const gchar *suffix;
-
-          suffix = strchr (tmp->name, ':');
-
-          if (suffix == NULL)
-            continue;
-          else
-            suffix++;
-
-          if (tp_strdiff (suffix, name))
-            continue;
-
-          tag = g_strndup (tmp->name, suffix - tmp->name - 1);
-        }
-
-      found = lm_message_node_has_namespace (tmp, ns, tag);
-
-      g_free (tag);
-
-      if (found)
-        return tmp;
+      found = lm_message_node_get_child_with_namespace (child, name, ns);
+      if (found != NULL)
+        return found;
     }
 
   return NULL;
@@ -305,7 +239,12 @@ lm_message_node_add_build_va (LmMessageNode *node, guint spec, va_list ap)
 
             g_return_if_fail (key != NULL);
             g_return_if_fail (value != NULL);
-            lm_message_node_set_attribute (stack->data, key, value);
+            if (!tp_strdiff (key, "xmlns"))
+              wocky_xmpp_node_set_ns (stack->data, value);
+            else if (!tp_strdiff (key, "xml:lang"))
+              wocky_xmpp_node_set_language (stack->data, value);
+            else
+              lm_message_node_set_attribute (stack->data, key, value);
           }
           break;
 
@@ -406,39 +345,6 @@ lm_message_build_with_sub_type (const gchar *to, LmMessageType type,
   return msg;
 }
 
-static gboolean
-validate_jid_node (const gchar *node)
-{
-  /* See RFC 3920 §3.3. */
-  const gchar *c;
-
-  for (c = node; *c; c++)
-    if (strchr ("\"&'/:<>@", *c))
-      /* RFC 3920 §A.5 */
-      return FALSE;
-
-  return TRUE;
-}
-
-static gboolean
-validate_jid_domain (const gchar *domain)
-{
-  /* XXX: This doesn't do proper validation, it just checks the character
-   * range. In theory, we check that the domain is a well-formed IDN or
-   * an IPv4/IPv6 address literal.
-   *
-   * See RFC 3920 §3.2.
-   */
-
-  const gchar *c;
-
-  for (c = domain; *c; c++)
-    if (!g_ascii_isalnum (*c) && !strchr (":-.", *c))
-      return FALSE;
-
-  return TRUE;
-}
-
 /**
  * gabble_decode_jid
  *
@@ -465,85 +371,7 @@ gabble_decode_jid (const gchar *jid,
                    gchar **domain,
                    gchar **resource)
 {
-  char *tmp_jid, *tmp_node, *tmp_domain, *tmp_resource;
-
-  g_assert (jid != NULL);
-
-  if (node != NULL)
-    *node = NULL;
-
-  if (domain != NULL)
-    *domain = NULL;
-
-  if (resource != NULL)
-    *resource = NULL;
-
-  /* Take a local copy so we don't modify the caller's string. */
-  tmp_jid = g_strdup (jid);
-
-  /* If there's a slash in tmp_jid, split it in two and take the second part as
-   * the resource.
-   */
-  tmp_resource = strchr (tmp_jid, '/');
-
-  if (tmp_resource)
-    {
-      *tmp_resource = '\0';
-      tmp_resource++;
-    }
-  else
-    {
-      tmp_resource = NULL;
-    }
-
-  /* If there's an at sign in tmp_jid, split it in two and set tmp_node and
-   * tmp_domain appropriately. Otherwise, tmp_node is NULL and the domain is
-   * the whole string.
-   */
-  tmp_domain = strchr (tmp_jid, '@');
-
-  if (tmp_domain)
-    {
-      *tmp_domain = '\0';
-      tmp_domain++;
-      tmp_node = tmp_jid;
-    }
-  else
-    {
-      tmp_domain = tmp_jid;
-      tmp_node = NULL;
-    }
-
-  /* Domain must be non-empty and not contain invalid characters. If the node
-   * or the resource exist, they must be non-empty and the node must not
-   * contain invalid characters.
-   */
-  if (*tmp_domain == '\0' ||
-      !validate_jid_domain (tmp_domain) ||
-      (tmp_node != NULL &&
-         (*tmp_node == '\0' || !validate_jid_node (tmp_node))) ||
-      (tmp_resource != NULL && *tmp_resource == '\0'))
-    {
-      g_free (tmp_jid);
-      return FALSE;
-    }
-
-  /* the server must be stored after we find the resource, in case we
-   * truncated a resource from it */
-  if (domain != NULL)
-    *domain = g_utf8_strdown (tmp_domain, -1);
-
-  /* store the username if the user provided a pointer */
-  if (tmp_node != NULL && node != NULL)
-    *node = g_utf8_strdown (tmp_node, -1);
-
-  /* store the resource if the user provided a pointer */
-  if (tmp_resource != NULL && resource != NULL)
-    *resource = g_strdup (tmp_resource);
-
-  /* free our working copy */
-  g_free (tmp_jid);
-  return TRUE;
+  return wocky_decode_jid (jid, node, domain, resource);
 }
 
 /**
@@ -1158,38 +986,7 @@ lm_message_node_get_attribute_with_namespace (LmMessageNode *node,
     const gchar *attribute,
     const gchar *ns)
 {
-  GSList *l;
-  const gchar *result = NULL;
-
-  g_return_val_if_fail (node != NULL, NULL);
-  g_return_val_if_fail (attribute != NULL, NULL);
-  g_return_val_if_fail (ns != NULL, NULL);
-
-  for (l = node->attributes; l != NULL && result == NULL; l = g_slist_next (l))
-    {
-      /* This is NOT part of loudmouth API; it depends LM internals */
-      Attribute *attr = (Attribute *) l->data;
-      gchar **pair;
-
-      pair = g_strsplit (attr->key, ":", 2);
-
-      if (tp_strdiff (pair[1], attribute))
-        /* no prefix (pair[1] == NULL) or the local-name is not the
-         * attribute we are looking for */
-        goto next_attribute;
-
-      if (tp_strdiff (find_namespace_of_prefix (node, pair[0]), ns))
-        /* wrong namespace */
-        goto next_attribute;
-
-      result = attr->value;
-
-next_attribute:
-      g_strfreev (pair);
-      continue;
-    }
-
-  return result;
+  return wocky_xmpp_node_get_attribute_ns (node, attribute, ns);
 }
 
 GPtrArray *

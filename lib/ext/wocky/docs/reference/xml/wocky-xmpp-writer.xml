@@ -1,0 +1,223 @@
+<refentry id="WockyXmppWriter">
+<refmeta>
+<refentrytitle role="top_of_page" id="WockyXmppWriter.top_of_page">WockyXmppWriter</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>WOCKY Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>WockyXmppWriter</refname>
+<refpurpose>Xmpp stanza to XML serializer</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="WockyXmppWriter.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+                    <link linkend="WockyXmppWriter-struct">WockyXmppWriter</link>;
+                    <link linkend="WockyXmppWriterClass">WockyXmppWriterClass</link>;
+<link linkend="WockyXmppWriter">WockyXmppWriter</link> *   <link linkend="wocky-xmpp-writer-new">wocky_xmpp_writer_new</link>               (void);
+<link linkend="WockyXmppWriter">WockyXmppWriter</link> *   <link linkend="wocky-xmpp-writer-new-no-stream">wocky_xmpp_writer_new_no_stream</link>     (void);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-writer-stream-open">wocky_xmpp_writer_stream_open</link>       (<link linkend="WockyXmppWriter">WockyXmppWriter</link> *writer,
+                                                         const <link linkend="gchar">gchar</link> *to,
+                                                         const <link linkend="gchar">gchar</link> *from,
+                                                         const <link linkend="gchar">gchar</link> *version,
+                                                         const <link linkend="gchar">gchar</link> *lang,
+                                                         const <link linkend="gchar">gchar</link> *id,
+                                                         const <link linkend="guint8">guint8</link> **data,
+                                                         <link linkend="gsize">gsize</link> *length);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-writer-stream-close">wocky_xmpp_writer_stream_close</link>      (<link linkend="WockyXmppWriter">WockyXmppWriter</link> *writer,
+                                                         const <link linkend="guint8">guint8</link> **data,
+                                                         <link linkend="gsize">gsize</link> *length);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-writer-write-stanza">wocky_xmpp_writer_write_stanza</link>      (<link linkend="WockyXmppWriter">WockyXmppWriter</link> *writer,
+                                                         <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
+                                                         const <link linkend="guint8">guint8</link> **data,
+                                                         <link linkend="gsize">gsize</link> *length);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-writer-flush">wocky_xmpp_writer_flush</link>             (<link linkend="WockyXmppWriter">WockyXmppWriter</link> *writer);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 id="WockyXmppWriter.object-hierarchy" role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+  <link linkend="GObject">GObject</link>
+   +----WockyXmppWriter
+</synopsis>
+</refsect1>
+
+
+
+
+
+<refsect1 id="WockyXmppWriter.properties" role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+  &quot;<link linkend="WockyXmppWriter--streaming-mode">streaming-mode</link>&quot;           <link linkend="gboolean">gboolean</link>              : Read / Write / Construct Only
+</synopsis>
+</refsect1>
+
+
+
+<refsect1 id="WockyXmppWriter.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+The <link linkend="WockyXmppWriter"><type>WockyXmppWriter</type></link> serializes <link linkend="WockyXmppStanzas"><type>WockyXmppStanzas</type></link> and xmpp stream opening
+and closing to raw XML. The various functions provide a pointer to an
+internal buffer, which remains valid until the next call to the writer.</para>
+<para>
+</para>
+</refsect1>
+
+<refsect1 id="WockyXmppWriter.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="WockyXmppWriter-struct" role="struct">
+<title>WockyXmppWriter</title>
+<indexterm zone="WockyXmppWriter-struct"><primary sortas="WockyXmppWriter">WockyXmppWriter</primary></indexterm><programlisting>typedef struct _WockyXmppWriter WockyXmppWriter;</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="WockyXmppWriterClass" role="struct">
+<title>WockyXmppWriterClass</title>
+<indexterm zone="WockyXmppWriterClass"><primary sortas="WockyXmppWriterClass">WockyXmppWriterClass</primary></indexterm><programlisting>typedef struct {
+    GObjectClass parent_class;
+} WockyXmppWriterClass;
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="wocky-xmpp-writer-new" role="function">
+<title>wocky_xmpp_writer_new ()</title>
+<indexterm zone="wocky-xmpp-writer-new"><primary sortas="wocky_xmpp_writer_new">wocky_xmpp_writer_new</primary></indexterm><programlisting><link linkend="WockyXmppWriter">WockyXmppWriter</link> *   wocky_xmpp_writer_new               (void);</programlisting>
+<para>
+Convenience function to create a new <link linkend="WockyXmppWriter"><type>WockyXmppWriter</type></link>.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a new <link linkend="WockyXmppWriter"><type>WockyXmppWriter</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-writer-new-no-stream" role="function">
+<title>wocky_xmpp_writer_new_no_stream ()</title>
+<indexterm zone="wocky-xmpp-writer-new-no-stream"><primary sortas="wocky_xmpp_writer_new_no_stream">wocky_xmpp_writer_new_no_stream</primary></indexterm><programlisting><link linkend="WockyXmppWriter">WockyXmppWriter</link> *   wocky_xmpp_writer_new_no_stream     (void);</programlisting>
+<para>
+Convenience function to create a new <link linkend="WockyXmppWriter"><type>WockyXmppWriter</type></link> that has streaming
+mode disabled.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a new <link linkend="WockyXmppWriter"><type>WockyXmppWriter</type></link> in non-streaming mode
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-writer-stream-open" role="function">
+<title>wocky_xmpp_writer_stream_open ()</title>
+<indexterm zone="wocky-xmpp-writer-stream-open"><primary sortas="wocky_xmpp_writer_stream_open">wocky_xmpp_writer_stream_open</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_writer_stream_open       (<link linkend="WockyXmppWriter">WockyXmppWriter</link> *writer,
+                                                         const <link linkend="gchar">gchar</link> *to,
+                                                         const <link linkend="gchar">gchar</link> *from,
+                                                         const <link linkend="gchar">gchar</link> *version,
+                                                         const <link linkend="gchar">gchar</link> *lang,
+                                                         const <link linkend="gchar">gchar</link> *id,
+                                                         const <link linkend="guint8">guint8</link> **data,
+                                                         <link linkend="gsize">gsize</link> *length);</programlisting>
+<para>
+Create the XML opening header of an XMPP stream. The result is available in
+the <parameter>data</parameter> buffer. The buffer is only valid until the next call to a function
+the writer.
+</para>
+<para>
+This function can only be called in streaming mode.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>writer</parameter>&#160;:</term>
+<listitem><simpara> a WockyXmppWriter
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>to</parameter>&#160;:</term>
+<listitem><simpara> the target of the stream opening (usually the xmpp server name)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>from</parameter>&#160;:</term>
+<listitem><simpara> the sender of the stream opening (usually the jid of the client)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>version</parameter>&#160;:</term>
+<listitem><simpara> XMPP version
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>lang</parameter>&#160;:</term>
+<listitem><simpara> default XMPP stream language
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&#160;:</term>
+<listitem><simpara> XMPP Stream ID, if any, or NULL
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&#160;:</term>
+<listitem><simpara> location to store a pointer to the data buffer
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>length</parameter>&#160;:</term>
+<listitem><simpara> length of the data buffer
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-writer-stream-close" role="function">
+<title>wocky_xmpp_writer_stream_close ()</title>
+<indexterm zone="wocky-xmpp-writer-stream-close"><primary sortas="wocky_xmpp_writer_stream_close">wocky_xmpp_writer_stream_close</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_writer_stream_close      (<link linkend="WockyXmppWriter">WockyXmppWriter</link> *writer,
+                                                         const <link linkend="guint8">guint8</link> **data,
+                                                         <link linkend="gsize">gsize</link> *length);</programlisting>
+<para>
+Create the XML closing footer of an XMPP stream . The result is available
+in the <parameter>data</parameter> buffer. The buffer is only valid until the next call to a
+function
+</para>
+<para>
+This function can only be called in streaming mode.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>writer</parameter>&#160;:</term>
+<listitem><simpara> a WockyXmppWriter
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&#160;:</term>
+<listitem><simpara> location to store a pointer to the data buffer
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>length</parameter>&#160;:</term>
+<listitem><simpara> length of the data buffer
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-writer-write-stanza" role="function">
+<title>wocky_xmpp_writer_write_stanza ()</title>
+<indexterm zone="wocky-xmpp-writer-write-stanza"><primary sortas="wocky_xmpp_writer_write_stanza">wocky_xmpp_writer_write_stanza</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_writer_write_stanza      (<link linkend="WockyXmppWriter">WockyXmppWriter</link> *writer,
+                                                         <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
+                                                         const <link linkend="guint8">guint8</link> **data,
+                                                         <link linkend="gsize">gsize</link> *length);</programlisting>
+<para>
+Serialize the <parameter>stanza</parameter> to XML. The result is available in the
+<parameter>data</parameter> buffer. The buffer is only valid until the next call to a function</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>writer</parameter>&#160;:</term>
+<listitem><simpara> a WockyXmppWriter
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>stanza</parameter>&#160;:</term>
+<listitem><simpara> the target of the stream opening (usually the xmpp server name)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&#160;:</term>
+<listitem><simpara> location to store a pointer to the data buffer
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>length</parameter>&#160;:</term>
+<listitem><simpara> length of the data buffer
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-writer-flush" role="function">
+<title>wocky_xmpp_writer_flush ()</title>
+<indexterm zone="wocky-xmpp-writer-flush"><primary sortas="wocky_xmpp_writer_flush">wocky_xmpp_writer_flush</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_writer_flush             (<link linkend="WockyXmppWriter">WockyXmppWriter</link> *writer);</programlisting>
+<para>
+Flushes and frees the internal data buffer</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>writer</parameter>&#160;:</term>
+<listitem><simpara> a WockyXmppWriter
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1 id="WockyXmppWriter.property-details" role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2 id="WockyXmppWriter--streaming-mode" role="property"><title>The <literal>&quot;streaming-mode&quot;</literal> property</title>
+<indexterm zone="WockyXmppWriter--streaming-mode"><primary sortas="WockyXmppWriter:streaming-mode">WockyXmppWriter:streaming-mode</primary></indexterm><programlisting>  &quot;streaming-mode&quot;           <link linkend="gboolean">gboolean</link>              : Read / Write / Construct Only</programlisting>
+<para>Whether the xml to be written is one big stream or seperate documents.</para><para>Default value: TRUE</para>
+</refsect2>
+</refsect1>
+
+
+
+
+</refentry>

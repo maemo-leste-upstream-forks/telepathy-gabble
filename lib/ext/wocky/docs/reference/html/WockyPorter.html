@@ -1,0 +1,937 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyPorter</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.1">
+<link rel="home" href="index.html" title="wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="wocky-wocky-contact-factory.html" title="wocky-contact-factory">
+<link rel="next" href="WockyConnector.html" title="WockyConnector">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="API Reference">
+<link rel="chapter" href="object-tree.html" title="Object Hierarchy">
+<link rel="index" href="api-index-full.html" title="API Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="wocky-wocky-contact-factory.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">wocky Reference Manual</th>
+<td><a accesskey="n" href="WockyConnector.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#WockyPorter.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#WockyPorter.description" class="shortcut">Description</a>
+                 | 
+                <a href="#WockyPorter.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#WockyPorter.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#WockyPorter.signals" class="shortcut">Signals</a>
+</td></tr>
+</table>
+<div class="refentry" title="WockyPorter">
+<a name="WockyPorter"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="WockyPorter.top_of_page"></a>WockyPorter</span></h2>
+<p>WockyPorter — Wrapper around a <span class="type">WockyXmppConnection</span> providing a
+higher level API.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="WockyPorter.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+enum                WockyPorterError;
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"
+>GQuark</a>              wocky_porter_error_quark            (void);
+#define             WOCKY_PORTER_HANDLER_PRIORITY_MIN
+#define             WOCKY_PORTER_HANDLER_PRIORITY_NORMAL
+#define             WOCKY_PORTER_HANDLER_PRIORITY_MAX
+#define             WOCKY_PORTER_ERROR
+                    WockyPorter;
+                    WockyPorterClass;
+WockyPorter *       wocky_porter_new                    (WockyXmppConnection *connection);
+void                wocky_porter_send_async             (WockyPorter *porter,
+                                                         WockyXmppStanza *stanza,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GCancellable.html"
+>GCancellable</a> *cancellable,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> callback,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            wocky_porter_send_finish            (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"
+>GAsyncResult</a> *result,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);
+void                wocky_porter_send                   (WockyPorter *porter,
+                                                         WockyXmppStanza *stanza);
+void                wocky_porter_start                  (WockyPorter *porter);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*WockyPorterHandlerFunc)           (WockyPorter *porter,
+                                                         WockyXmppStanza *stanza,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               wocky_porter_register_handler       (WockyPorter *porter,
+                                                         WockyStanzaType type,
+                                                         WockyStanzaSubType sub_type,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *from,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> priority,
+                                                         WockyPorterHandlerFunc callback,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data,
+                                                         WockyBuildTag spec,
+                                                         ...);
+void                wocky_porter_unregister_handler     (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> id);
+void                wocky_porter_close_async            (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GCancellable.html"
+>GCancellable</a> *cancellable,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> callback,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            wocky_porter_close_finish           (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"
+>GAsyncResult</a> *result,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);
+void                wocky_porter_send_iq_async          (WockyPorter *porter,
+                                                         WockyXmppStanza *stanza,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GCancellable.html"
+>GCancellable</a> *cancellable,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> callback,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+WockyXmppStanza *   wocky_porter_send_iq_finish         (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"
+>GAsyncResult</a> *result,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);
+void                wocky_porter_force_close_async      (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GCancellable.html"
+>GCancellable</a> *cancellable,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> callback,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            wocky_porter_force_close_finish     (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"
+>GAsyncResult</a> *result,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="WockyPorter.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----WockyPorter
+</pre>
+</div>
+<div class="refsect1" title="Properties">
+<a name="WockyPorter.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "connection"               WockyXmppConnection*  : Read / Write / Construct Only
+</pre>
+</div>
+<div class="refsect1" title="Signals">
+<a name="WockyPorter.signals"></a><h2>Signals</h2>
+<pre class="synopsis">
+  "closing"                                        : Run Last
+  "remote-closed"                                  : Run Last
+  "remote-error"                                   : Run Last
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="WockyPorter.description"></a><h2>Description</h2>
+<p>
+Sends and receives <span class="type">WockyXmppStanza</span> from an underlying
+<span class="type">WockyXmppConnection</span>.</p>
+<p>
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="WockyPorter.details"></a><h2>Details</h2>
+<div class="refsect2" title="enum WockyPorterError">
+<a name="WockyPorterError"></a><h3>enum WockyPorterError</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_PORTER_ERROR_NOT_STARTED,
+  WOCKY_PORTER_ERROR_CLOSING,
+  WOCKY_PORTER_ERROR_CLOSED,
+  WOCKY_PORTER_ERROR_NOT_IQ,
+  WOCKY_PORTER_ERROR_FORCE_CLOSING,
+} WockyPorterError;
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_error_quark ()">
+<a name="wocky-porter-error-quark"></a><h3>wocky_porter_error_quark ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"
+>GQuark</a>              wocky_porter_error_quark            (void);</pre>
+<p>
+Get the error quark used by the porter.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the quark for porter errors.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="WOCKY_PORTER_HANDLER_PRIORITY_MIN">
+<a name="WOCKY-PORTER-HANDLER-PRIORITY-MIN--CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_MIN</h3>
+<pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_MIN 0
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WOCKY_PORTER_HANDLER_PRIORITY_NORMAL">
+<a name="WOCKY-PORTER-HANDLER-PRIORITY-NORMAL--CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</h3>
+<pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_NORMAL (guint) (G_MAXUINT / 2)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WOCKY_PORTER_HANDLER_PRIORITY_MAX">
+<a name="WOCKY-PORTER-HANDLER-PRIORITY-MAX--CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_MAX</h3>
+<pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_MAX G_MAXUINT
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WOCKY_PORTER_ERROR">
+<a name="WOCKY-PORTER-ERROR--CAPS"></a><h3>WOCKY_PORTER_ERROR</h3>
+<pre class="programlisting">#define WOCKY_PORTER_ERROR (wocky_porter_error_quark ())
+</pre>
+<p>
+Get access to the error quark of the xmpp porter.</p>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WockyPorter">
+<a name="WockyPorter-struct"></a><h3>WockyPorter</h3>
+<pre class="programlisting">typedef struct _WockyPorter WockyPorter;</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WockyPorterClass">
+<a name="WockyPorterClass"></a><h3>WockyPorterClass</h3>
+<pre class="programlisting">typedef struct {
+    GObjectClass parent_class;
+} WockyPorterClass;
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_new ()">
+<a name="wocky-porter-new"></a><h3>wocky_porter_new ()</h3>
+<pre class="programlisting">WockyPorter *       wocky_porter_new                    (WockyXmppConnection *connection);</pre>
+<p>
+Convenience function to create a new <span class="type">WockyPorter</span>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
+<td> <span class="type">WockyXmppConnection</span> which will be used to receive and send
+<span class="type">WockyXmppStanza</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a new <span class="type">WockyPorter</span>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_send_async ()">
+<a name="wocky-porter-send-async"></a><h3>wocky_porter_send_async ()</h3>
+<pre class="programlisting">void                wocky_porter_send_async             (WockyPorter *porter,
+                                                         WockyXmppStanza *stanza,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GCancellable.html"
+>GCancellable</a> *cancellable,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> callback,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_send_finish ()">
+<a name="wocky-porter-send-finish"></a><h3>wocky_porter_send_finish ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            wocky_porter_send_finish            (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"
+>GAsyncResult</a> *result,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_send ()">
+<a name="wocky-porter-send"></a><h3>wocky_porter_send ()</h3>
+<pre class="programlisting">void                wocky_porter_send                   (WockyPorter *porter,
+                                                         WockyXmppStanza *stanza);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_start ()">
+<a name="wocky-porter-start"></a><h3>wocky_porter_start ()</h3>
+<pre class="programlisting">void                wocky_porter_start                  (WockyPorter *porter);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="WockyPorterHandlerFunc ()">
+<a name="WockyPorterHandlerFunc"></a><h3>WockyPorterHandlerFunc ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*WockyPorterHandlerFunc)           (WockyPorter *porter,
+                                                         WockyXmppStanza *stanza,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_register_handler ()">
+<a name="wocky-porter-register-handler"></a><h3>wocky_porter_register_handler ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               wocky_porter_register_handler       (WockyPorter *porter,
+                                                         WockyStanzaType type,
+                                                         WockyStanzaSubType sub_type,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *from,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> priority,
+                                                         WockyPorterHandlerFunc callback,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data,
+                                                         WockyBuildTag spec,
+                                                         ...);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sub_type</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>priority</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>spec</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_unregister_handler ()">
+<a name="wocky-porter-unregister-handler"></a><h3>wocky_porter_unregister_handler ()</h3>
+<pre class="programlisting">void                wocky_porter_unregister_handler     (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> id);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>id</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_close_async ()">
+<a name="wocky-porter-close-async"></a><h3>wocky_porter_close_async ()</h3>
+<pre class="programlisting">void                wocky_porter_close_async            (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GCancellable.html"
+>GCancellable</a> *cancellable,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> callback,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_close_finish ()">
+<a name="wocky-porter-close-finish"></a><h3>wocky_porter_close_finish ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            wocky_porter_close_finish           (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"
+>GAsyncResult</a> *result,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_send_iq_async ()">
+<a name="wocky-porter-send-iq-async"></a><h3>wocky_porter_send_iq_async ()</h3>
+<pre class="programlisting">void                wocky_porter_send_iq_async          (WockyPorter *porter,
+                                                         WockyXmppStanza *stanza,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GCancellable.html"
+>GCancellable</a> *cancellable,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> callback,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_send_iq_finish ()">
+<a name="wocky-porter-send-iq-finish"></a><h3>wocky_porter_send_iq_finish ()</h3>
+<pre class="programlisting">WockyXmppStanza *   wocky_porter_send_iq_finish         (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"
+>GAsyncResult</a> *result,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_force_close_async ()">
+<a name="wocky-porter-force-close-async"></a><h3>wocky_porter_force_close_async ()</h3>
+<pre class="programlisting">void                wocky_porter_force_close_async      (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GCancellable.html"
+>GCancellable</a> *cancellable,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> callback,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_force_close_finish ()">
+<a name="wocky-porter-force-close-finish"></a><h3>wocky_porter_force_close_finish ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            wocky_porter_force_close_finish     (WockyPorter *porter,
+                                                         <a
+href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"
+>GAsyncResult</a> *result,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="WockyPorter.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "connection" property'>
+<a name="WockyPorter--connection"></a><h3>The <code class="literal">"connection"</code> property</h3>
+<pre class="programlisting">  "connection"               WockyXmppConnection*  : Read / Write / Construct Only</pre>
+<p>the XMPP connection used by this porter.</p>
+</div>
+</div>
+<div class="refsect1" title="Signal Details">
+<a name="WockyPorter.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2" title='The "closing" signal'>
+<a name="WockyPorter-closing"></a><h3>The <code class="literal">"closing"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (WockyPorter *wockyporter,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)        : Run Last</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>wockyporter</code></em> :</span></p></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "remote-closed" signal'>
+<a name="WockyPorter-remote-closed"></a><h3>The <code class="literal">"remote-closed"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (WockyPorter *wockyporter,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)        : Run Last</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>wockyporter</code></em> :</span></p></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "remote-error" signal'>
+<a name="WockyPorter-remote-error"></a><h3>The <code class="literal">"remote-error"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (WockyPorter *wockyporter,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>        arg1,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>         arg2,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>       *arg3,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)        : Run Last</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>wockyporter</code></em> :</span></p></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg2</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg3</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

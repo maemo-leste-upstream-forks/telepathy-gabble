@@ -29,6 +29,9 @@
 #include <telepathy-glib/presence-mixin.h>
 #include <telepathy-glib/dbus-properties-mixin.h>
 
+#include <wocky/wocky-session.h>
+
+#include "capabilities.h"
 #include "error.h"
 #include "ft-manager.h"
 #include "jingle-factory.h"
@@ -138,6 +141,7 @@ struct _GabbleConnection {
 
     /* loudmouth connection */
     LmConnection *lmconn;
+    WockySession *session;
 
     /* channel factories borrowed from TpBaseConnection's list */
     GabbleRoster *roster;
@@ -186,12 +190,6 @@ struct _GabbleConnection {
 
     /* file transfer manager */
     GabbleFtManager *ft_manager;
-
-    /* temporary, for requestotron support */
-    GPtrArray *channel_factories;
-    GPtrArray *channel_managers;
-    GPtrArray *channel_requests;
-    gboolean has_tried_connection;
 
     GabbleConnectionPrivate *priv;
 };
@@ -242,8 +240,8 @@ const char *_gabble_connection_find_conference_server (GabbleConnection *);
 gboolean _gabble_connection_signal_own_presence (GabbleConnection *,
     GError **);
 
-void gabble_connection_ensure_capabilities (GabbleConnection *conn,
-    GabblePresenceCapabilities caps);
+void gabble_connection_ensure_capabilities (GabbleConnection *self,
+    const GabbleCapabilitySet *ensured);
 
 gboolean gabble_connection_send_presence (GabbleConnection *conn,
     LmMessageSubType sub_type, const gchar *contact, const gchar *status,

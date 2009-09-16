@@ -1159,8 +1159,11 @@ gabble_file_transfer_channel_offer_file (GabbleFileTransferChannel *self,
       /* Not a MUC jid, need to get a resource */
       const gchar *resource;
 
+      /* FIXME: should we check for SI, bytestreams and/or IBB too?
+       * http://bugs.freedesktop.org/show_bug.cgi?id=23777 */
       resource = gabble_presence_pick_resource_by_caps (presence,
-          PRESENCE_CAP_SI_FILE_TRANSFER);
+          gabble_capability_set_predicate_has, NS_FILE_TRANSFER);
+
       if (resource == NULL)
         {
           DEBUG ("contact doesn't have file transfer capabilities");
@@ -1408,7 +1411,16 @@ gabble_file_transfer_channel_accept_file (TpSvcChannelTypeFileTransfer *iface,
                                           DBusGMethodInvocation *context)
 {
   GabbleFileTransferChannel *self = GABBLE_FILE_TRANSFER_CHANNEL (iface);
+  TpBaseConnection *base_conn = (TpBaseConnection *) self->priv->connection;
   GError *error = NULL;
+
+  if (self->priv->initiator == base_conn->self_handle)
+    {
+      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+          "Channel is not an incoming transfer");
+      dbus_g_method_return_error (context, error);
+      return;
+    }
 
   if (self->priv->state != TP_FILE_TRANSFER_STATE_PENDING)
     {
@@ -1487,6 +1499,15 @@ gabble_file_transfer_channel_provide_file (
     {
       g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "Channel is not an outgoing transfer");
+      dbus_g_method_return_error (context, error);
+      return;
+    }
+
+  if (self->priv->state != TP_FILE_TRANSFER_STATE_PENDING &&
+      self->priv->state != TP_FILE_TRANSFER_STATE_ACCEPTED)
+    {
+      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+        "State is not pending or accepted; cannot provide file");
       dbus_g_method_return_error (context, error);
       return;
     }

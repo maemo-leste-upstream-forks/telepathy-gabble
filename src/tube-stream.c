@@ -512,7 +512,7 @@ start_stream_initiation (GabbleTubeStream *self,
         }
 
       resource = gabble_presence_pick_resource_by_caps (presence,
-          PRESENCE_CAP_SI_TUBES);
+          gabble_capability_set_predicate_has, NS_TUBES);
       if (resource == NULL)
         {
           DEBUG ("initiator doesn't have tubes capabilities");
@@ -2263,7 +2263,7 @@ send_tube_offer (GabbleTubeStream *self,
     }
 
   resource = gabble_presence_pick_resource_by_caps (presence,
-      PRESENCE_CAP_SI_TUBES);
+      gabble_capability_set_predicate_has, NS_TUBES);
   if (resource == NULL)
     {
       DEBUG ("tube recipient doesn't have tubes capabilities");
@@ -2368,8 +2368,15 @@ gabble_tube_stream_get_supported_socket_types (void)
       1);
   access_control = TP_SOCKET_ACCESS_CONTROL_LOCALHOST;
   g_array_append_val (unix_tab, access_control);
-  access_control = TP_SOCKET_ACCESS_CONTROL_CREDENTIALS;
-  g_array_append_val (unix_tab, access_control);
+
+  /* Credentials-passing is non-portable, so only advertise it on platforms
+   * where we have an implementation (like Linux) */
+  if (gibber_unix_transport_supports_credentials ())
+    {
+      access_control = TP_SOCKET_ACCESS_CONTROL_CREDENTIALS;
+      g_array_append_val (unix_tab, access_control);
+    }
+
   g_hash_table_insert (ret, GUINT_TO_POINTER (TP_SOCKET_ADDRESS_TYPE_UNIX),
       unix_tab);
 
