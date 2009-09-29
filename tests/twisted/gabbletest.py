@@ -342,18 +342,21 @@ def make_stream(event_func, authenticator=None, protocol=None, port=4242, resour
     port = reactor.listenTCP(port, factory)
     return (stream, port)
 
-def disconnect_conn(q, conn, stream, expected=[]):
+def disconnect_conn(q, conn, stream, expected_before=[], expected_after=[]):
     call_async(q, conn, 'Disconnect')
 
-    tmp = expected + [
+    tmp = expected_before + [
         EventPattern('dbus-signal', signal='StatusChanged', args=[cs.CONN_STATUS_DISCONNECTED, cs.CSR_REQUESTED]),
         EventPattern('stream-closed')]
 
-    events = q.expect_many(*tmp)
+    before_events = q.expect_many(*tmp)
 
     stream.sendFooter()
-    q.expect('dbus-return', method='Disconnect')
-    return events[:-2]
+
+    tmp = expected_after + [EventPattern('dbus-return', method='Disconnect')]
+    after_events = q.expect_many(*tmp)
+
+    return before_events[:-2], after_events[:-1]
 
 def exec_test_deferred(fun, params, protocol=None, timeout=None,
                         authenticator=None):
@@ -361,7 +364,7 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
     domish.Element.__repr__ = domish.Element.toXml
     colourer = None
 
-    if sys.stdout.isatty():
+    if sys.stdout.isatty() or 'CHECK_FORCE_COLOR' in os.environ:
         colourer = servicetest.install_colourer()
 
     queue = servicetest.IteratingEventQueue(timeout)
@@ -503,13 +506,17 @@ def elem_iq(server, type, **kw):
 
     return iq
 
-def make_presence(_from, to='test@localhost', type=None, status=None, caps=None):
+def make_presence(_from, to='test@localhost', type=None, show=None,
+        status=None, caps=None):
     presence = domish.Element((None, 'presence'))
     presence['from'] = _from
     presence['to'] = to
 
     if type is not None:
         presence['type'] = type
+
+    if show is not None:
+        presence.addElement('show', content=show)
 
     if status is not None:
         presence.addElement('status', content=status)

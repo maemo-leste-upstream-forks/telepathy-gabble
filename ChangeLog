@@ -1,3 +1,773 @@
+commit 2d98bd5cce7d9ff8e3a4f33719cce83fbbb74c32
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-29 16:58:36 +0100
+
+    version 0.9.1
+
+commit 870854fa65beb01faaaf8568fd0e5dd4d118a763
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-25 16:14:38 +0100
+
+    add httptest.py to EXTRA_DIST
+
+commit e0342aebe2cf355fe2a2514fe6fff9037ea5b25c
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-29 17:29:23 +0100
+
+    Update Wocky.
+    
+    This fixes distcheck.
+
+commit 803138857f38eae15dd99544778cd304b82d7445
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-29 16:57:11 +0100
+
+    update NEWS
+
+commit 17054cc65c9c73613dd37abba38c98b85e2b3027
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-29 12:12:00 +0100
+
+    Add the new jingle-caps test to the Makefile
+
+commit 1adcd646fdcfe067a5477d4aa159bf0ee3a6975a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-09-29 09:47:51 +0100
+
+    Sync glib-interfaces-gen.py with tp-glib HEAD to stop spurious lines on building.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 71faffcf175a1c7114ddafc78f76089facb92c11
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-09-29 09:46:33 +0100
+
+    Update wocky.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit a14e0e30fbd019d8acdaea3c618f7025a9daf6dc
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-09-29 09:45:46 +0100
+
+    Move from shave to automake 1.11's silent rules.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 67f4176af34388de675ab5e4fb4e3b67d0152c23
+Merge: f1fe9b6 e98ce12
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-29 00:17:53 +0100
+
+    Merge branch 'stun-fix'
+    
+    Reviewed-by: Dafydd Harries
+
+commit e98ce126c6c5eef66c616a5d614d8ac60555d86a
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2009-09-28 17:27:15 +0100
+
+    Use gethostbyname() rather than gethostbyaddr().
+    
+    Seems that gethostbyaddr() tries to do reverse lookup as well,
+    which fails now that stun.collabora.co.uk has moved to its own
+    host.
+
+commit f1fe9b6a0e93766b5bc2d8fa53b89eefd64faefe
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-28 21:20:09 +0100
+
+    Test various capabilitie sets that should give a media capable client
+
+commit eb4a9ae8f32514bd14d883ad40469cbd928b84b4
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-28 21:17:46 +0100
+
+    Factor a lot of useful code out of the caps-cache into the caps_helper
+
+commit a16a31af1f2d1eefce4eeeca2b042041490578f2
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-28 12:06:04 +0200
+
+    Recognize clients as media capable if they have any supported transport
+    
+    Before gabble would only regard a client as audio and/or video capable when it
+    support Google p2p as a transport. For jingle clients it's ofcouse entirely
+    valid to not support Google p2p.
+    
+    Allow clients to be marked as media capable if they support any of our
+    supported protocol (they still need to also advertise jingle/gtalk capabilities
+    seperatly. This is correct as we support all our transports as part of a normal
+    jingle session and for the google protocol it's not necessary to advertise a
+    transport.
+
+commit da77a925fb6522dccaeeddb6660b0e901d0c38ec
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 12:50:25 +0100
+
+    use wocky-pep-service from Wocky instead of our internal copy
+
+commit d92bf9fb7959942dd36141116e93ee0aa6edab86
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 12:40:30 +0100
+
+    Sync Wocky
+
+commit 271fd01cd52576d6ab868f468fb611f17c03cc42
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 11:43:36 +0100
+
+    remove NS_DATA as we already have NS_X_DATA for this namespace
+
+commit 790a441d21ef8e39c30825604e1ac7c568841135
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 10:25:43 +0100
+
+    test-wait-for-caps-incomplete.py: disconnect_conn now returns 2 lists of events
+
+commit eaff4f3092f6e2e18979eda93f56177facdaf661
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-24 17:22:30 +0100
+
+    use ensure_bare_contact_from_jid
+
+commit 9d931c4e6b3f84aa1dc6fdc22b18297b81906e0d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-24 17:22:09 +0100
+
+    util: add ensure_bare_contact_from_jid
+
+commit a3caf3538d22fdcff152460e996c49eec5e27abd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-24 17:21:51 +0100
+
+    conn-aliasing: rename location_nick_node_changed to pep_nick_node_changed
+
+commit eae070cadf57248372d7581cde9bf8f1a44472ba
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-24 16:14:25 +0100
+
+    olpc-buddy-search.py: test that BuddyInfo.GetProperties is completed when conn disconnects
+    
+    This is to test that D-Bus calls are completed if they are waiting for
+    a PEP IQ reply and the connection is disconnected before they receive
+    it.
+
+commit fb8823fc1e5b04a2567861c5e8ec32e81ea97ab8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-24 16:13:11 +0100
+
+    add an extra events list to disconnect_conn allowing to catch events after the closing of the stream
+
+commit a60dc41e1b7c1e07d4171a87498380d353e25b3d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-24 12:19:08 +0100
+
+    wocky_pep_service_get_async: raise an error if service has not been started
+
+commit be83b030b71a249758b39b7b082471e4ef52e1bb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-24 11:32:23 +0100
+
+    wocky_pep_service_dispose: if a porter has been defined, we registered the handler for sure
+
+commit 4c20da2f88b53a01f5611518a47d3b08bdc618f0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 15:40:48 +0100
+
+    remove wocky-pubsub
+
+commit 0c8133ae217793dfd68ba6c5ec277db5f99b1cd2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 15:38:27 +0100
+
+    don't instantiate WockyPubsub anymore
+
+commit 1794c481da9eea6596cdef01a197cc0707d1b5a9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 15:36:00 +0100
+
+    conn-olpc: use wocky_pep_service_make_publish_stanza
+
+commit 6fd11bd10be04eee0fd6d3d83f65bc7921f358fd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 15:24:26 +0100
+
+    conn-olpc: use wocky_pep_service_get_async
+
+commit fdbc24ec12b1db21baca7c0f44a8e07e5df3efb7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 15:07:07 +0100
+
+    conn-olpc: use WockyPepService to get events
+
+commit e449fcf7dcc9b147403187904b3a803746f7117b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 14:33:58 +0100
+
+    conn-aliasing: use WockyPepService API
+
+commit 867779ab371143fee533fce55ca88722bb833817
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 14:20:25 +0100
+
+    conn-location: use wocky_pep_service_make_publish_stanza instead of pubsub_make_publish_msg
+
+commit d7e83937d2301978439f3f33e3869dc90287f484
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 14:20:13 +0100
+
+    add wocky_pep_service_make_publish_stanza
+
+commit 2656ebcc21904c9bd713770de59ed30e1fa62457
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 14:07:40 +0100
+
+    conn-location: use wocky_pep_service_get_async instead of wocky_pubsub_send_query_async
+
+commit 083503ac58e62277716bca38b7eb3c9e5779d334
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 14:06:52 +0100
+
+    add wocky_pep_service_get_{async,finish}
+
+commit b5aa35efe935727d492d078a91d61954f290b642
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 13:27:48 +0100
+
+    add TODO about missing PEP subscription support
+
+commit 86abd45954b6cca227b0c1f2ca9d7c9173cda2b3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 13:26:21 +0100
+
+    Use WockyPepService to catch location changes events
+
+commit f6c1d90daafa02ad5968296b2a1c31a401173971
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 13:24:59 +0100
+
+    wocky-pep-service: fire 'changed' signal when an event is received
+
+commit e99bd59e536f6b5ce75cad84d143312014ed1af9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 12:02:20 +0100
+
+    add node and subscribe properties to WockyPepService
+
+commit ea119163d72065d8ea8f62c9db0939518390093c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 11:45:43 +0100
+
+    add stub wocky-pep-service.[ch]
+
+commit 8ff7a539b95ac7133609ce68e3253189a2c21ab0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-16 18:01:32 +0100
+
+    stop including util.h
+
+commit 98f91bfbe623059acedc9e1901434c2d8645f1ac
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-16 14:31:55 +0100
+
+    Dispatch pubsub events according to the 'node' attribute
+    
+    The right way to get the 'node' associated with an event is to look at
+    the 'node' attribute of the 'items' node.
+
+commit c62527a4ff2eaf6b14e0591f7bbad459161a96ae
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-16 14:22:30 +0100
+
+    rename 'ns' argument to 'node'
+    
+    In the pubsub world, the right terminology is 'node'. Nodes are
+    namespaces only in PEP.
+
+commit b196b98fa1a220cd7666f0a725c01a50be303b3c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-09 12:44:24 +0100
+
+    unregister pubsub event handlers when disposing
+
+commit 89ce0d908e2586690abbcb976ee0d6199e69fe37
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-09 12:33:12 +0100
+
+    add wocky_pubsub_unregister_event_handler
+
+commit d6b4dca4bada9875edb7fd5b44515f6cffb84d43
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-03 16:16:07 +0100
+
+    remove useless includes
+
+commit 49f1dde5b6bbd6cd7e069189ec31fededfc91a14
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-03 16:12:47 +0100
+
+    turn pubsub_query to a Wocky-style async function
+
+commit 06a37efd619a0f191ea6451bb0ef5d0ed5289858
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-03 14:06:02 +0100
+
+    use wocky namespaces
+
+commit e8b5e6eef35304f4673a51f2aa056f564cb44f82
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-03 13:36:31 +0100
+
+    use wocky_strdiff
+
+commit c93de1ef30e780b8d15e1af52629af69d775c16e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-03 13:33:38 +0100
+
+    use Wocky's stanza register
+
+commit d7887a74022433c6899f94bbb34bdaa11431c266
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-03 13:27:12 +0100
+
+    register pubsub event handlers in their component
+
+commit 505de2338ea276042e9ffcfe45e24479fc900b8a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-03 13:01:31 +0100
+
+    add a wocky_pubsub_start method passing the session instead of passing it to the constructor
+    
+    This allow us the instantiate the Pubsub object during the construction
+    of the connection and so other components can already register their
+    event handlers *before* the connection has been connected and so the
+    session created.
+
+commit b0cccb514179dcb1f78f35759e85e3c4b90f45c7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-03 12:15:03 +0100
+
+    add wocky_pubsub_register_event_handler and store handlers in the Pubsub object
+
+commit 775793d04aad7d5f1f29208a59164ce85e99bdf2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-03 11:43:39 +0100
+
+    rename GabblePubsubEventHandlerFunction and GabblePubsubEventHandler
+
+commit 0f93fff4d37cd2c1ed2c980db419c0397e0d418f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-02 18:03:58 +0100
+
+    connection: instantiate WockyPubsub
+
+commit 08cf3b51837aa4b2ab3d92c7584229c21ffa8f01
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-02 18:02:38 +0100
+
+    rename pubsub.[ch] to wocky-pubsub.[ch]
+
+commit 459cb708aaa149dc1963422deb33a83935ed544b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-02 17:59:01 +0100
+
+    create a WockyPubsub object
+
+commit e62c62d827d991982bf372710244102b1dce14e7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-02 17:27:06 +0100
+
+    pubsub_query: use wocky_xmpp_stanza_build
+
+commit da62f3202f190a5a9a03f2ddff353f97e25c462d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-02 17:22:07 +0100
+
+    pubsub_make_publish_msg: use wocky_xmpp_stanza_build
+
+commit c67b9867795365d9fb5a5d28e2c28fa0b2461066
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-02 17:13:22 +0100
+
+    use Wocky stanza/node API and pass the item node to gabble_pubsub_event_handler
+
+commit b4c49e0d9531162d5348ed0d3f6b8db892930541
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-02 16:52:09 +0100
+
+    pass a jid instead of a handle to pubsub handlers
+
+commit 038d7baf547fff624925ece3d93ee3227b13ea30
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-02 16:30:05 +0100
+
+    gabble_pubsub_event_handler: no need to be a public function
+
+commit 76f9f947fabf049b318576cb977260591fc7a4bd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-02 16:28:26 +0100
+
+    no need to define GabblePubsubEventHandler in pubsub.h
+
+commit e1508ddb3eaf235b2848fad22c57c70628bd3953
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-24 18:26:26 +0100
+
+    Sync Wocky
+    
+    WOCKY_PORTER_ERROR_FORCE_CLOSING has been renamed to WOCKY_PORTER_ERROR_FORCIBLY_CLOSED
+
+commit aeb1eef674df52a424b00d4337e00eefb5d1c3c0
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 22:34:05 +0100
+
+    update stream error test to match reason text handling change
+    
+    Reviewed-by: Will Thompson
+
+commit 4e3dc1c4e404e74b51a4eac13de47dd56e3e38e6
+Merge: 5acdcfa d7eec39
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 22:58:18 +0100
+
+    Merge branch 'pidgin-interop'
+    
+    This branch by David was already merged into 0.8.
+
+commit d7eec395cc5fcc9552754bf100a3a233121c7211
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2009-09-23 18:35:14 +0100
+
+    Test for bug 24043
+    
+    Added test for http://bugs.freedesktop.org/show_bug.cgi?id=24043
+    and also the / 65536 bug I found.
+
+commit 8913bb7fe20f80e8d05f2f2722ba2c5ca2f0dbb8
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2009-09-23 18:28:20 +0100
+
+    pref = priority / 65536 and debugging info
+    
+    Fixed parse_candidates in jingle-transport-iceudp.c
+    to divide by 65536 (as inject_candidates multiplies by 65536).
+    Also added some more debugging info when candidates are missing
+    required attributes.
+
+commit 406e8d3f33b54637894fabcf14bef083f462004c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-20 14:45:02 +0100
+
+    Parse transport node on accept to get candidates
+
+commit 5acdcfa0e678dc1544ba2a1ee87b5bca3e565df4
+Merge: c4c6f42 e4df02d
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 21:37:50 +0100
+
+    Merge branch 'tests-failure-helper'
+    
+    Reviewed-by: Will Thompson
+
+commit e4df02df6c90c7efcc86d0f39fd813e7efc6543c
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 20:40:41 +0100
+
+    add test failure debugging helper script
+
+commit 80aac7042ee727c39621206904e254aa5e13ce06
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 20:39:18 +0100
+
+    servicetest.py: better Event.__repr__()
+
+commit 763b5fcf493b83c4df8d3793790d1f5e34518865
+Merge: 1688de3 e843fe8
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 16:50:48 +0100
+
+    Merge branch 'tests-fix-presence'
+
+commit e843fe8d3068ad5fcb35e169d25e59eee185eb22
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 16:29:13 +0100
+
+    presence.py: use presence type constants
+
+commit 71714a372cf4e59e219f02d96453944ade6994e5
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 16:27:22 +0100
+
+    presence.py: use make_presence()
+
+commit abbc555fd2959e0bad38c37ee4b5cf2e88720002
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 16:16:41 +0100
+
+    make_presence(): take an optional show parameter
+
+commit 10d98494acd6169f75deeff64befe453ede4b674
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 16:10:22 +0100
+
+    make expects for presence events more specific
+    
+    This fixes a regression introduced by my initial-contacts-presence branch.
+
+commit c4c6f42f035b62a58cea6dc3a3053f437317d96a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-23 15:20:00 +0100
+
+    Update Wocky
+
+commit 1688de3c706a8d90654089dc9718167082a88ecf
+Merge: 9c938a8 6e0f7cd
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 14:31:48 +0100
+
+    Merge branch 'initial-streams-delay'
+    
+    Reviewed-by: Sjoerd Simons
+
+commit 9c938a82b181b702362a49325a9b0b029dfa3b31
+Merge: 0a5557e fabd80f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 14:31:40 +0100
+
+    Merge branch 'initial-contact-presence'
+    
+    Reviewed-by: Sjoerd Simons
+
+commit 0a5557e031a8a1383731d07ee60e55759a08a0c3
+Merge: fd0686b e4fe85f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 14:31:27 +0100
+
+    Merge branch 'call-error-reason'
+    
+    Reviewed-by: Sjoerd Simons
+
+commit fd0686be0a1f666459a6c1776009a9f1378b1ee4
+Merge: 74946dc a64cfac
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 14:31:11 +0100
+
+    Merge branch 'location-language'
+    
+    Reviewed-by: Sjoerd Simons
+
+commit 6e0f7cdaabb9fe744eb6aea99d4430902ed31743
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 15:41:14 +0100
+
+    google-relay.py: test for a regression of #24023
+    
+    We do this by accepting the call if it's incoming, then making sure that a
+    stream appears when the relay info has been sent.
+
+commit 01f07f21192b72423b7690796abded447d65ec10
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 15:12:26 +0100
+
+    with-tmp-session-bus.sh: add commented out call to dbus-monitor
+
+commit fd86ada7fe6f4f22b91bb294be852452912f4d2e
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 15:11:22 +0100
+
+    unwrap(): handle dbus.Boolean correctly
+
+commit 7a650c3f0e1b06bcb6f72d8b1f7a46ace0852d7f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 13:49:01 +0100
+
+    don't strip common prefix from object paths
+    
+    It was supposed to make test logs easier to read but ends up making test code
+    more complicated.
+
+commit d3457dbc14961a8d241ba11d309943a48b22ce22
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 17:06:59 +0100
+
+    accept-muc-dbus-type.py: make compatible with expect_many() fix
+
+commit 7960f0f5fd9b21ea85af71a0045b51ff7f7ff671
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 17:01:13 +0100
+
+    accept-muc-dbus-tube.py: use assert* functions
+
+commit fa901415af973e46a7507b65a917f98a91b76d65
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 15:22:00 +0100
+
+    google-relay.py: factor out repeated code
+
+commit 1a48b6badeab6131d8425d899d633d1c322385da
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 14:57:20 +0100
+
+    allow forcing test output colouring
+
+commit d5498512d6ffe3bbafcc10dd765a6acf8dc89b68
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 14:55:02 +0100
+
+    port Google relay test from BaseHTTPServer to twisted.web
+    
+    I think this makes the test more explicit, and also means that it doesn't
+    print HTTP log messages to stdout.
+
+commit d02dc81d607fe8c28b581330b727aa7d85d529f5
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 14:53:13 +0100
+
+    expect_many(): log which events are still pending when a timeout occurs
+
+commit 6a3117b1da18cd5ba5f5c587d573d80cff254653
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 14:47:34 +0100
+
+    expect_many(): ignore patterns that have already matched
+
+commit 476bca2c75b6dc08895630e8081f8a5a2c91399b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-16 18:22:32 +0100
+
+    Automatically accept Initial streams when the call is accepted
+
+commit fabd80fb606a9a51f9e8766fd0bcb76b5c4746a8
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 16:28:00 +0100
+
+    got_roster_iq(): add comment clarifying that _SUB_TYPE_RESULT means initial roster
+
+commit f637e11a412659ffed904a95ac0d5403320d7ea4
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-17 20:30:17 +0100
+
+    emit a presence update for subscribed contacts when we get the roster
+    
+    A GetPresence call for a contact we're subscribed to before we get the roster
+    will return unknown; a call after we get the roster will return offline. This
+    commit advertises that change to clients.
+
+commit 9b5bdee9c9fc892e3d0476eef4b0ded42876296e
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-17 20:25:22 +0100
+
+    add presence types to constants.py
+
+commit 117113e9993ee62d6eacea47390c0a3872d968bb
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-17 20:24:46 +0100
+
+    export emit_presence_update
+
+commit e4fe85f6c913eb4c7fe2c0106836294c8ad6e697
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-14 21:41:07 +0100
+
+    make MembersChanged have the correct reason when Error is called on a stream
+    
+    If we had an incoming call with a single mutable stream, the fact that an
+    error ocurred would get lost.
+
+commit a64cfac6e7ba653920f2b5803ae1aafc7d8d7002
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 16:25:37 +0100
+
+    call DEBUG() in location_set_location() to avoid #define/#undef pairs
+
+commit 0886d40d317e1b2816a3ed61a39e5c774cec71c3
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 16:23:52 +0100
+
+    remove reduntant check
+
+commit b096df42a00ebcd24966ccc55305489a6d759d69
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-16 18:41:17 +0100
+
+    fix corner cases in handling of language key for location data
+    
+    This fixes several problems in add_to_geoloc_node():
+    
+     - A NULL pointer would be dereferenced if the language value was one of the
+       types checked for, but not a string.
+     - An assertion would fail if the language value wasn't a string or one of the
+       other types checked for.
+     - Coverity flagged a possible dereference of the mapping pointer when it was
+       NULL, but in practice we'd already returned in that case. Hopefully the
+       code should be less confusing for both Coverity and humans now.
+
+commit 74946dc149336fe871c5fad52635c05889069656
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 21:26:00 +0100
+
+    fix typo in a debug msg
+
+commit 66784a2205e2e05fa0c2f7b62cb3b91469185505
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 21:14:15 +0100
+
+    remove some debug messages flooding output when using a stream tube
+
+commit 92839b2d78e4ba1b3f73c4754a5111149a6f73bc
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-09-21 17:45:58 +0100
+
+    Update wocky.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit e501e9f13f58c975bd9daa8ee3b7f2d122dac1e7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 15:46:33 +0100
+
+    Upgrade Wocky
+
+commit e9c2b0f19a620bf8da089d1254a2d6035e03996d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-20 13:08:09 +0100
+
+    Redirect wocky debug to the debug interface
+
+commit 032991ecfa9069857ea98aa51f69d3cb6fc3586c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-20 13:03:03 +0100
+
+    Sync with wocky master
+
+commit 9a9bc59a68820bade997a8bd7735db1ab273f9a8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-17 11:38:22 +0100
+
+    document FT fix in NEWS
+
+commit 8d843655cd6e874328fd5cd52a5960c61c19d20e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-17 11:32:10 +0100
+
+    file_transfer_helper.py: read on the local socket until it's disconnected
+
+commit 000f05541c9115e0c0de374598aa46ced8c7954e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-17 00:08:07 +0100
+
+    Disconnect the socket when the file-transfer is done
+    
+    When a file-tranfer has completed we need to close the socket as an
+    indicate to the FT handler.
+
+commit a96313ccaf1df0083a91cc3ec221f471bef37209
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-16 12:24:11 +0100
+
+    start dev of 0.9.1
+
 commit 39bb61486f9f948e69deca1d24e1ba49f6c8d65d
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   2009-09-16 11:51:54 +0100

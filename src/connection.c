@@ -68,7 +68,6 @@
 #include "olpc-gadget-manager.h"
 #include "presence-cache.h"
 #include "presence.h"
-#include "pubsub.h"
 #include "request-pipeline.h"
 #include "roomlist-manager.h"
 #include "roster.h"
@@ -161,7 +160,6 @@ struct _GabbleConnectionPrivate
 
   LmMessageHandler *iq_disco_cb;
   LmMessageHandler *iq_unknown_cb;
-  LmMessageHandler *pubsub_msg_cb;
   LmMessageHandler *olpc_msg_cb;
   LmMessageHandler *olpc_presence_cb;
 
@@ -406,9 +404,6 @@ gabble_connection_init (GabbleConnection *self)
 
   self->priv = priv;
   self->lmconn = lm_connection_new ();
-
-  /* Override LM domain log handler. */
-  gabble_lm_debug ();
 
   priv->caps_serial = 1;
   priv->port = 5222;
@@ -959,7 +954,6 @@ gabble_connection_dispose (GObject *object)
 
   g_assert (priv->iq_disco_cb == NULL);
   g_assert (priv->iq_unknown_cb == NULL);
-  g_assert (priv->pubsub_msg_cb == NULL);
   g_assert (priv->olpc_msg_cb == NULL);
   g_assert (priv->olpc_presence_cb == NULL);
 
@@ -991,6 +985,42 @@ gabble_connection_dispose (GObject *object)
     {
       g_source_remove (priv->disconnect_timer);
       priv->disconnect_timer = 0;
+    }
+
+  if (self->pep_location != NULL)
+    {
+      g_object_unref (self->pep_location);
+      self->pep_location = NULL;
+    }
+
+  if (self->pep_nick != NULL)
+    {
+      g_object_unref (self->pep_nick);
+      self->pep_nick = NULL;
+    }
+
+  if (self->pep_olpc_buddy_props != NULL)
+    {
+      g_object_unref (self->pep_olpc_buddy_props);
+      self->pep_olpc_buddy_props = NULL;
+    }
+
+  if (self->pep_olpc_activities != NULL)
+    {
+      g_object_unref (self->pep_olpc_activities);
+      self->pep_olpc_activities = NULL;
+    }
+
+  if (self->pep_olpc_current_act != NULL)
+    {
+      g_object_unref (self->pep_olpc_current_act);
+      self->pep_olpc_current_act = NULL;
+    }
+
+  if (self->pep_olpc_act_props != NULL)
+    {
+      g_object_unref (self->pep_olpc_act_props);
+      self->pep_olpc_act_props = NULL;
     }
 
   if (G_OBJECT_CLASS (gabble_connection_parent_class)->dispose)
@@ -1523,6 +1553,13 @@ connector_connected (GabbleConnection *self,
 
   lm_connection_set_porter (self->lmconn, priv->porter);
 
+  wocky_pep_service_start (self->pep_location, self->session);
+  wocky_pep_service_start (self->pep_nick, self->session);
+  wocky_pep_service_start (self->pep_olpc_buddy_props, self->session);
+  wocky_pep_service_start (self->pep_olpc_activities, self->session);
+  wocky_pep_service_start (self->pep_olpc_current_act, self->session);
+  wocky_pep_service_start (self->pep_olpc_act_props, self->session);
+
   /* Don't use wocky_session_start as we don't want to start all the
    * components (Roster, presence-manager, etc) for now */
   wocky_porter_start (priv->porter);
@@ -1622,7 +1659,6 @@ connect_callbacks (TpBaseConnection *base)
 
   g_assert (priv->iq_disco_cb == NULL);
   g_assert (priv->iq_unknown_cb == NULL);
-  g_assert (priv->pubsub_msg_cb == NULL);
   g_assert (priv->olpc_msg_cb == NULL);
   g_assert (priv->olpc_presence_cb == NULL);
 
@@ -1637,12 +1673,6 @@ connect_callbacks (TpBaseConnection *base)
   lm_connection_register_message_handler (conn->lmconn, priv->iq_unknown_cb,
                                           LM_MESSAGE_TYPE_IQ,
                                           LM_HANDLER_PRIORITY_LAST);
-
-  priv->pubsub_msg_cb = lm_message_handler_new (pubsub_msg_event_cb,
-                                            conn, NULL);
-  lm_connection_register_message_handler (conn->lmconn, priv->pubsub_msg_cb,
-                                          LM_MESSAGE_TYPE_MESSAGE,
-                                          LM_HANDLER_PRIORITY_FIRST);
 
   priv->olpc_msg_cb = lm_message_handler_new (conn_olpc_msg_cb,
                                             conn, NULL);
@@ -1665,7 +1695,6 @@ disconnect_callbacks (TpBaseConnection *base)
 
   g_assert (priv->iq_disco_cb != NULL);
   g_assert (priv->iq_unknown_cb != NULL);
-  g_assert (priv->pubsub_msg_cb != NULL);
   g_assert (priv->olpc_msg_cb != NULL);
   g_assert (priv->olpc_presence_cb != NULL);
 
@@ -1678,11 +1707,6 @@ disconnect_callbacks (TpBaseConnection *base)
                                             LM_MESSAGE_TYPE_IQ);
   lm_message_handler_unref (priv->iq_unknown_cb);
   priv->iq_unknown_cb = NULL;
-
-  lm_connection_unregister_message_handler (conn->lmconn, priv->pubsub_msg_cb,
-                                            LM_MESSAGE_TYPE_MESSAGE);
-  lm_message_handler_unref (priv->pubsub_msg_cb);
-  priv->pubsub_msg_cb = NULL;
 
   lm_connection_unregister_message_handler (conn->lmconn, priv->olpc_msg_cb,
                                             LM_MESSAGE_TYPE_MESSAGE);
@@ -1832,7 +1856,7 @@ closed_cb (GObject *source,
       DEBUG ("close failed: %s", error->message);
 
       if (g_error_matches (error, WOCKY_PORTER_ERROR,
-            WOCKY_PORTER_ERROR_FORCE_CLOSING))
+            WOCKY_PORTER_ERROR_FORCIBLY_CLOSED))
         {
           /* Close operation has been aborted because a force_close operation
            * has been started. tp_base_connection_finish_shutdown will be

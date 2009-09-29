@@ -37,15 +37,14 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(top_srcdir)/tools/check-coding-style.mk \
-	$(top_srcdir)/tools/shave.mk
+	$(top_srcdir)/tools/check-coding-style.mk
 subdir = lib/gibber
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/m4/compiler.m4 $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/shave.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -83,7 +82,6 @@ ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
-AM_MAKEFLAGS = @AM_MAKEFLAGS@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -94,7 +92,6 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CXX = @CXX@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
@@ -109,8 +106,6 @@ EGREP = @EGREP@
 ENABLE_CODING_STYLE_CHECKS = @ENABLE_CODING_STYLE_CHECKS@
 ERROR_CFLAGS = @ERROR_CFLAGS@
 EXEEXT = @EXEEXT@
-F77 = @F77@
-FC = @FC@
 FGREP = @FGREP@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
@@ -129,11 +124,9 @@ LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
-MAKEFLAGS = @MAKEFLAGS@
 MAKEINFO = @MAKEINFO@
 NM = @NM@
 NMEDIT = @NMEDIT@
-OBJC = @OBJC@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OTOOL = @OTOOL@
@@ -152,7 +145,6 @@ PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
 PYTHON_VERSION = @PYTHON_VERSION@
-Q = @Q@
 RANLIB = @RANLIB@
 RESOLV_LIBS = @RESOLV_LIBS@
 SED = @SED@
@@ -166,7 +158,6 @@ TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
 TP_GLIB_LIBS = @TP_GLIB_LIBS@
 UUID_CFLAGS = @UUID_CFLAGS@
 UUID_LIBS = @UUID_LIBS@
-V = @V@
 VERSION = @VERSION@
 WANT_TWISTED_TESTS_FALSE = @WANT_TWISTED_TESTS_FALSE@
 WANT_TWISTED_TESTS_TRUE = @WANT_TWISTED_TESTS_TRUE@
@@ -220,10 +211,8 @@ pyexecdir = @pyexecdir@
 pythondir = @pythondir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
-shavedir = @shavedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-QUIET_GEN = $(Q:@=@echo '  GEN   '$@;)
 noinst_LTLIBRARIES = libgibber.la
 BUILT_SOURCES = \
   gibber-signals-marshal.list \
@@ -270,7 +259,7 @@ all: $(BUILT_SOURCES)
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(top_srcdir)/tools/shave.mk $(top_srcdir)/tools/check-coding-style.mk $(am__configure_deps)
+$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(top_srcdir)/tools/check-coding-style.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -570,16 +559,16 @@ gibber-signals-marshal.list: $(OUR_SOURCES) Makefile.am
 	fi
 
 %-signals-marshal.h: %-signals-marshal.list Makefile.am
-	$(QUIET_GEN)glib-genmarshal --header --prefix=_$(subst -,_,$*)_signals_marshal $< > $@
+	$(AM_V_GEN)glib-genmarshal --header --prefix=_$(subst -,_,$*)_signals_marshal $< > $@
 
 %-signals-marshal.c: %-signals-marshal.list Makefile.am
-	$(QUIET_GEN){ echo '#include "$*-signals-marshal.h"' && \
+	$(AM_V_GEN){ echo '#include "$*-signals-marshal.h"' && \
 	glib-genmarshal --body --prefix=_$(subst -,_,$*)_signals_marshal $< ; \
 	} > $@
 
 # rules for making the glib enum objects
 %-enumtypes.h: %.h Makefile.in
-	$(QUIET_GEN)glib-mkenums \
+	$(AM_V_GEN)glib-mkenums \
 	--fhead "#ifndef __$(shell echo $* | tr [:lower:]- [:upper:]_)_ENUM_TYPES_H__\n#define __$(shell echo $* | tr [:lower:]- [:upper:]_)_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
 	--fprod "/* enumerations from \"@filename@\" */\n" \
 	--vhead "GType @enum_name@_get_type (void);\n#define $(shell echo $* | tr [:lower:]- [:upper:]_ | sed 's/_.*//')_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
@@ -587,7 +576,7 @@ gibber-signals-marshal.list: $(OUR_SOURCES) Makefile.am
 	$< > $@
 
 %-enumtypes.c: %.h Makefile.in
-	$(QUIET_GEN)glib-mkenums \
+	$(AM_V_GEN)glib-mkenums \
 	--fhead "#include <$*.h>\n#include <$*-enumtypes.h>" \
 	--fprod "\n/* enumerations from \"@filename@\" */" \
 	--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {"     \

@@ -857,7 +857,7 @@ tcp_srv_connected (GObject *source,
               DEBUG ("SRV error is: %s:%d", domain, error->code);
             }
         }
-      DEBUG ("Falling back to HOST connection\n");
+      DEBUG ("Falling back to HOST connection");
 
       g_error_free (error);
       priv->state = WCON_TCP_CONNECTING;
@@ -900,7 +900,7 @@ tcp_host_connected (GObject *source,
 
   if (priv->sock == NULL)
     {
-      DEBUG ("HOST connect failed: %s\n", error->message);
+      DEBUG ("HOST connect failed: %s", error->message);
       abort_connect_error (connector, &error, "connection failed");
       g_error_free (error);
     }
@@ -928,6 +928,9 @@ jabber_auth_init (WockyConnector *connector)
       NULL, priv->domain,
       WOCKY_NODE_ATTRIBUTE, "id", id,
       WOCKY_NODE, "query", WOCKY_NODE_XMLNS, WOCKY_JABBER_NS_AUTH,
+      WOCKY_NODE, "username",
+      WOCKY_NODE_TEXT, priv->user,
+      WOCKY_NODE_END,
       WOCKY_NODE_END,
       WOCKY_STANZA_END);
 
@@ -2691,7 +2694,7 @@ wocky_connector_connect_async (WockyConnector *self,
       guint port = (priv->xmpp_port == 0) ? 5222 : priv->xmpp_port;
       const gchar *srv = (priv->xmpp_host == NULL) ? host : priv->xmpp_host;
 
-      DEBUG ("host: %s; port: %d\n", priv->xmpp_host, priv->xmpp_port);
+      DEBUG ("host: %s; port: %d", priv->xmpp_host, priv->xmpp_port);
       g_socket_client_connect_to_host_async (priv->client, srv, port, NULL,
           tcp_host_connected, self);
     }

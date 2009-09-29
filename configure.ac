@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [9])
-m4_define([gabble_micro_version], [0])
+m4_define([gabble_micro_version], [1])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -28,6 +28,8 @@ AM_INIT_AUTOMAKE([1.9 -Wno-portability tar-ustar])
 AM_CONFIG_HEADER(config.h)
 
 AC_USE_SYSTEM_EXTENSIONS
+
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 
 dnl check for tools
 AC_PROG_CC
@@ -188,6 +190,9 @@ confcmd="$origdir"/"$srcdir"/lib/ext/wocky/configure
 if test x$enable_wocky_gtk_doc != xno; then
   confcmd="$confcmd --enable-gtk-doc"
 fi
+if test x$enable_silent_rules != xno; then
+  confcmd="$confcmd --enable-silent-rules"
+fi
 cd "$ac_top_build_prefix"lib/ext/wocky && echo "running $confcmd" &&
   $confcmd ||
   AC_MSG_ERROR([Failed to configure embedded Wocky tree])
@@ -216,8 +221,6 @@ fi
 
 AC_CHECK_FUNCS(getifaddrs memset select strndup setresuid setreuid strerror)
 
-SHAVE_INIT(.)
-
 AC_OUTPUT( Makefile \
            docs/Makefile \
            extensions/Makefile \
@@ -231,7 +234,5 @@ AC_OUTPUT( Makefile \
            lib/Makefile \
            lib/ext/Makefile \
            lib/gibber/Makefile \
-           lib/loudmouth/Makefile \
-           shave \
-           shave-libtool
+           lib/loudmouth/Makefile
 )

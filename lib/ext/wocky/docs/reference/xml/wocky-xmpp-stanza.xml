@@ -8,6 +8,7 @@
 <refnamediv>
 <refname>WockyXmppStanza</refname>
 <refpurpose></refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
 <refsynopsisdiv id="WockyXmppStanza.synopsis" role="synopsis">
@@ -19,8 +20,8 @@
 enum                <link linkend="WockyStanzaType">WockyStanzaType</link>;
 enum                <link linkend="WockyStanzaSubType">WockyStanzaSubType</link>;
 enum                <link linkend="WockyBuildTag">WockyBuildTag</link>;
-<link linkend="WockyXmppStanza">WockyXmppStanza</link> *   <link linkend="wocky-xmpp-stanza-new">wocky_xmpp_stanza_new</link>               (const <link linkend="gchar">gchar</link> *name);
-<link linkend="WockyXmppStanza">WockyXmppStanza</link> *   <link linkend="wocky-xmpp-stanza-build">wocky_xmpp_stanza_build</link>             (<link linkend="WockyStanzaType">WockyStanzaType</link> type,
+<link linkend="WockyXmppStanza">WockyXmppStanza</link>*    <link linkend="wocky-xmpp-stanza-new">wocky_xmpp_stanza_new</link>               (const <link linkend="gchar">gchar</link> *name);
+<link linkend="WockyXmppStanza">WockyXmppStanza</link>*    <link linkend="wocky-xmpp-stanza-build">wocky_xmpp_stanza_build</link>             (<link linkend="WockyStanzaType">WockyStanzaType</link> type,
                                                          <link linkend="WockyStanzaSubType">WockyStanzaSubType</link> sub_type,
                                                          const <link linkend="gchar">gchar</link> *from,
                                                          const <link linkend="gchar">gchar</link> *to,
@@ -29,19 +30,19 @@ enum                <link linkend="WockyBuildTag">WockyBuildTag</link>;
 <link linkend="void">void</link>                <link linkend="wocky-xmpp-stanza-get-type-info">wocky_xmpp_stanza_get_type_info</link>     (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
                                                          <link linkend="WockyStanzaType">WockyStanzaType</link> *type,
                                                          <link linkend="WockyStanzaSubType">WockyStanzaSubType</link> *sub_type);
-<link linkend="WockyXmppStanza">WockyXmppStanza</link> *   <link linkend="wocky-xmpp-stanza-build-va">wocky_xmpp_stanza_build_va</link>          (<link linkend="WockyStanzaType">WockyStanzaType</link> type,
+<link linkend="WockyXmppStanza">WockyXmppStanza</link>*    <link linkend="wocky-xmpp-stanza-build-va">wocky_xmpp_stanza_build_va</link>          (<link linkend="WockyStanzaType">WockyStanzaType</link> type,
                                                          <link linkend="WockyStanzaSubType">WockyStanzaSubType</link> sub_type,
                                                          const <link linkend="gchar">gchar</link> *from,
                                                          const <link linkend="gchar">gchar</link> *to,
                                                          <link linkend="WockyBuildTag">WockyBuildTag</link> spec,
                                                          <link linkend="va-list">va_list</link> ap);
-<link linkend="WockyXmppStanza">WockyXmppStanza</link> *   <link linkend="wocky-xmpp-stanza-build-iq-result">wocky_xmpp_stanza_build_iq_result</link>   (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *iq,
+<link linkend="WockyXmppStanza">WockyXmppStanza</link>*    <link linkend="wocky-xmpp-stanza-build-iq-result">wocky_xmpp_stanza_build_iq_result</link>   (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *iq,
                                                          <link linkend="WockyBuildTag">WockyBuildTag</link> spec,
                                                          ...);
-<link linkend="WockyXmppStanza">WockyXmppStanza</link> *   <link linkend="wocky-xmpp-stanza-build-iq-error">wocky_xmpp_stanza_build_iq_error</link>    (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *iq,
+<link linkend="WockyXmppStanza">WockyXmppStanza</link>*    <link linkend="wocky-xmpp-stanza-build-iq-error">wocky_xmpp_stanza_build_iq_error</link>    (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *iq,
                                                          <link linkend="WockyBuildTag">WockyBuildTag</link> spec,
                                                          ...);
-<link linkend="GError">GError</link> *            <link linkend="wocky-xmpp-stanza-to-gerror">wocky_xmpp_stanza_to_gerror</link>         (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza);
+<link linkend="GError">GError</link>*             <link linkend="wocky-xmpp-stanza-to-gerror">wocky_xmpp_stanza_to_gerror</link>         (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza);
 </synopsis>
 </refsynopsisdiv>
 
@@ -51,6 +52,7 @@ enum                <link linkend="WockyBuildTag">WockyBuildTag</link>;
   <link linkend="GObject">GObject</link>
    +----WockyXmppStanza
 </synopsis>
+
 </refsect1>
 
 
@@ -63,6 +65,7 @@ enum                <link linkend="WockyBuildTag">WockyBuildTag</link>;
 <refsect1 id="WockyXmppStanza.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
+
 </para>
 </refsect1>
 
@@ -70,20 +73,22 @@ enum                <link linkend="WockyBuildTag">WockyBuildTag</link>;
 <title role="details.title">Details</title>
 <refsect2 id="WockyXmppStanza-struct" role="struct">
 <title>WockyXmppStanza</title>
-<indexterm zone="WockyXmppStanza-struct"><primary sortas="WockyXmppStanza">WockyXmppStanza</primary></indexterm><programlisting>typedef struct _WockyXmppStanza WockyXmppStanza;</programlisting>
+<indexterm zone="WockyXmppStanza-struct"><primary>WockyXmppStanza</primary></indexterm><programlisting>typedef struct _WockyXmppStanza WockyXmppStanza;</programlisting>
 <para>
+
 </para></refsect2>
 <refsect2 id="WockyXmppStanzaClass" role="struct">
 <title>WockyXmppStanzaClass</title>
-<indexterm zone="WockyXmppStanzaClass"><primary sortas="WockyXmppStanzaClass">WockyXmppStanzaClass</primary></indexterm><programlisting>typedef struct {
+<indexterm zone="WockyXmppStanzaClass"><primary>WockyXmppStanzaClass</primary></indexterm><programlisting>typedef struct {
     GObjectClass parent_class;
 } WockyXmppStanzaClass;
 </programlisting>
 <para>
+
 </para></refsect2>
 <refsect2 id="WockyStanzaType" role="enum">
 <title>enum WockyStanzaType</title>
-<indexterm zone="WockyStanzaType"><primary sortas="WockyStanzaType">WockyStanzaType</primary></indexterm><programlisting>typedef enum
+<indexterm zone="WockyStanzaType"><primary>WockyStanzaType</primary></indexterm><programlisting>typedef enum
 {
   WOCKY_STANZA_TYPE_NONE,
   WOCKY_STANZA_TYPE_MESSAGE,
@@ -102,10 +107,11 @@ enum                <link linkend="WockyBuildTag">WockyBuildTag</link>;
 } WockyStanzaType;
 </programlisting>
 <para>
+
 </para></refsect2>
 <refsect2 id="WockyStanzaSubType" role="enum">
 <title>enum WockyStanzaSubType</title>
-<indexterm zone="WockyStanzaSubType"><primary sortas="WockyStanzaSubType">WockyStanzaSubType</primary></indexterm><programlisting>typedef enum
+<indexterm zone="WockyStanzaSubType"><primary>WockyStanzaSubType</primary></indexterm><programlisting>typedef enum
 {
   WOCKY_STANZA_SUB_TYPE_NONE,
   WOCKY_STANZA_SUB_TYPE_AVAILABLE,
@@ -128,10 +134,11 @@ enum                <link linkend="WockyBuildTag">WockyBuildTag</link>;
 } WockyStanzaSubType;
 </programlisting>
 <para>
+
 </para></refsect2>
 <refsect2 id="WockyBuildTag" role="enum">
 <title>enum WockyBuildTag</title>
-<indexterm zone="WockyBuildTag"><primary sortas="WockyBuildTag">WockyBuildTag</primary></indexterm><programlisting>typedef enum
+<indexterm zone="WockyBuildTag"><primary>WockyBuildTag</primary></indexterm><programlisting>typedef enum
 {
   WOCKY_NODE,
   WOCKY_NODE_TEXT,
@@ -143,144 +150,166 @@ enum                <link linkend="WockyBuildTag">WockyBuildTag</link>;
 } WockyBuildTag;
 </programlisting>
 <para>
+
 </para></refsect2>
 <refsect2 id="wocky-xmpp-stanza-new" role="function">
 <title>wocky_xmpp_stanza_new ()</title>
-<indexterm zone="wocky-xmpp-stanza-new"><primary sortas="wocky_xmpp_stanza_new">wocky_xmpp_stanza_new</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link> *   wocky_xmpp_stanza_new               (const <link linkend="gchar">gchar</link> *name);</programlisting>
+<indexterm zone="wocky-xmpp-stanza-new"><primary>wocky_xmpp_stanza_new</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link>*    wocky_xmpp_stanza_new               (const <link linkend="gchar">gchar</link> *name);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>name</parameter>&#160;:</term>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-stanza-build" role="function">
 <title>wocky_xmpp_stanza_build ()</title>
-<indexterm zone="wocky-xmpp-stanza-build"><primary sortas="wocky_xmpp_stanza_build">wocky_xmpp_stanza_build</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link> *   wocky_xmpp_stanza_build             (<link linkend="WockyStanzaType">WockyStanzaType</link> type,
+<indexterm zone="wocky-xmpp-stanza-build"><primary>wocky_xmpp_stanza_build</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link>*    wocky_xmpp_stanza_build             (<link linkend="WockyStanzaType">WockyStanzaType</link> type,
                                                          <link linkend="WockyStanzaSubType">WockyStanzaSubType</link> sub_type,
                                                          const <link linkend="gchar">gchar</link> *from,
                                                          const <link linkend="gchar">gchar</link> *to,
                                                          <link linkend="WockyBuildTag">WockyBuildTag</link> spec,
                                                          ...);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>type</parameter>&#160;:</term>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>sub_type</parameter>&#160;:</term>
+<varlistentry><term><parameter>sub_type</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>from</parameter>&#160;:</term>
+<varlistentry><term><parameter>from</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>to</parameter>&#160;:</term>
+<varlistentry><term><parameter>to</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>spec</parameter>&#160;:</term>
+<varlistentry><term><parameter>spec</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>...</parameter>&#160;:</term>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-stanza-get-type-info" role="function">
 <title>wocky_xmpp_stanza_get_type_info ()</title>
-<indexterm zone="wocky-xmpp-stanza-get-type-info"><primary sortas="wocky_xmpp_stanza_get_type_info">wocky_xmpp_stanza_get_type_info</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_stanza_get_type_info     (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
+<indexterm zone="wocky-xmpp-stanza-get-type-info"><primary>wocky_xmpp_stanza_get_type_info</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_stanza_get_type_info     (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
                                                          <link linkend="WockyStanzaType">WockyStanzaType</link> *type,
                                                          <link linkend="WockyStanzaSubType">WockyStanzaSubType</link> *sub_type);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>stanza</parameter>&#160;:</term>
+<varlistentry><term><parameter>stanza</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>type</parameter>&#160;:</term>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>sub_type</parameter>&#160;:</term>
+<varlistentry><term><parameter>sub_type</parameter>&nbsp;:</term>
 <listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-stanza-build-va" role="function">
 <title>wocky_xmpp_stanza_build_va ()</title>
-<indexterm zone="wocky-xmpp-stanza-build-va"><primary sortas="wocky_xmpp_stanza_build_va">wocky_xmpp_stanza_build_va</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link> *   wocky_xmpp_stanza_build_va          (<link linkend="WockyStanzaType">WockyStanzaType</link> type,
+<indexterm zone="wocky-xmpp-stanza-build-va"><primary>wocky_xmpp_stanza_build_va</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link>*    wocky_xmpp_stanza_build_va          (<link linkend="WockyStanzaType">WockyStanzaType</link> type,
                                                          <link linkend="WockyStanzaSubType">WockyStanzaSubType</link> sub_type,
                                                          const <link linkend="gchar">gchar</link> *from,
                                                          const <link linkend="gchar">gchar</link> *to,
                                                          <link linkend="WockyBuildTag">WockyBuildTag</link> spec,
                                                          <link linkend="va-list">va_list</link> ap);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>type</parameter>&#160;:</term>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>sub_type</parameter>&#160;:</term>
+<varlistentry><term><parameter>sub_type</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>from</parameter>&#160;:</term>
+<varlistentry><term><parameter>from</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>to</parameter>&#160;:</term>
+<varlistentry><term><parameter>to</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>spec</parameter>&#160;:</term>
+<varlistentry><term><parameter>spec</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>ap</parameter>&#160;:</term>
+<varlistentry><term><parameter>ap</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-stanza-build-iq-result" role="function">
 <title>wocky_xmpp_stanza_build_iq_result ()</title>
-<indexterm zone="wocky-xmpp-stanza-build-iq-result"><primary sortas="wocky_xmpp_stanza_build_iq_result">wocky_xmpp_stanza_build_iq_result</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link> *   wocky_xmpp_stanza_build_iq_result   (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *iq,
+<indexterm zone="wocky-xmpp-stanza-build-iq-result"><primary>wocky_xmpp_stanza_build_iq_result</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link>*    wocky_xmpp_stanza_build_iq_result   (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *iq,
                                                          <link linkend="WockyBuildTag">WockyBuildTag</link> spec,
                                                          ...);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>iq</parameter>&#160;:</term>
+<varlistentry><term><parameter>iq</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>spec</parameter>&#160;:</term>
+<varlistentry><term><parameter>spec</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>...</parameter>&#160;:</term>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-stanza-build-iq-error" role="function">
 <title>wocky_xmpp_stanza_build_iq_error ()</title>
-<indexterm zone="wocky-xmpp-stanza-build-iq-error"><primary sortas="wocky_xmpp_stanza_build_iq_error">wocky_xmpp_stanza_build_iq_error</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link> *   wocky_xmpp_stanza_build_iq_error    (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *iq,
+<indexterm zone="wocky-xmpp-stanza-build-iq-error"><primary>wocky_xmpp_stanza_build_iq_error</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link>*    wocky_xmpp_stanza_build_iq_error    (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *iq,
                                                          <link linkend="WockyBuildTag">WockyBuildTag</link> spec,
                                                          ...);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>iq</parameter>&#160;:</term>
+<varlistentry><term><parameter>iq</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>spec</parameter>&#160;:</term>
+<varlistentry><term><parameter>spec</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>...</parameter>&#160;:</term>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-stanza-to-gerror" role="function">
 <title>wocky_xmpp_stanza_to_gerror ()</title>
-<indexterm zone="wocky-xmpp-stanza-to-gerror"><primary sortas="wocky_xmpp_stanza_to_gerror">wocky_xmpp_stanza_to_gerror</primary></indexterm><programlisting><link linkend="GError">GError</link> *            wocky_xmpp_stanza_to_gerror         (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza);</programlisting>
+<indexterm zone="wocky-xmpp-stanza-to-gerror"><primary>wocky_xmpp_stanza_to_gerror</primary></indexterm><programlisting><link linkend="GError">GError</link>*             wocky_xmpp_stanza_to_gerror         (<link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>stanza</parameter>&#160;:</term>
+<varlistentry><term><parameter>stanza</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
