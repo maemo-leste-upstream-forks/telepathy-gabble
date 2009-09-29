@@ -9,6 +9,7 @@ TWISTED_TESTS = \
 	caps/from-bare-jid.py \
 	caps/hashed-caps.py \
 	caps/initial-caps.py \
+	caps/jingle-caps.py \
 	caps/receive-jingle.py \
 	caps/tube-caps.py \
 	muc/name-conflict.py \
@@ -33,6 +34,7 @@ TWISTED_TESTS = \
 	olpc/gadget-publish.py \
 	olpc/gadget-restarted.py \
 	olpc/view-presence.py \
+	presence/initial-contact-presence.py \
 	presence/initial-presence.py \
 	presence/presence.py \
 	roster/ensure.py \
@@ -96,6 +98,7 @@ TWISTED_TESTS = \
 	jingle/hold-audio.py \
 	jingle/hold-av.py \
 	jingle/incoming-basics.py \
+	jingle/incoming-call-stream-error.py \
 	jingle/initial-audio-video.py \
 	jingle/misuse.py \
 	jingle/stun-server.py \
@@ -187,6 +190,7 @@ EXTRA_DIST = \
 	config.py \
 	constants.py \
 	gabbletest.py \
+	httptest.py \
 	servicetest.py \
 	jingle/jingletest.py \
 	jingle/jingletest2.py \

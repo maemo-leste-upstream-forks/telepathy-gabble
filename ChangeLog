@@ -1,3 +1,684 @@
+commit 503c954ed60cb5673f954d1391d9602c161f674e
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-25 16:02:59 +0100
+
+    version 0.8.4
+
+commit 345cededee5191a4191c6ec0462a303f166583f5
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-29 14:35:49 +0100
+
+    update NEWS
+
+commit 688937b13b750115880f536b8b21a2accc1353d8
+Merge: 5b1ab30 33dd694
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-29 14:32:50 +0100
+
+    Merge branch 'jingle-caps' into telepathy-gabble-0.8
+    
+    Reviewed-by: Sjoerd Simons
+
+commit 33dd6946ded44ac1a60bc35007404af61861210e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-29 12:12:00 +0100
+
+    Add the new jingle-caps test to the Makefile
+
+commit 39e547347d816291a38e0de8c1986f9b21353ecd
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-28 21:20:09 +0100
+
+    Test various capabilitie sets that should give a media capable client
+
+commit 60617136428008fed7519e39f0f70b2f9dbe6f94
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-28 21:17:46 +0100
+
+    Factor a lot of useful code out of the caps-cache into the caps_helper
+
+commit 6941c16fb5a4aaa2d263217d815cc9d8eda61b13
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-28 23:43:29 +0100
+
+    Recognize clients as media capable if they have any supported transport
+    
+    Before gabble would only regard a client as audio and/or video capable when it
+    support Google p2p as a transport. For jingle clients it's ofcouse entirely
+    valid to not support Google p2p.
+    
+    Allow clients to be marked as media capable if they support any of our
+    supported protocol (they still need to also advertise jingle/gtalk capabilities
+    seperatly. This is correct as we support all our transports as part of a normal
+    jingle session and for the google protocol it's not necessary to advertise a
+    transport.
+    
+    (This is a version of a16a31a backported to 0.8, which has pretty different
+    caps code.)
+
+commit 5b1ab30285c71ff7beb2875b65693e294e289079
+Merge: f4b8ecd c197811
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-29 00:15:34 +0100
+
+    Merge commit 'alsuren/alsuren/stun-fix-0.8' into telepathy-gabble-0.8
+    
+    Reviewed-by: Dafydd Harries
+
+commit f4b8ecd6b8e65f709fee969d05db3da47df64a68
+Merge: 2af89e0 43e8643
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-28 22:15:14 +0100
+
+    Merge commit 'alban/avatar-bug23684-0.8' into telepathy-gabble-0.8
+    
+    Reviewed-by: Dafydd Harries
+
+commit 43e86431f9db8393a73f631482edfb97c0815391
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-28 19:16:48 +0100
+
+    vcard-manager.c: Add a FIXME: When requesting a vCard, the timeout is not always obeyed
+
+commit 764433c75d6ff3256deacda4f86b8a5c2f1dfb4c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-28 19:12:06 +0100
+
+    vcard-manager.c: Rename cache_entry_ensure_queued to request_send
+
+commit c1978112f50db2a4dccfee0c8d5236f0a1bb4bbe
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2009-09-28 17:27:15 +0100
+
+    Use gethostbyname() rather than gethostbyaddr().
+    
+    Seems that gethostbyaddr() tries to do reverse lookup as well,
+    which fails now that stun.collabora.co.uk has moved to its own
+    host.
+
+commit 09042cf7712cb0a4c0943078bf48912acb2cfc34
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-28 16:04:02 +0100
+
+    Make DEBUG output for suspending vCard gets more useful
+
+commit 82dbe98b2d5ec7b30b889567c03c8199d293b509
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-28 16:03:44 +0100
+
+    Clarify FIXME about generalizing error-extracting code
+
+commit 1ec306bc038c6b178059389eb8c5c54f925a7876
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-28 15:51:41 +0100
+
+    Clarify vCard get error processing
+
+commit 9a7ab75bffc6980d289be52eded73c06e9540ee2
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-28 13:25:01 +0100
+
+    vcard-manager.c: Suspend vCard request on all "wait" errors from the server, not only resource-constraint
+
+commit f8bc7fed2ce27217943920bd32753b232d4b68d0
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-28 13:08:03 +0100
+
+    vcard-manager.c: Add a debug when Gabble suspend a vCard request
+
+commit a7aacb87b96d1859da65e2a4ace6413fb5b84225
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-25 18:08:12 +0100
+
+    vcard-manager.c: Move the timer arming in cache_entry_ensure_queued()
+    
+    It will fixed the timers override (problem found during Daf's review)
+
+commit 4399d407d394d638304687e2403cc09a5d03131c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-25 18:05:14 +0100
+
+    vcard-manager.c: Add a FIXME to use error.c, as per Daf's review
+
+commit 4cba9b100bf7ce397c00dec0a6f5e13b2d92dc90
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-25 18:02:47 +0100
+
+    test-avatar-async.py: coding style and use assertEquals, as per Daf review
+
+commit 592ad86b787f50c0046e68ba9d555a2008d41cb1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-25 17:10:27 +0100
+
+    vcard-manager.c: Remove redondant test on suspended_timer_id, add an assert instead
+
+commit a11e024ce51e1b956912930ed061bdd1ab39fcf6
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-24 18:05:37 +0100
+
+    test-avatar-async.py: test the timer: gabble should reemit the vCard request after waiting
+
+commit fdf4e020871b8cde17d4a762b2936fad565969f2
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-24 18:05:22 +0100
+
+    Fix timer problem
+
+commit dbbcbe7ca63d0645fe767caa3496b0c38adf8783
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-24 18:04:27 +0100
+
+    vCard replay timer is set to 3 seconds for the unit tests
+
+commit 580e090715425f4d079f1d76d208f73ccdb7cf68
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-24 12:59:11 +0100
+
+    test-avatar-async.py: Add avatar test when the server reply busy
+
+commit dfb7d6cbaaea6efa7d8a45da38c8fef3970e674f
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-24 16:57:58 +0100
+
+    Bug #23684: Automatically request a vCard after the server replied with the error resource-constraint
+
+commit 7bcf9317e396f54f5f65061a9ca0f7b7ad640a53
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-23 16:17:48 +0100
+
+    Make gabble_request_pipeline_go() private
+
+commit 2af89e03d69b233fa49e0885489a94e70101df5b
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-25 16:14:38 +0100
+
+    add httptest.py to EXTRA_DIST
+
+commit 1eca5d8cc170190843e94fcc959a8a143746ff19
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-25 15:41:55 +0100
+
+    update NEWS
+
+commit d425fcb813537e163cb3ee50443bae4145b489f2
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 22:34:05 +0100
+
+    update stream error test to match reason text handling change
+    
+    Reviewed-by: Will Thompson
+
+commit c2e0e03d8a18bb6356ab68d7664945c707ba7679
+Merge: 5c445b1 90aafd7
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-25 14:59:27 +0100
+
+    Merge branch 'terminate-reason-text' into telepathy-gabble-0.8
+    
+    This branch by Will already merged into master, and reviewed by Simon. This
+    prevents us having to diverge Jingle tests.
+
+commit 5c445b1724d8c8839a462aa7b57f05dcd9b0b49a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 11:43:36 +0100
+
+    remove NS_DATA as we already have NS_X_DATA for this namespace
+
+commit 864cacaf9b30e7435688c057f0be0ce21454da9d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-05-04 12:53:40 +0100
+
+    Delete delete repeated repeated word word.
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 90aafd7dda243e3ab4ad4a651244509d3316c49a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-08-21 12:00:59 +0100
+
+    Update test for new group flags
+
+commit 224d4c8b97f45b47e8a40dd36fe069dba1b82fda
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-08-13 18:15:25 +0100
+
+    Add group flags for remove-with-message.
+
+commit 865e72ede99435dbc5b5ef3c67a2533cc3435cde
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-08-08 16:04:12 +0100
+
+    Expose <reason><text> as MembersChanged message
+
+commit 3b02425d210e03cce4c04eb7b9f67b9c57fb89af
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-08-08 15:54:45 +0100
+
+    Send <reason><text> in session-terminate
+
+commit 4b387c9fc150a180560b5bb368502919053e1429
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-08-08 15:52:33 +0100
+
+    Pass termination reason text to session_terminate()
+
+commit 76f50096cd2d8b63c81f0771b3c8a4c9857a8f94
+Merge: e16d85b b1aced3
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 21:39:57 +0100
+
+    Merge branch 'tests-failure-helper' into telepathy-gabble-0.8
+    
+    Reviewed-by: Will Thompson
+
+commit b1aced3eaefa6072f347ba9bdda8091bce6a1403
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 20:40:41 +0100
+
+    add test failure debugging helper script
+
+commit 6dd586c70fc40a216718a182efbea4a781cb84a7
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 20:39:18 +0100
+
+    servicetest.py: better Event.__repr__()
+
+commit e16d85bf0049e1b214a25b2b7a8955ddbb69fea3
+Merge: ec79922 afec722
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2009-09-23 20:31:36 +0100
+
+    Merge commit '0.8-pidgin-interop' into telepathy-gabble-0.8.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit afec722f1450ea59d07214f8289fd7fb75adccbd
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2009-09-23 18:35:14 +0100
+
+    Test for bug 24043
+    
+    Added test for http://bugs.freedesktop.org/show_bug.cgi?id=24043
+    and also the / 65536 bug I found.
+
+commit 2e230747743b15de32e7c34579d281405d930063
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2009-09-23 18:28:20 +0100
+
+    pref = priority / 65536 and debugging info
+    
+    Fixed parse_candidates in jingle-transport-iceudp.c
+    to divide by 65536 (as inject_candidates multiplies by 65536).
+    Also added some more debugging info when candidates are missing
+    required attributes.
+
+commit ec799227f279e7af57233bdb229570424e871e65
+Merge: c5ccc7a 47c3ce1
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 16:49:48 +0100
+
+    Merge branch 'tests-fix-presence' into telepathy-gabble-0.8
+    
+    Reviewed-by: Sjoerd Simons
+
+commit 47c3ce1dea4e762f93b214a0aa4f991ae09157e0
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 16:29:13 +0100
+
+    presence.py: use presence type constants
+
+commit 60a1f0f8f572d7cc286fb46f2c785b4c9e07e488
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 16:27:22 +0100
+
+    presence.py: use make_presence()
+
+commit ae1211319c084f5f5b75c9609cd3268da176cb5f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 16:16:41 +0100
+
+    make_presence(): take an optional show parameter
+
+commit aab33b77afcfa5e24ab2b735c5b4737148a44dfa
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 16:10:22 +0100
+
+    make expects for presence events more specific
+    
+    This fixes a regression introduced by my initial-contacts-presence branch.
+
+commit c5ccc7aa9e8522ab279df85838c69b85a9e49b6b
+Merge: db02116 78891e2
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 14:25:02 +0100
+
+    Merge branch 'initial-streams-delay' into telepathy-gabble-0.8
+    
+    Reviewed-by: Sjoerd Simons
+
+commit db02116f136c9d8ad4c6132dbe5c0fb162b18beb
+Merge: d920e44 adc7886
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 14:24:41 +0100
+
+    Merge branch 'initial-contact-presence' into telepathy-gabble-0.8
+    
+    Reviewed-by: Sjoerd Simons
+
+commit d920e4443e71419cf71f8a994586bab5aa2b5381
+Merge: 9b173ee 26ec0f5
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 14:24:24 +0100
+
+    Merge branch 'call-error-reason' into telepathy-gabble-0.8
+    
+    Reviewed-by: Sjoerd Simons
+
+commit 9b173eee06587fa5a0dc18dbc26f7ac0988a66dd
+Merge: 41cda4e 0c3cef8
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-23 14:23:35 +0100
+
+    Merge branch 'location-language' into telepathy-gabble-0.8
+    
+    Reviewed-by: Sjoerd Simons
+
+commit 0c3cef84057f7f2a37507a5f3fa52fc9f726b373
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 16:25:37 +0100
+
+    call DEBUG() in location_set_location() to avoid #define/#undef pairs
+
+commit 8621011f51a281ddfed778760a91fa662edf6cc9
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 16:23:52 +0100
+
+    remove reduntant check
+
+commit b6e04e28765af6dc24921e6c4e73a47c5b18bcce
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-16 18:41:17 +0100
+
+    fix corner cases in handling of language key for location data
+    
+    This fixes several problems in add_to_geoloc_node():
+    
+     - A NULL pointer would be dereferenced if the language value was one of the
+       types checked for, but not a string.
+     - An assertion would fail if the language value wasn't a string or one of the
+       other types checked for.
+     - Coverity flagged a possible dereference of the mapping pointer when it was
+       NULL, but in practice we'd already returned in that case. Hopefully the
+       code should be less confusing for both Coverity and humans now.
+
+commit adc7886f052aa86f7e272883d05b96af0644eae9
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 16:28:00 +0100
+
+    got_roster_iq(): add comment clarifying that _SUB_TYPE_RESULT means initial roster
+
+commit 26ec0f51142704fba03d667676da7f86a74d612b
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-14 21:41:07 +0100
+
+    make MembersChanged have the correct reason when Error is called on a stream
+    
+    If we had an incoming call with a single mutable stream, the fact that an
+    error ocurred would get lost.
+
+commit 78891e2721ed576ece100c3049ce143bf83e379e
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 15:41:14 +0100
+
+    google-relay.py: test for a regression of #24023
+    
+    We do this by accepting the call if it's incoming, then making sure that a
+    stream appears when the relay info has been sent.
+
+commit b658ecc2687c92797b645b83c7ed126157703774
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 15:12:26 +0100
+
+    with-tmp-session-bus.sh: add commented out call to dbus-monitor
+
+commit a95f55649b105b5210d59cf07a9195dcd149d52a
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 15:11:22 +0100
+
+    unwrap(): handle dbus.Boolean correctly
+
+commit 2da22dc8da1e8c4ea44859a94d941c3a8ec2c3aa
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-22 13:49:01 +0100
+
+    don't strip common prefix from object paths
+    
+    It was supposed to make test logs easier to read but ends up making test code
+    more complicated.
+
+commit 377abb226943566747ff3952be20d64aed4e0975
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 17:06:59 +0100
+
+    accept-muc-dbus-type.py: make compatible with expect_many() fix
+
+commit 6fb733a6926542f0dae0b77f17de6828c8825afa
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 17:01:13 +0100
+
+    accept-muc-dbus-tube.py: use assert* functions
+
+commit 9e8d38408b363558e4bcd6c7f5992bb71f4f4a66
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 15:22:00 +0100
+
+    google-relay.py: factor out repeated code
+
+commit 396d9c564f78130ff8cb964ea6c20c43f76d4f8f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 14:57:20 +0100
+
+    allow forcing test output colouring
+
+commit 41866b462d2c4aae60f7e91c119bea870b2ebddd
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 14:55:02 +0100
+
+    port Google relay test from BaseHTTPServer to twisted.web
+    
+    I think this makes the test more explicit, and also means that it doesn't
+    print HTTP log messages to stdout.
+
+commit 41cda4e81c0cbc15d543e8a536044c235ebc31a6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 21:26:00 +0100
+
+    fix typo in a debug msg
+
+commit 726733a837f72bca583a3e58768a3b8b4c3e29b2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-21 21:14:15 +0100
+
+    remove some debug messages flooding output when using a stream tube
+
+commit bf4074c8bbf0b9043fad89fe1d650aea05367c5e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-20 14:45:02 +0100
+
+    Parse transport node on accept to get candidates
+
+commit 3f213bdc662876fb2f3522fa39aea06210b0e77c
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 14:53:13 +0100
+
+    expect_many(): log which events are still pending when a timeout occurs
+
+commit 0ca8b8179ba5b32dec2a6ce3a438becaeabb1848
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-21 14:47:34 +0100
+
+    expect_many(): ignore patterns that have already matched
+
+commit 31973aef05cd5951ac75d067214b0c156ed9f866
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-16 18:22:32 +0100
+
+    Automatically accept Initial streams when the call is accepted
+
+commit 635891928053dbb6d6cafc82ff4207e1a208be8b
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-17 20:30:17 +0100
+
+    emit a presence update for subscribed contacts when we get the roster
+    
+    A GetPresence call for a contact we're subscribed to before we get the roster
+    will return unknown; a call after we get the roster will return offline. This
+    commit advertises that change to clients.
+
+commit 4a93620656e8489220c8275b0122fe1ef3252cd8
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-17 20:25:22 +0100
+
+    add presence types to constants.py
+
+commit 1943b179875414ebe73e1ea3dcdfb67793127345
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-17 20:24:46 +0100
+
+    export emit_presence_update
+
+commit 0c13804852bc982f79b30b8596485e07e2cdeb93
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-17 11:50:43 +0100
+
+    document FT fix in NEWS
+
+commit ccbb3e438eef3d2db7d71f147b14aec284df646c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-17 11:32:10 +0100
+
+    file_transfer_helper.py: read on the local socket until it's disconnected
+
+commit fee8b3dd668887c0d2606bfefe60a4d819ba63a3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-17 00:08:07 +0100
+
+    Disconnect the socket when the file-transfer is done
+    
+    When a file-tranfer has completed we need to close the socket as an
+    indicate to the FT handler.
+
+commit 4a14e502232843d6f87054a5d205f12fa3279dc3
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-16 10:41:27 +0100
+
+    build Gibber with fno-strict-aliasing so asyncns.c builds with new gcc (fd.o #23685)
+
+commit 77135cb88fe2af7474f84822cc70732009401cbb
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-14 20:26:06 +0100
+
+    fix typos
+
+commit 5e171a9f20e43e87eb316681d6b2fffb22ed12b6
+Merge: 63aaae2 0ae90f2
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-14 18:33:58 +0100
+
+    Merge branch 'tests' into telepathy-gabble-0.8
+    
+    Reviewed-by: Simon McVittie
+
+commit 0ae90f2a46b7cf95a3a2c71961c27292e04b6e26
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-14 17:59:23 +0100
+
+    remove a semicolon
+
+commit 3e09456f9de238e92abb4cdbf06eb195b488ddaf
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-14 17:58:42 +0100
+
+    clarify assertNotEquals() error message
+
+commit 1ae243d5b64939eb774544d94ded60648d15ba8b
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-10 14:37:10 +0100
+
+    servicetest.py: make assert*() not format the values unless necessary
+
+commit 8e6513f4fb435f36ab7c77543a5a1a6a4888dc50
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-10 14:31:43 +0100
+
+    servicetest.py: avoid formatting events when not necessary
+
+commit 19f39b5ccf5ad00511056c5c694a03c7fde7c6bb
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-08 11:58:02 +0100
+
+    move install_colourer() to servicetest.py
+
+commit 2d18ced624a243960382dca42f3b66242e29631f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-08 11:33:25 +0100
+
+    remove exec_tests()
+    
+    It was broken and nothing used it.
+
+commit 5d21ddcc255ff8d39fdb5fcbde6be14252e4c2d3
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-07 17:39:08 +0100
+
+    hoist import to top of file
+
+commit 63aaae2967c6193586907d0aab24e2bb077a2854
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-14 12:22:56 +0100
+
+    test-send-file-declined: try to provide the file after it has been declined
+
+commit a9180bca24ea3ea9d07722527bdfb9152cf66d16
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-14 12:22:24 +0100
+
+    gabble_file_transfer_channel_provide_file: check that the channel is in the pending or accepted state
+    
+    This fix the second part of fd.o #23903.
+
+commit 500ffd8b095b453e6b2188579bb29c80bb762d45
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-14 12:09:32 +0100
+
+    test-send-file-provide-immediately: try to accept an outgoing FT
+
+commit c27f98bb85c53b55a743f93d84d62b4c2e86b685
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-14 12:08:47 +0100
+
+    gabble_file_transfer_channel_accept_file: check that channel is an incoming one
+    
+    This fix the first part of fd.o #23903.
+
+commit 53e1c02e51c1086cbfbf9af446d7985674111007
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-09-12 21:52:49 +0100
+
+    For gtalk jingle dialect always use google p2p
+
+commit b1cb310544bd6c8ae85be6599489e23fdf23d954
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-11 12:40:43 +0100
+
+    Bump nano-version to 0.8.3.1
+
+commit 4e98c2e40bb7465ea3b56accd9970d72f7e78768
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-11 12:40:28 +0100
+
+    Include release date of 0.8.3 in NEWS
+
 commit 84c035b66b785fef23f90fd8f0d0eea5bbfa391d
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2009-09-10 19:30:50 +0100
