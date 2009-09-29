@@ -33,7 +33,6 @@
 #include "muc-channel.h"
 #include "presence-cache.h"
 #include "namespaces.h"
-#include "pubsub.h"
 #include "disco.h"
 #include "util.h"
 #include "olpc-activity.h"
@@ -349,47 +348,90 @@ get_buddy_properties_from_search (GabbleConnection *conn,
   lm_message_unref (query);
 }
 
-static LmHandlerResult
-get_properties_reply_cb (GabbleConnection *conn,
-                         LmMessage *sent_msg,
-                         LmMessage *reply_msg,
-                         GObject *object,
-                         gpointer user_data)
+typedef struct
 {
-  DBusGMethodInvocation *context = user_data;
+  GabbleConnection *conn;
+  DBusGMethodInvocation *context;
+} pubsub_query_ctx;
+
+static pubsub_query_ctx *
+pubsub_query_ctx_new (GabbleConnection *conn,
+    DBusGMethodInvocation *context)
+{
+  pubsub_query_ctx *ctx = g_slice_new (pubsub_query_ctx);
+
+  ctx->conn = conn;
+  ctx->context = context;
+  return ctx;
+}
+
+static void
+pubsub_query_ctx_free (pubsub_query_ctx *ctx)
+{
+  g_slice_free (pubsub_query_ctx, ctx);
+}
+
+static void
+get_properties_reply_cb (GObject *source,
+    GAsyncResult *res,
+    gpointer user_data)
+{
+  pubsub_query_ctx *ctx = (pubsub_query_ctx *) user_data;
+  WockyXmppStanza *reply_msg;
+  GError *error = NULL;
   GHashTable *properties;
   LmMessageNode *node;
+
+  reply_msg = wocky_pep_service_get_finish (WOCKY_PEP_SERVICE (source), res,
+      &error);
+  if (reply_msg == NULL)
+    {
+      GError err = { TP_ERRORS, TP_ERROR_NETWORK_ERROR,
+        "Failed to send property request to server" };
+
+      DEBUG ("Query failed: %s", error->message);
+
+      dbus_g_method_return_error (ctx->context, &err);
+      g_error_free (error);
+      goto out;
+    }
 
   if (!check_query_reply_msg (reply_msg, NULL))
     {
       const gchar *buddy;
 
-      buddy = lm_message_node_get_attribute (sent_msg->node, "to");
+      buddy = lm_message_node_get_attribute (reply_msg->node, "from");
       g_assert (buddy != NULL);
 
       DEBUG ("PEP query failed. Let's try to search this buddy.");
-      get_buddy_properties_from_search (conn, buddy, context);
-      return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+      get_buddy_properties_from_search (ctx->conn, buddy, ctx->context);
+      goto out;
     }
 
   node = lm_message_node_find_child (reply_msg->node, "properties");
   properties = lm_message_node_extract_properties (node, "property");
 
-  gabble_svc_olpc_buddy_info_return_from_get_properties (context, properties);
+  gabble_svc_olpc_buddy_info_return_from_get_properties (ctx->context,
+      properties);
   g_hash_table_destroy (properties);
 
-  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+out:
+  pubsub_query_ctx_free (ctx);
+  if (reply_msg != NULL)
+    g_object_unref (reply_msg);
 }
 
 static void
 olpc_buddy_info_get_properties (GabbleSvcOLPCBuddyInfo *iface,
-                                guint contact,
+                                guint handle,
                                 DBusGMethodInvocation *context)
 {
   GabbleConnection *conn = GABBLE_CONNECTION (iface);
   TpBaseConnection *base = (TpBaseConnection *) conn;
   const gchar *jid;
   GHashTable *properties;
+  pubsub_query_ctx *ctx;
+  WockyBareContact *contact;
 
   DEBUG ("called");
 
@@ -403,7 +445,7 @@ olpc_buddy_info_get_properties (GabbleSvcOLPCBuddyInfo *iface,
   /* FIXME: Maybe we should first try the PEP node as we do for buddy
    * activities ? */
   properties = gabble_olpc_gadget_manager_find_buddy_properties (
-      conn->olpc_gadget_manager, contact);
+      conn->olpc_gadget_manager, handle);
   if (properties != NULL)
     {
       gabble_svc_olpc_buddy_info_return_from_get_properties (context,
@@ -412,18 +454,17 @@ olpc_buddy_info_get_properties (GabbleSvcOLPCBuddyInfo *iface,
     }
 
   /* Then try to query the PEP node */
-  jid = inspect_contact (base, context, contact);
+  jid = inspect_contact (base, context, handle);
   if (jid == NULL)
     return;
 
-  if (!pubsub_query (conn, jid, NS_OLPC_BUDDY_PROPS, get_properties_reply_cb,
-        context))
-    {
-      GError error = { TP_ERRORS, TP_ERROR_NETWORK_ERROR,
-        "Failed to send property request to server" };
+  ctx = pubsub_query_ctx_new (conn, context);
+  contact = ensure_bare_contact_from_jid (conn, jid);
 
-      dbus_g_method_return_error (context, &error);
-    }
+  wocky_pep_service_get_async (conn->pep_olpc_buddy_props, contact, NULL,
+      get_properties_reply_cb, ctx);
+
+  g_object_unref (contact);
 }
 
 /* context may be NULL. */
@@ -451,7 +492,7 @@ transmit_properties (GabbleConnection *conn,
                      DBusGMethodInvocation *context)
 {
   LmMessage *msg;
-  LmMessageNode *publish;
+  WockyXmppNode *item, *props_node;
 
   gabble_connection_ensure_capabilities (conn,
       gabble_capabilities_get_olpc_notify ());
@@ -459,10 +500,12 @@ transmit_properties (GabbleConnection *conn,
   if (!check_pep (conn, context))
     return;
 
-  msg = pubsub_make_publish_msg (NULL, NS_OLPC_BUDDY_PROPS,
-      NS_OLPC_BUDDY_PROPS, "properties", &publish);
+  msg = wocky_pep_service_make_publish_stanza (conn->pep_olpc_buddy_props,
+      &item);
+  props_node = wocky_xmpp_node_add_child_ns (item, "properties",
+      NS_OLPC_BUDDY_PROPS);
 
-  lm_message_node_add_children_from_properties (publish, properties,
+  lm_message_node_add_children_from_properties (props_node, properties,
       "property");
 
   if (!_gabble_connection_send_with_reply (conn, msg,
@@ -559,39 +602,65 @@ olpc_buddy_info_set_properties (GabbleSvcOLPCBuddyInfo *iface,
     }
 }
 
-gboolean
-olpc_buddy_info_properties_event_handler (GabbleConnection *conn,
-                                          LmMessage *msg,
-                                          TpHandle handle)
+static void
+olpc_buddy_props_pep_node_changed (WockyPepService *pep,
+    WockyBareContact *contact,
+    WockyXmppStanza *stanza,
+    GabbleConnection *conn)
 {
+  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
+      (TpBaseConnection *) conn, TP_HANDLE_TYPE_CONTACT);
   GHashTable *properties;
   LmMessageNode *node;
   TpBaseConnection *base = (TpBaseConnection *) conn;
+  TpHandle handle;
+  const gchar *jid;
+
+  jid = wocky_bare_contact_get_jid (contact);
+  handle = tp_handle_ensure (contact_repo, jid, NULL, NULL);
+  if (handle == 0)
+    {
+      DEBUG ("Invalid from: %s", jid);
+      return;
+    }
 
   if (handle == base->self_handle)
     /* Ignore echoed pubsub notifications */
-    return TRUE;
+    goto out;
 
-  node = lm_message_node_find_child (msg->node, "properties");
+  node = lm_message_node_find_child (stanza->node, "properties");
   properties = lm_message_node_extract_properties (node, "property");
   gabble_svc_olpc_buddy_info_emit_properties_changed (conn, handle,
       properties);
   g_hash_table_destroy (properties);
-  return TRUE;
+out:
+  tp_handle_unref (contact_repo, handle);
 }
 
-static LmHandlerResult
-get_activity_properties_reply_cb (GabbleConnection *conn,
-                                  LmMessage *sent_msg,
-                                  LmMessage *reply_msg,
-                                  GObject *object,
-                                  gpointer user_data)
+static void
+get_activity_properties_reply_cb (GObject *source,
+    GAsyncResult *res,
+    gpointer user_data)
+
 {
+  GabbleConnection *conn = GABBLE_CONNECTION (user_data);
   const gchar *from;
+  WockyXmppStanza *reply_msg;
+  GError *error = NULL;
+
+  reply_msg = wocky_pep_service_get_finish (WOCKY_PEP_SERVICE (source), res,
+      &error);
+  if (reply_msg == NULL)
+    {
+      DEBUG ("Failed to send activity properties request to server: %s",
+          error->message);
+      g_error_free (error);
+      return;
+    }
 
   from = lm_message_node_get_attribute (reply_msg->node, "from");
   update_activities_properties (conn, from, reply_msg);
-  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+  g_object_unref (reply_msg);
 }
 
 static gboolean
@@ -855,11 +924,12 @@ check_activity_properties (GabbleConnection *conn,
 
   if (query_needed)
     {
-      if (!pubsub_query (conn, from, NS_OLPC_ACTIVITY_PROPS,
-          get_activity_properties_reply_cb, NULL))
-        {
-          DEBUG ("Failed to send activity properties request to server");
-        }
+      WockyBareContact *contact = ensure_bare_contact_from_jid (conn, from);
+
+      wocky_pep_service_get_async (conn->pep_olpc_buddy_props, contact,
+          NULL, get_activity_properties_reply_cb, conn);
+
+      g_object_unref (contact);
     }
 }
 
@@ -877,19 +947,34 @@ return_buddy_activities_from_views (GabbleConnection *conn,
   free_activities (activities);
 }
 
-static LmHandlerResult
-get_activities_reply_cb (GabbleConnection *conn,
-                         LmMessage *sent_msg,
-                         LmMessage *reply_msg,
-                         GObject *object,
-                         gpointer user_data)
+static void
+get_activities_reply_cb (GObject *source,
+    GAsyncResult *res,
+    gpointer user_data)
+
 {
-  DBusGMethodInvocation *context = user_data;
+  pubsub_query_ctx *ctx = (pubsub_query_ctx *) user_data;
+  WockyXmppStanza *reply_msg;
+  GError *err = NULL;
   GPtrArray *activities;
   const gchar *from;
   TpHandle from_handle;
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
-      (TpBaseConnection *) conn, TP_HANDLE_TYPE_CONTACT);
+      (TpBaseConnection *) ctx->conn, TP_HANDLE_TYPE_CONTACT);
+
+  reply_msg = wocky_pep_service_get_finish (WOCKY_PEP_SERVICE (source), res,
+      &err);
+  if (reply_msg == NULL)
+    {
+      GError error = { TP_ERRORS, TP_ERROR_NETWORK_ERROR,
+        "Failed to send property request to server" };
+
+      DEBUG ("Query failed: %s", err->message);
+
+      dbus_g_method_return_error (ctx->context, &error);
+      g_error_free (err);
+      goto out;
+    }
 
   from = lm_message_node_get_attribute (reply_msg->node, "from");
   if (from == NULL)
@@ -897,8 +982,8 @@ get_activities_reply_cb (GabbleConnection *conn,
       GError error = { TP_ERRORS, TP_ERROR_NETWORK_ERROR,
         "Error in pubsub reply: no sender" };
 
-      dbus_g_method_return_error (context, &error);
-      return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+      dbus_g_method_return_error (ctx->context, &error);
+      goto out;
     }
 
   from_handle = tp_handle_lookup (contact_repo, from, NULL, NULL);
@@ -907,38 +992,44 @@ get_activities_reply_cb (GabbleConnection *conn,
       GError error = { TP_ERRORS, TP_ERROR_NETWORK_ERROR,
         "Error in pubsub reply: unknown sender" };
 
-      dbus_g_method_return_error (context, &error);
-      return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+      dbus_g_method_return_error (ctx->context, &error);
+      goto out;
     }
 
   if (lm_message_get_sub_type (reply_msg) != LM_MESSAGE_SUB_TYPE_RESULT)
     {
       DEBUG ("Failed to query PEP node. Compute activities list using views");
-      return_buddy_activities_from_views (conn, from_handle, context);
-      return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+      return_buddy_activities_from_views (ctx->conn, from_handle, ctx->context);
+      goto out;
     }
 
-  extract_activities (conn, reply_msg, from_handle);
+  extract_activities (ctx->conn, reply_msg, from_handle);
 
-  activities = get_buddy_activities (conn, from_handle);
+  activities = get_buddy_activities (ctx->conn, from_handle);
 
   /* FIXME: race between client and PEP */
-  check_activity_properties (conn, activities, from);
+  check_activity_properties (ctx->conn, activities, from);
 
-  gabble_svc_olpc_buddy_info_return_from_get_activities (context, activities);
+  gabble_svc_olpc_buddy_info_return_from_get_activities (ctx->context,
+      activities);
 
   free_activities (activities);
-  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+out:
+  pubsub_query_ctx_free (ctx);
+  if (reply_msg != NULL)
+    g_object_unref (reply_msg);
 }
 
 static void
 olpc_buddy_info_get_activities (GabbleSvcOLPCBuddyInfo *iface,
-                                guint contact,
+                                guint handle,
                                 DBusGMethodInvocation *context)
 {
   GabbleConnection *conn = GABBLE_CONNECTION (iface);
   TpBaseConnection *base = (TpBaseConnection *) conn;
   const gchar *jid;
+  pubsub_query_ctx *ctx;
+  WockyBareContact *contact;
 
   DEBUG ("called");
 
@@ -948,18 +1039,17 @@ olpc_buddy_info_get_activities (GabbleSvcOLPCBuddyInfo *iface,
   if (!check_pep (conn, context))
     return;
 
-  jid = inspect_contact (base, context, contact);
+  jid = inspect_contact (base, context, handle);
   if (jid == NULL)
     return;
 
-  if (!pubsub_query (conn, jid, NS_OLPC_ACTIVITIES, get_activities_reply_cb,
-        context))
-    {
-      GError error = { TP_ERRORS, TP_ERROR_NETWORK_ERROR,
-        "Failed to send property request to server" };
+  ctx = pubsub_query_ctx_new (conn, context);
+  contact = ensure_bare_contact_from_jid (conn, jid);
 
-      dbus_g_method_return_error (context, &error);
-    }
+  wocky_pep_service_get_async (conn->pep_olpc_activities, contact, NULL,
+      get_activities_reply_cb, ctx);
+
+  g_object_unref (contact);
 }
 
 /* FIXME: API could be improved */
@@ -970,13 +1060,17 @@ upload_activities_pep (GabbleConnection *conn,
                        GError **error)
 {
   TpBaseConnection *base = (TpBaseConnection *) conn;
-  LmMessageNode *publish;
-  LmMessage *msg = pubsub_make_publish_msg (NULL, NS_OLPC_ACTIVITIES,
-      NS_OLPC_ACTIVITIES, "activities", &publish);
+  WockyXmppNode *item, *activities;
+  LmMessage *msg;
   TpHandleSet *my_activities = g_hash_table_lookup
       (conn->olpc_pep_activities, GUINT_TO_POINTER (base->self_handle));
   GError *e = NULL;
   gboolean ret;
+
+  msg = wocky_pep_service_make_publish_stanza (conn->pep_olpc_activities,
+      &item);
+  activities = wocky_xmpp_node_add_child_ns (item, "activities",
+      NS_OLPC_ACTIVITIES);
 
   if (my_activities != NULL)
     {
@@ -993,7 +1087,7 @@ upload_activities_pep (GabbleConnection *conn,
           if (!gabble_olpc_activity_is_visible (activity))
             continue;
 
-          activity_node = lm_message_node_add_child (publish,
+          activity_node = lm_message_node_add_child (activities,
               "activity", "");
           lm_message_node_set_attributes (activity_node,
               "type", activity->id,
@@ -1168,24 +1262,38 @@ olpc_buddy_info_set_activities (GabbleSvcOLPCBuddyInfo *iface,
    * the case */
 }
 
-gboolean
-olpc_buddy_info_activities_event_handler (GabbleConnection *conn,
-                                          LmMessage *msg,
-                                          TpHandle handle)
+static void
+olpc_activities_pep_node_changed (WockyPepService *pep,
+    WockyBareContact *contact,
+    WockyXmppStanza *stanza,
+    GabbleConnection *conn)
 {
+  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
+      (TpBaseConnection *) conn, TP_HANDLE_TYPE_CONTACT);
   GPtrArray *activities;
   TpBaseConnection *base = (TpBaseConnection *) conn;
+  TpHandle handle;
+  const gchar *jid;
+
+  jid = wocky_bare_contact_get_jid (contact);
+  handle = tp_handle_ensure (contact_repo, jid, NULL, NULL);
+  if (handle == 0)
+    {
+      DEBUG ("Invalid from: %s", jid);
+      return;
+    }
 
   if (handle == base->self_handle)
     /* Ignore echoed pubsub notifications */
-    return TRUE;
+    goto out;
 
-  extract_activities (conn, msg, handle);
+  extract_activities (conn, stanza, handle);
   activities = get_buddy_activities (conn, handle);
   gabble_svc_olpc_buddy_info_emit_activities_changed (conn, handle,
       activities);
   free_activities (activities);
-  return TRUE;
+out:
+  tp_handle_unref (contact_repo, handle);
 }
 
 static GabbleOlpcActivity *
@@ -1305,36 +1413,50 @@ extract_current_activity (GabbleConnection *conn,
   return activity;
 }
 
-static LmHandlerResult
-get_current_activity_reply_cb (GabbleConnection *conn,
-                               LmMessage *sent_msg,
-                               LmMessage *reply_msg,
-                               GObject *object,
-                               gpointer user_data)
+static void
+get_current_activity_reply_cb (GObject *source,
+    GAsyncResult *res,
+    gpointer user_data)
 {
-  DBusGMethodInvocation *context = user_data;
+  pubsub_query_ctx *ctx = (pubsub_query_ctx *) user_data;
+  WockyXmppStanza *reply_msg;
+  GError *error = NULL;
   LmMessageNode *node;
   const gchar *from;
   GabbleOlpcActivity *activity;
+
+  reply_msg = wocky_pep_service_get_finish (WOCKY_PEP_SERVICE (source), res,
+      &error);
+  if (reply_msg == NULL)
+    {
+      GError err = { TP_ERRORS, TP_ERROR_NETWORK_ERROR,
+        "Failed to send property request to server" };
+
+      DEBUG ("Query failed: %s", error->message);
+
+      dbus_g_method_return_error (ctx->context, &err);
+      g_error_free (error);
+      goto out;
+    }
 
   if (lm_message_get_sub_type (reply_msg) != LM_MESSAGE_SUB_TYPE_RESULT)
     {
       DEBUG ("Failed to query PEP node. No current activity");
 
-      gabble_svc_olpc_buddy_info_return_from_get_current_activity (context,
+      gabble_svc_olpc_buddy_info_return_from_get_current_activity (ctx->context,
           "", 0);
 
-      return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+      goto out;
     }
 
   from = lm_message_node_get_attribute (reply_msg->node, "from");
   node = lm_message_node_find_child (reply_msg->node, "activity");
-  activity = extract_current_activity (conn, node, from, TRUE);
+  activity = extract_current_activity (ctx->conn, node, from, TRUE);
   if (activity == NULL)
     {
       DEBUG ("GetCurrentActivity returns no activity");
 
-      gabble_svc_olpc_buddy_info_return_from_get_current_activity (context,
+      gabble_svc_olpc_buddy_info_return_from_get_current_activity (ctx->context,
           "", 0);
     }
   else
@@ -1342,24 +1464,29 @@ get_current_activity_reply_cb (GabbleConnection *conn,
       DEBUG ("GetCurrentActivity returns (\"%s\", room#%u)", activity->id,
           activity->room);
 
-      gabble_svc_olpc_buddy_info_return_from_get_current_activity (context,
+      gabble_svc_olpc_buddy_info_return_from_get_current_activity (ctx->context,
           activity->id, activity->room);
     }
 
-  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+out:
+  pubsub_query_ctx_free (ctx);
+  if (reply_msg != NULL)
+    g_object_unref (reply_msg);
 }
 
 static void
 olpc_buddy_info_get_current_activity (GabbleSvcOLPCBuddyInfo *iface,
-                                      guint contact,
+                                      guint handle,
                                       DBusGMethodInvocation *context)
 {
   GabbleConnection *conn = GABBLE_CONNECTION (iface);
   TpBaseConnection *base = (TpBaseConnection *) conn;
   const gchar *jid;
   GabbleOlpcActivity *activity;
+  pubsub_query_ctx *ctx;
+  WockyBareContact *contact;
 
-  DEBUG ("called for contact#%u", contact);
+  DEBUG ("called for contact#%u", handle);
 
   gabble_connection_ensure_capabilities (conn,
       gabble_capabilities_get_olpc_notify ());
@@ -1367,12 +1494,12 @@ olpc_buddy_info_get_current_activity (GabbleSvcOLPCBuddyInfo *iface,
   if (!check_pep (conn, context))
     return;
 
-  jid = inspect_contact (base, context, contact);
+  jid = inspect_contact (base, context, handle);
   if (jid == NULL)
     return;
 
   activity = g_hash_table_lookup (conn->olpc_current_act,
-      GUINT_TO_POINTER (contact));
+      GUINT_TO_POINTER (handle));
   if (activity != NULL)
     {
       DEBUG ("found current activity in cache: %s (%u)", activity->id,
@@ -1385,14 +1512,13 @@ olpc_buddy_info_get_current_activity (GabbleSvcOLPCBuddyInfo *iface,
 
     DEBUG ("current activity not in cache, query PEP node");
 
-    if (!pubsub_query (conn, jid, NS_OLPC_CURRENT_ACTIVITY,
-        get_current_activity_reply_cb, context))
-    {
-      GError error = { TP_ERRORS, TP_ERROR_NETWORK_ERROR,
-        "Failed to send property request to server" };
+  ctx = pubsub_query_ctx_new (conn, context);
+  contact = ensure_bare_contact_from_jid (conn, jid);
 
-      dbus_g_method_return_error (context, &error);
-    }
+  wocky_pep_service_get_async (conn->pep_olpc_current_act, contact,
+      NULL, get_current_activity_reply_cb, ctx);
+
+  g_object_unref (contact);
 }
 
 static LmHandlerResult
@@ -1447,7 +1573,7 @@ olpc_buddy_info_set_current_activity (GabbleSvcOLPCBuddyInfo *iface,
   GabbleConnection *conn = GABBLE_CONNECTION (iface);
   TpBaseConnection *base = (TpBaseConnection *) conn;
   LmMessage *msg;
-  LmMessageNode *publish;
+  WockyXmppNode *item, *publish;
   const gchar *room = "";
 
   DEBUG ("called");
@@ -1475,8 +1601,10 @@ olpc_buddy_info_set_current_activity (GabbleSvcOLPCBuddyInfo *iface,
         }
     }
 
-  msg = pubsub_make_publish_msg (NULL, NS_OLPC_CURRENT_ACTIVITY,
-      NS_OLPC_CURRENT_ACTIVITY, "activity", &publish);
+  msg = wocky_pep_service_make_publish_stanza (conn->pep_olpc_current_act,
+      &item);
+  publish = wocky_xmpp_node_add_child_ns (item, "activity",
+      NS_OLPC_CURRENT_ACTIVITY);
 
   lm_message_node_set_attributes (publish,
       "type", activity,
@@ -1495,24 +1623,35 @@ olpc_buddy_info_set_current_activity (GabbleSvcOLPCBuddyInfo *iface,
   lm_message_unref (msg);
 }
 
-gboolean
-olpc_buddy_info_current_activity_event_handler (GabbleConnection *conn,
-                                                LmMessage *msg,
-                                                TpHandle handle)
+static void
+olpc_current_act_pep_node_changed (WockyPepService *pep,
+    WockyBareContact *contact,
+    WockyXmppStanza *stanza,
+    GabbleConnection *conn)
 {
+  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
+      (TpBaseConnection *) conn, TP_HANDLE_TYPE_CONTACT);
   TpBaseConnection *base = (TpBaseConnection *) conn;
   LmMessageNode *node;
-  const gchar *from;
   GabbleOlpcActivity *activity;
+  TpHandle handle;
+  const gchar *jid;
+
+  jid = wocky_bare_contact_get_jid (contact);
+  handle = tp_handle_ensure (contact_repo, jid, NULL, NULL);
+  if (handle == 0)
+    {
+      DEBUG ("Invalid from: %s", jid);
+      return;
+    }
 
   if (handle == base->self_handle)
     /* Ignore echoed pubsub notifications */
-    return TRUE;
+    goto out;
 
-  from = lm_message_node_get_attribute (msg->node, "from");
-  node = lm_message_node_find_child (msg->node, "activity");
+  node = lm_message_node_find_child (stanza->node, "activity");
 
-  activity = extract_current_activity (conn, node, from, TRUE);
+  activity = extract_current_activity (conn, node, jid, TRUE);
   if (activity != NULL)
     {
       DEBUG ("emitting CurrentActivityChanged(contact#%u, ID \"%s\", room#%u)",
@@ -1528,7 +1667,8 @@ olpc_buddy_info_current_activity_event_handler (GabbleConnection *conn,
           "", 0);
     }
 
-  return TRUE;
+out:
+  tp_handle_unref (contact_repo, handle);
 }
 
 void
@@ -1556,13 +1696,16 @@ upload_activity_properties_pep (GabbleConnection *conn,
                                 GError **error)
 {
   TpBaseConnection *base = (TpBaseConnection *) conn;
-  LmMessageNode *publish;
-  LmMessage *msg = pubsub_make_publish_msg (NULL, NS_OLPC_ACTIVITY_PROPS,
-      NS_OLPC_ACTIVITY_PROPS, "activities", &publish);
+  LmMessageNode *publish, *item;
+  LmMessage *msg;
   GError *e = NULL;
   gboolean ret;
   TpHandleSet *my_activities = g_hash_table_lookup (conn->olpc_pep_activities,
       GUINT_TO_POINTER (base->self_handle));
+
+  msg = wocky_pep_service_make_publish_stanza (conn->pep_olpc_act_props, &item);
+  publish = wocky_xmpp_node_add_child_ns (item, "activities",
+      NS_OLPC_ACTIVITY_PROPS);
 
   if (my_activities != NULL)
     {
@@ -2061,21 +2204,33 @@ update_activities_properties (GabbleConnection *conn,
   return TRUE;
 }
 
-gboolean
-olpc_activities_properties_event_handler (GabbleConnection *conn,
-                                          LmMessage *msg,
-                                          TpHandle handle)
+static void
+olpc_act_props_pep_node_changed (WockyPepService *pep,
+    WockyBareContact *contact,
+    WockyXmppStanza *stanza,
+    GabbleConnection *conn)
 {
+  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
+      (TpBaseConnection *) conn, TP_HANDLE_TYPE_CONTACT);
   TpBaseConnection *base = (TpBaseConnection *) conn;
-  const gchar *from;
+  TpHandle handle;
+  const gchar *jid;
+
+  jid = wocky_bare_contact_get_jid (contact);
+  handle = tp_handle_ensure (contact_repo, jid, NULL, NULL);
+  if (handle == 0)
+    {
+      DEBUG ("Invalid from: %s", jid);
+      return;
+    }
 
   if (handle == base->self_handle)
     /* Ignore echoed pubsub notifications */
-    return TRUE;
+    goto out;
 
-  from = lm_message_node_get_attribute (msg->node, "from");
-
-  return update_activities_properties (conn, from, msg);
+  update_activities_properties (conn, jid, stanza);
+out:
+  tp_handle_unref (contact_repo, handle);
 }
 
 static void
@@ -3645,6 +3800,26 @@ conn_olpc_activity_properties_init (GabbleConnection *conn)
 
   g_signal_connect (conn->olpc_gadget_manager, "new-channels",
       G_CALLBACK (gadget_manager_new_channels_cb), conn);
+
+  conn->pep_olpc_buddy_props = wocky_pep_service_new (NS_OLPC_BUDDY_PROPS,
+      TRUE);
+  g_signal_connect (conn->pep_olpc_buddy_props, "changed",
+      G_CALLBACK (olpc_buddy_props_pep_node_changed), conn);
+
+  conn->pep_olpc_activities = wocky_pep_service_new (NS_OLPC_ACTIVITIES,
+      TRUE);
+  g_signal_connect (conn->pep_olpc_activities, "changed",
+      G_CALLBACK (olpc_activities_pep_node_changed), conn);
+
+  conn->pep_olpc_current_act = wocky_pep_service_new (NS_OLPC_CURRENT_ACTIVITY,
+      TRUE);
+  g_signal_connect (conn->pep_olpc_current_act, "changed",
+      G_CALLBACK (olpc_current_act_pep_node_changed), conn);
+
+  conn->pep_olpc_act_props = wocky_pep_service_new (NS_OLPC_ACTIVITY_PROPS,
+      TRUE);
+  g_signal_connect (conn->pep_olpc_act_props, "changed",
+      G_CALLBACK (olpc_act_props_pep_node_changed), conn);
 }
 
 static void

@@ -28,22 +28,6 @@
 void
 olpc_buddy_info_iface_init (gpointer g_iface, gpointer iface_data);
 
-gboolean
-olpc_buddy_info_properties_event_handler (GabbleConnection *conn,
-    LmMessage *msg, TpHandle handle);
-
-gboolean
-olpc_buddy_info_activities_event_handler (GabbleConnection *conn,
-    LmMessage *msg, TpHandle handle);
-
-gboolean
-olpc_buddy_info_current_activity_event_handler (GabbleConnection *conn,
-    LmMessage *msg, TpHandle handle);
-
-gboolean
-olpc_activities_properties_event_handler (GabbleConnection *conn,
-    LmMessage *msg, TpHandle handle);
-
 void gabble_connection_connected_olpc (GabbleConnection *conn);
 
 void

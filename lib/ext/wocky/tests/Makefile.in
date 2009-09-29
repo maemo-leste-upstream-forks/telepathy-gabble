@@ -45,7 +45,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/shave.m4 $(top_srcdir)/m4/tp-compiler-flag.m4 \
+	$(top_srcdir)/m4/tp-compiler-flag.m4 \
 	$(top_srcdir)/m4/tp-compiler-warnings.m4 \
 	$(top_srcdir)/m4/wocky-gcov.m4 $(top_srcdir)/m4/wocky-lcov.m4 \
 	$(top_srcdir)/configure.ac
@@ -62,8 +62,8 @@ am__EXEEXT_2 = wocky-xmpp-reader-test$(EXEEXT) \
 	wocky-roster-test$(EXEEXT) wocky-bare-contact-test$(EXEEXT) \
 	wocky-resource-contact-test$(EXEEXT) \
 	wocky-contact-factory-test$(EXEEXT) \
-	wocky-connector-test$(EXEEXT) wocky-session-test$(EXEEXT) \
-	$(am__EXEEXT_1)
+	wocky-session-test$(EXEEXT) wocky-pep-service-test$(EXEEXT) \
+	wocky-connector-test$(EXEEXT) $(am__EXEEXT_1)
 am_wocky_bare_contact_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-bare-contact-test.$(OBJEXT)
 wocky_bare_contact_test_OBJECTS =  \
@@ -84,6 +84,10 @@ am_wocky_contact_factory_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 wocky_contact_factory_test_OBJECTS =  \
 	$(am_wocky_contact_factory_test_OBJECTS)
 wocky_contact_factory_test_LDADD = $(LDADD)
+am_wocky_pep_service_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
+	wocky-test-stream.$(OBJEXT) wocky-pep-service-test.$(OBJEXT)
+wocky_pep_service_test_OBJECTS = $(am_wocky_pep_service_test_OBJECTS)
+wocky_pep_service_test_LDADD = $(LDADD)
 am_wocky_porter_test_OBJECTS = wocky-porter-test.$(OBJEXT) \
 	wocky-test-helper.$(OBJEXT) wocky-test-stream.$(OBJEXT)
 wocky_porter_test_OBJECTS = $(am_wocky_porter_test_OBJECTS)
@@ -147,7 +151,7 @@ LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_connector_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
-	$(wocky_porter_test_SOURCES) \
+	$(wocky_pep_service_test_SOURCES) $(wocky_porter_test_SOURCES) \
 	$(wocky_resource_contact_test_SOURCES) \
 	$(wocky_roster_test_SOURCES) $(wocky_session_test_SOURCES) \
 	$(wocky_test_sasl_auth_SOURCES) \
@@ -159,7 +163,7 @@ SOURCES = $(wocky_bare_contact_test_SOURCES) \
 DIST_SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_connector_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
-	$(wocky_porter_test_SOURCES) \
+	$(wocky_pep_service_test_SOURCES) $(wocky_porter_test_SOURCES) \
 	$(wocky_resource_contact_test_SOURCES) \
 	$(wocky_roster_test_SOURCES) $(wocky_session_test_SOURCES) \
 	$(wocky_test_sasl_auth_SOURCES) \
@@ -175,7 +179,6 @@ ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
-AM_MAKEFLAGS = @AM_MAKEFLAGS@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -188,7 +191,6 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CXX = @CXX@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
@@ -204,8 +206,6 @@ ENABLE_GTK_DOC_FALSE = @ENABLE_GTK_DOC_FALSE@
 ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 ERROR_CFLAGS = @ERROR_CFLAGS@
 EXEEXT = @EXEEXT@
-F77 = @F77@
-FC = @FC@
 FFLAGS = @FFLAGS@
 FGREP = @FGREP@
 GCOV = @GCOV@
@@ -242,13 +242,10 @@ LIBXML2_LIBS = @LIBXML2_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
-MAKEFLAGS = @MAKEFLAGS@
 MAKEINFO = @MAKEINFO@
-MCS = @MCS@
 MOSTLYCLEANFILES = @MOSTLYCLEANFILES@
 NM = @NM@
 NMEDIT = @NMEDIT@
-OBJC = @OBJC@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OTOOL = @OTOOL@
@@ -262,13 +259,11 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
-Q = @Q@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-V = @V@
 VERSION = @VERSION@
 WOCKY_CFLAGS = @WOCKY_CFLAGS@
 ac_ct_CC = @ac_ct_CC@
@@ -315,7 +310,6 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
-shavedir = @shavedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
@@ -346,8 +340,7 @@ CAS := $(CA_CERT) $(CA_CERT2) $(CA_CERT3)
 CRL := $(CERT_DIR)/ca-0-crl.pem
 UNKNOWN_KEY := $(CERT_DIR)/unknown-key.pem
 UNKNOWN_CERT := $(CERT_DIR)/unknown-cert.pem
-PRES := new exp ca-0
-PRESERVE := $(foreach y,cert key,$(foreach x,$(PRES),certs/$(x)-$(y).pem))
+PRES := new exp ca-0 ca-1 ca-2 rev ss tls unknown
 CERTS := $(TLS_CERT) $(NEW_CERT) $(EXP_CERT) $(SS_CERT) $(REV_CERT) \
             $(UNKNOWN_CERT)
 
@@ -369,10 +362,6 @@ TLSDEFS := -DTLS_CA_KEY_FILE='"$(CA_KEY)"'      \
             -DTLS_CRL_DIR='"$(CRL_DIR)"'         \
             -DTLS_CA_DIR='"$(CA_DIR)"'
 
-DUMMY := $(if $(shell which certtool),                  \
-                 $(info  certtool  installed, proceeding), \
-                 $(error certtool NOT IN PATH - please install gnutls-bin))
-
 DAY := 86400
 YEAR := 365 * $(DAY)
 TIMEWARP := 28 * $(YEAR)
@@ -384,8 +373,8 @@ TEST_PROGS = wocky-xmpp-reader-test wocky-xmpp-readwrite-test \
 	wocky-xmpp-connection-test wocky-porter-test \
 	wocky-xmpp-node-test wocky-xmpp-stanza-test wocky-roster-test \
 	wocky-bare-contact-test wocky-resource-contact-test \
-	wocky-contact-factory-test wocky-connector-test \
-	wocky-session-test $(am__append_1)
+	wocky-contact-factory-test wocky-session-test \
+	wocky-pep-service-test wocky-connector-test $(am__append_1)
 wocky_xmpp_connection_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_xmpp_connection_test_SOURCES = \
   wocky-xmpp-connection-test.c \
@@ -404,7 +393,7 @@ wocky_xmpp_reader_test_SOURCES = \
   wocky-test-stream.c wocky-test-stream.h \
   wocky-xmpp-reader-test.c
 
-wocky_connector_test_DEPENDENCIES = $(CRL_DIR) $(CA_DIR) $(CERTS) $(LIBWOCKY)
+wocky_connector_test_DEPENDENCIES = $(CRL_DIR) $(CA_DIR) certs $(LIBWOCKY)
 wocky_connector_test_SOURCES = \
    wocky-connector-test.c        \
    wocky-test-sasl-auth-server.c \
@@ -476,6 +465,12 @@ wocky_session_test_SOURCES = \
   wocky-test-stream.c wocky-test-stream.h \
   wocky-session-test.c
 
+wocky_pep_service_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_pep_service_test_SOURCES = \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h \
+  wocky-pep-service-test.c
+
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @WOCKY_CFLAGS@
 AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@
 LDADD = $(top_builddir)/wocky/libwocky.la
@@ -497,6 +492,7 @@ EXTRA_DIST = $(SUPPRESSIONS)     \
 	$(wildcard certs/*.pem)      \
 	$(wildcard certs/cas/*.pem)  \
 	certs/crl                    \
+	certs/cas                    \
 	$(wildcard certs/crl/*.pem)
 
 all: all-am
@@ -547,6 +543,9 @@ wocky-connector-test$(EXEEXT): $(wocky_connector_test_OBJECTS) $(wocky_connector
 wocky-contact-factory-test$(EXEEXT): $(wocky_contact_factory_test_OBJECTS) $(wocky_contact_factory_test_DEPENDENCIES) 
 	@rm -f wocky-contact-factory-test$(EXEEXT)
 	$(LINK) $(wocky_contact_factory_test_LDFLAGS) $(wocky_contact_factory_test_OBJECTS) $(wocky_contact_factory_test_LDADD) $(LIBS)
+wocky-pep-service-test$(EXEEXT): $(wocky_pep_service_test_OBJECTS) $(wocky_pep_service_test_DEPENDENCIES) 
+	@rm -f wocky-pep-service-test$(EXEEXT)
+	$(LINK) $(wocky_pep_service_test_LDFLAGS) $(wocky_pep_service_test_OBJECTS) $(wocky_pep_service_test_LDADD) $(LIBS)
 wocky-porter-test$(EXEEXT): $(wocky_porter_test_OBJECTS) $(wocky_porter_test_DEPENDENCIES) 
 	@rm -f wocky-porter-test$(EXEEXT)
 	$(LINK) $(wocky_porter_test_LDFLAGS) $(wocky_porter_test_OBJECTS) $(wocky_porter_test_LDADD) $(LIBS)
@@ -586,6 +585,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-bare-contact-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact-factory-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-porter-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-resource-contact-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-roster-test.Po@am__quote@
@@ -951,11 +951,13 @@ uninstall-am: uninstall-info-am
 	tags uninstall uninstall-am uninstall-info-am
 
 
-.PRECIOUS: %-key.pem $(CA_CERT) $(PRESERVE)
+.PRECIOUS: %.pem
 
 all: $(TEST_PROGS)
 
 certs: $(CERTS)
+certs: $(CRL_DIR)/ca-0-crl.pem 
+certs: $(foreach x,0 1 2,$(CA_DIR)/ca-$(x)-cert.pem)
 
 test-report: test-report.xml
 	gtester-report $(top_builddir)/tests/$@.xml > \
@@ -969,7 +971,7 @@ test: ${TEST_PROGS}
 test-%: wocky-%-test
 	gtester -o $@-report.xml -k --verbose $<
 
-.PHONY: test test-report
+.PHONY: test test-report certs
 check-coding-style:
 	@fail=0; \
 	if test -n "$(check_misc_sources)"; then \
@@ -992,7 +994,17 @@ check-local: test check-coding-style
 
 ############################################################################
 # x509 certificates:
-%-key.pem:
+certtool:
+	@echo $(or $(shell test -x "$(CERTTOOL)" && echo $@ OK),   \
+	           $(error Need $@ to rebuild expired/inactive certificates))
+	@touch $@
+
+tardis:
+	@echo $(or $(shell test -x "$(TARDIS)" && echo $@ OK),   \
+	           $(error Need $@ to rebuild expired/inactive certificates))
+	@touch $@
+
+%-key.pem: | certtool
 	$(GENKEY) $@
 
 %/ss-cert.pem: %/ss-key.pem %/ss-cert.cfg
@@ -1007,15 +1019,7 @@ check-local: test check-coding-style
 	            --template     $(basename $@).cfg \
 	            --outfile      $@ 2>&1 | $(FILTER_BITS)
 
-%/unknown-cert.pem: %/unknown-key.pem %/unknown-cert.cfg %/unknown-ca-cert.pem
-	$(CERTTOOL) --generate-certificate                           \
-                --load-ca-certificate $*/unknown-ca-cert.pem     \
-	            --load-ca-privkey     $*/unknown-ca-key.pem      \
-	            --load-privkey        $<                         \
-	            --template            $*/unknown-cert.cfg        \
-	            --outfile             $@ 2>&1 | $(FILTER_BITS)
-
-$(CERT_DIR)/ca-%-cert.pem: $(CERT_DIR)/ca-%-key.pem $(CERT_DIR)/ca-%-cert.cfg
+certs/ca-%-cert.pem $(CERT_DIR)/ca-%-cert.pem: $(CERT_DIR)/ca-%-key.pem $(CERT_DIR)/ca-%-cert.cfg
 	$(CERTTOOL) --generate-self-signed            \
 	            --load-privkey $<                 \
 	            --template     $(basename $@).cfg \
@@ -1026,16 +1030,28 @@ $(CERT_DIR)/ca-%-cert.pem: $(CERT_DIR)/ca-%-key.pem $(CERT_DIR)/ca-%-cert.cfg
 %/new-cert.pem: export CERTCMD = $(TARDIS) "$(FUTURE)" $(CERTTOOL)
 %/exp-cert.pem: export CERTCMD = $(TARDIS) "$(PAST)"   $(CERTTOOL)
 
-%-cert.pem: %-key.pem %-cert.cfg $(CA_CERT)
+$(NEW_CERT) $(EXP_CERT) certs/exp-cert.pem certs/new-cert.pem: | tardis
+
+%/unknown-cert.pem: export CERTCMD = $(CERTTOOL)
+%/unknown-cert.pem: export CA_CERT = $*/unknown-ca-cert.pem
+%/unknown-cert.pem: export CA_KEY  = $*/unknown-ca-key.pem
+
+%/unknown-cert.pem: %/unknown-key.pem %/unknown-cert.cfg %/unknown-ca-cert.pem
+	$(CERTTOOL) --generate-certificate                       \
+                --load-ca-certificate $*/unknown-ca-cert.pem \
+	            --load-ca-privkey     $*/unknown-ca-key.pem  \
+	            --load-privkey        $*/unknown-key.pem     \
+	            --template            $*/unknown-cert.cfg    \
+	            --outfile             $@ 2>&1 | $(FILTER_BITS)
+
+%-cert.pem: %-key.pem %-cert.cfg $(CA_CERT) | certtool
+	@echo "CERTIFICATE $@ ($(CERTCMD)): $^"
 	$(CERTCMD)  --generate-certificate                   \
                 --load-ca-certificate $(CA_CERT)         \
 	            --load-ca-privkey     $(CA_KEY)	         \
 	            --load-privkey        $<                 \
 	            --template            $*-cert.cfg        \
 	            --outfile             $@ 2>&1 | $(FILTER_BITS)
-
-$(CA_DIR): $(CAS)
-	@mkdir -p $@ && cp -av $(CAS) $(CA_DIR)
 
 $(CRL): $(REV_CERT) $(CA_CERT) $(CA_KEY)
 	$(CERTTOOL) --generate-crl        \
@@ -1045,18 +1061,18 @@ $(CRL): $(REV_CERT) $(CA_CERT) $(CA_KEY)
 	            --load-certificate    $(REV_CERT) \
                 --outfile             $@ 2>&1 | $(FILTER_BITS)
 
-$(CRL_DIR): $(CRL)
-	@( mkdir -p $@ &&                                \
-	   if cmp $(CRL) $(CRL_DIR)/$(notdir $(CRL));    \
-	   then                                          \
-	       echo -n;                                  \
-	   else                                          \
-	       ln -sfv $(CRL) $(CRL_DIR);                \
-	   fi );
+$(CA_DIR) $(CRL_DIR):
+	@mkdir -p $@
+
+$(CA_DIR)/%.pem: $(CERT_DIR)/%.pem
+	@cp -av $< $@
+
+$(CRL_DIR)/%.pem: $(CERT_DIR)/%.pem
+	@cp -av $< $@
 
 clean-local:
-	rm -fv certs/*.crl
-	rm -fv $(filter-out $(PRESERVE), $(wildcard certs/*.pem))
+	@rm -f certtool
+	@rm -f tardis
 	rm -fv certs/cas/*.pem
 	rm -fv certs/crl/*.pem
 

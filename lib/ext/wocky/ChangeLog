@@ -1,3 +1,566 @@
+commit f9601a319d69fd59124c68a0f8be57d4399df0da
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Sep 29 17:21:31 2009 +0100
+
+    wocky-pep-service: fix include of Wocky files
+
+ wocky/wocky-pep-service.c |    8 ++++----
+ wocky/wocky-pep-service.h |    4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 198e665a5b8bce4bdfac9cadcaf0eb0f054046d7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Sep 25 12:39:16 2009 +0100
+
+    Make building the marshal.list quieter.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/Makefile.am |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit d0146e0d3e3e295b9711ab9681c81d05e3224f93
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Sep 24 19:45:00 2009 +0100
+
+    Move from shave to automake 1.11's silent rules system.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ .gitignore        |    5 +--
+ autogen.sh        |    9 ----
+ configure.ac      |    8 +--
+ m4/Makefile.am    |    3 +-
+ m4/shave.m4       |  102 -------------------------------------------------
+ shave-libtool.in  |  109 -----------------------------------------------------
+ shave.in          |  109 -----------------------------------------------------
+ tools/Makefile.am |    1 -
+ tools/shave.mk    |    1 -
+ wocky/Makefile.am |    9 ++--
+ 10 files changed, 9 insertions(+), 347 deletions(-)
+
+commit b90ce738c61f084ca4854709cda3103c9ef7eff6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 21 17:48:00 2009 +0100
+
+    test wocky_pep_service_make_publish_stanza
+
+ tests/wocky-pep-service-test.c |   39 +++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 39 insertions(+), 0 deletions(-)
+
+commit bd958bdb099057e25dcfcdf0cf4997fdc2c9693b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 21 17:40:12 2009 +0100
+
+    test wocky_pep_service_get_async
+
+ tests/wocky-pep-service-test.c |   90 ++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 90 insertions(+), 0 deletions(-)
+
+commit e1c1d273cca722b280e7cc41969a82e78dcf4d3a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 21 17:28:30 2009 +0100
+
+    wocky-pep-service-test: test 'changed' signal
+
+ tests/wocky-pep-service-test.c |   83 ++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 83 insertions(+), 0 deletions(-)
+
+commit 2223be661d6a5e1d015f5ba9d08b94a2a2d9e911
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 21 17:17:31 2009 +0100
+
+    wocky-pep-service: add a debug msg
+
+ wocky/wocky-pep-service.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
+commit a75a44766c6451b3789b7ec3461efa1d1d32d3b9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 17 15:13:54 2009 +0100
+
+    add pubsub debug flag
+
+ wocky/wocky-debug.c |    1 +
+ wocky/wocky-debug.h |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+
+commit a0c102d5ff551eaca0b96de0584dd69f129da036
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 21 16:14:20 2009 +0100
+
+    add wocky-pep-service-test.c
+
+ .gitignore                     |    1 +
+ tests/Makefile.am              |    7 +++++++
+ tests/wocky-pep-service-test.c |   38 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 46 insertions(+), 0 deletions(-)
+
+commit 853f1f634e40a2a2b72b9409036ebf90e54368ea
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 21 16:09:25 2009 +0100
+
+    build wocky-pep-service
+
+ wocky/Makefile.am |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 2974927e81d77dc2223e31dbc04edb05feeadaf2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 21 16:09:15 2009 +0100
+
+    wocky-pep-service: use Wocky's signal marshallers
+
+ wocky/wocky-pep-service.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 2274057dbb094016e86a42fcd2c4d47f91d14807
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Fri Sep 25 10:34:27 2009 +0100
+
+    import wocky-pep-service.[ch] from Gabble
+
+ wocky/wocky-pep-service.c |  362 +++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-pep-service.h |   80 ++++++++++
+ 2 files changed, 442 insertions(+), 0 deletions(-)
+
+commit 76cf91722c1e1826750b9e396e119caddd675311
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 24 18:07:23 2009 +0100
+
+    factor out common code of test_wait_iq_reply_close and test_wait_iq_reply_force_close to a function
+
+ tests/wocky-porter-test.c |   80 ++++++++++++++++++--------------------------
+ 1 files changed, 33 insertions(+), 47 deletions(-)
+
+commit b54f1004fa279e184162130834d1609cce5791b0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 24 18:00:05 2009 +0100
+
+    rename complete_pending_send_iq to abort_pending_iqs
+
+ wocky/wocky-porter.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 7ececb0027aa22b504b81917caaf51b6bc2024dc
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 24 17:53:46 2009 +0100
+
+    rename WOCKY_PORTER_ERROR_FORCE_CLOSING to WOCKY_PORTER_ERROR_FORCIBLY_CLOSED
+
+ tests/wocky-porter-test.c |    8 +++++---
+ wocky/wocky-porter.c      |    4 ++--
+ wocky/wocky-porter.h      |    2 +-
+ 3 files changed, 8 insertions(+), 6 deletions(-)
+
+commit 6903df4c7c6b3545101b6d879134c4cb6d515684
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 24 15:49:05 2009 +0100
+
+    wocky_porter_force_close_async: re-use the same GError to set the error on all the results
+
+ wocky/wocky-porter.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 03d2273f68a9bf49746740a959f10b940eb50570
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 24 15:47:57 2009 +0100
+
+    error code when terminating send operations because of a force closing should be WOCKY_PORTER_ERROR_FORCE_CLOSING
+
+ tests/wocky-porter-test.c |    2 +-
+ wocky/wocky-porter.c      |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit c8f08025cda5419be3c011c5b338cbbc8841900e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 24 15:43:47 2009 +0100
+
+    test that pending send IQ operation are complete when we force the closing of our porter
+
+ tests/wocky-porter-test.c |   72 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 72 insertions(+), 0 deletions(-)
+
+commit 8eef61f1f410763625904ba419b47ce79727d785
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 24 15:42:33 2009 +0100
+
+    complete pending send IQ operations when we force the closing of the porter
+
+ wocky/wocky-porter.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 3fbce0242bfe600227e77d1edfd4402426dd5be6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 24 15:42:07 2009 +0100
+
+    factor out complete_pending_send_iq
+
+ wocky/wocky-porter.c |   27 ++++++++++++++++++---------
+ 1 files changed, 18 insertions(+), 9 deletions(-)
+
+commit 104bae4b182ade5d2942bfcd18511f7eb927572d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 24 15:14:48 2009 +0100
+
+    pass the reason of the disconnection to the send IQ callback
+
+ tests/wocky-porter-test.c |    3 ++-
+ wocky/wocky-porter.c      |    4 +---
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+commit 481054a85e50a0c5b584d2a6e95b2fff33ccb604
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 24 15:08:44 2009 +0100
+
+    complete send IQ operations before signalling the closing of the remote connection
+
+ wocky/wocky-porter.c |   26 +++++++++++++-------------
+ 1 files changed, 13 insertions(+), 13 deletions(-)
+
+commit 7a91dcc4b4f9a39c99d839b72745ee367c97719e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 24 14:58:50 2009 +0100
+
+    test that pending send IQ operation are complete when the remote connection is closed
+
+ tests/wocky-porter-test.c |   70 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 70 insertions(+), 0 deletions(-)
+
+commit 340cb5a7d92bbc91b186597827ad9b92c25fa5cf
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 24 14:57:12 2009 +0100
+
+    porter: complete pending send IQ operations when the remote connection is closed
+    
+    We won't be able to receive the IQ reply so we have to complete the
+    operation.
+
+ wocky/wocky-porter.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+
+commit a797ccc3b304be3a662e349189896dab2777fa31
+Merge: 16ce7be 76a008f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Wed Sep 23 22:05:25 2009 +0100
+
+    Merge branch 'cosmetics'
+    
+    Reviewed-by: Sjoerd Simons
+
+commit 76a008fd90eeb1f5ca92f866c76029ed9650449c
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Wed Sep 23 18:29:48 2009 +0100
+
+    cosmetics: remove adscititious newlines
+
+ tests/wocky-test-connector-server.c |   24 ++++++++++++------------
+ wocky/wocky-connector.c             |    6 +++---
+ wocky/wocky-porter.c                |    2 +-
+ 3 files changed, 16 insertions(+), 16 deletions(-)
+
+commit 16ce7be592b94c5f50c3ca4010f90247ef1d48f4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Tue Sep 22 17:08:36 2009 +0100
+
+    copy wocky_g_value_slice_* helpers from telepathy-glib
+
+ wocky/wocky-utils.c |  331 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-utils.h |   22 ++++
+ 2 files changed, 353 insertions(+), 0 deletions(-)
+
+commit 9b3de37e9b99af2abaf4cee045ba42a548d970b2
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Sep 21 16:21:17 2009 +0100
+
+    Make sure we include the username in the jabber auth iq get stanza.
+
+ tests/wocky-test-connector-server.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+
+commit 252c938262d0ddab12fff62c226700354a8f11cf
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Sep 21 16:16:07 2009 +0100
+
+    Include <username>...</username> in jabber auth iq get stanza. (Bug #24013)
+    
+    Not required by XEP 0078 but required by some implementations.
+    Not forbidden by XEP 0078.
+    Conforms to Gabble 0.8.x behaviour.
+
+ wocky/wocky-connector.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit a2ec0dbefa807527190dd46bd5d5044f1eb2d09e
+Merge: 7b80feb b30b339
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Sep 21 17:31:43 2009 +0100
+
+    Merge build-system-fixes branch (certtool, sasl.h dependency fixes)
+
+commit b30b3398e687918114dfa9fe37b47c230782d8e9
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Sep 21 17:19:52 2009 +0100
+
+    Deleted blank lines undeleted.
+
+ tests/wocky-test-sasl-auth-server.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 1d291e099d4798f4894b8f3b1e3250ee16a4210a
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Sep 21 12:41:12 2009 +0100
+
+    CA and CRL directories should also be prerequisites of the connector test suite.
+
+ tests/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 242830f3765fecd9d7d8000b29069fa0cc965ca2
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Sep 21 12:37:40 2009 +0100
+
+    challenge is not free()d, so need not be assigned from g_strdup().
+
+ tests/wocky-test-sasl-auth-server.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit e00fc6ee1e51ada35f07ec44796a3c0454630a4e
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Sep 21 12:35:51 2009 +0100
+
+    Remove #warnings about missing libsasl2, use g_message instead.
+
+ tests/wocky-connector-test.c        |    7 ++++++-
+ tests/wocky-test-sasl-auth-server.c |    1 -
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+commit 8cf3f5ddaf64c4548b769f4fec4405796892b069
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Sep 21 11:44:08 2009 +0100
+
+    Git ignore wocky dist tarball.
+
+ .gitignore |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 4a3b664a89db37d7826784da8d5fb5a465cca9b8
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Sep 18 18:20:04 2009 +0100
+
+    Add certs/cas dir to variable to keep distcheck happy.
+
+ tests/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 9be3ec00e4abbdf349286073bd9aed5da47af3c0
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Sep 18 18:16:56 2009 +0100
+
+    fake PLAIN SASL and ignore other mechs when libsasl2 is unavailable.
+
+ tests/wocky-connector-test.c        |   15 ++++++++
+ tests/wocky-test-sasl-auth-server.c |   68 +++++++++++++++++++++++++++++++---
+ 2 files changed, 77 insertions(+), 6 deletions(-)
+
+commit cd2defdc0dceb507f1a7cbf209ce300c329a3a69
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Sep 18 18:16:15 2009 +0100
+
+    sasl/sasl.h not needed here.
+
+ tests/wocky-test-connector-server.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 4194158aca737f2b19995355399fb822d40b6626
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Sep 18 18:15:51 2009 +0100
+
+    Patterns must match both short and full qualified paths.
+    
+    This is down to use of @abs_top_srcdir@ conflicting with distcheck.
+
+ tests/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 767530fcf1e4bbcb5ea3605c782060ad599e3427
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Sep 18 18:02:56 2009 +0100
+
+    Populate the CA certificates and CRL subdirectories correctly.
+
+ tests/Makefile.am |   21 ++++++++++-----------
+ 1 files changed, 10 insertions(+), 11 deletions(-)
+
+commit d0507e7471660f7cf73ef7ed37e8cb45dd882309
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Sep 18 17:44:30 2009 +0100
+
+    More Makefile.am fixes to cope now that certificates are preserved by default.
+    
+    .PRECIOUS rule simplified to all PEM files
+    Binary check deps converted to order only prerequisites (to avoid rebuilding
+    certs just because we re-ran the certtool/datefudge binary checks)
+    Don't delete CRLs or PEM files at all.
+
+ tests/Makefile.am |   11 ++++-------
+ 1 files changed, 4 insertions(+), 7 deletions(-)
+
+commit ddc8177f5514685505121d51f9d02d9df1bdb6b8
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Sep 18 14:35:17 2009 +0100
+
+    Update make system to preserve generated certificates.
+    
+    Ability to generate certificates remains, but may depend on availability
+    of gnutls certtool and/or datefudge, which are checked for at runtime.
+
+ tests/Makefile.am |   47 ++++++++++++++++++++++++++++++++---------------
+ 1 files changed, 32 insertions(+), 15 deletions(-)
+
+commit c2cbc5346062e9260ab30e7c67bebc4a8f5460e3
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Sep 18 14:14:00 2009 +0100
+
+    Check in generated certs as we preserve these now.
+    
+    Note that this will all fall apart in 2037 some time; This change
+    means downstream won't need to include the cert generation tools
+    just to run the test suite.
+
+ .gitignore                     |   34 ++++++++++++++------------
+ tests/certs/ca-0-cert.pem      |   30 ++++++++++++------------
+ tests/certs/ca-0-crl.pem       |   13 ++++++++++
+ tests/certs/ca-0-key.pem       |   50 ++++++++++++++++++++--------------------
+ tests/certs/ca-1-cert.pem      |   23 ++++++++++++++++++
+ tests/certs/ca-1-key.pem       |   27 +++++++++++++++++++++
+ tests/certs/ca-2-cert.pem      |   23 ++++++++++++++++++
+ tests/certs/ca-2-key.pem       |   27 +++++++++++++++++++++
+ tests/certs/exp-cert.pem       |   30 ++++++++++++------------
+ tests/certs/exp-key.pem        |   27 +++++++++++++++++++++
+ tests/certs/new-cert.pem       |   30 ++++++++++++------------
+ tests/certs/new-key.pem        |   27 +++++++++++++++++++++
+ tests/certs/rev-cert.pem       |   24 +++++++++++++++++++
+ tests/certs/rev-key.pem        |   27 +++++++++++++++++++++
+ tests/certs/ss-cert.pem        |   24 +++++++++++++++++++
+ tests/certs/ss-key.pem         |   27 +++++++++++++++++++++
+ tests/certs/tls-cert.pem       |   24 +++++++++++++++++++
+ tests/certs/tls-key.pem        |   27 +++++++++++++++++++++
+ tests/certs/unknown-ca-key.pem |   27 +++++++++++++++++++++
+ tests/certs/unknown-cert.pem   |   25 ++++++++++++++++++++
+ tests/certs/unknown-key.pem    |   27 +++++++++++++++++++++
+ 21 files changed, 487 insertions(+), 86 deletions(-)
+
+commit 81f9f5c01fa2de1b8e18a94095dc9fa14422e66f
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Sep 18 14:10:22 2009 +0100
+
+    Certificates last "forever" now, extend their expiry in the config templates.
+
+ tests/certs/ca-0-crl.cfg        |    2 +-
+ tests/certs/ca-1-cert.cfg       |    2 +-
+ tests/certs/ca-2-cert.cfg       |    2 +-
+ tests/certs/rev-cert.cfg        |    2 +-
+ tests/certs/ss-cert.cfg         |    2 +-
+ tests/certs/tls-cert.cfg        |    2 +-
+ tests/certs/unknown-ca-cert.cfg |    2 +-
+ tests/certs/unknown-cert.cfg    |    2 +-
+ 8 files changed, 8 insertions(+), 8 deletions(-)
+
+commit 450b8108b718e406e2b34669f1b24e9aad48ee3f
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Sep 18 14:08:54 2009 +0100
+
+    Typo: temporary DEBUG2 macro no longer exists.
+
+ tests/wocky-test-connector-server.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 7c4e232f11cdb0bc0b5c1900a6d16e1d3698365e
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Sep 18 14:07:36 2009 +0100
+
+    Permit server initialiasation without an x509 certificate/key pair.
+
+ wocky/wocky-tls.c |   13 ++++++++-----
+ 1 files changed, 8 insertions(+), 5 deletions(-)
+
+commit f07d5bdfb587b2941265e29878b6d70d66b38868
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Sep 18 14:03:51 2009 +0100
+
+    Now preserving generated certs, so don't check for certtool at configure time.
+
+ configure.ac |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
+
+commit 0974c93aef7b46caee9552350d6ca0aa4d29912e
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Sep 17 17:32:44 2009 +0100
+
+    Add check for gnutls certtool in configure.ac
+
+ configure.ac |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 42e9edd8c5ee54203fed2fec384a465403e470f6
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Sep 17 16:46:11 2009 +0100
+
+    Check for sasl/sasl.h as well as libsasl2.so (no .pc, so no pkg-config)
+
+ configure.ac |   15 ++++++++-------
+ 1 files changed, 8 insertions(+), 7 deletions(-)
+
+commit 7b80feb0be0daf92e3e14079082c019bfc1386ab
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon Sep 21 15:55:19 2009 +0100
+
+    run wocky-connector-test last as it takes age to run
+
+ tests/Makefile.am |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 230ec0678e0fb55aeb30678f103ff89d37e56a1a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Thu Sep 17 15:14:11 2009 +0100
+
+    wocky-namespaces: add WOCKY_XMPP_NS_PUBSUB_EVENT
+
+ wocky/wocky-namespaces.h |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 3822ffd5739951a48f18b0cfa4f7892418227084
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Sun Sep 20 12:44:47 2009 +0100
+
+    Namespace wocky-debug header file #ifdef
+
+ wocky/wocky-debug.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 5ae3040a2eefcde286c60af9afc40e075ccd6c8e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Sun Sep 20 11:59:38 2009 +0100
+
+    Remove debug message that make the logging less useful
+    
+    Unfortunately wocky only has one debug level. Outputting two lines for every
+    node in the tree completely overwhelms everything else, so remove these for
+    now.
+
+ wocky/wocky-xmpp-reader.c |   19 -------------------
+ 1 files changed, 0 insertions(+), 19 deletions(-)
+
+commit 9f7b18408dab61b0e35810719f1edfa86c9d4b5f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Sun Sep 20 11:38:53 2009 +0100
+
+    Set G_LOG_DOMAIN to wocky
+
+ wocky/Makefile.am |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
 commit f2973853cb582547505bd1284cf261d064f6db97
 Merge: e249ed8 c20db39
 Author: Vivek Dasmohapatra <vivek@collabora.co.uk>

@@ -1,13 +1,14 @@
 <refentry id="wocky-wocky-resource-contact">
 <refmeta>
-<refentrytitle role="top_of_page" id="wocky-wocky-resource-contact.top_of_page">WockyResourceContact</refentrytitle>
+<refentrytitle role="top_of_page" id="wocky-wocky-resource-contact.top_of_page">WockyContactFactory</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>WOCKY Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>WockyResourceContact</refname>
+<refname>WockyContactFactory</refname>
 <refpurpose></refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
 <refsynopsisdiv id="wocky-wocky-resource-contact.synopsis" role="synopsis">
@@ -19,13 +20,13 @@
 
                     <link linkend="WockyResourceContact-struct">WockyResourceContact</link>;
                     <link linkend="WockyResourceContactClass">WockyResourceContactClass</link>;
-<link linkend="WockyResourceContact">WockyResourceContact</link> * <link linkend="wocky-resource-contact-new">wocky_resource_contact_new</link>       (<link linkend="WockyBareContact">WockyBareContact</link> *bare,
+<link linkend="WockyResourceContact">WockyResourceContact</link>* <link linkend="wocky-resource-contact-new">wocky_resource_contact_new</link>        (<link linkend="WockyBareContact">WockyBareContact</link> *bare,
                                                          const <link linkend="gchar">gchar</link> *resource);
 <link linkend="gboolean">gboolean</link>            <link linkend="wocky-resource-contact-equal">wocky_resource_contact_equal</link>        (<link linkend="WockyResourceContact">WockyResourceContact</link> *a,
                                                          <link linkend="WockyResourceContact">WockyResourceContact</link> *b);
-<link linkend="WockyBareContact">WockyBareContact</link> *  <link linkend="wocky-resource-contact-get-bare-contact">wocky_resource_contact_get_bare_contact</link>
+<link linkend="WockyBareContact">WockyBareContact</link>*   <link linkend="wocky-resource-contact-get-bare-contact">wocky_resource_contact_get_bare_contact</link>
                                                         (<link linkend="WockyResourceContact">WockyResourceContact</link> *contact);
-const <link linkend="gchar">gchar</link> *       <link linkend="wocky-resource-contact-get-resource">wocky_resource_contact_get_resource</link> (<link linkend="WockyResourceContact">WockyResourceContact</link> *contact);
+const <link linkend="gchar">gchar</link>*        <link linkend="wocky-resource-contact-get-resource">wocky_resource_contact_get_resource</link> (<link linkend="WockyResourceContact">WockyResourceContact</link> *contact);
 </synopsis>
 </refsynopsisdiv>
 
@@ -36,6 +37,7 @@ const <link linkend="gchar">gchar</link> *       <link linkend="wocky-resource-c
    +----<link linkend="WockyContact">WockyContact</link>
          +----WockyResourceContact
 </synopsis>
+
 </refsect1>
 
 
@@ -57,6 +59,7 @@ const <link linkend="gchar">gchar</link> *       <link linkend="wocky-resource-c
 <para>
 </para>
 <para>
+
 </para>
 </refsect1>
 
@@ -64,87 +67,104 @@ const <link linkend="gchar">gchar</link> *       <link linkend="wocky-resource-c
 <title role="details.title">Details</title>
 <refsect2 id="WockyResourceContact-struct" role="struct">
 <title>WockyResourceContact</title>
-<indexterm zone="WockyResourceContact-struct"><primary sortas="WockyResourceContact">WockyResourceContact</primary></indexterm><programlisting>typedef struct _WockyResourceContact WockyResourceContact;</programlisting>
+<indexterm zone="WockyResourceContact-struct"><primary>WockyResourceContact</primary></indexterm><programlisting>typedef struct _WockyResourceContact WockyResourceContact;</programlisting>
 <para>
+
 </para></refsect2>
 <refsect2 id="WockyResourceContactClass" role="struct">
 <title>WockyResourceContactClass</title>
-<indexterm zone="WockyResourceContactClass"><primary sortas="WockyResourceContactClass">WockyResourceContactClass</primary></indexterm><programlisting>typedef struct {
+<indexterm zone="WockyResourceContactClass"><primary>WockyResourceContactClass</primary></indexterm><programlisting>typedef struct {
   WockyContactClass parent_class;
 } WockyResourceContactClass;
 </programlisting>
 <para>
+
 </para></refsect2>
 <refsect2 id="wocky-resource-contact-new" role="function">
 <title>wocky_resource_contact_new ()</title>
-<indexterm zone="wocky-resource-contact-new"><primary sortas="wocky_resource_contact_new">wocky_resource_contact_new</primary></indexterm><programlisting><link linkend="WockyResourceContact">WockyResourceContact</link> * wocky_resource_contact_new       (<link linkend="WockyBareContact">WockyBareContact</link> *bare,
+<indexterm zone="wocky-resource-contact-new"><primary>wocky_resource_contact_new</primary></indexterm><programlisting><link linkend="WockyResourceContact">WockyResourceContact</link>* wocky_resource_contact_new        (<link linkend="WockyBareContact">WockyBareContact</link> *bare,
                                                          const <link linkend="gchar">gchar</link> *resource);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>bare</parameter>&#160;:</term>
+<varlistentry><term><parameter>bare</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>resource</parameter>&#160;:</term>
+<varlistentry><term><parameter>resource</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-resource-contact-equal" role="function">
 <title>wocky_resource_contact_equal ()</title>
-<indexterm zone="wocky-resource-contact-equal"><primary sortas="wocky_resource_contact_equal">wocky_resource_contact_equal</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_resource_contact_equal        (<link linkend="WockyResourceContact">WockyResourceContact</link> *a,
+<indexterm zone="wocky-resource-contact-equal"><primary>wocky_resource_contact_equal</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_resource_contact_equal        (<link linkend="WockyResourceContact">WockyResourceContact</link> *a,
                                                          <link linkend="WockyResourceContact">WockyResourceContact</link> *b);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>a</parameter>&#160;:</term>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>b</parameter>&#160;:</term>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-resource-contact-get-bare-contact" role="function">
 <title>wocky_resource_contact_get_bare_contact ()</title>
-<indexterm zone="wocky-resource-contact-get-bare-contact"><primary sortas="wocky_resource_contact_get_bare_contact">wocky_resource_contact_get_bare_contact</primary></indexterm><programlisting><link linkend="WockyBareContact">WockyBareContact</link> *  wocky_resource_contact_get_bare_contact
+<indexterm zone="wocky-resource-contact-get-bare-contact"><primary>wocky_resource_contact_get_bare_contact</primary></indexterm><programlisting><link linkend="WockyBareContact">WockyBareContact</link>*   wocky_resource_contact_get_bare_contact
                                                         (<link linkend="WockyResourceContact">WockyResourceContact</link> *contact);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<varlistentry><term><parameter>contact</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-resource-contact-get-resource" role="function">
 <title>wocky_resource_contact_get_resource ()</title>
-<indexterm zone="wocky-resource-contact-get-resource"><primary sortas="wocky_resource_contact_get_resource">wocky_resource_contact_get_resource</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link> *       wocky_resource_contact_get_resource (<link linkend="WockyResourceContact">WockyResourceContact</link> *contact);</programlisting>
+<indexterm zone="wocky-resource-contact-get-resource"><primary>wocky_resource_contact_get_resource</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        wocky_resource_contact_get_resource (<link linkend="WockyResourceContact">WockyResourceContact</link> *contact);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>contact</parameter>&#160;:</term>
+<varlistentry><term><parameter>contact</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>
 <refsect1 id="wocky-wocky-resource-contact.property-details" role="property_details">
 <title role="property_details.title">Property Details</title>
-<refsect2 id="WockyResourceContact--bare-contact" role="property"><title>The <literal>&quot;bare-contact&quot;</literal> property</title>
-<indexterm zone="WockyResourceContact--bare-contact"><primary sortas="WockyResourceContact:bare-contact">WockyResourceContact:bare-contact</primary></indexterm><programlisting>  &quot;bare-contact&quot;             <link linkend="WockyBareContact">WockyBareContact</link>*     : Read / Write / Construct Only</programlisting>
+<refsect2 id="WockyResourceContact--bare-contact"><title>The <literal>&quot;bare-contact&quot;</literal> property</title>
+<indexterm zone="WockyResourceContact--bare-contact"><primary>WockyResourceContact:bare-contact</primary></indexterm><programlisting>  &quot;bare-contact&quot;             <link linkend="WockyBareContact">WockyBareContact</link>*     : Read / Write / Construct Only</programlisting>
 <para>
 The <link linkend="WockyBareContact"><type>WockyBareContact</type></link> associated with this <link linkend="WockyResourceContact"><type>WockyResourceContact</type></link></para>
 <para>
+
 </para></refsect2>
-<refsect2 id="WockyResourceContact--resource" role="property"><title>The <literal>&quot;resource&quot;</literal> property</title>
-<indexterm zone="WockyResourceContact--resource"><primary sortas="WockyResourceContact:resource">WockyResourceContact:resource</primary></indexterm><programlisting>  &quot;resource&quot;                 <link linkend="gchar">gchar</link>*                : Read / Write / Construct Only</programlisting>
+<refsect2 id="WockyResourceContact--resource"><title>The <literal>&quot;resource&quot;</literal> property</title>
+<indexterm zone="WockyResourceContact--resource"><primary>WockyResourceContact:resource</primary></indexterm><programlisting>  &quot;resource&quot;                 <link linkend="gchar">gchar</link>*                : Read / Write / Construct Only</programlisting>
 <para>
 The resource of the contact.</para>
 <para>
+
 </para><para>Default value: NULL</para>
 </refsect2>
+
 </refsect1>
 
 

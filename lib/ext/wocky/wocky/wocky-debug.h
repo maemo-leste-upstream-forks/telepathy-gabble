@@ -1,6 +1,6 @@
 
-#ifndef __DEBUG_H__
-#define __DEBUG_H__
+#ifndef __WOCKY_DEBUG_H__
+#define __WOCKY_DEBUG_H__
 
 #include "config.h"
 
@@ -29,6 +29,7 @@ typedef enum
   DEBUG_CONNECTOR         = 1 << 12,
   DEBUG_ROSTER            = 1 << 13,
   DEBUG_TLS               = 1 << 14,
+  DEBUG_PUBSUB            = 1 << 15,
 } DebugFlags;
 
 #define DEBUG_XMPP (DEBUG_XMPP_READER | DEBUG_XMPP_WRITER)

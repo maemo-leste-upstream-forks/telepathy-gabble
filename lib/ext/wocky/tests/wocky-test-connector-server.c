@@ -35,13 +35,9 @@
 #include <wocky/wocky-utils.h>
 #include <wocky/wocky-tls.h>
 
-#include <sasl/sasl.h>
-
 #define INITIAL_STREAM_ID "0-HAI"
 #define DEBUG(format, ...) \
   wocky_debug (DEBUG_CONNECTOR, "%s: " format, G_STRFUNC, ##__VA_ARGS__)
-#define DEBUG2(format, ...) \
-  wocky_debug (DEBUG_ROSTER, "%s: " format, G_STRFUNC, ##__VA_ARGS__)
 
 G_DEFINE_TYPE (TestConnectorServer, test_connector_server, G_TYPE_OBJECT);
 
@@ -480,6 +476,10 @@ iq_get_query_JABBER_AUTH (TestConnectorServer *self,
   WockyXmppStanza *iq = NULL;
   WockyXmppNode *env = xml->node;
   const gchar *id = wocky_xmpp_node_get_attribute (env, "id");
+  WockyXmppNode *query = wocky_xmpp_node_get_child (env, "query");
+  WockyXmppNode *user  = (query != NULL) ?
+    wocky_xmpp_node_get_child (query, "username") : NULL;
+  const gchar *name = (user != NULL) ? user->content : NULL;
 
   DEBUG ("");
   if (priv->problem.connector->jabber & JABBER_PROBLEM_AUTH_NIH)
@@ -490,6 +490,18 @@ iq_get_query_JABBER_AUTH (TestConnectorServer *self,
           WOCKY_NODE_ATTRIBUTE, "id", id,
           WOCKY_NODE, "error", WOCKY_NODE_ATTRIBUTE, "type", "cancel",
           WOCKY_NODE, "service-unavailable",
+          WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STANZAS,
+          WOCKY_NODE_END,
+          WOCKY_STANZA_END);
+    }
+  else if (name == NULL || *name == '\0')
+    {
+      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+          WOCKY_STANZA_SUB_TYPE_ERROR,
+          NULL, NULL,
+          WOCKY_NODE_ATTRIBUTE, "id", id,
+          WOCKY_NODE, "error", WOCKY_NODE_ATTRIBUTE, "type", "modify",
+          WOCKY_NODE, "not-acceptable",
           WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STANZAS,
           WOCKY_NODE_END,
           WOCKY_STANZA_END);
@@ -950,11 +962,11 @@ handle_starttls (TestConnectorServer *self,
                       break;
                     }
                 }
-              DEBUG2 ("cert file: %s", crt);
+              DEBUG ("cert file: %s", crt);
+
               priv->tls_sess =
                 wocky_tls_session_server_new (priv->stream, 1024, key, crt);
             }
-
         }
       wocky_xmpp_connection_send_stanza_async (conn, reply, NULL, cb, self);
       g_object_unref (reply);
@@ -1010,7 +1022,7 @@ starttls (GObject *source,
 
   if (priv->tls_conn == NULL)
     {
-      g_error ("TLS Server Setup failed: %s\n", error->message);
+      g_error ("TLS Server Setup failed: %s", error->message);
       exit (0);
     }
 
@@ -1067,7 +1079,7 @@ xmpp_handler (GObject *source,
         /* namespace, stanza subtype and payload tag name must match: */
         if ((payload == NULL) || (subtype != iq->subtype))
           continue;
-        DEBUG ("test_connector_server:invoking iq handler %s\n", iq->payload);
+        DEBUG ("test_connector_server:invoking iq handler %s", iq->payload);
         (iq->func) (self, xml);
         handled = TRUE;
         break;
@@ -1077,7 +1089,7 @@ xmpp_handler (GObject *source,
       {
         if (!strcmp (ns, handlers[i].ns) && !strcmp (name, handlers[i].name))
           {
-            DEBUG ("test_connector_server:invoking handler %s.%s\n", ns, name);
+            DEBUG ("test_connector_server:invoking handler %s.%s", ns, name);
             (handlers[i].func) (self, xml);
             handled = TRUE;
             break;
@@ -1087,7 +1099,7 @@ xmpp_handler (GObject *source,
   /* no handler found: just complain and sit waiting for the next stanza */
   if (!handled)
     {
-      DEBUG ("<%s xmlns=\"%s\"… not handled\n", name, ns);
+      DEBUG ("<%s xmlns=\"%s\"… not handled", name, ns);
       wocky_xmpp_connection_recv_stanza_async (conn, NULL, xmpp_handler, self);
       g_object_unref (xml);
     }
@@ -1148,7 +1160,7 @@ feature_stanza (TestConnectorServer *self)
   feat = wocky_xmpp_stanza_new (name);
   node = feat->node;
 
-  DEBUG ("constructing <%s...>... stanza\n", name);
+  DEBUG ("constructing <%s...>... stanza", name);
   wocky_xmpp_node_set_ns (node, WOCKY_XMPP_NS_STREAM);
 
   if (priv->problem.sasl != SERVER_PROBLEM_NO_SASL)
@@ -1229,7 +1241,7 @@ static void startssl (TestConnectorServer *self)
   priv->tls_conn = wocky_tls_session_handshake (priv->tls_sess, NULL, &error);
   if (priv->tls_conn == NULL)
     {
-      g_error ("SSL Server Setup failed: %p %s\n",
+      g_error ("SSL Server Setup failed: %p %s",
           priv->tls_sess, error->message);
       exit (0);
     }
@@ -1280,7 +1292,7 @@ xmpp_init (GObject *source,
 
       /* send our own <stream:stream… */
     case SERVER_STATE_CLIENT_OPENED:
-      DEBUG ("SERVER_STATE_CLIENT_OPENED\n");
+      DEBUG ("SERVER_STATE_CLIENT_OPENED");
       priv->state = SERVER_STATE_SERVER_OPENED;
       wocky_xmpp_connection_recv_open_finish (conn, result,
           NULL, NULL, NULL, NULL, NULL, NULL);
@@ -1292,7 +1304,7 @@ xmpp_init (GObject *source,
 
       /* send our feature set */
     case SERVER_STATE_SERVER_OPENED:
-      DEBUG ("SERVER_STATE_SERVER_OPENED\n");
+      DEBUG ("SERVER_STATE_SERVER_OPENED");
       priv->state = SERVER_STATE_FEATURES_SENT;
       wocky_xmpp_connection_send_open_finish (conn, result, NULL);
 
@@ -1316,7 +1328,7 @@ xmpp_init (GObject *source,
 
       /* ok, we're done with initial stream setup */
     case SERVER_STATE_FEATURES_SENT:
-      DEBUG ("SERVER_STATE_FEATURES_SENT\n");
+      DEBUG ("SERVER_STATE_FEATURES_SENT");
       wocky_xmpp_connection_send_stanza_finish (conn, result, NULL);
       wocky_xmpp_connection_recv_stanza_async (conn, NULL, xmpp_handler, self);
       if (priv->problem.connector->death & SERVER_DEATH_FEATURES)
@@ -1327,7 +1339,7 @@ xmpp_init (GObject *source,
       break;
 
     default:
-      DEBUG ("Unknown Server state. Broken code flow\n");
+      DEBUG ("Unknown Server state. Broken code flow.");
     }
 }
 
@@ -1347,7 +1359,7 @@ test_connector_server_new (GIOStream *stream,
   TestConnectorServer *self;
   TestConnectorServerPrivate *priv;
 
-  DEBUG ("test_connector_server_new\n");
+  DEBUG ("test_connector_server_new");
 
   self = g_object_new (TEST_TYPE_CONNECTOR_SERVER, NULL);
   priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
@@ -1377,7 +1389,7 @@ test_connector_server_start (GObject *object)
   TestConnectorServer *self;
   TestConnectorServerPrivate *priv;
 
-  DEBUG("test_connector_server_start\n");
+  DEBUG("test_connector_server_start");
 
   self = TEST_CONNECTOR_SERVER (object);
   priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);

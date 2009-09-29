@@ -37,18 +37,17 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(top_srcdir)/tools/check-coding-style.mk \
-	$(top_srcdir)/tools/shave.mk
 libexec_PROGRAMS = telepathy-gabble$(EXEEXT)
 noinst_PROGRAMS = write-mgr-file$(EXEEXT)
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	$(top_srcdir)/tools/check-coding-style.mk
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/m4/compiler.m4 $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/shave.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -75,7 +74,7 @@ am_libgabble_convenience_la_OBJECTS = base64.lo base-channel.lo \
 	media-channel.lo media-channel-hold.lo media-stream.lo \
 	media-factory.lo message-util.lo muc-channel.lo muc-factory.lo \
 	olpc-activity.lo olpc-activity-view.lo olpc-buddy-view.lo \
-	olpc-gadget-manager.lo olpc-view.lo pubsub.lo presence.lo \
+	olpc-gadget-manager.lo olpc-view.lo presence.lo \
 	presence-cache.lo private-tubes-factory.lo register.lo \
 	request-pipeline.lo roster.lo roster-channel.lo \
 	roomlist-channel.lo roomlist-manager.lo search-channel.lo \
@@ -118,7 +117,6 @@ ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
-AM_MAKEFLAGS = @AM_MAKEFLAGS@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -129,7 +127,6 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CXX = @CXX@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
@@ -144,8 +141,6 @@ EGREP = @EGREP@
 ENABLE_CODING_STYLE_CHECKS = @ENABLE_CODING_STYLE_CHECKS@
 ERROR_CFLAGS = @ERROR_CFLAGS@
 EXEEXT = @EXEEXT@
-F77 = @F77@
-FC = @FC@
 FGREP = @FGREP@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
@@ -164,11 +159,9 @@ LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
-MAKEFLAGS = @MAKEFLAGS@
 MAKEINFO = @MAKEINFO@
 NM = @NM@
 NMEDIT = @NMEDIT@
-OBJC = @OBJC@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OTOOL = @OTOOL@
@@ -187,7 +180,6 @@ PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
 PYTHON_VERSION = @PYTHON_VERSION@
-Q = @Q@
 RANLIB = @RANLIB@
 RESOLV_LIBS = @RESOLV_LIBS@
 SED = @SED@
@@ -201,7 +193,6 @@ TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
 TP_GLIB_LIBS = @TP_GLIB_LIBS@
 UUID_CFLAGS = @UUID_CFLAGS@
 UUID_LIBS = @UUID_LIBS@
-V = @V@
 VERSION = @VERSION@
 WANT_TWISTED_TESTS_FALSE = @WANT_TWISTED_TESTS_FALSE@
 WANT_TWISTED_TESTS_TRUE = @WANT_TWISTED_TESTS_TRUE@
@@ -255,10 +246,8 @@ pyexecdir = @pyexecdir@
 pythondir = @pythondir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
-shavedir = @shavedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-QUIET_GEN = $(Q:@=@echo '  GEN   '$@;)
 BUILT_SOURCES = \
     gabble-signals-marshal.h \
     gabble-signals-marshal.c \
@@ -361,8 +350,6 @@ libgabble_convenience_la_SOURCES = \
     olpc-gadget-manager.c \
     olpc-view.h \
     olpc-view.c \
-    pubsub.h \
-    pubsub.c \
     presence.h \
     presence.c \
     presence-cache.h \
@@ -435,7 +422,7 @@ all: $(BUILT_SOURCES)
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(top_srcdir)/tools/shave.mk $(top_srcdir)/tools/check-coding-style.mk $(am__configure_deps)
+$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(top_srcdir)/tools/check-coding-style.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -575,7 +562,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/presence-cache.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/presence.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/private-tubes-factory.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pubsub.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/register.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/request-pipeline.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roomlist-channel.Plo@am__quote@
@@ -822,7 +808,7 @@ check-local: check-coding-style
 # build gibber first
 all: gibber
 gibber:
-	${MAKE} -C $(top_builddir)/lib/gibber libgibber.la
+	@${MAKE} -C $(top_builddir)/lib/gibber libgibber.la
 .PHONY: gibber
 
 gabble-signals-marshal.list: $(libgabble_convenience_la_SOURCES) Makefile.am
@@ -837,16 +823,16 @@ gabble-signals-marshal.list: $(libgabble_convenience_la_SOURCES) Makefile.am
 	fi
 
 %-signals-marshal.h: %-signals-marshal.list Makefile.am
-	$(QUIET_GEN)glib-genmarshal --header --prefix=$(subst -,_,$*)_marshal $< > $@
+	$(AM_V_GEN)glib-genmarshal --header --prefix=$(subst -,_,$*)_marshal $< > $@
 
 %-signals-marshal.c: %-signals-marshal.list Makefile.am
-	$(QUIET_GEN){ echo '#include "$*-signals-marshal.h"' && \
+	$(AM_V_GEN){ echo '#include "$*-signals-marshal.h"' && \
 	glib-genmarshal --body --prefix=$(subst -,_,$*)_marshal $< ; \
 	} > $@
 
 # rules for making the glib enum objects
 %-enumtypes.h: %.h Makefile.in
-	$(QUIET_GEN)glib-mkenums \
+	$(AM_V_GEN)glib-mkenums \
 	--fhead "#ifndef __$(shell echo $* | tr [:lower:]- [:upper:]_)_ENUM_TYPES_H__\n#define __$(shell echo $* | tr [:lower:]- [:upper:]_)_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
 	--fprod "/* enumerations from \"@filename@\" */\n" \
 	--vhead "GType @enum_name@_get_type (void);\n#define $(shell echo $* | tr [:lower:]- [:upper:]_ | sed 's/_.*//')_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
@@ -854,7 +840,7 @@ gabble-signals-marshal.list: $(libgabble_convenience_la_SOURCES) Makefile.am
 	$< > $@
 
 %-enumtypes.c: %.h Makefile.in
-	$(QUIET_GEN)glib-mkenums \
+	$(AM_V_GEN)glib-mkenums \
 	--fhead "#include <$*.h>\n#include <$*-enumtypes.h>" \
 	--fprod "\n/* enumerations from \"@filename@\" */" \
 	--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {"     \

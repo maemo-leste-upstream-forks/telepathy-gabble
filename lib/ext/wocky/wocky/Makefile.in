@@ -39,14 +39,14 @@ host_triplet = @host@
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/wocky-uninstalled.pc.in \
 	$(top_srcdir)/tools/check-coding-style.mk \
-	$(top_srcdir)/tools/flymake.mk $(top_srcdir)/tools/shave.mk
+	$(top_srcdir)/tools/flymake.mk
 subdir = wocky
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/shave.m4 $(top_srcdir)/m4/tp-compiler-flag.m4 \
+	$(top_srcdir)/m4/tp-compiler-flag.m4 \
 	$(top_srcdir)/m4/tp-compiler-warnings.m4 \
 	$(top_srcdir)/m4/wocky-gcov.m4 $(top_srcdir)/m4/wocky-lcov.m4 \
 	$(top_srcdir)/configure.ac
@@ -63,7 +63,7 @@ am__objects_1 = wocky.lo wocky-connector.lo wocky-tls.lo \
 	wocky-xmpp-writer.lo wocky-xmpp-error.lo wocky-sasl-auth.lo \
 	wocky-porter.lo wocky-contact.lo wocky-bare-contact.lo \
 	wocky-resource-contact.lo wocky-roster.lo \
-	wocky-contact-factory.lo wocky-session.lo
+	wocky-contact-factory.lo wocky-session.lo wocky-pep-service.lo
 am__objects_2 = wocky-signals-marshal.lo \
 	wocky-xmpp-reader-enumtypes.lo
 am_libwocky_la_OBJECTS = $(am__objects_1) $(am__objects_2)
@@ -88,7 +88,6 @@ ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
-AM_MAKEFLAGS = @AM_MAKEFLAGS@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -101,7 +100,6 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CXX = @CXX@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
@@ -117,8 +115,6 @@ ENABLE_GTK_DOC_FALSE = @ENABLE_GTK_DOC_FALSE@
 ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 ERROR_CFLAGS = @ERROR_CFLAGS@
 EXEEXT = @EXEEXT@
-F77 = @F77@
-FC = @FC@
 FFLAGS = @FFLAGS@
 FGREP = @FGREP@
 GCOV = @GCOV@
@@ -155,13 +151,10 @@ LIBXML2_LIBS = @LIBXML2_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
-MAKEFLAGS = @MAKEFLAGS@
 MAKEINFO = @MAKEINFO@
-MCS = @MCS@
 MOSTLYCLEANFILES = @MOSTLYCLEANFILES@
 NM = @NM@
 NMEDIT = @NMEDIT@
-OBJC = @OBJC@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OTOOL = @OTOOL@
@@ -175,13 +168,11 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
-Q = @Q@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-V = @V@
 VERSION = @VERSION@
 WOCKY_CFLAGS = @WOCKY_CFLAGS@
 ac_ct_CC = @ac_ct_CC@
@@ -228,10 +219,8 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
-shavedir = @shavedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-QUIET_GEN = $(Q:@=@echo '  GEN   '$@;)
 noinst_LTLIBRARIES = libwocky.la
 BUILT_SOURCES = \
   wocky-signals-marshal.list \
@@ -280,21 +269,26 @@ HANDWRITTEN_SOURCES = \
   wocky-contact-factory.c        \
   wocky-contact-factory.h        \
   wocky-session.c                \
-  wocky-session.h
+  wocky-session.h                \
+  wocky-pep-service.c            \
+  wocky-pep-service.h
 
 libwocky_la_SOURCES = $(HANDWRITTEN_SOURCES) $(BUILT_SOURCES)
 
 # Coding style checks
 check_c_sources = $(filter-out wocky-tls.%, $(HANDWRITTEN_SOURCES))
 CLEANFILES = $(BUILT_SOURCES)
-AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ @LIBXML2_CFLAGS@
+AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) \
+            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ \
+            -DG_LOG_DOMAIN=\"wocky\"
+
 AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(top_srcdir)/tools/shave.mk $(top_srcdir)/tools/flymake.mk $(top_srcdir)/tools/check-coding-style.mk $(am__configure_deps)
+$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(top_srcdir)/tools/flymake.mk $(top_srcdir)/tools/check-coding-style.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -348,6 +342,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-debug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-porter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-resource-contact.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-roster.Plo@am__quote@
@@ -599,27 +594,27 @@ dist-hook:
 	$(shell for x in $(BUILT_SOURCES); do rm -f $(distdir)/$$x ; done)
 
 wocky-signals-marshal.list: $(HANDWRITTEN_SOURCES) Makefile.am
-	( cd $(srcdir) && \
+	$(AM_V_GEN)( cd $(srcdir) && \
 	sed -n -e 's/.*_wocky_signals_marshal_\([[:upper:][:digit:]]*__[[:upper:][:digit:]_]*\).*/\1/p' \
 	$(HANDWRITTEN_SOURCES) ) \
 	| sed -e 's/__/:/' -e 'y/_/,/' | sort -u > $@.tmp
-	if cmp -s $@.tmp $@; then \
+	@if cmp -s $@.tmp $@; then \
 		rm $@.tmp; \
 	else \
 		mv $@.tmp $@; \
 	fi
 
 %-signals-marshal.h: %-signals-marshal.list Makefile.am
-	$(QUIET_GEN)glib-genmarshal --header --prefix=_$(subst -,_,$*)_signals_marshal $< > $@
+	$(AM_V_GEN)glib-genmarshal --header --prefix=_$(subst -,_,$*)_signals_marshal $< > $@
 
 %-signals-marshal.c: %-signals-marshal.list Makefile.am
-	$(QUIET_GEN){ echo '#include "$*-signals-marshal.h"' && \
+	$(AM_V_GEN){ echo '#include "$*-signals-marshal.h"' && \
 	glib-genmarshal --body --prefix=_$(subst -,_,$*)_signals_marshal $< ; \
 	} > $@
 
 # rules for making the glib enum objects
 %-enumtypes.h: %.h Makefile.in
-	$(QUIET_GEN)glib-mkenums \
+	$(AM_V_GEN)glib-mkenums \
 	--fhead "#ifndef __$(shell echo $* | tr [:lower:]- [:upper:]_)_ENUM_TYPES_H__\n#define __$(shell echo $* | tr [:lower:]- [:upper:]_)_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
 	--fprod "/* enumerations from \"@filename@\" */\n" \
 	--vhead "GType @enum_name@_get_type (void);\n#define $(shell echo $* | tr [:lower:]- [:upper:]_ | sed 's/_.*//')_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
@@ -627,7 +622,7 @@ wocky-signals-marshal.list: $(HANDWRITTEN_SOURCES) Makefile.am
 	$< > $@
 
 %-enumtypes.c: %.h Makefile.in
-	$(QUIET_GEN)glib-mkenums \
+	$(AM_V_GEN)glib-mkenums \
 	--fhead "#include <$*.h>\n#include <$*-enumtypes.h>" \
 	--fprod "\n/* enumerations from \"@filename@\" */" \
 	--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {"     \

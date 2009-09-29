@@ -13,7 +13,6 @@
 
 #include "debug.h"
 #include "namespaces.h"
-#include "pubsub.h"
 #include "presence-cache.h"
 #include "util.h"
 
@@ -78,47 +77,60 @@ build_mapping_tables (void)
 static gboolean update_location_from_msg (GabbleConnection *conn,
     const gchar *from, LmMessage *msg);
 
-static LmHandlerResult
-pep_reply_cb (GabbleConnection *conn,
-              LmMessage *sent_msg,
-              LmMessage *reply_msg,
-              GObject *object,
-              gpointer user_data)
+static void
+pep_reply_cb (GObject *source,
+    GAsyncResult *res,
+    gpointer user_data)
 {
+  GabbleConnection *conn = GABBLE_CONNECTION (user_data);
+  WockyXmppStanza *reply_msg;
+  GError *error = NULL;
   const gchar *from;
+
+  reply_msg = wocky_pep_service_get_finish (WOCKY_PEP_SERVICE (source), res,
+      &error);
+  if (reply_msg == NULL)
+    {
+      DEBUG ("Query failed: %s", error->message);
+      g_error_free (error);
+      return;
+    }
 
   from = lm_message_node_get_attribute (reply_msg->node, "from");
 
   if (from != NULL)
     update_location_from_msg (conn, from, reply_msg);
-
-  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+  g_object_unref (reply_msg);
 }
 
 static GHashTable *
 get_cached_location_or_query (GabbleConnection *conn,
-    TpHandle contact,
+    TpHandle handle,
     GError **error)
 {
   TpBaseConnection *base = (TpBaseConnection *) conn;
   GHashTable *location;
   const gchar *jid;
   TpHandleRepoIface *contact_repo;
+  WockyBareContact *contact;
 
   contact_repo = tp_base_connection_get_handles (base, TP_HANDLE_TYPE_CONTACT);
-  jid = tp_handle_inspect (contact_repo, contact);
+  jid = tp_handle_inspect (contact_repo, handle);
 
-  location = gabble_presence_cache_get_location (conn->presence_cache, contact);
+  location = gabble_presence_cache_get_location (conn->presence_cache, handle);
   if (location != NULL)
     {
       DEBUG (" - %s: cached", jid);
       return location;
     }
 
-  /* Send a query */
-  if (pubsub_query (conn, jid, NS_GEOLOC, pep_reply_cb, error))
-    DEBUG (" - %s: requested", jid);
+  contact = ensure_bare_contact_from_jid (conn, jid);
 
+  /* Send a query */
+  wocky_pep_service_get_async (conn->pep_location, contact, NULL, pep_reply_cb,
+      conn);
+
+  g_object_unref (contact);
   return NULL;
 }
 
@@ -189,9 +201,25 @@ add_to_geoloc_node (const gchar *tp_name,
   LocationMapping *mapping;
   gchar *str = NULL;
 
+  /* Map "language" to the xml:lang attribute. */
+  if (!tp_strdiff (tp_name, "language"))
+    {
+      if (G_VALUE_TYPE (value) != G_TYPE_STRING)
+        {
+          g_set_error (err, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+              "expecting string for language value, but got %s",
+                  G_VALUE_TYPE_NAME (value));
+          return FALSE;
+        }
+
+      lm_message_node_set_attribute (
+          geoloc, "xml:lang", g_value_get_string (value));
+      return TRUE;
+    }
+
   mapping = g_hash_table_lookup (tp_to_xmpp, tp_name);
-  if (mapping == NULL &&
-      tp_strdiff (tp_name, "language"))
+
+  if (mapping == NULL)
     {
       DEBUG ("Unknown location key: %s ; skipping", (const gchar *) tp_name);
       /* We don't raise a D-Bus error if the key is unknown to stay backward
@@ -199,15 +227,12 @@ add_to_geoloc_node (const gchar *tp_name,
       return TRUE;
     }
 
-  if (mapping != NULL && G_VALUE_TYPE (value) != mapping->type)
+  if (G_VALUE_TYPE (value) != mapping->type)
     {
-#define ERROR_MSG "'%s' is supposed to be of type %s but is %s",\
-          (const char *) tp_name, g_type_name (mapping->type),\
-          G_VALUE_TYPE_NAME (value)
-
-      DEBUG (ERROR_MSG);
-      g_set_error (err, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT, ERROR_MSG);
-#undef ERROR_MSG
+      g_set_error (err, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+          "'%s' is supposed to be of type %s but is %s",
+          (const char *) tp_name, g_type_name (mapping->type),
+          G_VALUE_TYPE_NAME (value));
       return FALSE;
     }
 
@@ -226,14 +251,6 @@ add_to_geoloc_node (const gchar *tp_name,
   else if (G_VALUE_TYPE (value) == G_TYPE_STRING)
     {
       str = g_value_dup_string (value);
-
-      if (!tp_strdiff (tp_name, "language"))
-        {
-          /* Set the xml:lang */
-          lm_message_node_set_attribute (geoloc, "xml:lang", str);
-          g_free (str);
-          return TRUE;
-        }
     }
   else
     /* Keys and their type have been checked */
@@ -253,6 +270,7 @@ location_set_location (TpSvcConnectionInterfaceLocation *iface,
   GabbleConnection *conn = GABBLE_CONNECTION (iface);
   LmMessage *msg;
   LmMessageNode *geoloc;
+  WockyXmppNode *item;
   GHashTableIter iter;
   gpointer key, value;
   GError *err = NULL;
@@ -271,8 +289,8 @@ location_set_location (TpSvcConnectionInterfaceLocation *iface,
 
   gabble_connection_ensure_capabilities (conn,
       gabble_capabilities_get_geoloc_notify ());
-  msg = pubsub_make_publish_msg (NULL, NS_GEOLOC, NS_GEOLOC, "geoloc",
-      &geoloc);
+  msg = wocky_pep_service_make_publish_stanza (conn->pep_location, &item);
+  geoloc = wocky_xmpp_node_add_child_ns (item, "geoloc", NS_GEOLOC);
 
   DEBUG ("SetLocation to");
 
@@ -283,6 +301,7 @@ location_set_location (TpSvcConnectionInterfaceLocation *iface,
       if (!add_to_geoloc_node ((const gchar *) key, (GValue *) value, geoloc,
             &err))
         {
+          DEBUG ("%s", err->message);
           dbus_g_method_return_error (context, err);
           g_error_free (err);
           goto out;
@@ -504,21 +523,34 @@ update_location_from_msg (GabbleConnection *conn,
   return TRUE;
 }
 
-gboolean
-geolocation_event_handler (GabbleConnection *conn,
-                           LmMessage *msg,
-                           TpHandle handle)
+static void
+location_pep_node_changed (WockyPepService *pep,
+    WockyBareContact *contact,
+    WockyXmppStanza *stanza,
+    GabbleConnection *conn)
 {
+  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
+      (TpBaseConnection *) conn, TP_HANDLE_TYPE_CONTACT);
   TpBaseConnection *base = (TpBaseConnection *) conn;
-  const gchar *from;
+  TpHandle handle;
+  const gchar *jid;
+
+  jid = wocky_bare_contact_get_jid (contact);
+  handle = tp_handle_ensure (contact_repo, jid, NULL, NULL);
+  if (handle == 0)
+    {
+      DEBUG ("Invalid from: %s", jid);
+      return;
+    }
 
   if (handle == base->self_handle)
     /* Ignore echoed pubsub notifications */
-    return TRUE;
+    goto out;
 
-  from = lm_message_node_get_attribute (msg->node, "from");
+  update_location_from_msg (conn, jid, stanza);
 
-  return update_location_from_msg (conn, from, msg);
+out:
+  tp_handle_unref (contact_repo, handle);
 }
 
 static void
@@ -555,4 +587,9 @@ conn_location_init (GabbleConnection *conn)
   tp_contacts_mixin_add_contact_attributes_iface (G_OBJECT (conn),
     TP_IFACE_CONNECTION_INTERFACE_LOCATION,
     conn_location_fill_contact_attributes);
+
+  conn->pep_location = wocky_pep_service_new (NS_GEOLOC, TRUE);
+
+  g_signal_connect (conn->pep_location, "changed",
+      G_CALLBACK (location_pep_node_changed), conn);
 }

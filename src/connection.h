@@ -30,6 +30,7 @@
 #include <telepathy-glib/dbus-properties-mixin.h>
 
 #include <wocky/wocky-session.h>
+#include <wocky/wocky-pep-service.h>
 
 #include "capabilities.h"
 #include "error.h"
@@ -190,6 +191,14 @@ struct _GabbleConnection {
 
     /* file transfer manager */
     GabbleFtManager *ft_manager;
+
+    /* PEP */
+    WockyPepService *pep_nick;
+    WockyPepService *pep_location;
+    WockyPepService *pep_olpc_buddy_props;
+    WockyPepService *pep_olpc_activities;
+    WockyPepService *pep_olpc_current_act;
+    WockyPepService *pep_olpc_act_props;
 
     GabbleConnectionPrivate *priv;
 };

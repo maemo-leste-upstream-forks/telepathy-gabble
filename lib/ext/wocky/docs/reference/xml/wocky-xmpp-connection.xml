@@ -8,6 +8,7 @@
 <refnamediv>
 <refname>WockyXmppConnection</refname>
 <refpurpose>Low-level XMPP connection.</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
 <refsynopsisdiv id="WockyXmppConnection.synopsis" role="synopsis">
@@ -16,10 +17,10 @@
 <synopsis>
 enum                <link linkend="WockyXmppConnectionError">WockyXmppConnectionError</link>;
 <link linkend="GQuark">GQuark</link>              <link linkend="wocky-xmpp-connection-error-quark">wocky_xmpp_connection_error_quark</link>   (void);
-#define             <link linkend="WOCKY-XMPP-CONNECTION-ERROR--CAPS">WOCKY_XMPP_CONNECTION_ERROR</link>
+#define             <link linkend="WOCKY-XMPP-CONNECTION-ERROR:CAPS">WOCKY_XMPP_CONNECTION_ERROR</link>
                     <link linkend="WockyXmppConnection-struct">WockyXmppConnection</link>;
                     <link linkend="WockyXmppConnectionClass">WockyXmppConnectionClass</link>;
-<link linkend="WockyXmppConnection">WockyXmppConnection</link> * <link linkend="wocky-xmpp-connection-new">wocky_xmpp_connection_new</link>         (<link linkend="GIOStream">GIOStream</link> *stream);
+<link linkend="WockyXmppConnection">WockyXmppConnection</link>* <link linkend="wocky-xmpp-connection-new">wocky_xmpp_connection_new</link>          (<link linkend="GIOStream">GIOStream</link> *stream);
 <link linkend="void">void</link>                <link linkend="wocky-xmpp-connection-send-open-async">wocky_xmpp_connection_send_open_async</link>
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          const <link linkend="gchar">gchar</link> *to,
@@ -63,7 +64,7 @@ enum                <link linkend="WockyXmppConnectionError">WockyXmppConnection
                                                          <link linkend="GCancellable">GCancellable</link> *cancellable,
                                                          <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
                                                          <link linkend="gpointer">gpointer</link> user_data);
-<link linkend="WockyXmppStanza">WockyXmppStanza</link> *   <link linkend="wocky-xmpp-connection-recv-stanza-finish">wocky_xmpp_connection_recv_stanza_finish</link>
+<link linkend="WockyXmppStanza">WockyXmppStanza</link>*    <link linkend="wocky-xmpp-connection-recv-stanza-finish">wocky_xmpp_connection_recv_stanza_finish</link>
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);
@@ -86,7 +87,7 @@ enum                <link linkend="WockyXmppConnectionError">WockyXmppConnection
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);
 <link linkend="void">void</link>                <link linkend="wocky-xmpp-connection-reset">wocky_xmpp_connection_reset</link>         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection);
-<link linkend="gchar">gchar</link> *             <link linkend="wocky-xmpp-connection-new-id">wocky_xmpp_connection_new_id</link>        (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection);
+<link linkend="gchar">gchar</link>*              <link linkend="wocky-xmpp-connection-new-id">wocky_xmpp_connection_new_id</link>        (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection);
 </synopsis>
 </refsynopsisdiv>
 
@@ -96,6 +97,7 @@ enum                <link linkend="WockyXmppConnectionError">WockyXmppConnection
   <link linkend="GObject">GObject</link>
    +----WockyXmppConnection
 </synopsis>
+
 </refsect1>
 
 
@@ -116,6 +118,7 @@ enum                <link linkend="WockyXmppConnectionError">WockyXmppConnection
 <para>
 Sends and receives <link linkend="WockyXmppStanzas"><type>WockyXmppStanzas</type></link> from an underlying GIOStream.</para>
 <para>
+
 </para>
 </refsect1>
 
@@ -123,7 +126,7 @@ Sends and receives <link linkend="WockyXmppStanzas"><type>WockyXmppStanzas</type
 <title role="details.title">Details</title>
 <refsect2 id="WockyXmppConnectionError" role="enum">
 <title>enum WockyXmppConnectionError</title>
-<indexterm zone="WockyXmppConnectionError"><primary sortas="WockyXmppConnectionError">WockyXmppConnectionError</primary></indexterm><programlisting>typedef enum {
+<indexterm zone="WockyXmppConnectionError"><primary>WockyXmppConnectionError</primary></indexterm><programlisting>typedef enum {
   WOCKY_XMPP_CONNECTION_ERROR_EOS,
   WOCKY_XMPP_CONNECTION_ERROR_CLOSED,
   WOCKY_XMPP_CONNECTION_ERROR_NOT_OPEN,
@@ -135,31 +138,32 @@ Sends and receives <link linkend="WockyXmppStanzas"><type>WockyXmppStanzas</type
 The <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link> specific errors that can occur while
  reading a stream.</para>
 <para>
+
 </para><variablelist role="enum">
-<varlistentry id="WOCKY-XMPP-CONNECTION-ERROR-EOS--CAPS" role="constant">
+<varlistentry id="WOCKY-XMPP-CONNECTION-ERROR-EOS:CAPS" role="constant">
 <term><literal>WOCKY_XMPP_CONNECTION_ERROR_EOS</literal></term>
 <listitem><simpara> Connection got closed before receiving
                                    an XMPP stream close.
 </simpara></listitem>
 </varlistentry>
-<varlistentry id="WOCKY-XMPP-CONNECTION-ERROR-CLOSED--CAPS" role="constant">
+<varlistentry id="WOCKY-XMPP-CONNECTION-ERROR-CLOSED:CAPS" role="constant">
 <term><literal>WOCKY_XMPP_CONNECTION_ERROR_CLOSED</literal></term>
 <listitem><simpara> Other side closed the xmpp stream.
 </simpara></listitem>
 </varlistentry>
-<varlistentry id="WOCKY-XMPP-CONNECTION-ERROR-NOT-OPEN--CAPS" role="constant">
+<varlistentry id="WOCKY-XMPP-CONNECTION-ERROR-NOT-OPEN:CAPS" role="constant">
 <term><literal>WOCKY_XMPP_CONNECTION_ERROR_NOT_OPEN</literal></term>
 <listitem><simpara> Trying to send or receive while the
 connection isn't open.
 </simpara></listitem>
 </varlistentry>
-<varlistentry id="WOCKY-XMPP-CONNECTION-ERROR-IS-CLOSED--CAPS" role="constant">
+<varlistentry id="WOCKY-XMPP-CONNECTION-ERROR-IS-CLOSED:CAPS" role="constant">
 <term><literal>WOCKY_XMPP_CONNECTION_ERROR_IS_CLOSED</literal></term>
 <listitem><simpara> Trying to send or receive
 while the connection is closed.
 </simpara></listitem>
 </varlistentry>
-<varlistentry id="WOCKY-XMPP-CONNECTION-ERROR-IS-OPEN--CAPS" role="constant">
+<varlistentry id="WOCKY-XMPP-CONNECTION-ERROR-IS-OPEN:CAPS" role="constant">
 <term><literal>WOCKY_XMPP_CONNECTION_ERROR_IS_OPEN</literal></term>
 <listitem><simpara> Trying to send or receive
 the connection opening when it's already open
@@ -168,51 +172,56 @@ the connection opening when it's already open
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-error-quark" role="function">
 <title>wocky_xmpp_connection_error_quark ()</title>
-<indexterm zone="wocky-xmpp-connection-error-quark"><primary sortas="wocky_xmpp_connection_error_quark">wocky_xmpp_connection_error_quark</primary></indexterm><programlisting><link linkend="GQuark">GQuark</link>              wocky_xmpp_connection_error_quark   (void);</programlisting>
+<indexterm zone="wocky-xmpp-connection-error-quark"><primary>wocky_xmpp_connection_error_quark</primary></indexterm><programlisting><link linkend="GQuark">GQuark</link>              wocky_xmpp_connection_error_quark   (void);</programlisting>
 <para>
 Get the error quark used by the connection.</para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the quark for connection errors.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the quark for connection errors.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2 id="WOCKY-XMPP-CONNECTION-ERROR--CAPS" role="macro">
+<refsect2 id="WOCKY-XMPP-CONNECTION-ERROR:CAPS" role="macro">
 <title>WOCKY_XMPP_CONNECTION_ERROR</title>
-<indexterm zone="WOCKY-XMPP-CONNECTION-ERROR--CAPS"><primary sortas="WOCKY_XMPP_CONNECTION_ERROR">WOCKY_XMPP_CONNECTION_ERROR</primary></indexterm><programlisting>#define WOCKY_XMPP_CONNECTION_ERROR (wocky_xmpp_connection_error_quark ())
+<indexterm zone="WOCKY-XMPP-CONNECTION-ERROR:CAPS"><primary>WOCKY_XMPP_CONNECTION_ERROR</primary></indexterm><programlisting>#define WOCKY_XMPP_CONNECTION_ERROR (wocky_xmpp_connection_error_quark ())
 </programlisting>
 <para>
 Get access to the error quark of the xmpp connection.</para>
 <para>
+
 </para></refsect2>
 <refsect2 id="WockyXmppConnection-struct" role="struct">
 <title>WockyXmppConnection</title>
-<indexterm zone="WockyXmppConnection-struct"><primary sortas="WockyXmppConnection">WockyXmppConnection</primary></indexterm><programlisting>typedef struct _WockyXmppConnection WockyXmppConnection;</programlisting>
+<indexterm zone="WockyXmppConnection-struct"><primary>WockyXmppConnection</primary></indexterm><programlisting>typedef struct _WockyXmppConnection WockyXmppConnection;</programlisting>
 <para>
+
 </para></refsect2>
 <refsect2 id="WockyXmppConnectionClass" role="struct">
 <title>WockyXmppConnectionClass</title>
-<indexterm zone="WockyXmppConnectionClass"><primary sortas="WockyXmppConnectionClass">WockyXmppConnectionClass</primary></indexterm><programlisting>typedef struct {
+<indexterm zone="WockyXmppConnectionClass"><primary>WockyXmppConnectionClass</primary></indexterm><programlisting>typedef struct {
     GObjectClass parent_class;
 } WockyXmppConnectionClass;
 </programlisting>
 <para>
+
 </para></refsect2>
 <refsect2 id="wocky-xmpp-connection-new" role="function">
 <title>wocky_xmpp_connection_new ()</title>
-<indexterm zone="wocky-xmpp-connection-new"><primary sortas="wocky_xmpp_connection_new">wocky_xmpp_connection_new</primary></indexterm><programlisting><link linkend="WockyXmppConnection">WockyXmppConnection</link> * wocky_xmpp_connection_new         (<link linkend="GIOStream">GIOStream</link> *stream);</programlisting>
+<indexterm zone="wocky-xmpp-connection-new"><primary>wocky_xmpp_connection_new</primary></indexterm><programlisting><link linkend="WockyXmppConnection">WockyXmppConnection</link>* wocky_xmpp_connection_new          (<link linkend="GIOStream">GIOStream</link> *stream);</programlisting>
 <para>
 Convenience function to create a new <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>.</para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>stream</parameter>&#160;:</term>
+<varlistentry><term><parameter>stream</parameter>&nbsp;:</term>
 <listitem><simpara> GIOStream over wich all the data will be sent/received.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a new <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-send-open-async" role="function">
 <title>wocky_xmpp_connection_send_open_async ()</title>
-<indexterm zone="wocky-xmpp-connection-send-open-async"><primary sortas="wocky_xmpp_connection_send_open_async">wocky_xmpp_connection_send_open_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_send_open_async
+<indexterm zone="wocky-xmpp-connection-send-open-async"><primary>wocky_xmpp_connection_send_open_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_send_open_async
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          const <link linkend="gchar">gchar</link> *to,
                                                          const <link linkend="gchar">gchar</link> *from,
@@ -227,60 +236,62 @@ Request asynchronous sending of an XMPP stream opening over the stream. When
 the operation is finished <parameter>callback</parameter> will be called. You can then call
 <link linkend="wocky-xmpp-connection-send-open-finish"><function>wocky_xmpp_connection_send_open_finish()</function></link> to get the result of the operation.</para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>to</parameter>&#160;:</term>
+<varlistentry><term><parameter>to</parameter>&nbsp;:</term>
 <listitem><simpara> destination in the XMPP opening (can be NULL).
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>from</parameter>&#160;:</term>
+<varlistentry><term><parameter>from</parameter>&nbsp;:</term>
 <listitem><simpara> sender in the XMPP opening (can be NULL).
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>version</parameter>&#160;:</term>
+<varlistentry><term><parameter>version</parameter>&nbsp;:</term>
 <listitem><simpara> XMPP version sent (can be NULL).
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>lang</parameter>&#160;:</term>
+<varlistentry><term><parameter>lang</parameter>&nbsp;:</term>
 <listitem><simpara> language sent (can be NULL).
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>id</parameter>&#160;:</term>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
 <listitem><simpara> XMPP Stream ID, if any, or NULL
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
+<varlistentry><term><parameter>cancellable</parameter>&nbsp;:</term>
 <listitem><simpara> optional GCancellable object, NULL to ignore.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
 <listitem><simpara> callback to call when the request is satisfied.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara> the data to pass to callback function.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-send-open-finish" role="function">
 <title>wocky_xmpp_connection_send_open_finish ()</title>
-<indexterm zone="wocky-xmpp-connection-send-open-finish"><primary sortas="wocky_xmpp_connection_send_open_finish">wocky_xmpp_connection_send_open_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_xmpp_connection_send_open_finish
+<indexterm zone="wocky-xmpp-connection-send-open-finish"><primary>wocky_xmpp_connection_send_open_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_xmpp_connection_send_open_finish
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
 Finishes sending a stream opening.</para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>result</parameter>&#160;:</term>
+<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
 <listitem><simpara> a GAsyncResult.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
 <listitem><simpara> a GError location to store the error occuring, or NULL to ignore.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> TRUE if the opening was succesfully sent, FALSE on error.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the opening was succesfully sent, FALSE on error.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-recv-open-async" role="function">
 <title>wocky_xmpp_connection_recv_open_async ()</title>
-<indexterm zone="wocky-xmpp-connection-recv-open-async"><primary sortas="wocky_xmpp_connection_recv_open_async">wocky_xmpp_connection_recv_open_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_recv_open_async
+<indexterm zone="wocky-xmpp-connection-recv-open-async"><primary>wocky_xmpp_connection_recv_open_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_recv_open_async
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          <link linkend="GCancellable">GCancellable</link> *cancellable,
                                                          <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
@@ -290,23 +301,24 @@ Request asynchronous receiving of an XMPP stream opening over the stream.
 When the operation is finished <parameter>callback</parameter> will be called. You can then call
 <link linkend="wocky-xmpp-connection-recv-open-finish"><function>wocky_xmpp_connection_recv_open_finish()</function></link> to get the result of the operation.</para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
+<varlistentry><term><parameter>cancellable</parameter>&nbsp;:</term>
 <listitem><simpara> optional GCancellable object, NULL to ignore.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
 <listitem><simpara> callback to call when the request is satisfied.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara> the data to pass to callback function.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-recv-open-finish" role="function">
 <title>wocky_xmpp_connection_recv_open_finish ()</title>
-<indexterm zone="wocky-xmpp-connection-recv-open-finish"><primary sortas="wocky_xmpp_connection_recv_open_finish">wocky_xmpp_connection_recv_open_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_xmpp_connection_recv_open_finish
+<indexterm zone="wocky-xmpp-connection-recv-open-finish"><primary>wocky_xmpp_connection_recv_open_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_xmpp_connection_recv_open_finish
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="gchar">gchar</link> **to,
@@ -318,42 +330,43 @@ When the operation is finished <parameter>callback</parameter> will be called. Y
 <para>
 Finishes receiving a stream opening.</para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>result</parameter>&#160;:</term>
+<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
 <listitem><simpara> a GAsyncResult.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>to</parameter>&#160;:</term>
+<varlistentry><term><parameter>to</parameter>&nbsp;:</term>
 <listitem><simpara> Optional location to store the to attribute in the XMPP open stanza
  will be stored (free after usage).
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>from</parameter>&#160;:</term>
+<varlistentry><term><parameter>from</parameter>&nbsp;:</term>
 <listitem><simpara> Optional location to store the from attribute in the XMPP open stanza
  will be stored (free after usage).
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>version</parameter>&#160;:</term>
+<varlistentry><term><parameter>version</parameter>&nbsp;:</term>
 <listitem><simpara> Optional location to store the version attribute in the XMPP open
  stanza will be stored (free after usage).
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>lang</parameter>&#160;:</term>
+<varlistentry><term><parameter>lang</parameter>&nbsp;:</term>
 <listitem><simpara> Optional location to store the lang attribute in the XMPP open
  stanza will be stored (free after usage).
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>id</parameter>&#160;:</term>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
 <listitem><simpara> Optional location to store the Session ID of the XMPP stream
  (free after usage)
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
 <listitem><simpara> a GError location to store the error occuring, or NULL to ignore.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> TRUE if the opening was succesfully received, FALSE on error.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the opening was succesfully received, FALSE on error.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-send-stanza-async" role="function">
 <title>wocky_xmpp_connection_send_stanza_async ()</title>
-<indexterm zone="wocky-xmpp-connection-send-stanza-async"><primary sortas="wocky_xmpp_connection_send_stanza_async">wocky_xmpp_connection_send_stanza_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_send_stanza_async
+<indexterm zone="wocky-xmpp-connection-send-stanza-async"><primary>wocky_xmpp_connection_send_stanza_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_send_stanza_async
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
                                                          <link linkend="GCancellable">GCancellable</link> *cancellable,
@@ -369,48 +382,50 @@ the operation.
 Can only be called after wocky_xmpp_connection_send_open_async has finished
 its operation.</para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>stanza</parameter>&#160;:</term>
+<varlistentry><term><parameter>stanza</parameter>&nbsp;:</term>
 <listitem><simpara> <link linkend="WockyXmppStanza"><type>WockyXmppStanza</type></link> to send.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
+<varlistentry><term><parameter>cancellable</parameter>&nbsp;:</term>
 <listitem><simpara> optional GCancellable object, NULL to ignore.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
 <listitem><simpara> callback to call when the request is satisfied.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara> the data to pass to callback function.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-send-stanza-finish" role="function">
 <title>wocky_xmpp_connection_send_stanza_finish ()</title>
-<indexterm zone="wocky-xmpp-connection-send-stanza-finish"><primary sortas="wocky_xmpp_connection_send_stanza_finish">wocky_xmpp_connection_send_stanza_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_xmpp_connection_send_stanza_finish
+<indexterm zone="wocky-xmpp-connection-send-stanza-finish"><primary>wocky_xmpp_connection_send_stanza_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_xmpp_connection_send_stanza_finish
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
 Finishes sending a stanza.</para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>result</parameter>&#160;:</term>
+<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
 <listitem><simpara> a GAsyncResult.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
 <listitem><simpara> a GError location to store the error occuring, or NULL to ignore.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> TRUE if the stanza was succesfully sent, FALSE on error.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the stanza was succesfully sent, FALSE on error.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-recv-stanza-async" role="function">
 <title>wocky_xmpp_connection_recv_stanza_async ()</title>
-<indexterm zone="wocky-xmpp-connection-recv-stanza-async"><primary sortas="wocky_xmpp_connection_recv_stanza_async">wocky_xmpp_connection_recv_stanza_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_recv_stanza_async
+<indexterm zone="wocky-xmpp-connection-recv-stanza-async"><primary>wocky_xmpp_connection_recv_stanza_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_recv_stanza_async
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          <link linkend="GCancellable">GCancellable</link> *cancellable,
                                                          <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
@@ -425,23 +440,24 @@ the operation.
 Can only be called after wocky_xmpp_connection_recv_open_async has finished
 its operation.</para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
+<varlistentry><term><parameter>cancellable</parameter>&nbsp;:</term>
 <listitem><simpara> optional GCancellable object, NULL to ignore.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
 <listitem><simpara> callback to call when the request is satisfied.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara> the data to pass to callback function.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-recv-stanza-finish" role="function">
 <title>wocky_xmpp_connection_recv_stanza_finish ()</title>
-<indexterm zone="wocky-xmpp-connection-recv-stanza-finish"><primary sortas="wocky_xmpp_connection_recv_stanza_finish">wocky_xmpp_connection_recv_stanza_finish</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link> *   wocky_xmpp_connection_recv_stanza_finish
+<indexterm zone="wocky-xmpp-connection-recv-stanza-finish"><primary>wocky_xmpp_connection_recv_stanza_finish</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link>*    wocky_xmpp_connection_recv_stanza_finish
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
@@ -450,22 +466,25 @@ Reset the XMPP Connection. After the reset the connection is back in its
 initial state (as if wocky_xmpp_connection_send_open_async and
 wocky_xmpp_connection_recv_open_async were never called).</para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>result</parameter>&#160;:</term>
+<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-send-close-async" role="function">
 <title>wocky_xmpp_connection_send_close_async ()</title>
-<indexterm zone="wocky-xmpp-connection-send-close-async"><primary sortas="wocky_xmpp_connection_send_close_async">wocky_xmpp_connection_send_close_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_send_close_async
+<indexterm zone="wocky-xmpp-connection-send-close-async"><primary>wocky_xmpp_connection_send_close_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_send_close_async
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          <link linkend="GCancellable">GCancellable</link> *cancellable,
                                                          <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
@@ -480,104 +499,116 @@ operation.
 Can only be called after wocky_xmpp_connection_send_open_async has finished
 its operation.</para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
+<varlistentry><term><parameter>cancellable</parameter>&nbsp;:</term>
 <listitem><simpara> optional GCancellable object, NULL to ignore.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
 <listitem><simpara> callback to call when the request is satisfied.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara> the data to pass to callback function.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-send-close-finish" role="function">
 <title>wocky_xmpp_connection_send_close_finish ()</title>
-<indexterm zone="wocky-xmpp-connection-send-close-finish"><primary sortas="wocky_xmpp_connection_send_close_finish">wocky_xmpp_connection_send_close_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_xmpp_connection_send_close_finish
+<indexterm zone="wocky-xmpp-connection-send-close-finish"><primary>wocky_xmpp_connection_send_close_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_xmpp_connection_send_close_finish
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
 Finishes send the xmpp stream close.</para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>result</parameter>&#160;:</term>
+<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
 <listitem><simpara> a GAsyncResult.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
 <listitem><simpara> a GError location to store the error occuring, or NULL to ignore.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> TRUE on success or FALSE on error.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE on success or FALSE on error.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-force-close-async" role="function">
 <title>wocky_xmpp_connection_force_close_async ()</title>
-<indexterm zone="wocky-xmpp-connection-force-close-async"><primary sortas="wocky_xmpp_connection_force_close_async">wocky_xmpp_connection_force_close_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_force_close_async
+<indexterm zone="wocky-xmpp-connection-force-close-async"><primary>wocky_xmpp_connection_force_close_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_force_close_async
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          <link linkend="GCancellable">GCancellable</link> *cancellable,
                                                          <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
+<varlistentry><term><parameter>cancellable</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-force-close-finish" role="function">
 <title>wocky_xmpp_connection_force_close_finish ()</title>
-<indexterm zone="wocky-xmpp-connection-force-close-finish"><primary sortas="wocky_xmpp_connection_force_close_finish">wocky_xmpp_connection_force_close_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_xmpp_connection_force_close_finish
+<indexterm zone="wocky-xmpp-connection-force-close-finish"><primary>wocky_xmpp_connection_force_close_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_xmpp_connection_force_close_finish
                                                         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>result</parameter>&#160;:</term>
+<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-reset" role="function">
 <title>wocky_xmpp_connection_reset ()</title>
-<indexterm zone="wocky-xmpp-connection-reset"><primary sortas="wocky_xmpp_connection_reset">wocky_xmpp_connection_reset</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_reset         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection);</programlisting>
+<indexterm zone="wocky-xmpp-connection-reset"><primary>wocky_xmpp_connection_reset</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_connection_reset         (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection);</programlisting>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-xmpp-connection-new-id" role="function">
 <title>wocky_xmpp_connection_new_id ()</title>
-<indexterm zone="wocky-xmpp-connection-new-id"><primary sortas="wocky_xmpp_connection_new_id">wocky_xmpp_connection_new_id</primary></indexterm><programlisting><link linkend="gchar">gchar</link> *             wocky_xmpp_connection_new_id        (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection);</programlisting>
+<indexterm zone="wocky-xmpp-connection-new-id"><primary>wocky_xmpp_connection_new_id</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*              wocky_xmpp_connection_new_id        (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection);</programlisting>
 <para>
 </para>
 <para>
+
 </para><variablelist role="params">
-<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A short unique string for usage as the id attribute on a stanza
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A short unique string for usage as the id attribute on a stanza
 (free after usage).
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -585,9 +616,10 @@ Finishes send the xmpp stream close.</para>
 </refsect1>
 <refsect1 id="WockyXmppConnection.property-details" role="property_details">
 <title role="property_details.title">Property Details</title>
-<refsect2 id="WockyXmppConnection--base-stream" role="property"><title>The <literal>&quot;base-stream&quot;</literal> property</title>
-<indexterm zone="WockyXmppConnection--base-stream"><primary sortas="WockyXmppConnection:base-stream">WockyXmppConnection:base-stream</primary></indexterm><programlisting>  &quot;base-stream&quot;              <link linkend="GIOStream">GIOStream</link>*            : Read / Write / Construct Only</programlisting>
+<refsect2 id="WockyXmppConnection--base-stream"><title>The <literal>&quot;base-stream&quot;</literal> property</title>
+<indexterm zone="WockyXmppConnection--base-stream"><primary>WockyXmppConnection:base-stream</primary></indexterm><programlisting>  &quot;base-stream&quot;              <link linkend="GIOStream">GIOStream</link>*            : Read / Write / Construct Only</programlisting>
 <para>the stream that the XMPP connection communicates over.</para></refsect2>
+
 </refsect1>
 
 
