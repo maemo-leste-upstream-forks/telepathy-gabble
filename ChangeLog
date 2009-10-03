@@ -1,3 +1,145 @@
+commit 48c3bed6670464e5b810bcd89bf9ccf39b63ba4c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-02 20:31:05 +0100
+
+    version 0.8.5
+
+commit 5b4741fd9cb1da4524420702472314c399054fe2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-02 20:30:34 +0100
+
+    NEWS for 0.8.5
+
+commit ab4ef4fef0c56cdb9811b26addfda2dd681be2d4
+Merge: ecf6004 2634fe8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-02 20:10:01 +0100
+
+    Merge branch 'avatar-bug23684-0.8' into telepathy-gabble-0.8
+    
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 2634fe88c9b6105a9918ac15b204c0cf1de858ba
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-02 17:17:58 +0100
+
+    Coding style
+
+commit 3b1274e414095178726992c828c308724c95ea0a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-02 16:16:09 +0100
+
+    Do not invalidate the cache when we receive our own vCard after conflict resolution
+
+commit ae131141ed63726ed320cf0625ae319d0ff97ef5
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-02 16:15:25 +0100
+
+    test-avatar-async.py: check that the avatar cache still works after conflict resolution
+
+commit a3f910c678d4a7caece98b01390f70ad60f8e747
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-02 15:48:05 +0100
+
+    vcard-manager.c: Remove unused variable (and fix compilation with -Werror)
+
+commit a26667428acd2ba586222300f53cea15143180ad
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-02 13:14:22 +0100
+
+    presence-cache.c: add a FIXME comment about the avatar sha1 being resetted and set in 2 different files
+
+commit fa69248742e2185fc09bbcf96923af2039014da2
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 19:41:27 +0100
+
+    test-avatar-async.py: Test for the D-Bus signal AvatarUpdated after conflict resolution
+
+commit 9270b901d901ca178697381abf796a2026e6026e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 19:38:18 +0100
+
+    Emit the signal AvatarUpdated at the end of the conflict resolution
+
+commit a4a1763757ec3191e8c2958a2d0c46819a316bc8
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 18:04:43 +0100
+
+    vcard-manager.c: Fix: cancel the request in the pipeline on timeout
+
+commit 90316819aa4be76f98cdf88909c5dd8053b24dfe
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 16:20:00 +0100
+
+    presence-cache.c: add a FIXME about a race
+
+commit 931cd45b3ea4e8278e09d8242b427c14a0000783
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 16:08:29 +0100
+
+    presence-cache.c: self_avatar_resolve_conflict(): remove unnecessary indentation
+
+commit b343d45d043bbc20862fce77be4cb81fbcf95c15
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 15:36:29 +0100
+
+    presence-cache.c: move code in the new function self_avatar_resolve_conflict() to avoid quadrubly-nested "if" blocks
+
+commit 77c9d03428cc0a72811bbf3e57c53fe51dad84c6
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 15:17:51 +0100
+
+    test-avatar-multiple-resources.py: Don't expect AvatarUpdated for self_handle before conflict resolution
+    
+    The D-Bus signal AvatarUpdated is usually emitted as soon as we receive a
+    presence stanza from a contact: we don't want to wait to receive the vCard with
+    the actual avatar because we don't ask the vCard unless an application
+    specifically request it. However, when we receive a presence stanza from
+    'ourselves' on another resource, we emit the signal AvatarUpdated only when the
+    conflict resolution is finished. This commit change the test to reflect that.
+
+commit 6845e9ee1fbae6ae0f0c48f6b2da0f94f158ee2c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 12:45:48 +0100
+
+    tests: use ns.VCARD_TEMP_UPDATE instead of hard coding 'vcard-temp:x:update'
+
+commit fa8ce1f726b97740b141a2561bf10f2473db9515
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 12:11:03 +0100
+
+    test-avatar-async.py: new test cases to prevent recursive conflict resolution
+
+commit 0731b7c88e7db8fa8fdc2f10456f4f3a96f2f61e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 11:55:43 +0100
+
+    presence-cache.c: Fix avatar conflict resolution: Do not confuse self_presence and presence with self_handle from the cache
+
+commit 807ff3db66a960067a53823f2e5a7f14340a6154
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-30 18:27:40 +0100
+
+    Fix gabble_request_pipeline_item_cancel: remove the timer
+
+commit 999dff5a21a5caedefa315790cd36a769a63fabb
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-30 17:35:58 +0100
+
+    Fix a crash in vCard Manager dispose: remove the source of the suspended timeout
+
+commit bc5c549389d25ad9882825fde78284e13f640f2e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-30 16:09:25 +0100
+
+    presence-cache.c: Avoid recursive image resetting as per XEP-0153 section 4.4, bug #23684
+
+commit ecf60040d4cb5b3ddf0fd8c83efd5b8da3f5de95
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-29 15:41:41 +0100
+
+    version 0.8.4.1
+
 commit 503c954ed60cb5673f954d1391d9602c161f674e
 Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
 Date:   2009-09-25 16:02:59 +0100
