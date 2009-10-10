@@ -238,6 +238,12 @@ struct _CapabilityInfo
 
   TpIntSet *guys;
   guint trust;
+
+  /* TRUE if this cache entry is one of our own, so between caps and
+   * per_channel_manager_caps it holds the complete set of features for the
+   * node.
+   */
+  gboolean complete;
 };
 
 static CapabilityInfo *
@@ -668,6 +674,7 @@ self_vcard_request_cb (GabbleVCardManager *self,
 
       g_free (sha1);
     }
+  DEBUG ("End of avatar conflict resolution");
 }
 
 static void
@@ -694,7 +701,10 @@ self_avatar_resolve_conflict (GabblePresenceCache *cache)
    * The real contacts should still get the last avatar.
    */
   if (priv->avatar_reset_pending)
-    return;
+    {
+      DEBUG ("There is already an avatar conflict resolution pending.");
+      return;
+    }
 
   /* according to XEP-0153 section 4.3-2. 3rd bullet:
    * if we receive a photo from another resource, then we MUST
@@ -703,7 +713,10 @@ self_avatar_resolve_conflict (GabblePresenceCache *cache)
    * when that arrives, we may start setting the photo node in our
    * presence again.
    */
+  DEBUG ("Reset our avatar, signal our presence without an avatar and request"
+         " our own vCard.");
   priv->avatar_reset_pending = TRUE;
+  g_free (presence->avatar_sha1);
   presence->avatar_sha1 = NULL;
   if (!_gabble_connection_signal_own_presence (priv->conn, &error))
     {
@@ -769,15 +782,23 @@ _grab_avatar_sha1 (GabblePresenceCache *cache,
 
   sha1 = lm_message_node_get_value (photo_node);
 
+  /* "" means we know there is no avatar. NULL means we don't know what is the
+   * avatar. In this case, there is a <photo> node. */
+  if (sha1 == NULL)
+    sha1 = "";
+
   if (tp_strdiff (presence->avatar_sha1, sha1))
     {
-      g_free (presence->avatar_sha1);
       if (handle == base_conn->self_handle)
         {
+          DEBUG ("Avatar conflict! Received hash '%s' and our cache is '%s'",
+            sha1, presence->avatar_sha1 == NULL ?
+              "<NULL>" : presence->avatar_sha1);
           self_avatar_resolve_conflict (cache);
         }
       else
         {
+          g_free (presence->avatar_sha1);
           presence->avatar_sha1 = g_strdup (sha1);
           gabble_vcard_manager_invalidate_cache (priv->conn->vcard_manager, handle);
           g_signal_emit (cache, signals[AVATAR_UPDATE], 0, handle, sha1);
@@ -1782,6 +1803,86 @@ void gabble_presence_cache_add_bundle_caps (GabblePresenceCache *cache,
   info = capability_info_get (cache, node);
   info->trust = CAPABILITY_BUNDLE_ENOUGH_TRUST;
   info->caps |= new_caps;
+}
+
+void
+gabble_presence_cache_add_own_caps (
+    GabblePresenceCache *cache,
+    const gchar *ver,
+    GabblePresenceCapabilities caps,
+    GHashTable *contact_caps)
+{
+  gchar *uri = g_strdup_printf ("%s#%s", NS_GABBLE_CAPS, ver);
+  CapabilityInfo *info = capability_info_get (cache, uri);
+  GHashTable *copy = NULL;
+
+  if (info->complete)
+    goto out;
+
+  DEBUG ("caching our own caps (%s)", uri);
+
+  /* If this node was already in the cache but not labelled as complete, either
+   * the entry's correct, or someone's poisoning us with a SHA-1 collision.
+   * Let's update the entry just in case.
+   */
+  info->caps_set = TRUE;
+  info->complete = TRUE;
+  info->trust = CAPABILITY_BUNDLE_ENOUGH_TRUST;
+  info->caps = caps;
+  tp_intset_add (info->guys, cache->priv->conn->parent.self_handle);
+
+  if (contact_caps != NULL)
+    gabble_presence_cache_copy_cache_entry (&copy, contact_caps);
+
+  gabble_presence_cache_free_cache_entry (info->per_channel_manager_caps);
+  info->per_channel_manager_caps = copy;
+
+  /* FIXME: we should satisfy any waiters for this node now, but I think that
+   * can wait till 0.9.
+   */
+
+out:
+  g_free (uri);
+}
+
+/**
+ * gabble_presence_cache_peek_own_caps:
+ * @cache: a presence cache
+ * @ver: a verification string or bundle name
+ * @caps: location at which to store caps for @ver
+ * @contact_caps: location at which to store contact caps for @ver
+ *
+ * If the capabilities corresponding to @ver have been added to the cache with
+ * gabble_presence_cache_add_own_caps(), sets @caps and @contact_caps and
+ * returns %TRUE; otherwise, returns %FALSE.
+ *
+ * Since the cache only records features Gabble understands (omitting unknown
+ * features, identities, and data forms), we can only serve up disco replies
+ * from the cache if we know we once advertised exactly this verification
+ * string ourselves.
+ *
+ * Returns: %TRUE if we know exactly what @ver means.
+ */
+gboolean
+gabble_presence_cache_peek_own_caps (
+    GabblePresenceCache *cache,
+    const gchar *ver,
+    GabblePresenceCapabilities *caps,
+    GHashTable **contact_caps)
+{
+  gchar *uri = g_strdup_printf ("%s#%s", NS_GABBLE_CAPS, ver);
+  CapabilityInfo *info = capability_info_get (cache, uri);
+  gboolean ret = FALSE;
+
+  if (info->complete)
+    {
+      *caps = info->caps;
+      *contact_caps = info->per_channel_manager_caps;
+      ret = TRUE;
+    }
+
+  g_free (uri);
+  return ret;
 }
 
 void
