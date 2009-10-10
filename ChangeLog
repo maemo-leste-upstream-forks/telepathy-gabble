@@ -1,3 +1,281 @@
+commit 4b740ae96c26ab0c25530d4dc78d4ac4c73164f8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-09 12:17:28 +0100
+
+    version 0.8.6
+
+commit 8e5b17019c4e2dc3df2e397ffd973ecb23f26dfe
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-09 12:17:07 +0100
+
+    NEWS for 0.8.6
+
+commit 451d02f60c2489bea8c2e630299e7226ecaad701
+Merge: b64fc7f 83f3bc0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-09 09:31:36 +0100
+
+    Merge branch 'avatar-bug23684-0.8' into telepathy-gabble-0.8
+    
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 83f3bc053dc5bb01132b3683491b3a85e8d5cfee
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 16:40:15 +0100
+
+    test-avatar-async.py: better explanations of regression test LP#445847, as per wjt's review
+
+commit d495d8033ab84c3ddf2d7f9facb65232f6dd2e16
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 16:36:52 +0100
+
+    Coding style: avoid too long lines, as per wjt's review
+
+commit 54d420174d45ab416440d17ab62ae0e47a5b0305
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 16:36:00 +0100
+
+    src/presence-cache.c: fix leak of presence->avatar_sha1, as per wjt's review
+
+commit 0f4264198dccc2c055be17ec26e54ec91cf34612
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 16:04:03 +0100
+
+    test-avatar-async.py: use constants from cs, and RequestHandles is plural, as per wjt's review
+
+commit a65a12042f3b49177c46794b5a5f9a318cfd7b61
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 15:51:32 +0100
+
+    request-pipeline.c: Fix assert item->timer_id != 0
+    
+    See this crash:
+    https://bugs.edge.launchpad.net/ubuntu/+source/telepathy-gabble/+bug/445847
+
+commit d79929b2a229619e139cf9ae4483862c02f7e8e0
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 15:49:20 +0100
+
+    vCard default timer is set to 3 seconds for the unit tests
+
+commit 46c3c2a38610bce4ab72b7d2a6f37e8de50fd880
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 15:41:51 +0100
+
+    test-avatar-async.py: Regression test for item->timer_id != 0
+    
+    See this crash:
+    https://bugs.edge.launchpad.net/ubuntu/+source/telepathy-gabble/+bug/445847
+
+commit 37b9120d5bcc4e5bf7164c487818ae5c8fdfea92
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 14:03:31 +0100
+
+    presence-cache.c: More DEBUG() during avatar conflict resolution
+
+commit 6f705c81fc7cec3e2c8946776a0616e09b1e82b7
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 11:34:18 +0100
+
+    presence-cache.c: Fix avatar loop when there is no avatar
+
+commit 63b4c55ecf1a98f9e13095a67d4ae1b81d323fec
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 11:32:04 +0100
+
+    conn-avatars.c: More assertions on avatar sha1
+
+commit 37f6419427d4fc86b6036d60eaceac3a780f4adf
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 11:56:19 +0100
+
+    test-avatar-async.py: Do not loop when there is no avatar
+
+commit 2c689f2ce44f28e5c1f8ea8ad8e950d2b2a7d1bc
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 11:42:13 +0100
+
+    gabbletest.py: Fix make_presence() to be able to send a presence stanza with an empty <photo/>
+
+commit b64fc7f89dca56d654fabb72cd57519cd20be6df
+Merge: 42994ca 833b6b1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-07 13:19:09 +0100
+
+    Merge branch 'improve-caps-cache' into telepathy-gabble-0.8
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 833b6b142c689a7f75fffb8c837de57b51028891
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-07 13:15:28 +0100
+
+    Make caching-our-own-caps test more explicit
+
+commit 42994ca06a0dee9c3646c28e69e9da74e4e5385c
+Merge: 8fb9abe 9a4ada8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-07 12:57:55 +0100
+
+    Merge branch 'annie-let's-not-wait' into telepathy-gabble-0.8
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 8fb9abef09bbaf88826e0d6677cb20bde06c250a
+Merge: a0a6a43 1b877cb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-07 11:36:14 +0100
+
+    Merge branch 'immutable-streams' into telepathy-gabble-0.8
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit a0a6a4313c4cd7548ce210546f2b0d6e672c49ad
+Merge: 9341a89 6ec61fc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-06 19:59:17 +0100
+
+    Merge branch 'timeout-connect' into telepathy-gabble-0.8
+    
+    Reviewed-by: Alban Crequy <alban.crequy@collabora.co.uk>
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 6ec61fc80ea8c3626b507d20d6c95d64ae4216c0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-06 17:46:48 +0100
+
+    Use 'pass', not 'return', for empty Python methods
+
+commit 9341a89065f0f3256e19b4db926f5dfcec3dba5f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-08 18:26:53 +0100
+
+    Explain mapping <service-unavailable> to Offline
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 9a4ada8a261fb7ea659003118189044da794a3ea
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-05 13:18:10 +0100
+
+    Regard Jingle draft 0.15 clients as callable
+    
+    A contact has to pass contact_is_media_capable()'s scrutiny before we
+    can request streams to them. All the other code deals just fine with
+    clients that only support draft 0.15, but this did not.
+    
+    In practice this was not an issue because the only such client is Ye
+    Olde Gabble, which supports Google Talk's dialects, so it got past these
+    checks.
+
+commit 801d3935b2525eb14b7506acd93e1c4e4ec14a4e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-05 13:14:12 +0100
+
+    Don't wait for a caps if a contact's already callable
+
+commit e950d6c92baf8188642c5b9a64a118a888436419
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-06 11:01:09 +0100
+
+    Serve disco responses from the cache
+    
+    We only serve up responses from cache entries added locally, because
+    only those are known to be complete. This means we can serve responses
+    to people discoing our old caps hashes, rather than returning an error,
+    which also works around an iChat issue where it reacts to disco errors
+    by re-sending the request again and again.
+
+commit 2c45fb3fcf9b69105e47f38124c1e75eb4d52e1d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-06 10:58:03 +0100
+
+    Copy FT per channel manager caps in their entirety.
+    
+    In 0.8, FT caps are represented by two hash tables, mapping service
+    names to either NULL, or a Feature struct, depending on whether the caps
+    are for another user or for yourself.
+    
+    The copy function assumed that we'd only ever copy other people's caps,
+    not our own, and so always set the value to NULL in the copy. But for
+    caching our own caps, and serving up disco responses from the cache, we
+    do want to copy the tables in their entirity.
+
+commit 6418e0f50c18d96022f3e430f7dae25e0ad1399b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-05 17:00:08 +0100
+
+    Add an accessor for our past and presence caps hashes
+
+commit 01eae9ef489994af793d9642d5427839e5519185
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-05 16:44:04 +0100
+
+    Add compatibility bundles to the cache
+
+commit a53f91300541bec7cc7547ab710e07d5af170ca2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-03 02:03:38 +0100
+
+    Cache our own caps before announcing them.
+    
+    Previously, Gabble didn't put its own capabilities in the cache. So,
+    when it received its own presence echoed back by the server, it would...
+    disco itself.
+
+commit 1b877cbe71947a269a18cc52b0d2f3052c3e83e5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-05 10:57:56 +0100
+
+    Implement undrafted InitialAudio/Video
+    
+    We'll preserve support for these properties on StreamedMedia.FUTURE for
+    the lifetime of 0.8, in case people are depending on them, but they can
+    go away in 0.9.
+
+commit 56ee6d9d272671792fab8ab48e679c67476d055e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-05 10:48:38 +0100
+
+    Implement StreamedMedia.ImmutableStreams property
+
+commit 744b0d38a5b310c512009d7a6ef5f49df56a1910
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-06-25 10:47:23 +0100
+
+    Implement C_Media_Capabilities_Immutable_Streams
+    
+    The tests needed changing because the definition of the
+    Immutable_Streams cap implies that contacts who can only make audio
+    calls should have that flag set. Most of the tests were changed to make
+    the contacts video capable too; the jingle-caps test checks that Google
+    Video contacts (who are capable of both audio and video) have this flag
+    set.
+
+commit d241de2dbdcb2fd0e5924191317d70fcb9f82695
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-05 12:51:20 +0100
+
+    Depend on tp-glib with ImmutableStreams flag
+
+commit 13e868dea21be3a08d9480e5d031f392e1a8a2db
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-05 10:17:44 +0100
+
+    Correctly type Gabble presence caps
+
+commit 4b5e76035d8e6ba9d2e9ee7093f74b11f73259a1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-02 23:04:03 +0100
+
+    Pre-seed more Google Talk capability bundles.
+
+commit ed7edb2899401aec89c4ce3a2bc56a5e6ce8e54c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-03 01:04:34 +0100
+
+    Bump version to 0.8.5.1
+
 commit 48c3bed6670464e5b810bcd89bf9ccf39b63ba4c
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2009-10-02 20:31:05 +0100
@@ -373,6 +651,18 @@ Date:   2009-05-04 12:53:40 +0100
     Delete delete repeated repeated word word.
     
     Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit dae90ac2020877052677a7089626efa9dc93766e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-24 16:57:46 +0100
+
+    Add a test for timing out connecting.
+
+commit 8dae59624c42f74b723344cfa173a9182e5c4231
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-15 18:53:39 +0100
+
+    Time out connection process after 60 seconds
 
 commit 90aafd7dda243e3ab4ad4a651244509d3316c49a
 Author: Will Thompson <will.thompson@collabora.co.uk>
