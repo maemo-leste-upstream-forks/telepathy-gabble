@@ -17,23 +17,28 @@
  * Branched at: 42b00d143fcf644880456d06d3a20b6e990a7fa3
  *   "toss out everything that moved to glib"
  *
- * This file follows the orignal coding style from upstream, not house
+ * This file follows the original coding style from upstream, not house
  * collabora style: It is a copy of unmerged gnio TLS support with the
  * 'g' prefixes changes to 'wocky' and server-side TLS support added.
  */
 
 /**
  * SECTION: wocky-tls
- * @title: Wocky TLS
+ * @title: Wocky GnuTLS TLS
  * @short_description: Establish TLS sessions
  *
- * The WOCKY_TLS_DEBUG_LEVEL environnement variable can be used to print debug
+ * The WOCKY_TLS_DEBUG_LEVEL environment variable can be used to print debug
  * output from GNU TLS. To enable it, set it to a value from 1 to 9.
  * Higher values will print more information. See the documentation of
  * gnutls_global_set_log_level for more details.
  *
  * Increasing the value past certain thresholds will also trigger increased
  * debugging output from within wocky-tls.c as well.
+ *
+ * The WOCKY_GNUTLS_OPTIONS environment variable can be set to a gnutls
+ * priority string [See gnutls-cli(1) or the gnutls_priority_init docs]
+ * to control most tls protocol details. An empty or unset value is roughly
+ * equivalent to a priority string of "SECURE:+COMP-DEFLATE".
  */
 
 #include "wocky-tls.h"
@@ -41,6 +46,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
+
+#define DEFAULT_TLS_OPTIONS \
+  "SECURE:"         /* all algorithms on in most->least secure order     */ \
+  "-COMP-NULL:"     /* remove null compression                           */ \
+  "+COMP-DEFLATE:"  /* prefer deflate                                    */ \
+  "+COMP-NULL"      /* fall back to null                                 */
 
 #define DEBUG_FLAG DEBUG_TLS
 #define DEBUG_HANDSHAKE_LEVEL 5
@@ -171,7 +182,6 @@ struct OPAQUE_TYPE__WockyTLSSession
 
   gnutls_session_t session;
 
-  gnutls_priority_t gnutls_prio_cache;
   gnutls_certificate_credentials gnutls_cert_cred;
 };
 
@@ -1277,12 +1287,22 @@ wocky_tls_session_set_property (GObject *object, guint prop_id,
     }
 }
 
+static const char *
+tls_options (void)
+{
+  const char *options = getenv ("WOCKY_GNUTLS_OPTIONS");
+  return (options != NULL && *options != '\0') ? options : DEFAULT_TLS_OPTIONS;
+}
+
 static void
 wocky_tls_session_constructed (GObject *object)
 {
   WockyTLSSession *session = WOCKY_TLS_SESSION (object);
 
   gboolean server = session->server;
+  gint code;
+  const gchar *opt = tls_options ();
+  const gchar *pos = NULL;
 
   /* gnutls_handshake_set_private_extensions (session->session, 1); */
   gnutls_certificate_allocate_credentials (&(session->gnutls_cert_cred));
@@ -1309,10 +1329,25 @@ wocky_tls_session_constructed (GObject *object)
   else
     gnutls_init (&session->session, GNUTLS_CLIENT);
 
-  gnutls_priority_init (&session->gnutls_prio_cache, "NORMAL", NULL);
-  gnutls_credentials_set (session->session,
-    GNUTLS_CRD_CERTIFICATE, session->gnutls_cert_cred);
-  gnutls_set_default_priority (session->session);
+  code = gnutls_priority_set_direct (session->session, opt, &pos);
+  if (code != GNUTLS_E_SUCCESS)
+    {
+      DEBUG ("could not set priority string: %s", error_to_string (code));
+      DEBUG ("    '%s'", opt);
+      if (pos >= opt)
+        DEBUG ("     %*s^", (int) (pos - opt), "");
+    }
+  else
+    {
+      DEBUG ("priority set to: '%s'", opt);
+    }
+
+  code = gnutls_credentials_set (session->session,
+                                 GNUTLS_CRD_CERTIFICATE,
+                                 session->gnutls_cert_cred);
+  if (code != GNUTLS_E_SUCCESS)
+    DEBUG ("could not set credentials: %s", error_to_string (code));
+
   gnutls_transport_set_push_function (session->session,
                                       wocky_tls_session_push_func);
   gnutls_transport_set_pull_function (session->session,
@@ -1327,7 +1362,6 @@ wocky_tls_session_finalize (GObject *object)
 {
   WockyTLSSession *session = WOCKY_TLS_SESSION (object);
 
-  gnutls_priority_deinit (session->gnutls_prio_cache);
   gnutls_deinit (session->session);
   gnutls_certificate_free_credentials (session->gnutls_cert_cred);
   g_object_unref (session->stream);

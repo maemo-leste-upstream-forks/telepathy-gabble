@@ -2,6 +2,8 @@ include $(top_srcdir)/tools/flymake.mk
 
 noinst_LTLIBRARIES = libwocky.la
 
+EXTRA_DIST =
+
 BUILT_SOURCES = \
   wocky-signals-marshal.list \
   wocky-signals-marshal.h \
@@ -9,14 +11,22 @@ BUILT_SOURCES = \
   wocky-xmpp-reader-enumtypes.h \
   wocky-xmpp-reader-enumtypes.c
 
+OPENSSL_SRC = \
+  wocky-openssl.c        \
+  wocky-openssl.h        \
+  wocky-openssl-dh512.c  \
+  wocky-openssl-dh1024.c \
+  wocky-openssl-dh2048.c \
+  wocky-openssl-dh4096.c
+
+GNUTLS_SRC = wocky-tls.c wocky-tls.h
+
 HANDWRITTEN_SOURCES =            \
   wocky-types.h                  \
   wocky.c                        \
   wocky.h                        \
   wocky-connector.c              \
   wocky-connector.h              \
-  wocky-tls.c                    \
-  wocky-tls.h                    \
   wocky-xmpp-connection.c        \
   wocky-xmpp-connection.h        \
   wocky-debug.c                  \
@@ -53,10 +63,19 @@ HANDWRITTEN_SOURCES =            \
   wocky-pep-service.c            \
   wocky-pep-service.h
 
+if USING_OPENSSL
+  HANDWRITTEN_SOURCES += $(OPENSSL_SRC)
+  EXTRA_DIST += $(GNUTLS_SRC)
+else
+  HANDWRITTEN_SOURCES += $(GNUTLS_SRC)
+  EXTRA_DIST += $(OPENSSL_SRC)
+endif
+
 libwocky_la_SOURCES = $(HANDWRITTEN_SOURCES) $(BUILT_SOURCES)
 
 # Coding style checks
-check_c_sources = $(filter-out wocky-tls.%, $(HANDWRITTEN_SOURCES))
+check_c_sources = \
+  $(filter-out wocky-openssl%,$(filter-out wocky-tls.%, $(HANDWRITTEN_SOURCES)))
 
 include $(top_srcdir)/tools/check-coding-style.mk
 check-local: check-coding-style
@@ -86,10 +105,10 @@ wocky-signals-marshal.list: $(HANDWRITTEN_SOURCES) Makefile.am
 
 
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) \
-            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ \
+            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ \
             -DG_LOG_DOMAIN=\"wocky\"
 
-AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@
+AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
 
 # rules for making the glib enum objects
 %-enumtypes.h: %.h Makefile.in

@@ -110,6 +110,7 @@ enum
   PROP_CHANNEL_PROPERTIES,
   PROP_INITIAL_AUDIO,
   PROP_INITIAL_VIDEO,
+  PROP_IMMUTABLE_STREAMS,
   /* TP properties (see also below) */
   PROP_NAT_TRAVERSAL,
   PROP_STUN_SERVER,
@@ -413,6 +414,33 @@ gabble_media_channel_constructor (GType type, guint n_props,
         }
     }
 
+  /* If this is a Google session, let's set ImmutableStreams */
+  if (priv->session != NULL)
+    {
+      JingleDialect d = gabble_jingle_session_get_dialect (priv->session);
+
+      priv->immutable_streams = JINGLE_IS_GOOGLE_DIALECT (d);
+    }
+  /* If there's no session yet, but we know who the peer will be, and we have
+   * presence for them, we can set ImmutableStreams using the same algorithm as
+   * for old-style capabilities.  If we don't know who the peer will be, then
+   * the client is using an old calling convention and doesn't need to know
+   * this.
+   */
+  else if (priv->initial_peer != 0)
+    {
+      GabblePresence *presence = gabble_presence_cache_get (
+          priv->conn->presence_cache, priv->initial_peer);
+      TpChannelMediaCapabilities flags = 0;
+
+      if (presence != NULL)
+        flags = _gabble_media_factory_caps_to_typeflags (
+            gabble_presence_peek_caps (presence));
+
+      if (flags & TP_CHANNEL_MEDIA_CAPABILITY_IMMUTABLE_STREAMS)
+        priv->immutable_streams = TRUE;
+    }
+
   return obj;
 }
 
@@ -519,6 +547,7 @@ gabble_media_channel_get_property (GObject    *object,
               TP_IFACE_CHANNEL, "Interfaces",
               TP_IFACE_CHANNEL_TYPE_STREAMED_MEDIA, "InitialAudio",
               TP_IFACE_CHANNEL_TYPE_STREAMED_MEDIA, "InitialVideo",
+              TP_IFACE_CHANNEL_TYPE_STREAMED_MEDIA, "ImmutableStreams",
               NULL));
       break;
     case PROP_SESSION:
@@ -529,6 +558,9 @@ gabble_media_channel_get_property (GObject    *object,
       break;
     case PROP_INITIAL_VIDEO:
       g_value_set_boolean (value, priv->initial_video);
+      break;
+    case PROP_IMMUTABLE_STREAMS:
+      g_value_set_boolean (value, priv->immutable_streams);
       break;
     default:
       param_name = g_param_spec_get_name (pspec);
@@ -652,6 +684,7 @@ gabble_media_channel_class_init (GabbleMediaChannelClass *gabble_media_channel_c
       { NULL }
   };
   static TpDBusPropertiesMixinPropImpl streamed_media_props[] = {
+      { "ImmutableStreams", "immutable-streams", NULL },
       { "InitialAudio", "initial-audio", NULL },
       { "InitialVideo", "initial-video", NULL },
       { NULL }
@@ -803,6 +836,13 @@ gabble_media_channel_class_init (GabbleMediaChannelClass *gabble_media_channel_c
       FALSE,
       G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (object_class, PROP_INITIAL_VIDEO,
+      param_spec);
+
+  param_spec = g_param_spec_boolean ("immutable-streams", "ImmutableStreams",
+      "Whether the set of streams on this channel are fixed once requested",
+      FALSE,
+      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (object_class, PROP_IMMUTABLE_STREAMS,
       param_spec);
 
   tp_properties_mixin_class_init (object_class,
@@ -2064,6 +2104,20 @@ contact_is_media_capable (GabbleMediaChannel *chan,
       conn, TP_HANDLE_TYPE_CONTACT);
   gboolean wait = FALSE;
 
+  presence = gabble_presence_cache_get (priv->conn->presence_cache, peer);
+
+  if (presence != NULL)
+    {
+      const GabbleCapabilitySet *caps = gabble_presence_peek_caps (presence);
+
+      if (gabble_capability_set_has_one (caps,
+            gabble_capabilities_get_any_audio_video ()))
+        return TRUE;
+    }
+
+  /* Okay, they're not capable (yet). Let's figure out whether we should wait,
+   * and return an appropriate error.
+   */
   if (gabble_presence_cache_caps_pending (priv->conn->presence_cache, peer))
     {
       DEBUG ("caps are pending for peer %u", peer);
@@ -2078,32 +2132,16 @@ contact_is_media_capable (GabbleMediaChannel *chan,
   if (wait_ret != NULL)
     *wait_ret = wait;
 
-  presence = gabble_presence_cache_get (priv->conn->presence_cache, peer);
-
   if (presence == NULL)
-    {
-      g_set_error (error, TP_ERRORS, TP_ERROR_OFFLINE,
-          "contact %d (%s) has no presence available", peer,
-          tp_handle_inspect (contact_handles, peer));
-      return FALSE;
-    }
-
-  if (gabble_presence_has_cap (presence, NS_GOOGLE_FEAT_VOICE) ||
-      gabble_presence_has_cap (presence, NS_GOOGLE_FEAT_VIDEO) ||
-      gabble_presence_has_cap (presence, NS_JINGLE_RTP_AUDIO) ||
-      gabble_presence_has_cap (presence, NS_JINGLE_RTP_VIDEO) ||
-      gabble_presence_has_cap (presence, NS_JINGLE_DESCRIPTION_AUDIO) ||
-      gabble_presence_has_cap (presence, NS_JINGLE_DESCRIPTION_VIDEO))
-    {
-      return TRUE;
-    }
+    g_set_error (error, TP_ERRORS, TP_ERROR_OFFLINE,
+        "contact %d (%s) has no presence available", peer,
+        tp_handle_inspect (contact_handles, peer));
   else
-    {
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_CAPABLE,
-          "contact %d (%s) doesn't have sufficient media caps", peer,
-          tp_handle_inspect (contact_handles, peer));
-      return FALSE;
-    }
+    g_set_error (error, TP_ERRORS, TP_ERROR_NOT_CAPABLE,
+        "contact %d (%s) doesn't have sufficient media caps", peer,
+        tp_handle_inspect (contact_handles, peer));
+
+  return FALSE;
 }
 
 static gboolean

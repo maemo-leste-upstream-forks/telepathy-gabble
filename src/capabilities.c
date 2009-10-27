@@ -96,6 +96,9 @@ static GabbleCapabilitySet *voice_v1_caps = NULL;
 static GabbleCapabilitySet *video_v1_caps = NULL;
 static GabbleCapabilitySet *any_audio_caps = NULL;
 static GabbleCapabilitySet *any_video_caps = NULL;
+static GabbleCapabilitySet *any_audio_video_caps = NULL;
+static GabbleCapabilitySet *any_google_av_caps = NULL;
+static GabbleCapabilitySet *any_jingle_av_caps = NULL;
 static GabbleCapabilitySet *any_transport_caps = NULL;
 static GabbleCapabilitySet *fixed_caps = NULL;
 static GabbleCapabilitySet *geoloc_caps = NULL;
@@ -129,6 +132,24 @@ const GabbleCapabilitySet *
 gabble_capabilities_get_any_video (void)
 {
   return any_video_caps;
+}
+
+const GabbleCapabilitySet *
+gabble_capabilities_get_any_audio_video (void)
+{
+  return any_audio_video_caps;
+}
+
+const GabbleCapabilitySet *
+gabble_capabilities_get_any_google_av (void)
+{
+  return any_google_av_caps;
+}
+
+const GabbleCapabilitySet *
+gabble_capabilities_get_any_jingle_av (void)
+{
+  return any_jingle_av_caps;
 }
 
 const GabbleCapabilitySet *
@@ -241,6 +262,17 @@ gabble_capabilities_init (GabbleConnection *conn)
       gabble_capability_set_add (any_video_caps, NS_JINGLE_DESCRIPTION_VIDEO);
       gabble_capability_set_add (any_video_caps, NS_GOOGLE_FEAT_VIDEO);
 
+      any_audio_video_caps = gabble_capability_set_copy (any_audio_caps);
+      gabble_capability_set_update (any_audio_video_caps, any_video_caps);
+
+      any_google_av_caps = gabble_capability_set_new ();
+      gabble_capability_set_add (any_google_av_caps, NS_GOOGLE_FEAT_VOICE);
+      gabble_capability_set_add (any_google_av_caps, NS_GOOGLE_FEAT_VIDEO);
+
+      any_jingle_av_caps = gabble_capability_set_copy (any_audio_caps);
+      gabble_capability_set_update (any_jingle_av_caps, any_video_caps);
+      gabble_capability_set_exclude (any_jingle_av_caps, any_google_av_caps);
+
       any_transport_caps = gabble_capability_set_new ();
       gabble_capability_set_add (any_transport_caps, NS_GOOGLE_TRANSPORT_P2P);
       gabble_capability_set_add (any_transport_caps, NS_JINGLE_TRANSPORT_ICEUDP);
@@ -283,6 +315,9 @@ gabble_capabilities_finalize (GabbleConnection *conn)
       gabble_capability_set_free (video_v1_caps);
       gabble_capability_set_free (any_audio_caps);
       gabble_capability_set_free (any_video_caps);
+      gabble_capability_set_free (any_audio_video_caps);
+      gabble_capability_set_free (any_google_av_caps);
+      gabble_capability_set_free (any_jingle_av_caps);
       gabble_capability_set_free (any_transport_caps);
       gabble_capability_set_free (fixed_caps);
       gabble_capability_set_free (geoloc_caps);
@@ -293,6 +328,9 @@ gabble_capabilities_finalize (GabbleConnection *conn)
       video_v1_caps = NULL;
       any_audio_caps = NULL;
       any_video_caps = NULL;
+      any_audio_video_caps = NULL;
+      any_google_av_caps = NULL;
+      any_jingle_av_caps = NULL;
       any_transport_caps = NULL;
       fixed_caps = NULL;
       geoloc_caps = NULL;
@@ -310,13 +348,45 @@ struct _GabbleCapabilitySet {
 void
 capabilities_fill_cache (GabblePresenceCache *cache)
 {
-  /* Cache this bundle from the Google Talk client as trusted. So Gabble will
-   * not send any discovery request for this bundle.
-   *
-   * XMPP does not require to cache this bundle but some old versions of
-   * Google Talk do not reply correctly to discovery requests. */
+#define GOOGLE_BUNDLE(cap, features) \
+  gabble_presence_cache_add_bundle_caps (cache, \
+      "http://www.google.com/xmpp/client/caps#" cap, features); \
+  gabble_presence_cache_add_bundle_caps (cache, \
+      "http://talk.google.com/xmpp/client/caps#" cap, features);
+
+  /* Cache various bundle from the Google Talk clients as trusted.  Some old
+   * versions of Google Talk do not reply correctly to discovery requests.
+   * Plus, we know what Google's bundles mean, so it's a waste of time to disco
+   * them, particularly the ones for features we don't support. The desktop
+   * client doesn't currently have all of these, but it doesn't hurt to cache
+   * them anyway.
+   */
+  GOOGLE_BUNDLE ("voice-v1", NS_GOOGLE_FEAT_VOICE);
+  GOOGLE_BUNDLE ("video-v1", NS_GOOGLE_FEAT_VIDEO);
+
+  /* Not really sure what these ones are. */
+  GOOGLE_BUNDLE ("share-v1", NULL);
+  GOOGLE_BUNDLE ("sms-v1", NULL);
+
+  /* TODO: remove this when we fix fd.o#22768. */
+  GOOGLE_BUNDLE ("pmuc-v1", NULL);
+
+  /* The camera-v1 bundle seems to mean "I have a camera plugged in". Not
+   * having it doesn't seem to affect anything, and we have no way of exposing
+   * that information anyway.
+   */
+  GOOGLE_BUNDLE ("camera-v1", NULL);
+
+#undef GOOGLE_BUNDLE
+
+  /* We should also cache the ext='' bundles Gabble advertises: older Gabbles
+   * advertise these and don't support hashed caps, and we shouldn't need to
+   * disco them.
+   */
   gabble_presence_cache_add_bundle_caps (cache,
-    "http://www.google.com/xmpp/client/caps#voice-v1", NS_GOOGLE_FEAT_VOICE);
+      NS_GABBLE_CAPS "#" BUNDLE_VOICE_V1, NS_GOOGLE_FEAT_VOICE);
+  gabble_presence_cache_add_bundle_caps (cache,
+      NS_GABBLE_CAPS "#" BUNDLE_VIDEO_V1, NS_GOOGLE_FEAT_VIDEO);
 }
 
 const CapabilityConversionData capabilities_conversions[] =

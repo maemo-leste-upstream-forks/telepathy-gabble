@@ -70,6 +70,7 @@ typedef struct _WockyPorterPrivate WockyPorterPrivate;
 struct _WockyPorterPrivate
 {
   gboolean dispose_has_run;
+  gboolean forced_shutdown;
 
   /* Queue of (sending_queue_elem *) */
   GQueue *sending_queue;
@@ -243,6 +244,7 @@ static void
 stanza_iq_handler_free (StanzaIqHandler *handler)
 {
   g_object_unref (handler->result);
+  handler->result = NULL;
   if (handler->cancellable != NULL)
     {
       g_signal_handler_disconnect (handler->cancellable,
@@ -795,8 +797,12 @@ abort_pending_iqs (WockyPorter *self,
     {
       StanzaIqHandler *handler = value;
 
+      if (handler == NULL || handler->result == NULL)
+        continue;
+
       g_simple_async_result_set_from_error (handler->result, error);
       g_simple_async_result_complete (handler->result);
+      g_hash_table_iter_remove (&iter);
     }
 }
 
@@ -819,6 +825,11 @@ remote_connection_closed (WockyPorter *self,
   if (g_error_matches (error, WOCKY_XMPP_CONNECTION_ERROR,
             WOCKY_XMPP_CONNECTION_ERROR_CLOSED))
     error_occured = FALSE;
+
+  /* This flag MUST be set before we emit the remote-* signals: If it is not *
+   * some very subtle and hard to debug problems are created, which can in   *
+   * turn conceal further problems in the code. You have been warned.        */
+  priv->remote_closed = TRUE;
 
   if (error_occured)
     {
@@ -849,8 +860,6 @@ remote_connection_closed (WockyPorter *self,
       priv->receive_cancellable = NULL;
     }
 
-  priv->remote_closed = TRUE;
-
   g_object_unref (self);
 }
 
@@ -864,12 +873,21 @@ connection_force_close_cb (GObject *source,
   GSimpleAsyncResult *r = priv->force_close_result;
   GError *error = NULL;
 
+  /* null out the result so no-one else can use it after us   *
+   * this should never happen, but nullifying it lets us trap *
+   * that internal inconsistency if it arises                 */
+  priv->force_close_result = NULL;
   priv->local_closed = TRUE;
+
+  /* This can fail if the porter has put two                *
+   * wocky_xmpp_connection_force_close_async ops in flight  *
+   * at the same time: this is bad and should never happen: */
+  g_assert (r != NULL);
 
   if (!wocky_xmpp_connection_force_close_finish (WOCKY_XMPP_CONNECTION (source),
         res, &error))
     {
-      g_simple_async_result_set_from_error (priv->force_close_result, error);
+      g_simple_async_result_set_from_error (r, error);
       g_error_free (error);
     }
 
@@ -880,9 +898,10 @@ connection_force_close_cb (GObject *source,
     }
 
   DEBUG ("XMPP connection has been closed; complete the force close operation");
-  priv->force_close_result = NULL;
   g_simple_async_result_complete (r);
   g_object_unref (r);
+
+  g_object_unref (self);
 }
 
 static void
@@ -909,13 +928,23 @@ stanza_received_cb (GObject *source,
           DEBUG ("Error receiving stanza: %s", error->message);
         }
 
-      if (priv->force_close_result)
+      if (priv->force_close_result != NULL)
         {
-          /* We are forcing the closing. Actually close the connection. */
-          DEBUG ("Receive operation has been cancelled; "
-              "force closing of the XMPP connection");
-          wocky_xmpp_connection_force_close_async (priv->connection,
-             priv->force_close_cancellable, connection_force_close_cb, self);
+          DEBUG ("Receive operation has been cancelled; ");
+          if (!priv->forced_shutdown)
+            {
+              /* We are forcing the closing. Actually close the connection. */
+              DEBUG ("force shutdown of the XMPP connection");
+              g_object_ref (self);
+              priv->forced_shutdown = TRUE;
+              wocky_xmpp_connection_force_close_async (priv->connection,
+                  priv->force_close_cancellable,
+                  connection_force_close_cb, self);
+            }
+          else
+            {
+              DEBUG ("forced shutdown of XMPP connection already in progress");
+            }
         }
       else
         {
@@ -942,13 +971,19 @@ stanza_received_cb (GObject *source,
   else
     {
       DEBUG ("Remote connection has been closed, don't wait for next stanza");
+      DEBUG ("Remote connection has been closed; ");
 
-      if (priv->force_close_result)
+      if (priv->forced_shutdown)
         {
-          DEBUG ("Remote connection has been closed; "
-              "force closing of the XMPP connection");
+          DEBUG ("forced shutdown of the XMPP connection already in progress");
+        }
+      else if (priv->force_close_result != NULL)
+        {
+          DEBUG ("force shutdown of the XMPP connection");
+          g_object_ref (self);
+          priv->forced_shutdown = TRUE;
           wocky_xmpp_connection_force_close_async (priv->connection,
-             priv->force_close_cancellable, connection_force_close_cb, self);
+              priv->force_close_cancellable, connection_force_close_cb, self);
         }
     }
 
@@ -1185,8 +1220,11 @@ send_iq_cancelled_cb (GCancellable *cancellable,
   GError error = { G_IO_ERROR, G_IO_ERROR_CANCELLED,
       "IQ sending was cancelled" };
 
-  g_simple_async_result_set_from_error (handler->result, &error);
-  g_simple_async_result_complete (handler->result);
+  if (handler->result != NULL)
+    {
+      g_simple_async_result_set_from_error (handler->result, &error);
+      g_simple_async_result_complete (handler->result);
+    }
 
   /* Remove the handlers associated with this GCancellable */
   g_hash_table_foreach_remove (priv->iq_reply_handlers,
@@ -1225,8 +1263,11 @@ iq_sent_cb (GObject *source,
     }
 
   /* Raise an error */
-  g_simple_async_result_set_from_error (handler->result, error);
-  g_simple_async_result_complete (handler->result);
+  if (handler != NULL && handler->result != NULL)
+    {
+      g_simple_async_result_set_from_error (handler->result, error);
+      g_simple_async_result_complete (handler->result);
+    }
 
   g_hash_table_foreach_remove (priv->iq_reply_handlers,
       remove_iq_reply, handler);
@@ -1250,10 +1291,17 @@ wocky_porter_send_iq_async (WockyPorter *self,
 
   if (priv->close_result != NULL || priv->force_close_result != NULL)
     {
+      gchar *node = NULL;
+
+      g_assert (stanza != NULL && stanza->node != NULL);
+
+      node = wocky_xmpp_node_to_string (stanza->node);
       g_simple_async_report_error_in_idle (G_OBJECT (self), callback,
           user_data, WOCKY_PORTER_ERROR,
           WOCKY_PORTER_ERROR_CLOSING,
-          "Porter is closing");
+          "Porter is closing: iq '%s' aborted", node);
+      g_free (node);
+
       return;
     }
 
@@ -1401,8 +1449,19 @@ wocky_porter_force_close_async (WockyPorter *self,
 
   if (priv->remote_closed)
     {
+      /* forced shutdown in progress. noop */
+      if (priv->forced_shutdown)
+        {
+          g_simple_async_report_error_in_idle (G_OBJECT (self), callback,
+              user_data, WOCKY_PORTER_ERROR,
+              WOCKY_PORTER_ERROR_FORCIBLY_CLOSED,
+              "Porter is already executing a forced-shutdown");
+          return;
+        }
       /* No need to wait, close connection right now */
       DEBUG ("remote is already closed, close the XMPP connection");
+      g_object_ref (self);
+      priv->forced_shutdown = TRUE;
       wocky_xmpp_connection_force_close_async (priv->connection,
           priv->force_close_cancellable, connection_force_close_cb, self);
       return;

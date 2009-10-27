@@ -1,0 +1,1083 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyConnector</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="WockyXmppConnection.html" title="WockyXmppConnection">
+<link rel="next" href="WockyRoster.html" title="WockyRoster">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="API Reference">
+<link rel="chapter" href="object-tree.html" title="Object Hierarchy">
+<link rel="index" href="api-index-full.html" title="API Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="WockyXmppConnection.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">wocky Reference Manual</th>
+<td><a accesskey="n" href="WockyRoster.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#WockyConnector.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#WockyConnector.description" class="shortcut">Description</a>
+                 | 
+                <a href="#WockyConnector.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#WockyConnector.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" title="WockyConnector">
+<a name="WockyConnector"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="WockyConnector.top_of_page"></a>WockyConnector</span></h2>
+<p>WockyConnector — Low-level XMPP connection generator.
+<em class="parameter"><code>include</code></em> wocky/wocky-connector.h</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="WockyConnector.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+enum                WockyConnectorError;
+<a
+href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"
+>GQuark</a>              wocky_connector_error_quark         (void);
+#define             WOCKY_CONNECTOR_ERROR
+                    WockyConnector;
+                    WockyConnectorClass;
+WockyXmppConnection * wocky_connector_connect_finish    (WockyConnector *self,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
+>GAsyncResult</a> *res,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
+>GError</a> **error,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> **jid,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> **sid);
+WockyXmppConnection * wocky_connector_register_finish   (WockyConnector *self,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
+>GAsyncResult</a> *res,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
+>GError</a> **error,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> **jid,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> **sid);
+void                wocky_connector_connect_async       (WockyConnector *self,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> cb,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+WockyConnector *    wocky_connector_new                 (const <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> *jid,
+                                                         const <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> *pass,
+                                                         const <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> *resource);
+void                wocky_connector_register_async      (WockyConnector *self,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> cb,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+void                wocky_connector_unregister_async    (WockyConnector *self,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> cb,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>            wocky_connector_unregister_finish   (WockyConnector *self,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
+>GAsyncResult</a> *res,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
+>GError</a> **error);
+WockySaslAuthMechanism  wocky_connector_auth_mechanism  (WockyConnector *self);
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="WockyConnector.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----WockyConnector
+</pre>
+</div>
+<div class="refsect1" title="Properties">
+<a name="WockyConnector.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "email"                    <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "encrypted-plain-auth-ok"  <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "features"                 WockyXmppStanza*      : Read
+  "identity"                 <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read
+  "ignore-ssl-errors"        <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "jid"                      <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "legacy"                   <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "old-ssl"                  <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "password"                 <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "plaintext-auth-allowed"   <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "resource"                 <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write / Construct Only
+  "session-id"               <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read
+  "tls-required"             <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "xmpp-port"                <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct
+  "xmpp-server"              <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="WockyConnector.description"></a><h2>Description</h2>
+<p>
+See: RFC3920 XEP-0077
+</p>
+<p>
+Sends and receives <span class="type">WockyXmppStanzas</span> from an underlying <a
+href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
+><span class="type">GIOStream</span></a>.
+negotiating TLS if possible and completing authentication with the server
+by the "most suitable" method available.
+Returns a <span class="type">WockyXmppConnection</span> object to the user on successful completion.
+</p>
+<p>
+Can also be used to register or unregister an account: When unregistering
+(cancelling) an account, a <span class="type">WockyXmppConnection</span> is NOT returned - a <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+><span class="type">gboolean</span></a>
+value indicating success or failure is returned instead.
+</p>
+<p>
+The WOCKY_DEBUG tag for this module is "connector".
+</p>
+<p>
+The flow of control during connection is roughly as follows:
+(registration/cancellation flows are not represented with here)
+</p>
+<p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+tcp_srv_connected
+│
+├→ tcp_host_connected                       ①
+│  ↓                                        ↑
+└→ maybe_old_ssl                            jabber_auth_reply
+   ↓                                        ↑
+   xmpp_init ←─────────────┬──┐             jabber_auth_query
+   ↓                       │  │             ↑
+   xmpp_init_sent_cb       │  │             ├──────────────────────┐
+   ↓                       │  │             │                      │
+   xmpp_init_recv_cb       │  │             │ jabber_auth_try_passwd
+   │ ↓                     │  │             │                      ↑
+   │ xmpp_features_cb      │  │             jabber_auth_try_digest │
+   │ │ │ ↓                 │  │             ↑                      │
+   │ │ │ starttls_sent_cb  │  │             ├──────────────────────┘
+   │ │ │ ↓                 │  │             │
+   │ │ │ starttls_recv_cb ─┘  │             jabber_auth_fields
+   │ │ ↓                      │             ↑
+   │ │ request-auth           │             jabber_auth_init_sent
+   │ │ ↓                      │             ↑
+   │ │ auth_done ─────────────┴─[no sasl]─→ jabber_auth_init
+   │ ↓                                      ↑
+   │ iq_bind_resource                       │
+   │ ↓                                      │
+   │ iq_bind_resource_sent_cb               │
+   │ ↓                                      │
+   │ iq_bind_resource_recv_cb               │
+   │ ↓                                      │
+   │ ①                                      │
+   └──────────[old auth]────────────────────┘
+
+   ①
+   ↓
+   establish_session ─────────→ success
+   ↓                              ↑
+   establish_session_sent_cb      │
+   ↓                              │
+   establish_session_recv_cb ─────┘
+ </pre></div>
+<p>
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="WockyConnector.details"></a><h2>Details</h2>
+<div class="refsect2" title="enum WockyConnectorError">
+<a name="WockyConnectorError"></a><h3>enum WockyConnectorError</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_CONNECTOR_ERROR_UNKNOWN,
+  WOCKY_CONNECTOR_ERROR_IN_PROGRESS,
+  WOCKY_CONNECTOR_ERROR_BAD_JID,
+  WOCKY_CONNECTOR_ERROR_NON_XMPP_V1_SERVER,
+  WOCKY_CONNECTOR_ERROR_BAD_FEATURES,
+  WOCKY_CONNECTOR_ERROR_TLS_UNAVAILABLE,
+  WOCKY_CONNECTOR_ERROR_TLS_REFUSED,
+  WOCKY_CONNECTOR_ERROR_TLS_SESSION_FAILED,
+  WOCKY_CONNECTOR_ERROR_BIND_UNAVAILABLE,
+  WOCKY_CONNECTOR_ERROR_BIND_FAILED,
+  WOCKY_CONNECTOR_ERROR_BIND_INVALID,
+  WOCKY_CONNECTOR_ERROR_BIND_DENIED,
+  WOCKY_CONNECTOR_ERROR_BIND_CONFLICT,
+  WOCKY_CONNECTOR_ERROR_BIND_REJECTED,
+  WOCKY_CONNECTOR_ERROR_SESSION_FAILED,
+  WOCKY_CONNECTOR_ERROR_SESSION_DENIED,
+  WOCKY_CONNECTOR_ERROR_SESSION_CONFLICT,
+  WOCKY_CONNECTOR_ERROR_SESSION_REJECTED,
+  WOCKY_CONNECTOR_ERROR_JABBER_AUTH_UNAVAILABLE,
+  WOCKY_CONNECTOR_ERROR_JABBER_AUTH_FAILED,
+  WOCKY_CONNECTOR_ERROR_JABBER_AUTH_NO_MECHS,
+  WOCKY_CONNECTOR_ERROR_JABBER_AUTH_REJECTED,
+  WOCKY_CONNECTOR_ERROR_JABBER_AUTH_INCOMPLETE,
+  WOCKY_CONNECTOR_ERROR_INSECURE,
+  WOCKY_CONNECTOR_ERROR_REGISTRATION_FAILED,
+  WOCKY_CONNECTOR_ERROR_REGISTRATION_UNAVAILABLE,
+  WOCKY_CONNECTOR_ERROR_REGISTRATION_UNSUPPORTED,
+  WOCKY_CONNECTOR_ERROR_REGISTRATION_EMPTY,
+  WOCKY_CONNECTOR_ERROR_REGISTRATION_CONFLICT,
+  WOCKY_CONNECTOR_ERROR_REGISTRATION_REJECTED,
+  WOCKY_CONNECTOR_ERROR_UNREGISTER_FAILED,
+  WOCKY_CONNECTOR_ERROR_UNREGISTER_DENIED,
+} WockyConnectorError;
+</pre>
+<p>
+The <span class="type">WockyConnector</span> specific errors that can occur while connecting.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-UNKNOWN--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_UNKNOWN</code></span></p></td>
+<td> Unexpected Error Condition
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-IN-PROGRESS--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_IN_PROGRESS</code></span></p></td>
+<td> Connection Already Underway
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-BAD-JID--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_BAD_JID</code></span></p></td>
+<td> JID is Invalid
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-NON-XMPP-V1-SERVER--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_NON_XMPP_V1_SERVER</code></span></p></td>
+<td> XMPP Version &lt; 1
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-BAD-FEATURES--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_BAD_FEATURES</code></span></p></td>
+<td> Feature Stanza Invalid
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-TLS-UNAVAILABLE--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_TLS_UNAVAILABLE</code></span></p></td>
+<td> TLS Unavailable
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-TLS-REFUSED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_TLS_REFUSED</code></span></p></td>
+<td> TLS Refused by Server
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-TLS-SESSION-FAILED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_TLS_SESSION_FAILED</code></span></p></td>
+<td> TLS Handshake Failed
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-BIND-UNAVAILABLE--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_BIND_UNAVAILABLE</code></span></p></td>
+<td> Bind Not Available
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-BIND-FAILED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_BIND_FAILED</code></span></p></td>
+<td> Bind Failed
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-BIND-INVALID--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_BIND_INVALID</code></span></p></td>
+<td> Bind Args Invalid
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-BIND-DENIED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_BIND_DENIED</code></span></p></td>
+<td> Bind Not Allowed
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-BIND-CONFLICT--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_BIND_CONFLICT</code></span></p></td>
+<td> Bind Resource In Use
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-BIND-REJECTED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_BIND_REJECTED</code></span></p></td>
+<td> Bind Error (Generic)
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-SESSION-FAILED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_SESSION_FAILED</code></span></p></td>
+<td> Session Failed
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-SESSION-DENIED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_SESSION_DENIED</code></span></p></td>
+<td> Session Refused by Server
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-SESSION-CONFLICT--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_SESSION_CONFLICT</code></span></p></td>
+<td> Session Not Allowed
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-SESSION-REJECTED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_SESSION_REJECTED</code></span></p></td>
+<td> Session Error
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-JABBER-AUTH-UNAVAILABLE--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_JABBER_AUTH_UNAVAILABLE</code></span></p></td>
+<td> Jabber Auth Unavailable
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-JABBER-AUTH-FAILED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_JABBER_AUTH_FAILED</code></span></p></td>
+<td> Jabber Auth Failed
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-JABBER-AUTH-NO-MECHS--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_JABBER_AUTH_NO_MECHS</code></span></p></td>
+<td> Jabber Auth - No Mechanisms
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-JABBER-AUTH-REJECTED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_JABBER_AUTH_REJECTED</code></span></p></td>
+<td> Jabber Auth - Unauthorised
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-JABBER-AUTH-INCOMPLETE--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_JABBER_AUTH_INCOMPLETE</code></span></p></td>
+<td> Jabber Auth Args Incomplete
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-INSECURE--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_INSECURE</code></span></p></td>
+<td> Insufficent Security for Requested Operation
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-REGISTRATION-FAILED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_REGISTRATION_FAILED</code></span></p></td>
+<td> Account Registration Error
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-REGISTRATION-UNAVAILABLE--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_REGISTRATION_UNAVAILABLE</code></span></p></td>
+<td> Account Registration Not Available
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-REGISTRATION-UNSUPPORTED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_REGISTRATION_UNSUPPORTED</code></span></p></td>
+<td> Account Registration Not Implemented
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-REGISTRATION-EMPTY--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_REGISTRATION_EMPTY</code></span></p></td>
+<td> Account Registration Makes No Sense
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-REGISTRATION-CONFLICT--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_REGISTRATION_CONFLICT</code></span></p></td>
+<td> Account Already Registered
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-REGISTRATION-REJECTED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_REGISTRATION_REJECTED</code></span></p></td>
+<td> Account Registration Rejected
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-UNREGISTER-FAILED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_UNREGISTER_FAILED</code></span></p></td>
+<td> Account Cancellation Failed
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-CONNECTOR-ERROR-UNREGISTER-DENIED--CAPS"></a><span class="term"><code class="literal">WOCKY_CONNECTOR_ERROR_UNREGISTER_DENIED</code></span></p></td>
+<td> Account Cancellation Refused
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_connector_error_quark ()">
+<a name="wocky-connector-error-quark"></a><h3>wocky_connector_error_quark ()</h3>
+<pre class="programlisting"><a
+href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"
+>GQuark</a>              wocky_connector_error_quark         (void);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="WOCKY_CONNECTOR_ERROR">
+<a name="WOCKY-CONNECTOR-ERROR--CAPS"></a><h3>WOCKY_CONNECTOR_ERROR</h3>
+<pre class="programlisting">#define WOCKY_CONNECTOR_ERROR (wocky_connector_error_quark ())
+</pre>
+<p>
+Get access to the error quark of the connector.</p>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WockyConnector">
+<a name="WockyConnector-struct"></a><h3>WockyConnector</h3>
+<pre class="programlisting">typedef struct _WockyConnector WockyConnector;</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WockyConnectorClass">
+<a name="WockyConnectorClass"></a><h3>WockyConnectorClass</h3>
+<pre class="programlisting">typedef struct {
+    GObjectClass parent_class;
+} WockyConnectorClass;
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="wocky_connector_connect_finish ()">
+<a name="wocky-connector-connect-finish"></a><h3>wocky_connector_connect_finish ()</h3>
+<pre class="programlisting">WockyXmppConnection * wocky_connector_connect_finish    (WockyConnector *self,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
+>GAsyncResult</a> *res,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
+>GError</a> **error,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> **jid,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> **sid);</pre>
+<p>
+Called by the callback passed to <code class="function">wocky_connector_connect_async()</code>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td> a <span class="type">WockyConnector</span> instance.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em> :</span></p></td>
+<td> a <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
+><span class="type">GAsyncResult</span></a> (from your <code class="function">wocky_connector_connect_async()</code> callback).
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td> (<a
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
+><code class="literal">NULL</code></a> to ignore) the <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> (if any) is sored here.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
+<td> the user JID from the server is stored here.. <a href="http://foldoc.doc.ic.ac.uk/foldoc/foldoc.cgi?query=%NULL%20to"><span class="acronym">%NULL to</span></a> ignore. </td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sid</code></em> :</span></p></td>
+<td> the Session ID is stored here.. <a href="http://foldoc.doc.ic.ac.uk/foldoc/foldoc.cgi?query=%NULL%20to"><span class="acronym">%NULL to</span></a> ignore. </td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <span class="type">WockyXmppConnection</span> instance (success), or <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
+><code class="literal">NULL</code></a> (failure).
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_connector_register_finish ()">
+<a name="wocky-connector-register-finish"></a><h3>wocky_connector_register_finish ()</h3>
+<pre class="programlisting">WockyXmppConnection * wocky_connector_register_finish   (WockyConnector *self,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
+>GAsyncResult</a> *res,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
+>GError</a> **error,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> **jid,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> **sid);</pre>
+<p>
+Called by the callback passed to <code class="function">wocky_connector_register_async()</code>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td> a <span class="type">WockyConnector</span> instance.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em> :</span></p></td>
+<td> a <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
+><span class="type">GAsyncResult</span></a> (from your <code class="function">wocky_connector_register_async()</code> callback).
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td> (<a
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
+><code class="literal">NULL</code></a> to ignore) the <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> (if any) is stored here.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
+<td> (<a
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
+><code class="literal">NULL</code></a> to ignore) the JID in effect after connection is stored here.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sid</code></em> :</span></p></td>
+<td> (<a
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
+><code class="literal">NULL</code></a> to ignore) the Session ID after connection is stored here.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <span class="type">WockyXmppConnection</span> instance (success), or <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
+><code class="literal">NULL</code></a> (failure).
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_connector_connect_async ()">
+<a name="wocky-connector-connect-async"></a><h3>wocky_connector_connect_async ()</h3>
+<pre class="programlisting">void                wocky_connector_connect_async       (WockyConnector *self,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> cb,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+Connect to the account/server specified by the <em class="parameter"><code>self</code></em>.
+<em class="parameter"><code>cb</code></em> should invoke <code class="function">wocky_connector_connect_finish()</code>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td> a <span class="type">WockyConnector</span> instance.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cb</code></em> :</span></p></td>
+<td> a <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
+><span class="type">GAsyncReadyCallback</span></a> to call when the operation completes.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td> a <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
+><span class="type">gpointer</span></a> to pass to the callback.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_connector_new ()">
+<a name="wocky-connector-new"></a><h3>wocky_connector_new ()</h3>
+<pre class="programlisting">WockyConnector *    wocky_connector_new                 (const <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> *jid,
+                                                         const <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> *pass,
+                                                         const <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a> *resource);</pre>
+<p>
+Connect to the account/server specified by <em class="parameter"><code>self</code></em>.
+To set other <span class="type">WockyConnector</span> properties, use <a
+href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-new"
+><code class="function">g_object_new()</code></a> instead.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
+<td> a JID (user AT domain).
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pass</code></em> :</span></p></td>
+<td> the password.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>resource</code></em> :</span></p></td>
+<td> the resource (sans '/'), or NULL to autogenerate one.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <span class="type">WockyConnector</span> instance which can be used to connect to,
+register or cancel an account
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_connector_register_async ()">
+<a name="wocky-connector-register-async"></a><h3>wocky_connector_register_async ()</h3>
+<pre class="programlisting">void                wocky_connector_register_async      (WockyConnector *self,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> cb,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+Connect to the account/server specified by <em class="parameter"><code>self</code></em>, register (set up)
+the account there and then log in to it.
+<em class="parameter"><code>cb</code></em> should invoke <code class="function">wocky_connector_register_finish()</code>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td> a <span class="type">WockyConnector</span> instance.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cb</code></em> :</span></p></td>
+<td> a <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
+><span class="type">GAsyncReadyCallback</span></a> to call when the operation completes.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td> a <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
+><span class="type">gpointer</span></a> to pass to the callback <em class="parameter"><code>cb</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_connector_unregister_async ()">
+<a name="wocky-connector-unregister-async"></a><h3>wocky_connector_unregister_async ()</h3>
+<pre class="programlisting">void                wocky_connector_unregister_async    (WockyConnector *self,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
+>GAsyncReadyCallback</a> cb,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+Connect to the account/server specified by <em class="parameter"><code>self</code></em>, and unregister (cancel)
+the account there.
+<em class="parameter"><code>cb</code></em> should invoke <code class="function">wocky_connector_unregister_finish()</code>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td> a <span class="type">WockyConnector</span> instance.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cb</code></em> :</span></p></td>
+<td> a <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
+><span class="type">GAsyncReadyCallback</span></a> to call when the operation completes.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td> a <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
+><span class="type">gpointer</span></a> to pass to the callback <em class="parameter"><code>cb</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_connector_unregister_finish ()">
+<a name="wocky-connector-unregister-finish"></a><h3>wocky_connector_unregister_finish ()</h3>
+<pre class="programlisting"><a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>            wocky_connector_unregister_finish   (WockyConnector *self,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
+>GAsyncResult</a> *res,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre>
+<p>
+Called by the callback passed to <code class="function">wocky_connector_unregister_async()</code>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td> a <span class="type">WockyConnector</span> instance.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em> :</span></p></td>
+<td> a <a
+href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
+><span class="type">GAsyncResult</span></a> (from the <code class="function">wocky_connector_unregister_async()</code> callback).
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td> (<a
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL--CAPS"
+><code class="literal">NULL</code></a> to ignore) the <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> (if any) is stored here.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+><span class="type">gboolean</span></a> value <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE--CAPS"
+><code class="literal">TRUE</code></a> (success), or <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE--CAPS"
+><code class="literal">FALSE</code></a> (failure).
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_connector_auth_mechanism ()">
+<a name="wocky-connector-auth-mechanism"></a><h3>wocky_connector_auth_mechanism ()</h3>
+<pre class="programlisting">WockySaslAuthMechanism  wocky_connector_auth_mechanism  (WockyConnector *self);</pre>
+<p>
+</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td> a <span class="type">WockyConnector</span> instance.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <span class="type">WockySaslAuthMechanism</span> value indicating the auth mechanism.
+actually used during the connection process.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="WockyConnector.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "email" property'>
+<a name="WockyConnector--email"></a><h3>The <code class="literal">"email"</code> property</h3>
+<pre class="programlisting">  "email"                    <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>
+The XMPP account's email address (optional, MAY be required by the server
+if we are registering an account, not required otherwise).</p>
+<p>
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "encrypted-plain-auth-ok" property'>
+<a name="WockyConnector--encrypted-plain-auth-ok"></a><h3>The <code class="literal">"encrypted-plain-auth-ok"</code> property</h3>
+<pre class="programlisting">  "encrypted-plain-auth-ok"  <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
+<p>
+Whether PLAINTEXT auth is ok when encrypted.</p>
+<p>
+</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "features" property'>
+<a name="WockyConnector--features"></a><h3>The <code class="literal">"features"</code> property</h3>
+<pre class="programlisting">  "features"                 WockyXmppStanza*      : Read</pre>
+<p>
+A <span class="type">WockyXmppStanza</span> instance, the last WockyXmppStanza instance received
+by the connector during the connection procedure (there may be several,
+the most recent one always being the one we should refer to).</p>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title='The "identity" property'>
+<a name="WockyConnector--identity"></a><h3>The <code class="literal">"identity"</code> property</h3>
+<pre class="programlisting">  "identity"                 <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read</pre>
+<p>
+JID + resource (a AT b SLASH c) that is in effect _after_ a successful
+resource binding operation. This is NOT guaranteed to be related to
+the JID specified in the original <span class="type">"jid"</span> property.
+The resource, in particular, is often different, and with gtalk the
+domain is often different.</p>
+<p>
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "ignore-ssl-errors" property'>
+<a name="WockyConnector--ignore-ssl-errors"></a><h3>The <code class="literal">"ignore-ssl-errors"</code> property</h3>
+<pre class="programlisting">  "ignore-ssl-errors"        <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
+<p>
+Whether to ignore recoverable SSL errors.
+(certificate insecurity/expiry etc) - not actually implemented yet.</p>
+<p>
+</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "jid" property'>
+<a name="WockyConnector--jid"></a><h3>The <code class="literal">"jid"</code> property</h3>
+<pre class="programlisting">  "jid"                      <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>
+The XMPP account's JID (with or without a /resource).</p>
+<p>
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "legacy" property'>
+<a name="WockyConnector--legacy"></a><h3>The <code class="literal">"legacy"</code> property</h3>
+<pre class="programlisting">  "legacy"                   <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
+<p>
+Whether to attempt old-style (non-SASL) jabber auth.</p>
+<p>
+</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "old-ssl" property'>
+<a name="WockyConnector--old-ssl"></a><h3>The <code class="literal">"old-ssl"</code> property</h3>
+<pre class="programlisting">  "old-ssl"                  <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
+<p>
+The Session ID supplied by the server upon successfully connecting.
+May be useful later on as some XEPs suggest this value should be used
+at various stages as part of a hash or as an ID.</p>
+<p>
+</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "password" property'>
+<a name="WockyConnector--password"></a><h3>The <code class="literal">"password"</code> property</h3>
+<pre class="programlisting">  "password"                 <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>
+XMPP Account password.</p>
+<p>
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "plaintext-auth-allowed" property'>
+<a name="WockyConnector--plaintext-auth-allowed"></a><h3>The <code class="literal">"plaintext-auth-allowed"</code> property</h3>
+<pre class="programlisting">  "plaintext-auth-allowed"   <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
+<p>
+Whether auth info can be sent in the clear (eg PLAINTEXT auth).
+This is independent of any encryption (TLS, SSL) that has been negotiated.</p>
+<p>
+</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "resource" property'>
+<a name="WockyConnector--resource"></a><h3>The <code class="literal">"resource"</code> property</h3>
+<pre class="programlisting">  "resource"                 <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write / Construct Only</pre>
+<p>
+The resource (sans '/') for this connection. Will be generated
+automatically if not set. May be altered by the server anyway
+upon successful binding.</p>
+<p>
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "session-id" property'>
+<a name="WockyConnector--session-id"></a><h3>The <code class="literal">"session-id"</code> property</h3>
+<pre class="programlisting">  "session-id"               <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read</pre>
+<p>XMPP Session ID.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "tls-required" property'>
+<a name="WockyConnector--tls-required"></a><h3>The <code class="literal">"tls-required"</code> property</h3>
+<pre class="programlisting">  "tls-required"             <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
+<p>
+Whether we require successful tls/ssl negotiation to continue.</p>
+<p>
+</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "xmpp-port" property'>
+<a name="WockyConnector--xmpp-port"></a><h3>The <code class="literal">"xmpp-port"</code> property</h3>
+<pre class="programlisting">  "xmpp-port"                <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write / Construct</pre>
+<p>
+Optional XMPP connect port. Any DNS SRV record will be ignored if
+this is set. (So the host will be either the WockyConnector:xmpp-server
+property or the domain part of the JID, in descending order of preference)</p>
+<p>
+</p>
+<p>Allowed values: &lt;= 65535</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" title='The "xmpp-server" property'>
+<a name="WockyConnector--xmpp-server"></a><h3>The <code class="literal">"xmpp-server"</code> property</h3>
+<pre class="programlisting">  "xmpp-server"              <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>
+Optional XMPP connect server. Any DNS SRV record and the host specified
+in <span class="type">"jid"</span> will be ignored if this is set. May be a hostname
+(fully qualified or otherwise), a dotted quad or an ipv6 address.</p>
+<p>
+</p>
+<p>Default value: NULL</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>
