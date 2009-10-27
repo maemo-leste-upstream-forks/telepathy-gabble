@@ -1,3 +1,304 @@
+commit 69679f560c5490668840f29c582d946bd7f0ee70
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Oct 22 17:49:22 2009 +0100
+
+    Comments explaining the new avoid-double-close test.
+
+ tests/wocky-porter-test.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+
+commit 5a80eeac888503d53b5569e173269d4b32f9573c
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Oct 22 16:19:08 2009 +0100
+
+    Comment explaining the importance of the timing of when remote_closed is set.
+
+ wocky/wocky-porter.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 1cba28f9b5cdb45fa98acee8c5f75f13e81bf939
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Oct 22 15:56:28 2009 +0100
+
+    Test for the double-force-close on remote-error case.
+
+ tests/wocky-porter-test.c |   37 +++++++++++++++++++++++++++++++++++++
+ 1 files changed, 37 insertions(+), 0 deletions(-)
+
+commit 871b439aa9de4f4ed5f837352f88756f8164423d
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Tue Oct 20 19:54:32 2009 +0100
+
+    Fixes calls to wocky_xmpp_connection_force_close_async. DEBUG gives file+line.
+    
+    Never put more than 1 wocky_xmpp_connection_force_close_async in flight for a
+    given connection.
+    
+    g_object_ref the wocky porter passed in as the user_data to the call so that
+    it is guaranteed to still be alive when the callback happens.
+    
+    Report an error in idle if we try to force a shutdown twice.
+    
+    DEBUG gives file + line now.
+
+ wocky/wocky-debug.h  |    3 +-
+ wocky/wocky-porter.c |   56 +++++++++++++++++++++++++++++++++++++++++--------
+ 2 files changed, 49 insertions(+), 10 deletions(-)
+
+commit 3ac75cc16227e4dc39aecd9d9fa659c5d5cf1698
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Wed Oct 21 12:21:40 2009 +0100
+
+    Put some actual aborted-iq-node info in the debug output.
+
+ wocky/wocky-porter.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
+
+commit 1f2e07aab5c7d57d6aa3021a529376125dab2912
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Wed Oct 21 12:19:27 2009 +0100
+
+    Value tested in if condition clause is a pointer, not a boolean.
+
+ wocky/wocky-porter.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 3ab69e056517fac671e3f1db06f4973538c42584
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Wed Oct 21 12:18:04 2009 +0100
+
+    'forget' the stashed async result earlier, use the local copy i nthe callback.
+
+ wocky/wocky-porter.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit dfc0e61089f9db3946aa53251d7fe5745b202712
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Wed Oct 21 12:14:58 2009 +0100
+
+    Flag should be set _before_ the signal is fired or some callbacks may not fire.
+
+ wocky/wocky-porter.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 62d54ca0a6e338987f363f0ef979b00e8b6a6a99
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Tue Oct 20 19:54:32 2009 +0100
+
+    Remove handlers as we abort IQs, and check iq handlers before invoking them.
+    
+    NULL out each handler->result after freeing it.
+    Check handler and/or handler->result before using them.
+    Remove handler form the hash when we abort all pending IQs.
+
+ wocky/wocky-porter.c |   19 +++++++++++++++----
+ 1 files changed, 15 insertions(+), 4 deletions(-)
+
+commit 04c77df70f46ecf1386d2d9b24f273d43c953a00
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Oct 19 15:17:38 2009 +0100
+
+    Certs should not be removed on distclean anymore: nothing to do on clean-local
+
+ tests/Makefile.am |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+commit a7d02c2a6b9811fe63e80bc681933cf52ce0ea25
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Oct 19 13:08:38 2009 +0100
+
+    Turn openpgp cert support back off.
+
+ wocky/wocky-tls.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 774eeec1ba1933537897d6d6da4ca14754000924
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Oct 16 16:48:08 2009 +0100
+
+    Comments explaining gnutls default protocol options we use.
+
+ wocky/wocky-tls.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+commit 3cfb88f8e8cb76f54b11bab6bd8dde9b798a3c81
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Oct 16 15:58:53 2009 +0100
+
+    Activate deflate compression, openpgp certs and secure (slow) crypto by default.
+
+ wocky/wocky-tls.c |   14 +++++++++-----
+ 1 files changed, 9 insertions(+), 5 deletions(-)
+
+commit 3f65748a178c5b7445f58ea21cf38bb2f09646a0
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Oct 16 15:44:08 2009 +0100
+
+    Fix gnutls session protocol detail setup.
+    
+    Don't set the details then immediately set them back to the defaults.
+    Complain if we can't set the various session options.
+    Complain if we can't set the session credentials.
+    Allow default options to be set via an environment variable.
+    Prio_cache storage not used anymore, using gnutls_priority_set_direct.
+
+ wocky/wocky-tls.c |   38 ++++++++++++++++++++++++++++++++------
+ 1 files changed, 32 insertions(+), 6 deletions(-)
+
+commit 42441d6581b8eccb0cd81bf080c60b9336d72edd
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Oct 5 18:24:39 2009 +0100
+
+    Overriding gnutls autodetection to use openssl was broken.
+
+ configure.ac |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 1f0a57f6dd8b75c97eb1087e0ff0d7b966fbff8b
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Oct 1 19:45:31 2009 +0100
+
+    Don't check certtool/datefudge until actually needed to generate a certificate.
+
+ tests/Makefile.am |   12 +++++++-----
+ 1 files changed, 7 insertions(+), 5 deletions(-)
+
+commit 1beb3ec922476241462ea046ece2acfad0d09234
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Oct 5 15:46:57 2009 +0100
+
+    Ship openssl files in dist tarball even when building w gnutls and vice versa.
+
+ wocky/Makefile.am |   23 ++++++++++++++++-------
+ 1 files changed, 16 insertions(+), 7 deletions(-)
+
+commit 03787b9f06af91ac0acd8f6b52e0b7783fc794d7
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Oct 5 15:07:14 2009 +0100
+
+    Typos: environnement -> environment; updated doc section title.
+
+ wocky/wocky-openssl.c |    2 +-
+ wocky/wocky-tls.c     |    6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 65b6b5fb802c884120428021bbf74edf88758c4b
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Oct 5 14:48:15 2009 +0100
+
+    Comment around SSL_CTX_set_cipher_list explaining how to use it if we want to.
+
+ wocky/wocky-openssl.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 1e6461d57cc555b087111873cbce46e6a36644ac
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Oct 5 14:12:33 2009 +0100
+
+    Coding style fix.
+
+ wocky/wocky-openssl.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit e2ba67289c6711fe84fe137e97ec9d0df80ed185
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Oct 5 13:10:08 2009 +0100
+
+    Reduce debugging unless WOCKY_TLS_DEBUG_LEVEL exceeds the async detail level.
+
+ wocky/wocky-openssl.c |   33 ++++++++++++++++++++++-----------
+ 1 files changed, 22 insertions(+), 11 deletions(-)
+
+commit 258c62ea0b95c43fabe9c1777d64dfc76280a1cc
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Oct 5 12:41:26 2009 +0100
+
+    Comment explaining arcane reasons behind structure of error_to_string()
+
+ wocky/wocky-openssl.c |   20 ++++++++++++++++++--
+ 1 files changed, 18 insertions(+), 2 deletions(-)
+
+commit 69e631b51d7a812d4d0d04dd7e9164d752e74847
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Oct 2 16:35:46 2009 +0100
+
+    Removed tmp comments tagging functions for review, warn if BIO alloc fails.
+
+ wocky/wocky-openssl.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+commit e3fb29ad6a586bfcb2fa8006d66024dde466631e
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Oct 1 19:05:33 2009 +0100
+
+    Check in cert dir copies of certs as well as the openssl hash symlinks thereto.
+
+ .gitignore                    |    4 ++--
+ tests/Makefile.am             |    4 +++-
+ tests/certs/cas/a7481a9e.0    |    1 +
+ tests/certs/cas/bb7d74ae.0    |    1 +
+ tests/certs/cas/c5d5c0da.0    |    1 +
+ tests/certs/cas/ca-0-cert.pem |   23 +++++++++++++++++++++++
+ tests/certs/cas/ca-1-cert.pem |   23 +++++++++++++++++++++++
+ tests/certs/cas/ca-2-cert.pem |   23 +++++++++++++++++++++++
+ tests/certs/crl/c5d5c0da.r0   |    1 +
+ tests/certs/crl/ca-0-crl.pem  |   13 +++++++++++++
+ 10 files changed, 91 insertions(+), 3 deletions(-)
+
+commit d0977e8aed68ec2169534c35e396b6be0df4146c
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Oct 1 18:32:48 2009 +0100
+
+    Example connect program was missing wocky_init() call, prevented testing.
+
+ examples/connect.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 2d5e141cd3030077a5d532d3becd7562f844b760
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Oct 1 18:31:39 2009 +0100
+
+    Use WOCKY_TEST_SERVER_DEBUG env var to control test server debug independently.
+
+ tests/wocky-connector-test.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 6325c54e019d535495f59c4a29b9864f0ae16c11
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Oct 1 18:30:34 2009 +0100
+
+    Pick one of gnutls and openssl automatically, unless the user choose explicitly.
+
+ configure.ac                        |   24 ++++++++++++++++++++++--
+ tests/Makefile.am                   |    5 +++--
+ tests/wocky-test-connector-server.c |    6 ++++++
+ wocky/Makefile.am                   |   20 +++++++++++++++-----
+ wocky/wocky-connector.h             |    7 +++++++
+ 5 files changed, 53 insertions(+), 9 deletions(-)
+
+commit f57076bcd5865e39b4ccc61881b539dec0689175
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Oct 1 18:25:15 2009 +0100
+
+    WockyTLSSession et al based on OpenSSL (in addition to existing gnutls version)
+
+ wocky/wocky-openssl-dh1024.c |   30 +
+ wocky/wocky-openssl-dh2048.c |   41 +
+ wocky/wocky-openssl-dh4096.c |   62 ++
+ wocky/wocky-openssl-dh512.c  |   25 +
+ wocky/wocky-openssl.c        | 1698 ++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-openssl.h        |  102 +++
+ 6 files changed, 1958 insertions(+), 0 deletions(-)
+
+commit bc04e13d7fb4a48b291e0117fef24f220620e6b9
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Wed Sep 30 13:04:06 2009 +0100
+
+    certtool/datefudge errors should be warnings, tweaked warning messages.
+
+ tests/Makefile.am |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
 commit f9601a319d69fd59124c68a0f8be57d4399df0da
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   Tue Sep 29 17:21:31 2009 +0100

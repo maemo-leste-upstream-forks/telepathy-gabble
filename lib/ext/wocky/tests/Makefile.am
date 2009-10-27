@@ -51,6 +51,7 @@ TIMEWARP := 28 * $(YEAR)
 FUTURE   := $(shell date +'%Y-%m-%d %H:%M' -d @$$(($$(date +%s) + $(TIMEWARP))))
 PAST     := $(shell date +'%Y-%m-%d %H:%M' -d @$$(($$(date +%s) - $(DAY) * 7)))
 FILTER_BITS := grep -v '^[	 ]\+\([a-f0-9]\{2\}:\)\+[a-f0-9]\{2\}$$'
+check_bin = $(or $(shell test -x "$(1)" && echo Y), $(error Need $(2) to $(3)))
 ############################################################################
 TEST_PROGS = wocky-xmpp-reader-test \
   wocky-xmpp-readwrite-test \
@@ -168,8 +169,9 @@ wocky_pep_service_test_SOURCES = \
   wocky-test-stream.c wocky-test-stream.h \
   wocky-pep-service-test.c
 
-AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @WOCKY_CFLAGS@
-AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@
+AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@
+AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
+
 LDADD = $(top_builddir)/wocky/libwocky.la
 
 check_PROGRAMS = $(TEST_PROGS)
@@ -209,16 +211,17 @@ check-local: test check-coding-style
 ############################################################################
 # x509 certificates:
 certtool:
-	@echo $(or $(shell test -x "$(CERTTOOL)" && echo $@ OK),   \
-	           $(error Need $@ to rebuild expired/inactive certificates))
+	@echo $(or $(shell test -x "$(CERTTOOL)" && echo $@ OK), \
+	           $(warning Need $@ to rebuild test certs))
 	@touch $@
 
 tardis:
 	@echo $(or $(shell test -x "$(TARDIS)" && echo $@ OK),   \
-	           $(error Need $@ to rebuild expired/inactive certificates))
+	           $(warning Need datefudge to rebuild expired/inactive test certs))
 	@touch $@
 
-%-key.pem: | certtool
+%-key.pem:
+	@echo $(call check_bin,$(CERTTOOL),certtool,rebuild $@)
 	$(GENKEY) $@
 
 %/ss-cert.pem: %/ss-key.pem %/ss-cert.cfg
@@ -244,7 +247,7 @@ certs/ca-%-cert.pem $(CERT_DIR)/ca-%-cert.pem: $(CERT_DIR)/ca-%-key.pem $(CERT_D
 %/new-cert.pem: export CERTCMD = $(TARDIS) "$(FUTURE)" $(CERTTOOL)
 %/exp-cert.pem: export CERTCMD = $(TARDIS) "$(PAST)"   $(CERTTOOL)
 
-$(NEW_CERT) $(EXP_CERT) certs/exp-cert.pem certs/new-cert.pem: | tardis
+$(NEW_CERT) $(EXP_CERT) certs/exp-cert.pem certs/new-cert.pem: NEED_TIME = 1
 
 %/unknown-cert.pem: export CERTCMD = $(CERTTOOL)
 %/unknown-cert.pem: export CA_CERT = $*/unknown-ca-cert.pem
@@ -258,8 +261,10 @@ $(NEW_CERT) $(EXP_CERT) certs/exp-cert.pem certs/new-cert.pem: | tardis
 	            --template            $*/unknown-cert.cfg    \
 	            --outfile             $@ 2>&1 | $(FILTER_BITS)
 
-%-cert.pem: %-key.pem %-cert.cfg $(CA_CERT) | certtool
+%-cert.pem: %-key.pem %-cert.cfg $(CA_CERT)
 	@echo "CERTIFICATE $@ ($(CERTCMD)): $^"
+	@echo $(call check_bin,$(CERTTOOL),certtool,rebuild $@)
+	@echo $(if $(NEED_TIME),$(call check_bin,$(TARDIS),datefudge,rebuild $@))
 	$(CERTCMD)  --generate-certificate                   \
                 --load-ca-certificate $(CA_CERT)         \
 	            --load-ca-privkey     $(CA_KEY)	         \
@@ -283,12 +288,6 @@ $(CA_DIR)/%.pem: $(CERT_DIR)/%.pem
 
 $(CRL_DIR)/%.pem: $(CERT_DIR)/%.pem
 	@cp -av $< $@
-
-clean-local:
-	@rm -f certtool
-	@rm -f tardis
-	rm -fv certs/cas/*.pem
-	rm -fv certs/crl/*.pem
 
 ############################################################################
 
@@ -331,7 +330,9 @@ EXTRA_DIST = $(SUPPRESSIONS)     \
     $(wildcard certs/*.cfg)      \
 	$(wildcard certs/*.pem)      \
 	$(wildcard certs/cas/*.pem)  \
+	$(wildcard certs/cas/*.0)    \
 	certs/crl                    \
 	certs/cas                    \
-	$(wildcard certs/crl/*.pem)
+	$(wildcard certs/crl/*.pem)  \
+	$(wildcard certs/crl/*.r0)
 

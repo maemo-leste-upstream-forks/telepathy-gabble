@@ -1,3 +1,673 @@
+commit 8835b7af976589de329677e721aca00c75b63b05
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-27 17:12:12 +0000
+
+    Prepare 0.9.2
+
+commit 6b8efd0db961cb9665907ad4f4d00cdc701ce671
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-27 17:07:43 +0000
+
+    Update NEWS
+
+commit 8a758ada0b9e8249d71bbc80a1730267cc2ac4d1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-07 23:57:51 +0100
+
+    Correct the type of pre-presence's marshaller
+    
+    The signal's argument is a LmMessage *, which is wider than guint on
+    amd64.
+
+commit 904af702fbc56dd9216addac9021523ff8943b5a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-06 14:59:01 +0100
+
+    Don't trust <message> ids to be globally unique
+
+commit 452048f06e5a037435747a5122f31ceb25e174b3
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-10-23 17:23:36 +0100
+
+    libloudmouth.la was linked against libwocky.la but did not depend on it.
+    
+    This broken dependency meant symbols from stale copies of libwocky.a could end up linked into the telepathy-gabble and telepathy-gabble-debug binaries, which could be very misleading during the patch/build/test cycle.
+
+commit fb462e4687c35e0aaa88da064ca67e081b9af006
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-10-23 13:11:53 +0100
+
+    Update wocky to pull in porter-disconnect bug fixes.
+    
+    Fixes the "undead dbus names" bug correctly, previous [gabble] fix was masking the symptom but not addressing the underling bug (actully an interaction of three bugs) in wocky.
+
+commit 06a594dabd7fc207ef272a67366d514f21b28afa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-19 18:41:11 +0100
+
+    Don't call shut_down() twice on stream errors.
+    
+    This essentially reverts 63d0cd4, which papered over a bug in Wocky
+    where the callback passed to wocky_porter_force_close_async() would
+    never be called in slightly obscure situations.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 9b77f35aa8b054a70ff8e2a5e63a3a61f21a9eb2
+Merge: 6d46975 bf56a76
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-22 18:54:26 +0100
+
+    Merge branch 'annie-let's-not-wait-0.9'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 6d46975b1487bc0f5b54f1b6465a3cbaa45ee068
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-22 16:40:35 +0100
+
+    Fix identation
+
+commit 25d6ba1801ab0be2208f60676e1b9e4f4dfa6c4f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-22 16:11:45 +0100
+
+    Check both old style and new style capabilities
+
+commit 9b61197a6961c9d6bab1ea99a0a8597934bd18b2
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-22 16:35:02 +0100
+
+    Put ImmutableStreams in allowed properties if needed
+
+commit bf56a76f2432114708689e9bf2c21cff49ed4bb2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-19 16:23:09 +0100
+
+    Add and use a canned "any audio/video" caps set
+
+commit c343956a91f972cc7c7cb6c81cc775ad850dcae5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-05 13:14:12 +0100
+
+    Don't wait for a caps if a contact's already callable
+    
+    This is a version of 801d393, updated to apply to master.
+
+commit de9183149c35d8f7c84cd56b0786442d46138bee
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-19 15:31:11 +0100
+
+    Test Channel.Type.StreamedMedia.ImmutableStreams
+
+commit 240139a27f4fe7ac704a453a661e401681a95e94
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-19 15:29:51 +0100
+
+    Compile, and actually set ImmutableStreams property
+    
+    7956fc5 broke the build (sorry!) and didn't actually assign to 'flags'
+    so the ImmutableStreams channel property was always false (although the
+    capability works).
+
+commit 5edd11b52b0d2341ba648cbd87e33cb597bb8164
+Merge: 9904163 e435baf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-19 14:57:50 +0100
+
+    Merge branch 'improve-caps-cache-0.9'
+    
+    Fixes fd.o bug #24377.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit e435bafcde2fb77a43698ae49c316821eb41f571
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-19 14:56:50 +0100
+
+    Note bug number for satisfying waiters with our own hash
+
+commit 990416362eed42781e948fa0537d373375c779fe
+Merge: cbe1d31 7956fc5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-19 14:43:17 +0100
+
+    Merge branch 'immutable-streams-0.9'
+    
+    Fixes fd.o bug #24374.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit cbe1d31f773b7f92e031814a37c47c7871a9eec2
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-10-15 17:08:37 +0100
+
+    Don't care about early state changes in this test, don't check for them.
+
+commit b77d4a534f5f6435f0f60c0a082b9ae02673d574
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-10-15 17:07:17 +0100
+
+    Make sure state change signal to 'disconnected' is also sent.
+
+commit 70e80c6c0294b242f3972463769dc4dc47cac2ef
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-10-14 18:48:32 +0100
+
+    Enable new TCP disconnect test.
+
+commit 8cd8dd5777007c3282e7a4264b3d1643b1924df5
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-10-14 18:46:01 +0100
+
+    Watch all dbus signals. Check conn object is unregistered on TCP disconnect.
+
+commit 63d0cd486c64e24d24199d9df501e69b24a3189b
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-10-14 15:35:02 +0100
+
+    The shut_down method should clean up even if the closing flag is already set.
+    
+    If we don't do this then the name is never removed from dbus if a network
+    error occurs, leaving an undead object path registered with the bus.
+
+commit 16d4754a716a3dd1d2af2e05afd8f6c219fc264a
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-10-14 15:32:46 +0100
+
+    Stop idle/timeout probing for proxies when we are disconnected.
+
+commit 37731860fc675b1346879ca63ea47c8ec19160bb
+Merge: dbd5a13 436754b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-09 11:01:58 +0100
+
+    Merge branch 'avatar-bug23684-0.9'
+    
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 436754ba93fdba9aa707705ac3a9e7d58b87642a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 16:40:15 +0100
+
+    test-avatar-async.py: better explanations of regression test LP#445847, as per wjt's review
+
+commit b6a70af674553f5cfa6fa3c3c9d30d2abbe88c7f
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 16:36:52 +0100
+
+    Coding style: avoid too long lines, as per wjt's review
+
+commit 8834e43a2f92449e83cc9797483d85349ad843af
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 16:36:00 +0100
+
+    src/presence-cache.c: fix leak of presence->avatar_sha1, as per wjt's review
+
+commit 42c438f2fcf62d0c3b6592eaa347892f1ecd1ebd
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 16:04:03 +0100
+
+    test-avatar-async.py: use constants from cs, and RequestHandles is plural, as per wjt's review
+
+commit 6d208b177cecb8de6e224c970f9723b37786917a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 15:51:32 +0100
+
+    request-pipeline.c: Fix assert item->timer_id != 0
+    
+    See this crash:
+    https://bugs.edge.launchpad.net/ubuntu/+source/telepathy-gabble/+bug/445847
+
+commit e88caa3b70d5e04427d88935cce2d4eaafa056ac
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 15:49:20 +0100
+
+    vCard default timer is set to 3 seconds for the unit tests
+
+commit 0d62c36b80568e2f88dd6d86e0cda70fa077cb51
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 15:41:51 +0100
+
+    test-avatar-async.py: Regression test for item->timer_id != 0
+    
+    See this crash:
+    https://bugs.edge.launchpad.net/ubuntu/+source/telepathy-gabble/+bug/445847
+
+commit 07fbf575b350981783e84fea14144f483245521c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 14:03:31 +0100
+
+    presence-cache.c: More DEBUG() during avatar conflict resolution
+
+commit a4540d85bb49a1f8db729a0d6129b685adda996c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 11:34:18 +0100
+
+    presence-cache.c: Fix avatar loop when there is no avatar
+
+commit 7cb4e021f224c1175c88e636bc32afbdf5d6fa5a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 11:32:04 +0100
+
+    conn-avatars.c: More assertions on avatar sha1
+
+commit 81c730e3d53616d2cfd354ba0f491ea49765c00e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 11:56:19 +0100
+
+    test-avatar-async.py: Do not loop when there is no avatar
+
+commit f2382f76e3f013408d7c300a5e6e929a5f2c3f92
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-08 11:42:13 +0100
+
+    gabbletest.py: Fix make_presence() to be able to send a presence stanza with an empty <photo/>
+
+commit 8907e3d5cb230ed9eddc35b1124307251591c8e7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-07 13:15:28 +0100
+
+    Make caching-our-own-caps test more explicit
+
+commit af55ea3dcc39af01b75dad89fb83898496353ebd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-06 11:01:09 +0100
+
+    Serve disco responses from the cache
+    
+    We only serve up responses from cache entries added locally, because
+    only those are known to be complete. This means we can serve responses
+    to people discoing our old caps hashes, rather than returning an error,
+    which also works around an iChat issue where it reacts to disco errors
+    by re-sending the request again and again.
+
+commit fab500d3e05e0a8e9ab517d990f2398abc4ee911
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-05 16:44:04 +0100
+
+    Add compatibility bundles to the cache
+
+commit 84c6be681b3ba3a3bef4233e8ec23798ff08cb22
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-03 02:03:38 +0100
+
+    Cache our own caps before announcing them.
+    
+    Previously, Gabble didn't put its own capabilities in the cache. So,
+    when it received its own presence echoed back by the server, it would...
+    disco itself.
+
+commit 834ed44caea0cd4dee5233fb04b4945581cfc233
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-07 18:09:03 +0100
+
+    Add gabble_presence_peek_caps() to avoid copying
+
+commit b7dbafe87a5b9f5134e0c2934c886cb5c8420d20
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-02 23:04:03 +0100
+
+    Pre-seed more Google Talk capability bundles.
+
+commit 7956fc56513eea393728e8ab5b3e5ba6fda394f8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-07 12:48:18 +0100
+
+    Implement StreamedMedia.ImmutableStreams property
+    
+    This is a version of 56ee6d9, tweaked slightly for 0.9
+
+commit 06113e1d22947f49aa8faaf4500dff43586ed11a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-06-25 10:47:23 +0100
+
+    Implement C_Media_Capabilities_Immutable_Streams
+    
+    The tests needed changing because the definition of the
+    Immutable_Streams cap implies that contacts who can only make audio
+    calls should have that flag set. Most of the tests were changed to make
+    the contacts video capable too; the jingle-caps test checks that Google
+    Video contacts (who are capable of both audio and video) have this flag
+    set.
+    
+    This is a version of 744b0d3, modified to work with the refactored
+    capabilities code in 0.9
+
+commit dbd5a13f68dc53be9a0c5c8611792d735e241fbd
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-10-07 11:59:41 +0100
+
+    Update wocky (allow manual ssl backend selection)
+
+commit 9de1e04a6b222cacf899ae35257bc16a8c3c1a53
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-10-05 18:46:32 +0100
+
+    Pass flags to choose wocky tls backend on to embedded wocky configure.
+
+commit a6c1dfa1cd31fb897ae86eb61c93322f2d0cd5f3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-06 20:04:00 +0100
+
+    Clarify that the vCard changes weren't in 0.9.1
+
+commit fdebc9769b348caddfd2e2efe19e323642f3842d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-08 18:26:53 +0100
+
+    Explain mapping <service-unavailable> to Offline
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit d4d381d9ec5ac8c7ffe040e6a312d6e6c195d0f8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-06 17:38:56 +0100
+
+    Update NEWS for vCard fixes and 0.8 releases
+
+commit 435920f449a2e7e1fa9771f6bb7f90baa67bc5bd
+Merge: dc32477 b219bdf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-06 17:19:41 +0100
+
+    Merge branch 'vcard-branches'
+    
+    This is a forward-port of the ranges 7bcf931..43e8643 and
+    bc5c549..2634fe8 from telepathy-gabble-0.8, fixing fd.o bug #23684.
+
+commit b219bdf2ec2faeb0b81636114bc9b00bdcd9ed60
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-02 17:17:58 +0100
+
+    Coding style
+
+commit 9f2add073d7ef101dd358e0766e018a2aab61497
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-02 16:16:09 +0100
+
+    Do not invalidate the cache when we receive our own vCard after conflict resolution
+
+commit b2c01a096a952f51b14fd32dec57d205c386a1ad
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-02 16:15:25 +0100
+
+    test-avatar-async.py: check that the avatar cache still works after conflict resolution
+
+commit 26954e283c2a1ee65d3b6c0d25fc9b3de9d146d8
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-02 15:48:05 +0100
+
+    vcard-manager.c: Remove unused variable (and fix compilation with -Werror)
+
+commit 8a6bfe9a23728088d1fd1ed952ac9217a9b3c40a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-02 13:14:22 +0100
+
+    presence-cache.c: add a FIXME comment about the avatar sha1 being resetted and set in 2 different files
+
+commit 96279e67279e99cef88f7c2c095fe69a09ed3729
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 19:41:27 +0100
+
+    test-avatar-async.py: Test for the D-Bus signal AvatarUpdated after conflict resolution
+
+commit 544512ed0093b7f189649b8d01bb6a024469b618
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 19:38:18 +0100
+
+    Emit the signal AvatarUpdated at the end of the conflict resolution
+
+commit 0446a6f4913764b0d1dd15d82acaee040fcba26f
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 18:04:43 +0100
+
+    vcard-manager.c: Fix: cancel the request in the pipeline on timeout
+
+commit 7576bdcbf27419a19067b0885f7695df5eef3f5a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 16:20:00 +0100
+
+    presence-cache.c: add a FIXME about a race
+
+commit 09af0accc58ea7bca88d1d61191e553be1aa7eb6
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 16:08:29 +0100
+
+    presence-cache.c: self_avatar_resolve_conflict(): remove unnecessary indentation
+
+commit 1b958d902efabe7b23d41af2cb096ead933b305e
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 15:36:29 +0100
+
+    presence-cache.c: move code in the new function self_avatar_resolve_conflict() to avoid quadrubly-nested "if" blocks
+
+commit bb9668ae1d7eee1492733659bf9d017fab021f74
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 15:17:51 +0100
+
+    test-avatar-multiple-resources.py: Don't expect AvatarUpdated for self_handle before conflict resolution
+    
+    The D-Bus signal AvatarUpdated is usually emitted as soon as we receive a
+    presence stanza from a contact: we don't want to wait to receive the vCard with
+    the actual avatar because we don't ask the vCard unless an application
+    specifically request it. However, when we receive a presence stanza from
+    'ourselves' on another resource, we emit the signal AvatarUpdated only when the
+    conflict resolution is finished. This commit change the test to reflect that.
+
+commit 4fb28ba7b94e365868eafb1aa664df86b596165a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 12:45:48 +0100
+
+    tests: use ns.VCARD_TEMP_UPDATE instead of hard coding 'vcard-temp:x:update'
+
+commit 3067462259eba7d1cbae4588505fe2e9c1573ec1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 12:11:03 +0100
+
+    test-avatar-async.py: new test cases to prevent recursive conflict resolution
+
+commit bb81008006e459af6518be63685937a958dd49de
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-10-01 11:55:43 +0100
+
+    presence-cache.c: Fix avatar conflict resolution: Do not confuse self_presence and presence with self_handle from the cache
+
+commit 443401251b3bd373f1368f2746e5f50d8d2811fc
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-30 18:27:40 +0100
+
+    Fix gabble_request_pipeline_item_cancel: remove the timer
+
+commit 6577f24bfd907f0cb916aa9523207426f36cab57
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-30 17:35:58 +0100
+
+    Fix a crash in vCard Manager dispose: remove the source of the suspended timeout
+
+commit f9d4b4d0ad626f6f62942e30ad34280927c13f8c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-30 16:09:25 +0100
+
+    presence-cache.c: Avoid recursive image resetting as per XEP-0153 section 4.4, bug #23684
+
+commit 4c8dec4f06070e4411d87a99464c76b4faaa47f7
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-28 19:16:48 +0100
+
+    vcard-manager.c: Add a FIXME: When requesting a vCard, the timeout is not always obeyed
+
+commit 20f3e470fff2589395f914dee03d22e67169ddc7
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-28 19:12:06 +0100
+
+    vcard-manager.c: Rename cache_entry_ensure_queued to request_send
+
+commit 6b9a83d65046205aca2edb67444fa035729ad4d2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-28 16:04:02 +0100
+
+    Make DEBUG output for suspending vCard gets more useful
+
+commit 59ea23026b4b202f268cde2d1c312c3cdc2589dc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-28 16:03:44 +0100
+
+    Clarify FIXME about generalizing error-extracting code
+
+commit 0e46de809acc6054568a8e35429452a8ec40cde2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-28 15:51:41 +0100
+
+    Clarify vCard get error processing
+
+commit 951d00b09f831c18a379bc233e66e20eb6c185b1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-28 13:25:01 +0100
+
+    vcard-manager.c: Suspend vCard request on all "wait" errors from the server, not only resource-constraint
+
+commit 31e6e9df79d7b19b17b897993e8f137caf489f2d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-28 13:08:03 +0100
+
+    vcard-manager.c: Add a debug when Gabble suspend a vCard request
+
+commit 95cf6b41151123dd7bcea812076edbd42c12458d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-25 18:08:12 +0100
+
+    vcard-manager.c: Move the timer arming in cache_entry_ensure_queued()
+    
+    It will fixed the timers override (problem found during Daf's review)
+
+commit b1d6b34d3864a4978f3fb6d0b99b66eb0aa1f8fd
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-25 18:05:14 +0100
+
+    vcard-manager.c: Add a FIXME to use error.c, as per Daf's review
+
+commit c096d8e2c6d4c10f977675645349f217ec70b1d2
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-25 18:02:47 +0100
+
+    test-avatar-async.py: coding style and use assertEquals, as per Daf review
+
+commit dd50e6c25dd280dd054c0532be1060c45b775601
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-25 17:10:27 +0100
+
+    vcard-manager.c: Remove redondant test on suspended_timer_id, add an assert instead
+
+commit 57de8f76150c81d748be97c3c85ffa5386413e8c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-24 18:05:37 +0100
+
+    test-avatar-async.py: test the timer: gabble should reemit the vCard request after waiting
+
+commit 817896fbc8552e462463344ebb07cb6c8e8a78d6
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-24 18:05:22 +0100
+
+    Fix timer problem
+
+commit 3fbaeea3f32ba47f6d5f69fe2216accdc275cec1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-24 18:04:27 +0100
+
+    vCard replay timer is set to 3 seconds for the unit tests
+
+commit c8070f35ca62df753c914ae5329d786f86f91c1c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-24 12:59:11 +0100
+
+    test-avatar-async.py: Add avatar test when the server reply busy
+
+commit ff801f9163709ba32939cec4b099bd7de8936f9d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-24 16:57:58 +0100
+
+    Bug #23684: Automatically request a vCard after the server replied with the error resource-constraint
+
+commit 194392b8d11dac8cdd33b7c35e42ed1d178dff10
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2009-09-23 16:17:48 +0100
+
+    Make gabble_request_pipeline_go() private
+
+commit dc324773a067232d5eb026e63aa15b03b4b9fd3c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-05-04 12:53:40 +0100
+
+    Delete delete repeated repeated word word.
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit e8277c08d49e60039c22ba803bcbcb8407bad95b
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-10-05 17:40:11 +0100
+
+    Update wocky to include openssl support + latest certtool build dep fixes.
+
+commit 5bac8138f1bac7ded209c401afd3ad8b673e4ee3
+Merge: caa3274 5b12f6f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-30 17:38:52 +0100
+
+    Merge branch 'getcc-crash'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 5b12f6fa430963f16b23a9ac5beb24561918425e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-30 17:09:55 +0100
+
+    Simplifying freeing contact capabilities
+
+commit fd3f3f52638be36f0e3bc3d95eaacd8dad6ef86e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-30 13:54:23 +0100
+
+    Test GetCCs for handles with unknown presence
+
+commit fa32c9a4e9cb5229e4d0c012d7e4aa37bb03fe70
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-30 13:51:22 +0100
+
+    Return an array from get_handle_ccs and build_contact_caps
+    
+    Creating a new array and passing it in to be filled with caps was pretty
+    weird, and made it hard to distinguish between "no caps" and "don't
+    know".
+
+commit 941a941f77377b9de2e7ffd243a74b2e7956ea73
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-30 13:37:40 +0100
+
+    Use build_contact_caps to emit ContactCapsChanged
+    
+    There's no point in looking up the handle's capabilities again, given
+    that we already know what the new set of caps is.
+
+commit 6bf200388248f27b5048a2e6c43d8fe2b70e4a0f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-30 13:33:28 +0100
+
+    Extract turning a caps set into contact caps
+
+commit 55665fa263b5b86d47db004cb32985e95dd39f20
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-09-30 13:12:05 +0100
+
+    Survive GetContactCaps when we don't have presence
+
+commit caa32745011ed8d3ca87b4a3e36df0788f084490
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-09-29 19:27:02 +0100
+
+    version 0.9.1.1
+
 commit 2d98bd5cce7d9ff8e3a4f33719cce83fbbb74c32
 Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
 Date:   2009-09-29 16:58:36 +0100

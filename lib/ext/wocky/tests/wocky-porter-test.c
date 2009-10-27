@@ -2298,6 +2298,58 @@ test_wait_iq_reply_force_close (void)
   teardown_test (test);
 }
 
+/* this tries to catch the case where we receive a remote-error, which   *
+ * results in a wocky_porter_force_close_async in the connected signal   *
+ * handler but the internal stanza_received_cb _also_ attempts to force  *
+ * a shutdown: when correctly functioning, only one of these will result *
+ * in a force close operation and the other will noop.                   *
+ * Typical failure cases are the shutdown not happening at all or being  *
+ * attempted twice and failing because the porter can only support one   *
+ * force close attempt (both indicate broken logic in the porter)        */
+static void
+test_remote_error (void)
+{
+  test_data_t *test = setup_test ();
+  WockyXmppStanza *error =
+    wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_STREAM_ERROR,
+        WOCKY_STANZA_SUB_TYPE_NONE, NULL, NULL,
+        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STREAM,
+        WOCKY_NODE, "conflict",
+        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STREAMS,
+        WOCKY_NODE_END,
+        WOCKY_STANZA_END);
+
+  test_open_both_connections (test);
+  wocky_porter_start (test->sched_out);
+  wocky_porter_start (test->sched_in);
+
+  /* this callback will force_close_async the OUT porter, *
+   * and decrement test->outstanding when it has done so  */
+  g_signal_connect (test->sched_out, "remote-error",
+      G_CALLBACK (test_stream_error_cb), test);
+
+  /* this pumps a stream error through the IN (server) porter    *
+   * which triggers the remote-error signal from the OUT porter */
+  wocky_porter_send_async (test->sched_in, error, NULL, send_stanza_cb, test);
+  test->outstanding++;
+  test_wait_pending (test);
+
+  test->outstanding++; /* this is for the signal connect above */
+
+  /* this closes the IN (server) porter so that the test doesn't fail (we *
+   * don't really care about the IN porter for the purposes of this test) */
+  wocky_porter_force_close_async (test->sched_in, NULL,
+      test_close_force_force_closed_cb, test);
+  test->outstanding++;
+
+  /* now wait for the IN porter to shutdown and the remote-error callback *
+   * to shut down the OUT porter                                          */
+  test_wait_pending (test);
+
+  g_object_unref (error);
+  teardown_test (test);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -2347,6 +2399,7 @@ main (int argc, char **argv)
       test_wait_iq_reply_close);
   g_test_add_func ("/xmpp-porter/wait-iq-reply-force-close",
       test_wait_iq_reply_force_close);
+  g_test_add_func ("/xmpp-porter/avoid-double-force-close", test_remote_error);
 
   result = g_test_run ();
   test_deinit ();

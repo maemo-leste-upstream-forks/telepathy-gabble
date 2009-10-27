@@ -40,6 +40,10 @@ DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/wocky-uninstalled.pc.in \
 	$(top_srcdir)/tools/check-coding-style.mk \
 	$(top_srcdir)/tools/flymake.mk
+@USING_OPENSSL_TRUE@am__append_1 = $(OPENSSL_SRC)
+@USING_OPENSSL_TRUE@am__append_2 = $(GNUTLS_SRC)
+@USING_OPENSSL_FALSE@am__append_3 = $(GNUTLS_SRC)
+@USING_OPENSSL_FALSE@am__append_4 = $(OPENSSL_SRC)
 subdir = wocky
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-compiler-flag.m4 \
@@ -57,16 +61,42 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = wocky-uninstalled.pc
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libwocky_la_LIBADD =
-am__objects_1 = wocky.lo wocky-connector.lo wocky-tls.lo \
-	wocky-xmpp-connection.lo wocky-debug.lo wocky-utils.lo \
-	wocky-xmpp-node.lo wocky-xmpp-reader.lo wocky-xmpp-stanza.lo \
-	wocky-xmpp-writer.lo wocky-xmpp-error.lo wocky-sasl-auth.lo \
-	wocky-porter.lo wocky-contact.lo wocky-bare-contact.lo \
+am__libwocky_la_SOURCES_DIST = wocky-types.h wocky.c wocky.h \
+	wocky-connector.c wocky-connector.h wocky-xmpp-connection.c \
+	wocky-xmpp-connection.h wocky-debug.c wocky-debug.h \
+	wocky-namespaces.h wocky-utils.c wocky-utils.h \
+	wocky-xmpp-node.c wocky-xmpp-node.h wocky-xmpp-reader.c \
+	wocky-xmpp-reader.h wocky-xmpp-stanza.c wocky-xmpp-stanza.h \
+	wocky-xmpp-writer.c wocky-xmpp-writer.h wocky-xmpp-error.c \
+	wocky-xmpp-error.h wocky-sasl-auth.c wocky-sasl-auth.h \
+	wocky-porter.c wocky-porter.h wocky-contact.c wocky-contact.h \
+	wocky-bare-contact.c wocky-bare-contact.h \
+	wocky-resource-contact.c wocky-resource-contact.h \
+	wocky-roster.c wocky-roster.h wocky-contact-factory.c \
+	wocky-contact-factory.h wocky-session.c wocky-session.h \
+	wocky-pep-service.c wocky-pep-service.h wocky-openssl.c \
+	wocky-openssl.h wocky-openssl-dh512.c wocky-openssl-dh1024.c \
+	wocky-openssl-dh2048.c wocky-openssl-dh4096.c wocky-tls.c \
+	wocky-tls.h wocky-signals-marshal.list wocky-signals-marshal.h \
+	wocky-signals-marshal.c wocky-xmpp-reader-enumtypes.h \
+	wocky-xmpp-reader-enumtypes.c
+am__objects_1 = wocky-openssl.lo wocky-openssl-dh512.lo \
+	wocky-openssl-dh1024.lo wocky-openssl-dh2048.lo \
+	wocky-openssl-dh4096.lo
+@USING_OPENSSL_TRUE@am__objects_2 = $(am__objects_1)
+am__objects_3 = wocky-tls.lo
+@USING_OPENSSL_FALSE@am__objects_4 = $(am__objects_3)
+am__objects_5 = wocky.lo wocky-connector.lo wocky-xmpp-connection.lo \
+	wocky-debug.lo wocky-utils.lo wocky-xmpp-node.lo \
+	wocky-xmpp-reader.lo wocky-xmpp-stanza.lo wocky-xmpp-writer.lo \
+	wocky-xmpp-error.lo wocky-sasl-auth.lo wocky-porter.lo \
+	wocky-contact.lo wocky-bare-contact.lo \
 	wocky-resource-contact.lo wocky-roster.lo \
-	wocky-contact-factory.lo wocky-session.lo wocky-pep-service.lo
-am__objects_2 = wocky-signals-marshal.lo \
+	wocky-contact-factory.lo wocky-session.lo wocky-pep-service.lo \
+	$(am__objects_2) $(am__objects_4)
+am__objects_6 = wocky-signals-marshal.lo \
 	wocky-xmpp-reader-enumtypes.lo
-am_libwocky_la_OBJECTS = $(am__objects_1) $(am__objects_2)
+am_libwocky_la_OBJECTS = $(am__objects_5) $(am__objects_6)
 libwocky_la_OBJECTS = $(am_libwocky_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -80,7 +110,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libwocky_la_SOURCES)
-DIST_SOURCES = $(libwocky_la_SOURCES)
+DIST_SOURCES = $(am__libwocky_la_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -173,6 +203,10 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+TLS_CFLAGS = @TLS_CFLAGS@
+TLS_LIBS = @TLS_LIBS@
+USING_OPENSSL_FALSE = @USING_OPENSSL_FALSE@
+USING_OPENSSL_TRUE = @USING_OPENSSL_TRUE@
 VERSION = @VERSION@
 WOCKY_CFLAGS = @WOCKY_CFLAGS@
 ac_ct_CC = @ac_ct_CC@
@@ -222,6 +256,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 noinst_LTLIBRARIES = libwocky.la
+EXTRA_DIST = $(am__append_2) $(am__append_4)
 BUILT_SOURCES = \
   wocky-signals-marshal.list \
   wocky-signals-marshal.h \
@@ -229,60 +264,42 @@ BUILT_SOURCES = \
   wocky-xmpp-reader-enumtypes.h \
   wocky-xmpp-reader-enumtypes.c
 
-HANDWRITTEN_SOURCES = \
-  wocky-types.h                  \
-  wocky.c                        \
-  wocky.h                        \
-  wocky-connector.c              \
-  wocky-connector.h              \
-  wocky-tls.c                    \
-  wocky-tls.h                    \
-  wocky-xmpp-connection.c        \
-  wocky-xmpp-connection.h        \
-  wocky-debug.c                  \
-  wocky-debug.h                  \
-  wocky-namespaces.h             \
-  wocky-utils.c                  \
-  wocky-utils.h                  \
-  wocky-xmpp-node.c              \
-  wocky-xmpp-node.h              \
-  wocky-xmpp-reader.c            \
-  wocky-xmpp-reader.h            \
-  wocky-xmpp-stanza.c            \
-  wocky-xmpp-stanza.h            \
-  wocky-xmpp-writer.c            \
-  wocky-xmpp-writer.h            \
-  wocky-xmpp-error.c             \
-  wocky-xmpp-error.h             \
-  wocky-sasl-auth.c              \
-  wocky-sasl-auth.h              \
-  wocky-porter.c                 \
-  wocky-porter.h                 \
-  wocky-contact.c                \
-  wocky-contact.h                \
-  wocky-bare-contact.c           \
-  wocky-bare-contact.h           \
-  wocky-resource-contact.c       \
-  wocky-resource-contact.h       \
-  wocky-roster.c                 \
-  wocky-roster.h                 \
-  wocky-contact-factory.c        \
-  wocky-contact-factory.h        \
-  wocky-session.c                \
-  wocky-session.h                \
-  wocky-pep-service.c            \
-  wocky-pep-service.h
+OPENSSL_SRC = \
+  wocky-openssl.c        \
+  wocky-openssl.h        \
+  wocky-openssl-dh512.c  \
+  wocky-openssl-dh1024.c \
+  wocky-openssl-dh2048.c \
+  wocky-openssl-dh4096.c
 
+GNUTLS_SRC = wocky-tls.c wocky-tls.h
+HANDWRITTEN_SOURCES = wocky-types.h wocky.c wocky.h wocky-connector.c \
+	wocky-connector.h wocky-xmpp-connection.c \
+	wocky-xmpp-connection.h wocky-debug.c wocky-debug.h \
+	wocky-namespaces.h wocky-utils.c wocky-utils.h \
+	wocky-xmpp-node.c wocky-xmpp-node.h wocky-xmpp-reader.c \
+	wocky-xmpp-reader.h wocky-xmpp-stanza.c wocky-xmpp-stanza.h \
+	wocky-xmpp-writer.c wocky-xmpp-writer.h wocky-xmpp-error.c \
+	wocky-xmpp-error.h wocky-sasl-auth.c wocky-sasl-auth.h \
+	wocky-porter.c wocky-porter.h wocky-contact.c wocky-contact.h \
+	wocky-bare-contact.c wocky-bare-contact.h \
+	wocky-resource-contact.c wocky-resource-contact.h \
+	wocky-roster.c wocky-roster.h wocky-contact-factory.c \
+	wocky-contact-factory.h wocky-session.c wocky-session.h \
+	wocky-pep-service.c wocky-pep-service.h $(am__append_1) \
+	$(am__append_3)
 libwocky_la_SOURCES = $(HANDWRITTEN_SOURCES) $(BUILT_SOURCES)
 
 # Coding style checks
-check_c_sources = $(filter-out wocky-tls.%, $(HANDWRITTEN_SOURCES))
+check_c_sources = \
+  $(filter-out wocky-openssl%,$(filter-out wocky-tls.%, $(HANDWRITTEN_SOURCES)))
+
 CLEANFILES = $(BUILT_SOURCES)
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) \
-            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ \
+            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ \
             -DG_LOG_DOMAIN=\"wocky\"
 
-AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@
+AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -342,6 +359,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-debug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-openssl-dh1024.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-openssl-dh2048.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-openssl-dh4096.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-openssl-dh512.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-openssl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-porter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-resource-contact.Plo@am__quote@

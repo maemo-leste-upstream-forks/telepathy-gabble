@@ -8,7 +8,6 @@
 <refnamediv>
 <refname>WockyRoster</refname>
 <refpurpose>TODO</refpurpose>
-<!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
 <refsynopsisdiv id="WockyRoster.synopsis" role="synopsis">
@@ -20,8 +19,8 @@
                     <link linkend="WockyRosterClass">WockyRosterClass</link>;
 enum                <link linkend="WockyRosterSubscriptionFlags">WockyRosterSubscriptionFlags</link>;
 enum                <link linkend="WockyRosterError">WockyRosterError</link>;
-#define             <link linkend="WOCKY-ROSTER-ERROR:CAPS">WOCKY_ROSTER_ERROR</link>
-<link linkend="WockyRoster">WockyRoster</link>*        <link linkend="wocky-roster-new">wocky_roster_new</link>                    (<link linkend="WockySession">WockySession</link> *session);
+#define             <link linkend="WOCKY-ROSTER-ERROR--CAPS">WOCKY_ROSTER_ERROR</link>
+<link linkend="WockyRoster">WockyRoster</link> *       <link linkend="wocky-roster-new">wocky_roster_new</link>                    (<link linkend="WockySession">WockySession</link> *session);
 <link linkend="void">void</link>                <link linkend="wocky-roster-fetch-roster-async">wocky_roster_fetch_roster_async</link>     (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="GCancellable">GCancellable</link> *cancellable,
                                                          <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
@@ -29,9 +28,9 @@ enum                <link linkend="WockyRosterError">WockyRosterError</link>;
 <link linkend="gboolean">gboolean</link>            <link linkend="wocky-roster-fetch-roster-finish">wocky_roster_fetch_roster_finish</link>    (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);
-<link linkend="WockyBareContact">WockyBareContact</link>*   <link linkend="wocky-roster-get-contact">wocky_roster_get_contact</link>            (<link linkend="WockyRoster">WockyRoster</link> *self,
+<link linkend="WockyBareContact">WockyBareContact</link> *  <link linkend="wocky-roster-get-contact">wocky_roster_get_contact</link>            (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          const <link linkend="gchar">gchar</link> *jid);
-<link linkend="GSList">GSList</link>*             <link linkend="wocky-roster-get-all-contacts">wocky_roster_get_all_contacts</link>       (<link linkend="WockyRoster">WockyRoster</link> *self);
+<link linkend="GSList">GSList</link> *            <link linkend="wocky-roster-get-all-contacts">wocky_roster_get_all_contacts</link>       (<link linkend="WockyRoster">WockyRoster</link> *self);
 <link linkend="void">void</link>                <link linkend="wocky-roster-add-contact-async">wocky_roster_add_contact_async</link>      (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          const <link linkend="gchar">gchar</link> *jid,
                                                          const <link linkend="gchar">gchar</link> *name,
@@ -83,7 +82,7 @@ enum                <link linkend="WockyRosterError">WockyRosterError</link>;
 <link linkend="gboolean">gboolean</link>            <link linkend="wocky-roster-remove-contact-finish">wocky_roster_remove_contact_finish</link>  (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);
-const <link linkend="gchar">gchar</link>*        <link linkend="wocky-roster-subscription-to-string">wocky_roster_subscription_to_string</link> (<link linkend="WockyRosterSubscriptionFlags">WockyRosterSubscriptionFlags</link> subscription);
+const <link linkend="gchar">gchar</link> *       <link linkend="wocky-roster-subscription-to-string">wocky_roster_subscription_to_string</link> (<link linkend="WockyRosterSubscriptionFlags">WockyRosterSubscriptionFlags</link> subscription);
 </synopsis>
 </refsynopsisdiv>
 
@@ -93,7 +92,6 @@ const <link linkend="gchar">gchar</link>*        <link linkend="wocky-roster-sub
   <link linkend="GObject">GObject</link>
    +----WockyRoster
 </synopsis>
-
 </refsect1>
 
 
@@ -121,7 +119,6 @@ const <link linkend="gchar">gchar</link>*        <link linkend="wocky-roster-sub
 <para>
 TODO</para>
 <para>
-
 </para>
 </refsect1>
 
@@ -129,33 +126,30 @@ TODO</para>
 <title role="details.title">Details</title>
 <refsect2 id="wocky-roster-error-quark" role="function">
 <title>wocky_roster_error_quark ()</title>
-<indexterm zone="wocky-roster-error-quark"><primary>wocky_roster_error_quark</primary></indexterm><programlisting><link linkend="GQuark">GQuark</link>              wocky_roster_error_quark            (void);</programlisting>
+<indexterm zone="wocky-roster-error-quark"><primary sortas="wocky_roster_error_quark">wocky_roster_error_quark</primary></indexterm><programlisting><link linkend="GQuark">GQuark</link>              wocky_roster_error_quark            (void);</programlisting>
 <para>
 Get the error quark used by the roster.</para>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the quark for roster errors.
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the quark for roster errors.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="WockyRoster-struct" role="struct">
 <title>WockyRoster</title>
-<indexterm zone="WockyRoster-struct"><primary>WockyRoster</primary></indexterm><programlisting>typedef struct _WockyRoster WockyRoster;</programlisting>
+<indexterm zone="WockyRoster-struct"><primary sortas="WockyRoster">WockyRoster</primary></indexterm><programlisting>typedef struct _WockyRoster WockyRoster;</programlisting>
 <para>
-
 </para></refsect2>
 <refsect2 id="WockyRosterClass" role="struct">
 <title>WockyRosterClass</title>
-<indexterm zone="WockyRosterClass"><primary>WockyRosterClass</primary></indexterm><programlisting>typedef struct {
+<indexterm zone="WockyRosterClass"><primary sortas="WockyRosterClass">WockyRosterClass</primary></indexterm><programlisting>typedef struct {
   GObjectClass parent_class;
 } WockyRosterClass;
 </programlisting>
 <para>
-
 </para></refsect2>
 <refsect2 id="WockyRosterSubscriptionFlags" role="enum">
 <title>enum WockyRosterSubscriptionFlags</title>
-<indexterm zone="WockyRosterSubscriptionFlags"><primary>WockyRosterSubscriptionFlags</primary></indexterm><programlisting>typedef enum
+<indexterm zone="WockyRosterSubscriptionFlags"><primary sortas="WockyRosterSubscriptionFlags">WockyRosterSubscriptionFlags</primary></indexterm><programlisting>typedef enum
 {
   WOCKY_ROSTER_SUBSCRIPTION_TYPE_NONE = 0,
   WOCKY_ROSTER_SUBSCRIPTION_TYPE_TO   = 1 &lt;&lt; 0,
@@ -166,11 +160,10 @@ Get the error quark used by the roster.</para>
 } WockyRosterSubscriptionFlags;
 </programlisting>
 <para>
-
 </para></refsect2>
 <refsect2 id="WockyRosterError" role="enum">
 <title>enum WockyRosterError</title>
-<indexterm zone="WockyRosterError"><primary>WockyRosterError</primary></indexterm><programlisting>typedef enum {
+<indexterm zone="WockyRosterError"><primary sortas="WockyRosterError">WockyRosterError</primary></indexterm><programlisting>typedef enum {
   WOCKY_ROSTER_ERROR_INVALID_STANZA,
   WOCKY_ROSTER_ERROR_NOT_IN_ROSTER,
 } WockyRosterError;
@@ -178,124 +171,107 @@ Get the error quark used by the roster.</para>
 <para>
 The <link linkend="WockyRosterError"><type>WockyRosterError</type></link> specific errors.</para>
 <para>
-
 </para><variablelist role="enum">
-<varlistentry id="WOCKY-ROSTER-ERROR-INVALID-STANZA:CAPS" role="constant">
+<varlistentry id="WOCKY-ROSTER-ERROR-INVALID-STANZA--CAPS" role="constant">
 <term><literal>WOCKY_ROSTER_ERROR_INVALID_STANZA</literal></term>
 <listitem><simpara> received an invalid roster stanza
 from the server
 </simpara></listitem>
 </varlistentry>
-<varlistentry id="WOCKY-ROSTER-ERROR-NOT-IN-ROSTER:CAPS" role="constant">
+<varlistentry id="WOCKY-ROSTER-ERROR-NOT-IN-ROSTER--CAPS" role="constant">
 <term><literal>WOCKY_ROSTER_ERROR_NOT_IN_ROSTER</literal></term>
 <listitem><simpara> the contact is not in the roster
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2 id="WOCKY-ROSTER-ERROR:CAPS" role="macro">
+<refsect2 id="WOCKY-ROSTER-ERROR--CAPS" role="macro">
 <title>WOCKY_ROSTER_ERROR</title>
-<indexterm zone="WOCKY-ROSTER-ERROR:CAPS"><primary>WOCKY_ROSTER_ERROR</primary></indexterm><programlisting>#define WOCKY_ROSTER_ERROR (wocky_roster_error_quark ())
+<indexterm zone="WOCKY-ROSTER-ERROR--CAPS"><primary sortas="WOCKY_ROSTER_ERROR">WOCKY_ROSTER_ERROR</primary></indexterm><programlisting>#define WOCKY_ROSTER_ERROR (wocky_roster_error_quark ())
 </programlisting>
 <para>
 Get access to the error quark of the roster.</para>
 <para>
-
 </para></refsect2>
 <refsect2 id="wocky-roster-new" role="function">
 <title>wocky_roster_new ()</title>
-<indexterm zone="wocky-roster-new"><primary>wocky_roster_new</primary></indexterm><programlisting><link linkend="WockyRoster">WockyRoster</link>*        wocky_roster_new                    (<link linkend="WockySession">WockySession</link> *session);</programlisting>
+<indexterm zone="wocky-roster-new"><primary sortas="wocky_roster_new">wocky_roster_new</primary></indexterm><programlisting><link linkend="WockyRoster">WockyRoster</link> *       wocky_roster_new                    (<link linkend="WockySession">WockySession</link> *session);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>session</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>session</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-fetch-roster-async" role="function">
 <title>wocky_roster_fetch_roster_async ()</title>
-<indexterm zone="wocky-roster-fetch-roster-async"><primary>wocky_roster_fetch_roster_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_roster_fetch_roster_async     (<link linkend="WockyRoster">WockyRoster</link> *self,
+<indexterm zone="wocky-roster-fetch-roster-async"><primary sortas="wocky_roster_fetch_roster_async">wocky_roster_fetch_roster_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_roster_fetch_roster_async     (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="GCancellable">GCancellable</link> *cancellable,
                                                          <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cancellable</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>
-
-
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-fetch-roster-finish" role="function">
 <title>wocky_roster_fetch_roster_finish ()</title>
-<indexterm zone="wocky-roster-fetch-roster-finish"><primary>wocky_roster_fetch_roster_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_roster_fetch_roster_finish    (<link linkend="WockyRoster">WockyRoster</link> *self,
+<indexterm zone="wocky-roster-fetch-roster-finish"><primary sortas="wocky_roster_fetch_roster_finish">wocky_roster_fetch_roster_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_roster_fetch_roster_finish    (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>result</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-get-contact" role="function">
 <title>wocky_roster_get_contact ()</title>
-<indexterm zone="wocky-roster-get-contact"><primary>wocky_roster_get_contact</primary></indexterm><programlisting><link linkend="WockyBareContact">WockyBareContact</link>*   wocky_roster_get_contact            (<link linkend="WockyRoster">WockyRoster</link> *self,
+<indexterm zone="wocky-roster-get-contact"><primary sortas="wocky_roster_get_contact">wocky_roster_get_contact</primary></indexterm><programlisting><link linkend="WockyBareContact">WockyBareContact</link> *  wocky_roster_get_contact            (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          const <link linkend="gchar">gchar</link> *jid);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>jid</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>jid</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-get-all-contacts" role="function">
 <title>wocky_roster_get_all_contacts ()</title>
-<indexterm zone="wocky-roster-get-all-contacts"><primary>wocky_roster_get_all_contacts</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*             wocky_roster_get_all_contacts       (<link linkend="WockyRoster">WockyRoster</link> *self);</programlisting>
+<indexterm zone="wocky-roster-get-all-contacts"><primary sortas="wocky_roster_get_all_contacts">wocky_roster_get_all_contacts</primary></indexterm><programlisting><link linkend="GSList">GSList</link> *            wocky_roster_get_all_contacts       (<link linkend="WockyRoster">WockyRoster</link> *self);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-add-contact-async" role="function">
 <title>wocky_roster_add_contact_async ()</title>
-<indexterm zone="wocky-roster-add-contact-async"><primary>wocky_roster_add_contact_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_roster_add_contact_async      (<link linkend="WockyRoster">WockyRoster</link> *self,
+<indexterm zone="wocky-roster-add-contact-async"><primary sortas="wocky_roster_add_contact_async">wocky_roster_add_contact_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_roster_add_contact_async      (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          const <link linkend="gchar">gchar</link> *jid,
                                                          const <link linkend="gchar">gchar</link> *name,
                                                          const <link linkend="gchar">gchar</link> * const *groups,
@@ -303,57 +279,51 @@ Get access to the error quark of the roster.</para>
                                                          <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>jid</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>jid</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>name</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>groups</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>groups</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cancellable</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>
-
-
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-add-contact-finish" role="function">
 <title>wocky_roster_add_contact_finish ()</title>
-<indexterm zone="wocky-roster-add-contact-finish"><primary>wocky_roster_add_contact_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_roster_add_contact_finish     (<link linkend="WockyRoster">WockyRoster</link> *self,
+<indexterm zone="wocky-roster-add-contact-finish"><primary sortas="wocky_roster_add_contact_finish">wocky_roster_add_contact_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_roster_add_contact_finish     (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>result</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-change-contact-name-async" role="function">
 <title>wocky_roster_change_contact_name_async ()</title>
-<indexterm zone="wocky-roster-change-contact-name-async"><primary>wocky_roster_change_contact_name_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_roster_change_contact_name_async
+<indexterm zone="wocky-roster-change-contact-name-async"><primary sortas="wocky_roster_change_contact_name_async">wocky_roster_change_contact_name_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_roster_change_contact_name_async
                                                         (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="WockyBareContact">WockyBareContact</link> *contact,
                                                          const <link linkend="gchar">gchar</link> *name,
@@ -361,55 +331,49 @@ Get access to the error quark of the roster.</para>
                                                          <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>contact</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>name</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cancellable</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>
-
-
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-change-contact-name-finish" role="function">
 <title>wocky_roster_change_contact_name_finish ()</title>
-<indexterm zone="wocky-roster-change-contact-name-finish"><primary>wocky_roster_change_contact_name_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_roster_change_contact_name_finish
+<indexterm zone="wocky-roster-change-contact-name-finish"><primary sortas="wocky_roster_change_contact_name_finish">wocky_roster_change_contact_name_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_roster_change_contact_name_finish
                                                         (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>result</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-contact-add-group-async" role="function">
 <title>wocky_roster_contact_add_group_async ()</title>
-<indexterm zone="wocky-roster-contact-add-group-async"><primary>wocky_roster_contact_add_group_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_roster_contact_add_group_async
+<indexterm zone="wocky-roster-contact-add-group-async"><primary sortas="wocky_roster_contact_add_group_async">wocky_roster_contact_add_group_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_roster_contact_add_group_async
                                                         (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="WockyBareContact">WockyBareContact</link> *contact,
                                                          const <link linkend="gchar">gchar</link> *group,
@@ -417,55 +381,49 @@ Get access to the error quark of the roster.</para>
                                                          <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>contact</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>group</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>group</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cancellable</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>
-
-
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-contact-add-group-finish" role="function">
 <title>wocky_roster_contact_add_group_finish ()</title>
-<indexterm zone="wocky-roster-contact-add-group-finish"><primary>wocky_roster_contact_add_group_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_roster_contact_add_group_finish
+<indexterm zone="wocky-roster-contact-add-group-finish"><primary sortas="wocky_roster_contact_add_group_finish">wocky_roster_contact_add_group_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_roster_contact_add_group_finish
                                                         (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>result</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-contact-remove-group-async" role="function">
 <title>wocky_roster_contact_remove_group_async ()</title>
-<indexterm zone="wocky-roster-contact-remove-group-async"><primary>wocky_roster_contact_remove_group_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_roster_contact_remove_group_async
+<indexterm zone="wocky-roster-contact-remove-group-async"><primary sortas="wocky_roster_contact_remove_group_async">wocky_roster_contact_remove_group_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_roster_contact_remove_group_async
                                                         (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="WockyBareContact">WockyBareContact</link> *contact,
                                                          const <link linkend="gchar">gchar</link> *group,
@@ -473,159 +431,139 @@ Get access to the error quark of the roster.</para>
                                                          <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>contact</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>group</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>group</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cancellable</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>
-
-
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-contact-remove-group-finish" role="function">
 <title>wocky_roster_contact_remove_group_finish ()</title>
-<indexterm zone="wocky-roster-contact-remove-group-finish"><primary>wocky_roster_contact_remove_group_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_roster_contact_remove_group_finish
+<indexterm zone="wocky-roster-contact-remove-group-finish"><primary sortas="wocky_roster_contact_remove_group_finish">wocky_roster_contact_remove_group_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_roster_contact_remove_group_finish
                                                         (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>result</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-remove-contact-async" role="function">
 <title>wocky_roster_remove_contact_async ()</title>
-<indexterm zone="wocky-roster-remove-contact-async"><primary>wocky_roster_remove_contact_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_roster_remove_contact_async   (<link linkend="WockyRoster">WockyRoster</link> *self,
+<indexterm zone="wocky-roster-remove-contact-async"><primary sortas="wocky_roster_remove_contact_async">wocky_roster_remove_contact_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_roster_remove_contact_async   (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="WockyBareContact">WockyBareContact</link> *contact,
                                                          <link linkend="GCancellable">GCancellable</link> *cancellable,
                                                          <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
                                                          <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>contact</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>contact</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>cancellable</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>
-
-
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-remove-contact-finish" role="function">
 <title>wocky_roster_remove_contact_finish ()</title>
-<indexterm zone="wocky-roster-remove-contact-finish"><primary>wocky_roster_remove_contact_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_roster_remove_contact_finish  (<link linkend="WockyRoster">WockyRoster</link> *self,
+<indexterm zone="wocky-roster-remove-contact-finish"><primary sortas="wocky_roster_remove_contact_finish">wocky_roster_remove_contact_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_roster_remove_contact_finish  (<link linkend="WockyRoster">WockyRoster</link> *self,
                                                          <link linkend="GAsyncResult">GAsyncResult</link> *result,
                                                          <link linkend="GError">GError</link> **error);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>self</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>result</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-roster-subscription-to-string" role="function">
 <title>wocky_roster_subscription_to_string ()</title>
-<indexterm zone="wocky-roster-subscription-to-string"><primary>wocky_roster_subscription_to_string</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        wocky_roster_subscription_to_string (<link linkend="WockyRosterSubscriptionFlags">WockyRosterSubscriptionFlags</link> subscription);</programlisting>
+<indexterm zone="wocky-roster-subscription-to-string"><primary sortas="wocky_roster_subscription_to_string">wocky_roster_subscription_to_string</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link> *       wocky_roster_subscription_to_string (<link linkend="WockyRosterSubscriptionFlags">WockyRosterSubscriptionFlags</link> subscription);</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>subscription</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>subscription</parameter>&#160;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>
 <refsect1 id="WockyRoster.property-details" role="property_details">
 <title role="property_details.title">Property Details</title>
-<refsect2 id="WockyRoster--session"><title>The <literal>&quot;session&quot;</literal> property</title>
-<indexterm zone="WockyRoster--session"><primary>WockyRoster:session</primary></indexterm><programlisting>  &quot;session&quot;                  <link linkend="WockySession">WockySession</link>*         : Read / Write / Construct Only</programlisting>
+<refsect2 id="WockyRoster--session" role="property"><title>The <literal>&quot;session&quot;</literal> property</title>
+<indexterm zone="WockyRoster--session"><primary sortas="WockyRoster:session">WockyRoster:session</primary></indexterm><programlisting>  &quot;session&quot;                  <link linkend="WockySession">WockySession</link>*         : Read / Write / Construct Only</programlisting>
 <para>the wocky session used by this roster.</para></refsect2>
-
 </refsect1>
 
 <refsect1 id="WockyRoster.signal-details" role="signals">
 <title role="signals.title">Signal Details</title>
-<refsect2 id="WockyRoster-added"><title>The <literal>&quot;added&quot;</literal> signal</title>
-<indexterm zone="WockyRoster-added"><primary>WockyRoster::added</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="WockyRoster">WockyRoster</link> *wockyroster,
+<refsect2 id="WockyRoster-added" role="signal"><title>The <literal>&quot;added&quot;</literal> signal</title>
+<indexterm zone="WockyRoster-added"><primary sortas="WockyRoster::added">WockyRoster::added</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="WockyRoster">WockyRoster</link> *wockyroster,
                                                         <link linkend="GObject">GObject</link>     *arg1,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>wockyroster</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>wockyroster</parameter>&#160;:</term>
 <listitem><simpara>the object which received the signal.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
 <listitem><simpara>
-
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2 id="WockyRoster-removed"><title>The <literal>&quot;removed&quot;</literal> signal</title>
-<indexterm zone="WockyRoster-removed"><primary>WockyRoster::removed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="WockyRoster">WockyRoster</link> *wockyroster,
+</variablelist></refsect2><refsect2 id="WockyRoster-removed" role="signal"><title>The <literal>&quot;removed&quot;</literal> signal</title>
+<indexterm zone="WockyRoster-removed"><primary sortas="WockyRoster::removed">WockyRoster::removed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="WockyRoster">WockyRoster</link> *wockyroster,
                                                         <link linkend="GObject">GObject</link>     *arg1,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>wockyroster</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>wockyroster</parameter>&#160;:</term>
 <listitem><simpara>the object which received the signal.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
 <listitem><simpara>
-
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 </refsect1>

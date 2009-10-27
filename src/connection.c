@@ -1376,7 +1376,7 @@ remote_error_cb (WockyPorter *porter,
   if (domain == WOCKY_XMPP_STREAM_ERROR)
     {
       /* stream error */
-      DEBUG ("Received stream error (%u): %s\n", code, msg);
+      DEBUG ("Received stream error (%u): %s", code, msg);
 
       if (code == WOCKY_XMPP_STREAM_ERROR_CONFLICT)
         {
@@ -1391,7 +1391,7 @@ remote_error_cb (WockyPorter *porter,
       DEBUG ("remote error: %s", msg);
     }
 
-  DEBUG ("Force closing of the connection");
+  DEBUG ("Force closing of the connection %p", self);
   priv->closing = TRUE;
   wocky_porter_force_close_async (priv->porter, NULL, force_close_cb,
       self);
@@ -1903,25 +1903,26 @@ connection_shut_down (TpBaseConnection *base)
 
   if (priv->porter != NULL)
     {
-      DEBUG ("connection still open; closing it");
+      DEBUG ("connection may still be open; closing it: %p", base);
 
-      /* We were connected and setup, disconnect now.. */
       g_assert (priv->disconnect_timer == 0);
       priv->disconnect_timer = g_timeout_add_seconds (DISCONNECT_TIMEOUT,
           disconnect_timeout_cb, self);
 
       wocky_porter_close_async (priv->porter, NULL, closed_cb, self);
+      return;
     }
   else if (priv->connector != NULL)
     {
-      /* FIXME: cancel connecting if we are connecting, for now we wait until
-       * the connection is finished and then drop it directly */
-      DEBUG ("connecting waiting for it to finish before closing");
+      /* FIXME: cancel connecting if we are connecting, for now we wait *
+       * until the connection is finished and then drop it directly     *
+       * wocky connector does not support gcancellables yet             */
+      DEBUG ("wait for connector to finish before closing: %p", base);
+      return;
     }
-  else
-    {
-      tp_base_connection_finish_shutdown (base);
-    }
+
+  DEBUG ("neither porter nor connector is alive: clean up the base connection");
+  tp_base_connection_finish_shutdown (base);
 }
 
 
@@ -1960,6 +1961,10 @@ _gabble_connection_signal_own_presence (GabbleConnection *self, GError **error)
     "node",  NS_GABBLE_CAPS,
     "ver",   caps_hash,
     NULL);
+
+  /* Ensure this set of capabilities is in the cache. */
+  gabble_presence_cache_add_own_caps (self->presence_cache, caps_hash,
+      gabble_presence_peek_caps (presence));
 
   /* XEP-0115 deprecates 'ext' feature bundles. But we still need
    * BUNDLE_VOICE_V1 it for backward-compatibility with Gabble 0.2 */
@@ -2155,8 +2160,7 @@ connection_iq_disco_cb (LmMessageHandler *handler,
   LmMessage *result;
   LmMessageNode *iq, *result_iq, *query, *result_query, *identity;
   const gchar *node, *suffix;
-  GabbleCapabilitySet *features;
-  gchar *caps_hash;
+  const GabbleCapabilitySet *features;
 
   if (lm_message_get_sub_type (message) != LM_MESSAGE_SUB_TYPE_GET)
     return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
@@ -2202,29 +2206,32 @@ connection_iq_disco_cb (LmMessageHandler *handler,
   lm_message_node_set_attribute (identity, "name", PACKAGE_STRING);
   lm_message_node_set_attribute (identity, "type", "pc");
 
-  caps_hash = caps_hash_compute_from_self_presence (self);
-
+  if (node == NULL)
+    features = gabble_presence_peek_caps (self->self_presence);
   /* If node is not NULL, it can be either a caps bundle as defined in the
    * legacy XEP-0115 version 1.3 or an hash as defined in XEP-0115 version
-   * 1.5. */
-  /* FIXME: We shouldn't have to copy the sets here */
-  if (node == NULL || !tp_strdiff (suffix, caps_hash))
-    features = gabble_presence_dup_caps (self->self_presence);
-  else if (!tp_strdiff (suffix, BUNDLE_VOICE_V1))
-    features = gabble_capability_set_copy (
-        gabble_capabilities_get_bundle_voice_v1 ());
-  else if (!tp_strdiff (suffix, BUNDLE_VIDEO_V1))
-    features = gabble_capability_set_copy (
-        gabble_capabilities_get_bundle_video_v1 ());
+   * 1.5. Let's see if it's a verification string we've told the cache about.
+   */
   else
-    features = NULL;
+    features = gabble_presence_cache_peek_own_caps (self->presence_cache,
+        suffix);
 
   if (features == NULL)
     {
-      /* Return <item-not-found>. It is possible that the remote contact
-       * requested an old version (old hash) of our capabilities. In the
-       * meantime, it will have gotten a new hash, and query the new hash
-       * anyway. */
+      /* Otherwise, is it one of the caps bundles we advertise? These are not
+       * just shoved into the cache with gabble_presence_cache_add_own_caps()
+       * because capabilities_get_features() always includes a few bonus
+       * features...
+       */
+      if (!tp_strdiff (suffix, BUNDLE_VOICE_V1))
+        features = gabble_capabilities_get_bundle_voice_v1 ();
+
+      if (!tp_strdiff (suffix, BUNDLE_VIDEO_V1))
+        features = gabble_capabilities_get_bundle_video_v1 ();
+    }
+
+  if (features == NULL)
+    {
       _gabble_connection_send_iq_error (self, message,
           XMPP_ERROR_ITEM_NOT_FOUND, NULL);
     }
@@ -2239,11 +2246,7 @@ connection_iq_disco_cb (LmMessageHandler *handler,
         {
           DEBUG ("sending disco response failed");
         }
-
-      gabble_capability_set_free (features);
     }
-
-  g_free (caps_hash);
 
   lm_message_unref (result);
 
@@ -2404,9 +2407,42 @@ ERROR:
  *                          D-BUS EXPORTED METHODS                          *
  ****************************************************************************/
 
-static void gabble_connection_get_handle_contact_capabilities (
-    GabbleConnection *self, TpHandle handle, GPtrArray *arr);
-static void gabble_free_enhanced_contact_capabilities (GPtrArray *caps);
+static void gabble_free_rcc_list (GPtrArray *rccs)
+{
+  g_boxed_free (TP_ARRAY_TYPE_REQUESTABLE_CHANNEL_CLASS_LIST, rccs);
+}
+
+/**
+ * gabble_connection_build_contact_caps:
+ * @handle: a contact
+ * @caps: @handle's XMPP capabilities
+ *
+ * Returns: an array containing the channel classes corresponding to @caps.
+ */
+static GPtrArray *
+gabble_connection_build_contact_caps (
+    GabbleConnection *self,
+    TpHandle handle,
+    const GabbleCapabilitySet *caps)
+{
+  TpBaseConnection *base_conn = TP_BASE_CONNECTION (self);
+  TpChannelManagerIter iter;
+  TpChannelManager *manager;
+  GPtrArray *ret = g_ptr_array_new ();
+
+  tp_base_connection_channel_manager_iter_init (&iter, base_conn);
+
+  while (tp_base_connection_channel_manager_iter_next (&iter, &manager))
+    {
+      /* all channel managers must implement the capability interface */
+      g_assert (GABBLE_IS_CAPS_CHANNEL_MANAGER (manager));
+
+      gabble_caps_channel_manager_get_contact_capabilities (
+          GABBLE_CAPS_CHANNEL_MANAGER (manager), handle, caps, ret);
+    }
+
+  return ret;
+}
 
 static void
 _emit_capabilities_changed (GabbleConnection *conn,
@@ -2476,69 +2512,48 @@ _emit_capabilities_changed (GabbleConnection *conn,
   g_ptr_array_free (caps_arr, TRUE);
 
   /* o.f.T.C.ContactCapabilities */
+  caps_arr = gabble_connection_build_contact_caps (conn, handle, new_set);
 
-  caps_arr = g_ptr_array_new ();
-
-  gabble_connection_get_handle_contact_capabilities (conn, handle,
-      caps_arr);
-
-  hash = g_hash_table_new (NULL, NULL);
+  hash = g_hash_table_new_full (NULL, NULL, NULL,
+      (GDestroyNotify) gabble_free_rcc_list);
   g_hash_table_insert (hash, GUINT_TO_POINTER (handle), caps_arr);
 
   tp_svc_connection_interface_contact_capabilities_emit_contact_capabilities_changed (
       conn, hash);
 
   g_hash_table_destroy (hash);
-  gabble_free_enhanced_contact_capabilities (caps_arr);
 }
 
 /**
- * gabble_connection_get_handle_contact_capabilities
+ * gabble_connection_get_handle_contact_capabilities:
  *
- * Add capabilities of handle to the given GPtrArray
+ * Returns: a set of channel classes representing @handle's capabilities, or
+ *          %NULL if unknown.
  */
-static void
-gabble_connection_get_handle_contact_capabilities (GabbleConnection *self,
-  TpHandle handle, GPtrArray *arr)
+static GPtrArray *
+gabble_connection_get_handle_contact_capabilities (
+    GabbleConnection *self,
+    TpHandle handle)
 {
   TpBaseConnection *base_conn = TP_BASE_CONNECTION (self);
   GabblePresence *p;
-  GabbleCapabilitySet *caps;
-  TpChannelManagerIter iter;
-  TpChannelManager *manager;
+  const GabbleCapabilitySet *caps;
+  GPtrArray *arr;
 
   if (handle == base_conn->self_handle)
     p = self->self_presence;
   else
     p = gabble_presence_cache_get (self->presence_cache, handle);
 
-  caps = gabble_presence_dup_caps (p);
-
-  tp_base_connection_channel_manager_iter_init (&iter, base_conn);
-
-  while (tp_base_connection_channel_manager_iter_next (&iter, &manager))
+  if (p == NULL)
     {
-      /* all channel managers must implement the capability interface */
-      g_assert (GABBLE_IS_CAPS_CHANNEL_MANAGER (manager));
-
-      gabble_caps_channel_manager_get_contact_capabilities (
-          GABBLE_CAPS_CHANNEL_MANAGER (manager), handle, caps, arr);
+      DEBUG ("don't know %u's presence; no caps for them.", handle);
+      return NULL;
     }
 
-  gabble_capability_set_free (caps);
-}
-
-static void
-gabble_free_enhanced_contact_capabilities (GPtrArray *caps)
-{
-  guint i;
-
-  for (i = 0; i < caps->len; i++)
-    {
-      g_value_array_free (g_ptr_array_index (caps, i));
-    }
-
-  g_ptr_array_free (caps, TRUE);
+  caps = gabble_presence_peek_caps (p);
+  arr = gabble_connection_build_contact_caps (self, handle, caps);
+  return arr;
 }
 
 static void
@@ -2796,7 +2811,7 @@ gabble_connection_get_handle_capabilities (GabbleConnection *self,
 
   if (NULL != pres)
     {
-      GabbleCapabilitySet *cap_set = gabble_presence_dup_caps (pres);
+      const GabbleCapabilitySet *cap_set = gabble_presence_peek_caps (pres);
 
       for (ccd = capabilities_conversions; NULL != ccd->iface; ccd++)
         {
@@ -2822,8 +2837,6 @@ gabble_connection_get_handle_capabilities (GabbleConnection *self,
               g_ptr_array_add (arr, g_value_get_boxed (&monster));
             }
         }
-
-      gabble_capability_set_free (cap_set);
     }
 
   for (assumed = assumed_caps; NULL != *assumed; assumed++)
@@ -2889,18 +2902,15 @@ conn_contact_capabilities_fill_contact_attributes (GObject *obj,
 {
   GabbleConnection *self = GABBLE_CONNECTION (obj);
   guint i;
-  GPtrArray *array = NULL;
 
   for (i = 0; i < contacts->len; i++)
     {
       TpHandle handle = g_array_index (contacts, TpHandle, i);
+      GPtrArray *array;
 
-      if (array == NULL)
-        array = g_ptr_array_new ();
+      array = gabble_connection_get_handle_contact_capabilities (self, handle);
 
-      gabble_connection_get_handle_contact_capabilities (self, handle, array);
-
-      if (array->len > 0)
+      if (array != NULL)
         {
           GValue *val =  tp_g_value_slice_new (
             TP_ARRAY_TYPE_REQUESTABLE_CHANNEL_CLASS_LIST);
@@ -2910,13 +2920,8 @@ conn_contact_capabilities_fill_contact_attributes (GObject *obj,
               handle,
               TP_IFACE_CONNECTION_INTERFACE_CONTACT_CAPABILITIES"/caps",
               val);
-
-          array = NULL;
         }
     }
-
-    if (array != NULL)
-      g_ptr_array_free (array, TRUE);
 }
 
 /**
@@ -2998,16 +3003,17 @@ gabble_connection_get_contact_capabilities (
     }
 
   ret = g_hash_table_new_full (NULL, NULL, NULL,
-      (GDestroyNotify) gabble_free_enhanced_contact_capabilities);
+      (GDestroyNotify) gabble_free_rcc_list);
 
   for (i = 0; i < handles->len; i++)
     {
-      GPtrArray *arr = g_ptr_array_new ();
+      GPtrArray *arr;
       TpHandle handle = g_array_index (handles, TpHandle, i);
 
-      gabble_connection_get_handle_contact_capabilities (self, handle, arr);
+      arr = gabble_connection_get_handle_contact_capabilities (self, handle);
 
-      g_hash_table_insert (ret, GUINT_TO_POINTER (handle), arr);
+      if (arr != NULL)
+        g_hash_table_insert (ret, GUINT_TO_POINTER (handle), arr);
     }
 
   tp_svc_connection_interface_contact_capabilities_return_from_get_contact_capabilities

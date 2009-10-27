@@ -8,7 +8,6 @@
 <refnamediv>
 <refname>wocky-utils</refname>
 <refpurpose></refpurpose>
-<!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
 <refsynopsisdiv id="wocky-wocky-utils.synopsis" role="synopsis">
@@ -35,7 +34,6 @@
 <refsect1 id="wocky-wocky-utils.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
-
 </para>
 </refsect1>
 
@@ -43,28 +41,27 @@
 <title role="details.title">Details</title>
 <refsect2 id="wocky-strdiff" role="function">
 <title>wocky_strdiff ()</title>
-<indexterm zone="wocky-strdiff"><primary>wocky_strdiff</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_strdiff                       (const <link linkend="gchar">gchar</link> *left,
+<indexterm zone="wocky-strdiff"><primary sortas="wocky_strdiff">wocky_strdiff</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_strdiff                       (const <link linkend="gchar">gchar</link> *left,
                                                          const <link linkend="gchar">gchar</link> *right);</programlisting>
 <para>
-Return <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the given strings are different. Unlike <link linkend="strcmp"><type>strcmp</type></link> this
+Return <link linkend="TRUE--CAPS"><literal>TRUE</literal></link> if the given strings are different. Unlike <link linkend="strcmp"><type>strcmp</type></link> this
 function will handle null pointers, treating them as distinct from any
 string.</para>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>left</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>left</parameter>&#160;:</term>
 <listitem><simpara> The first string to compare (may be NULL)
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>right</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>right</parameter>&#160;:</term>
 <listitem><simpara> The second string to compare (may be NULL)
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if <parameter>left</parameter> and <parameter>right</parameter> are both <link linkend="NULL:CAPS"><literal>NULL</literal></link>, or if
-         neither is <link linkend="NULL:CAPS"><literal>NULL</literal></link> and both have the same contents; <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> otherwise
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="FALSE--CAPS"><literal>FALSE</literal></link> if <parameter>left</parameter> and <parameter>right</parameter> are both <link linkend="NULL--CAPS"><literal>NULL</literal></link>, or if
+         neither is <link linkend="NULL--CAPS"><literal>NULL</literal></link> and both have the same contents; <link linkend="TRUE--CAPS"><literal>TRUE</literal></link> otherwise
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="wocky-decode-jid" role="function">
 <title>wocky_decode_jid ()</title>
-<indexterm zone="wocky-decode-jid"><primary>wocky_decode_jid</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_decode_jid                    (const <link linkend="gchar">gchar</link> *jid,
+<indexterm zone="wocky-decode-jid"><primary sortas="wocky_decode_jid">wocky_decode_jid</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_decode_jid                    (const <link linkend="gchar">gchar</link> *jid,
                                                          <link linkend="gchar">gchar</link> **node,
                                                          <link linkend="gchar">gchar</link> **domain,
                                                          <link linkend="gchar">gchar</link> **resource);</programlisting>
@@ -81,23 +78,20 @@ XXX: Do nodeprep/resourceprep and length checking.
 <para>
 See RFC 3920 §3.</para>
 <para>
-
 </para><variablelist role="params">
-<varlistentry><term><parameter>jid</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>jid</parameter>&#160;:</term>
 <listitem><simpara> a JID
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>node</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
 <listitem><simpara> address to which return the username/room part of the JID
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>domain</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>domain</parameter>&#160;:</term>
 <listitem><simpara> address to which return the server/service part of the JID
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>resource</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>resource</parameter>&#160;:</term>
 <listitem><simpara> address to which return the resource/nick part of the JID
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
