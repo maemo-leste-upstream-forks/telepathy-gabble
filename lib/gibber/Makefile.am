@@ -5,10 +5,6 @@ BUILT_SOURCES = \
   gibber-signals-marshal.h \
   gibber-signals-marshal.c
 
-IMPORTED_SOURCES =                \
-  asyncns.c                       \
-  asyncns.h
-
 OUR_SOURCES =                     \
   gibber-debug.c                  \
   gibber-debug.h                  \
@@ -24,14 +20,12 @@ OUR_SOURCES =                     \
   gibber-linklocal-transport.h    \
   gibber-listener.c               \
   gibber-listener.h               \
-  gibber-resolver.c               \
-  gibber-resolver.h               \
   gibber-linklocal-transport.c    \
   gibber-linklocal-transport.h    \
   gibber-util.h                   \
   gibber-util.c
 
-libgibber_la_SOURCES = $(OUR_SOURCES) $(BUILT_SOURCES) $(IMPORTED_SOURCES)
+libgibber_la_SOURCES = $(OUR_SOURCES) $(BUILT_SOURCES)
 
 # Coding style checks
 check_c_sources = \
@@ -67,7 +61,7 @@ gibber-signals-marshal.list: $(OUR_SOURCES) Makefile.am
 
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ -fno-strict-aliasing
 
-AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @RESOLV_LIBS@
+AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@
 
 # rules for making the glib enum objects
 %-enumtypes.h: %.h Makefile.in

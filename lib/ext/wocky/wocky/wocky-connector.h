@@ -21,19 +21,13 @@
 #ifndef __WOCKY_CONNECTOR_H__
 #define __WOCKY_CONNECTOR_H__
 
-#include "config.h"
-
 #include <glib-object.h>
 
 #include "wocky-sasl-auth.h"
 #include "wocky-xmpp-connection.h"
 #include "wocky-xmpp-stanza.h"
 
-#if USING_OPENSSL
-#include "wocky-openssl.h"
-#else
 #include "wocky-tls.h"
-#endif
 
 G_BEGIN_DECLS
 
@@ -180,8 +174,6 @@ void wocky_connector_unregister_async (WockyConnector *self,
 gboolean wocky_connector_unregister_finish (WockyConnector *self,
     GAsyncResult *res,
     GError **error);
-
-WockySaslAuthMechanism wocky_connector_auth_mechanism (WockyConnector *self);
 
 gboolean wocky_connector_add_crl (WockyConnector *self,
     const gchar *path);

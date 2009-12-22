@@ -1,3 +1,1616 @@
+commit 8170458b10489bb44a5357a208b588ac553087a1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-21 14:36:23 +0000
+
+    Bump the version to 0.9.3
+
+commit 0da2e837c129da054c1deaab451e76d913e003fd
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-21 16:36:01 +0000
+
+    Update NEWS
+
+commit 3cf6b96cd04b6da227e4f9b09ea304cd64f1b61f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-22 12:11:43 +0000
+
+    Update wocky snapshot
+
+commit 07289e06dfdc6ae581dbb679028211cc09a53d0c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-21 12:21:11 +0000
+
+    Updating the wocky snapshot
+
+commit 8c78a28e070f05dd93a1ba34acd784aced4689ff
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-20 18:01:07 +0000
+
+    Update wocky snapshot
+
+commit 3b02ffcb24b7cd77b503e7f729f9b688d03b102a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-20 17:49:50 +0000
+
+    Update --enable-gtk-doc configure flag name
+
+commit 9e505634f874b1b74d9f50089164ca7241f37558
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-20 17:18:19 +0000
+
+    Test for the source file, not the target file
+
+commit 1875107f9ed94dfaf8bcdb9347c0aca7dbe29aa0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-20 17:15:43 +0000
+
+    Make AX_CONFIG_DIR_IMPLY AC_DISABLE_OPTION_CHECKING
+    
+    Turn of warnings about unknown options as this also causes warnings about
+    options from submodules. AC_CONFIG_SUBDIRS has the same behaviour
+
+commit 65e4514df2949262d11963f59f205375582533ad
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-20 17:12:44 +0000
+
+    Append configured subdir to _AC_LIST_SUBDIRS
+    
+    _AC_LIST_SUBDIRS is used to by ./configure --help=recursive to show the
+    options of the submodules. AX_CONFIG_DIR should do the same
+
+commit 5211db62c20c9adbb681ce0c56aec29c2ad24fc4
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-20 17:12:12 +0000
+
+    Add ax_config_dir from audacity
+
+commit ca188951b8ab8315451893fdc58375cc99d4fbbb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-20 15:21:46 +0000
+
+    Sync the tests valgrind command with those of the twisted tests
+
+commit a857b7e03a43a2108d2690f7e1e205dc86188a2f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-20 15:21:22 +0000
+
+    Disable DBUS mem-pools when valgrinding to prevent false positives
+
+commit e0649c2ad46f37c02ff5ba24545f32514750df57
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-20 15:20:40 +0000
+
+    Add gabble specific suppressions file
+
+commit ffc91551f1857a7b611793256c54bd2f3d318a88
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-20 14:38:37 +0000
+
+    Move the suppression file to a more generic path
+
+commit 796c2ef9fb32300fe70b53294d8ff9f441cc9bf6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 19:49:21 +0000
+
+    Update wocky snapshot
+
+commit 3bb21486495e4bd770e050c580dc6a6c7d0db00e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 19:22:49 +0000
+
+    Test that we don't accept open iq for unaccepted bytestreams
+
+commit 9b601eb70dc3b160e045a2afce26d114692786c8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 19:21:37 +0000
+
+    Don't accept an open ibb iq if we didn't accept the bytestream yet
+
+commit e8aaf40b493af783addedb613238236f53c50eb6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 16:10:24 +0000
+
+    Wait for the stream-iq reply before opening the bytestream
+    
+    We should wait with the accepting side to accept our bytestream before sending
+    data over it. Also change things around a bit so a tube with a different id is
+    requested every time which makes debugging slightly easier
+
+commit 98ef3cb6dd1d238f1babb4eccca0e69919f05251
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 15:28:44 +0000
+
+    Test that the tests waited for the stream-iq reply
+    
+    By the time a test calls open_bytestream it should have waited for the response
+    to the stream-iq. If it doesn't races can occur which are hard to detect and
+    debug. So add a small boobytrap in open_bytestream which explodes if a test
+    didn't call check_si_reply, which it should have called after getting the reply
+
+commit c80cc5490e81dd791a0277a34dd1f11efc93a71a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 15:23:41 +0000
+
+    Leave the Disconnect handling to tp-glib
+
+commit 6c3fee622752404275333df672d0d0970b819cf2
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 14:28:02 +0000
+
+    Make sure we only call the callback if it's still alive
+
+commit 67e61a2f508c9ed75fe7b892c52f7fae53f49cf6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 14:22:26 +0000
+
+    Free some memory allocated by gabble for debugging
+
+commit 77d25997f19843f2fb7c685df1fff48e9f717a38
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 14:21:08 +0000
+
+    Deinit wocky at the end of the run so it can free some memory
+
+commit 970b3ab0cf5e94aa58d4c90a1b1640ac032eca00
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 14:19:46 +0000
+
+    Remove now unused out label
+
+commit 661be7bf14fa851f5bd04ebde1fd6e747d854982
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 14:19:29 +0000
+
+    Chain up to the parent class so it can free some memory
+
+commit f2caa16d08e8203de9899959814cd3281991e3f6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 14:12:48 +0000
+
+    Fix usage of potentially freed memory
+    
+    In various error cases the data buffer in the socks5 bytestream gets freed
+    directly, in such cases don't try to return the lenght of said buffer. Instead
+    return -1, which, in case the buffer isn't freed yet, will erase all the data
+    left, which is exactly what we want.
+
+commit 40f6db89083907719baf0523d7673b13ebb86873
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 14:10:46 +0000
+
+    Fail early if we can't get local ip address to prevent leaking memory
+
+commit 666feae2d300e2818908d6e60c1a7be7c1c499fa
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 14:09:57 +0000
+
+    Don't leak the intset returned by tp_handle_set_update
+
+commit 45be548bfe8594d805230887f1bb45f6207e9f0b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 14:08:35 +0000
+
+    If there is a destroy notify, call it
+
+commit f69eb69684c17cf0ab363b09dbe231bbe5c119ce
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 14:08:15 +0000
+
+    Also unref the LmMessageHandler in error cases
+
+commit c3929608e3c1a2e3679861c7ede948881fdc7d1c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-18 14:06:53 +0000
+
+    Initialize the buffer used in a cmsg to zero
+    
+    Initializing the buffer the zero prevents false positives from valgrind. Also
+    fixed a small code consistency issue
+
+commit 27bb1340e0d4ea8594709bc0d4a5db86106359bb
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-12-10 20:38:14 -0500
+
+    plug various leaks
+
+commit 8f38439db7085dd668f051d73ed5ebb365fa35d5
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-12-10 20:32:25 -0500
+
+    update copy of tp-glib.supp
+
+commit 04514132d08651444403f2b0156fff5c5f4717da
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-15 19:01:35 +0000
+
+    NEWS for fd.o#25341
+
+commit 244f587f4cd5a21613f17e7b3df234307b9a8655
+Merge: fec6a62 1340421
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-15 18:57:41 +0000
+
+    Merge branch 'fd.o#25341'
+    
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 13404217de857b28e64d2d16a8c012e2d539cb51
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-14 17:55:40 +0000
+
+    Test that the fix for fd.o#25341 works.
+
+commit b81ea4e2153f4fed9f81addb4ac7b20c63f23bf8
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-09 14:15:48 -0300
+
+    vcard-manager: Iterate over hashtable instead of usin g_hash_table_find to check if vcard changed.
+
+commit 6de8040cbe857f1d5320e27b7401ad2eae23fe2d
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-09 14:04:42 -0300
+
+    vcard-manager: Do not try to set vcard fields not supported by google servers.
+
+commit fec6a6215080b612e60bea85558222e0b3848296
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-12-08 14:50:04 +0000
+
+    Update wocky to fix OpenSSL infinite pseudo-read loop.
+
+commit 92c6f043435704a14768bc859729edc10271ecc1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-08 14:01:19 +0000
+
+    Miscellaneous NEWS updates
+
+commit 61d7c72b2c0a6cde45ec9f343706cdbbc1f3f760
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-07 15:40:12 +0000
+
+    Fix coding style checks for out-of-tree builds
+
+commit 39c2a3b8779fae2a52a4d301c0b19def546c09d1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-07 15:01:44 +0000
+
+    Move pmuc-v1 #define up with the other bundles'
+
+commit 1aca8d2c74bbd0b7ab2e8e1f7e7fa998ceb8a2b8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-07 14:43:24 +0000
+
+    Fall back to stun.telepathy.im not stun.ccu
+
+commit 5fd8e6f6a177a1a15bcf21ba4dda76029c09f524
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-07 14:08:04 +0000
+
+    test-muc-ownership: Remove magic numbered handles
+    
+    This makes the test a bit less write-only.
+
+commit 1b9f931a2946ae1e5c94def5f844c40a9066fa4c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-07 14:06:47 +0000
+
+    Add assertFlags{Set,Unset}
+
+commit 32123d640ce85f79d027117e5a65a95a72e1dca9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-07 14:02:55 +0000
+
+    Remove obsolete asynchronousity.
+
+commit 5aa88e73da42faf7529b80e3ee952e70f4d0318c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-08 12:19:38 +0000
+
+    Make log-strip.py process its arguments
+
+commit 481c0f19df9165f88a80960602cda53bf5f2a076
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-08 12:15:22 +0000
+
+    Make log-strip.py executable
+
+commit 69d8880ea0ac8f8ed5b04d621b4becba6078a357
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-08 11:33:13 +0000
+
+    Tidy some assertions in caps_helper.py
+    
+    These triggered while I was experimenting with different places to put
+    the test name, and I thought I'd fix them up.
+
+commit d7ae6c73bce691170147d56a517e4a8d55a78431
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-08 11:30:17 +0000
+
+    Shove the test name into 'account' as the resource
+    
+    This means the name of (most) tests appears in gabble-testing.log;
+    'resource' takes priority so the test jid still comes out as
+    test@localhost/Resource.
+
+commit ac0d8fde22da281e989e6ae8ddfa6982b516b128
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-08 11:27:32 +0000
+
+    Make 'resource' override a resource in 'account'
+    
+    This way round makes more sense to me and (empirically) to #telepathy.
+
+commit 787defed096a6293c0dddb7ecc5985524afc57ae
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-07 11:04:16 -0300
+
+    fd.o#25341: Always sets its own vcard on login
+    
+    Note that gmail only stores vcard fields FN and PHOTO, so when using empathy the
+    nickname (alias) will be updated on every login.
+
+commit 8e0268e4d6e9244468be8af36863d5060f842e78
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-07 18:30:45 +0000
+
+    Update code-gten tools from telepathy-glib 0.9.2
+
+commit 3792e0103cb035ecdbce9aa170cb3007a4824662
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-07 18:50:49 +0000
+
+    Add tp:name-for-bindings to the OLPC specs
+
+commit 908602869f027b92e16c25171b7fd1462b9254bb
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-12-07 17:42:08 +0000
+
+    Update wocky to include openssl deadlock and build fixes.
+
+commit 4e7fc410af6ca050a3f57f49e351a904cbb0f596
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-07 15:12:52 +0000
+
+    Remove various bits that were only used for GibberResolver
+
+commit dae4f4df74ac7609801ca79e5ca85a85d590931d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-07 15:00:31 +0000
+
+    Tweak coding style
+
+commit b0be95b534330c5538544b779044e4ab96cedffd
+Merge: ba33603 0af825f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-07 14:48:21 +0000
+
+    Merge remote branch 'maiku/gresolver'
+
+commit ba3360330c19940a000a3c92c1e7385cceb1600b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-07 11:29:51 +0000
+
+    remove debug message in bytestream_write_blocked_cb
+    
+    Those flood the debug log and are not that useful.
+
+commit c2111a7d8249603d74255262fdc7b00d4b284f40
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 18:43:05 +0000
+
+    remove useless \n
+
+commit 342ae93005022e0110e93b07030e385255a24010
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 18:38:38 +0000
+
+    fix typo
+
+commit 4ad9bcd0afa9aad6bb4dccfacacb9c45a3d0a0b9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 18:33:24 +0000
+
+    test if bugged proxies are not queried twice
+
+commit 28d344a9d11f0d23eab602f6406fa6c86a08d5d9
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 18:30:17 +0000
+
+    remove proxy from the list if we receive an IQ error
+
+commit eaa219390c1d4347a082579045a69c0e77b3be49
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 17:48:12 +0000
+
+    use a timestamp instead of a timer to manage the lifetime of the proxies list
+
+commit 4f39f6e17d991d83442043d27b88af3b9465d2fa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 17:22:36 +0000
+
+    connection.h: remove old comments about proxies
+
+commit a06796617e51b913dc5d466fb317b178d782f135
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 17:22:02 +0000
+
+    proxies_disco_cb: log a debug msg if disco failed
+
+commit b43ca913add25cc76ed10e8b6643d866419aa348
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 17:16:13 +0000
+
+    Always recycle the socks5_potential_proxies list
+    
+    We ensure that we won't query twice the same proxy by clamping the number of
+    proxy needed to the length of the list of the potential proxies.
+    This add the nice side effect of prioritizing a different proxy every time.
+
+commit bf9b340bfd4333cc8b7c3e797b416724b956d8cc
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 17:00:35 +0000
+
+    proxies_disco_cb: Replace the old list instead of adding elements to it
+
+commit e2c73522d5275d4e787a19fd5d79d97cac898845
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 16:46:18 +0000
+
+    add_proxy_to_list: free the oldest proxy once removed
+
+commit 21ada2f323e7d72d1105b5d006a4753d458dabe6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 16:44:29 +0000
+
+    remove double ';'
+
+commit 92ff1d7aa5fc47859e8b9d4c4746eede46128e55
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 15:55:05 +0000
+
+    mark the proxies list has expired after 6 hours
+
+commit 4d2fd71d7f6a15df9d60ea9e20e224fd452d1c6d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 15:04:27 +0000
+
+    Stop hardcoding a list of public proxies
+    
+    They should now get fetched through proxies.telepathy.im. This allow us a more
+    flexible control on the proxies used.
+
+commit e898716d6db952797922f471dd3d7c89d10f06a1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 15:04:07 +0000
+
+    test if proxies_telepathy_im is properly queried
+
+commit d225a208a47e985ba3b409a1ac9d866c7a434e3c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 15:03:19 +0000
+
+    query proxies.telepathy.im if there is no fallback server
+    
+    This server returns a list of public proxies that can be used as fallback.
+
+commit db14f9c1d46ede49992d89eccf0563af19557d31
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 14:03:24 +0000
+
+    check if Gabble requests a new proxy if a reply is an error
+
+commit 401fba21bcf41c7c451ec381ddd389269ff884c4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 14:02:35 +0000
+
+    remove the sock5 proxies timer; instead request a new proxy if a reply is wrong
+
+commit fbe22e6bd43ee62a580511bb8e2545c545ece3a1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 13:51:11 +0000
+
+    factor out query_proxies
+
+commit 6388627d83822a7dc1313c75158a61352b3137e6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 13:41:21 +0000
+
+    check that we don't flood proxies with useless requests
+
+commit 539db841f4d0455651565e8cbad33a931c9c9c34
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 13:41:09 +0000
+
+    don't recycle proxies list if that doesn't make sense
+
+commit bb8d5643ed5183828509ca6743cd5c542b66efbd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 13:31:36 +0000
+
+    test-fallback-socks5-proxy: test that the list of proxies is recycled
+
+commit f9cec5878b5cbb2d6ec63683353740eb3d230606
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 13:30:50 +0000
+
+    recycle the list of potential proxies
+    
+    This avoid to get stuck with the latest proxies added in the cache once we
+    queried all the potential proxies.
+
+commit 6408ae680a85d8b7fc243e5b0eb37f27389881f1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 12:27:12 +0000
+
+    test-fallback-socks5-proxy.py: test how gabble manages the proxy cache once it's full
+
+commit 796de2a1e75a683e77876002b7fca3636b9e8b63
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 12:27:02 +0000
+
+    test-fallback-socks5-proxy.py: factor out send_file_to_alice
+
+commit beefba0328a8d2dbcbf0ccb0f94899616360bd49
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 12:22:54 +0000
+
+    gabble_bytestream_factory_get_socks5_proxies: stop randomizing proxies
+    
+    The newer proxies have to be put first in the SOCKS5 stanza.
+
+commit 7372e05b592298e4478d8f0f975dd72fe47e60d5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 11:38:25 +0000
+
+    streamhost are identified by their host
+    
+    The SOCKS5 reply from the other peer only contains the jid of the streamhost.
+    We can't have more than one proxy using the same jid as then we won't be able
+    to know which one is used by the peer.
+
+commit 3a3de09a58072192e4423cfa0cf2c1a37bc08650
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-27 14:59:08 +0000
+
+    remove oldest proxy from the cache
+
+commit 4350f0217a7de9bfb94c9d266abc7facaffb0964
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-27 14:46:20 +0000
+
+    move existing proxy to the head of the list when they are re-discovered
+
+commit fbad85953c6791382d204c886f17e1eaa4eba5e5
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-27 14:37:59 +0000
+
+    gabble_bytestream_factory_query_socks5_proxies: always request at least one proxy
+    
+    This ensure to always have at least one fresh proxy in the cache.
+
+commit 77c4e09576106791a30409af8e402dc14be1396b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-27 14:19:48 +0000
+
+    test-fallback-socks5-proxy: add wait_si_and_return_proxies returning the list of used proxies
+
+commit 049cc9a7412698e03160412c68954a121e0f80e8
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-27 13:07:39 +0000
+
+    test-fallback-socks5-proxy.py: make send_socks5_reply more generic
+
+commit 76672431edce6b39664cf00da33cc458c54c947b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-27 12:55:45 +0000
+
+    rename NB_SOCKS5_PROXIES_USED to NB_MIN_SOCKS5_PROXIES and decrease it to 3
+
+commit 93617df81979d0df5afce984c388e361c80f5c97
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-27 11:34:05 +0000
+
+    test-fallback-socks5-proxy.py: check that the same proxy can't be added twice
+
+commit 8f6ed3ae5846691a77a4dbb6333ebed91ea74576
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-27 11:33:45 +0000
+
+    add_proxy_to_list: don't add twice the same proxy
+
+commit e4ba4772d8d3188f041e88e643231139b9e96377
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-27 11:17:22 +0000
+
+    bytestream-factory: factor out add_proxy_to_list
+
+commit 8fa20229033e5271f7c059b8741658f7a32d8a94
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-12-04 16:19:51 +0000
+
+    fd.o #25296: break race in test-send-file-provide-immediately.py and test-send-file-wait-to-provide.py
+    
+    bytestream.wait_bytestream_closed() may involve waiting for a socket
+    disconnection (if using SOCKS5). Waiting for the TransferredBytesChanged
+    before calling wait_bytestream_closed is racy as the ordering of socket and
+    D-Bus events is not garanteed.
+    We break this race by waiting for those signals *after* we called
+    wait_bytestream_closed(). As the TransferredBytesChanged signals are
+    manually catched using connect_to_signal we'll only wait for them if needed.
+
+commit 3c42c48013a499c03cb4fcbc343699a655a5e9ec
+Merge: 7acfe00 8a54cec
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-03 21:11:51 +0000
+
+    Merge branch 'plugin-headers'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 8a54cec133435f6dd7a1c9d773f8856ba869d536
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-03 21:10:17 +0000
+
+    Adjust test plugin to include plugin.h properly
+
+commit 69a8a0ac8a9ca7698f8f33137fd58f88732767a5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-03 19:32:04 +0000
+
+    Put headers in lib/telepathy-gabble-0/{gabble,wocky}
+    
+    This isn't part of 'telepathy-1.0', and putting the two directories
+    side-by-side (rather than wocky/ being inside gabble/)means that
+    including <plugin.h> won't accidentally include gabble/plugin.h because
+    gabble/ was in the include path for Wocky's benefit.
+
+commit 6c13f0e060ac30b54a89af5dc9bd9d7f72b52244
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-03 18:25:41 +0000
+
+    Include plugin directory in .pc files
+
+commit 6927a344fefddf1135a2d409c0368850ea6dd8aa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-30 11:51:13 +0000
+
+    Install plugin and Wocky headers, and a .pc file
+
+commit 0af825f8b18f3ab8bb4939cdc1de3cfff3cba7b7
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-02 21:41:36 -0600
+
+    Don't use self if it is NULL.
+    
+    Upon discussion with Sjoerd I learned that it was possible for a GAsync
+    function to be cancelled, but still return a valid result. In this case, that
+    would mean the GabbleJingleFactory was disposed. With my previous assumption
+    that the error handler would have caught any condition where the factory was
+    NULL, this could have tried to access the disposed factory. This commit fixes
+    that assumption.
+
+commit 40473b675fe013d2eb141155d1507454d99686f9
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-02 21:12:52 -0600
+
+    Use g_hostname_to_ascii unconditionally (instead of removing it).
+
+commit cae7f901c9798a7d781f8484f2ab519f954384e9
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 21:50:31 -0600
+
+    Definitely return NULL on error in the *_finish functions.
+
+commit d4c136a5a6d12b00544e2c158253d2a5b6984383
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 21:14:38 -0600
+
+    Simplify the code path in lookup_by_name_async.
+
+commit 16d1307ce67160caeb904af94e2c4231df20c0ed
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 21:10:55 -0600
+
+    Use g_simple_async_result_complete_in_idle instead of the immediate equivalent.
+
+commit 8cba3df4a5a38604626b606513b533b6ca409129
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 21:08:47 -0600
+
+    Simplify the code path in lookup_service_async.
+
+commit 534dc818d26b8c508b3797fcba2f3e37d412e8f1
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 20:50:33 -0600
+
+    Use entry != NULL instead of just entry.
+
+commit 287037d3ce6d36dbf0fa0dbe776872474857a79d
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 20:43:34 -0600
+
+    Use fake != NULL and g_list_next to follow Telepathy standards.
+
+commit 0bf47895312850b1a3434cae87e5c4a1d564108e
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 20:39:45 -0600
+
+    Simplify _service_rrname.
+
+commit ae877e4d6ac750d436b7dbdc1be3113f5c093f07
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 20:36:58 -0600
+
+    Define these structs in Telepathy's coding style.
+
+commit 8c8bedc59cc4e544aae5bcde4cee69f3208d3832
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 20:32:32 -0600
+
+    Remove the real-resolver property from the test-resolver.
+
+commit 0756b0cdd72485ffca165678c425a4bc16f796c0
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 20:18:58 -0600
+
+    Remove the compile-time debugging code.
+    
+    It shouldn't be a special compile-time function and it's not really needed.
+
+commit aadc26b3a8fbabf59174468248b8f1333286558b
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 20:16:07 -0600
+
+    Add 'stun.collabora.co.uk' to the list of addresses test-resolver handles.
+    
+    This allows for the fallback server to be tested in stun-server.py. This
+    also allows those tests to be run without a network connection.
+
+commit 16dea4a4a0968b0c28f797350b0726d2a0dcda8d
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 20:13:51 -0600
+
+    Add localhost to the set of addresses test-resolver handles.
+    
+    This is so that GabbleConnection can connect using 'localhost' in the tests.
+
+commit c787aeb2951b88668b5712783c502039a1eab24a
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 19:41:13 -0600
+
+    Resync with wocky master which doesn't chain up to the real resolver.
+
+commit 10de892c149a6848bbf4177fc32b36e33a46b3f8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-27 19:29:14 +0000
+
+    Move headers available to plugins to gabble/
+    
+    This makes it obvious which headers plugins can use, as well as making
+    it possible to write both gabble.pc and gabble-uninstalled.pc without
+    moving the whole of src/ to gabble/.
+
+commit 7acfe00ef6fb90e236c81aaf4c215cc52af079e9
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-27 18:04:26 +0100
+
+    Remove FT debug messages that get printed repeatedly
+    
+    Don't use debug message that get printed everytime the internal send of receive
+    buffer is full/empty as this isn't very useful and makes the debug log useless.
+
+commit a15c0121d16fc11c207eb62ab9223e18959e3ebb
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-11-27 16:43:17 +0000
+
+    Updated wocky (up to non-normalised-jid in IQ)
+
+commit b2c3648cb89cc0a88e12f7671f2a5096db270128
+Merge: 2059502 5c61965
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-27 16:30:48 +0000
+
+    Merge branch 'plugins'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 5c61965eed786193f7f1cc636127e38421a05843
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-26 20:29:17 +0000
+
+    Make test plugin build out of tree.
+
+commit b9549d801527f1411e992987eab13f4693c8d83f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-26 17:30:53 +0000
+
+    Ship Connection.FUTURE and Gabble.Plugin.Test xml.
+
+commit 4667612dfb104b6e2a2d19f0fababe5d755f166f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-26 17:19:20 +0000
+
+    Partly disable sidecar test with --disable-plugins
+
+commit 48fd9382544d1582d3d854e65101ae9cbfcf906c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-26 17:03:47 +0000
+
+    Make GabblePluginLoader a mortal singleton
+    
+    <http://bugs.freedesktop.org/show_bug.cgi?id=25205#c1> points out that
+    making it immortal is a pain for valgrinding, and makes the time of
+    probing for plugins unpredictable.
+
+commit 0b0506542442aa801fdf21afa5f880cf6320bc05
+Merge: 2ee360d 2059502
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-27 12:26:50 +0000
+
+    Merge branch 'master' into plugins
+
+commit 2059502c054f55e332aafe29c2476c5963033dc7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-27 11:47:25 +0000
+
+    Don't distribute config.py in source tarball
+    
+    config.py is analogous to config.h: it's generated at build time based
+    on the arguments passed to configure. Having it in EXTRA_DIST led to the
+    interesting situation where `make distcheck` would:
+    
+    • generate config.py while making the tarball, with DEBUGGING = True;
+    • generate it again when building, with DEBUGGING = False, but in
+      _build/tests/twisted not in tests/twisted;
+    • fail the debugger test because python picked up the config.py from the
+      source tree rather than from the build tree, leading to the test
+      trying to use the debugger despite Gabble being built without it.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 091706982bcfd8fec07a037b7dfc64131863a31e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-26 17:21:55 +0000
+
+    Remove proxy.fsinf.at on their request
+
+commit 596d17e6f0ab129b7965464fdc4fdfddf5cfd010
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-26 16:15:46 +0000
+
+    test-fallback-socks5-proxy.py: break potential race in offer_dbus_tube
+    
+    The ordering of the queries and the return of CreateChannel is not garanteed.
+
+commit b3075dc18ecefa0b50e63508c280cf373096937d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-26 16:02:37 +0000
+
+    test-fallback-socks5-proxy.py: test if proxy queries are sent when creating a FT channel
+
+commit 467281d12819a483510f3b60ecd80c15628e983b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-26 15:55:03 +0000
+
+    ft-channel: query SOCKS5 proxy when creating an outgoing FT
+    
+    We'll need proxies when we'll offer the file.
+
+commit ccd5c9bad730de088d7b730e024028d3da2343c1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-26 15:32:40 +0000
+
+    test-fallback-socks5-proxy: test if proxy queries are sent when accepting a stream tube
+
+commit 64ac6b9103a899394f4cccb0f68184d865b9165c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-26 15:30:57 +0000
+
+    tube_stream: query SOCKS5 proxy when creating an incoming tube
+    
+    We'll need proxies when we'll accept the tube.
+
+commit a4cb93a17d9bdd151421118cc18bf4a8a557844e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-26 14:35:50 +0000
+
+    test-fallback-socks5-proxy.py: factor out test so we can easily re-use part of it
+
+commit b8a4191b5070070c487a58a3b3c9d006d83f124f
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-26 13:57:41 +0000
+
+    test-fallback-socks5-proxy.py: test new proxy querying policy
+    
+    Proxy queries are sent when creating the 1-1 D-Bus tube now.
+
+commit 5b2d61a703c7b1a5869c08ef049fb65d811a515b
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-26 13:56:29 +0000
+
+    tube-dbus: query SOCKS5 proxy when creating a 1-1 D-Bus tube
+    
+    We'll need proxies when we'll offer the tube.
+
+commit be8dbdc514ce479c4604e346206613790dba3011
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-11-26 13:50:23 +0000
+
+    fd.o#21151: Don't query SOCKS5 proxies when we are connected
+    
+    We should query the SOCKS5 proxies only when we'll actually need them.
+    Export the query method so other components will be able to start the querying
+    process when needed.
+
+commit a5bdc7e1b21eb264a449c4c053831b1ec7bedf14
+Merge: 96ec6eb 946bfe2
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-26 16:09:12 +0000
+
+    Merge branch '09-conditional-ft'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 96ec6eb9ad21715c405795f6d60adede103b10f9
+Merge: 6ba702e 2c7bff9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-26 15:09:02 +0000
+
+    Merge branch 'trivia'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 2c7bff966e6f114236b8bd2b6d11cefb64c64083
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-26 15:06:34 +0000
+
+    Unset debug-sender log handler before unreffing the global debug sender
+    
+    Otherwise, TpProxy destruction messages triggered by the death of the
+    global debug sender (as it probably holds the last ref to the
+    TpDBusDaemon) will be debug-logged through our custom log handler, which
+    asserts that the global debug sender still exists!
+
+commit cb38a29c521fc6a7f5b91ac707fea75015233c65
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-26 14:50:36 +0000
+
+    autogen.sh: prefer automake 1.11 if available, for silent rules
+    
+    This mirrors a similar change in telepathy-glib.
+
+commit 65a732505eb68c66ee11e0b16d7ae7c0d6078fad
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-26 14:50:10 +0000
+
+    Run test-debug.py if the debugger is enabled, using an automake conditional
+    
+    The Makefile rule that generates tests/twisted/config.py was always
+    setting DEBUGGING = False there, because ENABLE_DEBUG was not in fact
+    set in the Makefile.
+    
+    Based on a patch from wjt.
+
+commit 6ba702eb465e1741f0338de107d82498adc2219f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-11-20 17:08:02 -0500
+
+    propagate disabling of -Werror to Wocky build configuration
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit b9029718e3989e062ad28641a488433f94490a42
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-26 11:26:20 +0000
+
+    Remove proxy.schokokeks.org on their request
+
+commit 1652c38b0ee930c773d3142212552cf2416eff8d
+Merge: 5c44be4 2fd6f76
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-25 18:40:07 +0000
+
+    Merge branch 'coverity'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 5c44be4cd0ffedb7b9aaeae6b8e4455d103b68ee
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-24 18:58:36 +0000
+
+    Make matching of GroupFlagsChanged signals race-free
+
+commit 24818b8127d386b4d01b9504bd360a42c8deef40
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-24 18:58:13 +0000
+
+    Update wocky snapshot
+
+commit 310ee5ba0c5f4620f446b76599e5eb126c0d1278
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-23 18:46:18 +0000
+
+    More NEWS
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 2fd6f76474eee986862cbbdac339800ee75ce941
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-25 14:07:10 +0000
+
+    Assert that base64_decode parses valid base64.
+    
+    All the other tests in this file check that base64_decode() returns
+    non-NULL, so this one should too.
+
+commit 2699778643219a244044fd0698b6b6144dc5c7bc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-25 13:08:49 +0000
+
+    Document a deliberate switch fall-through
+
+commit 137284035db3b40aa59b4df4902c9277e6581092
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-25 12:11:44 +0000
+
+    Calling g_time_val_from_iso8601() once is enough.
+
+commit 946bfe27846f2f4517285826f4d52939317144e4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-24 13:32:59 +0000
+
+    Remove unused handle parameter from add_file_transfer_channel_class()
+
+commit c59b00eeb42ef72bcfa17f0adc7df882957a0c14
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-24 13:26:52 +0000
+
+    fd.o#25243: only advertise FT capability if we have a FT client
+    
+    Originally from commit 79c625e8ac7108, but more or less rewritten for
+    the new capabilities code in 0.9.
+
+commit f7ea4a25d6b916e3aef91db337afcf59328a09bc
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-23 18:42:48 +0000
+
+    NEWS
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 416c58eb82d6b8bde664cf561b2aac11ff051b37
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-11-20 00:45:35 +0000
+
+    connection: ack the pmuc-v1 cap disco request
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 0a8be4f699fb3cadfe4d6e74cfd5f86942aa5d8a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-11-19 23:55:48 +0000
+
+    util: allow GabbleConnection to be NULL in _normalize_room
+    
+    The handle test, test-handles, has no connection, but calls this
+    function.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 2e2a062f8548ea3d88153d68fc62cdaba33fbb7e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-10-07 10:50:19 +0100
+
+    normalize_room: use gabble_decode_jid to shorten the function
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 557d0de3b6670e05e3ec662104db876dbbb9e9ad
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-10-01 18:01:32 +0100
+
+    fd.o#22456: util: get the canonical room name in gabble_normalize_room
+    
+    This means that both RequestHandles and the TargetID property set
+    during a call to CreateChannel will use the canonical room
+    name. Previously, it only ever did this in a RequestHandles call.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 3095e0dee4d5ff525337363d00c0c9507d20a2ff
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-09-29 17:53:22 +0100
+
+    fd.o#21152: connection: don't disco rooms in RequestHandles
+    
+    This is unnecessary as if you join a server which doesn't respond,
+    gabble will timeout.
+    
+    Also make sure all the tests don't expect a disco request, and respond
+    to it.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit d43024b0228ece94221f9608a232fc38ca9cbe7e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-09-29 14:49:57 +0100
+
+    connection: always set pmuc-v1 capability when sending presence
+    
+    If you are invited to a Google private MUC, then google's server
+    (talk.google.com) will get your caps and if you have the "pmuc-v1" cap
+    set as an entity capability element, it will invite you like any
+    normal MUC.
+    
+    Partly fixes fd.o#22768 (as long as discoing chatrooms is
+    disabled). This commit enables us to be invited to private MUCs by the
+    Google client, but doesn't currently support creating them without
+    making the UI terrible.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 38cfd5883dc4f55389cd3bb013f356569cc4349e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-09-29 14:49:27 +0100
+
+    capabilities: define pmuc-v1 cap
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 1b4940738529318e1b093c40c9e3c40909e9b90f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-09-29 14:48:45 +0100
+
+    connection: make get_canonical_room_name non-static
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 4f286a8c1fa52addcdd24b38cac70f78fdcb211d
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-20 16:07:58 -0600
+
+    Remove gibber-resolver.
+
+commit 35957a040548632fe4f96ffb9a001c163418a0c4
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-20 15:45:09 -0600
+
+    Remove the old fake resolver.
+
+commit 1889a140d184740deda9cd5d1559b61bb72839f9
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-20 15:41:28 -0600
+
+    Switch the tests to use the test-resolver.
+
+commit e757c00715fcdc728913d985676515b3784cae20
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-20 15:37:02 -0600
+
+    Copy test-resolver.[ch] from lib/ext/wocky/tests/.
+
+commit 9034d0c67a7f2928490f2640f41e8db9c6d13bac
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-20 15:34:52 -0600
+
+    Convert to use GResolver instead of GibberResolver.
+
+commit 06cb9ae67dd43e89f51e4fd66b89edbebf1492be
+Merge: bb1f1fa 8d5b52f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-20 20:11:26 +0000
+
+    Merge branch '09-privates'
+    
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 8d5b52f77025e5d007fc39305d242f1bb4760e9f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-11 18:48:28 +0000
+
+    GabbleRegister: point to private structure in public struct
+
+commit 8356af8af184f5248ea3c16d9ff18da3b4f97c47
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-11 18:45:34 +0000
+
+    GabbleMucFactory: point to private structure in public struct
+
+commit a444d899bbd801cc53bf5e7ec786efd2fda8757b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-11 18:44:53 +0000
+
+    GabbleConnectionManager: remove unused, uninitialized priv pointer
+    
+    There is actually no such structure as GabbleConnectionManagerPrivate,
+    but having an uninitialized pointer is clearly a trap.
+
+commit bb1f1fa5232f02ae2044465581baa8643a42c32e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-15 20:13:54 +0100
+
+    fd.o#24558: Flag the password param as secret, and enhance write-mgr-file to put this in the .manager file
+    
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 767b5598af4e775b464b38b2a44accc4feda4e56
+Merge: 8bcb431 77bd004
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-20 19:23:25 +0000
+
+    Merge branch 'chat-states'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 2ee360dce6b0ea69d0f4d1fdea4e1148291a13d0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-19 15:25:32 +0000
+
+    Test ensuring a sidecar which pings a server first
+
+commit 3562de5e5ba3a00f4e9969a69d3771786105edf1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-18 18:13:54 +0000
+
+    Only construct sidecars once we're connected.
+    
+    Sidecars need access to the WockySession. While we could add an (async)
+    accessor to the connection, let's defer that until a plugin needs to be
+    able to create a sidecar before the connection becomes Connected.
+
+commit 7449ee951428772e3ee1b41e77dfb1652bfb09a6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-18 12:15:08 +0000
+
+    Pass TpBaseConn and WockySession to sidecars
+
+commit f4b8a85615e5d7e7819cb154fe6958648c658a81
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-17 11:55:59 +0000
+
+    Test sidecar support using test plugin
+
+commit e158e16ac14e9420f55fd8a21dfd947bf44675de
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-17 11:55:04 +0000
+
+    Point Gabble at our local plugin dir for tests
+
+commit da6412b49f7b4cb24273c4aafc8667e22f0e9064
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-16 19:43:53 +0000
+
+    Load plugins from $GABBLE_PLUGIN_DIR if set
+
+commit cc4df7c513da6de25f8c7de5fb4e7a13e055a97c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-17 17:19:04 +0000
+
+    Add a plugin for use in the test suite
+
+commit 4263b63f90f947eb6ba33793c4c1d16ac82ff878
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-17 15:46:28 +0000
+
+    Build a stub interface for test sidecars to implement
+
+commit c33778b9ff3ad3fa85309770ebac3ccf2f86666b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-16 17:28:37 +0000
+
+    Don't spawn the plugin loader on start.
+    
+    This was mostly for testing purposes while implementing the loader. Now
+    that it's dupped as needed to instantiate sidecars, there's no point in
+    instantiating it until we need it.
+
+commit c215290b84f5b660e8145d73214f808d01abd428
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-16 12:47:27 +0000
+
+    Generate and implement Connection.FUTURE.EnsureSidecar()
+
+commit b86e76e48e7bed350b76570d834e1838e65ce476
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-15 21:57:00 +0000
+
+    Add API to request a sidecar from the plugin loader
+
+commit 16953f13be6352a0fe64729ae8cc32bf9d382c40
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-14 22:27:30 +0000
+
+    Add API to GabblePlugin to create sidecars
+
+commit f406e8a323c0b3e20d56e7496ea01cc630d6945b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-14 15:29:07 +0000
+
+    Add a GObject interface for sidecar implementations
+
+commit 2413aadac802d1935b81f2bc2395a022568aaa13
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-16 19:39:23 +0000
+
+    Split up the plugin loader a bit
+    
+    gabble_plugin_loader_probe was ridiculously large. Splitting it into
+    directory-scanning and plugin-loading makes it clearer, as does
+    introducing some early returns in the latter.
+
+commit 2c94441c0713c5f20890b71240d2e8e70f815d90
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-15 21:29:03 +0000
+
+    Store loaded plugins in the loader
+
+commit 8da134514018668181a2a1c9f474362a3b9de37b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-14 13:15:50 +0000
+
+    Turn the plugin loader into a fully-fledged object
+    
+    GabblePluginLoader is a singleton, because it doesn't make sense to have
+    more than one plugin loader. It keeps a reference to itself once it's
+    instantiated, because it doesn't make sense to destroy it (our modules
+    can't be unloaded).
+    
+    If Gabble is built without plugin support, GabblePluginLoader is still
+    an immortal singleton, it just doesn't do anything.
+
+commit 00c39eed295df7f82e8654c4c284bc7298a0b289
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-13 18:36:25 +0000
+
+    Attempt to instantiate a GabblePlugin from modules
+
+commit 7fea8c47ac64bd2377100df57fc1729e1e82fe45
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-17 15:02:35 +0000
+
+    Use -export-dynamic to expose symbols to plugins
+    
+    I'm not sure why this is needed: the flags from gmodule's pkg-config
+    file include this...
+
+commit 80f4568dadc249b0288acbcd1e299a7c7df5a73b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-13 18:34:54 +0000
+
+    Add a trivial GabblePlugin interface
+
+commit 12020afea9ce300f223357a7c4578a63576f4365
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-10 18:52:14 +0000
+
+    Probe for plugins in $(libdir)/telepathy/gabble-0
+
+commit d42a037ccdcc55ed57f18f0f6334c28e9643df61
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-10 19:36:10 +0000
+
+    Add a debug flag for plugins
+
+commit ec0baa4f19d9963cbcfb7fcbdb74b947115fad45
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-10 19:35:00 +0000
+
+    Link against GModule when plugins are enabled.
+
+commit 290f7337b7e145f51a6eb61a7318862e0f9055ed
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-13 10:21:21 +0000
+
+    Add a disabled-by-default build option for plugins
+
+commit 8bcb431db00372745884a46a583db65dd0f5d265
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-17 14:11:40 +0000
+
+    Update manpage to refer to Wocky, not Loudmouth
+
+commit fe17fe877b4e1689d79180a8775ef5cac90ba7dc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-13 18:07:10 +0000
+
+    Remove unused vars from gabble_disco_service_find
+    
+    Given that we don't use the key and value looked up from the features
+    hash, and you can just pass NULL to g_hash_table_lookup_extended(), this
+    makes the function more regular and easier to read.
+
+commit 93551f15942a3eaa7a524a54bb1a9e6dbfed2a7f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-13 10:21:03 +0000
+
+    Work around a syntax highlighting bug in Vim
+
+commit 4cfc3641d32e4dcae4ecc4e02d3445ffed749d53
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2009-09-07 17:19:16 +0100
+
+    debug: use TpDebugSender instead of implementing GabbleDebugger
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 379217808bd85e7ada863309fb123cd350a508d9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-12 14:57:34 +0000
+
+    NEWS: mention mitigation of fd.o#13157
+
+commit 6d5415a8fec56e596878d10eb070045c97675876
+Merge: 3f48773 15197c1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-12 14:46:34 +0000
+
+    Merge branch '09-subject-test'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+    [but then rebased onto 0.9]
+
+commit 15197c1dd052f72009b487f30e2d3e75dd89a8a4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-12 14:36:46 +0000
+
+    muc/subject.py: explain why I use 12 rooms (fd.o#21152 will fix this)
+
+commit d46f54766bda5d8f848af24cb558a0b88af72ff8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-11-12 14:13:26 +0000
+
+    muc/subject.py: new test for the current behaviour of the 'subject' MUC property
+
+commit e3af96fe39fc31e96a33dc9f91f8c71a968f32be
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-22 18:12:59 +0100
+
+    mucutil.join_muc: make it possible to control our role in the room
+
+commit e88ccd53a12cd5674eb0dca5c5a144280eb725ed
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-22 17:53:51 +0100
+
+    mucutil.join_muc: make it possible to capture the disco#info query in a race-free way
+
+commit 9f863b7a9a64b85d6ad8a2e49048e544bba043c9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-22 17:20:12 +0100
+
+    constants: add PROPERTY_FLAGS_RW for convenience
+
+commit b4baf341747766dcdc7d6443bf01cc48ab91c820
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-22 14:05:42 +0100
+
+    GabbleMucChannel: annotate which properties can be changed by who
+
+commit 7d8eb30e618f5f406722127c818864f54ea2f47b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-22 17:00:53 +0100
+
+    GabbleMucChannel: having special-cased SUBJECT, don't remove the special case again and treat it like part of the room definition!
+
+commit b52d0f4f591de3a767307cd0af6435c082ae4d92
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-22 15:22:56 +0100
+
+    gabble_muc_channel_init: initialize self->priv correctly
+    
+    It was uninitialized, which had never been significant so far because
+    all of muc-channel.c redundantly calls GABBLE_MUC_CHANNEL_GET_PRIVATE
+    again.
+
+commit 3f487738a27917814fc60ca7e8678f3621a2db68
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-09 18:33:24 +0000
+
+    Update NEWS for stable resource fix
+
+commit bd6522afe807be0f8c2a57ed9fbc47a989cfef45
+Merge: b45e8ba 9f690c0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-09 11:32:15 +0000
+
+    Merge branch 'stable-resource-0.9'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 9f690c0bb71b5412a3486912877bd2d48f49de3c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-22 12:33:51 +0100
+
+    Use a hash of the machine ID as default resource
+    
+    Technically the first 8 bytes may not be pseudo-random and so we might
+    collide if we just use those rather than (a function of) the full range.
+    
+    (Cherry-picked from 07d1195.)
+
+commit 728deb234286de88b87e0b2f8045f00d1ddd6d98
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-10-09 14:10:13 +0100
+
+    Use (part of) D-Bus machine ID as default resource.
+    
+    Previously, Gabble generated a random resource for each connection if no
+    resource was explicitly specified. This meant that you could connect to
+    the same account with two Telepathy-powered clients at the same time
+    (say, your N900 and Empathy on the desktop) without having to change
+    your resource on one of them.
+    
+    However, this is too random: if you lose your network connection without
+    telling the server you're leaving, and then reconnect with a new
+    resource, the server may still think the old resource is connected
+    (until it decides it's timed out) and send messages there rather than to
+    your new connection. Ditto your contacts, if they're sending to full
+    JIDs. By using the D-Bus machine ID as the default resource, you'll get
+    the same resource each time you connect from a particular device, with a
+    reasonably good chance that it'll be different on each of your devices.
+    
+    This has the downside that you can't make two connections to the same
+    account on the same bus. I don't think this is a major problem: MC
+    should be managing your connections anyway. :-) However, it does mean I
+    had to remove the test which checks that you can do that...
+    
+    (Forward-port of 4a216f6.)
+
+commit 77bd00436c11941e7c6366dd76f316c563a8fe79
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-07 14:19:14 +0000
+
+    Negotiate chat state support for capsless contacts
+    
+    XEP-0085 §5.1 defines how to negotiate support for chat states when you
+    don't know a contact's caps. Roughly:
+    
+    • If you don't know whether someone supports them, don't send
+      stand-alone notifications, but include <active/> in messages you send;
+    • If you receive a chat state, mark the contact as supporting chat
+      states;
+    • If you receive a message without a chat state, mark the contact as not
+      supporting chat states.
+    
+    This is complicated slightly by multiple resources, but basically we
+    follow the above rules, resetting whenever we change which resource
+    we're sending to.
+
+commit 4f42194a71eca288e34e5663deb31a39ab53412d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-07 13:40:21 +0000
+
+    Send chat state notifications as type='chat'
+    
+    This has been a SHOULD since 2003-09-18. From XEP-0085 §5.4:
+    
+        This protocol SHOULD NOT be used with message types other than
+        "chat" or "groupchat".
+
+commit 41736c6f5db36348836384e1fb6208a2ba839068
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-07 13:28:50 +0000
+
+    Refactor determining whether to send chat states
+
+commit 711837c67c6d6b6d7b5de244e3fd271c02b1ecdd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-07 11:48:17 +0000
+
+    Tidy up the chat states test a smidge
+
+commit b45e8ba34a7fa5ad0ea46246e8f8e0d088b55085
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-11-03 16:09:13 +0000
+
+    Update wocky (changes to make the SASL challnge parser more robust).
+
+commit d879fd98ca9252f4cfd35ca78451b5ad48f94cdc
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-27 17:58:11 +0000
+
+    Post release bump (0.9.2.1)
+
 commit 8835b7af976589de329677e721aca00c75b63b05
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   2009-10-27 17:12:12 +0000

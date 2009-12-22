@@ -50,6 +50,8 @@ static void
 gabble_connection_manager_finalize (GObject *object)
 {
   gabble_debug_free ();
+
+  G_OBJECT_CLASS (gabble_connection_manager_parent_class)->finalize (object);
 }
 
 static void
@@ -126,7 +128,9 @@ static TpCMParamSpec jabber_params[] = {
     /* FIXME: validate the JID according to the RFC */
     tp_cm_param_filter_string_nonempty, NULL },
   { "password", DBUS_TYPE_STRING_AS_STRING, G_TYPE_STRING,
-    TP_CONN_MGR_PARAM_FLAG_REQUIRED | TP_CONN_MGR_PARAM_FLAG_REGISTER, NULL,
+    TP_CONN_MGR_PARAM_FLAG_REQUIRED | TP_CONN_MGR_PARAM_FLAG_REGISTER |
+      TP_CONN_MGR_PARAM_FLAG_SECRET,
+    NULL,
     G_STRUCT_OFFSET(GabbleParams, password), NULL, NULL },
 
   { "server", DBUS_TYPE_STRING_AS_STRING, G_TYPE_STRING, 0, NULL,
@@ -240,6 +244,7 @@ free_params (void *p)
   g_free (params->https_proxy_server);
   g_free (params->fallback_conference_server);
   g_free (params->stun_server);
+  g_free (params->fallback_stun_server);
   g_free (params->alias);
   g_strfreev (params->fallback_socks5_proxies);
 
@@ -287,6 +292,15 @@ _gabble_connection_manager_new_connection (TpBaseConnectionManager *self,
                        "password",           params->password,
                        NULL);
 
+  /* split up account into username, stream-server and resource */
+  if (!_gabble_connection_set_properties_from_account (conn, params->account,
+        error))
+    {
+      g_object_unref (G_OBJECT (conn));
+      conn = NULL;
+      goto out;
+    }
+
   SET_PROPERTY_IF_PARAM_SET ("connect-server", JABBER_PARAM_SERVER,
                              params->server);
   SET_PROPERTY_IF_PARAM_SET ("resource", JABBER_PARAM_RESOURCE,
@@ -327,13 +341,6 @@ _gabble_connection_manager_new_connection (TpBaseConnectionManager *self,
   SET_PROPERTY_IF_PARAM_SET ("keepalive-interval",
       JABBER_PARAM_KEEPALIVE_INTERVAL, params->keepalive_interval);
 
-  /* split up account into username, stream-server and resource */
-  if (!_gabble_connection_set_properties_from_account (conn, params->account,
-        error))
-    {
-      g_object_unref (G_OBJECT (conn));
-      conn = NULL;
-    }
-
+out:
   return (TpBaseConnection *) conn;
 }

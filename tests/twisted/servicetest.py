@@ -338,6 +338,7 @@ def wrap_connection(conn):
         [('Peer', 'org.freedesktop.DBus.Peer'),
          ('ContactCapabilities', cs.CONN_IFACE_CONTACT_CAPS),
          ('Location', cs.CONN_IFACE_LOCATION),
+         ('Future', tp_name_prefix + '.Connection.FUTURE'),
         ]))
 
 def wrap_channel(chan, type_, extra=None):
@@ -465,6 +466,20 @@ def assertLength(length, value):
     if len(value) != length:
         raise AssertionError("expected: length %d, got length %d:\n%s" % (
             length, len(value), pretty(value)))
+
+def assertFlagsSet(flags, value):
+    masked = value & flags
+    if masked != flags:
+        raise AssertionError(
+            "expected flags %u, of which only %u are set in %u" % (
+            flags, masked, value))
+
+def assertFlagsUnset(flags, value):
+    masked = value & flags
+    if masked != 0:
+        raise AssertionError(
+            "expected none of flags %u, but %u are set in %u" % (
+            flags, masked, value))
 
 def install_colourer():
     def red(s):

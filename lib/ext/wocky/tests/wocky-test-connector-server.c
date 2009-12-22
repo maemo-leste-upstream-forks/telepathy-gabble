@@ -32,18 +32,14 @@
 #include <wocky/wocky-xmpp-connection.h>
 
 #include <wocky/wocky-namespaces.h>
-#include <wocky/wocky-debug.h>
 #include <wocky/wocky-utils.h>
 
-#if USING_OPENSSL
-#include <wocky/wocky-openssl.h>
-#else
 #include <wocky/wocky-tls.h>
-#endif
 
 #define INITIAL_STREAM_ID "0-HAI"
-#define DEBUG(format, ...) \
-  wocky_debug (DEBUG_CONNECTOR, "%s: " format, G_STRFUNC, ##__VA_ARGS__)
+
+#define DEBUG_FLAG DEBUG_CONNECTOR
+#include <wocky/wocky-debug.h>
 
 G_DEFINE_TYPE (TestConnectorServer, test_connector_server, G_TYPE_OBJECT);
 
@@ -67,6 +63,9 @@ static void xmpp_init (GObject *source, GAsyncResult *result, gpointer data);
 static void starttls (GObject *source, GAsyncResult *result, gpointer data);
 static void finished (GObject *source, GAsyncResult *, gpointer data);
 static void quit (GObject *source, GAsyncResult *result, gpointer data);
+
+static void server_enc_outstanding (TestConnectorServer *self);
+static gboolean server_dec_outstanding (TestConnectorServer *self);
 
 /* ************************************************************************* */
 /* test connector server object definition */
@@ -103,9 +102,15 @@ struct _TestConnectorServerPrivate
   gchar *pass;
   gchar *version;
 
+  gchar *used_mech;
+
   CertSet cert;
   WockyTLSSession *tls_sess;
   WockyTLSConnection *tls_conn;
+
+  GCancellable *cancellable;
+  gint outstanding;
+  GSimpleAsyncResult *teardown_result;
 
   struct { ServerProblem sasl; ConnectorProblem *connector; } problem;
 };
@@ -152,6 +157,7 @@ test_connector_server_finalise (GObject *object)
   g_free (priv->user);
   g_free (priv->pass);
   g_free (priv->version);
+  g_free (priv->used_mech);
 
   G_OBJECT_CLASS (test_connector_server_parent_class)->finalize (object);
 }
@@ -162,6 +168,7 @@ test_connector_server_init (TestConnectorServer *obj)
   TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (obj);
   priv->tls_started = FALSE;
   priv->authed      = FALSE;
+  priv->cancellable = g_cancellable_new ();
 }
 
 static void
@@ -392,7 +399,9 @@ iq_set_query_XEP77_REGISTER (TestConnectorServer *self,
         }
     }
 
-  wocky_xmpp_connection_send_stanza_async (conn, iq, NULL, cb, self);
+  server_enc_outstanding (self);
+  wocky_xmpp_connection_send_stanza_async (conn, iq,
+    priv->cancellable, cb, self);
   g_object_unref (xml);
   g_object_unref (iq);
 }
@@ -468,6 +477,7 @@ iq_get_query_XEP77_REGISTER (TestConnectorServer *self,
         }
     }
 
+  server_enc_outstanding (self);
   wocky_xmpp_connection_send_stanza_async (conn, iq, NULL, iq_sent, self);
   g_object_unref (xml);
   g_object_unref (iq);
@@ -541,7 +551,9 @@ iq_get_query_JABBER_AUTH (TestConnectorServer *self,
     }
 
   DEBUG ("responding to iq get");
-  wocky_xmpp_connection_send_stanza_async (conn, iq, NULL, iq_sent, self);
+  server_enc_outstanding (self);
+  wocky_xmpp_connection_send_stanza_async (conn, iq,
+    priv->cancellable, iq_sent, self);
   DEBUG ("sent iq get response");
   g_object_unref (xml);
   g_object_unref (iq);
@@ -665,7 +677,9 @@ iq_set_query_JABBER_AUTH (TestConnectorServer *self,
           WOCKY_STANZA_END);
     }
 
-  wocky_xmpp_connection_send_stanza_async (conn, iq, NULL, iq_sent, self);
+  server_enc_outstanding (self);
+  wocky_xmpp_connection_send_stanza_async (conn, iq, priv->cancellable,
+    iq_sent, self);
   g_object_unref (iq);
   g_object_unref (xml);
 }
@@ -775,7 +789,9 @@ iq_set_bind_XMPP_BIND (TestConnectorServer *self,
         }
     }
 
-  wocky_xmpp_connection_send_stanza_async (conn, iq, NULL, iq_sent, self);
+  server_enc_outstanding (self);
+  wocky_xmpp_connection_send_stanza_async (conn, iq, priv->cancellable,
+    iq_sent, self);
   g_object_unref (xml);
   g_object_unref (iq);
 }
@@ -851,6 +867,7 @@ iq_set_session_XMPP_SESSION (TestConnectorServer *self,
           WOCKY_STANZA_END);
     }
 
+  server_enc_outstanding (self);
   wocky_xmpp_connection_send_stanza_async (conn, iq, NULL, iq_sent, self);
   g_object_unref (xml);
   g_object_unref (iq);
@@ -862,7 +879,8 @@ iq_sent_unregistered (GObject *source,
     gpointer data)
 {
   GError *error = NULL;
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (data);
+  TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
+  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
   WockyXmppConnection *conn = priv->conn;
   WockyXmppStanza *es = NULL;
 
@@ -872,11 +890,17 @@ iq_sent_unregistered (GObject *source,
     {
       DEBUG ("send iq response failed: %s", error->message);
       g_error_free (error);
+      server_dec_outstanding (self);
       return;
     }
 
+  if (server_dec_outstanding (self))
+    return;
+
   es = error_stanza ("not-authorized", NULL, FALSE);
-  wocky_xmpp_connection_send_stanza_async (conn, es, NULL, finished, data);
+  server_enc_outstanding (self);
+  wocky_xmpp_connection_send_stanza_async (conn, es, priv->cancellable,
+    finished, self);
   g_object_unref (es);
 }
 
@@ -887,6 +911,7 @@ iq_sent (GObject *source,
     gpointer data)
 {
   GError *error = NULL;
+  TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
   TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (data);
   WockyXmppConnection *conn = priv->conn;
 
@@ -896,11 +921,18 @@ iq_sent (GObject *source,
     {
       DEBUG ("send iq response failed: %s", error->message);
       g_error_free (error);
+      server_dec_outstanding (self);
       return;
     }
 
+  if (server_dec_outstanding (self))
+    return;
+
+  server_enc_outstanding (self);
+
   DEBUG ("waiting for next stanza from client");
-  wocky_xmpp_connection_recv_stanza_async (conn, NULL, xmpp_handler, data);
+  wocky_xmpp_connection_recv_stanza_async (conn,
+    priv->cancellable, xmpp_handler, data);
 }
 
 static void
@@ -916,7 +948,9 @@ handle_auth (TestConnectorServer *self,
      when we need to send our final feature stanza:
      the stream does not return to us */
   /* this will also unref *xml when it has finished with it */
-  test_sasl_auth_server_auth_async (sasl, priv->conn, xml, after_auth, self);
+  server_enc_outstanding (self);
+  test_sasl_auth_server_auth_async (sasl, priv->conn, xml,
+    after_auth, priv->cancellable, self);
 }
 
 static void
@@ -974,6 +1008,7 @@ handle_starttls (TestConnectorServer *self,
                 wocky_tls_session_server_new (priv->stream, 1024, key, crt);
             }
         }
+      server_enc_outstanding (self);
       wocky_xmpp_connection_send_stanza_async (conn, reply, NULL, cb, self);
       g_object_unref (reply);
     }
@@ -988,7 +1023,12 @@ finished (GObject *source,
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
   TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
   DEBUG ("");
-  wocky_xmpp_connection_send_close_async (priv->conn, NULL, quit, data);
+
+  if (server_dec_outstanding (self))
+    return;
+  server_enc_outstanding (self);
+  wocky_xmpp_connection_send_close_async (priv->conn,
+    priv->cancellable, quit, data);
 }
 
 static void
@@ -1002,8 +1042,42 @@ quit (GObject *source,
 
   DEBUG ("");
   wocky_xmpp_connection_send_close_finish (priv->conn, result, &error);
-  g_object_unref (self);
-  exit (0);
+  server_dec_outstanding (self);
+}
+
+static void
+handshake_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TestConnectorServer *self = TEST_CONNECTOR_SERVER (user_data);
+  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  GError *error = NULL;
+
+  DEBUG ("TLS/SSL handshake finished");
+
+  priv->tls_conn = wocky_tls_session_handshake_finish (
+    WOCKY_TLS_SESSION (source),
+    result,
+    &error);
+
+  if (server_dec_outstanding (self))
+    return;
+
+  if (priv->tls_conn == NULL)
+    {
+      DEBUG ("SSL or TLS Server Setup failed: %s", error->message);
+      g_io_stream_close (priv->stream, NULL, NULL);
+      return;
+    }
+
+  if (priv->conn != NULL)
+    g_object_unref (priv->conn);
+
+  priv->state = SERVER_STATE_START;
+  priv->conn = wocky_xmpp_connection_new (G_IO_STREAM (priv->tls_conn));
+  priv->tls_started = TRUE;
+  xmpp_init (NULL,NULL,self);
 }
 
 
@@ -1012,32 +1086,29 @@ starttls (GObject *source,
     GAsyncResult *result,
     gpointer data)
 {
-  GError *error = NULL;
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
   TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
   WockyXmppConnection *conn = WOCKY_XMPP_CONNECTION (source);
+  GError *error = NULL;
 
   DEBUG ("");
+
   if (!wocky_xmpp_connection_send_stanza_finish (conn, result, &error))
     {
       DEBUG ("Sending starttls '<proceed...>' failed: %s", error->message);
+      server_dec_outstanding (self);
       return;
     }
 
-  priv->tls_conn = wocky_tls_session_handshake (priv->tls_sess, NULL, &error);
+  if (server_dec_outstanding (self))
+    return;
 
-  if (priv->tls_conn == NULL)
-    {
-      g_error ("TLS Server Setup failed: %s", error->message);
-      exit (0);
-    }
-
-  if (priv->conn != NULL)
-    g_object_unref (priv->conn);
-  priv->state = SERVER_STATE_START;
-  priv->conn = wocky_xmpp_connection_new (G_IO_STREAM (priv->tls_conn));
-  priv->tls_started = TRUE;
-  xmpp_init (NULL,NULL,self);
+  server_enc_outstanding (self);
+  wocky_tls_session_handshake_async (priv->tls_sess,
+    G_PRIORITY_DEFAULT,
+    NULL,
+    handshake_cb,
+    self);
 }
 
 
@@ -1068,7 +1139,17 @@ xmpp_handler (GObject *source,
    * we got this far, we can just exit: The client (ie the test) will
    * report any error that actually needs reporting - we don't need to */
   if (error != NULL)
-      exit (0);
+    {
+      if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        {
+          server_dec_outstanding (self);
+          return;
+        }
+      g_assert_not_reached ();
+    }
+
+  if (server_dec_outstanding (self))
+    return;
 
   ns   = wocky_xmpp_node_get_ns (xml->node);
   name = xml->node->name;
@@ -1106,7 +1187,9 @@ xmpp_handler (GObject *source,
   if (!handled)
     {
       DEBUG ("<%s xmlns=\"%s\"… not handled", name, ns);
-      wocky_xmpp_connection_recv_stanza_async (conn, NULL, xmpp_handler, self);
+      server_enc_outstanding (self);
+      wocky_xmpp_connection_recv_stanza_async (conn, priv->cancellable,
+          xmpp_handler, self);
       g_object_unref (xml);
     }
 }
@@ -1125,12 +1208,29 @@ after_auth (GObject *source,
   TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (tcs);
   WockyXmppConnection *conn = priv->conn;
 
-  DEBUG ("");
+  DEBUG ("Auth finished: %d", priv->outstanding);
   if (!test_sasl_auth_server_auth_finish (tsas, res, &error))
     {
-      wocky_xmpp_connection_send_close_async (conn, NULL, xmpp_close, data);
+      g_object_unref (priv->sasl);
+      priv->sasl = NULL;
+
+      if (server_dec_outstanding (tcs))
+        return;
+
+      server_enc_outstanding (tcs);
+      wocky_xmpp_connection_send_close_async (conn, priv->cancellable,
+          xmpp_close, data);
       return;
     }
+
+  priv->used_mech = g_strdup (test_sasl_auth_server_get_selected_mech
+    (priv->sasl));
+
+  g_object_unref (priv->sasl);
+  priv->sasl = NULL;
+
+  if (server_dec_outstanding (tcs))
+    return;
 
   feat = wocky_xmpp_stanza_new ("stream:features");
   node = feat->node;
@@ -1142,7 +1242,10 @@ after_auth (GObject *source,
     wocky_xmpp_node_add_child_ns (node, "bind", WOCKY_XMPP_NS_BIND);
 
   priv->state = SERVER_STATE_FEATURES_SENT;
-  wocky_xmpp_connection_send_stanza_async (conn, feat, NULL, xmpp_init, data);
+
+  server_enc_outstanding (tcs);
+  wocky_xmpp_connection_send_stanza_async (conn, feat, priv->cancellable,
+    xmpp_init, data);
 
   g_object_unref (feat);
 }
@@ -1193,7 +1296,7 @@ xmpp_close (GObject *source,
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
   TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
 
-  DEBUG ("");
+  DEBUG ("Closing connection");
   wocky_xmpp_connection_send_close_async (priv->conn, NULL, xmpp_closed, self);
 }
 
@@ -1205,19 +1308,16 @@ xmpp_closed (GObject *source,
   GError *error = NULL;
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
   TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
-  DEBUG ("");
+  DEBUG ("Connection closed");
   wocky_xmpp_connection_send_close_finish (priv->conn, result, &error);
 }
 
 static void startssl (TestConnectorServer *self)
 {
-  GError *error = NULL;
   TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
-  WockyXmppConnection *conn = priv->conn;
   ConnectorProblem *problem = priv->problem.connector;
 
-  if (priv->tls_started)
-    return;
+  g_assert (!priv->tls_started);
 
   DEBUG ("creating SSL Session [server]");
   if (problem->death & SERVER_DEATH_TLS_NEG)
@@ -1244,20 +1344,28 @@ static void startssl (TestConnectorServer *self)
     }
 
   DEBUG ("starting server SSL handshake");
-  priv->tls_conn = wocky_tls_session_handshake (priv->tls_sess, NULL, &error);
-  if (priv->tls_conn == NULL)
-    {
-      g_error ("SSL Server Setup failed: %p %s",
-          priv->tls_sess, error->message);
-      exit (0);
-    }
-  DEBUG ("server SSL handshake complete");
+  server_enc_outstanding (self);
+  wocky_tls_session_handshake_async (priv->tls_sess,
+    G_PRIORITY_DEFAULT,
+    priv->cancellable,
+    handshake_cb,
+    self);
+}
 
-  priv->conn = wocky_xmpp_connection_new (G_IO_STREAM (priv->tls_conn));
-  priv->tls_started = TRUE;
-  if (conn != NULL)
-    g_object_unref (conn);
+static void
+force_closed_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TestConnectorServer *self = TEST_CONNECTOR_SERVER (user_data);
 
+  DEBUG ("Connection force closed");
+
+  g_assert (wocky_xmpp_connection_force_close_finish (
+    WOCKY_XMPP_CONNECTION (source),
+    result, NULL));
+
+  server_dec_outstanding (self);
 }
 
 static void
@@ -1282,18 +1390,19 @@ xmpp_init (GObject *source,
       /* wait for <stream:stream… from the client */
     case SERVER_STATE_START:
       DEBUG ("SERVER_STATE_START");
-
-      if (priv->problem.connector->xmpp & XMPP_PROBLEM_OLD_SSL)
-        {
-          startssl (self);
-          conn = priv->conn;
-        }
-      DEBUG ("SERVER_STATE_START: SSL");
       priv->state = SERVER_STATE_CLIENT_OPENED;
 
-      wocky_xmpp_connection_recv_open_async (conn, NULL, xmpp_init, self);
+      server_enc_outstanding (self);
       if (priv->problem.connector->death & SERVER_DEATH_SERVER_START)
-          exit (0);
+        {
+          wocky_xmpp_connection_force_close_async (conn,
+            priv->cancellable, force_closed_cb, self);
+        }
+      else
+        {
+          wocky_xmpp_connection_recv_open_async (conn, priv->cancellable,
+            xmpp_init, self);
+        }
       break;
 
       /* send our own <stream:stream… */
@@ -1302,10 +1411,22 @@ xmpp_init (GObject *source,
       priv->state = SERVER_STATE_SERVER_OPENED;
       wocky_xmpp_connection_recv_open_finish (conn, result,
           NULL, NULL, NULL, NULL, NULL, NULL);
-      wocky_xmpp_connection_send_open_async (conn, NULL, "testserver",
-          priv->version, NULL, INITIAL_STREAM_ID, NULL, xmpp_init, self);
+      if (server_dec_outstanding (self))
+        return;
+
+      server_enc_outstanding (self);
       if (priv->problem.connector->death & SERVER_DEATH_CLIENT_OPEN)
-          exit (0);
+        {
+          wocky_xmpp_connection_force_close_async (conn,
+            priv->cancellable, force_closed_cb, self);
+        }
+      else
+        {
+          wocky_xmpp_connection_send_open_async (conn, NULL,
+              "testserver",
+             priv->version, NULL, INITIAL_STREAM_ID,
+             priv->cancellable, xmpp_init, self);
+        }
       break;
 
       /* send our feature set */
@@ -1313,21 +1434,29 @@ xmpp_init (GObject *source,
       DEBUG ("SERVER_STATE_SERVER_OPENED");
       priv->state = SERVER_STATE_FEATURES_SENT;
       wocky_xmpp_connection_send_open_finish (conn, result, NULL);
+      if (server_dec_outstanding (self))
+        return;
 
       if (priv->problem.connector->death & SERVER_DEATH_SERVER_OPEN)
-          exit (0);
-
-      if (priv->problem.connector->xmpp & XMPP_PROBLEM_OLD_SERVER)
+        {
+          server_enc_outstanding (self);
+          wocky_xmpp_connection_force_close_async (conn,
+            priv->cancellable, force_closed_cb, self);
+        }
+      else if (priv->problem.connector->xmpp & XMPP_PROBLEM_OLD_SERVER)
         {
           DEBUG ("diverting to old-jabber-auth");
-          wocky_xmpp_connection_recv_stanza_async (priv->conn, NULL,
+          server_enc_outstanding (self);
+          wocky_xmpp_connection_recv_stanza_async (priv->conn,
+              priv->cancellable,
               xmpp_handler, self);
         }
       else
         {
           xml = feature_stanza (self);
+          server_enc_outstanding (self);
           wocky_xmpp_connection_send_stanza_async (conn, xml,
-              NULL, xmpp_init, self);
+              priv->cancellable, xmpp_init, self);
           g_object_unref (xml);
         }
       break;
@@ -1336,11 +1465,19 @@ xmpp_init (GObject *source,
     case SERVER_STATE_FEATURES_SENT:
       DEBUG ("SERVER_STATE_FEATURES_SENT");
       wocky_xmpp_connection_send_stanza_finish (conn, result, NULL);
-      wocky_xmpp_connection_recv_stanza_async (conn, NULL, xmpp_handler, self);
+      if (server_dec_outstanding (self))
+        return;
+
+      server_enc_outstanding (self);
       if (priv->problem.connector->death & SERVER_DEATH_FEATURES)
         {
-          sleep (1);
-          exit (0);
+          wocky_xmpp_connection_force_close_async (conn,
+            priv->cancellable, force_closed_cb, self);
+        }
+      else
+        {
+          wocky_xmpp_connection_recv_stanza_async (conn, priv->cancellable,
+            xmpp_handler, self);
         }
       break;
 
@@ -1389,17 +1526,103 @@ test_connector_server_new (GIOStream *stream,
   return self;
 }
 
-void
-test_connector_server_start (GObject *object)
+static void
+server_enc_outstanding (TestConnectorServer *self)
 {
-  TestConnectorServer *self;
+  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  priv->outstanding++;
+
+  DEBUG ("Upped outstanding to %d", priv->outstanding);
+}
+
+static gboolean
+server_dec_outstanding (TestConnectorServer *self)
+{
+  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+
+  priv->outstanding--;
+  g_assert (priv->outstanding >= 0);
+
+  if (priv->teardown_result != NULL && priv->outstanding == 0)
+    {
+      GSimpleAsyncResult *r = priv->teardown_result;
+      priv->teardown_result = NULL;
+
+      DEBUG ("Tearing down, bye bye");
+
+      g_simple_async_result_complete (r);
+      g_object_unref (r);
+      DEBUG ("Unreffed!");
+      return TRUE;
+    }
+
+  DEBUG ("Outstanding: %d", priv->outstanding);
+
+  return FALSE;
+}
+
+void
+test_connector_server_teardown (TestConnectorServer *self,
+  GAsyncReadyCallback callback,
+  gpointer user_data)
+{
+  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self),
+    callback, user_data, test_connector_server_teardown_finish);
+
+  /* For now, we'll assert if this gets called twice */
+  g_assert (priv->cancellable != NULL);
+
+  DEBUG ("Requested to stop: %d", priv->outstanding);
+
+  g_cancellable_cancel (priv->cancellable);
+  g_object_unref (priv->cancellable);
+  priv->cancellable = NULL;
+
+  if (priv->outstanding == 0)
+    {
+      g_simple_async_result_complete_in_idle (result);
+      g_object_unref (result);
+    }
+  else
+    {
+      priv->teardown_result = result;
+    }
+}
+
+gboolean
+test_connector_server_teardown_finish (TestConnectorServer *self,
+  GAsyncResult *result,
+  GError *error)
+{
+  return TRUE;
+}
+
+
+void
+test_connector_server_start (TestConnectorServer *self)
+{
   TestConnectorServerPrivate *priv;
 
   DEBUG("test_connector_server_start");
 
-  self = TEST_CONNECTOR_SERVER (object);
   priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
   priv->state = SERVER_STATE_START;
   DEBUG ("connection: %p", priv->conn);
-  xmpp_init (NULL,NULL,self);
+  if (priv->problem.connector->xmpp & XMPP_PROBLEM_OLD_SSL)
+    {
+      startssl (self);
+    }
+  else
+    {
+      xmpp_init (NULL,NULL,self);
+    }
+}
+
+const gchar *
+test_connector_server_get_used_mech (TestConnectorServer *self)
+{
+  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+
+  return priv->used_mech;
 }

@@ -42,6 +42,10 @@
  */
 
 #include "wocky-tls.h"
+
+#include <gnutls/x509.h>
+#include <gnutls/openpgp.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -56,6 +60,16 @@
 #define DEBUG_FLAG DEBUG_TLS
 #define DEBUG_HANDSHAKE_LEVEL 5
 #define DEBUG_ASYNC_DETAIL_LEVEL 6
+
+#define VERIFY_STRICT  GNUTLS_VERIFY_DO_NOT_ALLOW_SAME
+#define VERIFY_NORMAL  ( GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT | \
+                         GNUTLS_VERIFY_DO_NOT_ALLOW_SAME )
+#define VERIFY_LENIENT ( GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT     | \
+                         GNUTLS_VERIFY_ALLOW_ANY_X509_V1_CA_CRT | \
+                         GNUTLS_VERIFY_ALLOW_SIGN_RSA_MD2       | \
+                         GNUTLS_VERIFY_ALLOW_SIGN_RSA_MD5       | \
+                         GNUTLS_VERIFY_DISABLE_TIME_CHECKS      | \
+                         GNUTLS_VERIFY_DISABLE_CA_SIGN          )
 
 #include "wocky-debug.h"
 
@@ -155,6 +169,12 @@ typedef GObjectClass WockyTLSSessionClass;
 typedef GInputStreamClass WockyTLSInputStreamClass;
 typedef GOutputStreamClass WockyTLSOutputStreamClass;
 
+static gnutls_dh_params_t dh_0768 = NULL;
+static gnutls_dh_params_t dh_1024 = NULL;
+static gnutls_dh_params_t dh_2048 = NULL;
+static gnutls_dh_params_t dh_3072 = NULL;
+static gnutls_dh_params_t dh_4096 = NULL;
+
 struct OPAQUE_TYPE__WockyTLSSession
 {
   GObject parent;
@@ -234,6 +254,7 @@ wocky_tls_cert_error_quark (void)
   return quark;
 }
 
+#ifdef ENABLE_DEBUG
 static const gchar *hdesc_to_string (long desc)
 {
 #define HDESC(x) case GNUTLS_HANDSHAKE_##x: return #x; break;
@@ -253,6 +274,7 @@ static const gchar *hdesc_to_string (long desc)
     }
   return "Unknown State";
 }
+#endif
 
 static const gchar *error_to_string (long error)
 {
@@ -584,7 +606,7 @@ wocky_tls_session_handshake_finish (WockyTLSSession   *session,
 int
 wocky_tls_session_verify_peer (WockyTLSSession    *session,
                                const gchar        *peername,
-                               long                flags,
+                               WockyTLSVerificationLevel level,
                                WockyTLSCertStatus *status)
 {
   int rval = -1;
@@ -592,6 +614,7 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
   guint _stat = 0;
   gboolean peer_name_ok = TRUE;
   const gchar *check_level;
+  gnutls_certificate_verify_flags check;
 
   /* list gnutls cert error conditions in descending order of noteworthiness *
    * and map them to wocky cert error conditions                             */
@@ -614,23 +637,29 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
   g_assert (status != NULL);
   *status = WOCKY_TLS_CERT_OK;
 
-  switch (flags)
+  switch (level)
     {
     case WOCKY_TLS_VERIFY_STRICT:
       check_level = "WOCKY_TLS_VERIFY_STRICT";
+      check = VERIFY_STRICT;
       break;
     case WOCKY_TLS_VERIFY_NORMAL:
       check_level = "WOCKY_TLS_VERIFY_NORMAL";
+      check = VERIFY_NORMAL;
       break;
     case WOCKY_TLS_VERIFY_LENIENT:
       check_level = "WOCKY_TLS_VERIFY_LENIENT";
+      check = VERIFY_LENIENT;
       break;
     default:
-      check_level = "*custom setting*";
+      g_warn_if_reached ();
+      check_level = "Unknown strictness level";
+      check = VERIFY_STRICT;
+      break;
     }
 
   DEBUG ("setting gnutls verify flags level to: %s", check_level);
-  gnutls_certificate_set_verify_flags (session->gnutls_cert_cred, flags);
+  gnutls_certificate_set_verify_flags (session->gnutls_cert_cred, check);
   rval = gnutls_certificate_verify_peers2 (session->session, &_stat);
 
   if (rval != GNUTLS_E_SUCCESS)
@@ -1312,6 +1341,8 @@ wocky_tls_session_constructed (GObject *object)
      but IANA cryptographer */
   if (server)
     {
+      gnutls_dh_params_t *dhp;
+
       if ((session->key_file != NULL) && (session->cert_file != NULL))
         {
           DEBUG ("cert/key pair: %s/%s", session->cert_file, session->key_file);
@@ -1320,10 +1351,38 @@ wocky_tls_session_constructed (GObject *object)
                                                 session->key_file,
                                                 GNUTLS_X509_FMT_PEM);
         }
-      gnutls_dh_params_init (&session->dh_params);
-      gnutls_dh_params_generate2 (session->dh_params, session->dh_bits);
-      gnutls_certificate_set_dh_params (session->gnutls_cert_cred,
-                                        session->dh_params);
+
+      switch (session->dh_bits)
+        {
+        case 768:
+          dhp = &dh_0768;
+          break;
+        case 1024:
+          dhp = &dh_1024;
+          break;
+        case 2048:
+          dhp = &dh_2048;
+          break;
+        case 3072:
+          dhp = &dh_3072;
+          break;
+        case 4096:
+          dhp = &dh_4096;
+          break;
+        default:
+          dhp = &dh_1024;
+          break;
+        }
+
+      if (*dhp == NULL)
+        {
+          DEBUG ("Initialising DH parameters (%d bits)", session->dh_bits);
+          gnutls_dh_params_init (dhp);
+          gnutls_dh_params_generate2 (*dhp, session->dh_bits);
+        }
+
+      session->dh_params = *dhp;
+      gnutls_certificate_set_dh_params (session->gnutls_cert_cred, *dhp);
       gnutls_init (&session->session, GNUTLS_SERVER);
     }
   else
@@ -1445,6 +1504,16 @@ wocky_tls_connection_set_property (GObject *object, guint prop_id,
     }
 }
 
+static gboolean
+wocky_tls_connection_close (GIOStream *stream,
+  GCancellable *cancellable,
+  GError **error)
+{
+  WockyTLSConnection *connection = WOCKY_TLS_CONNECTION (stream);
+
+  return g_io_stream_close (connection->session->stream, cancellable, error);
+}
+
 static GInputStream *
 wocky_tls_connection_get_input_stream (GIOStream *io_stream)
 {
@@ -1525,6 +1594,7 @@ wocky_tls_connection_class_init (WockyTLSConnectionClass *class)
                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
   stream_class->get_input_stream = wocky_tls_connection_get_input_stream;
   stream_class->get_output_stream = wocky_tls_connection_get_output_stream;
+  stream_class->close_fn = wocky_tls_connection_close;
 }
 
 WockyTLSSession *

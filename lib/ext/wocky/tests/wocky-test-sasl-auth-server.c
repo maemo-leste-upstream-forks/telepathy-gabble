@@ -93,10 +93,11 @@ struct _TestSaslAuthServerPrivate
   gchar *username;
   gchar *password;
   gchar *mech;
+  gchar *selected_mech;
   AuthState state;
   ServerProblem problem;
-  GCancellable *recv_cancel;
   GSimpleAsyncResult *result;
+  GCancellable *cancellable;
 };
 
 #define TEST_SASL_AUTH_SERVER_GET_PRIVATE(o)  \
@@ -114,7 +115,6 @@ test_sasl_auth_server_init (TestSaslAuthServer *obj)
   priv->password = NULL;
   priv->mech = NULL;
   priv->state = AUTH_STATE_STARTED;
-  priv->recv_cancel = g_cancellable_new ();
 
   /* allocate any data required by the object here */
 }
@@ -147,10 +147,6 @@ test_sasl_auth_server_dispose (GObject *object)
 
   priv->dispose_has_run = TRUE;
 
-  g_cancellable_cancel (priv->recv_cancel);
-  g_object_unref (priv->recv_cancel);
-  priv->recv_cancel = NULL;
-
   /* release any references held by the object here */
   if (priv->conn != NULL)
     g_object_unref (priv->conn);
@@ -166,9 +162,7 @@ test_sasl_auth_server_dispose (GObject *object)
   priv->sasl_conn = NULL;
 #endif
 
-  if (priv->result != NULL)
-    g_object_unref (priv->result);
-  priv->result = NULL;
+  g_warn_if_fail (priv->result == NULL);
 
   if (G_OBJECT_CLASS (test_sasl_auth_server_parent_class)->dispose)
     G_OBJECT_CLASS (test_sasl_auth_server_parent_class)->dispose (object);
@@ -184,6 +178,7 @@ test_sasl_auth_server_finalize (GObject *object)
   g_free (priv->username);
   g_free (priv->password);
   g_free (priv->mech);
+  g_free (priv->selected_mech);
 
   G_OBJECT_CLASS (test_sasl_auth_server_parent_class)->finalize (object);
 }
@@ -193,11 +188,14 @@ features_sent (GObject *source,
     GAsyncResult *res,
     gpointer user_data)
 {
+  TestSaslAuthServer *self = TEST_SASL_AUTH_SERVER (user_data);
+  TestSaslAuthServerPrivate *priv = TEST_SASL_AUTH_SERVER_GET_PRIVATE (self);
+
   g_assert (wocky_xmpp_connection_send_stanza_finish (
     WOCKY_XMPP_CONNECTION (source), res, NULL));
 
   wocky_xmpp_connection_recv_stanza_async (WOCKY_XMPP_CONNECTION (source),
-    NULL, received_stanza, user_data);
+    priv->cancellable, received_stanza, user_data);
 }
 
 
@@ -220,7 +218,7 @@ stream_open_sent (GObject *source,
   test_sasl_auth_server_set_mechs (G_OBJECT (self), stanza);
 
   wocky_xmpp_connection_send_stanza_async (priv->conn, stanza,
-    NULL, features_sent, user_data);
+    priv->cancellable, features_sent, user_data);
   g_object_unref (stanza);
 }
 
@@ -256,6 +254,8 @@ post_auth_recv_stanza (GObject *source,
   GAsyncResult *result,
   gpointer user_data)
 {
+  TestSaslAuthServer *self = TEST_SASL_AUTH_SERVER(user_data);
+  TestSaslAuthServerPrivate * priv = TEST_SASL_AUTH_SERVER_GET_PRIVATE (self);
   WockyXmppStanza *stanza;
   GError *error = NULL;
 
@@ -267,15 +267,26 @@ post_auth_recv_stanza (GObject *source,
     {
       g_object_unref (stanza);
       wocky_xmpp_connection_recv_stanza_async (
-          WOCKY_XMPP_CONNECTION (source), NULL,
+          WOCKY_XMPP_CONNECTION (source), priv->cancellable,
           post_auth_recv_stanza, user_data);
+    }
+  else if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+      GSimpleAsyncResult *r = priv->result;
+
+      priv->result = NULL;
+      g_simple_async_result_set_from_error (r, error);
+
+      g_simple_async_result_complete (r);
+      g_object_unref (r);
+      g_error_free (error);
     }
   else
     {
       g_assert_error (error, WOCKY_XMPP_CONNECTION_ERROR,
           WOCKY_XMPP_CONNECTION_ERROR_CLOSED);
       wocky_xmpp_connection_send_close_async (WOCKY_XMPP_CONNECTION (source),
-          NULL, post_auth_close_sent, user_data);
+          priv->cancellable, post_auth_close_sent, user_data);
       g_error_free (error);
     }
 }
@@ -285,11 +296,13 @@ post_auth_features_sent (GObject *source,
     GAsyncResult *result,
     gpointer user_data)
 {
+  TestSaslAuthServer *self = TEST_SASL_AUTH_SERVER(user_data);
+  TestSaslAuthServerPrivate * priv = TEST_SASL_AUTH_SERVER_GET_PRIVATE (self);
   g_assert (wocky_xmpp_connection_send_stanza_finish (
     WOCKY_XMPP_CONNECTION (source), result, NULL));
 
   wocky_xmpp_connection_recv_stanza_async (WOCKY_XMPP_CONNECTION (source),
-      NULL, post_auth_recv_stanza, user_data);
+      priv->cancellable, post_auth_recv_stanza, user_data);
 }
 
 static void
@@ -305,8 +318,11 @@ post_auth_open_sent (GObject *source,
   /* if our caller wanted control back, hand it back here: */
   if (priv->result != NULL)
     {
-      g_simple_async_result_complete (priv->result);
-      g_object_unref (priv->result);
+      GSimpleAsyncResult *r = priv->result;
+
+      priv->result = NULL;
+      g_simple_async_result_complete (r);
+      g_object_unref (r);
     }
   else
     {
@@ -370,8 +386,19 @@ failure_sent (GObject *source,
     GAsyncResult *result,
     gpointer user_data)
 {
+  TestSaslAuthServer *tsas = TEST_SASL_AUTH_SERVER (user_data);
+  TestSaslAuthServerPrivate *priv = TEST_SASL_AUTH_SERVER_GET_PRIVATE (tsas);
+  GSimpleAsyncResult *r = priv->result;
+
+  priv->result = NULL;
   g_assert (wocky_xmpp_connection_send_stanza_finish (
       WOCKY_XMPP_CONNECTION (source), result, NULL));
+
+  if (r != NULL)
+    {
+      g_simple_async_result_complete (r);
+      g_object_unref (r);
+    }
 }
 
 static void
@@ -388,7 +415,7 @@ not_authorized (TestSaslAuthServer *self)
       WOCKY_NODE, "not-authorized", WOCKY_NODE_END,
     WOCKY_STANZA_END);
   wocky_xmpp_connection_send_stanza_async (priv->conn, s, NULL,
-    failure_sent, NULL);
+    failure_sent, self);
 
   g_object_unref (s);
 }
@@ -421,12 +448,144 @@ check_sasl_return (TestSaslAuthServer *self, int ret)
   return TRUE;
 }
 
+enum
+{
+  BEFORE_KEY,
+  INSIDE_KEY,
+  AFTER_KEY,
+  AFTER_EQ,
+  INSIDE_VALUE,
+  AFTER_VALUE,
+};
+
+/* insert space, CRLF, TAB etc at strategic locations in the challenge *
+ * to make sure our challenge parser is sufficently robust             */
+static gchar * space_challenge (const gchar *challenge, unsigned *len)
+{
+  GString *spaced = g_string_new_len (challenge, (gssize) *len);
+  gchar *c = spaced->str;
+  gchar q = '\0';
+  gsize pos;
+  gulong state = BEFORE_KEY;
+  gchar spc[] = { ' ', '\t', '\r', '\n' };
+
+  for (pos = 0; pos < spaced->len; pos++)
+    {
+      c = spaced->str + pos;
+
+      switch (state)
+        {
+          case BEFORE_KEY:
+            if (!g_ascii_isspace (*c) && *c != '\0' && *c != '=')
+              state = INSIDE_KEY;
+            break;
+          case INSIDE_KEY:
+            if (*c != '=')
+              break;
+            g_string_insert_c (spaced, pos++, spc [rand () % sizeof (spc)]);
+            state = AFTER_EQ;
+            break;
+          case AFTER_KEY:
+            if (*c != '=')
+              break;
+            state = AFTER_EQ;
+            break;
+          case AFTER_EQ:
+            if (g_ascii_isspace (*c))
+              break;
+            q = *c;
+            g_string_insert_c (spaced, pos++, spc [rand () % sizeof (spc)]);
+            state = INSIDE_VALUE;
+            break;
+          case INSIDE_VALUE:
+            if (q == '"' && *c != '"')
+              break;
+            if (q != '"' && !g_ascii_isspace (*c) && *c != ',')
+              break;
+            if (q != '"')
+              {
+                g_string_insert_c (spaced, pos++, spc [rand () % sizeof (spc)]);
+                g_string_insert_c (spaced, ++pos, spc [rand () % sizeof (spc)]);
+              }
+            state = AFTER_VALUE;
+            break;
+          case AFTER_VALUE:
+            if (*c == ',')
+              {
+                g_string_insert_c (spaced, pos++, spc [rand () % sizeof (spc)]);
+                g_string_insert_c (spaced, ++pos, spc [rand () % sizeof (spc)]);
+              }
+            state = BEFORE_KEY;
+            break;
+          default:
+            g_assert_not_reached ();
+        }
+    }
+
+  *len = spaced->len;
+  return g_string_free (spaced, FALSE);
+}
+
+/* insert a bogus parameter with a \" and a \\ sequence in it
+ * scatter some \ characters through the " quoted challenge values */
+static gchar * slash_challenge (const gchar *challenge, unsigned *len)
+{
+  GString *slashed = g_string_new_len (challenge, (gssize) *len);
+  gchar *c = slashed->str;
+  gchar q = '\0';
+  gsize pos;
+  gulong state = BEFORE_KEY;
+
+  for (pos = 0; pos < slashed->len; pos++)
+    {
+      c = slashed->str + pos;
+
+      switch (state)
+        {
+          case BEFORE_KEY:
+            if (!g_ascii_isspace (*c) && *c != '\0' && *c != '=')
+              state = INSIDE_KEY;
+            break;
+          case INSIDE_KEY:
+            if (*c != '=')
+              break;
+            state = AFTER_EQ;
+            break;
+          case AFTER_EQ:
+            if (g_ascii_isspace (*c))
+              break;
+            q = *c;
+            state = INSIDE_VALUE;
+            break;
+          case INSIDE_VALUE:
+            if (q == '"' && *c != '"')
+              {
+                if ((rand () % 3) == 0)
+                  g_string_insert_c (slashed, pos++, '\\');
+                break;
+              }
+            if (q != '"' && !g_ascii_isspace (*c) && *c != ',')
+              break;
+            state = AFTER_VALUE;
+            break;
+          case AFTER_VALUE:
+            state = BEFORE_KEY;
+            break;
+          default:
+            g_assert_not_reached ();
+        }
+    }
+
+  g_string_prepend (slashed, "ignore-me = \"(a slash \\\\ a quote \\\")\", ");
+
+  *len = slashed->len;
+  return g_string_free (slashed, FALSE);
+}
+
 static void
 handle_auth (TestSaslAuthServer *self, WockyXmppStanza *stanza)
 {
   TestSaslAuthServerPrivate *priv = TEST_SASL_AUTH_SERVER_GET_PRIVATE (self);
-  const gchar *mech = wocky_xmpp_node_get_attribute (stanza->node,
-      "mechanism");
   guchar *response = NULL;
   const gchar *challenge;
   unsigned challenge_len;
@@ -434,6 +593,10 @@ handle_auth (TestSaslAuthServer *self, WockyXmppStanza *stanza)
   int ret;
   WockyXmppNode *auth = stanza->node;
   const gchar *gjdd = NULL;
+
+  g_free (priv->selected_mech);
+  priv->selected_mech = g_strdup (wocky_xmpp_node_get_attribute (stanza->node,
+    "mechanism"));
 
   if (stanza->node->content != NULL)
     {
@@ -446,14 +609,14 @@ handle_auth (TestSaslAuthServer *self, WockyXmppStanza *stanza)
   switch (priv->problem)
     {
       case SERVER_PROBLEM_REQUIRE_GOOGLE_JDD:
-        if ((gjdd == NULL) || strcmp ("true", gjdd))
+        if ((gjdd == NULL) || wocky_strdiff ("true", gjdd))
           {
             not_authorized (self);
             goto out;
           }
         break;
       case SERVER_PROBLEM_DISLIKE_GOOGLE_JDD:
-        if (gjdd && !strcmp ("true", gjdd))
+        if (gjdd && !wocky_strdiff ("true", gjdd))
           {
             not_authorized (self);
             goto out;
@@ -465,27 +628,38 @@ handle_auth (TestSaslAuthServer *self, WockyXmppStanza *stanza)
 
   priv->state = AUTH_STATE_CHALLENGE;
 
-#if HAVE_LIBSASL2
-  ret = sasl_server_start (priv->sasl_conn, mech, (gchar *) response,
-      (unsigned) response_len, &challenge, &challenge_len);
-#else
-  challenge = "";
-  challenge_len = 0;
-  g_assert (!wocky_strdiff ("PLAIN", mech));
-  /* response format: ^@ u s e r ^@ p a s s    */
-  /* require at least 1 char user and password */
-  if (response_len >= 4)
+  if (!wocky_strdiff ("X-TEST", priv->selected_mech))
     {
-      const gchar *user = ((gchar *) response) + 1;
-      int ulen = strlen (user);
-      gchar *pass = g_strndup (user + ulen + 1, response_len - ulen - 2);
-      ret = ( wocky_strdiff (user, priv->username) ? SASL_NOUSER  :
-              wocky_strdiff (pass, priv->password) ? SASL_BADAUTH : SASL_OK );
-      g_free (pass);
+      challenge = "";
+      challenge_len = 0;
+      ret = wocky_strdiff ((gchar *) response, priv->password) ?
+          SASL_BADAUTH : SASL_OK;
     }
   else
-    ret = SASL_BADAUTH;
+    {
+#if HAVE_LIBSASL2
+      ret = sasl_server_start (priv->sasl_conn,
+          priv->selected_mech, (gchar *) response,
+          (unsigned) response_len, &challenge, &challenge_len);
+#else
+      challenge = "";
+      challenge_len = 0;
+      g_assert (!wocky_strdiff ("PLAIN", priv->selected_mech));
+      /* response format: ^@ u s e r ^@ p a s s    */
+      /* require at least 1 char user and password */
+      if (response_len >= 4)
+        {
+          const gchar *user = ((gchar *) response) + 1;
+          int ulen = strlen (user);
+          gchar *pass = g_strndup (user + ulen + 1, response_len - ulen - 2);
+          ret = ( wocky_strdiff (user, priv->username) ? SASL_NOUSER  :
+                  wocky_strdiff (pass, priv->password) ? SASL_BADAUTH : SASL_OK );
+          g_free (pass);
+        }
+      else
+        ret = SASL_BADAUTH;
 #endif
+    }
 
   if (!check_sasl_return (self, ret))
     goto out;
@@ -500,7 +674,25 @@ handle_auth (TestSaslAuthServer *self, WockyXmppStanza *stanza)
           priv->state = AUTH_STATE_FINAL_CHALLENGE;
         }
 
-      challenge64 = g_base64_encode ((guchar *) challenge, challenge_len);
+      if (priv->problem == SERVER_PROBLEM_SPACE_CHALLENGE)
+        {
+          unsigned slen = challenge_len;
+          gchar *spaced = space_challenge (challenge, &slen);
+          challenge64 = g_base64_encode ((guchar *) spaced, slen);
+          g_free (spaced);
+        }
+      else if (priv->problem == SERVER_PROBLEM_SLASH_CHALLENGE)
+        {
+          unsigned slen = challenge_len;
+          gchar *slashc = slash_challenge (challenge, &slen);
+          challenge64 = g_base64_encode ((guchar *) slashc, slen);
+          g_free (slashc);
+        }
+      else
+        {
+          challenge64 = g_base64_encode ((guchar *) challenge, challenge_len);
+        }
+
       c = wocky_xmpp_stanza_new ("challenge");
       wocky_xmpp_node_set_ns (c->node, WOCKY_XMPP_NS_SASL_AUTH);
       wocky_xmpp_node_set_content (c->node, challenge64);
@@ -569,7 +761,24 @@ handle_response (TestSaslAuthServer *self, WockyXmppStanza *stanza)
           priv->state = AUTH_STATE_FINAL_CHALLENGE;
         }
 
-      challenge64 = g_base64_encode ((guchar *) challenge, challenge_len);
+      if (priv->problem == SERVER_PROBLEM_SPACE_CHALLENGE)
+        {
+          unsigned slen = challenge_len;
+          gchar *spaced = space_challenge (challenge, &slen);
+          challenge64 = g_base64_encode ((guchar *) spaced, slen);
+          g_free (spaced);
+        }
+      else if (priv->problem == SERVER_PROBLEM_SLASH_CHALLENGE)
+        {
+          unsigned slen = challenge_len;
+          gchar *slashc = slash_challenge (challenge, &slen);
+          challenge64 = g_base64_encode ((guchar *) slashc, slen);
+          g_free (slashc);
+        }
+      else
+        {
+          challenge64 = g_base64_encode ((guchar *) challenge, challenge_len);
+        }
 
       c = wocky_xmpp_stanza_new ("challenge");
       wocky_xmpp_node_set_ns (c->node, WOCKY_XMPP_NS_SASL_AUTH);
@@ -627,7 +836,7 @@ received_stanza (GObject *source,
 
   g_assert (stanza != NULL);
 
-  if (strcmp (wocky_xmpp_node_get_ns (stanza->node),
+  if (wocky_strdiff (wocky_xmpp_node_get_ns (stanza->node),
       WOCKY_XMPP_NS_SASL_AUTH))
     {
       g_assert_not_reached ();
@@ -635,7 +844,7 @@ received_stanza (GObject *source,
 
   for (i = 0 ; handlers[i].name != NULL; i++)
     {
-      if (!strcmp (stanza->node->name, handlers[i].name))
+      if (!wocky_strdiff (stanza->node->name, handlers[i].name))
         {
           handlers[i].func (self, stanza);
           if (priv->state < AUTH_STATE_AUTHENTICATED)
@@ -674,7 +883,7 @@ test_sasl_server_auth_getopt (void *context, const char *plugin_name,
 
   for (i = 0; options[i].name != NULL; i++)
     {
-      if (!strcmp (option, options[i].name))
+      if (!wocky_strdiff (option, options[i].name))
         {
           *result = options[i].value;
           if (len != NULL)
@@ -751,10 +960,11 @@ test_sasl_auth_server_auth_finish (TestSaslAuthServer *self,
   gboolean ok = FALSE;
   TestSaslAuthServerPrivate *priv = TEST_SASL_AUTH_SERVER_GET_PRIVATE (self);
 
-  if (g_simple_async_result_propagate_error (priv->result, error))
+  if (g_simple_async_result_propagate_error (
+      G_SIMPLE_ASYNC_RESULT (res), error))
     return FALSE;
 
-  ok = g_simple_async_result_is_valid (G_ASYNC_RESULT (priv->result),
+  ok = g_simple_async_result_is_valid (G_ASYNC_RESULT (res),
       G_OBJECT (self),
       test_sasl_auth_server_auth_finish);
   g_return_val_if_fail (ok, FALSE);
@@ -767,6 +977,7 @@ test_sasl_auth_server_auth_async (GObject *obj,
     WockyXmppConnection *conn,
     WockyXmppStanza *auth,
     GAsyncReadyCallback cb,
+    GCancellable *cancellable,
     gpointer data)
 {
   TestSaslAuthServer *self = TEST_SASL_AUTH_SERVER (obj);
@@ -778,7 +989,8 @@ test_sasl_auth_server_auth_async (GObject *obj,
     g_object_unref (priv->conn);
 
   priv->state = AUTH_STATE_STARTED;
-  priv->conn = conn;
+  priv->conn = g_object_ref (conn);
+  priv->cancellable = cancellable;
 
   /* save the details of the point ot which we will hand back control */
   if (cb != NULL)
@@ -789,7 +1001,7 @@ test_sasl_auth_server_auth_async (GObject *obj,
   if (priv->state < AUTH_STATE_AUTHENTICATED)
     {
       wocky_xmpp_connection_recv_stanza_async (priv->conn,
-          NULL, received_stanza, self);
+          priv->cancellable, received_stanza, self);
     }
   g_object_unref (auth);
 }
@@ -839,4 +1051,12 @@ test_sasl_auth_server_set_mechs (GObject *obj, WockyXmppStanza *feat)
         }
     }
   return ret;
+}
+
+const gchar *
+test_sasl_auth_server_get_selected_mech (TestSaslAuthServer *self)
+{
+  TestSaslAuthServerPrivate *priv = TEST_SASL_AUTH_SERVER_GET_PRIVATE (self);
+
+  return priv->selected_mech;
 }

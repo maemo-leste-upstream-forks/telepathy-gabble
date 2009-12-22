@@ -1,8 +1,8 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = docs tools extensions lib src data m4 tests
+SUBDIRS = docs tools extensions lib src data m4 plugins tests gabble
 
-DISTCHECK_CONFIGURE_FLAGS = --disable-debug --enable-wocky-gtk-doc
+DISTCHECK_CONFIGURE_FLAGS = --disable-debug --enable-gtk-doc
 
 CLEANFILES = FIXME.out
 

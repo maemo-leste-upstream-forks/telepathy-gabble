@@ -38,6 +38,8 @@ typedef enum {
   SERVER_PROBLEM_INVALID_PASSWORD,
   SERVER_PROBLEM_REQUIRE_GOOGLE_JDD,
   SERVER_PROBLEM_DISLIKE_GOOGLE_JDD,
+  SERVER_PROBLEM_SPACE_CHALLENGE,
+  SERVER_PROBLEM_SLASH_CHALLENGE,
 } ServerProblem;
 
 typedef struct _TestSaslAuthServer TestSaslAuthServer;
@@ -71,12 +73,18 @@ GType test_sasl_auth_server_get_type (void);
    TestSaslAuthServerClass))
 
 
-void test_sasl_auth_server_auth_async (GObject *obj, WockyXmppConnection *conn,
-    WockyXmppStanza *auth, GAsyncReadyCallback cb, gpointer data);
+void test_sasl_auth_server_auth_async (GObject *obj,
+    WockyXmppConnection *conn,
+    WockyXmppStanza *auth,
+    GAsyncReadyCallback cb,
+    GCancellable *cancellable,
+    gpointer data);
 
 gboolean
 test_sasl_auth_server_auth_finish (TestSaslAuthServer *self, GAsyncResult *res,
     GError **error);
+
+const gchar *test_sasl_auth_server_get_selected_mech (TestSaslAuthServer *self);
 
 TestSaslAuthServer * test_sasl_auth_server_new (GIOStream *stream,
     gchar *mech, const gchar *user, const gchar *password,

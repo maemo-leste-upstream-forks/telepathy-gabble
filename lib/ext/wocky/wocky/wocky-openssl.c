@@ -33,7 +33,9 @@
  * debugging output from within wocky-openssl.c as well.
  */
 
-#include "wocky-openssl.h"
+#include "wocky-tls.h"
+
+#include <openssl/ssl.h>
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -41,13 +43,13 @@
 #include <openssl/err.h>
 #include <openssl/engine.h>
 #include <openssl/x509v3.h>
-#include <wocky/wocky-utils.h>
 
 #define DEBUG_FLAG DEBUG_TLS
 #define DEBUG_HANDSHAKE_LEVEL 5
 #define DEBUG_ASYNC_DETAIL_LEVEL 6
 
 #include "wocky-debug.h"
+#include "wocky-utils.h"
 
 #include <openssl/ssl.h>
 #include <openssl/x509_vfy.h>
@@ -258,9 +260,9 @@ wocky_tls_job_make_result (WockyTLSJob *job,
                                       job->callback,
                                       job->user_data,
                                       job->source_tag);
-  if (job->error)
+  if (job->error != NULL)
     {
-      DEBUG ("setting error from job");
+      DEBUG ("setting error from job '%s'", job->error->message);
       g_simple_async_result_set_from_error (simple, job->error);
       g_error_free (job->error);
       job->error = NULL;
@@ -289,6 +291,7 @@ wocky_tls_job_result_gssize (WockyTLSJob *job,
     }
 }
 
+/* only used for handshake results: read + write use result_gssize */
 static void
 wocky_tls_job_result_boolean (WockyTLSJob *job,
                               gint     result)
@@ -489,6 +492,36 @@ ssl_flush (WockyTLSSession *session)
                                  wocky_tls_session_write_ready, session);
 }
 
+/* FALSE indicates we should go round again and try to get more data */
+static gboolean
+ssl_read_is_complete (WockyTLSSession *session, gint result)
+{
+  /* if the job error is set, we should bail out now, we have failed   *
+   * otherwise:                                                        *
+   * a -ve return with an SSL error of WANT_READ implies an incomplete *
+   * crypto record: we need to go round again and get more data        *
+   * or:                                                               *
+   * a 0 return means the SSL connection was shut down cleanly         */
+  if ((session->job.read.error == NULL) && (result <= 0))
+    {
+      int err = SSL_get_error (session->ssl, result);
+
+      switch (err)
+        {
+        case SSL_ERROR_WANT_READ:
+          DEBUG ("Incomplete SSL record, read again");
+          return FALSE;
+        case SSL_ERROR_WANT_WRITE:
+          g_warning ("read caused write: unsupported TLS re-negotiation?");
+        default:
+          g_set_error (&session->job.read.error, WOCKY_TLS_ERROR, err,
+                       "OpenSSL read: protocol error %d", err);
+        }
+    }
+
+  return TRUE;
+}
+
 static void
 wocky_tls_session_try_operation (WockyTLSSession   *session,
                                  WockyTLSOperation  operation)
@@ -511,8 +544,14 @@ wocky_tls_session_try_operation (WockyTLSSession   *session,
           ssl_handshake (session);
           break;
         case SSL_ERROR_NONE:
+          DEBUG ("Handshake complete (success): %d", result);
+          wocky_tls_job_result_boolean (handshake, result);
+          break;
         default:
-          DEBUG ("Handshake complete: %d", result);
+          DEBUG ("Handshake complete (failure): %d", result);
+          if (handshake->error == NULL)
+            handshake->error =
+              g_error_new (WOCKY_TLS_ERROR, result, "Handshake Error");
           wocky_tls_job_result_boolean (handshake, result);
         }
     }
@@ -529,8 +568,13 @@ wocky_tls_session_try_operation (WockyTLSSession   *session,
       wanted = session->job.read.count;
       pending = (gulong)BIO_pending (session->rbio);
       result = SSL_read (session->ssl, session->job.read.buffer, wanted);
-      DEBUG ("read %ld clearbytes (from %ld cipherbytes)", result, pending);
-      wocky_tls_job_result_gssize (&session->job.read, result);
+      DEBUG ("read %" G_GSSIZE_FORMAT " clearbytes (from %ld cipherbytes)",
+          result, pending);
+
+      if (ssl_read_is_complete (session, result))
+        wocky_tls_job_result_gssize (&session->job.read, result);
+      else
+        ssl_fill (session);
     }
 
   else
@@ -544,7 +588,7 @@ wocky_tls_session_try_operation (WockyTLSSession   *session,
         DEBUG ("async job OP_WRITE");
 
       g_assert (operation == WOCKY_TLS_OP_WRITE);
-      DEBUG ("wrote %ld clearbytes", result);
+      DEBUG ("wrote %" G_GSSIZE_FORMAT " clearbytes", result);
       wocky_tls_job_result_gssize (&session->job.write, result);
     }
 }
@@ -626,7 +670,7 @@ wocky_tls_session_handshake (WockyTLSSession   *session,
           DEBUG ("sending %ld cipherbytes", wsize);
           if (wsize > 0)
             sent = g_output_stream_write (out, wbuf, wsize, NULL, error);
-          DEBUG ("sent %ld cipherbytes", sent);
+          DEBUG ("sent %" G_GSSIZE_FORMAT " cipherbytes", sent);
           ignored = BIO_reset (session->wbio);
         }
 
@@ -636,7 +680,7 @@ wocky_tls_session_handshake (WockyTLSSession   *session,
           GInputStream *in = g_io_stream_get_input_stream (session->stream);
           gssize bytes =
             g_input_stream_read (in, &rbuf, sizeof(rbuf), NULL, error);
-          DEBUG ("read %ld cipherbytes", bytes);
+          DEBUG ("read %" G_GSSIZE_FORMAT " cipherbytes", bytes);
           BIO_write (session->rbio, &rbuf, bytes);
         }
 
@@ -875,20 +919,20 @@ check_peer_name (const char *target, X509 *cert)
 int
 wocky_tls_session_verify_peer (WockyTLSSession    *session,
                                const gchar        *peername,
-                               long                flags,
+                               WockyTLSVerificationLevel level,
                                WockyTLSCertStatus *status)
 {
   int rval = -1;
   gboolean peer_name_ok = TRUE;
   const gchar *check_level;
   X509 *cert;
-  gboolean lenient = (flags == WOCKY_TLS_VERIFY_LENIENT);
+  gboolean lenient = (level == WOCKY_TLS_VERIFY_LENIENT);
 
   DEBUG ();
   g_assert (status != NULL);
   *status = WOCKY_TLS_CERT_OK;
 
-  switch (flags)
+  switch (level)
     {
     case WOCKY_TLS_VERIFY_STRICT:
       check_level = "WOCKY_TLS_VERIFY_STRICT";
@@ -900,7 +944,9 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
       check_level = "WOCKY_TLS_VERIFY_LENIENT";
       break;
     default:
-      check_level = "*custom setting*";
+      g_warn_if_reached ();
+      check_level = "Unknown strictness level";
+      level = WOCKY_TLS_VERIFY_STRICT;
     }
 
   DEBUG ("setting ssl verify flags level to: %s", check_level);
@@ -1030,9 +1076,43 @@ wocky_tls_input_stream_read_async (GInputStream        *stream,
                                    gpointer             user_data)
 {
   WockyTLSSession *session = WOCKY_TLS_INPUT_STREAM (stream)->session;
+  int ret;
 
   if (tls_debug_level >= DEBUG_ASYNC_DETAIL_LEVEL)
     DEBUG ();
+
+  g_assert (session->job.read.active == FALSE);
+
+  /* It is possible for a complete SSL record to be present in the read BIO *
+   * already as a result of a previous read, since SSL_read may extract     *
+   * just the first complete record, or some or all of them:                *
+   * as a result, we may not want to issue an actual read request as the    *
+   * data we are expecting may already have been read, causing us to wait   *
+   * until the next block of data arrives over the network (which may not   *
+   * ever happen): short-circuit the actual read if this is the case:       */
+  ret = SSL_read (session->ssl, buffer, count);
+
+  if (ssl_read_is_complete (session, ret))
+    {
+      GSimpleAsyncResult *r;
+
+      if (tls_debug_level >= DEBUG_ASYNC_DETAIL_LEVEL)
+        DEBUG ("already have %d clearbytes buffered", ret);
+
+      r = g_simple_async_result_new (G_OBJECT (stream),
+                                     callback,
+                                     user_data,
+                                     wocky_tls_input_stream_read_async);
+
+      if (session->job.read.error == NULL)
+        g_simple_async_result_set_op_res_gssize (r, ret);
+      else
+        g_simple_async_result_set_from_error (r, session->job.read.error);
+
+      g_simple_async_result_complete_in_idle (r);
+      g_object_unref (r);
+      return;
+    }
 
   wocky_tls_job_start (&session->job.read, stream,
                        io_priority, cancellable, callback, user_data,
@@ -1052,16 +1132,9 @@ wocky_tls_input_stream_read_finish (GInputStream  *stream,
 
   if (tls_debug_level >= DEBUG_ASYNC_DETAIL_LEVEL)
     DEBUG ();
-  {
-    GObject *source_object;
 
-    source_object = g_async_result_get_source_object (result);
-    g_object_unref (source_object);
-    g_return_val_if_fail (G_OBJECT (stream) == source_object, -1);
-  }
-
-  g_return_val_if_fail (wocky_tls_input_stream_read_async ==
-                        g_simple_async_result_get_source_tag (simple), -1);
+  g_return_val_if_fail (g_simple_async_result_is_valid (result,
+    G_OBJECT (stream), wocky_tls_input_stream_read_async), -1);
 
   if (g_simple_async_result_propagate_error (simple, error))
     return -1;
@@ -1094,16 +1167,39 @@ wocky_tls_output_stream_write_async (GOutputStream       *stream,
                                      GAsyncReadyCallback  callback,
                                      gpointer             user_data)
 {
+  int code;
   WockyTLSSession *session = WOCKY_TLS_OUTPUT_STREAM (stream)->session;
 
-  DEBUG ("%ld clearbytes to send", count);
+  DEBUG ("%" G_GSIZE_FORMAT " clearbytes to send", count);
   wocky_tls_job_start (&session->job.write, stream,
                        io_priority, cancellable, callback, user_data,
                        wocky_tls_output_stream_write_async);
 
   session->job.write.count = count;
 
-  SSL_write (session->ssl, buffer, count);
+  code = SSL_write (session->ssl, buffer, count);
+  if (code < 0)
+    {
+      int error = SSL_get_error (session->ssl, code);
+      switch (error)
+        {
+        case SSL_ERROR_WANT_WRITE:
+          DEBUG ("Incomplete SSL write to BIO (theoretically impossible)");
+          ssl_flush (session);
+          return;
+        case SSL_ERROR_WANT_READ:
+          g_warning ("write caused read: unsupported TLS re-negotiation?");
+        default:
+          DEBUG ("SSL write failed, setting error %d", error);
+          /* if we haven't already generated an error, set one here: */
+          if(session->job.write.error == NULL)
+            session->job.write.error =
+              g_error_new (WOCKY_TLS_ERROR, error,
+                           "OpenSSL write: protocol error %d", error);
+          wocky_tls_session_try_operation (session, WOCKY_TLS_OP_WRITE);
+          return;
+        }
+    }
   ssl_flush (session);
 }
 
@@ -1281,7 +1377,8 @@ wocky_tls_session_read_ready (GObject      *object,
     {
       int x;
       int y;
-      DEBUG ("received %ld cipherbytes, filling SSL BIO", rsize);
+      DEBUG ("received %" G_GSSIZE_FORMAT " cipherbytes, filling SSL BIO",
+          rsize);
       BIO_write (session->rbio, buf, rsize);
       if (tls_debug_level > DEBUG_ASYNC_DETAIL_LEVEL + 1)
         for (x = 0; x < rsize; x += 16)
@@ -1295,9 +1392,32 @@ wocky_tls_session_read_ready (GObject      *object,
             fprintf (stderr, "\n");
           }
     }
+  /* note that we never issue a read of 0, so this _must_ be EOF (0) *
+   * or a fatal error (-ve rval)                                     */
+  else if (session->job.handshake.job.active)
+    {
+      if (tls_debug_level >= DEBUG_ASYNC_DETAIL_LEVEL)
+        DEBUG("read SSL cipherbytes (handshake) failed: %" G_GSSIZE_FORMAT,
+            rsize);
+      session->job.handshake.state = SSL_ERROR_SSL;
+    }
   else
     {
-      DEBUG ("read of SSL cipherbytes failed: %ld", rsize);
+      DEBUG ("read of SSL cipherbytes failed: %" G_GSSIZE_FORMAT, rsize);
+
+      if ((*error != NULL) && ((*error)->domain == g_io_error_quark ()))
+        {
+          /* if there were any errors we could ignore, we'd do it like this: *
+           * g_error_free (*error); *error = NULL;                           */
+          DEBUG ("failed op: [%d] %s", (*error)->code, (*error)->message);
+        }
+      /* in order for non-handshake reads to return an error properly *
+       * we need to make sure the error in the job is set             */
+      else if (*error == NULL)
+        {
+          *error =
+            g_error_new (WOCKY_TLS_ERROR, SSL_ERROR_SSL, "unknown error");
+        }
     }
 
   wocky_tls_session_try_operation (session, WOCKY_TLS_OP_READ);
@@ -1617,6 +1737,15 @@ wocky_tls_connection_set_property (GObject *object, guint prop_id,
     }
 }
 
+static gboolean
+wocky_tls_connection_close (GIOStream *stream, GCancellable *cancellable,
+                            GError **error)
+{
+  WockyTLSConnection *connection = WOCKY_TLS_CONNECTION (stream);
+
+  return g_io_stream_close (connection->session->stream, cancellable, error);
+}
+
 static GInputStream *
 wocky_tls_connection_get_input_stream (GIOStream *io_stream)
 {
@@ -1697,6 +1826,7 @@ wocky_tls_connection_class_init (WockyTLSConnectionClass *class)
                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
   stream_class->get_input_stream = wocky_tls_connection_get_input_stream;
   stream_class->get_output_stream = wocky_tls_connection_get_output_stream;
+  stream_class->close_fn = wocky_tls_connection_close;
 }
 
 WockyTLSSession *

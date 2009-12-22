@@ -63,7 +63,7 @@ static const Feature self_advertised_features[] =
   { FEATURE_FIXED, NS_IBB },
   { FEATURE_FIXED, NS_TUBES },
   { FEATURE_FIXED, NS_BYTESTREAMS },
-  { FEATURE_FIXED, NS_FILE_TRANSFER },
+  { FEATURE_OPTIONAL, NS_FILE_TRANSFER },
 
   { FEATURE_OPTIONAL, NS_GOOGLE_TRANSPORT_P2P },
   { FEATURE_OPTIONAL, NS_JINGLE_TRANSPORT_ICEUDP },
@@ -471,10 +471,14 @@ void
 gabble_capability_set_update (GabbleCapabilitySet *target,
     const GabbleCapabilitySet *source)
 {
+  TpIntSet *ret;
   g_return_if_fail (target != NULL);
   g_return_if_fail (source != NULL);
 
-  tp_handle_set_update (target->handles, tp_handle_set_peek (source->handles));
+  ret = tp_handle_set_update (target->handles,
+    tp_handle_set_peek (source->handles));
+
+  tp_intset_destroy (ret);
 }
 
 typedef struct {
