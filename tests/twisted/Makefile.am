@@ -17,6 +17,7 @@ TWISTED_TESTS = \
 	muc/renamed.py \
 	muc/roomlist.py \
 	muc/send-error.py \
+	muc/subject.py \
 	muc/test-ensure.py \
 	muc/test-muc-alias.py \
 	muc/test-muc-invitation.py \
@@ -131,7 +132,6 @@ TWISTED_TESTS = \
 	file-transfer/test-send-file-to-unknown-contact.py \
 	file-transfer/test-send-file-wait-to-provide.py \
 	test-debug.py \
-	connect/multiple-times-to-same-account.py \
 	connect/test-fail.py \
 	connect/test-success.py \
 	connect/test-twice.py \
@@ -176,20 +176,30 @@ check-twisted:
 		exit 1;\
 	fi
 
+if ENABLE_DEBUG
+DEBUGGING_PYBOOL = True
+else
+DEBUGGING_PYBOOL = False
+endif
+
+if ENABLE_ASSUMED_FT_CAP
+ENABLE_ASSUMED_FT_CAP_PYBOOL = True
+else
+ENABLE_ASSUMED_FT_CAP_PYBOOL = False
+endif
+
 config.py: Makefile
-	echo "PACKAGE_STRING = \"$(PACKAGE_STRING)\"" > config.py
-	if test -n ''$(ENABLE_DEBUG); then \
-		echo "DEBUGGING = True" >> config.py; \
-	else \
-		echo "DEBUGGING = False" >> config.py; \
-	fi
+	$(QUIET_GEN) { \
+		echo "PACKAGE_STRING = \"$(PACKAGE_STRING)\""; \
+		echo "DEBUGGING = $(DEBUGGING_PYBOOL)"; \
+		echo "ENABLE_ASSUMED_FT_CAP = $(ENABLE_ASSUMED_FT_CAP_PYBOOL)"; \
+	} > $@
 
 BUILT_SOURCES = config.py
 
 EXTRA_DIST = \
 	$(TWISTED_TESTS) \
 	bytestream.py \
-	config.py \
 	constants.py \
 	gabbletest.py \
 	httptest.py \

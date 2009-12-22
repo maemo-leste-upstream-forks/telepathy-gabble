@@ -8,7 +8,7 @@ from gabbletest import make_result_iq, make_presence
 from servicetest import EventPattern, assertEquals, assertContains, \
         assertDoesNotContain
 
-from config import PACKAGE_STRING
+from config import PACKAGE_STRING, ENABLE_ASSUMED_FT_CAP
 import ns
 import constants as cs
 
@@ -44,9 +44,10 @@ JINGLE_CAPS = [
 VARIABLE_CAPS = (
     JINGLE_CAPS +
     [
+    ns.FILE_TRANSFER,
+
     # FIXME: currently we always advertise these, but in future we should
     # only advertise them if >= 1 client supports them:
-    # ns.FILE_TRANSFER,
     # ns.TUBES,
 
     # there is an unlimited set of these; only the ones actually relevant to
@@ -57,6 +58,14 @@ VARIABLE_CAPS = (
     ns.TUBES + '/dbus#com.example.Go',
     ns.TUBES + '/dbus#com.example.Xiangqi',
     ])
+
+if ENABLE_ASSUMED_FT_CAP:
+    # For backwards compatibility, the default behaviour of the stable
+    # branch is to say that we can receive file transfers, even if no
+    # client seems to be able to. Disable with
+    # ./configure --disable-assumed-ft-cap */
+    VARIABLE_CAPS.remove(ns.FILE_TRANSFER)
+    FIXED_CAPS.append(ns.FILE_TRANSFER)
 
 def check_caps(namespaces, desired):
     """Assert that all the FIXED_CAPS are supported, and of the VARIABLE_CAPS,
