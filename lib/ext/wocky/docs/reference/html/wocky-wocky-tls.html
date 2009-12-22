@@ -123,22 +123,6 @@ href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Ty
 <a name="wocky-wocky-tls.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "session"                  WockyTLSSession*      : Write / Construct Only
-  "session"                  WockyTLSSession*      : Write / Construct Only
-  "base-stream"              <a
-href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
->GIOStream</a>*            : Write / Construct Only
-  "dh-bits"                  <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a>                 : Write / Construct Only
-  "server"                   <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Write / Construct Only
-  "x509-cert"                <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write / Construct Only
-  "x509-key"                 <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write / Construct Only
   "base-stream"              <a
 href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
 >GIOStream</a>*            : Write / Construct Only
@@ -180,14 +164,16 @@ equivalent to a priority string of "SECURE:+COMP-DEFLATE".</p>
 <a name="wocky-wocky-tls.details"></a><h2>Details</h2>
 <div class="refsect2" title="WOCKY_TYPE_TLS_CONNECTION">
 <a name="WOCKY-TYPE-TLS-CONNECTION--CAPS"></a><h3>WOCKY_TYPE_TLS_CONNECTION</h3>
-<pre class="programlisting">#define             WOCKY_TYPE_TLS_CONNECTION</pre>
+<pre class="programlisting">#define WOCKY_TYPE_TLS_CONNECTION (wocky_tls_connection_get_type ())
+</pre>
 <p>
 </p>
 </div>
 <hr>
 <div class="refsect2" title="WOCKY_TYPE_TLS_SESSION">
 <a name="WOCKY-TYPE-TLS-SESSION--CAPS"></a><h3>WOCKY_TYPE_TLS_SESSION</h3>
-<pre class="programlisting">#define             WOCKY_TYPE_TLS_SESSION</pre>
+<pre class="programlisting">#define WOCKY_TYPE_TLS_SESSION    (wocky_tls_session_get_type ())
+</pre>
 <p>
 </p>
 </div>
@@ -224,12 +210,16 @@ equivalent to a priority string of "SECURE:+COMP-DEFLATE".</p>
 <hr>
 <div class="refsect2" title="WockyTLSConnection">
 <a name="WockyTLSConnection"></a><h3>WockyTLSConnection</h3>
+<pre class="programlisting">typedef struct OPAQUE_TYPE__WockyTLSConnection WockyTLSConnection;
+</pre>
 <p>
 </p>
 </div>
 <hr>
 <div class="refsect2" title="WockyTLSSession">
 <a name="WockyTLSSession"></a><h3>WockyTLSSession</h3>
+<pre class="programlisting">typedef struct OPAQUE_TYPE__WockyTLSSession WockyTLSSession;
+</pre>
 <p>
 </p>
 </div>
@@ -475,12 +465,6 @@ Create a new TLS server session</p>
 <p>the TLS session object for this connection.</p>
 </div>
 <hr>
-<div class="refsect2" title='The "session" property'>
-<a name="WockyTLSConnection--session"></a><h3>The <code class="literal">"session"</code> property</h3>
-<pre class="programlisting">  "session"                  WockyTLSSession*      : Write / Construct Only</pre>
-<p>the TLS session object for this connection.</p>
-</div>
-<hr>
 <div class="refsect2" title='The "base-stream" property'>
 <a name="WockyTLSSession--base-stream"></a><h3>The <code class="literal">"base-stream"</code> property</h3>
 <pre class="programlisting">  "base-stream"              <a
@@ -494,53 +478,8 @@ href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
 <pre class="programlisting">  "dh-bits"                  <a
 href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
 >guint</a>                 : Write / Construct Only</pre>
-<p>Diffie-Hellmann bits: 512, 1024, 2048, or 4096.</p>
-<p>Allowed values: [512,4096]</p>
-<p>Default value: 1024</p>
-</div>
-<hr>
-<div class="refsect2" title='The "server" property'>
-<a name="WockyTLSSession--server"></a><h3>The <code class="literal">"server"</code> property</h3>
-<pre class="programlisting">  "server"                   <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Write / Construct Only</pre>
-<p>whether this is a server.</p>
-<p>Default value: FALSE</p>
-</div>
-<hr>
-<div class="refsect2" title='The "x509-cert" property'>
-<a name="WockyTLSSession--x509-cert"></a><h3>The <code class="literal">"x509-cert"</code> property</h3>
-<pre class="programlisting">  "x509-cert"                <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write / Construct Only</pre>
-<p>x509 PEM certificate file.</p>
-<p>Default value: NULL</p>
-</div>
-<hr>
-<div class="refsect2" title='The "x509-key" property'>
-<a name="WockyTLSSession--x509-key"></a><h3>The <code class="literal">"x509-key"</code> property</h3>
-<pre class="programlisting">  "x509-key"                 <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write / Construct Only</pre>
-<p>x509 PEM key file.</p>
-<p>Default value: NULL</p>
-</div>
-<hr>
-<div class="refsect2" title='The "base-stream" property'>
-<a name="WockyTLSSession--base-stream"></a><h3>The <code class="literal">"base-stream"</code> property</h3>
-<pre class="programlisting">  "base-stream"              <a
-href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
->GIOStream</a>*            : Write / Construct Only</pre>
-<p>the stream that TLS communicates over.</p>
-</div>
-<hr>
-<div class="refsect2" title='The "dh-bits" property'>
-<a name="WockyTLSSession--dh-bits"></a><h3>The <code class="literal">"dh-bits"</code> property</h3>
-<pre class="programlisting">  "dh-bits"                  <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a>                 : Write / Construct Only</pre>
-<p>Diffie-Hellmann bits: 512, 1024, 2048, or 4096.</p>
-<p>Allowed values: [512,4096]</p>
+<p>Diffie-Hellmann bits: 768, 1024, 2048, 3072 0r 4096.</p>
+<p>Allowed values: [768,4096]</p>
 <p>Default value: 1024</p>
 </div>
 <hr>

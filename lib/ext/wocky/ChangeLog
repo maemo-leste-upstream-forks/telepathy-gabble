@@ -1,3 +1,1185 @@
+commit 97682078013710c7ad6e02d5b0c6fcfa9b241e01
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Dec 22 12:02:52 2009 +0000
+
+    Rename verification level variable from 'flags'
+    
+    It's no longer a set of flags, it's a single enum member.
+
+ wocky/wocky-openssl.c |    8 ++++----
+ wocky/wocky-tls.c     |    4 ++--
+ wocky/wocky-tls.h     |    2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+commit c5342b10ab9067b975edebaa02d57ef9fbdfe964
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Dec 22 11:57:39 2009 +0000
+
+    Correctly fall back to VERIFY_STRICT.
+
+ wocky/wocky-openssl.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 2a63eaf938da05886758f46d2c5f83811d649a8d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Dec 21 11:58:44 2009 +0000
+
+    Use a simple enum for the tls verification level
+
+ wocky/wocky-openssl.c |    6 ++++--
+ wocky/wocky-tls.c     |    8 +++++---
+ wocky/wocky-tls.h     |   11 +++++++----
+ 3 files changed, 16 insertions(+), 9 deletions(-)
+
+commit 5d494cc07923b0b1da09aaa95b53180889cebda6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Sun Dec 20 17:51:40 2009 +0000
+
+    Use wocky's debugging in the more traditional way
+
+ tests/wocky-test-connector-server.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 0505ac47351f59dd962cdfa502fb54823d7a284e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Sun Dec 20 17:49:13 2009 +0000
+
+    Don't use a temporary variable just in DEBUG
+
+ wocky/wocky-connector.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 255c63eeffe1ae3d223b8959152dcc71783f8ac0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Sun Dec 20 17:48:44 2009 +0000
+
+    Don't call wocky_debug if debugging isn't enabled
+
+ wocky/wocky-xmpp-writer.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit dc1918699e06befa204b458a8f6eb07c42c72018
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Sun Dec 20 17:47:38 2009 +0000
+
+    only define hdesc_to_string when debugging is enabled
+
+ wocky/wocky-tls.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 7987cc80119759523561cb7d60595b9d96e426cd
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Dec 18 14:01:55 2009 +0000
+
+    Don't summarize if python isn't there
+
+ tests/Makefile.am |   12 ++++++++++--
+ 1 files changed, 10 insertions(+), 2 deletions(-)
+
+commit e7ccc4314201ca7cb84c89753ee08e7e5702d31a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Dec 18 14:01:36 2009 +0000
+
+    Don't assume python is in /usr/bin
+
+ tests/summarise-tests.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit dbe94b97a0117b92a2146f77b5ade4aa28918b25
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Dec 18 13:04:00 2009 +0000
+
+    Various improvements to the python summary
+    
+    Let the python summary cope with skipped and restarted tests and in case of
+    failures print the cases that failed.
+
+ tests/summarise-tests.py |   25 +++++++++++++++++--------
+ 1 files changed, 17 insertions(+), 8 deletions(-)
+
+commit 4d89d5a2bee0e2cab0095aa9cee7e842538318f4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Dec 17 13:41:08 2009 +0000
+
+    Reimplement summarize-tests in Python
+    
+    This lets us use a real XML parser, and makes the whole thing shorter
+    and more legible.
+
+ tests/Makefile.am        |    6 +-
+ tests/summarise-tests.py |   46 ++++++++++++++++++++
+ tests/summarise-tests.sh |  104 ----------------------------------------------
+ 3 files changed, 49 insertions(+), 107 deletions(-)
+
+commit 4a29668ca4fd8500fa2e59d7a593a8fc49904207
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Dec 18 10:50:33 2009 +0000
+
+    Rethink iq cancellation to ensure we don't use freed memory
+    
+    Some valgrind testing on gabble indicated that quite often the StanzaIqHandlers
+    were used after being freed. This redoes the handling in such a way that the
+    handlers get removed when there was a result _and_ the send operation has
+    finished.
+
+ wocky/wocky-porter.c |  147 +++++++++++++++++++++++++++++---------------------
+ 1 files changed, 86 insertions(+), 61 deletions(-)
+
+commit 4fff9be936824e6c5b4e61768db1332e2fd3b164
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Dec 17 15:43:36 2009 +0000
+
+    Use G_G[S]SIZE_FORMAT for g[s]size in printf
+    
+    These aren't both %ld on all platforms.
+
+ wocky/wocky-openssl.c |   19 +++++++++++--------
+ 1 files changed, 11 insertions(+), 8 deletions(-)
+
+commit 0bd6d0dd44ba5a880f3fdb5679aa200af41fc3c1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Dec 17 13:40:06 2009 +0000
+
+    Fix coding style checks in out-of-tree builds.
+    
+    This is already fixed in Gabble's copy of the script; this just updates
+    Wocky's copy to match.
+
+ tools/check-coding-style.mk |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 440fd94bf01530163ada2b247fbbb56e59904286
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Dec 17 13:28:28 2009 +0000
+
+    test-sasl-auth-server: fix no-libsasl compilation
+
+ tests/wocky-test-sasl-auth-server.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 2dae85b150264b60b9b4b3e12939288078a6ca30
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Dec 16 20:39:41 2009 +0000
+
+    connector-test: include wocky-utils for _strdiff.
+    
+    This is only used on the no-libsasl path, hence why it compiles for
+    everyone working on it!
+
+ tests/wocky-connector-test.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 76cb2dcae9697bd246b1faa562d4a795712ea7a5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Dec 16 19:09:26 2009 +0000
+
+    Document wocky_xmpp_stanza_build
+
+ wocky/wocky-xmpp-stanza.c |   12 +++++++++---
+ 1 files changed, 9 insertions(+), 3 deletions(-)
+
+commit a02011ab948ad57ee5eff23e05293e4dd3898555
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Dec 16 19:09:07 2009 +0000
+
+    Fix out-of-tree compilation with OpenSSL
+
+ wocky/wocky-openssl.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 1298577c5a25f38054fa8262b9ecaf8c3a75f115
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Dec 17 16:51:41 2009 +0000
+
+    Remove wocky-openssl.h, no headers use the USING_OPENSSL #define (or config.h)
+
+ tests/wocky-test-connector-server.c |    4 --
+ wocky/Makefile.am                   |    2 +-
+ wocky/wocky-connector.h             |    6 --
+ wocky/wocky-openssl.c               |    4 +-
+ wocky/wocky-openssl.h               |  102 -----------------------------------
+ wocky/wocky-tls.c                   |   21 +++++++-
+ wocky/wocky-tls.h                   |   19 +++----
+ 7 files changed, 31 insertions(+), 127 deletions(-)
+
+commit 9de9e9e066e9f30a934fbf821962458c4442cec9
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Tue Dec 8 14:38:51 2009 +0000
+
+    Indentation trivia.
+
+ tests/wocky-tls-test.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+commit 64f7c3b7390d9362f06de42019ff486a583b6f1b
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Tue Dec 8 14:34:37 2009 +0000
+
+    Elide comments which no longer apply as we no longer use SSL_ pending/peek.
+
+ wocky/wocky-openssl.c |   12 +-----------
+ 1 files changed, 1 insertions(+), 11 deletions(-)
+
+commit ba418e28897c300eb569d39dc94ba745f70f4c64
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Tue Dec 8 14:25:38 2009 +0000
+
+    Fix an infinite io pseudo-read case in the OpenSSL backend.
+
+ wocky/wocky-openssl.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 8205a202f384717e84ae0673bb9e3565d08c5343
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Tue Dec 8 14:25:02 2009 +0000
+
+    Write 5 records and alternate the payloads, to catch the SSL_peek infinite loop.
+
+ tests/wocky-tls-test.c |   43 ++++++++++++++++++++++++++++++-------------
+ 1 files changed, 30 insertions(+), 13 deletions(-)
+
+commit b656cea75f64b9668608196f9743a06c9dcbde74
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Dec 7 16:57:39 2009 +0000
+
+    Tweak result error/gssize setting logic slightly.
+
+ wocky/wocky-openssl.c |   16 +++++++---------
+ 1 files changed, 7 insertions(+), 9 deletions(-)
+
+commit 702cf932702d80950b41ae1c5566e0f253477b2d
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Dec 7 15:56:03 2009 +0000
+
+    Unnecessary error == NULL test removed, use g_set_error.
+
+ wocky/wocky-openssl.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
+
+commit 5e835ee2b717c467e6a639a69e6cb26ec423f61e
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Dec 7 15:50:29 2009 +0000
+
+    There are, in fact, no errors we want to ignore/retry in _ready_ready.
+
+ wocky/wocky-openssl.c |   17 +++--------------
+ 1 files changed, 3 insertions(+), 14 deletions(-)
+
+commit f939baf19d6a8954f75c6be72991715a0639f3a2
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Dec 7 15:28:12 2009 +0000
+
+    Move code from _result_boolean to _try_operation, reduce logic duplication.
+
+ wocky/wocky-openssl.c |   21 +++++++--------------
+ 1 files changed, 7 insertions(+), 14 deletions(-)
+
+commit 0277c07727561f56e8e2f8c7e7920cb5f78d3f4a
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Dec 7 15:17:34 2009 +0000
+
+    Detect renegotiation attempts when trying SSL_peek as well as SSL_read.
+
+ wocky/wocky-openssl.c |   86 ++++++++++++++++++++++++++++++------------------
+ 1 files changed, 54 insertions(+), 32 deletions(-)
+
+commit dec48abfe9390655299a8f717b3510c6c8632923
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Dec 7 12:36:07 2009 +0000
+
+    Make the openssl test not be openssl specific
+    
+    Change the test to use the new modes in the WockyTestStream to force the way
+    the openssl backend reads in the various records. This allows us to mostly use
+    the test in case we're using the GnuTLS backend as well
+    
+    Also test for that the operation actually completes asynchronously.
+
+ tests/Makefile.am                 |   15 +-
+ tests/wocky-openssl-test.c        |  225 -----
+ tests/wocky-test-openssl-server.c | 1915 -------------------------------------
+ tests/wocky-test-openssl-server.h |  123 ---
+ tests/wocky-tls-test.c            |  266 +++++
+ 5 files changed, 271 insertions(+), 2273 deletions(-)
+
+commit d80a5a003aa42122fb5fea973c4e07596a925bf8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Dec 7 12:23:30 2009 +0000
+
+    Don't reimplement g_simple_async_result_is_valid
+
+ wocky/wocky-openssl.c |   11 ++---------
+ 1 files changed, 2 insertions(+), 9 deletions(-)
+
+commit e725b215f4490b04035b33dcf8ea171a88940213
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Dec 7 12:22:47 2009 +0000
+
+    If there is data to read directly make sure we still return asynchronously
+
+ wocky/wocky-openssl.c |   52 ++++++++++++++++++++++++++++--------------------
+ 1 files changed, 30 insertions(+), 22 deletions(-)
+
+commit 5c349ed383080afbf634a8322e3aba56b94ef7f0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Dec 7 12:17:07 2009 +0000
+
+    Add API to enable different reading modes
+
+ tests/wocky-test-stream.c |   47 ++++++++++++++++++++++++++++++++++----------
+ tests/wocky-test-stream.h |   13 ++++++++++++
+ 2 files changed, 49 insertions(+), 11 deletions(-)
+
+commit 9546b329c81630a8e20c016ea1ae63642a2cf50f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Dec 7 12:10:48 2009 +0000
+
+    Fix the logic for detecting when there is more to read
+
+ tests/wocky-test-stream.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b5a514d57985f4b3ed9fd8bce39cca5695eef952
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Dec 7 12:05:13 2009 +0000
+
+    Add the ability to cork input streams
+
+ tests/wocky-test-stream.c |   16 ++++++++++++++++
+ tests/wocky-test-stream.h |    2 ++
+ 2 files changed, 18 insertions(+), 0 deletions(-)
+
+commit 5fbaccae83d908a434aca9c9b90a88ac1748fe52
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Dec 7 11:58:35 2009 +0000
+
+    Force close the porter after cancelling close
+
+ tests/wocky-porter-test.c |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
+
+commit 890c40f40b37064b8b28d2c417e9a3aedddb4bdf
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Dec 4 14:31:56 2009 +0000
+
+    Test for 1.x records buffered n+1 records buffered edge cases for OpenSSL.
+
+ tests/Makefile.am                 |   13 +
+ tests/wocky-openssl-test.c        |  225 +++++
+ tests/wocky-test-openssl-server.c | 1915 +++++++++++++++++++++++++++++++++++++
+ tests/wocky-test-openssl-server.h |  123 +++
+ 4 files changed, 2276 insertions(+), 0 deletions(-)
+
+commit 382e4218dc82c669f430b5f1c5fae15c9a9ddd75
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Dec 4 01:58:58 2009 +0000
+
+    SSL_pending is unreliable: Use SSL_peek instead.
+
+ wocky/wocky-openssl.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
+
+commit 7a34217b5e011ee189978ea19b7cd020f4127bb1
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Wed Dec 2 15:26:32 2009 +0000
+
+    Clean up OpenSSL/gio error handling logic (misc bugs).
+
+ wocky/wocky-openssl.c |   85 ++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 files changed, 77 insertions(+), 8 deletions(-)
+
+commit a5dd54410e64ad76eabcf19f0ca42c17bb81fd05
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Wed Dec 2 15:22:41 2009 +0000
+
+    OpenSSL BIO's may have records left after SSL_read, detect to avoid blocking.
+
+ wocky/wocky-openssl.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+commit d2d7917c673fbe0f10cc54a3f3876dd4d41b285b
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Nov 26 17:34:59 2009 +0000
+
+    Implement close_fn class method for openssl based tls conn as well as gnutls.
+
+ wocky/wocky-openssl.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 3852a8a1076453800aa3ee8d46cfae3a1e1d01e3
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Thu Nov 26 17:33:54 2009 +0000
+
+    Detect async EOF conditions as well as read errors (gssize of 0 => EOF).
+
+ wocky/wocky-openssl.c |   32 ++++++++++++++++++++++++++++++--
+ 1 files changed, 30 insertions(+), 2 deletions(-)
+
+commit 7bf33fafd29360523bb51405f85dceb3be3ac9ca
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Wed Nov 25 18:24:30 2009 +0000
+
+    Generated DH parameter functions need protos to stop a -Werror failure.
+
+ wocky/wocky-openssl-dh1024.c |    1 +
+ wocky/wocky-openssl-dh2048.c |    1 +
+ wocky/wocky-openssl-dh4096.c |    1 +
+ wocky/wocky-openssl-dh512.c  |    1 +
+ 4 files changed, 4 insertions(+), 0 deletions(-)
+
+commit eeef0d2e4c27228316c6c1b7c163c96d328dc5a1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Dec 7 11:36:14 2009 +0000
+
+    Check for the right definition
+
+ wocky/wocky-xmpp-reader.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5e662895f7c0249f58fb2f8dd4082c721426522c
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Nov 27 16:21:02 2009 +0000
+
+    Remove unused cancellable support in callback, rename according to convention.
+
+ tests/wocky-porter-test.c |   17 ++++-------------
+ 1 files changed, 4 insertions(+), 13 deletions(-)
+
+commit e8c90f37dff8e7a0a4627c3357256cf1d2219bc2
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Nov 27 15:40:17 2009 +0000
+
+    Debug should contain expected JID as well as the mismatched JID we actually got.
+
+ wocky/wocky-porter.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit a561b6587ffc3a8e55048fe5d8a115249fba54e7
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Nov 27 14:55:55 2009 +0000
+
+    Normalise handler's copy of the 'to' JID and the 'from' JID we compare it to.
+
+ wocky/wocky-porter.c |   21 ++++++++++++++++++---
+ 1 files changed, 18 insertions(+), 3 deletions(-)
+
+commit 83fe481855f9e4eb891ea4077aa7ba8d11972362
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Nov 27 14:52:49 2009 +0000
+
+    Test the iq-recipient/sender-JIDs-are-not-normalised case.
+
+ tests/wocky-porter-test.c |   90 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 90 insertions(+), 0 deletions(-)
+
+commit 4a157c055d645bb2b975250b3386c5506c7024e4
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Fri Nov 27 14:51:37 2009 +0000
+
+    wocky_normalise_jid implemented in -utils.
+
+ wocky/wocky-utils.c |   50 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-utils.h |    2 ++
+ 2 files changed, 52 insertions(+), 0 deletions(-)
+
+commit 195db67317d726d6d14c8e5c07056bd877dc17b4
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Wed Nov 25 17:32:54 2009 +0000
+
+    Style trivia flagged by check.
+
+ wocky/wocky-sasl-digest-md5.h |    2 +-
+ wocky/wocky-sasl-plain.c      |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit d56ba71a576a08f6dda5a1c18081e7d61367b08f
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Wed Nov 25 17:18:52 2009 +0000
+
+    Cope with alternate format on test failure, exit 1 if any tests failed.
+    
+    The gtester report contains a </testbinary><testbinary> transition in between each failed test and subsequent tests. Cope with that when generating the summary.
+    
+    Exit with non-zero status of any tests failed so make can pick up on the error.
+
+ tests/summarise-tests.sh |   86 ++++++++++++++++++++++++++++++----------------
+ 1 files changed, 56 insertions(+), 30 deletions(-)
+
+commit 6efb1dd1650c20723a8f57445be96b5e427cc648
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Wed Nov 25 16:27:35 2009 +0000
+
+    Summarise test results at end (to help catch early failures).
+
+ tests/Makefile.am        |    3 ++
+ tests/summarise-tests.sh |   78 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 81 insertions(+), 0 deletions(-)
+
+commit 13fe3ce29b5dab130ef3a79fdaa2e0e1c9e9cd1e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Nov 24 22:03:44 2009 +0000
+
+    Never chain up to the real resolver, tests shouldn't hit the network
+
+ tests/test-resolver.c |   13 ++++++++-----
+ 1 files changed, 8 insertions(+), 5 deletions(-)
+
+commit 52068812840405391668f201d81bc1103c084ce7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 17:40:52 2009 +0000
+
+    Don't assert that there is no error when there should be errors
+
+ tests/wocky-xmpp-reader-test.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 64271a34056ce93014c07bdcb903a44c869071d2
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 17:07:31 2009 +0000
+
+    Reset the authentication status before calling the callback
+    
+    We can't rely on the user to call our _finish method, so depending on that for
+    resetting is wrong. Also at the point when the operation has finished the
+    object should always be in the same state, ready to authenticate again (Not
+    useful for the success case, but good for consistency)
+
+ wocky/wocky-sasl-auth.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 145c376a5e3d9c288722af37a7b8cb9a3afa519d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 17:06:37 2009 +0000
+
+    Remove unused state member
+
+ wocky/wocky-sasl-auth.c |   11 -----------
+ 1 files changed, 0 insertions(+), 11 deletions(-)
+
+commit 88834a8539c975d97b441a0a2d95742c2f3834a9
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 17:04:12 2009 +0000
+
+    Remove api to get the used sasl mechanism
+    
+    As it stands this API was broken, but futhermore it's not useful for a
+    client to check after the fact which mechanism was used.
+
+ wocky/wocky-connector.c |   18 ------------------
+ wocky/wocky-connector.h |    2 --
+ wocky/wocky-sasl-auth.c |   18 ++----------------
+ wocky/wocky-sasl-auth.h |    3 ---
+ 4 files changed, 2 insertions(+), 39 deletions(-)
+
+commit da9fdc7d053e562a1470f0861c98280e77367e0d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 16:57:26 2009 +0000
+
+    The bind should always succeed immediately as SO_REUSEADDR is set
+
+ tests/wocky-connector-test.c |    8 +-------
+ 1 files changed, 1 insertions(+), 7 deletions(-)
+
+commit 17a33a93fc761199c61e246c73901a1776c70d51
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 16:56:54 2009 +0000
+
+    Check the mechanism from what went on the wire, not what the connector thinks
+
+ tests/wocky-connector-test.c |   24 +++++++++++++++++++-----
+ 1 files changed, 19 insertions(+), 5 deletions(-)
+
+commit 9eeb7a6db8d412545cab7aa9ce7bb6d57bfc868b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 16:50:18 2009 +0000
+
+    Add API to get the last used SASL mechanism from the test server
+
+ tests/wocky-test-connector-server.c |   14 ++++++++++++++
+ tests/wocky-test-connector-server.h |    2 ++
+ 2 files changed, 16 insertions(+), 0 deletions(-)
+
+commit f8aa7c3656204929620a8fc07011f5568655ab27
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 16:49:36 2009 +0000
+
+    Add API to get the last selected mechanism from the Sasl server
+
+ tests/wocky-test-sasl-auth-server.c |   21 +++++++++++++++++----
+ tests/wocky-test-sasl-auth-server.h |    2 ++
+ 2 files changed, 19 insertions(+), 4 deletions(-)
+
+commit ed0c55901d06448223f841b301ec12f5dc5934b7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 16:27:36 2009 +0000
+
+    Run the test server in process
+
+ tests/wocky-connector-test.c |  121 ++++++++++++++++++++----------------------
+ 1 files changed, 57 insertions(+), 64 deletions(-)
+
+commit 16f32f490409f9bf27882ae4c21211f6f31144fa
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 16:20:25 2009 +0000
+
+    Add an async teardown server to the server
+
+ tests/wocky-connector-test.c        |    2 +-
+ tests/wocky-test-connector-server.c |  261 ++++++++++++++++++++++++++++++-----
+ tests/wocky-test-connector-server.h |   10 ++-
+ 3 files changed, 239 insertions(+), 34 deletions(-)
+
+commit b176b4aec466773e9c85e67a26737bd9dc999672
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 15:58:21 2009 +0000
+
+    Make the ssl handshaking async
+
+ tests/wocky-test-connector-server.c |   95 ++++++++++++++++++++---------------
+ 1 files changed, 54 insertions(+), 41 deletions(-)
+
+commit 97ae8fb5f40ab45aa0641fda49044b2a70fa3223
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 15:40:04 2009 +0000
+
+    Also complete the auth operation on failure
+    
+    The _finish operation should probably return an operation if the authentication
+    failed, but nothing currently checks this and the test connector server would
+    be unhappy if we start doing this. Should be refactored at some point though.
+
+ tests/wocky-test-sasl-auth-server.c |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
+
+commit c5d3ffcb64e12762df6d73b4ec4667f0aa317f7f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 15:38:46 2009 +0000
+
+    Make the sasl completion race free
+
+ tests/wocky-test-sasl-auth-server.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
+
+commit 4fa140cc5943bd7368b40a5dc39d308ef758e23c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 15:07:23 2009 +0000
+
+    Let _start take a cancellable and weave it through
+
+ tests/wocky-test-connector-server.c |    5 +++-
+ tests/wocky-test-sasl-auth-server.c |   38 +++++++++++++++++++++++------------
+ tests/wocky-test-sasl-auth-server.h |    8 +++++-
+ 3 files changed, 35 insertions(+), 16 deletions(-)
+
+commit 27db2fdc7865d1cbfe0320ac6671c06be5ff4178
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 15:05:45 2009 +0000
+
+    Warn if we have an outstanding result on dispose
+
+ tests/wocky-test-sasl-auth-server.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
+
+commit 79f36bfbe8c21750763759fcd1f05be7471faa95
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 15:03:47 2009 +0000
+
+    Implement the close virtual function
+
+ wocky/wocky-tls.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+commit b3857a610ec0e0fd62f46675ea9133857867ba9b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 23 15:03:20 2009 +0000
+
+    warn if there are outstanding input or output operations when disposing
+
+ wocky/wocky-xmpp-connection.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 426167511e8bcc82350ccfd8748098bc0aa8ec97
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Nov 20 12:19:18 2009 +0000
+
+    Fix coding style
+
+ tests/wocky-test-sasl-handler.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit be827a7aae280daf91d5a9b81debef16316f3a22
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Nov 20 12:19:06 2009 +0000
+
+    This is not python, there is no == for strings
+
+ tests/wocky-connector-test.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 7ec6eb82587f414677cbb438d897bbd0b5d99d0a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Nov 20 11:57:08 2009 +0000
+
+    Fix typo in documentation
+
+ wocky/wocky-sasl-handler.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit f52707f94ecf18df1f559dc6b1b034c2261fb32e
+Merge: 822cb9c 2ce5d30
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Nov 24 17:53:44 2009 +0000
+
+    Merge remote branch 'daf/sasl'
+
+commit 822cb9c779e34884774be12600779e21325586e6
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Nov 23 20:15:25 2009 +0000
+
+    Change g_message to DEBUG, explain number logged is DH bit size.
+
+ wocky/wocky-tls.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 2f61ae80679071a9eeae699d3b9f20754313a974
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Nov 23 19:40:14 2009 +0000
+
+    Cache DH parameters on generation (for each valid DH param size)
+    
+    This speeds up setup of subsequent wocky TLS server sessions significantly.
+    (GnuTLS only, OpenSSL can't generate DH params on the fly and so uses
+    a completely static set of DH parameters for servers anyway).
+    
+    Has no effect whatsoever on wocky TLS clients.
+
+ wocky/wocky-tls.c |   44 ++++++++++++++++++++++++++++++++++++++++----
+ 1 files changed, 40 insertions(+), 4 deletions(-)
+
+commit 2ce5d30c5914780c41e0fe62d32613e82ee65ea5
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 19 14:11:04 2009 -0500
+
+    give SASL handlers a plain flag and skip handlers based on it
+
+ tests/wocky-test-sasl-handler.c |    1 +
+ wocky/wocky-sasl-auth.c         |    3 +++
+ wocky/wocky-sasl-digest-md5.c   |    1 +
+ wocky/wocky-sasl-handler.c      |    6 ++++++
+ wocky/wocky-sasl-handler.h      |    6 ++++++
+ wocky/wocky-sasl-plain.c        |    1 +
+ 6 files changed, 18 insertions(+), 0 deletions(-)
+
+commit 661aba6e06097ca073acdf157159befb00251bbf
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 19 14:02:57 2009 -0500
+
+    document how handler/mechanism selection works
+
+ wocky/wocky-sasl-auth.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 867ff3daca3abe47a0d602dffe5fe776ebfa8e05
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 19 13:58:04 2009 -0500
+
+    simplify SASL handler error logic
+
+ wocky/wocky-sasl-auth.c |   21 ++++++++-------------
+ 1 files changed, 8 insertions(+), 13 deletions(-)
+
+commit 89640d31d00746407d552e5f694e544a5f878e38
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 19 13:49:36 2009 -0500
+
+    put "Server send" into the past tense where appropriate
+
+ wocky/wocky-sasl-auth.c       |    4 ++--
+ wocky/wocky-sasl-auth.h       |    2 +-
+ wocky/wocky-sasl-digest-md5.c |   10 +++++-----
+ wocky/wocky-sasl-plain.c      |    2 +-
+ 4 files changed, 9 insertions(+), 9 deletions(-)
+
+commit 6a51d50816f6d7b987437905351195b202b76b07
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 19 13:45:07 2009 -0500
+
+    add some documentation for the WockySaslHandler interface
+
+ wocky/wocky-sasl-handler.h |   35 +++++++++++++++++++++++++++++++++++
+ 1 files changed, 35 insertions(+), 0 deletions(-)
+
+commit da936335d0919445a7ef9830d9c135ae4f592918
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 19 13:25:35 2009 -0500
+
+    use wocky_strdiff instead of strcmp
+
+ tests/wocky-test-sasl-auth-server.c |   10 +++++-----
+ wocky/wocky-sasl-auth.c             |   16 ++++++++--------
+ 2 files changed, 13 insertions(+), 13 deletions(-)
+
+commit 78885334038f201e9a4dbaf1bd04d004fd35b32a
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Nov 17 20:02:22 2009 -0500
+
+    allow adding extra handlers to WockySaslAuth instances
+
+ tests/Makefile.am                   |    2 +
+ tests/wocky-test-sasl-auth-server.c |   44 +++++++++++++--------
+ tests/wocky-test-sasl-auth.c        |   15 +++++++
+ tests/wocky-test-sasl-handler.c     |   70 +++++++++++++++++++++++++++++++++++
+ tests/wocky-test-sasl-handler.h     |   42 +++++++++++++++++++++
+ wocky/wocky-sasl-auth.c             |   35 +++++++++++++++++
+ wocky/wocky-sasl-auth.h             |    3 +
+ 7 files changed, 194 insertions(+), 17 deletions(-)
+
+commit 9dfc9defae7aa003a8ce4a49338fab710c7f6ce0
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Nov 17 20:03:04 2009 -0500
+
+    allow SASL handler failure callbacks to not set errors
+
+ wocky/wocky-sasl-auth.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit c4fa4828be9e33528a23a3ece6238ee60f7e47aa
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Nov 17 20:02:52 2009 -0500
+
+    double check SASL test results
+
+ tests/wocky-test-sasl-auth.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+commit 81ea6725fb69b09be86e5e0412b2cd893a52613a
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Nov 17 15:55:12 2009 -0500
+
+    factor out SASL handler selection
+
+ wocky/wocky-sasl-auth.c |   50 ++++++++++++++++++++++++++++++----------------
+ 1 files changed, 32 insertions(+), 18 deletions(-)
+
+commit 82af20ab6aabc3c4fe8571496534b3f3b8779879
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Nov 17 11:56:46 2009 -0500
+
+    declare WockySaslHandlerIface properly
+
+ wocky/wocky-sasl-handler.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 71b215e0b41f78efef67f35160fb8e256ac8b2ad
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Fri Nov 13 02:00:36 2009 -0500
+
+    make WockySaslHandler a GInterface
+    
+    Make WockySaslDigestMd5 and WockySaslPlain implementations of it.
+
+ wocky/Makefile.am             |    4 +
+ wocky/wocky-sasl-auth.c       |  532 +--------------------------------------
+ wocky/wocky-sasl-digest-md5.c |  556 +++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-sasl-digest-md5.h |   53 ++++
+ wocky/wocky-sasl-handler.c    |   58 +++--
+ wocky/wocky-sasl-handler.h    |   40 ++--
+ wocky/wocky-sasl-plain.c      |  214 ++++++++++++++++
+ wocky/wocky-sasl-plain.h      |   50 ++++
+ 8 files changed, 939 insertions(+), 568 deletions(-)
+
+commit 7a1cd447ce46b11912019466c23c06b3100ee193
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 12 20:52:46 2009 -0500
+
+    generalize provision of initial response
+    
+    By which I mean the response sent with the authentication initiation, as per
+    the SASL RFC. The digest MD5 code also refers to an initial response but it
+    means the response to the first challenge from the server. The RFC term is
+    poor, but probably best to follow it.
+
+ wocky/wocky-sasl-auth.c |   47 +++++++++++++++++++++++++++++++++--------------
+ 1 files changed, 33 insertions(+), 14 deletions(-)
+
+commit 79c31ca8cda88a553f550858731e86718e09d378
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 12 20:27:32 2009 -0500
+
+    give SASL handlers independent private state
+
+ wocky/wocky-sasl-auth.c    |  137 ++++++++++++++++++++++++++++++--------------
+ wocky/wocky-sasl-auth.h    |    3 +
+ wocky/wocky-sasl-handler.c |    5 +-
+ wocky/wocky-sasl-handler.h |    2 +
+ 4 files changed, 102 insertions(+), 45 deletions(-)
+
+commit 3c058fc7756dac85f1414d35cf987b777327046b
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 12 20:14:45 2009 -0500
+
+    remove code for impossible case
+
+ wocky/wocky-sasl-auth.c |    9 ---------
+ 1 files changed, 0 insertions(+), 9 deletions(-)
+
+commit 378e38877dd72b5108811ea857992ddbfb222fe9
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 12 20:13:48 2009 -0500
+
+    auth_reset(): free and clear handler
+
+ wocky/wocky-sasl-auth.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 561db1c2b0d1981b38aba6a65a9a543eb5e48ee1
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 12 18:25:57 2009 -0500
+
+    make WockySaslChallengeFunc return the response to send
+
+ wocky/wocky-sasl-auth.c    |   88 ++++++++++++++++++++++++++------------------
+ wocky/wocky-sasl-handler.c |    4 +-
+ wocky/wocky-sasl-handler.h |    4 +-
+ 3 files changed, 56 insertions(+), 40 deletions(-)
+
+commit 1634e77b712036d82f3d0080b466cc93dd2b5523
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Sun Nov 8 10:24:54 2009 -0500
+
+    introduce WockySaslHandler abstraction and use it in WockySaslAuth
+
+ wocky/Makefile.am          |    2 +
+ wocky/wocky-sasl-auth.c    |  141 +++++++++++++++++++++++--------------------
+ wocky/wocky-sasl-auth.h    |    1 +
+ wocky/wocky-sasl-handler.c |   58 ++++++++++++++++++
+ wocky/wocky-sasl-handler.h |   64 ++++++++++++++++++++
+ 5 files changed, 200 insertions(+), 66 deletions(-)
+
+commit 50c2bd9a0d0d2091ad71e9c6ee541cc42f0e1e1f
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Nov 10 18:32:18 2009 -0500
+
+    factor out setting mechanism name on stanza
+
+ wocky/wocky-sasl-auth.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 87be0be5449ab592db1688c2034bab6f8431de14
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Nov 9 15:28:35 2009 -0500
+
+    call auth_succeeded implicitly if success handler didn't return an error
+
+ wocky/wocky-sasl-auth.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+commit b65faa10d8de11feb00c4bf2196f76c7f7e2bf90
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Nov 9 15:12:03 2009 -0500
+
+    replace usage of auth_failed with GErrors
+
+ wocky/wocky-sasl-auth.c |   90 ++++++++++++++++++++++++++++------------------
+ 1 files changed, 55 insertions(+), 35 deletions(-)
+
+commit 4ba6a316ac5ecfa6b2f408bc7aba6500e2e38a66
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Nov 9 14:03:07 2009 -0500
+
+    use string instead of enum to identify SASL mechanisms
+
+ tests/wocky-connector-test.c |  183 +++++++++++++++++++++---------------------
+ wocky/wocky-connector.c      |    9 +-
+ wocky/wocky-connector.h      |    2 +-
+ wocky/wocky-sasl-auth.c      |   86 ++++++++++++--------
+ wocky/wocky-sasl-auth.h      |    8 +--
+ 5 files changed, 149 insertions(+), 139 deletions(-)
+
+commit 6f4a02d6c9856445b33b166a778116e94675fa25
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Mon Nov 9 12:09:33 2009 -0500
+
+    factor out generation of initial SASL PLAIN response
+
+ wocky/wocky-sasl-auth.c |   25 ++++++++++++++++---------
+ 1 files changed, 16 insertions(+), 9 deletions(-)
+
+commit 197d5d733dfebf66d823c2996a71463595535c8a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Nov 17 14:33:28 2009 +0000
+
+    Don't explicitly define the "all" debug flag
+    
+    g_parse_debug_string () does this for us:
+    
+    > If string is equal to "all", all flags are set. If string is equal to
+    > "help", all the available keys in keys are printed out to standard
+    > error.
+
+ wocky/wocky-debug.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 0dff81f9c868bb1801ba8bfa36bbd78bfa90e275
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Nov 13 18:14:57 2009 +0000
+
+    nprefix should be gchar *
+
+ wocky/wocky-xmpp-node.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit bdbf0c690a3f10f6549b04003521cf95709d1541
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Nov 12 16:09:22 2009 +0000
+
+    Make it easier to debug incoming/outgoing stanzas
+    
+    Use the stanza debugging function when the xmpp debug flag is used. This is a
+    lot more readable then the non-pretty printed data that comes over the network.
+    To see the raw network data, use the net debug flag instead
+
+ wocky/wocky-xmpp-reader.c |    6 ++++--
+ wocky/wocky-xmpp-writer.c |    8 ++++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+commit 3eef43e7d584f87e6eb5912f5b75912e3186b339
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Nov 12 16:05:58 2009 +0000
+
+    Actually implement wocky_debug_stanza
+
+ wocky/wocky-debug.c |   26 ++++++++++++++++++++++++++
+ 1 files changed, 26 insertions(+), 0 deletions(-)
+
+commit f134d2374df47ccc5389224d69763e219dbbbda6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Nov 12 15:59:11 2009 +0000
+
+    Make the stanza to string conversion not be xml
+    
+    The stanza to string utility function is meant to be used
+    for debugging purposes. Make it be unlike XML so it can't
+    be confused with the data that's actually send over the wire.
+
+ wocky/wocky-xmpp-node.c |   73 ++++++++++++++++++++--------------------------
+ 1 files changed, 32 insertions(+), 41 deletions(-)
+
+commit dafa5824563b3bcaa4d7a8ea3d6c0662a5174cad
+Merge: e1fe6a1 81898f6
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 12 12:26:14 2009 -0500
+
+    Merge branch 'misc'
+    
+    Reviewed-by: Vivek Dasmohapatra <vivek@collabora.co.uk>
+
+commit 81898f6a98a668f8ecf7c6247498c9cb76a7bbc4
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Thu Nov 12 12:11:09 2009 -0500
+
+    use AC_HELP_STRING for --with-tls configure option
+
+ configure.ac |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit b0a93575dad899e1fa71b144ae7773f3cec8648d
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Wed Nov 11 21:11:29 2009 -0500
+
+    use g_assert_no_error()
+
+ tests/wocky-connector-test.c   |    2 +-
+ tests/wocky-test-sasl-auth.c   |    2 +-
+ tests/wocky-xmpp-reader-test.c |    6 +++---
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit de59db1f75b7c1f54009f7d3e65c720893a7393a
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Wed Nov 11 21:13:55 2009 -0500
+
+    configure.ac: override official release logic
+    
+    Because the current version, 0.0.0.0, ends in a zero, it's assumed that this
+    is a release version, so -Werror is disabled. For now, just declare that it's
+    not a release.
+    
+    Possibly an explicit release flag would be better than nano version which are always
+    0 or 1.
+
+ configure.ac |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit 56c29352f61a95090b6bbe87dea0e8a388fbce54
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   Tue Nov 3 14:01:25 2009 -0500
+
+    test SASL server: pass cancellable to _recv_stanza
+    
+    This avoids a memory leak where the connection is closed while a message
+    receive is pending.
+
+ tests/wocky-test-sasl-auth-server.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit e1fe6a1a8ca841efca7c9f7bd409f4a76e68d65a
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   Wed Nov 4 17:04:38 2009 +0100
+
+    Fix some typos in the gtk-doc annotations.
+
+ wocky/wocky-xmpp-reader.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit d02987e47e4a4a9e967365a06799449c85f43ec9
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Tue Nov 3 15:59:14 2009 +0000
+
+    Expand + comment the \ escape parsing logic for " quoted SASL challenge values.
+
+ wocky/wocky-sasl-auth.c |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
+
+commit 6727760976ff85623cbf19c1f10bcbaff94a8cb5
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Tue Nov 3 15:21:42 2009 +0000
+
+    Handle \ escapes in quoted SASL challenge parameters.
+
+ wocky/wocky-sasl-auth.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 1eac8915ae3dea0d8134a75aac29282828b13686
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Tue Nov 3 15:08:29 2009 +0000
+
+    Test for \ escapes in " quoted challenge values.
+
+ tests/wocky-test-sasl-auth-server.c |   70 +++++++++++++++++++++++++++++++++++
+ tests/wocky-test-sasl-auth-server.h |    1 +
+ tests/wocky-test-sasl-auth.c        |   13 ++++--
+ 3 files changed, 79 insertions(+), 5 deletions(-)
+
+commit 65ec8f42aa1d59c06cfe6ef5c0659666d9132b2a
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Nov 2 18:17:11 2009 +0000
+
+    Implement server-adds-wacky-whitespace-to-challenge problem, test SASL with it.
+
+ tests/wocky-test-sasl-auth-server.c |  103 ++++++++++++++++++++++++++++++++++-
+ tests/wocky-test-sasl-auth-server.h |    1 +
+ tests/wocky-test-sasl-auth.c        |    7 ++-
+ 3 files changed, 108 insertions(+), 3 deletions(-)
+
+commit 59c6a1d57893ccebebf1e410f12c4c3b21df01e7
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   Mon Nov 2 15:37:50 2009 +0000
+
+    SASL challenge tokens may be separated by optional whitespace, cope with these.
+
+ wocky/wocky-sasl-auth.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
 commit 69679f560c5490668840f29c582d946bd7f0ee70
 Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
 Date:   Thu Oct 22 17:49:22 2009 +0100

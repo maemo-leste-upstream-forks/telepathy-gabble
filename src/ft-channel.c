@@ -494,6 +494,13 @@ gabble_file_transfer_channel_constructor (GType type,
        tp_handle_inspect (contact_repo, self->priv->initiator),
        self->priv->filename, self->priv->size);
 
+  if (self->priv->initiator == base_conn->self_handle)
+    {
+      /* Outgoing FT , we'll need SOCK5 proxies when we'll offer the file */
+      gabble_bytestream_factory_query_socks5_proxies (
+          self->priv->connection->bytestream_factory);
+    }
+
   return obj;
 }
 
@@ -1345,9 +1352,6 @@ data_received_cb (GabbleBytestreamIface *stream,
       return;
     }
 
-  DEBUG ("received %"G_GSIZE_FORMAT" bytes from bytestream. Writing to socket",
-      data->len);
-
   transferred_chunk (self, (guint64) data->len);
 
   if (self->priv->transferred_bytes + self->priv->initial_offset >=
@@ -1368,7 +1372,6 @@ data_received_cb (GabbleBytestreamIface *stream,
   if (!gibber_transport_buffer_is_empty (self->priv->transport))
     {
       /* We don't want to send more data while the buffer isn't empty */
-      DEBUG ("file transfer buffer isn't empty. Block the bytestream");
       gabble_bytestream_iface_block_reading (self->priv->bytestream, TRUE);
     }
 }
@@ -1423,6 +1426,7 @@ gabble_file_transfer_channel_accept_file (TpSvcChannelTypeFileTransfer *iface,
       g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "Channel is not an incoming transfer");
       dbus_g_method_return_error (context, error);
+      g_error_free (error);
       return;
     }
 
@@ -1431,6 +1435,7 @@ gabble_file_transfer_channel_accept_file (TpSvcChannelTypeFileTransfer *iface,
       g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
         "State is not pending; cannot accept file");
       dbus_g_method_return_error (context, error);
+      g_error_free (error);
       return;
     }
 
@@ -1449,6 +1454,8 @@ gabble_file_transfer_channel_accept_file (TpSvcChannelTypeFileTransfer *iface,
       g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "Could not set up local socket");
       dbus_g_method_return_error (context, error);
+      g_error_free (error);
+      return;
     }
 
   gabble_file_transfer_channel_set_state (iface,
@@ -1504,6 +1511,7 @@ gabble_file_transfer_channel_provide_file (
       g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "Channel is not an outgoing transfer");
       dbus_g_method_return_error (context, error);
+      g_error_free (error);
       return;
     }
 
@@ -1513,6 +1521,7 @@ gabble_file_transfer_channel_provide_file (
       g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
         "State is not pending or accepted; cannot provide file");
       dbus_g_method_return_error (context, error);
+      g_error_free (error);
       return;
     }
 
@@ -1521,6 +1530,7 @@ gabble_file_transfer_channel_provide_file (
       g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "ProvideFile has already been called for this channel");
       dbus_g_method_return_error (context, error);
+      g_error_free (error);
       return;
     }
 
@@ -1539,6 +1549,8 @@ gabble_file_transfer_channel_provide_file (
       g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "Could not set up local socket");
       dbus_g_method_return_error (context, error);
+      g_error_free (error);
+      return;
     }
 
   if (self->priv->remote_accepted)
@@ -1607,9 +1619,6 @@ transport_handler (GibberTransport *transport,
 {
   GabbleFileTransferChannel *self = GABBLE_FILE_TRANSFER_CHANNEL (user_data);
 
-  DEBUG ("Data available, writing a %"G_GSIZE_FORMAT" bytes chunk",
-      data->length);
-
   if (!gabble_bytestream_iface_send (self->priv->bytestream, data->length,
         (const gchar *) data->data))
     {
@@ -1640,17 +1649,7 @@ bytestream_write_blocked_cb (GabbleBytestreamIface *bytestream,
                              gboolean blocked,
                              GabbleFileTransferChannel *self)
 {
-  if (blocked)
-    {
-      DEBUG ("bytestream blocked, stop to read data from FT socket");
-    }
-  else
-    {
-      DEBUG ("bytestream unblocked, restart to read data from FT socket");
-    }
-
   gibber_transport_block_receiving (self->priv->transport, blocked);
-
 }
 
 static void
@@ -1691,7 +1690,6 @@ transport_buffer_empty_cb (GibberTransport *transport,
                            GabbleFileTransferChannel *self)
 {
   /* Buffer is empty so we can unblock the buffer if it was blocked */
-  DEBUG ("file transfer buffer is empty. Unblock the bytestream");
   gabble_bytestream_iface_block_reading (self->priv->bytestream, FALSE);
 
   if (self->priv->state > TP_FILE_TRANSFER_STATE_OPEN)

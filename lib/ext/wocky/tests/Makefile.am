@@ -4,6 +4,7 @@ CERTTOOL := $(shell which certtool)
 TARDIS   := $(shell which datefudge)
 GENKEY   := $(CERTTOOL) --generate-privkey --outfile
 TEST_DIR := @abs_top_srcdir@/tests
+SUMMARY  := $(TEST_DIR)/summarise-tests.py
 CERT_DIR := $(TEST_DIR)/certs
 CA_CERT2 := $(CERT_DIR)/ca-1-cert.pem
 CA_CERT3 := $(CERT_DIR)/ca-2-cert.pem
@@ -65,7 +66,15 @@ TEST_PROGS = wocky-xmpp-reader-test \
   wocky-contact-factory-test \
   wocky-session-test \
   wocky-pep-service-test \
+  wocky-tls-test \
   wocky-connector-test
+
+wocky_tls_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_tls_test_SOURCES = \
+  wocky-tls-test.c        \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h
+wocky_tls_test_CFLAGS = $(AM_CFLAGS) $(TLSDEFS)
 
 wocky_xmpp_connection_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_xmpp_connection_test_SOURCES = \
@@ -108,6 +117,8 @@ wocky_test_sasl_auth_DEPENDENCIES = $(LIBWOCKY)
 wocky_test_sasl_auth_SOURCES = \
    wocky-test-helper.c wocky-test-helper.h \
    wocky-test-sasl-auth.c \
+   wocky-test-sasl-handler.c \
+   wocky-test-sasl-handler.h \
    wocky-test-sasl-auth-server.c \
    wocky-test-sasl-auth-server.h \
    wocky-test-stream.c \
@@ -199,9 +210,19 @@ test-report.xml: ${TEST_PROGS} test
 
 test: ${TEST_PROGS}
 	gtester -o test-report.xml -k --verbose ${TEST_PROGS}
+	@if [ -x $(which python) ] ; then \
+		$(SUMMARY) $@-report.xml ; \
+	else \
+		echo "No python available, not summarizing test results" ; \
+	fi
 
 test-%: wocky-%-test
 	gtester -o $@-report.xml -k --verbose $<
+	@if [ -x $(which python) ] ; then \
+		$(SUMMARY) $@-report.xml ; \
+	else \
+		echo "No python available, not summarizing test results" ; \
+	fi
 
 .PHONY: test test-report certs
 
