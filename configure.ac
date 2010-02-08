@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [8])
-m4_define([gabble_micro_version], [9])
+m4_define([gabble_micro_version], [10])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -120,6 +120,15 @@ AC_SUBST(HANDLE_LEAK_DEBUG_CFLAGS)
 
 AC_SUBST([ENABLE_CODING_STYLE_CHECKS])
 
+AC_ARG_ENABLE([is-a-phone],
+  AC_HELP_STRING([--enable-is-a-phone],
+    [advertise that we are a phone, not a PC]),
+    [is_a_phone=$enableval], [is_a_phone=no])
+
+if test x$is_a_phone = xyes; then
+  AC_DEFINE(IS_A_PHONE, [], [Defined if the target device is a phone])
+fi
+
 dnl Check for Glib
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >= 2.16])
 
@@ -164,6 +173,11 @@ AC_CHECK_FUNC(res_query, ,
 )
 
 AC_SUBST(RESOLV_LIBS)
+
+PKG_CHECK_MODULES(SQLITE, [sqlite3])
+
+AC_SUBST(SQLITE_CFLAGS)
+AC_SUBST(SQLITE_LIBS)
 
 dnl Check for code generation tools
 XSLTPROC=
