@@ -1,9 +1,11 @@
 TWISTED_TESTS = \
-	avatar-requirements.py \
 	caps_helper.py \
+	servicetest.py \
+	avatar-requirements.py \
 	caps/advertise-draft1.py \
 	caps/advertise-legacy.py \
 	caps/caps-cache.py \
+	caps/caps-persistent-cache.py \
 	caps/compat-bundles.py \
 	caps/double-disco.py \
 	caps/from-bare-jid.py \
@@ -78,7 +80,9 @@ TWISTED_TESTS = \
 	tubes/request-invalid-dbus-tube.py \
 	tubes/test-get-available-tubes.py \
 	tubes/test-socks5-muc.py \
+	vcard/item-not-found.py \
 	vcard/overlapping-sets.py \
+	vcard/redundant-set.py \
 	vcard/set-set-disconnect.py \
 	vcard/test-alias-empty-vcard.py \
 	vcard/test-alias-pep.py \
@@ -203,7 +207,6 @@ EXTRA_DIST = \
 	constants.py \
 	gabbletest.py \
 	httptest.py \
-	servicetest.py \
 	jingle/jingletest.py \
 	jingle/jingletest2.py \
 	mucutil.py \

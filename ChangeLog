@@ -1,3 +1,311 @@
+commit 0a906a3db24c85648a3262be0f5094785059925d
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-28 15:37:21 -0500
+
+    version 0.8.10
+
+commit 15e2b7e285a3cb9475b41d1334dd234f12bbbb0d
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-28 14:15:15 -0500
+
+    update NEWS file
+
+commit a55f9edf8964ecf8b937f4410ab76841eaa651ac
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-27 14:28:49 +0000
+
+    Don't crash on disco requests with no id=''
+    
+    It's illegal to send <iq/> stanzas without an id='' (per the first rule
+    of IQ Semantics in XMPP Core
+    <http://xmpp.org/rfcs/rfc3920.html#stanzas-semantics-iq>), but neither
+    ejabberd nor Loudmouth filters them out before they reach Gabble. If
+    passed an IQ with no id='', lm_iq_message_make_result() returns NULL;
+    connection_iq_disco_cb() assumed that it returned a valid message, and
+    hence crashed.
+    
+    Other places which call lm_iq_message_make_result() already check if the
+    result was NULL, so this is the only place that needed fixing.
+    
+    Fixes: fd.o#26271
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit a47685549c2d2d4523de7ba9e64439276f87ae2c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-22 11:45:03 +0000
+
+    Add --enable-is-a-phone
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 0c87773a015d6ffdd456470680d84c8e405e772a
+Merge: 8a3ab84 099bb45
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-20 18:32:59 -0500
+
+    Merge branch 'caps-cache-0.8' into telepathy-gabble-0.8
+    
+    Reviewed-by: Will Thompson
+
+commit 099bb4534a52dc871be73a29eab60f2e7d334dda
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-20 18:22:32 -0500
+
+    caps cache: create correct directory when falling back to default path
+
+commit 2ce3ea29b77bf743918024dd4cf243b81069322b
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-12 20:25:01 -0500
+
+    restore per-channel-manager caps from the cache
+
+commit 12332f03fe4aec3c3c19970a0ac82c9095ab93fa
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-12 18:59:09 -0500
+
+    test-caps-file-transfer.py: use a unique client name
+    
+    This avoids problems with pre-existing cache entries.
+
+commit 699f386ae749cdca74f7210faf90ba316f06aa50
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-07 21:14:23 -0500
+
+    make caps cache persist to disk using SQLite
+
+commit b1df5a2b100ad7e260e311952d888a7675a1d73d
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-12 15:15:33 -0500
+
+    free shared caps cache when CM exits
+
+commit eb486f58c64b15924d6db62b27baf31f388d39a7
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-12-02 18:30:32 -0500
+
+    add initial implementation of CM-wide caps cache
+    
+    This is in memory only, for now.
+
+commit 85e4534e2b32bb28d80eefeb66346bfd3c8487de
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-12 14:02:05 -0500
+
+    factor out capability URI extraction from messages
+    
+    Then, make GabbleCapsChannelManager's parse_caps take the resulting gchar **.
+
+commit cd1bc17de75f6c498d78b0f0f3a56bda486f9643
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-06 15:41:34 -0500
+
+    make send_disco_reply() take a list of identities
+
+commit b60cd05169151a194ad294ea9ed405b948cda508
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-12-18 17:54:30 -0500
+
+    make use of send_disco_reply in tests
+
+commit c4fc3f5b09d56463a993dc60a794bbedd746c77d
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-07 20:20:00 -0500
+
+    free debugger singleton on exit
+
+commit d45835150052693a5f2f289d5eda465f4223220b
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-07 20:18:49 -0500
+
+    compute_caps_hash(): verify that identities are well-formed
+
+commit 8a3ab8448e1394b8865f26b2c8c714800c7905c0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-28 14:18:30 +0000
+
+    Grab UNRELEASED-checking distcheck-hook from tp-glib
+    
+    Fixes: fd.o#23848
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 80246ee40a69a2494c79e358d3312dba329cda6e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-11 13:42:39 +0000
+
+    Treat <item-not-found/> as the empty vCard
+    
+    When we want to update our vCard, we first retrieve our vCard from the
+    server. XEP-0054 says that the server MUST return <item-not-found/> if
+    you have no vCard set, but we previously assumed that the server would
+    return success, with an empty <vCard/> node. Prosody respects the XEP.
+    So, let's treat the former case identically to the latter.
+    
+    Fixes: fd.o#25987
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit a457b62d25d2dd9a5132517662f3f71aee55cee1
+Merge: 5e30a2a 4ae769d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-11 11:36:25 +0000
+
+    Merge branch '0.8-chat-state-negotiation' into telepathy-gabble-0.8
+
+commit 4ae769daa29650deac6b9717a1d320111aaf36dc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-07 14:19:14 +0000
+
+    Negotiate chat state support for capsless contacts
+    
+    XEP-0085 §5.1 defines how to negotiate support for chat states when you
+    don't know a contact's caps. Roughly:
+    
+    • If you don't know whether someone supports them, don't send
+      stand-alone notifications, but include <active/> in messages you send;
+    • If you receive a chat state, mark the contact as supporting chat
+      states;
+    • If you receive a message without a chat state, mark the contact as not
+      supporting chat states.
+    
+    This is complicated slightly by multiple resources, but basically we
+    follow the above rules, resetting whenever we change which resource
+    we're sending to.
+
+commit 5347d19ec0fd6289af83ea97e3ec67ef1b98f9ef
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-07 13:40:21 +0000
+
+    Send chat state notifications as type='chat'
+    
+    This has been a SHOULD since 2003-09-18. From XEP-0085 §5.4:
+    
+        This protocol SHOULD NOT be used with message types other than
+        "chat" or "groupchat".
+
+commit 80cd543c521549390325daa1dcb9bc98e887f944
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-07 13:28:50 +0000
+
+    Refactor determining whether to send chat states
+
+commit 8a89ddb2661f9fabd007179258cc89ca27372f04
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-11-07 11:48:17 +0000
+
+    Tidy up the chat states test a smidge
+
+commit dfebff86eebb26dbf37e921ec819d7bda06437c6
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-12-01 17:53:40 -0500
+
+    add servicetest.py to the list of Twisted tests
+    
+    This is so that its self-tests get run, as with caps_helper.py.
+
+commit 5e30a2a7b91893234cffe05eaebfad2deadb2f5b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-15 19:29:06 +0000
+
+    NEWS for fd.o#25341
+
+commit 43fb5dd8995d99019e09e2e784b5cb302a126c16
+Merge: 9a9a24b f8f8d46
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-15 19:02:24 +0000
+
+    Merge branch '0.8-fd.o#25341' into telepathy-gabble-0.8
+    
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit f8f8d46e044888b1208699e930e0e1aaa27456c0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-14 17:55:40 +0000
+
+    Test that the fix for fd.o#25341 works.
+
+commit 170601eaec1fbabfe3da509fa7ec95ac3500f04b
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-09 14:15:48 -0300
+
+    vcard-manager: Iterate over hashtable instead of usin g_hash_table_find to check if vcard changed.
+
+commit e1a05fa9c9bf62624f1803b7be58e1cd5c085d4e
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-09 14:04:42 -0300
+
+    vcard-manager: Do not try to set vcard fields not supported by google servers.
+
+commit 4062055dba5efeaca72ccab6b2cc6aa329bd6a9f
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-07 11:04:16 -0300
+
+    fd.o#25341: Always sets its own vcard on login
+    
+    Note that gmail only stores vcard fields FN and PHOTO, so when using empathy the
+    nickname (alias) will be updated on every login.
+
+commit 9a9a24ba18b83504f9db09d1928b76cc10588f49
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-08 13:20:10 +0100
+
+    set-set-disconnect.py: fix race when setting the avatar
+    
+    Test was relying on the ordering of the vCard IQ reply and the D-Bus
+    method call. Ensure that the first vCard reply has been received by
+    Gabble and then wait for the second vCard query once we have
+    called the SetAvatar method.
+
+commit dfa5f85f65ac632399ec1c3d441f134db5ddc804
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-08 12:44:58 +0000
+
+    Check coding style in test-ns.c not test.ns
+
+commit 62f3671be8e15196345553501c9b25a45ea852c4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-08 12:19:38 +0000
+
+    Make log-strip.py process its arguments
+
+commit b573d2fc9c63115c76ba83c487ffbaa27bb69699
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-08 12:15:22 +0000
+
+    Make log-strip.py executable
+
+commit 6c81bd1167de7774c057f5549f3a30d739f8af21
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-08 11:33:13 +0000
+
+    Tidy some assertions in caps_helper.py
+    
+    These triggered while I was experimenting with different places to put
+    the test name, and I thought I'd fix them up.
+
+commit 8725ab750917ba18aae93ce3ea63360a79d16054
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-08 11:30:17 +0000
+
+    Shove the test name into 'account' as the resource
+    
+    This means the name of (most) tests appears in gabble-testing.log;
+    'resource' takes priority so the test jid still comes out as
+    test@localhost/Resource.
+
+commit 102454e6d81d1ca122a2db395a404db55177161b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-08 11:27:32 +0000
+
+    Make 'resource' override a resource in 'account'
+    
+    This way round makes more sense to me and (empirically) to #telepathy.
+
+commit c0d9b5309ca826be8a81272a6ce4bed7dd420491
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-07 18:42:11 +0000
+
+    Bump nano-version to 0.8.9.1
+
 commit 4180594248d525be1e22f9b1b1451f4a04c0eb09
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2009-12-07 17:10:21 +0000
