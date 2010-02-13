@@ -1,0 +1,195 @@
+<refentry id="wocky-wocky-debug">
+<refmeta>
+<refentrytitle role="top_of_page" id="wocky-wocky-debug.top_of_page">wocky-debug</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>WOCKY Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>wocky-debug</refname>
+<refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="wocky-wocky-debug.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+enum                <link linkend="DebugFlags">DebugFlags</link>;
+#define             <link linkend="DEBUG-XMPP--CAPS">DEBUG_XMPP</link>
+<link linkend="void">void</link>                <link linkend="wocky-debug-set-flags-from-env">wocky_debug_set_flags_from_env</link>      (void);
+<link linkend="void">void</link>                <link linkend="wocky-debug-set-flags">wocky_debug_set_flags</link>               (<link linkend="DebugFlags">DebugFlags</link> flags);
+<link linkend="gboolean">gboolean</link>            <link linkend="wocky-debug-flag-is-set">wocky_debug_flag_is_set</link>             (<link linkend="DebugFlags">DebugFlags</link> flag);
+<link linkend="void">void</link>                <link linkend="wocky-debug">wocky_debug</link>                         (<link linkend="DebugFlags">DebugFlags</link> flag,
+                                                         const <link linkend="gchar">gchar</link> *format,
+                                                         ...);
+<link linkend="void">void</link>                <link linkend="wocky-debug-stanza">wocky_debug_stanza</link>                  (<link linkend="DebugFlags">DebugFlags</link> flag,
+                                                         <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
+                                                         const <link linkend="gchar">gchar</link> *format,
+                                                         ...);
+#define             <link linkend="DEBUG--CAPS">DEBUG</link>                               (format, ...)
+#define             <link linkend="DEBUG-STANZA--CAPS">DEBUG_STANZA</link>                        (stanza, format, ...)
+#define             <link linkend="DEBUGGING--CAPS">DEBUGGING</link>
+#define             <link linkend="NODE-DEBUG--CAPS">NODE_DEBUG</link>                          (n, s)
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1 id="wocky-wocky-debug.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+</para>
+</refsect1>
+
+<refsect1 id="wocky-wocky-debug.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="DebugFlags" role="enum">
+<title>enum DebugFlags</title>
+<indexterm zone="DebugFlags"><primary sortas="DebugFlags">DebugFlags</primary></indexterm><programlisting>typedef enum
+{
+  DEBUG_TRANSPORT         = 1 &lt;&lt; 0,
+  DEBUG_NET               = 1 &lt;&lt; 1,
+  DEBUG_XMPP_READER       = 1 &lt;&lt; 2,
+  DEBUG_XMPP_WRITER       = 1 &lt;&lt; 3,
+  DEBUG_SASL              = 1 &lt;&lt; 4,
+  DEBUG_SSL               = 1 &lt;&lt; 5,
+  DEBUG_RMULTICAST        = 1 &lt;&lt; 6,
+  DEBUG_RMULTICAST_SENDER = 1 &lt;&lt; 7,
+  DEBUG_MUC_CONNECTION    = 1 &lt;&lt; 8,
+  DEBUG_BYTESTREAM        = 1 &lt;&lt; 9,
+  DEBUG_FILE_TRANSFER     = 1 &lt;&lt; 10,
+  DEBUG_PORTER            = 1 &lt;&lt; 11,
+  DEBUG_CONNECTOR         = 1 &lt;&lt; 12,
+  DEBUG_ROSTER            = 1 &lt;&lt; 13,
+  DEBUG_TLS               = 1 &lt;&lt; 14,
+  DEBUG_PUBSUB            = 1 &lt;&lt; 15,
+} DebugFlags;
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="DEBUG-XMPP--CAPS" role="macro">
+<title>DEBUG_XMPP</title>
+<indexterm zone="DEBUG-XMPP--CAPS"><primary sortas="DEBUG_XMPP">DEBUG_XMPP</primary></indexterm><programlisting>#define DEBUG_XMPP (DEBUG_XMPP_READER | DEBUG_XMPP_WRITER)
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="wocky-debug-set-flags-from-env" role="function">
+<title>wocky_debug_set_flags_from_env ()</title>
+<indexterm zone="wocky-debug-set-flags-from-env"><primary sortas="wocky_debug_set_flags_from_env">wocky_debug_set_flags_from_env</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_debug_set_flags_from_env      (void);</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="wocky-debug-set-flags" role="function">
+<title>wocky_debug_set_flags ()</title>
+<indexterm zone="wocky-debug-set-flags"><primary sortas="wocky_debug_set_flags">wocky_debug_set_flags</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_debug_set_flags               (<link linkend="DebugFlags">DebugFlags</link> flags);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>flags</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-debug-flag-is-set" role="function">
+<title>wocky_debug_flag_is_set ()</title>
+<indexterm zone="wocky-debug-flag-is-set"><primary sortas="wocky_debug_flag_is_set">wocky_debug_flag_is_set</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_debug_flag_is_set             (<link linkend="DebugFlags">DebugFlags</link> flag);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>flag</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-debug" role="function">
+<title>wocky_debug ()</title>
+<indexterm zone="wocky-debug"><primary sortas="wocky_debug">wocky_debug</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_debug                         (<link linkend="DebugFlags">DebugFlags</link> flag,
+                                                         const <link linkend="gchar">gchar</link> *format,
+                                                         ...);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>flag</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>format</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-debug-stanza" role="function">
+<title>wocky_debug_stanza ()</title>
+<indexterm zone="wocky-debug-stanza"><primary sortas="wocky_debug_stanza">wocky_debug_stanza</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_debug_stanza                  (<link linkend="DebugFlags">DebugFlags</link> flag,
+                                                         <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
+                                                         const <link linkend="gchar">gchar</link> *format,
+                                                         ...);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>flag</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>stanza</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>format</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="DEBUG--CAPS" role="macro">
+<title>DEBUG()</title>
+<indexterm zone="DEBUG--CAPS"><primary sortas="DEBUG">DEBUG</primary></indexterm><programlisting>#define             DEBUG(format, ...)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>format</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="DEBUG-STANZA--CAPS" role="macro">
+<title>DEBUG_STANZA()</title>
+<indexterm zone="DEBUG-STANZA--CAPS"><primary sortas="DEBUG_STANZA">DEBUG_STANZA</primary></indexterm><programlisting>#define             DEBUG_STANZA(stanza, format, ...)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>stanza</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>format</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="DEBUGGING--CAPS" role="macro">
+<title>DEBUGGING</title>
+<indexterm zone="DEBUGGING--CAPS"><primary sortas="DEBUGGING">DEBUGGING</primary></indexterm><programlisting>#define             DEBUGGING</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="NODE-DEBUG--CAPS" role="macro">
+<title>NODE_DEBUG()</title>
+<indexterm zone="NODE-DEBUG--CAPS"><primary sortas="NODE_DEBUG">NODE_DEBUG</primary></indexterm><programlisting>#define             NODE_DEBUG(n, s)</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>n</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

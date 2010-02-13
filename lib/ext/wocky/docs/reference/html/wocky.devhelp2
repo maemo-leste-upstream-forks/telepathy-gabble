@@ -11,6 +11,7 @@
       <sub name="wocky-contact-factory" link="wocky-wocky-contact-factory.html"/>
       <sub name="WockyPorter" link="WockyPorter.html"/>
       <sub name="WockyConnector" link="WockyConnector.html"/>
+      <sub name="WockyXmppStanza" link="WockyXmppStanza.html"/>
       <sub name="WockyXmppWriter" link="WockyXmppWriter.html"/>
       <sub name="WockyXmppConnection" link="WockyXmppConnection.html"/>
       <sub name="WockyConnector" link="WockyConnector.html"/>
@@ -23,7 +24,7 @@
       <sub name="wocky-utils" link="wocky-wocky-utils.html"/>
       <sub name="wocky-xmpp-node" link="wocky-wocky-xmpp-node.html"/>
       <sub name="wocky-xmpp-error" link="wocky-wocky-xmpp-error.html"/>
-      <sub name="Wocky GnuTLS TLS" link="wocky-wocky-tls.html"/>
+      <sub name="Wocky OpenSSL TLS" link="wocky-wocky-tls.html"/>
     </sub>
     <sub name="Object Hierarchy" link="object-tree.html"/>
     <sub name="API Index" link="api-index-full.html"/>
@@ -152,6 +153,18 @@
     <keyword type="property" name="The &quot;tls-required&quot; property" link="WockyConnector.html#WockyConnector--tls-required"/>
     <keyword type="property" name="The &quot;xmpp-port&quot; property" link="WockyConnector.html#WockyConnector--xmpp-port"/>
     <keyword type="property" name="The &quot;xmpp-server&quot; property" link="WockyConnector.html#WockyConnector--xmpp-server"/>
+    <keyword type="struct" name="WockyXmppStanza" link="WockyXmppStanza.html#WockyXmppStanza-struct"/>
+    <keyword type="struct" name="WockyXmppStanzaClass" link="WockyXmppStanza.html#WockyXmppStanzaClass"/>
+    <keyword type="enum" name="enum WockyStanzaType" link="WockyXmppStanza.html#WockyStanzaType"/>
+    <keyword type="enum" name="enum WockyStanzaSubType" link="WockyXmppStanza.html#WockyStanzaSubType"/>
+    <keyword type="enum" name="enum WockyBuildTag" link="WockyXmppStanza.html#WockyBuildTag"/>
+    <keyword type="function" name="wocky_xmpp_stanza_new ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-new"/>
+    <keyword type="function" name="wocky_xmpp_stanza_build ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-build"/>
+    <keyword type="function" name="wocky_xmpp_stanza_get_type_info ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-get-type-info"/>
+    <keyword type="function" name="wocky_xmpp_stanza_build_va ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-build-va"/>
+    <keyword type="function" name="wocky_xmpp_stanza_build_iq_result ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-build-iq-result"/>
+    <keyword type="function" name="wocky_xmpp_stanza_build_iq_error ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-build-iq-error"/>
+    <keyword type="function" name="wocky_xmpp_stanza_to_gerror ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-to-gerror"/>
     <keyword type="struct" name="WockyXmppWriter" link="WockyXmppWriter.html#WockyXmppWriter-struct"/>
     <keyword type="struct" name="WockyXmppWriterClass" link="WockyXmppWriter.html#WockyXmppWriterClass"/>
     <keyword type="function" name="wocky_xmpp_writer_new ()" link="WockyXmppWriter.html#wocky-xmpp-writer-new"/>
@@ -247,10 +260,6 @@
     <keyword type="macro" name="NODE_DEBUG()" link="wocky-wocky-debug.html#NODE-DEBUG--CAPS"/>
     <keyword type="function" name="wocky_init ()" link="wocky-wocky.html#wocky-init"/>
     <keyword type="function" name="wocky_deinit ()" link="wocky-wocky.html#wocky-deinit"/>
-    <keyword type="function" name="wocky_xmpp_reader_state_get_type ()" link="wocky-wocky-xmpp-reader-enumtypes.html#wocky-xmpp-reader-state-get-type"/>
-    <keyword type="macro" name="WOCKY_TYPE_XMPP_READER_STATE" link="wocky-wocky-xmpp-reader-enumtypes.html#WOCKY-TYPE-XMPP-READER-STATE--CAPS"/>
-    <keyword type="function" name="wocky_xmpp_reader_error_get_type ()" link="wocky-wocky-xmpp-reader-enumtypes.html#wocky-xmpp-reader-error-get-type"/>
-    <keyword type="macro" name="WOCKY_TYPE_XMPP_READER_ERROR" link="wocky-wocky-xmpp-reader-enumtypes.html#WOCKY-TYPE-XMPP-READER-ERROR--CAPS"/>
     <keyword type="struct" name="WockyContact" link="wocky-wocky-types.html#WockyContact-struct"/>
     <keyword type="struct" name="WockyContactClass" link="wocky-wocky-types.html#WockyContactClass"/>
     <keyword type="macro" name="WOCKY_XMPP_NS_JABBER_CLIENT" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JABBER-CLIENT--CAPS"/>
@@ -300,7 +309,6 @@
     <keyword type="function" name="wocky_xmpp_node_get_child ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-child"/>
     <keyword type="function" name="wocky_xmpp_node_get_child_ns ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-child-ns"/>
     <keyword type="function" name="wocky_xmpp_node_get_first_child ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-first-child"/>
-    <keyword type="function" name="wocky_xmpp_node_unpack_error ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-unpack-error"/>
     <keyword type="function" name="wocky_xmpp_node_add_child ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-add-child"/>
     <keyword type="function" name="wocky_xmpp_node_add_child_ns ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-add-child-ns"/>
     <keyword type="function" name="wocky_xmpp_node_add_child_with_content ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-add-child-with-content"/>

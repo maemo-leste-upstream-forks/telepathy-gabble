@@ -8,8 +8,12 @@ BUILT_SOURCES = \
   wocky-signals-marshal.list \
   wocky-signals-marshal.h \
   wocky-signals-marshal.c \
+  wocky-xmpp-error-enumtypes.h \
+  wocky-xmpp-error-enumtypes.c \
   wocky-xmpp-reader-enumtypes.h \
-  wocky-xmpp-reader-enumtypes.c
+  wocky-xmpp-reader-enumtypes.c \
+  wocky-muc-enumtypes.h \
+  wocky-muc-enumtypes.c
 
 OPENSSL_SRC = \
   wocky-openssl.c        \
@@ -66,6 +70,8 @@ HANDWRITTEN_SOURCES =            \
   wocky-contact-factory.h        \
   wocky-session.c                \
   wocky-session.h                \
+  wocky-muc.h                    \
+  wocky-muc.c					 \
   wocky-pep-service.c            \
   wocky-pep-service.h
 
@@ -117,15 +123,21 @@ AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) \
 AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
 
 # rules for making the glib enum objects
-%-enumtypes.h: %.h Makefile.in
-	$(AM_V_GEN)glib-mkenums \
-	--fhead "#ifndef __$(shell echo $* | tr [:lower:]- [:upper:]_)_ENUM_TYPES_H__\n#define __$(shell echo $* | tr [:lower:]- [:upper:]_)_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
+# The shell variable $long is something like WOCKY_XMPP_ERROR for
+# wocky-xmpp-error-enumtypes.h, and $short is WOCKY.
+$(filter %-enumtypes.h,$(BUILT_SOURCES)): %-enumtypes.h: %.h Makefile.in
+	$(AM_V_GEN)set -e; \
+	long=`echo $* | tr [:lower:]- [:upper:]_`; \
+	short=$${long%%_*}; \
+	guard="__$${long}_ENUM_TYPES_H__"; \
+	glib-mkenums \
+	--fhead "#ifndef $${guard}\n#define $${guard}\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
 	--fprod "/* enumerations from \"@filename@\" */\n" \
-	--vhead "GType @enum_name@_get_type (void);\n#define $(shell echo $* | tr [:lower:]- [:upper:]_ | sed 's/_.*//')_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
-	--ftail "G_END_DECLS\n\n#endif /* __$(shell echo $* | tr [:lower:]- [:upper:]_)_ENUM_TYPES_H__ */" \
+	--vhead "GType @enum_name@_get_type (void);\n#define $${short}_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
+	--ftail "G_END_DECLS\n\n#endif" \
 	$< > $@
 
-%-enumtypes.c: %.h Makefile.in
+$(filter %-enumtypes.c,$(BUILT_SOURCES)): %-enumtypes.c: %.h Makefile.in
 	$(AM_V_GEN)glib-mkenums \
 	--fhead "#include <$*.h>\n#include <$*-enumtypes.h>" \
 	--fprod "\n/* enumerations from \"@filename@\" */" \

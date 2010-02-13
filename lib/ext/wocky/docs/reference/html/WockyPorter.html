@@ -493,6 +493,15 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
                                                          WockyBuildTag spec,
                                                          ...);</pre>
 <p>
+<em class="parameter"><code>spec</code></em> should be WOCKY_STANZA_END to specify no XMPP node matching details.
+</p>
+<p>
+If <em class="parameter"><code>from</code></em> is a bare JID, then the resource of the JID in the from attribute
+will be ignored: In other words, a handler registered against a bare JID
+will match _all_ stanzas from a JID with the same node and domain:
+"foo@bar.org" will match:
+"foo@bar.org", "foo@bar.org/moose" and so forth.</p>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -504,47 +513,49 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
-<td>
+<td> A <span class="type">WockyStanzaSubType</span> value, stanza type to be handled WOCKY_STANZA_TYPE_NONE for all.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>sub_type</code></em> :</span></p></td>
-<td>
+<td> A <span class="type">WockyStanzaSubType</span> value, stanza sub type to be handled, WOCKY_STANZA_SUB_TYPE_NONE for all.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>from</code></em> :</span></p></td>
-<td>
+<td> the JID whose messages this handler is intended for (or <code class="literal">NULL</code> for any).
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>priority</code></em> :</span></p></td>
-<td>
+<td> a priority between <code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_MIN</code> and <code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_MAX</code> (often <code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</code>).
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
-<td>
+<td> A <span class="type">WockyPorterHandlerFunc</span>, should return <code class="literal">FALSE</code> to decline the stanza and <code class="literal">TRUE</code> to stop further processing and free the stanza.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>
+<td> Passed to <em class="parameter"><code>callback</code></em>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>spec</code></em> :</span></p></td>
-<td>
+<td> the start of a <code class="function">wocky_xmpp_stanza_build()</code> specification. The handler will be a candidate only if the stanza received is a superset of the one built with <em class="parameter"><code>spec</code></em> and its subsequent arguments, as per <code class="function">wocky_xmpp_node_is_superset()</code>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
-<td>
+<td> the rest of the args to <code class="function">wocky_xmpp_stanza_build()</code>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> a non-zero <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
+><span class="type">guint</span></a> id for use with <code class="function">wocky_porter_unregister_handler()</code>.
 </td>
 </tr>
 </tbody>

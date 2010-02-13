@@ -144,15 +144,6 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
 href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
 >gchar</a> *ns);
 WockyXmppNode *     wocky_xmpp_node_get_first_child     (WockyXmppNode *node);
-const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *       wocky_xmpp_node_unpack_error        (WockyXmppNode *node,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> **type,
-                                                         WockyXmppNode **text,
-                                                         WockyXmppNode **orig,
-                                                         WockyXmppNode **extra);
 WockyXmppNode *     wocky_xmpp_node_add_child           (WockyXmppNode *node,
                                                          const <a
 href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
@@ -754,79 +745,6 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2" title="wocky_xmpp_node_unpack_error ()">
-<a name="wocky-xmpp-node-unpack-error"></a><h3>wocky_xmpp_node_unpack_error ()</h3>
-<pre class="programlisting">const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *       wocky_xmpp_node_unpack_error        (WockyXmppNode *node,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> **type,
-                                                         WockyXmppNode **text,
-                                                         WockyXmppNode **orig,
-                                                         WockyXmppNode **extra);</pre>
-<p>
-<em class="parameter"><code>node</code></em>: a <span class="type">WockyXmppNode</span>
-<em class="parameter"><code>type</code></em>: gchar ** into which to write the XMPP Stanza error type
-<em class="parameter"><code>text</code></em>: <span class="type">WockyXmppNode</span> ** to hold the node containing the error description
-<em class="parameter"><code>orig</code></em>: <span class="type">WockyXmppNode</span> ** to hold the original XMPP Stanza that triggered
-       the error: XMPP does not require this to be provided in the error
-<em class="parameter"><code>extra</code></em>: <span class="type">WockyXmppNode</span> ** to hold any extra domain-specific XML tags
-        for the error received.
-</p>
-<p>
-Given an XMPP Stanza error <span class="type">WockyXmppNode</span> see RFC 3920) this function
-extracts useful error info.
-</p>
-<p>
-The above parameters are all optional, pass NULL to ignore them.
-</p>
-<p>
-The above data are all optional in XMPP, except for <em class="parameter"><code>type</code></em>, which
-the XMPP spec requires in all stanza errors. See RFC 3920 [9.3.2].
-</p>
-<p>
-None of the above parameters need be freed, they are owned by the
-parent <span class="type">WockyXmppNode</span> <em class="parameter"><code>node</code></em>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
-<td>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>text</code></em> :</span></p></td>
-<td>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>orig</code></em> :</span></p></td>
-<td>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>extra</code></em> :</span></p></td>
-<td>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a const gchar * indicating the error condition
 </td>
 </tr>
 </tbody>

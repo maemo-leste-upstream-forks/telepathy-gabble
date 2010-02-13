@@ -13,6 +13,7 @@ TWISTED_TESTS = \
 	caps/receive-jingle.py \
 	caps/trust-thyself.py \
 	caps/tube-caps.py \
+	gateways.py \
 	muc/name-conflict.py \
 	muc/renamed.py \
 	muc/roomlist.py \
@@ -36,6 +37,7 @@ TWISTED_TESTS = \
 	olpc/gadget-publish.py \
 	olpc/gadget-restarted.py \
 	olpc/view-presence.py \
+	presence/decloak.py \
 	presence/initial-contact-presence.py \
 	presence/initial-presence.py \
 	presence/presence.py \
@@ -82,6 +84,7 @@ TWISTED_TESTS = \
 	tubes/request-invalid-dbus-tube.py \
 	tubes/test-get-available-tubes.py \
 	tubes/test-socks5-muc.py \
+	vcard/item-not-found.py \
 	vcard/overlapping-sets.py \
 	vcard/redundant-set.py \
 	vcard/set-set-disconnect.py \
@@ -101,6 +104,9 @@ TWISTED_TESTS = \
 	vcard/update-rejected.py \
 	jingle/accept-extra-stream.py \
 	jingle/call-state.py \
+	jingle/call-basics.py \
+	jingle/call-codecoffer.py \
+	jingle/decloak-peer.py \
 	jingle/google-relay.py \
 	jingle/hold-audio.py \
 	jingle/hold-av.py \
@@ -198,11 +204,18 @@ else
 PLUGINS_ENABLED_PYBOOL = False
 endif
 
+if ENABLE_CHANNEL_TYPE_CALL
+CHANNEL_TYPE_CALL_ENABLED_PYBOOL = True
+else
+CHANNEL_TYPE_CALL_ENABLED_PYBOOL = False
+endif
+
 config.py: Makefile
 	$(AM_V_GEN) { \
 		echo "PACKAGE_STRING = \"$(PACKAGE_STRING)\""; \
 		echo "DEBUGGING = $(DEBUGGING_PYBOOL)"; \
 		echo "PLUGINS_ENABLED = $(PLUGINS_ENABLED_PYBOOL)"; \
+		echo "CHANNEL_TYPE_CALL_ENABLED = $(CHANNEL_TYPE_CALL_ENABLED_PYBOOL)"; \
 	} > $@
 
 BUILT_SOURCES = config.py

@@ -38,7 +38,7 @@ noinst_PROGRAMS = test-base64$(EXEEXT) test-caps-hash$(EXEEXT) \
 	test-dtube-unique-names$(EXEEXT) \
 	test-gabble-idle-weak$(EXEEXT) test-handles$(EXEEXT) \
 	test-jid-decode$(EXEEXT) test-parse-message$(EXEEXT) \
-	test-presence$(EXEEXT)
+	test-presence$(EXEEXT) test-tp-error-from-wocky$(EXEEXT)
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/tools/check-coding-style.mk
 subdir = tests
@@ -98,6 +98,12 @@ test_presence_OBJECTS = test-presence.$(OBJEXT)
 test_presence_LDADD = $(LDADD)
 test_presence_DEPENDENCIES =  \
 	$(top_builddir)/src/libgabble-convenience.la
+am_test_tp_error_from_wocky_OBJECTS = tp-error-from-wocky.$(OBJEXT)
+test_tp_error_from_wocky_OBJECTS =  \
+	$(am_test_tp_error_from_wocky_OBJECTS)
+test_tp_error_from_wocky_LDADD = $(LDADD)
+test_tp_error_from_wocky_DEPENDENCIES =  \
+	$(top_builddir)/src/libgabble-convenience.la
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -126,11 +132,12 @@ am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = test-base64.c test-caps-hash.c test-dtube-unique-names.c \
 	test-gabble-idle-weak.c test-handles.c test-jid-decode.c \
-	test-parse-message.c test-presence.c
+	test-parse-message.c test-presence.c \
+	$(test_tp_error_from_wocky_SOURCES)
 DIST_SOURCES = test-base64.c test-caps-hash.c \
 	test-dtube-unique-names.c test-gabble-idle-weak.c \
 	test-handles.c test-jid-decode.c test-parse-message.c \
-	test-presence.c
+	test-presence.c $(test_tp_error_from_wocky_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -335,8 +342,10 @@ check_c_sources = \
 	test-presence.c \
 	test-jid-decode.c \
 	test-handles.c \
-	test-parse-message.c
+	test-parse-message.c \
+	tp-error-from-wocky.c
 
+test_tp_error_from_wocky_SOURCES = tp-error-from-wocky.c
 all: all-recursive
 
 .SUFFIXES:
@@ -404,6 +413,9 @@ test-parse-message$(EXEEXT): $(test_parse_message_OBJECTS) $(test_parse_message_
 test-presence$(EXEEXT): $(test_presence_OBJECTS) $(test_presence_DEPENDENCIES) 
 	@rm -f test-presence$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_presence_OBJECTS) $(test_presence_LDADD) $(LIBS)
+test-tp-error-from-wocky$(EXEEXT): $(test_tp_error_from_wocky_OBJECTS) $(test_tp_error_from_wocky_DEPENDENCIES) 
+	@rm -f test-tp-error-from-wocky$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_tp_error_from_wocky_OBJECTS) $(test_tp_error_from_wocky_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -419,6 +431,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-jid-decode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-parse-message.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-presence.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tp-error-from-wocky.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

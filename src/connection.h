@@ -220,6 +220,8 @@ GType gabble_connection_get_type (void);
 
 gchar *gabble_connection_get_full_jid (GabbleConnection *conn);
 
+WockyPorter *gabble_connection_get_porter (GabbleConnection *conn);
+
 gboolean _gabble_connection_set_properties_from_account (
     GabbleConnection *conn, const gchar *account, GError **error);
 gboolean _gabble_connection_send (GabbleConnection *conn, LmMessage *msg,
@@ -236,7 +238,7 @@ const char *_gabble_connection_find_conference_server (GabbleConnection *);
 gchar *gabble_connection_get_canonical_room_name (GabbleConnection *conn,
     const gchar *jid);
 gboolean _gabble_connection_signal_own_presence (GabbleConnection *,
-    GError **);
+    const gchar *to, GError **);
 
 void gabble_connection_ensure_capabilities (GabbleConnection *self,
     const GabbleCapabilitySet *ensured);
@@ -244,6 +246,15 @@ void gabble_connection_ensure_capabilities (GabbleConnection *self,
 gboolean gabble_connection_send_presence (GabbleConnection *conn,
     LmMessageSubType sub_type, const gchar *contact, const gchar *status,
     GError **error);
+
+gboolean gabble_connection_visible_to (GabbleConnection *self,
+    TpHandle recipient);
+
+gboolean gabble_connection_send_capabilities (GabbleConnection *self,
+    const gchar *recipient, GError **error);
+
+gboolean gabble_connection_request_decloak (GabbleConnection *self,
+    const gchar *to, const gchar *reason, GError **error);
 
 /* extern only for the benefit of the unit tests */
 void _gabble_connection_create_handle_repos (TpBaseConnection *conn,

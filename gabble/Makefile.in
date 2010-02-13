@@ -86,7 +86,7 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(pkgconfigdir)" \
 	"$(DESTDIR)$(gabbleincludedir)" "$(DESTDIR)$(wockyincludedir)"
 DATA = $(pkgconfig_DATA)
-am__gabbleinclude_HEADERS_DIST = plugin.h sidecar.h
+am__gabbleinclude_HEADERS_DIST = error.h gabble.h plugin.h sidecar.h
 am__wockyinclude_HEADERS_DIST =  \
 	$(top_srcdir)/lib/ext/wocky/wocky/wocky-types.h \
 	$(top_srcdir)/lib/ext/wocky/wocky/wocky.h \
@@ -263,6 +263,8 @@ top_srcdir = @top_srcdir@
 @ENABLE_PLUGINS_TRUE@pkgconfig_DATA = telepathy-gabble.pc
 @ENABLE_PLUGINS_TRUE@gabbleincludedir = $(includedir)/telepathy-gabble-0/gabble
 @ENABLE_PLUGINS_TRUE@gabbleinclude_HEADERS = \
+@ENABLE_PLUGINS_TRUE@    error.h \
+@ENABLE_PLUGINS_TRUE@    gabble.h \
 @ENABLE_PLUGINS_TRUE@    plugin.h \
 @ENABLE_PLUGINS_TRUE@    sidecar.h
 
