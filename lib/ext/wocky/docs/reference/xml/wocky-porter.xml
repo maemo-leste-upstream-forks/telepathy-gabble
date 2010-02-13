@@ -1,0 +1,524 @@
+<refentry id="WockyPorter">
+<refmeta>
+<refentrytitle role="top_of_page" id="WockyPorter.top_of_page">WockyPorter</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>WOCKY Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>WockyPorter</refname>
+<refpurpose>Wrapper around a <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link> providing a
+higher level API.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="WockyPorter.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+enum                <link linkend="WockyPorterError">WockyPorterError</link>;
+<link linkend="GQuark">GQuark</link>              <link linkend="wocky-porter-error-quark">wocky_porter_error_quark</link>            (void);
+#define             <link linkend="WOCKY-PORTER-HANDLER-PRIORITY-MIN--CAPS">WOCKY_PORTER_HANDLER_PRIORITY_MIN</link>
+#define             <link linkend="WOCKY-PORTER-HANDLER-PRIORITY-NORMAL--CAPS">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</link>
+#define             <link linkend="WOCKY-PORTER-HANDLER-PRIORITY-MAX--CAPS">WOCKY_PORTER_HANDLER_PRIORITY_MAX</link>
+#define             <link linkend="WOCKY-PORTER-ERROR--CAPS">WOCKY_PORTER_ERROR</link>
+                    <link linkend="WockyPorter-struct">WockyPorter</link>;
+                    <link linkend="WockyPorterClass">WockyPorterClass</link>;
+<link linkend="WockyPorter">WockyPorter</link> *       <link linkend="wocky-porter-new">wocky_porter_new</link>                    (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection);
+<link linkend="void">void</link>                <link linkend="wocky-porter-send-async">wocky_porter_send_async</link>             (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
+                                                         <link linkend="GCancellable">GCancellable</link> *cancellable,
+                                                         <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
+                                                         <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="gboolean">gboolean</link>            <link linkend="wocky-porter-send-finish">wocky_porter_send_finish</link>            (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="GAsyncResult">GAsyncResult</link> *result,
+                                                         <link linkend="GError">GError</link> **error);
+<link linkend="void">void</link>                <link linkend="wocky-porter-send">wocky_porter_send</link>                   (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza);
+<link linkend="void">void</link>                <link linkend="wocky-porter-start">wocky_porter_start</link>                  (<link linkend="WockyPorter">WockyPorter</link> *porter);
+<link linkend="gboolean">gboolean</link>            (<link linkend="WockyPorterHandlerFunc">*WockyPorterHandlerFunc</link>)           (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
+                                                         <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="guint">guint</link>               <link linkend="wocky-porter-register-handler">wocky_porter_register_handler</link>       (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="WockyStanzaType">WockyStanzaType</link> type,
+                                                         <link linkend="WockyStanzaSubType">WockyStanzaSubType</link> sub_type,
+                                                         const <link linkend="gchar">gchar</link> *from,
+                                                         <link linkend="guint">guint</link> priority,
+                                                         <link linkend="WockyPorterHandlerFunc">WockyPorterHandlerFunc</link> callback,
+                                                         <link linkend="gpointer">gpointer</link> user_data,
+                                                         <link linkend="WockyBuildTag">WockyBuildTag</link> spec,
+                                                         ...);
+<link linkend="void">void</link>                <link linkend="wocky-porter-unregister-handler">wocky_porter_unregister_handler</link>     (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="guint">guint</link> id);
+<link linkend="void">void</link>                <link linkend="wocky-porter-close-async">wocky_porter_close_async</link>            (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="GCancellable">GCancellable</link> *cancellable,
+                                                         <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
+                                                         <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="gboolean">gboolean</link>            <link linkend="wocky-porter-close-finish">wocky_porter_close_finish</link>           (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="GAsyncResult">GAsyncResult</link> *result,
+                                                         <link linkend="GError">GError</link> **error);
+<link linkend="void">void</link>                <link linkend="wocky-porter-send-iq-async">wocky_porter_send_iq_async</link>          (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
+                                                         <link linkend="GCancellable">GCancellable</link> *cancellable,
+                                                         <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
+                                                         <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="WockyXmppStanza">WockyXmppStanza</link> *   <link linkend="wocky-porter-send-iq-finish">wocky_porter_send_iq_finish</link>         (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="GAsyncResult">GAsyncResult</link> *result,
+                                                         <link linkend="GError">GError</link> **error);
+<link linkend="void">void</link>                <link linkend="wocky-porter-force-close-async">wocky_porter_force_close_async</link>      (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="GCancellable">GCancellable</link> *cancellable,
+                                                         <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
+                                                         <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="gboolean">gboolean</link>            <link linkend="wocky-porter-force-close-finish">wocky_porter_force_close_finish</link>     (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="GAsyncResult">GAsyncResult</link> *result,
+                                                         <link linkend="GError">GError</link> **error);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 id="WockyPorter.object-hierarchy" role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+  <link linkend="GObject">GObject</link>
+   +----WockyPorter
+</synopsis>
+</refsect1>
+
+
+
+
+
+<refsect1 id="WockyPorter.properties" role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+  &quot;<link linkend="WockyPorter--connection">connection</link>&quot;               <link linkend="WockyXmppConnection">WockyXmppConnection</link>*  : Read / Write / Construct Only
+</synopsis>
+</refsect1>
+
+<refsect1 id="WockyPorter.signals" role="signal_proto">
+<title role="signal_proto.title">Signals</title>
+<synopsis>
+  &quot;<link linkend="WockyPorter-closing">closing</link>&quot;                                        : Run Last
+  &quot;<link linkend="WockyPorter-remote-closed">remote-closed</link>&quot;                                  : Run Last
+  &quot;<link linkend="WockyPorter-remote-error">remote-error</link>&quot;                                   : Run Last
+</synopsis>
+</refsect1>
+
+
+<refsect1 id="WockyPorter.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+Sends and receives <link linkend="WockyXmppStanza"><type>WockyXmppStanza</type></link> from an underlying
+<link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link>.</para>
+<para>
+</para>
+</refsect1>
+
+<refsect1 id="WockyPorter.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="WockyPorterError" role="enum">
+<title>enum WockyPorterError</title>
+<indexterm zone="WockyPorterError"><primary sortas="WockyPorterError">WockyPorterError</primary></indexterm><programlisting>typedef enum {
+  WOCKY_PORTER_ERROR_NOT_STARTED,
+  WOCKY_PORTER_ERROR_CLOSING,
+  WOCKY_PORTER_ERROR_CLOSED,
+  WOCKY_PORTER_ERROR_NOT_IQ,
+  WOCKY_PORTER_ERROR_FORCIBLY_CLOSED,
+} WockyPorterError;
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="wocky-porter-error-quark" role="function">
+<title>wocky_porter_error_quark ()</title>
+<indexterm zone="wocky-porter-error-quark"><primary sortas="wocky_porter_error_quark">wocky_porter_error_quark</primary></indexterm><programlisting><link linkend="GQuark">GQuark</link>              wocky_porter_error_quark            (void);</programlisting>
+<para>
+Get the error quark used by the porter.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the quark for porter errors.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="WOCKY-PORTER-HANDLER-PRIORITY-MIN--CAPS" role="macro">
+<title>WOCKY_PORTER_HANDLER_PRIORITY_MIN</title>
+<indexterm zone="WOCKY-PORTER-HANDLER-PRIORITY-MIN--CAPS"><primary sortas="WOCKY_PORTER_HANDLER_PRIORITY_MIN">WOCKY_PORTER_HANDLER_PRIORITY_MIN</primary></indexterm><programlisting>#define WOCKY_PORTER_HANDLER_PRIORITY_MIN 0
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="WOCKY-PORTER-HANDLER-PRIORITY-NORMAL--CAPS" role="macro">
+<title>WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</title>
+<indexterm zone="WOCKY-PORTER-HANDLER-PRIORITY-NORMAL--CAPS"><primary sortas="WOCKY_PORTER_HANDLER_PRIORITY_NORMAL">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</primary></indexterm><programlisting>#define WOCKY_PORTER_HANDLER_PRIORITY_NORMAL (guint) (G_MAXUINT / 2)
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="WOCKY-PORTER-HANDLER-PRIORITY-MAX--CAPS" role="macro">
+<title>WOCKY_PORTER_HANDLER_PRIORITY_MAX</title>
+<indexterm zone="WOCKY-PORTER-HANDLER-PRIORITY-MAX--CAPS"><primary sortas="WOCKY_PORTER_HANDLER_PRIORITY_MAX">WOCKY_PORTER_HANDLER_PRIORITY_MAX</primary></indexterm><programlisting>#define WOCKY_PORTER_HANDLER_PRIORITY_MAX G_MAXUINT
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="WOCKY-PORTER-ERROR--CAPS" role="macro">
+<title>WOCKY_PORTER_ERROR</title>
+<indexterm zone="WOCKY-PORTER-ERROR--CAPS"><primary sortas="WOCKY_PORTER_ERROR">WOCKY_PORTER_ERROR</primary></indexterm><programlisting>#define WOCKY_PORTER_ERROR (wocky_porter_error_quark ())
+</programlisting>
+<para>
+Get access to the error quark of the xmpp porter.</para>
+<para>
+</para></refsect2>
+<refsect2 id="WockyPorter-struct" role="struct">
+<title>WockyPorter</title>
+<indexterm zone="WockyPorter-struct"><primary sortas="WockyPorter">WockyPorter</primary></indexterm><programlisting>typedef struct _WockyPorter WockyPorter;</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="WockyPorterClass" role="struct">
+<title>WockyPorterClass</title>
+<indexterm zone="WockyPorterClass"><primary sortas="WockyPorterClass">WockyPorterClass</primary></indexterm><programlisting>typedef struct {
+    GObjectClass parent_class;
+} WockyPorterClass;
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="wocky-porter-new" role="function">
+<title>wocky_porter_new ()</title>
+<indexterm zone="wocky-porter-new"><primary sortas="wocky_porter_new">wocky_porter_new</primary></indexterm><programlisting><link linkend="WockyPorter">WockyPorter</link> *       wocky_porter_new                    (<link linkend="WockyXmppConnection">WockyXmppConnection</link> *connection);</programlisting>
+<para>
+Convenience function to create a new <link linkend="WockyPorter"><type>WockyPorter</type></link>.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>connection</parameter>&#160;:</term>
+<listitem><simpara> <link linkend="WockyXmppConnection"><type>WockyXmppConnection</type></link> which will be used to receive and send
+<link linkend="WockyXmppStanza"><type>WockyXmppStanza</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a new <link linkend="WockyPorter"><type>WockyPorter</type></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-porter-send-async" role="function">
+<title>wocky_porter_send_async ()</title>
+<indexterm zone="wocky-porter-send-async"><primary sortas="wocky_porter_send_async">wocky_porter_send_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_porter_send_async             (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
+                                                         <link linkend="GCancellable">GCancellable</link> *cancellable,
+                                                         <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
+                                                         <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>stanza</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-porter-send-finish" role="function">
+<title>wocky_porter_send_finish ()</title>
+<indexterm zone="wocky-porter-send-finish"><primary sortas="wocky_porter_send_finish">wocky_porter_send_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_porter_send_finish            (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="GAsyncResult">GAsyncResult</link> *result,
+                                                         <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>result</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-porter-send" role="function">
+<title>wocky_porter_send ()</title>
+<indexterm zone="wocky-porter-send"><primary sortas="wocky_porter_send">wocky_porter_send</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_porter_send                   (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>stanza</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-porter-start" role="function">
+<title>wocky_porter_start ()</title>
+<indexterm zone="wocky-porter-start"><primary sortas="wocky_porter_start">wocky_porter_start</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_porter_start                  (<link linkend="WockyPorter">WockyPorter</link> *porter);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="WockyPorterHandlerFunc" role="function">
+<title>WockyPorterHandlerFunc ()</title>
+<indexterm zone="WockyPorterHandlerFunc"><primary sortas="WockyPorterHandlerFunc">WockyPorterHandlerFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*WockyPorterHandlerFunc)           (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
+                                                         <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>stanza</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-porter-register-handler" role="function">
+<title>wocky_porter_register_handler ()</title>
+<indexterm zone="wocky-porter-register-handler"><primary sortas="wocky_porter_register_handler">wocky_porter_register_handler</primary></indexterm><programlisting><link linkend="guint">guint</link>               wocky_porter_register_handler       (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="WockyStanzaType">WockyStanzaType</link> type,
+                                                         <link linkend="WockyStanzaSubType">WockyStanzaSubType</link> sub_type,
+                                                         const <link linkend="gchar">gchar</link> *from,
+                                                         <link linkend="guint">guint</link> priority,
+                                                         <link linkend="WockyPorterHandlerFunc">WockyPorterHandlerFunc</link> callback,
+                                                         <link linkend="gpointer">gpointer</link> user_data,
+                                                         <link linkend="WockyBuildTag">WockyBuildTag</link> spec,
+                                                         ...);</programlisting>
+<para>
+<parameter>spec</parameter> should be WOCKY_STANZA_END to specify no XMPP node matching details.
+</para>
+<para>
+If <parameter>from</parameter> is a bare JID, then the resource of the JID in the from attribute
+will be ignored: In other words, a handler registered against a bare JID
+will match _all_ stanzas from a JID with the same node and domain:
+"foo@<!-- -->bar.org" will match:
+"foo@<!-- -->bar.org", "foo@<!-- -->bar.org/moose" and so forth.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&#160;:</term>
+<listitem><simpara> A <link linkend="WockyStanzaSubType"><type>WockyStanzaSubType</type></link> value, stanza type to be handled WOCKY_STANZA_TYPE_NONE for all.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>sub_type</parameter>&#160;:</term>
+<listitem><simpara> A <link linkend="WockyStanzaSubType"><type>WockyStanzaSubType</type></link> value, stanza sub type to be handled, WOCKY_STANZA_SUB_TYPE_NONE for all.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>from</parameter>&#160;:</term>
+<listitem><simpara> the JID whose messages this handler is intended for (or <link linkend="NULL--CAPS"><literal>NULL</literal></link> for any).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>priority</parameter>&#160;:</term>
+<listitem><simpara> a priority between <link linkend="WOCKY-PORTER-HANDLER-PRIORITY-MIN--CAPS"><literal>WOCKY_PORTER_HANDLER_PRIORITY_MIN</literal></link> and <link linkend="WOCKY-PORTER-HANDLER-PRIORITY-MAX--CAPS"><literal>WOCKY_PORTER_HANDLER_PRIORITY_MAX</literal></link> (often <link linkend="WOCKY-PORTER-HANDLER-PRIORITY-NORMAL--CAPS"><literal>WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</literal></link>).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<listitem><simpara> A <link linkend="WockyPorterHandlerFunc"><type>WockyPorterHandlerFunc</type></link>, should return <link linkend="FALSE--CAPS"><literal>FALSE</literal></link> to decline the stanza and <link linkend="TRUE--CAPS"><literal>TRUE</literal></link> to stop further processing and free the stanza.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara> Passed to <parameter>callback</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>spec</parameter>&#160;:</term>
+<listitem><simpara> the start of a <link linkend="wocky-xmpp-stanza-build"><function>wocky_xmpp_stanza_build()</function></link> specification. The handler will be a candidate only if the stanza received is a superset of the one built with <parameter>spec</parameter> and its subsequent arguments, as per <link linkend="wocky-xmpp-node-is-superset"><function>wocky_xmpp_node_is_superset()</function></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&#160;:</term>
+<listitem><simpara> the rest of the args to <link linkend="wocky-xmpp-stanza-build"><function>wocky_xmpp_stanza_build()</function></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a non-zero <link linkend="guint"><type>guint</type></link> id for use with <link linkend="wocky-porter-unregister-handler"><function>wocky_porter_unregister_handler()</function></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-porter-unregister-handler" role="function">
+<title>wocky_porter_unregister_handler ()</title>
+<indexterm zone="wocky-porter-unregister-handler"><primary sortas="wocky_porter_unregister_handler">wocky_porter_unregister_handler</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_porter_unregister_handler     (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="guint">guint</link> id);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-porter-close-async" role="function">
+<title>wocky_porter_close_async ()</title>
+<indexterm zone="wocky-porter-close-async"><primary sortas="wocky_porter_close_async">wocky_porter_close_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_porter_close_async            (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="GCancellable">GCancellable</link> *cancellable,
+                                                         <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
+                                                         <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-porter-close-finish" role="function">
+<title>wocky_porter_close_finish ()</title>
+<indexterm zone="wocky-porter-close-finish"><primary sortas="wocky_porter_close_finish">wocky_porter_close_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_porter_close_finish           (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="GAsyncResult">GAsyncResult</link> *result,
+                                                         <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>result</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-porter-send-iq-async" role="function">
+<title>wocky_porter_send_iq_async ()</title>
+<indexterm zone="wocky-porter-send-iq-async"><primary sortas="wocky_porter_send_iq_async">wocky_porter_send_iq_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_porter_send_iq_async          (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="WockyXmppStanza">WockyXmppStanza</link> *stanza,
+                                                         <link linkend="GCancellable">GCancellable</link> *cancellable,
+                                                         <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
+                                                         <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>stanza</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-porter-send-iq-finish" role="function">
+<title>wocky_porter_send_iq_finish ()</title>
+<indexterm zone="wocky-porter-send-iq-finish"><primary sortas="wocky_porter_send_iq_finish">wocky_porter_send_iq_finish</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link> *   wocky_porter_send_iq_finish         (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="GAsyncResult">GAsyncResult</link> *result,
+                                                         <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>result</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-porter-force-close-async" role="function">
+<title>wocky_porter_force_close_async ()</title>
+<indexterm zone="wocky-porter-force-close-async"><primary sortas="wocky_porter_force_close_async">wocky_porter_force_close_async</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_porter_force_close_async      (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="GCancellable">GCancellable</link> *cancellable,
+                                                         <link linkend="GAsyncReadyCallback">GAsyncReadyCallback</link> callback,
+                                                         <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-porter-force-close-finish" role="function">
+<title>wocky_porter_force_close_finish ()</title>
+<indexterm zone="wocky-porter-force-close-finish"><primary sortas="wocky_porter_force_close_finish">wocky_porter_force_close_finish</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_porter_force_close_finish     (<link linkend="WockyPorter">WockyPorter</link> *porter,
+                                                         <link linkend="GAsyncResult">GAsyncResult</link> *result,
+                                                         <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>porter</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>result</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1 id="WockyPorter.property-details" role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2 id="WockyPorter--connection" role="property"><title>The <literal>&quot;connection&quot;</literal> property</title>
+<indexterm zone="WockyPorter--connection"><primary sortas="WockyPorter:connection">WockyPorter:connection</primary></indexterm><programlisting>  &quot;connection&quot;               <link linkend="WockyXmppConnection">WockyXmppConnection</link>*  : Read / Write / Construct Only</programlisting>
+<para>the XMPP connection used by this porter.</para></refsect2>
+</refsect1>
+
+<refsect1 id="WockyPorter.signal-details" role="signals">
+<title role="signals.title">Signal Details</title>
+<refsect2 id="WockyPorter-closing" role="signal"><title>The <literal>&quot;closing&quot;</literal> signal</title>
+<indexterm zone="WockyPorter-closing"><primary sortas="WockyPorter::closing">WockyPorter::closing</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="WockyPorter">WockyPorter</link> *wockyporter,
+                                                        <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>wockyporter</parameter>&#160;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2 id="WockyPorter-remote-closed" role="signal"><title>The <literal>&quot;remote-closed&quot;</literal> signal</title>
+<indexterm zone="WockyPorter-remote-closed"><primary sortas="WockyPorter::remote-closed">WockyPorter::remote-closed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="WockyPorter">WockyPorter</link> *wockyporter,
+                                                        <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>wockyporter</parameter>&#160;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2 id="WockyPorter-remote-error" role="signal"><title>The <literal>&quot;remote-error&quot;</literal> signal</title>
+<indexterm zone="WockyPorter-remote-error"><primary sortas="WockyPorter::remote-error">WockyPorter::remote-error</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="WockyPorter">WockyPorter</link> *wockyporter,
+                                                        <link linkend="guint">guint</link>        arg1,
+                                                        <link linkend="gint">gint</link>         arg2,
+                                                        <link linkend="gchar">gchar</link>       *arg3,
+                                                        <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>wockyporter</parameter>&#160;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg3</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
+
+
+
+</refentry>

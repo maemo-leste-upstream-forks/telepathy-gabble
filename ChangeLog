@@ -1,3 +1,1920 @@
+commit a1b20303ad25d7d3c52f2cabfc4f72d84f699f23
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-28 15:58:56 +0000
+
+    Version 0.9.4
+
+commit 03379adfc79f09dbcbba1e69a9146e6fd64b023c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-28 12:45:11 +0000
+
+    Add Call interfaces to EXTRA_DIST
+
+commit 7a859d2944da798a22b79a1b94b7d1ba6b1a94d5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-28 12:41:03 +0000
+
+    Use the Glorious XIncludator, not identity.xsl
+
+commit 2dabba9c31fc6e81fce8d52f39cab18ab8f7ac68
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-27 17:06:41 +0000
+
+    Add a --disable-channel-type-call configure switch
+
+commit d4ef47aca699ac72716a03269a2f53dcbb01f02c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-27 14:28:49 +0000
+
+    Don't crash on disco requests with no id=''
+    
+    It's illegal to send <iq/> stanzas without an id='' (per the first rule
+    of IQ Semantics in XMPP Core
+    <http://xmpp.org/rfcs/rfc3920.html#stanzas-semantics-iq>), but neither
+    ejabberd nor Loudmouth filters them out before they reach Gabble. If
+    passed an IQ with no id='', lm_iq_message_make_result() returns NULL;
+    connection_iq_disco_cb() assumed that it returned a valid message, and
+    hence crashed.
+    
+    Other places which call lm_iq_message_make_result() already check if the
+    result was NULL, so this is the only place that needed fixing.
+    
+    Fixes: fd.o#26271
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit da5cb49ad68609e30348771c4b25d5892d03d66e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-27 14:46:40 +0000
+
+    Update wocky snapshot
+
+commit aa90a8e299ed3774b7c7acc429b39fd65eb392c4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-27 12:35:45 +0000
+
+    Use XEP-0276 Temporary Presence Sharing, instead of our prototype version
+    
+    Also improve jingle/decloak-peer.py to make better assertions about the
+    presence stanza we use to decloak a peer.
+
+commit 679cfc5c6cf8d79a70cfc54d36803c258d9a3d5c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-27 12:16:25 +0000
+
+    Remove decloaking proto-XEP; it's now XEP-0276
+
+commit fa4c21f2a6275ae85f7985b23713df67d25b4f83
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-25 14:46:03 +0000
+
+    Correct attribute name for Contact Capabilities
+    
+    /caps is wrong; /capabilities is right. Fixes fd.o#26210.
+
+commit e520f52d0dedff11527e00264c602aaeb0228c1d
+Merge: b559624 b04a052
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-22 16:08:30 +0000
+
+    Merge branch 'decloak-api'
+    
+    Reviewed-by: Vivek Dasmohapatra
+    Conflicts:
+    	extensions/all.xml
+    	tests/twisted/Makefile.am
+
+commit b55962469416da2ffd9350d6017a6f421df541fb
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-22 15:49:01 +0000
+
+    fd.o #26170: correctly NULL-terminate muc_tubes_channel_allowed_properties
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 780375d88e9af9e8bd70216d38d03c8200dd09c2
+Merge: d619840 afbbb05
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 14:50:58 +0000
+
+    Merge remote branch 'maiku/implement-ensure'
+
+commit d619840d391bd6939fbe2113a7565c289697c32e
+Merge: 20d5afe 3e94d46
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 14:50:36 +0000
+
+    Merge remote branch 'maiku/replace-codecoffers'
+    
+    Conflicts:
+    	src/call-content.c
+    	src/call-content.h
+
+commit 20d5afee894774296021cd4f48946b2cc42baeef
+Merge: 7dba588 e005d04
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 14:41:31 +0000
+
+    Merge remote branch 'maiku/handle-new-content'
+
+commit 7dba588d8fba926fe0084b9345eb19e3171ec5d1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-22 11:49:33 +0000
+
+    Add --enable-is-a-phone
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit afbbb05d6be544074fabbdad6e25641c16cb74f4
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-21 20:51:19 -0600
+
+    Test Ensuring channels that are most likely still being created.
+
+commit 2b273508acf36ffa0ed2f06f8faca83fe560be20
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-21 20:49:33 -0600
+
+    Update the outgoing-ensure test to test the Call interface too.
+
+commit 8a5a81a6be253c423527ab0852f8f7e2015fc900
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-21 20:40:21 -0600
+
+    Add the MediaChannelRequest into pending_call_channels.
+    
+    This looks like it was a typo. Another place in the code tries to
+    remove a MediaChannelRequest from pending_call_channels, but the
+    only place that inserts anything into pending_call_channels inserts
+    a channel. Inserting the MediaChannelRequest makes more sense as
+    then you can add request tokens to it.
+
+commit 9c8abea8af92b059ee25c7e93775dc09fa4c782d
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-21 20:38:06 -0600
+
+    CallChannel uses "handle" instead of "peer".
+    
+    The StreamedMedia interface used "peer" to fetch the target handle.
+    CallChannel provides "handle" instead.
+
+commit 3e94d46057eb68963016e666ea06b35870575372
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-21 17:24:28 -0600
+
+    Keep count of the pending CodecOffers.
+    
+    Only free CallContent once all of its pending CodecOffers have been
+    freed.
+
+commit 5b5e88df16ac072f9119991f1e143e84268db540
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-21 16:02:50 +0000
+
+    Mention we do file transfer in the README
+
+commit 5179e40604425fc0b3dddf5fe36bd0bce17d951e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-21 15:55:34 +0000
+
+    Stop referring to Loudmouth in the README
+
+commit 189d080d560c450f2b23ad6802e5e70fc7d56569
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-21 15:05:00 +0000
+
+    I noticed the extra newline only after pushing :(
+
+commit 57e99f97bd380fc92d49c70e8d2936d63fa2b849
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2010-01-21 14:21:33 +0000
+
+    Update wocky (openssl backend now offers deflate compression)
+
+commit 8a4eb423bbf6196cfb93cc06463cfa7e8eb640cd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-21 12:57:41 +0000
+
+    Add a version to the gateways plugin.
+    
+    I'm deliberately not setting a version on the test plugin to make sure
+    Gabble copes with it being NULL.
+
+commit 40768280a76471e4fd6784c52eafa5ff40b3c6f4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-21 12:53:53 +0000
+
+    Show plugins' version in debug output
+
+commit 49aa6a73cb7de004a77780730bc128b33125e47d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-21 12:49:50 +0000
+
+    Add a version field to GabblePluginInterface.
+
+commit 1223803555fe45ea5caa4300ec75fd422dd4de0a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-21 12:05:33 +0000
+
+    Add a variable with the path to Gabble to .pc files
+    
+    Tests for out-of-tree Gabble plugins need to know where Gabble lives in
+    order to set its working directory and environment variables, etc. It's
+    possible to set the latter on the tests' dbus-daemon, but having the
+    path to Gabble allows plugins' test framework look more like Gabble's
+    (with their own directory of D-Bus services, rather than relying on the
+    installed set).
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit f8c039df16769d01e1fad39506ee6c2484e2bda8
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-20 22:53:59 -0600
+
+    In EnsureChannel, check pending call channels as well.
+    
+    If there's a pending call channel, the EnsureChannel request can
+    piggy-back on that request and simply add its request_token to the
+    list in the MediaChannelRequest.
+
+commit f4f1f376bd74ff58bcaa2a6cec0e57fbca21d28d
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-20 21:59:20 -0600
+
+    Unregister Contents and their Streams from DBus ASAP after deiniting.
+
+commit 83e832241863218b35d0f5879b4cd9e62126ae81
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-20 21:42:33 -0600
+
+    Skip setting codecs if the offer is invalid.
+    
+    After cancelling an AsyncResult, it can potentially still return
+    successfully. This code assumed it would always return an error.
+    This patch makes it skip setting codecs if there was an error,
+    the content was deinited, or the offer that finished isn't current.
+
+commit 6816b1e823b0a839126c02cf001a32c5cbbaf09b
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-20 21:24:54 -0600
+
+    Unleak when switching CodecOffers.
+
+commit 8b10d54037ba7a0a07013c2044129711b2c378c1
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-20 20:11:45 -0600
+
+    Unregister CodecOffer from the bus immediately when cancelled.
+
+commit 8c6624c9743fac3981e1039b8ee27494acd0dd42
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-20 19:43:46 -0600
+
+    Make sure the NewChannels signal contains the Call.
+    
+    A race was happening where the testcase was failing due to the
+    NewChannels signal from the contact list being caught instead of
+    the one for the Call. This caused the rest of the test case to
+    continue before the Call was ready and would fail when trying
+    to retrieve the Contents property.
+
+commit a416cf558ce810afd6cdd0c2c74a63e5a0b4248c
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-20 17:24:24 -0600
+
+    Remove AsyncResult dispose code from CodecOffer.
+    
+    AsyncResult will have a ref to the CodecOffer.
+
+commit 747ff23ed8d3dd0d4bbd954f2ebed7f912603f52
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-18 20:32:19 -0600
+
+    Add test for CodecOffer's Reject method.
+
+commit da2f212d18ac83d521b0f2e9e1a87d9a929c6b20
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-18 20:31:20 -0600
+
+    Implement Reject on CallContentCodecoffer.
+
+commit 600011fd50f651168c66f8de15a6aa4ff0eada73
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-18 18:49:59 -0600
+
+    Add testcase to make sure CodecOffers are freed when CallContent is freed.
+
+commit 4ea81b3a3f48596382c97d6e7a6f904383568eae
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-20 17:27:29 -0600
+
+    Add a _deinit function to CallContent.
+    
+    Using _deinit, CallContent will wait for its CodecOffer (if any) to
+    be freed before allowing itself to be freed.
+
+commit 961f1972f5df63196896bcdde0414575db4e86db
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-20 16:20:52 -0600
+
+    Add debug messages for unexpected events in Accept().
+
+commit 1458db7a77aaa1d4e8428350b0e9964c73a66f75
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-20 16:06:36 -0600
+
+    Modify error message wording.
+
+commit e005d0407ce6560a2206c4645dc664a374500bb9
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-20 15:53:11 -0600
+
+    Use a function to get the local sending state.
+
+commit c04ad7ea628c6131da2da818b2d53aeff6637b90
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-20 14:24:58 -0600
+
+    Simplify an if statement.
+
+commit 7ac7ee278ec1c6a589916adbf74ab16ddc534a96
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-15 17:53:57 -0600
+
+    Set sending state to sending if the local side created it.
+    
+    When a stream is created by the local side, it should initially be
+    in the sending state.
+
+commit 4d07f4be1777565091bff9f5c5605ee83a609686
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-14 13:41:32 -0600
+
+    In Accept(), set sending state from Pending to Sending automatically.
+    
+    As per the spec, in Accept(), all streams that are in the pending
+    send state and are in contents whose disposition is initial should
+    be automatically set to the sending state.
+
+commit 76a0599d4e19d0a2dfb371ba0f382c7b6a5fdd87
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-14 13:08:32 -0600
+
+    Fix SetSending to correctly set senders and update Jingle.
+
+commit 6e4d629f4603605e7420273ceb5e16028fc609fc
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-07 21:03:19 -0600
+
+    Handle when the remote end adds a content to the session.
+
+commit 8ade2d1fa5953e492990847771a1244b2392d36b
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-15 16:19:48 -0600
+
+    Add add tests for CodecOffers.
+
+commit 33572756db667c2ed002599331758c9661337479
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-15 16:09:09 -0600
+
+    Handle switching CodecOffers in CallContent.
+
+commit 03d33cd391855f3752e55629ceb0f91089ec5c0b
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-15 16:07:23 -0600
+
+    Handle a GCancellable passed to gabble_call_content_codecoffer_offer.
+
+commit d31cd86c2ef2995c44373dde97277450831db1ab
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-18 19:55:44 -0600
+
+    Support EnsureChannel.
+
+commit cfacc64ba48286023b9fa2bacf2102bee1810f5c
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-18 22:56:22 -0600
+
+    Add a testcase for the Ringing_Locally flag.
+
+commit 21c690cb16ed3b4302ca9538ce47994843e4880c
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-18 22:55:33 -0600
+
+    Set the Ringing_Locally flag when Ringing is called.
+
+commit 28f901c858bcaebd791a970977783d74e68d9e6e
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-18 21:50:36 -0600
+
+    Ensure Accept isn't called in an invalid state.
+
+commit 9d4d394e52ad11dca205365602553b708f34dcd1
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-18 21:36:05 -0600
+
+    Return an error if AddContent is called on an ended Call.
+
+commit 5a7757ca53b83ee6904354f02a4caa0ade0a11eb
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-18 21:14:13 -0600
+
+    Don't send a content-modify message if the content hasn't been sent yet.
+    
+    This fixes a crash if you SetSending before session-initiate is sent.
+
+commit 344de4db2a684323083cc3fb8432009f720feb34
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-18 20:17:57 -0600
+
+    Ensure that InitialAudio and/or InitialVideo is set.
+
+commit 07914e06755374064b50ec7f7d8e46c705301f7e
+Merge: 04c6381 0145f36
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-15 16:24:19 +0000
+
+    Merge remote branch 'danni/pmuc'
+
+commit 04c638177e42671a64acc55b9f4141e27bdf4249
+Merge: a1f6b57 70b9262
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-13 15:52:37 +0000
+
+    Merge branch 'enumtypes'
+    
+    Reviewed-by: Vivek Dasmohapatra <vivek@collabora.co.uk>
+
+commit 70b926235f24014036ea42d72d1e847eaeefb990
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-13 15:44:46 +0000
+
+    fd.o #26027: gibber, loudmouth, src: remove unused rules for *-enumtypes.h
+    
+    If/when we resurrect these, we should use static pattern rules rather than
+    implicit rules, to avoid the bug described in fd.o #26027.
+
+commit d8452cbe12580af14352e78af4a1d815a24ad3b9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-13 15:43:22 +0000
+
+    fd.o#26027-related: update wocky to have less magic in *-enumtypes.h
+
+commit a1f6b57a49b180cbe2d3d29b2b07e1abdc0a7786
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-13 13:53:29 +0000
+
+    Update wocky for working gtkdoc and better enumtypes.h generation
+
+commit 0145f36d52f54dca7ab56bb48cb27d6140c2c6ab
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2010-01-13 21:33:24 +1100
+
+    Remove requirement that InitialInvitee{IDs,Handles} are mutually exclusive
+
+commit 0c2492f71f5ee8b8781d72f57b04e60e2b1ce54c
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2010-01-13 21:29:30 +1100
+
+    Use that quirk to decide when to create a chat on Google's server
+
+commit 967e2f391a3f4a8e5cf526b3e9a60d16378fdc64
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2010-01-13 21:28:45 +1100
+
+    Add a quirk capability to detect the Google webmail client from its c@node
+
+commit a7fb982744b626772abfcfb1f26dab9a77d8ab56
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-12 17:11:24 +0000
+
+    ¬ require-encryption ⇒ ignore-ssl-errors
+    
+    In Gabble 0.8, setting require-encryption to False implicitly set
+    ignore-ssl-errors to True, on the basis that if you're only using TLS
+    opportunistically, you don't care about most certificate errors (except
+    maybe revocation). There are only three combinations of these two
+    settings:
+    
+     • Don't care about encryption
+     • Give me SSL but I don't care about certs
+     • Tin-foil hat
+    
+    Previously in 0.9, the two parameters were just passed as-is to Wocky,
+    which does not behave as described above. This patch makes Gabble
+    explicitly state this logic.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 7336d67d367d7b7f7c19af78fe51527f214c11f7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-12 11:41:41 +0000
+
+    Depend on dbus-glib 0.82 for _unregister_g_object
+    
+    While this function was introduced in an earlier version, it was not
+    exposed in a header file until 0.82.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit ddaf234d1628e9a464ac37ec719e9845a4615b41
+Merge: ed89e24 9254d60
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 21:46:28 +0000
+
+    Merge branch 'gateway-reg'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 9254d60e427435824cc4a89701528c4ba88c72ad
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 20:52:50 +0000
+
+    gateways plugin: put non-WOCKY_XMPP_ERROR errors through gabble_set_tp_error_from_wocky
+
+commit 7098fca46292a666b3a8297c07f30f6db310f361
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-04 18:53:56 +0000
+
+    Add a regression test for the gateways plugin
+    
+    In particular, check that the errors mentioned in XEP-0077 are handled.
+
+commit 0e4b405ad5393afa134ff867546f0a227e18f6fa
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 20:37:51 +0000
+
+    plugins: add a gateway-registration plugin
+
+commit 092af3fb811d6b6d010903835a2c63102ca35543
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 15:42:59 +0000
+
+    extensions: add a very simple API for gateway registration
+
+commit 211eb5f45acae1798c401b294a38e23bbc73f49f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 20:35:53 +0000
+
+    Add a simple test for gabble_set_tp_error_from_wocky()
+
+commit 2f837030df081384886d29a006493d964fe73078
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 19:54:54 +0000
+
+    Add code to map Wocky errors into Telepathy errors
+
+commit cb0550043175abff7df36e08d47312a1200fff04
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 19:54:10 +0000
+
+    add <gabble/gabble.h> meta-header
+
+commit ed89e2468db33e18aa796bb2b1aea278262d11d8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 15:30:50 +0000
+
+    .gitignore: ignore intermediate files for gcov 4.4
+    
+    This is basically commit a9cd3574ef61d from telepathy-glib.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 02d6ca0ff7a19f47b7367eda756a4d5121135b11
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 15:27:35 +0000
+
+    Sync glib-ginterface-gen.py from telepathy-glib, fixing method names that are C keywords
+    
+    This is commit 46dc86715c3ff6b0e from telepathy-glib.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit b04a05234d8569c9852611142bfb3ecb6c1a5822
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 14:14:59 +0000
+
+    Add a trivial test for SendDirectedPresence()
+
+commit bb419aa34f74fcb103f484a04fb3d120c4122d73
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 14:11:27 +0000
+
+    Implement conn_presence_send_directed_presence()
+
+commit 8dbbac825bfa72377cc85c6fbf75e5ba7660fbc3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 13:57:26 +0000
+
+    presence/decloak.py: assert that DecloakRequested is emitted
+
+commit 6c8b6f1172665e43c6186499a32744cc3d4534d7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 13:57:16 +0000
+
+    Emit DecloakRequested when appropriate
+
+commit 85de913c2b4c58e8b11548adff72da2c85f9dc5e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 13:46:05 +0000
+
+    Extend presence/decloak.py to test altering DecloakAutomatically at runtime
+
+commit 4f7d751ccaa4154bb0b580f71cd6f1b6063c2490
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 13:38:33 +0000
+
+    Implement the DecloakAutomatically property
+
+commit e3f82002b27de0943ee8ab06cb1b00a9488ce316
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 13:38:07 +0000
+
+    Add a stub implementation of the Decloak D-Bus API
+
+commit 1e733b4760b85dda0dcd321b101fc1a2fa374772
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-11 13:26:41 +0000
+
+    Add a simple Gabble-specific D-Bus API for decloaking
+
+commit 67ff3c952da0685060315a16f9b15650426ba4b1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-08 17:16:00 +0000
+
+    gabble_presence_cache_is_unsure: presences with keep_unavailable don't count
+    
+    These aren't really presence, but a pseudo-presence-record from some other
+    source (currently, a <message>), used to avoid duplicate signals for
+    someone's nick if they send it in a message.
+
+commit fbaefb943d49560da85d15d83864ecfe823e6e65
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-07 18:05:36 +0000
+
+    jingle/decloak-peer.py: add a test for decloaking people when we call them
+
+commit 6281979aa398c74194e8840bbf512b9abf6d7bf3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-07 18:04:35 +0000
+
+    GabbleMediaChannel: once per call, try to decloak apparently-offline contacts
+
+commit dda02eda330be0e810f5a31147bab0aa2c39a3c5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-07 18:04:09 +0000
+
+    GabblePresenceCache: add support for de-cloaking contacts
+
+commit 516919bbaeaedf0e1b2df41ad32898c3035ca17d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-07 18:02:47 +0000
+
+    gabble_presence_cache_is_unsure: improve diagnostics
+    
+    Also note a way in which we're too conservative - if we've had the roster,
+    we don't need to wait for the unsure-period to end if the handle is not
+    on the roster.
+
+commit be02fb4b9ad8b9197b5c394cc3b41e6314b52b78
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-07 17:59:32 +0000
+
+    GabbleMediaChannel: delay_stream_request: always subscribe to both signals
+
+commit 1b356a74904bb25c92108aea29f505b1c411d494
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 20:39:04 +0000
+
+    gabble_connection_request_decloak: add
+
+commit db5480a0e2807adeac0bbf05e65b1128b2ca5891
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-07 13:55:39 +0000
+
+    gabble_presence_cache_caps_pending: make static
+    
+    We no longer need to call this function elsewhere, since is_unsure()
+    implies a call to it.
+
+commit 6d0a3314234787494c2ce267966375a02c2b9264
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-07 13:54:52 +0000
+
+    Call gabble_presence_cache_caps_pending from gabble_presence_cache_is_unsure
+    
+    This will let us extend _is_unsure to cover new and exciting ways to be
+    unsure about someone's capabilities, like waiting for them to respond
+    to a decloak attempt.
+
+commit fc3396182ff4fabcec1b0432cb753024193cacea
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 21:05:00 +0000
+
+    GabbleMediaChannel: listen to GabblePresenceCache::unsure-period-ended
+    
+    Previously we hard-coded a wait of 5 seconds, but if the call was
+    started (say) 2 seconds after the presence cache was created, then a
+    3 second wait would be adequate. We might as well let the presence
+    cache tell us what it's thinking, rather than duplicating the timeout
+    logic.
+
+commit d93fd820134cfbcafb7a045f4d292e8783ad5239
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-08 12:58:29 +0000
+
+    GabblePresenceCache: emit a signal on unsure -> sure transition
+    
+    This also means we don't have to compare GTimeVals in order to see whether
+    we're sure yet.
+
+commit 943d8e93f311587b1da9758cc0430ae1dcc64935
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 18:27:56 +0000
+
+    presence/decloak.py: regression test for de-cloaking (or not)
+
+commit 14d1cd412220e9d906b67a02862ed8020823108f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 18:27:40 +0000
+
+    GabblePresenceCache: optionally respond to requests to de-cloak
+
+commit 39d575c8c2a4333ac87877e0ce819d9f82759a5b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 17:40:10 +0000
+
+    jingle/outgoing-basics.py: check sending of directed presences
+
+commit 8d7ca1ca34a690c7788f8189349e08b80c873885
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 17:15:47 +0000
+
+    GabbleJingleSession: send directed presence before session-initiate
+    
+    Only send it if we aren't already visible to the peer. This includes our
+    avatar, detailed presence etc. (we could use
+    gabble_connection_send_capabilities if this is considered too much of
+    a presence leak).
+
+commit 17451b23e5a577d7ed736c80f38a6177670a0ccd
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 17:14:29 +0000
+
+    gabble_connection_visible_to: make extern
+
+commit 25d0fad58c9d213c865fa039db341e97e2eebfc6
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 17:12:23 +0000
+
+    _gabble_connection_signal_own_presence: optionally send as directed presence
+
+commit da7ce416da24909566cbe58a52c5df86b19a5de2
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 16:28:44 +0000
+
+    gabble_connection_send_capabilities: add a method to send caps by directed presence
+
+commit a80dd813b75295a08e4406f8d337bb405f5373b9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 16:27:38 +0000
+
+    _gabble_connection_signal_own_presence: factor out gabble_connection_fill_in_caps
+
+commit 27cba18d0fc9aee67561a9d07eae500803c8a1e3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 15:15:53 +0000
+
+    Add proto-XEP for de-cloaking
+
+commit 3fe08120e1de62687cdd3a75be11a92ba1e2c788
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-08 17:06:24 +0000
+
+    lm_connection_register_message_handler: comment assertion that differs from LM
+
+commit 725dd6cf4fb569e6132df69bd035639cd44cab21
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-08 17:05:45 +0000
+
+    lm_connection_register_message_handler: remove bogus de-duplication
+    
+    It is incorrect to register the same  twice: it won't work
+    with this implementation, and if done after connecting, it'll cause an
+    assertion failure. However, the current code silently ignores these
+    double-registrations if they happen before the connection is connected,
+    and omits the second and subsequent use from the list of delayed
+    registrations.
+    
+    This patch causes both code paths to lead to the assertion failure,
+    which means we'll at least spot it if someone gets it wrong again :-)
+
+commit 148fa831f05619b4020d11787c9e53daee4fdb7c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-08 17:00:40 +0000
+
+    GabblePresenceCache: don't register the same LmMessageHandler twice
+    
+    The presence cache wants to register the same C callback, with the same
+    user data, for two message types. The real Loudmouth allowed it to
+    use the same LmMessageHandler for each registration, but our
+    compatibility shim for Wocky doesn't support that usage; one of the
+    registrations just doesn't get called. In practice, this resulted in
+    the callback not being called for LM_MESSAGE_TYPE_MESSAGE.
+    
+    (I've audited the rest of Gabble and this is the only place where this
+    happens.)
+
+commit 0ce9468ed9a70c4ee2a1e88add54fb058e7c4356
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-28 14:18:30 +0000
+
+    Grab UNRELEASED-checking distcheck-hook from tp-glib
+    
+    Fixes: fd.o#23848
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 1e56a445a34d428c0feefd7423983608bd04919c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-11 13:42:39 +0000
+
+    Treat <item-not-found/> as the empty vCard
+    
+    When we want to update our vCard, we first retrieve our vCard from the
+    server. XEP-0054 says that the server MUST return <item-not-found/> if
+    you have no vCard set, but we previously assumed that the server would
+    return success, with an empty <vCard/> node. Prosody respects the XEP.
+    So, let's treat the former case identically to the latter.
+    
+    Fixes: fd.o#25987
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit d902fd929f26f5cecb24ba50303685d46eb500b4
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2010-01-09 14:12:52 +1100
+
+    Make checks for NULLness explicit
+
+commit e42da6e2ad14c712511555c90878f4846c089ef5
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2010-01-09 10:22:17 +1100
+
+    Small style fixes from review.
+
+commit b34f3eddc77999112467098f33ea8f32d3d81beb
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2010-01-09 10:15:56 +1100
+
+    g_warning -> DEBUG
+
+commit 99b587426c4a95da8815a70d0027feb37353eaf4
+Merge: 644c748 2e75d50
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-08 17:09:55 +0000
+
+    Merge remote branch 'maiku/freeing-fixes'
+
+commit b4fe3d04f29f6572f0d4635e7397fb48bbdce1fc
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-08 15:03:24 +0000
+
+    Don't free strings not owned by us
+
+commit 6b99c9af6ac674710a04f21a3a43555d52934f1d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-08 15:03:06 +0000
+
+    Ensure that the Initial{Channels,Handles} is never NULL
+
+commit 644c748ced34ac54eff4f0818d5d9fd42e42c846
+Merge: 35f3910 788d787
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-08 13:50:32 +0000
+
+    Merge branch 'trivia-before-decloak'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 788d78767b81c83012c35ef4616a34bab94d9fbc
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-08 13:45:23 +0000
+
+    COPYING: update details of XEP tools
+
+commit 36c723d35353b1ec708c027ea2ea69718e7ca508
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-27 15:31:35 +1100
+
+    Extend test
+
+commit 9ca42ee011b7f9ce8a549d97dfc004dd16932ff4
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-27 15:15:19 +1100
+
+    Beginnings of a PMUC unit test
+
+commit d4f8c583bd9cb478177c2346cf795a18f9aade5b
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-16 14:31:26 +1100
+
+    Refactor a bit so that the Conference interface on named MUCs
+    
+    The spec implies that you can create a new named MUC using the Conference
+    interface. This currently isn't implemented quite right, because if the MUC
+    already exists and you join it, but with properties from the Conference
+    interface, these probably won't work the way you think they should. Probably
+    needs a stack of tweaking here.
+
+commit 13cf3b90958650fe50847674637aa1737eeea206
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-16 09:52:26 +1100
+
+    Some small fixes to props
+
+commit 94b7a84ca77489c97c7d6a6aef8d7c232a79fc56
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 13:48:08 +0000
+
+    Move xep.xsl into docs/ and add xep.dtd, xep.ent, xep.xsd
+    
+    The .ent and .dtd expect to be used from the same directory as the source.
+
+commit 8c957bcc81f36bcf9d54113ed6441736a29e63d4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-07 18:04:48 +0000
+
+    exec-with-log.sh.in: put timestamps in the log
+
+commit 5c1feb9385aa24636b14593046b6707029fdab48
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-07 17:24:55 +0000
+
+    GabbleMediaChannelPrivate: turn bitfield into genuine booleans
+
+commit 59c5fea47d2054f5160dc152142454ade878f32a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-08 12:30:47 +0000
+
+    GabblePresenceCache: assert that caller supplied a connection
+
+commit fab38837b0a6baf7147c7b614f4a37d8b8455196
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-07 18:01:35 +0000
+
+    gabble_presence_cache_set_property: simplify construct-only 'connection'
+    
+    There's no point in defending against already having presence_handles;
+    because connection is construct-only, it can only be set once.
+
+commit 885c027079e9568fd620f4b9d66a010990a222c5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 17:10:34 +0000
+
+    JingleTest2: optionally send roster during prepare()
+
+commit 9821afdc553a513fe1c657dc20e5f2a7d77348bb
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 17:08:39 +0000
+
+    Jingle tests: be robust against receiving NewChannel[s] for contact lists
+
+commit d71e033164d5f5e2f9614eebec14bb25a850640b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-07 12:59:49 +0000
+
+    test-wait-for-caps-incomplete.py: don't crash if the test fails at the end
+    
+    It was using a nonexistent object as the assertion message.
+
+commit 35f391063fd31c0e436ccedac9541620848baa60
+Merge: 274ee25 be01642
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-08 13:20:08 +0000
+
+    Merge branch 'bare-jids'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 1125f3ffdafc805f327e342c8dad480ad8e77ebb
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-15 22:49:06 +1100
+
+    Add Conference immutable properties to PROP_CHANNEL_PROPERTIES
+
+commit 7e2553e7146bb65b8b5aa2c4177e52385eea5114
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-15 22:36:53 +1100
+
+    Add Conference properties to GabbleMucChannel
+
+commit 944001868ae654632c5eeb19dc2dad8f601d36c4
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-15 09:24:39 +1100
+
+    Add support for <continue/> to invites coming from InitialChannels
+
+commit 6a33b71a82e8adef4351b39acb8afd204caa6d35
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-14 15:59:00 +1100
+
+    Remove API from GabbleImChannel
+
+commit c316c817d2a34c5d890c93acc5b734036f4b3952
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-14 15:56:49 +1100
+
+    Use GObject properties instead of introduced API on GabbleMucChannel
+
+commit c64e247fd8eef9267767b79a8734f7a80c3e0be1
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-14 15:07:30 +1100
+
+    Invite initial invitees to MUC
+
+commit 0f51f4def0b336879d76baef8ea040133ee3f179
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-14 14:49:01 +1100
+
+    Actually connect to a Google PMUC
+
+commit c11dce49c1bdbfc592a033f5e5a6d2462824b827
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-14 13:18:18 +1100
+
+    Process InitialInviteeHandles and InitialInviteeIDs
+
+commit c01dff2ef4cb114e23417b7301b37d52961a3c09
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-11 21:49:40 +1100
+
+    Look at InitialChannels and build a set of Handles
+
+commit afe42bd4046a57103baa15755eb6de51171d4849
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-11 17:52:38 +1100
+
+    [MucFactory] detect conference channels and add a stub for handling them
+
+commit 52c2ac17274a524cae7b2d3c937c93582a5d09fc
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-11 17:01:24 +1100
+
+    Include Channel.Interface.Conference draft from tp-spec
+
+commit 274ee25fafc97818a91f9f3b1f2b5881bf70d56a
+Merge: bb62f35 ff8b997
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-08 11:52:00 +0000
+
+    Merge branch 'muc'
+
+commit ff8b997a6348a4fc87c832d901c0176958dfded8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-07 16:03:42 +0000
+
+    Unref the WockyMuc object when disposing the MucChannel
+
+commit ed835404db22113719cfb8235ee628d858e4cb1d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-07 16:03:08 +0000
+
+    Update the presence cache from the cache in muc channels
+
+commit 174d89b56330e546116c5294e221fea736de4df9
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-07 16:02:16 +0000
+
+    Set object GValues with set_object
+
+commit 200c2b91f40ea3859d9402c7e2d7d35f9e0433e3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-07 16:01:11 +0000
+
+    Expose api to pass presence message to the presence cache
+
+commit e8cb6fa8350fd9fc82b80dd1c33da6c6b02b6818
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-07 13:37:48 +0000
+
+    Handle tube presences in the intial presence
+
+commit f1ef705a545d84fbd92da2e6837bcf2242e544eb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-07 13:37:26 +0000
+
+    Correct refcounting when requesting multiple tubes from one muc
+
+commit 0cd7f9df38066a399fb8abd03ca465e142adaeec
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-07 13:32:47 +0000
+
+    Streamline some code slightly
+    
+    Instead of jumping through hoops with g_hash_table_foreach, iterate over the
+    hashtable. Also no need to assert something is of a certain type, static type
+    checking ensures that already and if it's NULL things will explode anyway..
+
+commit f66b28b14616aa330444956c4d669bc13c404f08
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-07 13:31:09 +0000
+
+    Small race-protection
+
+commit 2cba8f33c47389cc5acf126ff455fde2d1aae193
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-07 13:30:41 +0000
+
+    Use the right muc namespace for participants
+
+commit 2c5858e58b8c68eb217311819ba404f58eb5f0e0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-05 18:13:21 +0000
+
+    Explicitely tear down the muc channel
+    
+    A MucChannel owns the Tubes channel associated with it. The tubes channel uses
+    a tp_external_group_mixin, with the MucChannel being the external. Which means
+    there is a reference counting loop that must be explicitely broken.
+
+commit c3790d1cf16ad88d11b1844155206a09e8003a03
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-05 18:04:04 +0000
+
+    The factory should emit new channels, not the text channel
+
+commit 7e8a6e05b04511526df353fb727a5671a6a5e31e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-04 13:10:53 +0100
+
+    Be resiliant against other group flags changes
+
+commit ae4be50782e52dcdea3a6e40e04ef4a43713f8a7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-04 13:09:40 +0100
+
+    Handle the fill-presence signal
+
+commit 526208c2475dc1eaccddc96238f10a2073e6720e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-04 13:08:31 +0100
+
+    Use the right bit of userdata
+
+commit 85b79963c03b918834a8ede0a676bb8add7b757c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-04 11:41:14 +0100
+
+    Add status and vcard info to the presence we send to a muc
+
+commit 3a5ef8587f9c5808fdc3d8cda71681644acbf968
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-04 11:39:47 +0100
+
+    Set the members of a muc
+
+commit 086c53ed3bb32a00aaa14b1389668c1f3c9b40cd
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-04 11:39:04 +0100
+
+    Reset jid when retrying to join
+
+commit 96af7bbe896abf2869467d087416d6596022ea98
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-04 11:34:13 +0100
+
+    Factor out code to add the status, caps and vcard to a presence
+
+commit 6444150d0740eb7d9f7c65a323bfd5430eee1dba
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-04 11:28:16 +0100
+
+    Use assertEquals where applicable
+
+commit 5307940a67aff7e2d503ded843d86ec553941472
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-12-27 19:35:45 +0000
+
+    First attempt at moving the muc backend over to wocky, and moving most of
+    the tubes support into the muc-channel object. Builds, most tests fail as
+    of this check in.
+
+commit 4117ccd6d750f36933ab2d080e9934a53e987e10
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-12-27 19:34:13 +0000
+
+    Change ..._channel_presence_updated to take the LmMessageNode, not LmMessage.
+
+commit 0cc0b0a3dc36706805a4f7587fc499d376280f03
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-12-27 19:33:11 +0000
+
+    Move GabbleTubesChannel typedef to types.h header to break circular dependdency.
+
+commit ba54c2a031a957d3c2815a2d048efe3180a7ea62
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-12-27 19:29:23 +0000
+
+    Expose some utility functions related to gabble/tp specific MUC functionality.
+
+commit 765b21af67f0cff378ca8faa65e06e9b506d2229
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2009-12-27 19:28:41 +0000
+
+    Expose underlying wocky porter to things using the connection object.
+
+commit 3cbc88298eb86870c6258a39336d92d3d029212d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-08 11:31:22 +0000
+
+    Update to a wocky snapshot with initial muc support
+
+commit be01642d29ebca226c6bbc593e1f71396cdada64
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-06 13:16:55 +0000
+
+    Represent bare jids as resource = NULL, not resource = ""
+    
+    The RFCs don't explicitly say anywhere that the empty string is not a
+    valid resource... also, it's cleaner this way. However, this does mean
+    changing a couple of function signatures.
+    
+    Also move the definition of SESSION_MAP_KEY_FORMAT close to its only use.
+
+commit 2e75d502a47a85bd321acf7e5eef6e957f542a53
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-05 19:40:11 -0600
+
+    Free GabbleCallStream's endpoints when disposing.
+
+commit 2ef7cddac66cd4774c17e920a4476dc3070bc2c8
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-05 19:39:36 -0600
+
+    Free GabbleCallContent's streams when disposing.
+
+commit 96f0832a0cb115a6d147b355729bdf1910e30d59
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-05 19:38:02 -0600
+
+    Don't unref an object that isn't owned.
+
+commit bb51ec50a7355cc8aa63889bc6b9206cb2571a6e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-05 19:29:34 +0000
+
+    various Jingle tests: test calls to/from bare JIDs where we have presence
+
+commit b357797a99d19fbbb54040f4f644652362264cbd
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-05 19:03:53 +0000
+
+    jingle_pick_best_resource: allow the bare JID (resource = "") to be chosen
+
+commit 2185b62068be9ebfec0b819d7092f1048d3662d9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-05 19:03:24 +0000
+
+    GabbleJingleFactory: allow bare JIDs to call us
+    
+    Represent them by resource = ""; adjust a debug message to be less
+    confusing in the presence of potentially-empty resources.
+
+commit 11f1a294df976be6f7bcf19d5d1b1bc18c7e99f5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-05 19:02:09 +0000
+
+    GabbleCallChannel, GabbleMediaChannel: improve debug for existing sessions
+
+commit 93d4bf4f917007dc10cdbd2d0cbe456c34d2c492
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-05 19:01:16 +0000
+
+    gabble_presence_resource_pick_best_feature: disallow "" as a resource
+
+commit a205d8533786c18f1eac8ee4e3829a16f61b4abb
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-05 19:00:51 +0000
+
+    jingle_pick_best_content_type: allow the resource to be "" (bare JID)
+
+commit 25bfdf35f13d8bcfcb47e8a0d930eba9f55c4dc6
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-05 19:00:04 +0000
+
+    gabble_presence_pick_best_feature(): add
+    
+    This is analogous to gabble_presence_resource_pick_best_feature(), but
+    checks the aggregated caps of all resources (or, more usefully, the bare
+    JID's caps, if there are no resources at all).
+
+commit c9ce806c55027c5c9da866b3ba595698717d617b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-05 18:59:09 +0000
+
+    gabble_presence_has_resources(): add
+    
+    We'll sometimes need to deal with presences that have no resources, just
+    presence for the bare JID (like gateway users).
+
+commit e32d1a34e0e5ada12d80630286adaf3b76b741e3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-05 18:58:09 +0000
+
+    GabbleJingleSession: allow resource to be "" to indicate use of a bare JID
+    
+    Calling XEP-0100-compliant SIP gateways will require this to work.
+
+commit db4f843ac9d4b0b6f7e5608a3f1a0d2c6747d667
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-05 18:56:47 +0000
+
+    Jingle tests: get the peer's full and bare JIDs from the JingleTest(2) object
+
+commit 5c6a2e027c2db05c7760a2ac58436a21f59cb51c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-05 18:53:22 +0000
+
+    jingletest, jingletest2: also remember the peer's bare JID
+    
+    This is useful for assertions involving TargetID.
+
+commit bb62f35a3a916a68f6750f234f2d5cb6b20d3a58
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-04 16:28:25 +0000
+
+    Remove unused register.[ch]
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 60681ce1a3418668ec04d4a472bc995a7e399740
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-28 19:36:21 -0600
+
+    Wait for CALL_STATE_PENDING_RECEIVER before sending session-initiate.
+
+commit 3d4e2c865c72bc30db5346fcd84575e88aebcf97
+Merge: 52e72ad fd2dd27
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-29 14:11:13 +0100
+
+    Merge branch 'new-media-spec'
+
+commit fd2dd27e7478995631ee0b2815a5c4089a2e4b47
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-29 12:19:51 +0100
+
+    Improve comments
+
+commit e51c5d8fe6d89dbc7e8e10dc7dcb9ec3a715e64f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-23 13:13:01 +0000
+
+    Remove the obsolete add_payload argument to generate_contents
+    
+    Now that generate_contents is only used go generate the content for the
+    session-initiate and session-accept stanzas the add_payload argument isn't
+    needed anymore.
+
+commit 27e9e0e749d723f02863c8cafa48dfbce02ebba3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-23 13:10:06 +0000
+
+    Call remote-candidates with the stream it should apply to
+    
+    This allows us to send the transport info per stream we have and makes it send
+    the right transport-info stanza. Also tweak the GTalk Content and Jingle
+    function so it understands cases without a description correctly
+
+commit b4517917e02cb3ea04eef8c982f6bf844c94319b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-23 13:04:58 +0000
+
+    Make the senders and description argument to Content optional
+
+commit 715144e83d0a3a73ce691bcac62c29f8a7b8868b
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-10 19:14:38 -0600
+
+    Convert Content() in JingleTest2 to take transports and descriptions separately.
+
+commit 432cea8bd2d6f03414497239b5a43ca6739fcde4
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-08 14:30:41 -0600
+
+    Add a flag to include payloads in generate_contents' output.
+
+commit dc74b6dbb8506b9a7c8b7a88e6821fafa5658ff1
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-03 22:54:45 -0600
+
+    Add tests for SelectedCandidate's property and signal.
+
+commit 0b0a3f3505e1159f29cca78dc04854e13e8102a5
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-03 22:42:52 -0600
+
+    Add a test for the RemoteCandidatesAdded signal.
+    
+    Because of fdo bug #25426, adding remote candidates using the GTalk v0.4
+    doesn't work if Gabble initiated the call. It can't be tested, so just skip
+    that mode for now.
+
+commit b11057f3bee51779944589fb61ba0f33c77b5ec6
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-03 22:38:23 -0600
+
+    Move StreamState related tests out of the incoming condition block.
+    
+    They are applicable for both incoming and outgoing.
+
+commit cc8fc4fb9e58fb99f00f412b48f27208763842d8
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-03 22:19:57 -0600
+
+    Move LocalCandidatesAdded and session-initiate into an expect_many.
+    
+    Because one is a dbus-signal and the other is an xmpp stream-iq, the order
+    wasn't guaranteed. The two signals were sometimes, although rarely, out of
+    order, which caused the test to incorrectly fail.
+
+commit 3fd33feeec42f42f3895bc0d857d1f0bd3f2816c
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-03 22:02:07 -0600
+
+    Modify get_call_remote_transports_dbus to reflect what Gabble actually returns.
+    
+    At least for Google P2P transports.
+
+commit 6e2afb4bed192140612dae0ee9514f1092be79ec
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-03 21:59:53 -0600
+
+    Add a remote_candidates function for sending remote candidates to Gabble.
+
+commit 2afce0f46464468a23db149d43495f57ed64d7f5
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-03 21:55:40 -0600
+
+    Have generate_contents add transports instead of payloads if they're passed.
+
+commit f2cc24398b6d9290a5df9bf71b551a365a1d62db
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-03 21:41:01 -0600
+
+    Remove GtalkProtocol03's dummy TransportGoogleP2P as it's not valid anymore.
+    
+    The transport node will be ignored as usual, but if there are candidates,
+    the content function will grab those instead.
+
+commit f5576e64026785483cd4867d565bc3443da5d78d
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-03 21:50:50 -0600
+
+    Return candidates if they exist in GtalkProtocol03's Content function.
+
+commit 54c76cc4de42d56ab6a14e10aa0f5f3d01ac2fec
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-03 21:39:11 -0600
+
+    Fill in GoogleP2P candidate nodes when remote_transports are passed.
+
+commit 9663eb9cf4fa669b509754e738100d909338f215
+Merge: 0042f76 2a8704d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-28 21:24:48 +0100
+
+    Merge branch 'new-media-spec-channel' into new-media-spec
+
+commit 52e72ad406268d096ba2763c72b05ee859110f91
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2009-12-28 18:19:10 +0000
+
+    Update Wocky to ship test certs in out-of-tree builds
+    
+    This makes Gabble distcheck successfully if you build out-of-tree.
+
+commit 0042f760f5ce99761bf12de4132d5f2d9bd6c8b6
+Merge: 59eee74 def0f7a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-25 12:49:41 +0100
+
+    Merge remote branch 'maiku/remote-credentials' into new-media-spec
+
+commit 2a8704dfeedfb8f956ee199e2cb3452ffd655fd6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 17:04:47 +0100
+
+    Use constants
+
+commit c768af1e0bc9180a7d9c4f2bb82d7b57dfe8e4dd
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 17:04:32 +0100
+
+    Webcam streams should be of type Video
+
+commit a5b39df2b89ea28aca1aefac44a7e7177a3a55b0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 17:04:12 +0100
+
+    fix identation
+
+commit 40bca678861e488ddc898f149c5d52e11930eeeb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 17:03:03 +0100
+
+    Fix identation
+
+commit 43b567fc61ae7aa20a991b89037d6bfd477577b1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 17:02:48 +0100
+
+    misc tweaks
+
+commit ec46d41ddb1fdc23eaacdc3cda1921738124dd88
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 17:02:34 +0100
+
+    misc tweaks
+
+commit 0a5b021d9a462b4ba437eeff9218acc4aba91d14
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 17:02:19 +0100
+
+    Free all data in finalize
+
+commit 94686c7ab29982f17d8f6a559334d4bc352f1a43
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 18:23:19 +0000
+
+    Test the CallMembers property a bit
+
+commit 7dcaf21aa8a0530c4a044d179ac6c1de3b903243
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 18:23:07 +0000
+
+    Implement of CallMembers
+
+commit 4e2b39860cfc530a4b31d12dc01ae6a84aa083f5
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 16:17:27 +0000
+
+    Correctly implement mutable contents
+
+commit 03a733985935c1a0cd9b4415fb16485e315b1814
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 15:18:03 +0000
+
+    Test the Senders property a bit more
+
+commit 1387e1dfba25d1e0aedc31329d7cddaf96ff8801
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 15:14:51 +0000
+
+    SendersChanged should only have updates not the full set
+
+commit b2b102478c50f5bbe54a658a5b20b883da6349ab
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 14:54:10 +0000
+
+    Even if the protocol doesn't have a concept of senders keep our internal state consistent
+
+commit da1e31643920c29ead48cdc2ee51b9dc09eb694c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 14:53:32 +0000
+
+    Implement SetSending and ensure the Senders property stays in sync
+
+commit febcc8cbebabf6f3f561aa7dab9c011fefcf59c4
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 14:53:00 +0000
+
+    Add a utility function to change the direction to sending from out side
+
+commit dfaffe9515cb6ea1284eb01a7dbb3fbdb63d7517
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 12:31:55 +0000
+
+    No need to get the GabbleConnection from the JingleContent anymore
+
+commit 111d79afadd97920803d6d2fbbe8ef573b28f055
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 12:31:09 +0000
+
+    Check sender states after stream acceptance
+
+commit fd22819d6f3e3e6854656779079a4f23e4b8f3f3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 12:30:50 +0000
+
+    Update the sender states whenever the content state changes
+
+commit 6fb364ddb2ba7c1bd517e11185023c341c5f51d5
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 12:04:47 +0000
+
+    Slightly simplify determining the transport type
+
+commit 51a2f36a94c38097133aa6ed6a2b545bcfcc3871
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 11:54:14 +0000
+
+    Add basic testing for the Senders property
+
+commit 80fccd484c8584803715155cbca0322ec0dd4ffd
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 11:50:59 +0000
+
+    Basic implementation of the Senders property
+
+commit 2230c87670bf197f7c08934685075c7c0e2e28f7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 11:41:46 +0000
+
+    Pass the GabbleConnection on to CallStream objects
+
+commit f44903097d2f8b372648775e3619f09b72acd38e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-14 11:34:38 +0000
+
+    Add functions to see if the direction is sending or receiving from our pov
+
+commit 6d6de3058b6a6ccc76834f1b386da4d27f4031c6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-11 14:44:22 +0000
+
+    Test Name, Creator and Disposition properties
+
+commit f988362df3a8c289e4e4e22252968eae26e5c975
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-11 14:37:25 +0000
+
+    Add a name argument to the jingle session
+    
+    Allow other bits of code to suggest a name when creating a new content
+    in a jingle session. Also default audio/video streams to have respectively
+    Audio/Video as their default names. In case of content naming colisions
+    suffix the suggested/default name with _%d to prevent confusing clients that
+    think content names are unique.
+
+commit d5153d2576c298bb2c1c209aadbd8a8b584f716d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-11 14:33:35 +0000
+
+    Implement Name, Disposition and Creator properties on Call Content objects
+
+commit 697b3a565afebd0591613d304f6835ba4ee09275
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-11 12:39:54 +0000
+
+    Test adding a video stream
+
+commit 5d6224f06a815bc7cddb0b589e4a7ff65d6c646f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-11 12:39:23 +0000
+
+    Implement the AddContent method
+
+commit 2df8c9711cc2884d0142f2e00d1f3a70b95820a5
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-11 12:37:50 +0000
+
+    Use the first transport of an incoming stream as the default transport
+
+commit 96fc1af6420668395bebeae767f61353b2eff0ec
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-11 12:33:32 +0000
+
+    Make call_channel_create_content return the object path or an error
+
+commit 9cf9b5807fa7e2ab4c50ea1c40c2433939969c24
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-10 13:22:36 +0000
+
+    Test Hangup
+
+commit 256c7204de034c4af36bf20c23a0c783ae8497ef
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-10 13:22:20 +0000
+
+    Simple implementation of Hangup
+
+commit 8510a2d3a93b2396f48f4c576639546a538a263c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-09 17:20:38 +0000
+
+    Test the CallState tracking
+
+commit b0efecd0abb47f3aaf06b6df9c88095b8a3a5ce6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-09 17:20:16 +0000
+
+    Implement CallState
+
+commit d5479c33719c44cd5fd9003eac885e001bde0c65
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-09 11:43:45 +0000
+
+    Get all call state properties directly from private fields
+
+commit 8560c86414e6dd76102abb3999197432d8d8c5a0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-08 17:45:25 +0000
+
+    Implement dummy versions of various properties
+
+commit 492f580abf7a60036d038ccaf243273a4663d8fb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-08 15:23:18 +0000
+
+    Implement the HardwareStreaming property
+
+commit af8d7b5130c1a1e8de134792fad85a1793188660
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-08 15:22:44 +0000
+
+    Indentation trivia
+
+commit a11a3869957de24d6499872f2d05421451637545
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-08 14:47:34 +0000
+
+    Implement dummy version of Ringing
+
+commit 59eee74f16517a6e616cc894fa0e13765e424bde
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 01:10:12 +0100
+
+    Use the protocol parameter from the remote transports array
+
+commit 14da889010e8855b299e0dbc88e7cdd4d7b03a8a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 01:09:52 +0100
+
+    Fix indentation
+
+commit 6a138241850759b9486905691513c61e7f696fe1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 01:09:39 +0100
+
+    Also check the removed array
+
+commit 6f8a50f64fe088652ec18cd3cff436e97828be66
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 01:08:42 +0100
+
+    Use assertLength where applicable
+
+commit f02e8e9a500af3e08acce3c31eaf7bd04da0fee9
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 01:06:12 +0100
+
+    Translate the internal media type to the tp media type
+
+commit 60c84d7bb36651df1bebf9644ce5c89f1768295c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 01:01:08 +0100
+
+    Use G_PARAM_STATIC_STRINGS where applicable
+
+commit dc2143525032a8e4f17f6492c69a7b86849223f3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 00:53:40 +0100
+
+    Assert that object patch are non-NULL after setting them
+
+commit d858076ae1c30804e10473ab76840840bc275323
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-24 00:49:12 +0100
+
+    Fix various coding style and types, also remove some dead code
+
+commit 457e905ea89139eaceffc19879fefd58e1ccae0f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-23 18:42:59 +0000
+
+    Remove duplicate second definition of TWICE
+
+commit def0f7a8cc63ac02eeabdf638614c1667f3cef46
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-23 12:03:39 -0600
+
+    Don't set remote-credentials until we have better Jingle infrastructure for it.
+
+commit 59ee534da955e4c8a2a83d2d35a6ea9005303ada
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-23 15:24:41 +0000
+
+    Fix identation and remove superfluous code
+
+commit c949e18f33dbc27733e7a4c3dc816925f568fcb0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-23 15:20:40 +0000
+
+    Fix identation
+
+commit f6c0a077649de0424dc0747e5e4a9d794b43ed2a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-23 15:17:47 +0000
+
+    Use G_PARAM_STATIC_STRINGS where applicable
+
+commit e6e4e07ff245d844a12fa05bcec549b765c92fbb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-23 14:55:27 +0000
+
+    Fix indentation
+
+commit e147bfa89e3335b945f113f3aab1d99d3dfe7c52
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-23 14:36:18 +0000
+
+    No need to check for TARGET_{HANDLE,ID} twice
+
+commit aa89ff9cb8a984d3e8edd77ee557488d2f3b9ac8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-23 14:34:24 +0000
+
+    Type fix
+
+commit fd63dc3201fc4624bbee916a770c10e1b7dc5c92
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-23 14:08:59 +0000
+
+    Use tp_asv_* to create channel classes
+
+commit 671acd828790db49845cf4ea4bf098d27ac1e259
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-22 22:37:56 -0600
+
+    Use GABBLE_STRUCT_TYPE_STREAM_CREDENTIALS constant.
+
+commit 055748176df1f26d5fb03cb6c78033297fa79237
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-22 22:17:53 -0600
+
+    Initialize remote_credentials in init.
+    
+    This allows the get handler to be simplified and fixes a possible issue of
+    freeing remote_credentials without it necessarily having been set.
+
+commit 09c50d4b1e9e0dd98646aafae368e0fb7eac11ca
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-10 19:47:49 -0600
+
+    Free remote_credentials on finalize.
+
+commit b7d4223970c7dbf977e43c58f49cf41ea05d8d63
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-08 15:47:48 -0600
+
+    Fix shadowed variable error from rebasing.
+
+commit 6f09a8b44503f8209a92001babdba6660af91796
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-03 20:23:09 -0600
+
+    Set RemoteCredentials and emit RemoteCredentialsSet.
+
+commit ce858b243b8fe883898b9bcd1c5f77cf70e211fa
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-30 17:41:01 -0600
+
+    Add the RemoteCredentials property to GabbleCallStreamEndpoint.
+
+commit 72450d40bd46b2bead92f1e1a141c008261b879a
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-29 22:45:00 -0600
+
+    Add a test for GabbleCallStream's LocalCandidatesAdded signal.
+
+commit 03e683794080e1f75d4d4fe3f81272e87053d04d
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-29 22:44:31 -0600
+
+    Emit GabbleCallStream's LocalCandidatesAdded signal.
+
+commit 460065f9f5d4cfdc022faec360d0612e69a36ff4
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-22 22:03:50 -0600
+
+    Fix some minor style and initialization issues that were caught by make check.
+
+commit 91fc8f1f8e4ea7bcd9e68c1be4aaedb1ef7d0b7b
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-22 21:32:10 -0600
+
+    Initialize selected_candidate to an appropriate value.
+    
+    This simplifies its get handler and fixes a possible problem of freeing
+    regardless of whether or not it was actually set.
+
+commit 10636a399eeb206494ff1bb10f747d152e21656d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-22 12:47:55 +0000
+
+    Post-release version bump (0.9.3.1)
+
 commit 8170458b10489bb44a5357a208b588ac553087a1
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   2009-12-21 14:36:23 +0000
@@ -252,6 +2169,72 @@ Date:   2009-12-09 14:04:42 -0300
 
     vcard-manager: Do not try to set vcard fields not supported by google servers.
 
+commit 25f56b84854d239ff542c12467405ccfe606e706
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-08 15:15:44 -0600
+
+    Validate the selected candidate before setting it.
+
+commit f35857131da7584c1c5f97bd37f99fbca5c380c1
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-07 17:31:59 -0600
+
+    Free the selected candidate on finalize.
+
+commit 26e4e1a604a84a6f6f5428f50ccd7c95d63cc123
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-03 20:25:40 -0600
+
+    If the SelectedCandidate is being changed, free the old one so it doesn't leak.
+
+commit 8be13fb65cc2e51ba460caa6c223207426b9caf4
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-29 22:37:05 -0600
+
+    Add a partial test of GabbleCallStreamEndpoint's SelectedCandidate property.
+    
+    It only tests what it returns when it hasn't been set yet. The tests don't yet
+    set remote candidates or the selected candidate anywhere.
+
+commit b8a3c7a61cc52ab36041c2b4d9266af95d787228
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-29 22:35:20 -0600
+
+    Implement SetSelectedCandidate in GabbleCallStreamEndpoint.
+
+commit 99abaa07fef94649f9bbfb602354d34d2838bdb3
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-29 22:34:24 -0600
+
+    Add the SelectedCandidate property to GabbleCallStreamEndpoint.
+
+commit cf9d4c93f1cd6b97ed4190f51bf163c7f1dfe53c
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-02 20:40:35 -0600
+
+    Escape from the function on error.
+
+commit f8e7559e7c55099851b264b44f2c64588384edf2
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-02 20:39:18 -0600
+
+    Add the erroneously passed state to the debug message.
+
+commit 8fde7fe14a0faed3ba7fc3701d4ee800cb6aeaea
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-02 20:37:33 -0600
+
+    Use g_error_new instead of g_set_error.
+    
+    This avoids GError complaining if *err is non-NULL and I'm not using an
+    existing GError, so it really is a new one.
+
+commit c8e2cca2caba64f2868d5cf3ded9eb680ff8e8fd
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 18:51:43 -0600
+
+    Validate that the stream state being set is within the allowed range.
+
 commit fec6a6215080b612e60bea85558222e0b3848296
 Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
 Date:   2009-12-08 14:50:04 +0000
@@ -302,6 +2285,176 @@ Date:   2009-12-07 14:02:55 +0000
 
     Remove obsolete asynchronousity.
 
+commit 7ede11aab37d9f25f3cda205b6b9d9b0ac2da77b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-12-07 18:25:48 +0000
+
+    Update the Call spec to the 0.19.0 version
+
+commit f474c0bc6827ea0b5b5926b29eca07e9c96eabdc
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-12-01 18:57:11 -0600
+
+    Use g_assert_not_reached as it's more common in this case.
+
+commit 750b02d1f092afa844ccd6f56c02cd5f3d4c4883
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-23 16:02:16 -0600
+
+    Add a test for GabbleCallStreamEndpoint's Transport property.
+
+commit 059c8756bc929c049c192f7e14096afc4edb3ff3
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-23 16:01:24 -0600
+
+    Add the Transport property to GabbleCallStreamEndpoint.
+
+commit a0422b0c6d702d276f2ba89b28df0ef72abded97
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-23 14:59:15 -0600
+
+    Add checks for an endpoint's StreamState and StreamStateChanged.
+
+commit 85c001df18ac18ecc2869eff7d4dd948b41cd20c
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-23 14:58:24 -0600
+
+    Emit StreamStateChanged on GabbleCallStreamEndpoint.
+
+commit 1e3a0535c6d9bfc9f4364c07dad372d465a7ddb5
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-23 14:57:37 -0600
+
+    Add the StreamState property to GabbleCallStreamEndpoint.
+
+commit d43783a4d8ff553b92d705fcd770453d23389472
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-20 13:23:32 -0600
+
+    No need to do a runtime check and cast as it's already a GabbleCallStream.
+
+commit 4c48bcf122f881ccc5e0a9d847716e1f4dec84b8
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-20 13:19:33 -0600
+
+    If one block in an if/else has {} then all of them should have it.
+
+commit e67255ebab87490e871ce9a6df4ac2444290ebbb
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-19 15:12:56 -0600
+
+    Swap assertEquals parameters as the expected value is first.
+
+commit 65eafeba2ee906e72c4009241b0fbad7391f10d2
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-19 15:08:48 -0600
+
+    Refer to the got_relay_info boolean for the RetrievedServerInfo property.
+
+commit 22fa13ce64bfbaf49bdfa77757def16b018bf4a3
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-19 15:08:19 -0600
+
+    Emit ServerInfoRetrieved based on the got_relay_info boolean.
+
+commit dd32f1059c72bf752288cab99c78f475f44d2870
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-19 15:07:13 -0600
+
+    Add a boolean to keep track of whether or not relay info has been retrieved.
+
+commit 4ee21bfb9c1d0f9d70f97d15f404079ee0f5729d
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-18 17:36:34 -0600
+
+    Add a test for the ServerInfoRetrieved signal.
+
+commit a129a741c0c5e6dd5bae0a54326bc9bf90168a0e
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-18 17:35:42 -0600
+
+    Emit the ServerInfoRetrieved signal.
+
+commit 06ca9968763354f9014df2ea86e6789b542cc608
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-18 17:33:40 -0600
+
+    Add a test for the RetrievedServerInfo property.
+
+commit 24589b7a968b0b9df1d258e06bbb1d044235b7e1
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-18 17:30:00 -0600
+
+    Add the RetrievedServerInfo property to GabbleCallStream.
+
+commit 3dd3d1a51f24fcbbf35ba4ec3a346ebc0ce8b310
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-18 16:56:06 -0600
+
+    Update the spec to include ServerInfoRetrieved and RetrievedServerInfo
+    
+    This also removes STUNServersAdded and RelayInfoAdded.
+
+commit 68b2faf97a9252b9d0f6c4add7cd3bbf92325aea
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-19 13:48:33 -0600
+
+    Swap assertEquals parameters as the expected value comes first.
+
+commit d02e749db14bcd684b98ccb81046609bfad6fa64
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-18 15:33:27 -0600
+
+    Skip candidates with unhandled candidate types.
+
+commit b736f17180b81889bcdc5a68bc3d4f2318c7ccb7
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-17 21:55:46 -0600
+
+    Add a test for the Call.Stream.Interface.Media.Draft's RelayInfo property.
+
+commit db5729a3b622a50ba0906647892f2f4fd2592276
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-17 17:46:25 -0600
+
+    Translate candidate types between the D-Bus AddCandidate message and Jingle.
+    
+    At the time of this commit there is no defined standard for candidate types.
+    Here I'm using values of FsCandidateType since that's what the new-call-demo
+    is passing it.
+
+commit a03c01995168d3c2cc69442dfc0b79cf36646427
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-17 17:45:23 -0600
+
+    If the call is using Gtalk P2P, retrieve relay-info data.
+
+commit 2cb3db218b0179feb18df532ecb48bcb25035160
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-17 17:35:27 -0600
+
+    Add the RelayInfo property to GabbleCallStream.
+
+commit 8c65c0aee2db204bbeaa265846f5794ad4266a57
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-19 13:42:02 -0600
+
+    Swap assert{,Not}Equals parameters as the expected value comes first.
+
+commit 20ee0a051852d9dd1f95ed187b0f481db68e522b
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-18 14:49:30 -0600
+
+    Use the constant CALL_STREAM_TRANSPORT_GOOGLE instead of its value.
+    
+    Didn't see that constant the first time through. Oops :)
+
+commit f2cb657cc5e1c8cfd48e7ed6722beb9fb0264b75
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-18 14:45:15 -0600
+
+    Split the Call STUN server tests apart from the StreamedMedia tests.
+
 commit 5aa88e73da42faf7529b80e3ee952e70f4d0318c
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2009-12-08 12:19:38 +0000
@@ -341,6 +2494,12 @@ Date:   2009-12-08 11:27:32 +0000
     
     This way round makes more sense to me and (empirically) to #telepathy.
 
+commit f98bb21b2c428958ef800a47747dee98985f1e5e
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-18 14:29:18 -0600
+
+    Break stun server check out into its own function.
+
 commit 787defed096a6293c0dddb7ecc5985524afc57ae
 Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
 Date:   2009-12-07 11:04:16 -0300
@@ -349,6 +2508,433 @@ Date:   2009-12-07 11:04:16 -0300
     
     Note that gmail only stores vcard fields FN and PHOTO, so when using empathy the
     nickname (alias) will be updated on every login.
+
+commit d5c20bac9df9e93cf21700fc966abb1a82a86192
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-18 14:03:30 -0600
+
+    Use assertEquals, assertLength, and assertNotEquals where applicable.
+
+commit 1a8191c5b30f2cf2d0cf9f5b3e53f79aeb4daaef
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-18 13:54:48 -0600
+
+    Use gabble_value_array_build instead of manually building the ValueArray.
+
+commit 5e8bdf395a4e981b3edba6977dd795a0b047ac45
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-17 21:55:46 -0600
+
+    Add a test for the Call.Stream.Interface.Media.Draft's STUNServers property.
+
+commit caa0661d6063b83f95a2b3bd743f37ea79991664
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-17 21:53:13 -0600
+
+    Fix tests/twisted/Makefile.am due to a previously renamed file.
+
+commit 14e7e3bc01b5758c14b826374b260b7aba8b0b46
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2009-11-16 16:51:21 -0600
+
+    Add the STUNServers property to call-stream.c.
+
+commit c3fd65ef248969d7752fd53ffca95710d5835165
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-16 15:19:07 +0000
+
+    Implement CandidatesPrepared
+    
+    For jingle candidates prepared is basically meaningless, so the implementation
+    just returns successfully right away
+
+commit 6003f397d551eb98877997ee92528f9cc4095d06
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-16 14:45:25 +0000
+
+    Test both incoming and outgoing calls
+
+commit d2bdf42c1cdc37fadaac4456ca9fb679d09afb07
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-16 14:42:57 +0000
+
+    Add a FIXME for the CodecMap implementation
+    
+    The ContactCodecMap property always includes both the remote and local codecs,
+    while it should only have the remote codecs if we accepted them. Add a FIXME
+    for this
+
+commit 3290635d0c9a3e80a586ffde7ba7bd5774c9ae98
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-16 14:42:34 +0000
+
+    (Re)set local codecs as result of an acceptance of a codec offer
+
+commit 8d6db8a7456020f5d58c1c5751806f4fa8c55ec6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-16 14:42:06 +0000
+
+    Spawn a codec offer a result of an incoming call as well
+
+commit 77dd42ef89d7fc065d1d7839d789539bc72f18cb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-16 14:41:32 +0000
+
+    Implement the CodecOffer property
+
+commit 8636b86452847b36a21a117b2f9bf9a114ebb804
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-16 14:22:25 +0000
+
+    Implement Call.Endpoint.SetStreamState
+
+commit 075947fab70ddc0983118a6a4aab6194a3bb477e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-16 14:22:05 +0000
+
+    Impement CallChannel.Accept
+
+commit d43a586dee6d609535bd7dc3b261264092719ae1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-16 14:18:30 +0000
+
+    Refactor CallContent creation so it works correctly for incoming calls
+
+commit 7fe31f016103e4f1802f563f8519e8121dd27879
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-13 17:20:40 +0000
+
+    Update spec draft
+
+commit 7adafb18cd06821fa1cde3010eadb78d88b24aa7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-11 17:37:35 +0000
+
+    Update the spec snapshot
+
+commit d1444c1a7941722a524bbfada146978246f6bb9a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-11 16:09:16 +0000
+
+    Use constructed instead of constructor
+
+commit d609c350a3cd617a0ee2a3718ea17578ea3c8d93
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-11 16:07:54 +0000
+
+    Use call channels if one client supports it
+
+commit 8a0d428240d1fec555557f99bc79caeca3537409
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-11 16:03:44 +0000
+
+    Tell CapChannelManagers that their caps are going to be reset
+
+commit f8d6a5fb853eb1e216778ed73fce120e237831b0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-11 16:06:58 +0000
+
+    Refactor the call channel creation code a bit
+
+commit 9f232b218bb4f3340a65dba53684365d58adbcf3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-11 13:21:04 +0000
+
+    Test the implementation of the Transport property
+
+commit cbf51c27199ec3d3bdc8478ae12ee5aedde08b1a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-11 13:04:54 +0000
+
+    Implement the Transport property
+
+commit 068a2736890609e7ab5349fd417cd0ec6a8df9eb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-11 12:52:55 +0000
+
+    Check if the Content has the right type
+
+commit c249abb214c6e388a2c4adceb82faf7454e02835
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-11 12:51:24 +0000
+
+    Implement the Type property on Content
+
+commit 236a4f41ea7d657c90d8d30950548eca53b43e55
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-09 15:42:27 +0000
+
+    Test the RemoteCandidates property
+
+commit 2fd57cbf974e106dcb6c1f17421895fc24d5a89c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-09 15:42:03 +0000
+
+    Don't shadow the stream variable
+
+commit 928c73e80cf59e2f03b228a79fc07be9aad5fb58
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-09 15:41:28 +0000
+
+    Support RemoteCandidates property and signal new ones
+
+commit 3e429905b2a3355a49eca62ceb254c3ad96ae1fa
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-09 15:41:00 +0000
+
+    Add a utility function to convert a list of candidates to the a GPtrArray
+
+commit 6aed79c7dbdfbd02a00abe0f98c46117870e7fd0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-09 14:15:09 +0000
+
+    Test that a stream has an endpoint
+
+commit 6df8cdedd408f7e154572294feb7b068527d7930
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-09 14:14:32 +0000
+
+    Add a basic endpoint object
+
+commit b973d7843474d647a7294fd69ee52970ed05bee7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-09 13:41:05 +0000
+
+    Use constructed instead of constructor
+
+commit 54052b4ef568c20a9ca3cdfd40702088cfa4f950
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-06 16:53:22 +0000
+
+    Add a test for the codecoffer
+
+commit 578777311429512af959b2622feacab1af1e5630
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-06 16:52:24 +0000
+
+    Add basic codec offer support
+
+commit 976334fb14d807367a7d5cb99094772d794410a5
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-06 16:48:24 +0000
+
+    Allow the codecmap to generate both local and remote codecs
+
+commit c92ce4979f55a65be616dcf6a8731b2b110bf9a7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-05 14:13:23 +0000
+
+    Factor out converting a codec GList to a GPtrArray
+
+commit 78cb3e68e9f88c9debc7daba6d3cb03a9d02c47a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-05 14:07:49 +0000
+
+    Use constructed instead of constructor
+
+commit dafa1f4ee34a36ff3add8b05cc49d784e6042607
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-04 18:21:19 +0000
+
+    Test setting candidates and codecs
+
+commit 650f6953055a871112fc32a1bd7a70c84c602803
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-04 18:20:54 +0000
+
+    Add convenience function to get codecs and candidates for Call dbus interfaces
+
+commit 8d6548f4348e7dc2ec84710108a9f3115a8c8465
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-04 18:19:35 +0000
+
+    Add constant for version new call interfaces
+
+commit e269cfee43739e41141b01b0cc9ee96e993918be
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-04 18:18:20 +0000
+
+    Implement setting and getting codecs
+
+commit 9f7d10bb7baf8df6db578d37e3d46a54a68bb15e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-04 18:02:32 +0000
+
+    Add initial implementation of Call.Stream objects
+
+commit ad470f1824e33b607de786e780cde2df41bb69f3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-04 17:42:57 +0000
+
+    Pass the GabbleConnection to the content
+
+commit 8dc8c9853fecd17f5d372b722d9fc27bbfc2bf67
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-04 17:40:37 +0000
+
+    Tweak indentation
+
+commit d63c7304160817ca81a00b79c8c081f345073779
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-04 17:40:06 +0000
+
+    Set the dialect on the session
+
+commit 59154f7c62ce02ddb346cb0dbc83913a1d4ec83f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-03 18:31:36 +0000
+
+    Short-circuit adding no candidates
+
+commit 0ffd8e5b5b6e3617c6ce0aa899610bc02417bdd9
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-03 18:31:05 +0000
+
+    Add utility function to build GValueArrays
+
+commit da1a3cb3e57ab5afac3b65be70b9afe4450a7540
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-03 18:30:07 +0000
+
+    Make it possible to retrieve our local candidates
+
+commit ac015dca22a7f6462f21a0495505b3e5442d77ca
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-11-03 18:24:34 +0000
+
+    Add the ability to retrieve local codecs
+
+commit 429976f0bd4da9b0cb853d8783bea1d447d5d333
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-27 14:51:28 +0000
+
+    Initial dummy version of CallContent objects
+
+commit 830e91daf2b35514d5fb11ac803c985a29b7aea3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-26 16:26:24 +0000
+
+    Create the jingle session and initial streams
+
+commit 61bd59de232c53941b21452f2d30fbbe51c356a5
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-26 16:13:14 +0000
+
+    Move _pick_best_content_type to utils.c
+
+commit fd5b9865d38c2b44a5ca155d98561703b66c1c1b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-26 15:21:54 +0000
+
+    Move jingle resource selection to utils
+
+commit 148664852301f67e8a0f20f40c71bdb4bd260519
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-26 12:35:10 +0000
+
+    Let CallChannel implement GAsyncInitable
+
+commit e7c40efe4de218e0b798ccd96ddebd9d68a484e8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-23 18:02:58 +0100
+
+    Let MediaChannelRequest store a list of tokens
+
+commit 63c4ddc7d0836fffe0e9925a9fbe65eb5f503ef7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-22 19:18:58 +0100
+
+    Add test for basic construction of a Call channel
+
+commit aaa035a9c83b080259bc66b3739d24230682f0d8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-23 15:05:31 +0100
+
+    Add first dummy implementation of a Call channel
+
+commit b32e4791b7b6ac9b2ade86b68abac144404b26ac
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-23 14:47:13 +0100
+
+    Change media channel GPtrArray to a GList
+
+commit 9df3c899a69dced5539c4738f7adb6e13caf940c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-22 18:35:28 +0100
+
+    Check for the correct Call channel ContactCaps
+
+commit 62b7b6855ec8b69e5caca2ebb1b9906a6cbf61e4
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-22 18:38:10 +0100
+
+    Advertise Call Channel in ContactCaps
+
+commit 284a59dfce9cb3b43d448f4e286baba41372c52f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-22 18:31:56 +0100
+
+    More pedantic RCC content testing
+
+commit 1787ed808c2bef25ea755e28bf776a8ad386d0ee
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-22 18:31:48 +0100
+
+    Put MutableContents in the Call channel RCC
+
+commit c4b12e9f75315972f20a65752d72384b8d38eccd
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-22 18:15:45 +0100
+
+    Update the spec to the latest version
+
+commit f19211f48f93d7619d59cb4bd95498a074bb0db7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-22 12:39:28 +0100
+
+    Make sure mixed media spec clients don't confuse things
+
+commit c72ffa3fbc33f17221cf18cecc173422b7dae7b8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-21 17:56:08 +0100
+
+    Test advertising capabilities for both call channel types
+
+commit 3161ff7971c81f66dd18756bf4a33d2fb3c8621a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-21 17:55:34 +0100
+
+    Advertise the same caps for StreamedMedia and Call channels
+
+commit a51648db3a61dac449a4f893579fe464af0dd686
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-21 17:04:43 +0100
+
+    Test the requestable channel classes contain the new media spec
+
+commit 279cadff435842ee30572fcc51d2782d9ac46fd3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-21 17:17:11 +0100
+
+    Announce the new media spec in RequestableChannelClasses
+
+commit 160f29c77de5bc338869d255ad5c362e9565085b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-21 17:01:10 +0100
+
+    Add various constants for the new media spec
+
+commit fbf6c504ccbe963450344c17611bea5c5aed86e8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-21 17:00:45 +0100
+
+    Verify the stream media RCC contains Initial Audio/Video
+
+commit bfc1154aef53ac3a06c21bbc463b6c918f3c9bed
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2009-10-21 15:53:30 +0100
+
+    Add an early draft of the new call spec
 
 commit 8e0268e4d6e9244468be8af36863d5060f842e78
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>

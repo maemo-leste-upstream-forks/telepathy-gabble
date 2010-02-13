@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [9])
-m4_define([gabble_micro_version], [3])
+m4_define([gabble_micro_version], [4])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -112,6 +112,15 @@ AC_SUBST(HANDLE_LEAK_DEBUG_CFLAGS)
 
 AC_SUBST([ENABLE_CODING_STYLE_CHECKS])
 
+AC_ARG_ENABLE([is-a-phone],
+  AC_HELP_STRING([--enable-is-a-phone],
+    [advertise that we are a phone, not a PC]),
+    [is_a_phone=$enableval], [is_a_phone=no])
+
+if test x$is_a_phone = xyes; then
+  AC_DEFINE(IS_A_PHONE, [], [Defined if the target device is a phone])
+fi
+
 dnl Check for Glib
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >= 2.16])
 
@@ -138,10 +147,19 @@ AC_SUBST(GMODULE_LIBS)
 AM_CONDITIONAL(ENABLE_PLUGINS, test x$enable_plugins = xyes)
 AC_SUBST(ENABLE_PLUGINS)
 
+AC_ARG_ENABLE(channel-type-call,
+  AC_HELP_STRING([--disable-channel-type-call],
+                 [disable support for the draft Channel.Type.Call]),
+    [enable_channel_type_call=$enableval], [enable_channel_type_call=yes])
+
+if test x$enable_channel_type_call = xyes; then
+  AC_DEFINE(ENABLE_CHANNEL_TYPE_CALL, [], [Enable Channel.Type.Call])
+fi
+
+AM_CONDITIONAL(ENABLE_CHANNEL_TYPE_CALL, test x$enable_channel_type_call = xyes)
+
 dnl Check for D-Bus
-# dbus-glib 0.78 fixed the bug #17329. It is needed for the contact
-# capabilities interface.
-PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.78])
+PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.82])
 
 AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)

@@ -1,0 +1,70 @@
+<refentry id="wocky-wocky">
+<refmeta>
+<refentrytitle role="top_of_page" id="wocky-wocky.top_of_page">wocky</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>WOCKY Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>wocky</refname>
+<refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="wocky-wocky.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+<link linkend="void">void</link>                <link linkend="wocky-init">wocky_init</link>                          (void);
+<link linkend="void">void</link>                <link linkend="wocky-deinit">wocky_deinit</link>                        (void);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1 id="wocky-wocky.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+</para>
+</refsect1>
+
+<refsect1 id="wocky-wocky.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="wocky-init" role="function">
+<title>wocky_init ()</title>
+<indexterm zone="wocky-init"><primary sortas="wocky_init">wocky_init</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_init                          (void);</programlisting>
+<para>
+Initializes the Wocky library.
+</para>
+<para>
+This function should be called before calling any other Wocky functions.</para>
+<para>
+</para></refsect2>
+<refsect2 id="wocky-deinit" role="function">
+<title>wocky_deinit ()</title>
+<indexterm zone="wocky-deinit"><primary sortas="wocky_deinit">wocky_deinit</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_deinit                        (void);</programlisting>
+<para>
+Clean up any resources created by Wocky in <link linkend="wocky-init"><function>wocky_init()</function></link>.
+</para>
+<para>
+It is normally not needed to call this function in a normal application
+as the resources will automatically be freed when the program terminates.
+This function is therefore mostly used by testsuites and other memory
+profiling tools.
+</para>
+<para>
+After this call Wocky (including this method) should not be used anymore.</para>
+<para>
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

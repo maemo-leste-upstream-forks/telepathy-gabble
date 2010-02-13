@@ -261,6 +261,11 @@ DISTCHECK_CONFIGURE_FLAGS = --disable-debug --enable-gtk-doc
 CLEANFILES = FIXME.out
 LCOV_CHECK_ARGS = CHECK_TWISTED_SLEEP=6
 CHANGELOG_RANGE = telepathy-gabble-0.6.0..
+CHECK_FOR_UNRELEASED = \
+	$(srcdir)/NEWS \
+	$(wildcard $(srcdir)/gabble/*.[ch]) \
+	$(wildcard $(srcdir)/src/*.[ch])
+
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -590,6 +595,7 @@ distcheck: dist
 	test -d $(distdir)/_build || exit 0; \
 	dc_install_base=`$(am__cd) $(distdir)/_inst && pwd | sed -e 's,^[^:\\/]:[\\/],/,'` \
 	  && dc_destdir="$${TMPDIR-/tmp}/am-dc-$$$$/" \
+	  && $(MAKE) $(AM_MAKEFLAGS) distcheck-hook \
 	  && am__cwd=`pwd` \
 	  && $(am__cd) $(distdir)/_build \
 	  && ../configure --srcdir=.. --prefix="$$dc_install_base" \
@@ -797,6 +803,18 @@ dist-hook:
 	if test -d ${top_srcdir}/.git; then \
 		git log --date=iso $(CHANGELOG_RANGE) > ${distdir}/ChangeLog; \
 	fi
+
+distcheck-hook:
+	@case @VERSION@ in \
+		*.*.*.*) ;; \
+		*) \
+			if grep -r UNRELEASED $(CHECK_FOR_UNRELEASED); \
+			then \
+				echo "^^^ This is meant to be a release, but some files say UNRELEASED" >&2; \
+				exit 2; \
+			fi \
+			;; \
+	esac
 
 maintainer-upload-release: _maintainer-upload-release
 

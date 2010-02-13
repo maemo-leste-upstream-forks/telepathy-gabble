@@ -1,0 +1,302 @@
+<refentry id="WockyXmppReader">
+<refmeta>
+<refentrytitle role="top_of_page" id="WockyXmppReader.top_of_page">WockyXmppReader</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>WOCKY Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>WockyXmppReader</refname>
+<refpurpose>Xmpp XML to stanza deserializer</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="WockyXmppReader.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+                    <link linkend="WockyXmppReader-struct">WockyXmppReader</link>;
+                    <link linkend="WockyXmppReaderClass">WockyXmppReaderClass</link>;
+enum                <link linkend="WockyXmppReaderState">WockyXmppReaderState</link>;
+enum                <link linkend="WockyXmppReaderError">WockyXmppReaderError</link>;
+<link linkend="GQuark">GQuark</link>              <link linkend="wocky-xmpp-reader-error-quark">wocky_xmpp_reader_error_quark</link>       (void);
+#define             <link linkend="WOCKY-XMPP-READER-ERROR--CAPS">WOCKY_XMPP_READER_ERROR</link>
+<link linkend="WockyXmppReader">WockyXmppReader</link> *   <link linkend="wocky-xmpp-reader-new">wocky_xmpp_reader_new</link>               (void);
+<link linkend="WockyXmppReader">WockyXmppReader</link> *   <link linkend="wocky-xmpp-reader-new-no-stream">wocky_xmpp_reader_new_no_stream</link>     (void);
+<link linkend="WockyXmppReaderState">WockyXmppReaderState</link>  <link linkend="wocky-xmpp-reader-get-state">wocky_xmpp_reader_get_state</link>       (<link linkend="WockyXmppReader">WockyXmppReader</link> *reader);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-reader-push">wocky_xmpp_reader_push</link>              (<link linkend="WockyXmppReader">WockyXmppReader</link> *reader,
+                                                         const <link linkend="guint8">guint8</link> *data,
+                                                         <link linkend="gsize">gsize</link> length);
+<link linkend="WockyXmppStanza">WockyXmppStanza</link> *   <link linkend="wocky-xmpp-reader-pop-stanza">wocky_xmpp_reader_pop_stanza</link>        (<link linkend="WockyXmppReader">WockyXmppReader</link> *reader);
+<link linkend="WockyXmppStanza">WockyXmppStanza</link> *   <link linkend="wocky-xmpp-reader-peek-stanza">wocky_xmpp_reader_peek_stanza</link>       (<link linkend="WockyXmppReader">WockyXmppReader</link> *reader);
+<link linkend="GError">GError</link> *            <link linkend="wocky-xmpp-reader-get-error">wocky_xmpp_reader_get_error</link>         (<link linkend="WockyXmppReader">WockyXmppReader</link> *reader);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-reader-reset">wocky_xmpp_reader_reset</link>             (<link linkend="WockyXmppReader">WockyXmppReader</link> *reader);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 id="WockyXmppReader.object-hierarchy" role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+  <link linkend="GObject">GObject</link>
+   +----WockyXmppReader
+</synopsis>
+</refsect1>
+
+
+
+
+
+<refsect1 id="WockyXmppReader.properties" role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+  &quot;<link linkend="WockyXmppReader--from">from</link>&quot;                     <link linkend="gchar">gchar</link>*                : Read
+  &quot;<link linkend="WockyXmppReader--id">id</link>&quot;                       <link linkend="gchar">gchar</link>*                : Read
+  &quot;<link linkend="WockyXmppReader--lang">lang</link>&quot;                     <link linkend="gchar">gchar</link>*                : Read
+  &quot;<link linkend="WockyXmppReader--streaming-mode">streaming-mode</link>&quot;           <link linkend="gboolean">gboolean</link>              : Read / Write / Construct Only
+  &quot;<link linkend="WockyXmppReader--to">to</link>&quot;                       <link linkend="gchar">gchar</link>*                : Read
+  &quot;<link linkend="WockyXmppReader--version">version</link>&quot;                  <link linkend="gchar">gchar</link>*                : Read
+</synopsis>
+</refsect1>
+
+
+
+<refsect1 id="WockyXmppReader.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+The <link linkend="WockyXmppReader"><type>WockyXmppReader</type></link> deserializes XML to <link linkend="WockyXmppStanza"><type>WockyXmppStanza</type></link><!-- -->s,
+misc, other</para>
+<para>
+</para>
+</refsect1>
+
+<refsect1 id="WockyXmppReader.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="WockyXmppReader-struct" role="struct">
+<title>WockyXmppReader</title>
+<indexterm zone="WockyXmppReader-struct"><primary sortas="WockyXmppReader">WockyXmppReader</primary></indexterm><programlisting>typedef struct _WockyXmppReader WockyXmppReader;</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="WockyXmppReaderClass" role="struct">
+<title>WockyXmppReaderClass</title>
+<indexterm zone="WockyXmppReaderClass"><primary sortas="WockyXmppReaderClass">WockyXmppReaderClass</primary></indexterm><programlisting>typedef struct {
+    GObjectClass parent_class;
+} WockyXmppReaderClass;
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="WockyXmppReaderState" role="enum">
+<title>enum WockyXmppReaderState</title>
+<indexterm zone="WockyXmppReaderState"><primary sortas="WockyXmppReaderState">WockyXmppReaderState</primary></indexterm><programlisting>typedef enum {
+  WOCKY_XMPP_READER_STATE_INITIAL,
+  WOCKY_XMPP_READER_STATE_OPENED,
+  WOCKY_XMPP_READER_STATE_CLOSED,
+  WOCKY_XMPP_READER_STATE_ERROR,
+} WockyXmppReaderState;
+</programlisting>
+<para>
+The possible states a reader can be in.</para>
+<para>
+</para><variablelist role="enum">
+<varlistentry id="WOCKY-XMPP-READER-STATE-INITIAL--CAPS" role="constant">
+<term><literal>WOCKY_XMPP_READER_STATE_INITIAL</literal></term>
+<listitem><simpara> initial state
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="WOCKY-XMPP-READER-STATE-OPENED--CAPS" role="constant">
+<term><literal>WOCKY_XMPP_READER_STATE_OPENED</literal></term>
+<listitem><simpara> stream is open
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="WOCKY-XMPP-READER-STATE-CLOSED--CAPS" role="constant">
+<term><literal>WOCKY_XMPP_READER_STATE_CLOSED</literal></term>
+<listitem><simpara> stream has been closed
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="WOCKY-XMPP-READER-STATE-ERROR--CAPS" role="constant">
+<term><literal>WOCKY_XMPP_READER_STATE_ERROR</literal></term>
+<listitem><simpara> stream reader hit an error
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="WockyXmppReaderError" role="enum">
+<title>enum WockyXmppReaderError</title>
+<indexterm zone="WockyXmppReaderError"><primary sortas="WockyXmppReaderError">WockyXmppReaderError</primary></indexterm><programlisting>typedef enum {
+  WOCKY_XMPP_READER_ERROR_INVALID_STREAM_START,
+  WOCKY_XMPP_READER_ERROR_PARSE_ERROR,
+} WockyXmppReaderError;
+</programlisting>
+<para>
+The different errors that can occur while reading a stream</para>
+<para>
+</para><variablelist role="enum">
+<varlistentry id="WOCKY-XMPP-READER-ERROR-INVALID-STREAM-START--CAPS" role="constant">
+<term><literal>WOCKY_XMPP_READER_ERROR_INVALID_STREAM_START</literal></term>
+<listitem><simpara> invalid start of xmpp stream
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="WOCKY-XMPP-READER-ERROR-PARSE-ERROR--CAPS" role="constant">
+<term><literal>WOCKY_XMPP_READER_ERROR_PARSE_ERROR</literal></term>
+<listitem><simpara> error in parsing the XML
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-reader-error-quark" role="function">
+<title>wocky_xmpp_reader_error_quark ()</title>
+<indexterm zone="wocky-xmpp-reader-error-quark"><primary sortas="wocky_xmpp_reader_error_quark">wocky_xmpp_reader_error_quark</primary></indexterm><programlisting><link linkend="GQuark">GQuark</link>              wocky_xmpp_reader_error_quark       (void);</programlisting>
+<para>
+Get the error quark used by the reader.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> the quark for reader errors.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="WOCKY-XMPP-READER-ERROR--CAPS" role="macro">
+<title>WOCKY_XMPP_READER_ERROR</title>
+<indexterm zone="WOCKY-XMPP-READER-ERROR--CAPS"><primary sortas="WOCKY_XMPP_READER_ERROR">WOCKY_XMPP_READER_ERROR</primary></indexterm><programlisting>#define WOCKY_XMPP_READER_ERROR (wocky_xmpp_reader_error_quark ())
+</programlisting>
+<para>
+Get access to the error quark of the reader.</para>
+<para>
+</para></refsect2>
+<refsect2 id="wocky-xmpp-reader-new" role="function">
+<title>wocky_xmpp_reader_new ()</title>
+<indexterm zone="wocky-xmpp-reader-new"><primary sortas="wocky_xmpp_reader_new">wocky_xmpp_reader_new</primary></indexterm><programlisting><link linkend="WockyXmppReader">WockyXmppReader</link> *   wocky_xmpp_reader_new               (void);</programlisting>
+<para>
+Convenience function to create a new <link linkend="WockyXmppReader"><type>WockyXmppReader</type></link>.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a new <link linkend="WockyXmppReader"><type>WockyXmppReader</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-reader-new-no-stream" role="function">
+<title>wocky_xmpp_reader_new_no_stream ()</title>
+<indexterm zone="wocky-xmpp-reader-new-no-stream"><primary sortas="wocky_xmpp_reader_new_no_stream">wocky_xmpp_reader_new_no_stream</primary></indexterm><programlisting><link linkend="WockyXmppReader">WockyXmppReader</link> *   wocky_xmpp_reader_new_no_stream     (void);</programlisting>
+<para>
+Convenience function to create a new <link linkend="WockyXmppReader"><type>WockyXmppReader</type></link> that has streaming
+mode disabled.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a new <link linkend="WockyXmppReader"><type>WockyXmppReader</type></link> in non-streaming mode
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-reader-get-state" role="function">
+<title>wocky_xmpp_reader_get_state ()</title>
+<indexterm zone="wocky-xmpp-reader-get-state"><primary sortas="wocky_xmpp_reader_get_state">wocky_xmpp_reader_get_state</primary></indexterm><programlisting><link linkend="WockyXmppReaderState">WockyXmppReaderState</link>  wocky_xmpp_reader_get_state       (<link linkend="WockyXmppReader">WockyXmppReader</link> *reader);</programlisting>
+<para>
+</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>reader</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="WockyXmppReader"><type>WockyXmppReader</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The current state of the reader
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-reader-push" role="function">
+<title>wocky_xmpp_reader_push ()</title>
+<indexterm zone="wocky-xmpp-reader-push"><primary sortas="wocky_xmpp_reader_push">wocky_xmpp_reader_push</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_reader_push              (<link linkend="WockyXmppReader">WockyXmppReader</link> *reader,
+                                                         const <link linkend="guint8">guint8</link> *data,
+                                                         <link linkend="gsize">gsize</link> length);</programlisting>
+<para>
+Push an amount of data to parse.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>reader</parameter>&#160;:</term>
+<listitem><simpara> a WockyXmppReader
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&#160;:</term>
+<listitem><simpara> Data to read
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>length</parameter>&#160;:</term>
+<listitem><simpara> Size of <parameter>data</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-reader-pop-stanza" role="function">
+<title>wocky_xmpp_reader_pop_stanza ()</title>
+<indexterm zone="wocky-xmpp-reader-pop-stanza"><primary sortas="wocky_xmpp_reader_pop_stanza">wocky_xmpp_reader_pop_stanza</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link> *   wocky_xmpp_reader_pop_stanza        (<link linkend="WockyXmppReader">WockyXmppReader</link> *reader);</programlisting>
+<para>
+Gets one <link linkend="WockyXmppStanza"><type>WockyXmppStanza</type></link> out of the reader or NULL if there are no
+available stanzas.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>reader</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="WockyXmppReader"><type>WockyXmppReader</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> One <link linkend="WockyXmppStanza"><type>WockyXmppStanza</type></link> or NULL if there are no available stanzas.
+Caller owns the returned stanza.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-reader-peek-stanza" role="function">
+<title>wocky_xmpp_reader_peek_stanza ()</title>
+<indexterm zone="wocky-xmpp-reader-peek-stanza"><primary sortas="wocky_xmpp_reader_peek_stanza">wocky_xmpp_reader_peek_stanza</primary></indexterm><programlisting><link linkend="WockyXmppStanza">WockyXmppStanza</link> *   wocky_xmpp_reader_peek_stanza       (<link linkend="WockyXmppReader">WockyXmppReader</link> *reader);</programlisting>
+<para>
+Returns the first <link linkend="WockyXmppStanza"><type>WockyXmppStanza</type></link> available from reader or NULL
+if there are no available stanzas. The stanza is not removed from the
+readers queue</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>reader</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="WockyXmppReader"><type>WockyXmppReader</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> One <link linkend="WockyXmppStanza"><type>WockyXmppStanza</type></link> or NULL if there are no available stanzas. The
+stanza is owned by the <link linkend="WockyXmppReader"><type>WockyXmppReader</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-reader-get-error" role="function">
+<title>wocky_xmpp_reader_get_error ()</title>
+<indexterm zone="wocky-xmpp-reader-get-error"><primary sortas="wocky_xmpp_reader_get_error">wocky_xmpp_reader_get_error</primary></indexterm><programlisting><link linkend="GError">GError</link> *            wocky_xmpp_reader_get_error         (<link linkend="WockyXmppReader">WockyXmppReader</link> *reader);</programlisting>
+<para>
+Get the error from the reader</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>reader</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="WockyXmppReader"><type>WockyXmppReader</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A copy of the error as encountered by the reader or NULL if there
+was no error. Free after use.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-reader-reset" role="function">
+<title>wocky_xmpp_reader_reset ()</title>
+<indexterm zone="wocky-xmpp-reader-reset"><primary sortas="wocky_xmpp_reader_reset">wocky_xmpp_reader_reset</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_reader_reset             (<link linkend="WockyXmppReader">WockyXmppReader</link> *reader);</programlisting>
+<para>
+Reset the xml parser.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>reader</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="WockyXmppReader"><type>WockyXmppReader</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1 id="WockyXmppReader.property-details" role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2 id="WockyXmppReader--from" role="property"><title>The <literal>&quot;from&quot;</literal> property</title>
+<indexterm zone="WockyXmppReader--from"><primary sortas="WockyXmppReader:from">WockyXmppReader:from</primary></indexterm><programlisting>  &quot;from&quot;                     <link linkend="gchar">gchar</link>*                : Read</programlisting>
+<para>from attribute in the xml stream opening.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2 id="WockyXmppReader--id" role="property"><title>The <literal>&quot;id&quot;</literal> property</title>
+<indexterm zone="WockyXmppReader--id"><primary sortas="WockyXmppReader:id">WockyXmppReader:id</primary></indexterm><programlisting>  &quot;id&quot;                       <link linkend="gchar">gchar</link>*                : Read</programlisting>
+<para>id attribute in the xml stream opening.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2 id="WockyXmppReader--lang" role="property"><title>The <literal>&quot;lang&quot;</literal> property</title>
+<indexterm zone="WockyXmppReader--lang"><primary sortas="WockyXmppReader:lang">WockyXmppReader:lang</primary></indexterm><programlisting>  &quot;lang&quot;                     <link linkend="gchar">gchar</link>*                : Read</programlisting>
+<para>xml:lang attribute in the xml stream opening.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2 id="WockyXmppReader--streaming-mode" role="property"><title>The <literal>&quot;streaming-mode&quot;</literal> property</title>
+<indexterm zone="WockyXmppReader--streaming-mode"><primary sortas="WockyXmppReader:streaming-mode">WockyXmppReader:streaming-mode</primary></indexterm><programlisting>  &quot;streaming-mode&quot;           <link linkend="gboolean">gboolean</link>              : Read / Write / Construct Only</programlisting>
+<para>Whether the xml to be read is one big stream or seperate documents.</para><para>Default value: TRUE</para>
+</refsect2>
+<refsect2 id="WockyXmppReader--to" role="property"><title>The <literal>&quot;to&quot;</literal> property</title>
+<indexterm zone="WockyXmppReader--to"><primary sortas="WockyXmppReader:to">WockyXmppReader:to</primary></indexterm><programlisting>  &quot;to&quot;                       <link linkend="gchar">gchar</link>*                : Read</programlisting>
+<para>to attribute in the xml stream opening.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2 id="WockyXmppReader--version" role="property"><title>The <literal>&quot;version&quot;</literal> property</title>
+<indexterm zone="WockyXmppReader--version"><primary sortas="WockyXmppReader:version">WockyXmppReader:version</primary></indexterm><programlisting>  &quot;version&quot;                  <link linkend="gchar">gchar</link>*                : Read</programlisting>
+<para>version attribute in the xml stream opening.</para><para>Default value: NULL</para>
+</refsect2>
+</refsect1>
+
+
+
+
+</refentry>

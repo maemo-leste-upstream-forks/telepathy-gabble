@@ -1,0 +1,648 @@
+<refentry id="wocky-wocky-xmpp-node">
+<refmeta>
+<refentrytitle role="top_of_page" id="wocky-wocky-xmpp-node.top_of_page">wocky-xmpp-node</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>WOCKY Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>wocky-xmpp-node</refname>
+<refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="wocky-wocky-xmpp-node.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+                    <link linkend="WockyXmppNode">WockyXmppNode</link>;
+<link linkend="gboolean">gboolean</link>            (<link linkend="wocky-xmpp-node-each-child-func">*wocky_xmpp_node_each_child_func</link>)  (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-each-attribute">wocky_xmpp_node_each_attribute</link>      (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         <link linkend="wocky-xmpp-node-each-attr-func">wocky_xmpp_node_each_attr_func</link> func,
+                                                         <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-each-child">wocky_xmpp_node_each_child</link>          (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         <link linkend="wocky-xmpp-node-each-child-func">wocky_xmpp_node_each_child_func</link> func,
+                                                         <link linkend="gpointer">gpointer</link> user_data);
+const <link linkend="gchar">gchar</link> *       <link linkend="wocky-xmpp-node-get-attribute">wocky_xmpp_node_get_attribute</link>       (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *key);
+const <link linkend="gchar">gchar</link> *       <link linkend="wocky-xmpp-node-get-attribute-ns">wocky_xmpp_node_get_attribute_ns</link>    (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *key,
+                                                         const <link linkend="gchar">gchar</link> *ns);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-set-attribute">wocky_xmpp_node_set_attribute</link>       (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *key,
+                                                         const <link linkend="gchar">gchar</link> *value);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-set-attribute-ns">wocky_xmpp_node_set_attribute_ns</link>    (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *key,
+                                                         const <link linkend="gchar">gchar</link> *value,
+                                                         const <link linkend="gchar">gchar</link> *ns);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-set-attribute-n">wocky_xmpp_node_set_attribute_n</link>     (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *key,
+                                                         const <link linkend="gchar">gchar</link> *value,
+                                                         <link linkend="gsize">gsize</link> value_size);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-set-attribute-n-ns">wocky_xmpp_node_set_attribute_n_ns</link>  (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *key,
+                                                         const <link linkend="gchar">gchar</link> *value,
+                                                         <link linkend="gsize">gsize</link> value_size,
+                                                         const <link linkend="gchar">gchar</link> *ns);
+const <link linkend="gchar">gchar</link> *       <link linkend="wocky-xmpp-node-attribute-ns-get-prefix-from-urn">wocky_xmpp_node_attribute_ns_get_prefix_from_urn</link>
+                                                        (const <link linkend="gchar">gchar</link> *urn);
+const <link linkend="gchar">gchar</link> *       <link linkend="wocky-xmpp-node-attribute-ns-get-prefix-from-quark">wocky_xmpp_node_attribute_ns_get_prefix_from_quark</link>
+                                                        (<link linkend="GQuark">GQuark</link> ns);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-attribute-ns-set-prefix">wocky_xmpp_node_attribute_ns_set_prefix</link>
+                                                        (<link linkend="GQuark">GQuark</link> ns,
+                                                         const <link linkend="gchar">gchar</link> *prefix);
+<link linkend="WockyXmppNode">WockyXmppNode</link> *     <link linkend="wocky-xmpp-node-get-child">wocky_xmpp_node_get_child</link>           (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *name);
+<link linkend="WockyXmppNode">WockyXmppNode</link> *     <link linkend="wocky-xmpp-node-get-child-ns">wocky_xmpp_node_get_child_ns</link>        (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *name,
+                                                         const <link linkend="gchar">gchar</link> *ns);
+<link linkend="WockyXmppNode">WockyXmppNode</link> *     <link linkend="wocky-xmpp-node-get-first-child">wocky_xmpp_node_get_first_child</link>     (<link linkend="WockyXmppNode">WockyXmppNode</link> *node);
+<link linkend="WockyXmppNode">WockyXmppNode</link> *     <link linkend="wocky-xmpp-node-add-child">wocky_xmpp_node_add_child</link>           (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *name);
+<link linkend="WockyXmppNode">WockyXmppNode</link> *     <link linkend="wocky-xmpp-node-add-child-ns">wocky_xmpp_node_add_child_ns</link>        (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *name,
+                                                         const <link linkend="gchar">gchar</link> *ns);
+<link linkend="WockyXmppNode">WockyXmppNode</link> *     <link linkend="wocky-xmpp-node-add-child-with-content">wocky_xmpp_node_add_child_with_content</link>
+                                                        (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *name,
+                                                         const <link linkend="char">char</link> *content);
+<link linkend="WockyXmppNode">WockyXmppNode</link> *     <link linkend="wocky-xmpp-node-add-child-with-content-ns">wocky_xmpp_node_add_child_with_content_ns</link>
+                                                        (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *name,
+                                                         const <link linkend="gchar">gchar</link> *content,
+                                                         const <link linkend="gchar">gchar</link> *ns);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-set-ns">wocky_xmpp_node_set_ns</link>              (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *ns);
+const <link linkend="gchar">gchar</link> *       <link linkend="wocky-xmpp-node-get-ns">wocky_xmpp_node_get_ns</link>              (<link linkend="WockyXmppNode">WockyXmppNode</link> *node);
+const <link linkend="gchar">gchar</link> *       <link linkend="wocky-xmpp-node-get-language">wocky_xmpp_node_get_language</link>        (<link linkend="WockyXmppNode">WockyXmppNode</link> *node);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-set-language">wocky_xmpp_node_set_language</link>        (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *lang);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-set-language-n">wocky_xmpp_node_set_language_n</link>      (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *lang,
+                                                         <link linkend="gsize">gsize</link> lang_size);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-set-content">wocky_xmpp_node_set_content</link>         (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *content);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-append-content">wocky_xmpp_node_append_content</link>      (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *content);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-append-content-n">wocky_xmpp_node_append_content_n</link>    (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *content,
+                                                         <link linkend="gsize">gsize</link> size);
+<link linkend="gchar">gchar</link> *             <link linkend="wocky-xmpp-node-to-string">wocky_xmpp_node_to_string</link>           (<link linkend="WockyXmppNode">WockyXmppNode</link> *node);
+<link linkend="WockyXmppNode">WockyXmppNode</link> *     <link linkend="wocky-xmpp-node-new">wocky_xmpp_node_new</link>                 (const <link linkend="char">char</link> *name);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-free">wocky_xmpp_node_free</link>                (<link linkend="WockyXmppNode">WockyXmppNode</link> *node);
+<link linkend="gboolean">gboolean</link>            <link linkend="wocky-xmpp-node-equal">wocky_xmpp_node_equal</link>               (<link linkend="WockyXmppNode">WockyXmppNode</link> *node0,
+                                                         <link linkend="WockyXmppNode">WockyXmppNode</link> *node1);
+<link linkend="gboolean">gboolean</link>            <link linkend="wocky-xmpp-node-is-superset">wocky_xmpp_node_is_superset</link>         (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         <link linkend="WockyXmppNode">WockyXmppNode</link> *pattern);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-init">wocky_xmpp_node_init</link>                (void);
+<link linkend="void">void</link>                <link linkend="wocky-xmpp-node-deinit">wocky_xmpp_node_deinit</link>              (void);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1 id="wocky-wocky-xmpp-node.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+</para>
+</refsect1>
+
+<refsect1 id="wocky-wocky-xmpp-node.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="WockyXmppNode" role="struct">
+<title>WockyXmppNode</title>
+<indexterm zone="WockyXmppNode"><primary sortas="WockyXmppNode">WockyXmppNode</primary></indexterm><programlisting>typedef struct {
+  gchar *name;
+  gchar *content;
+
+  /* Private */
+  gchar *language;
+  GQuark ns;
+  GSList *attributes;
+  GSList *children;
+} WockyXmppNode;
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="wocky-xmpp-node-each-child-func" role="function">
+<title>wocky_xmpp_node_each_child_func ()</title>
+<indexterm zone="wocky-xmpp-node-each-child-func"><primary sortas="wocky_xmpp_node_each_child_func">wocky_xmpp_node_each_child_func</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*wocky_xmpp_node_each_child_func)  (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-each-attribute" role="function">
+<title>wocky_xmpp_node_each_attribute ()</title>
+<indexterm zone="wocky-xmpp-node-each-attribute"><primary sortas="wocky_xmpp_node_each_attribute">wocky_xmpp_node_each_attribute</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_each_attribute      (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         <link linkend="wocky-xmpp-node-each-attr-func">wocky_xmpp_node_each_attr_func</link> func,
+                                                         <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>func</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-each-child" role="function">
+<title>wocky_xmpp_node_each_child ()</title>
+<indexterm zone="wocky-xmpp-node-each-child"><primary sortas="wocky_xmpp_node_each_child">wocky_xmpp_node_each_child</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_each_child          (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         <link linkend="wocky-xmpp-node-each-child-func">wocky_xmpp_node_each_child_func</link> func,
+                                                         <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>func</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-get-attribute" role="function">
+<title>wocky_xmpp_node_get_attribute ()</title>
+<indexterm zone="wocky-xmpp-node-get-attribute"><primary sortas="wocky_xmpp_node_get_attribute">wocky_xmpp_node_get_attribute</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link> *       wocky_xmpp_node_get_attribute       (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *key);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-get-attribute-ns" role="function">
+<title>wocky_xmpp_node_get_attribute_ns ()</title>
+<indexterm zone="wocky-xmpp-node-get-attribute-ns"><primary sortas="wocky_xmpp_node_get_attribute_ns">wocky_xmpp_node_get_attribute_ns</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link> *       wocky_xmpp_node_get_attribute_ns    (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *key,
+                                                         const <link linkend="gchar">gchar</link> *ns);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-set-attribute" role="function">
+<title>wocky_xmpp_node_set_attribute ()</title>
+<indexterm zone="wocky-xmpp-node-set-attribute"><primary sortas="wocky_xmpp_node_set_attribute">wocky_xmpp_node_set_attribute</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_set_attribute       (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *key,
+                                                         const <link linkend="gchar">gchar</link> *value);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-set-attribute-ns" role="function">
+<title>wocky_xmpp_node_set_attribute_ns ()</title>
+<indexterm zone="wocky-xmpp-node-set-attribute-ns"><primary sortas="wocky_xmpp_node_set_attribute_ns">wocky_xmpp_node_set_attribute_ns</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_set_attribute_ns    (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *key,
+                                                         const <link linkend="gchar">gchar</link> *value,
+                                                         const <link linkend="gchar">gchar</link> *ns);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-set-attribute-n" role="function">
+<title>wocky_xmpp_node_set_attribute_n ()</title>
+<indexterm zone="wocky-xmpp-node-set-attribute-n"><primary sortas="wocky_xmpp_node_set_attribute_n">wocky_xmpp_node_set_attribute_n</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_set_attribute_n     (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *key,
+                                                         const <link linkend="gchar">gchar</link> *value,
+                                                         <link linkend="gsize">gsize</link> value_size);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value_size</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-set-attribute-n-ns" role="function">
+<title>wocky_xmpp_node_set_attribute_n_ns ()</title>
+<indexterm zone="wocky-xmpp-node-set-attribute-n-ns"><primary sortas="wocky_xmpp_node_set_attribute_n_ns">wocky_xmpp_node_set_attribute_n_ns</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_set_attribute_n_ns  (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *key,
+                                                         const <link linkend="gchar">gchar</link> *value,
+                                                         <link linkend="gsize">gsize</link> value_size,
+                                                         const <link linkend="gchar">gchar</link> *ns);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value_size</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-attribute-ns-get-prefix-from-urn" role="function">
+<title>wocky_xmpp_node_attribute_ns_get_prefix_from_urn ()</title>
+<indexterm zone="wocky-xmpp-node-attribute-ns-get-prefix-from-urn"><primary sortas="wocky_xmpp_node_attribute_ns_get_prefix_from_urn">wocky_xmpp_node_attribute_ns_get_prefix_from_urn</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link> *       wocky_xmpp_node_attribute_ns_get_prefix_from_urn
+                                                        (const <link linkend="gchar">gchar</link> *urn);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>urn</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-attribute-ns-get-prefix-from-quark" role="function">
+<title>wocky_xmpp_node_attribute_ns_get_prefix_from_quark ()</title>
+<indexterm zone="wocky-xmpp-node-attribute-ns-get-prefix-from-quark"><primary sortas="wocky_xmpp_node_attribute_ns_get_prefix_from_quark">wocky_xmpp_node_attribute_ns_get_prefix_from_quark</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link> *       wocky_xmpp_node_attribute_ns_get_prefix_from_quark
+                                                        (<link linkend="GQuark">GQuark</link> ns);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ns</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-attribute-ns-set-prefix" role="function">
+<title>wocky_xmpp_node_attribute_ns_set_prefix ()</title>
+<indexterm zone="wocky-xmpp-node-attribute-ns-set-prefix"><primary sortas="wocky_xmpp_node_attribute_ns_set_prefix">wocky_xmpp_node_attribute_ns_set_prefix</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_attribute_ns_set_prefix
+                                                        (<link linkend="GQuark">GQuark</link> ns,
+                                                         const <link linkend="gchar">gchar</link> *prefix);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ns</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prefix</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-get-child" role="function">
+<title>wocky_xmpp_node_get_child ()</title>
+<indexterm zone="wocky-xmpp-node-get-child"><primary sortas="wocky_xmpp_node_get_child">wocky_xmpp_node_get_child</primary></indexterm><programlisting><link linkend="WockyXmppNode">WockyXmppNode</link> *     wocky_xmpp_node_get_child           (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *name);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-get-child-ns" role="function">
+<title>wocky_xmpp_node_get_child_ns ()</title>
+<indexterm zone="wocky-xmpp-node-get-child-ns"><primary sortas="wocky_xmpp_node_get_child_ns">wocky_xmpp_node_get_child_ns</primary></indexterm><programlisting><link linkend="WockyXmppNode">WockyXmppNode</link> *     wocky_xmpp_node_get_child_ns        (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *name,
+                                                         const <link linkend="gchar">gchar</link> *ns);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-get-first-child" role="function">
+<title>wocky_xmpp_node_get_first_child ()</title>
+<indexterm zone="wocky-xmpp-node-get-first-child"><primary sortas="wocky_xmpp_node_get_first_child">wocky_xmpp_node_get_first_child</primary></indexterm><programlisting><link linkend="WockyXmppNode">WockyXmppNode</link> *     wocky_xmpp_node_get_first_child     (<link linkend="WockyXmppNode">WockyXmppNode</link> *node);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-add-child" role="function">
+<title>wocky_xmpp_node_add_child ()</title>
+<indexterm zone="wocky-xmpp-node-add-child"><primary sortas="wocky_xmpp_node_add_child">wocky_xmpp_node_add_child</primary></indexterm><programlisting><link linkend="WockyXmppNode">WockyXmppNode</link> *     wocky_xmpp_node_add_child           (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *name);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-add-child-ns" role="function">
+<title>wocky_xmpp_node_add_child_ns ()</title>
+<indexterm zone="wocky-xmpp-node-add-child-ns"><primary sortas="wocky_xmpp_node_add_child_ns">wocky_xmpp_node_add_child_ns</primary></indexterm><programlisting><link linkend="WockyXmppNode">WockyXmppNode</link> *     wocky_xmpp_node_add_child_ns        (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *name,
+                                                         const <link linkend="gchar">gchar</link> *ns);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-add-child-with-content" role="function">
+<title>wocky_xmpp_node_add_child_with_content ()</title>
+<indexterm zone="wocky-xmpp-node-add-child-with-content"><primary sortas="wocky_xmpp_node_add_child_with_content">wocky_xmpp_node_add_child_with_content</primary></indexterm><programlisting><link linkend="WockyXmppNode">WockyXmppNode</link> *     wocky_xmpp_node_add_child_with_content
+                                                        (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *name,
+                                                         const <link linkend="char">char</link> *content);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>content</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-add-child-with-content-ns" role="function">
+<title>wocky_xmpp_node_add_child_with_content_ns ()</title>
+<indexterm zone="wocky-xmpp-node-add-child-with-content-ns"><primary sortas="wocky_xmpp_node_add_child_with_content_ns">wocky_xmpp_node_add_child_with_content_ns</primary></indexterm><programlisting><link linkend="WockyXmppNode">WockyXmppNode</link> *     wocky_xmpp_node_add_child_with_content_ns
+                                                        (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *name,
+                                                         const <link linkend="gchar">gchar</link> *content,
+                                                         const <link linkend="gchar">gchar</link> *ns);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>content</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-set-ns" role="function">
+<title>wocky_xmpp_node_set_ns ()</title>
+<indexterm zone="wocky-xmpp-node-set-ns"><primary sortas="wocky_xmpp_node_set_ns">wocky_xmpp_node_set_ns</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_set_ns              (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *ns);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-get-ns" role="function">
+<title>wocky_xmpp_node_get_ns ()</title>
+<indexterm zone="wocky-xmpp-node-get-ns"><primary sortas="wocky_xmpp_node_get_ns">wocky_xmpp_node_get_ns</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link> *       wocky_xmpp_node_get_ns              (<link linkend="WockyXmppNode">WockyXmppNode</link> *node);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-get-language" role="function">
+<title>wocky_xmpp_node_get_language ()</title>
+<indexterm zone="wocky-xmpp-node-get-language"><primary sortas="wocky_xmpp_node_get_language">wocky_xmpp_node_get_language</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link> *       wocky_xmpp_node_get_language        (<link linkend="WockyXmppNode">WockyXmppNode</link> *node);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-set-language" role="function">
+<title>wocky_xmpp_node_set_language ()</title>
+<indexterm zone="wocky-xmpp-node-set-language"><primary sortas="wocky_xmpp_node_set_language">wocky_xmpp_node_set_language</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_set_language        (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *lang);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>lang</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-set-language-n" role="function">
+<title>wocky_xmpp_node_set_language_n ()</title>
+<indexterm zone="wocky-xmpp-node-set-language-n"><primary sortas="wocky_xmpp_node_set_language_n">wocky_xmpp_node_set_language_n</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_set_language_n      (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *lang,
+                                                         <link linkend="gsize">gsize</link> lang_size);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>lang</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>lang_size</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-set-content" role="function">
+<title>wocky_xmpp_node_set_content ()</title>
+<indexterm zone="wocky-xmpp-node-set-content"><primary sortas="wocky_xmpp_node_set_content">wocky_xmpp_node_set_content</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_set_content         (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *content);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>content</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-append-content" role="function">
+<title>wocky_xmpp_node_append_content ()</title>
+<indexterm zone="wocky-xmpp-node-append-content"><primary sortas="wocky_xmpp_node_append_content">wocky_xmpp_node_append_content</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_append_content      (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *content);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>content</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-append-content-n" role="function">
+<title>wocky_xmpp_node_append_content_n ()</title>
+<indexterm zone="wocky-xmpp-node-append-content-n"><primary sortas="wocky_xmpp_node_append_content_n">wocky_xmpp_node_append_content_n</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_append_content_n    (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         const <link linkend="gchar">gchar</link> *content,
+                                                         <link linkend="gsize">gsize</link> size);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>content</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>size</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-to-string" role="function">
+<title>wocky_xmpp_node_to_string ()</title>
+<indexterm zone="wocky-xmpp-node-to-string"><primary sortas="wocky_xmpp_node_to_string">wocky_xmpp_node_to_string</primary></indexterm><programlisting><link linkend="gchar">gchar</link> *             wocky_xmpp_node_to_string           (<link linkend="WockyXmppNode">WockyXmppNode</link> *node);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-new" role="function">
+<title>wocky_xmpp_node_new ()</title>
+<indexterm zone="wocky-xmpp-node-new"><primary sortas="wocky_xmpp_node_new">wocky_xmpp_node_new</primary></indexterm><programlisting><link linkend="WockyXmppNode">WockyXmppNode</link> *     wocky_xmpp_node_new                 (const <link linkend="char">char</link> *name);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>name</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-free" role="function">
+<title>wocky_xmpp_node_free ()</title>
+<indexterm zone="wocky-xmpp-node-free"><primary sortas="wocky_xmpp_node_free">wocky_xmpp_node_free</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_free                (<link linkend="WockyXmppNode">WockyXmppNode</link> *node);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-equal" role="function">
+<title>wocky_xmpp_node_equal ()</title>
+<indexterm zone="wocky-xmpp-node-equal"><primary sortas="wocky_xmpp_node_equal">wocky_xmpp_node_equal</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_xmpp_node_equal               (<link linkend="WockyXmppNode">WockyXmppNode</link> *node0,
+                                                         <link linkend="WockyXmppNode">WockyXmppNode</link> *node1);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node0</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>node1</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-is-superset" role="function">
+<title>wocky_xmpp_node_is_superset ()</title>
+<indexterm zone="wocky-xmpp-node-is-superset"><primary sortas="wocky_xmpp_node_is_superset">wocky_xmpp_node_is_superset</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            wocky_xmpp_node_is_superset         (<link linkend="WockyXmppNode">WockyXmppNode</link> *node,
+                                                         <link linkend="WockyXmppNode">WockyXmppNode</link> *pattern);</programlisting>
+<para>
+</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>node</parameter>&#160;:</term>
+<listitem><simpara> the <link linkend="WockyXmppNode"><type>WockyXmppNode</type></link> to test
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pattern</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="TRUE--CAPS"><literal>TRUE</literal></link> if <parameter>node</parameter> is a superset of <parameter>subset</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-xmpp-node-init" role="function">
+<title>wocky_xmpp_node_init ()</title>
+<indexterm zone="wocky-xmpp-node-init"><primary sortas="wocky_xmpp_node_init">wocky_xmpp_node_init</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_init                (void);</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="wocky-xmpp-node-deinit" role="function">
+<title>wocky_xmpp_node_deinit ()</title>
+<indexterm zone="wocky-xmpp-node-deinit"><primary sortas="wocky_xmpp_node_deinit">wocky_xmpp_node_deinit</primary></indexterm><programlisting><link linkend="void">void</link>                wocky_xmpp_node_deinit              (void);</programlisting>
+<para>
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

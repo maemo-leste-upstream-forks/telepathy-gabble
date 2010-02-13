@@ -1,0 +1,188 @@
+<refentry id="wocky-wocky-contact-factory">
+<refmeta>
+<refentrytitle role="top_of_page" id="wocky-wocky-contact-factory.top_of_page">wocky-contact-factory</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>WOCKY Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>wocky-contact-factory</refname>
+<refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="wocky-wocky-contact-factory.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+<anchor id="WockyContactFactory"/>
+<synopsis>
+                    <link linkend="WockyContactFactory-struct">WockyContactFactory</link>;
+                    <link linkend="WockyContactFactoryClass">WockyContactFactoryClass</link>;
+<link linkend="WockyContactFactory">WockyContactFactory</link> * <link linkend="wocky-contact-factory-new">wocky_contact_factory_new</link>         (void);
+<link linkend="WockyBareContact">WockyBareContact</link> *  <link linkend="wocky-contact-factory-ensure-bare-contact">wocky_contact_factory_ensure_bare_contact</link>
+                                                        (<link linkend="WockyContactFactory">WockyContactFactory</link> *factory,
+                                                         const <link linkend="gchar">gchar</link> *bare_jid);
+<link linkend="WockyResourceContact">WockyResourceContact</link> * <link linkend="wocky-contact-factory-ensure-resource-contact">wocky_contact_factory_ensure_resource_contact</link>
+                                                        (<link linkend="WockyContactFactory">WockyContactFactory</link> *factory,
+                                                         const <link linkend="gchar">gchar</link> *full_jid);
+<link linkend="WockyBareContact">WockyBareContact</link> *  <link linkend="wocky-contact-factory-lookup-bare-contact">wocky_contact_factory_lookup_bare_contact</link>
+                                                        (<link linkend="WockyContactFactory">WockyContactFactory</link> *factory,
+                                                         const <link linkend="gchar">gchar</link> *bare_jid);
+<link linkend="WockyResourceContact">WockyResourceContact</link> * <link linkend="wocky-contact-factory-lookup-resource-contact">wocky_contact_factory_lookup_resource_contact</link>
+                                                        (<link linkend="WockyContactFactory">WockyContactFactory</link> *factory,
+                                                         const <link linkend="gchar">gchar</link> *full_jid);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 id="wocky-wocky-contact-factory.object-hierarchy" role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+  <link linkend="GObject">GObject</link>
+   +----WockyContactFactory
+</synopsis>
+</refsect1>
+
+
+
+
+
+
+<refsect1 id="wocky-wocky-contact-factory.signals" role="signal_proto">
+<title role="signal_proto.title">Signals</title>
+<synopsis>
+  &quot;<link linkend="WockyContactFactory-bare-contact-added">bare-contact-added</link>&quot;                             : Run Last
+  &quot;<link linkend="WockyContactFactory-resource-contact-added">resource-contact-added</link>&quot;                         : Run Last
+</synopsis>
+</refsect1>
+
+
+<refsect1 id="wocky-wocky-contact-factory.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+</para>
+</refsect1>
+
+<refsect1 id="wocky-wocky-contact-factory.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="WockyContactFactory-struct" role="struct">
+<title>WockyContactFactory</title>
+<indexterm zone="WockyContactFactory-struct"><primary sortas="WockyContactFactory">WockyContactFactory</primary></indexterm><programlisting>typedef struct _WockyContactFactory WockyContactFactory;</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="WockyContactFactoryClass" role="struct">
+<title>WockyContactFactoryClass</title>
+<indexterm zone="WockyContactFactoryClass"><primary sortas="WockyContactFactoryClass">WockyContactFactoryClass</primary></indexterm><programlisting>typedef struct {
+  GObjectClass parent_class;
+} WockyContactFactoryClass;
+</programlisting>
+<para>
+</para></refsect2>
+<refsect2 id="wocky-contact-factory-new" role="function">
+<title>wocky_contact_factory_new ()</title>
+<indexterm zone="wocky-contact-factory-new"><primary sortas="wocky_contact_factory_new">wocky_contact_factory_new</primary></indexterm><programlisting><link linkend="WockyContactFactory">WockyContactFactory</link> * wocky_contact_factory_new         (void);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-contact-factory-ensure-bare-contact" role="function">
+<title>wocky_contact_factory_ensure_bare_contact ()</title>
+<indexterm zone="wocky-contact-factory-ensure-bare-contact"><primary sortas="wocky_contact_factory_ensure_bare_contact">wocky_contact_factory_ensure_bare_contact</primary></indexterm><programlisting><link linkend="WockyBareContact">WockyBareContact</link> *  wocky_contact_factory_ensure_bare_contact
+                                                        (<link linkend="WockyContactFactory">WockyContactFactory</link> *factory,
+                                                         const <link linkend="gchar">gchar</link> *bare_jid);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>factory</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>bare_jid</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-contact-factory-ensure-resource-contact" role="function">
+<title>wocky_contact_factory_ensure_resource_contact ()</title>
+<indexterm zone="wocky-contact-factory-ensure-resource-contact"><primary sortas="wocky_contact_factory_ensure_resource_contact">wocky_contact_factory_ensure_resource_contact</primary></indexterm><programlisting><link linkend="WockyResourceContact">WockyResourceContact</link> * wocky_contact_factory_ensure_resource_contact
+                                                        (<link linkend="WockyContactFactory">WockyContactFactory</link> *factory,
+                                                         const <link linkend="gchar">gchar</link> *full_jid);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>factory</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>full_jid</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-contact-factory-lookup-bare-contact" role="function">
+<title>wocky_contact_factory_lookup_bare_contact ()</title>
+<indexterm zone="wocky-contact-factory-lookup-bare-contact"><primary sortas="wocky_contact_factory_lookup_bare_contact">wocky_contact_factory_lookup_bare_contact</primary></indexterm><programlisting><link linkend="WockyBareContact">WockyBareContact</link> *  wocky_contact_factory_lookup_bare_contact
+                                                        (<link linkend="WockyContactFactory">WockyContactFactory</link> *factory,
+                                                         const <link linkend="gchar">gchar</link> *bare_jid);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>factory</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>bare_jid</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="wocky-contact-factory-lookup-resource-contact" role="function">
+<title>wocky_contact_factory_lookup_resource_contact ()</title>
+<indexterm zone="wocky-contact-factory-lookup-resource-contact"><primary sortas="wocky_contact_factory_lookup_resource_contact">wocky_contact_factory_lookup_resource_contact</primary></indexterm><programlisting><link linkend="WockyResourceContact">WockyResourceContact</link> * wocky_contact_factory_lookup_resource_contact
+                                                        (<link linkend="WockyContactFactory">WockyContactFactory</link> *factory,
+                                                         const <link linkend="gchar">gchar</link> *full_jid);</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>factory</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>full_jid</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+<refsect1 id="wocky-wocky-contact-factory.signal-details" role="signals">
+<title role="signals.title">Signal Details</title>
+<refsect2 id="WockyContactFactory-bare-contact-added" role="signal"><title>The <literal>&quot;bare-contact-added&quot;</literal> signal</title>
+<indexterm zone="WockyContactFactory-bare-contact-added"><primary sortas="WockyContactFactory::bare-contact-added">WockyContactFactory::bare-contact-added</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="WockyContactFactory">WockyContactFactory</link> *wockycontactfactory,
+                                                        <link linkend="GObject">GObject</link>             *arg1,
+                                                        <link linkend="gpointer">gpointer</link>             user_data)                : Run Last</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>wockycontactfactory</parameter>&#160;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2 id="WockyContactFactory-resource-contact-added" role="signal"><title>The <literal>&quot;resource-contact-added&quot;</literal> signal</title>
+<indexterm zone="WockyContactFactory-resource-contact-added"><primary sortas="WockyContactFactory::resource-contact-added">WockyContactFactory::resource-contact-added</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="WockyContactFactory">WockyContactFactory</link> *wockycontactfactory,
+                                                        <link linkend="GObject">GObject</link>             *arg1,
+                                                        <link linkend="gpointer">gpointer</link>             user_data)                : Run Last</programlisting>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>wockycontactfactory</parameter>&#160;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
+
+
+
+</refentry>

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Wocky GnuTLS TLS</title>
+<title>Wocky OpenSSL TLS</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
@@ -33,12 +33,12 @@
                 <a href="#wocky-wocky-tls.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry" title="Wocky GnuTLS TLS">
+<div class="refentry" title="Wocky OpenSSL TLS">
 <a name="wocky-wocky-tls"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2><span class="refentrytitle"><a name="wocky-wocky-tls.top_of_page"></a>Wocky GnuTLS TLS</span></h2>
-<p>Wocky GnuTLS TLS — Establish TLS sessions</p>
+<h2><span class="refentrytitle"><a name="wocky-wocky-tls.top_of_page"></a>Wocky OpenSSL TLS</span></h2>
+<p>Wocky OpenSSL TLS — Establish TLS sessions</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -144,19 +144,12 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
 <a name="wocky-wocky-tls.description"></a><h2>Description</h2>
 <p>
 The WOCKY_TLS_DEBUG_LEVEL environment variable can be used to print debug
-output from GNU TLS. To enable it, set it to a value from 1 to 9.
-Higher values will print more information. See the documentation of
-gnutls_global_set_log_level for more details.
+output from OpenSSL. To enable it, set it to a value from 1 to 9.
+Higher values will print more information.
 </p>
 <p>
 Increasing the value past certain thresholds will also trigger increased
-debugging output from within wocky-tls.c as well.
-</p>
-<p>
-The WOCKY_GNUTLS_OPTIONS environment variable can be set to a gnutls
-priority string [See gnutls-cli(1) or the gnutls_priority_init docs]
-to control most tls protocol details. An empty or unset value is roughly
-equivalent to a priority string of "SECURE:+COMP-DEFLATE".</p>
+debugging output from within wocky-openssl.c as well.</p>
 <p>
 </p>
 </div>
@@ -435,7 +428,7 @@ Create a new TLS server session</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dhbits</code></em> :</span></p></td>
-<td> size of the DH parameters (see gnutls for valid settings)
+<td> size of the DH parameters
 </td>
 </tr>
 <tr>
