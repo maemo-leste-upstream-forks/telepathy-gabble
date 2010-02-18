@@ -1,3 +1,55 @@
+commit 0131e41fd4b984aa24a0a474192043c2afdbb25b
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-02-16 20:52:14 -0500
+
+    version 0.8.11
+
+commit 9c2454165582c9fe78eeb8db47dfddc7a9c6235d
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-02-16 20:52:05 -0500
+
+    update NEWS
+
+commit 63a76d10d6055bcce29667c020b3c1592c2ad989
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-12 14:17:56 +0000
+
+    Use correct client type when calculating hash.
+    
+    Previously, if you compiled with --enable-is-a-phone, Gabble would still
+    use "pc" when calculating its own hash. Bzzt.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 5af87f52d8e3bf5a9f2c139512dfb184561aa5a0
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-10 21:19:22 -0600
+
+    Fix a non-UTF-8 string being sent to the debug log.
+    
+    In the HTTP response for a Google relay session there is a
+    'magic_cookie' value which contains a binary 'magic' string. This
+    string, contained in the entire response, was being sent to the
+    debug log. If Empathy's debug window was open, this would cause
+    that string to be sent over DBus. Since the string wasn't valid
+    UTF-8, DBus dropped Gabble from the session bus. This patch escapes
+    the binary data in that output.
+
+commit b7285c90631159cc72fc3d5c5c54060bb907eb7c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-02-08 18:49:23 +0000
+
+    Fix typo.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 4768fb7a8fda859e8dcceaa3b15a09ff0cfdedcb
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-28 17:18:13 -0500
+
+    version 0.8.10.1
+
 commit 0a906a3db24c85648a3262be0f5094785059925d
 Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
 Date:   2010-01-28 15:37:21 -0500
