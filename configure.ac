@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [9])
-m4_define([gabble_micro_version], [4])
+m4_define([gabble_micro_version], [6])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -118,8 +118,16 @@ AC_ARG_ENABLE([is-a-phone],
     [is_a_phone=$enableval], [is_a_phone=no])
 
 if test x$is_a_phone = xyes; then
-  AC_DEFINE(IS_A_PHONE, [], [Defined if the target device is a phone])
+  AC_DEFINE(CLIENT_TYPE, ["phone"],
+      [Client type from http://xmpp.org/registrar/disco-categories.html#client])
+  CLIENT_TYPE=phone
+else
+  AC_DEFINE(CLIENT_TYPE, ["pc"],
+      [Client type from http://xmpp.org/registrar/disco-categories.html#client])
+  CLIENT_TYPE=pc
 fi
+
+AC_SUBST(CLIENT_TYPE)
 
 dnl Check for Glib
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >= 2.16])
@@ -131,14 +139,19 @@ GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
 
 AC_ARG_ENABLE(plugins,
-  AC_HELP_STRING([--enable-plugins],
-                 [enable experimental plugin support]),
-    [enable_plugins=$enableval], [enable_plugins=no])
+  AC_HELP_STRING([--disable-plugins],
+                 [disable plugin loader]),
+    [enable_plugins=$enableval], [enable_plugins=yes])
 
 if test x$enable_plugins = xyes; then
   AC_DEFINE(ENABLE_PLUGINS, [], [Enable plugins])
-  dnl If we want plugins, we need gmodule
   PKG_CHECK_MODULES(GMODULE, [gmodule-2.0])
+
+  AC_ARG_ENABLE(plugin-api,
+    AC_HELP_STRING([--enable-plugin-api],
+                   [install headers for third-party plugins (experimental)]),
+    [enable_plugin_api=$enableval],
+    [enable_plugin_api=no])
 fi
 
 AC_SUBST(GMODULE_CFLAGS)
@@ -146,6 +159,8 @@ AC_SUBST(GMODULE_LIBS)
 
 AM_CONDITIONAL(ENABLE_PLUGINS, test x$enable_plugins = xyes)
 AC_SUBST(ENABLE_PLUGINS)
+
+AM_CONDITIONAL(ENABLE_PLUGIN_API, test x$enable_plugin_api = xyes)
 
 AC_ARG_ENABLE(channel-type-call,
   AC_HELP_STRING([--disable-channel-type-call],

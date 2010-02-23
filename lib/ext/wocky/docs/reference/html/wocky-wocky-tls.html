@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-xmpp-error.html" title="wocky-xmpp-error">
 <link rel="next" href="object-tree.html" title="Object Hierarchy">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.13 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="API Reference">
 <link rel="chapter" href="object-tree.html" title="Object Hierarchy">
@@ -25,12 +25,12 @@
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#wocky-wocky-tls.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#wocky-wocky-tls.description" class="shortcut">Description</a>
-                 | 
-                <a href="#wocky-wocky-tls.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#wocky-wocky-tls.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#wocky-wocky-tls.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#wocky-wocky-tls.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#wocky-wocky-tls.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
 <div class="refentry" title="Wocky OpenSSL TLS">
@@ -44,100 +44,53 @@
 </tr></table></div>
 <div class="refsynopsisdiv" title="Synopsis">
 <a name="wocky-wocky-tls.synopsis"></a><h2>Synopsis</h2>
-<a name="WockyTLSConnection"></a><a name="WockyTLSSession"></a><pre class="synopsis">
-#define             WOCKY_TYPE_TLS_CONNECTION
-#define             WOCKY_TYPE_TLS_SESSION
-#define             WOCKY_TLS_SESSION                   (inst)
-#define             WOCKY_TLS_CONNECTION                (inst)
-typedef             WockyTLSConnection;
-typedef             WockyTLSSession;
-<a
-href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"
->GType</a>               wocky_tls_connection_get_type       (void);
-<a
-href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"
->GType</a>               wocky_tls_session_get_type          (void);
-WockyTLSConnection * wocky_tls_session_handshake        (WockyTLSSession *session,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);
-void                wocky_tls_session_handshake_async   (WockyTLSSession *session,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"
->gint</a> io_priority,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
->GAsyncReadyCallback</a> callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);
-WockyTLSConnection * wocky_tls_session_handshake_finish (WockyTLSSession *session,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
->GAsyncResult</a> *result,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);
-WockyTLSSession *   wocky_tls_session_new               (<a
-href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
->GIOStream</a> *stream);
-WockyTLSSession *   wocky_tls_session_server_new        (<a
-href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
->GIOStream</a> *stream,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a> dhbits,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *key,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *cert);
+<a name="WockyTLSConnection"></a><a name="WockyTLSSession"></a><pre class="synopsis">#define             <a href="wocky-wocky-tls.html#WOCKY-TYPE-TLS-CONNECTION:CAPS">WOCKY_TYPE_TLS_CONNECTION</a>
+#define             <a href="wocky-wocky-tls.html#WOCKY-TYPE-TLS-SESSION:CAPS">WOCKY_TYPE_TLS_SESSION</a>
+#define             <a href="wocky-wocky-tls.html#WOCKY-TLS-SESSION:CAPS">WOCKY_TLS_SESSION</a>                   (inst)
+#define             <a href="wocky-wocky-tls.html#WOCKY-TLS-CONNECTION:CAPS">WOCKY_TLS_CONNECTION</a>                (inst)
+typedef             <a href="wocky-wocky-tls.html#WockyTLSConnection">WockyTLSConnection</a>;
+typedef             <a href="wocky-wocky-tls.html#WockyTLSSession">WockyTLSSession</a>;
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               <a href="wocky-wocky-tls.html#wocky-tls-connection-get-type">wocky_tls_connection_get_type</a>       (void);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               <a href="wocky-wocky-tls.html#wocky-tls-session-get-type">wocky_tls_session_get_type</a>          (void);
+<a href="wocky-wocky-tls.html#WockyTLSConnection"><span class="returnvalue">WockyTLSConnection</span></a> * <a href="wocky-wocky-tls.html#wocky-tls-session-handshake">wocky_tls_session_handshake</a>        (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
+<span class="returnvalue">void</span>                <a href="wocky-wocky-tls.html#wocky-tls-session-handshake-async">wocky_tls_session_handshake_async</a>   (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a> io_priority,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
+<a href="wocky-wocky-tls.html#WockyTLSConnection"><span class="returnvalue">WockyTLSConnection</span></a> * <a href="wocky-wocky-tls.html#wocky-tls-session-handshake-finish">wocky_tls_session_handshake_finish</a> (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
+<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *   <a href="wocky-wocky-tls.html#wocky-tls-session-new">wocky_tls_session_new</a>               (<a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="returnvalue">GIOStream</span></a> *stream);
+<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *   <a href="wocky-wocky-tls.html#wocky-tls-session-server-new">wocky_tls_session_server_new</a>        (<a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="returnvalue">GIOStream</span></a> *stream,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a> dhbits,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *key,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *cert);
 </pre>
 </div>
 <div class="refsect1" title="Object Hierarchy">
 <a name="wocky-wocky-tls.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
->GIOStream</a>
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html">GIOStream</a>
          +----WockyTLSConnection
 </pre>
 <pre class="synopsis">
-  <a
-href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
    +----WockyTLSSession
 </pre>
 </div>
 <div class="refsect1" title="Properties">
 <a name="wocky-wocky-tls.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "session"                  WockyTLSSession*      : Write / Construct Only
-  "base-stream"              <a
-href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
->GIOStream</a>*            : Write / Construct Only
-  "dh-bits"                  <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a>                 : Write / Construct Only
-  "server"                   <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Write / Construct Only
-  "x509-cert"                <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write / Construct Only
-  "x509-key"                 <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write / Construct Only
+  "<a href="wocky-wocky-tls.html#WockyTLSConnection--session">session</a>"                  <a href="wocky-wocky-tls.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a>*      : Write / Construct Only
+  "<a href="wocky-wocky-tls.html#WockyTLSSession--base-stream">base-stream</a>"              <a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="type">GIOStream</span></a>*            : Write / Construct Only
+  "<a href="wocky-wocky-tls.html#WockyTLSSession--dh-bits">dh-bits</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Write / Construct Only
+  "<a href="wocky-wocky-tls.html#WockyTLSSession--server">server</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Write / Construct Only
+  "<a href="wocky-wocky-tls.html#WockyTLSSession--x509-cert">x509-cert</a>"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write / Construct Only
+  "<a href="wocky-wocky-tls.html#WockyTLSSession--x509-key">x509-key</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write / Construct Only
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -150,13 +103,11 @@ Higher values will print more information.
 <p>
 Increasing the value past certain thresholds will also trigger increased
 debugging output from within wocky-openssl.c as well.</p>
-<p>
-</p>
 </div>
 <div class="refsect1" title="Details">
 <a name="wocky-wocky-tls.details"></a><h2>Details</h2>
 <div class="refsect2" title="WOCKY_TYPE_TLS_CONNECTION">
-<a name="WOCKY-TYPE-TLS-CONNECTION--CAPS"></a><h3>WOCKY_TYPE_TLS_CONNECTION</h3>
+<a name="WOCKY-TYPE-TLS-CONNECTION:CAPS"></a><h3>WOCKY_TYPE_TLS_CONNECTION</h3>
 <pre class="programlisting">#define WOCKY_TYPE_TLS_CONNECTION (wocky_tls_connection_get_type ())
 </pre>
 <p>
@@ -164,7 +115,7 @@ debugging output from within wocky-openssl.c as well.</p>
 </div>
 <hr>
 <div class="refsect2" title="WOCKY_TYPE_TLS_SESSION">
-<a name="WOCKY-TYPE-TLS-SESSION--CAPS"></a><h3>WOCKY_TYPE_TLS_SESSION</h3>
+<a name="WOCKY-TYPE-TLS-SESSION:CAPS"></a><h3>WOCKY_TYPE_TLS_SESSION</h3>
 <pre class="programlisting">#define WOCKY_TYPE_TLS_SESSION    (wocky_tls_session_get_type ())
 </pre>
 <p>
@@ -172,7 +123,7 @@ debugging output from within wocky-openssl.c as well.</p>
 </div>
 <hr>
 <div class="refsect2" title="WOCKY_TLS_SESSION()">
-<a name="WOCKY-TLS-SESSION--CAPS"></a><h3>WOCKY_TLS_SESSION()</h3>
+<a name="WOCKY-TLS-SESSION:CAPS"></a><h3>WOCKY_TLS_SESSION()</h3>
 <pre class="programlisting">#define             WOCKY_TLS_SESSION(inst)</pre>
 <p>
 </p>
@@ -187,7 +138,7 @@ debugging output from within wocky-openssl.c as well.</p>
 </div>
 <hr>
 <div class="refsect2" title="WOCKY_TLS_CONNECTION()">
-<a name="WOCKY-TLS-CONNECTION--CAPS"></a><h3>WOCKY_TLS_CONNECTION()</h3>
+<a name="WOCKY-TLS-CONNECTION:CAPS"></a><h3>WOCKY_TLS_CONNECTION()</h3>
 <pre class="programlisting">#define             WOCKY_TLS_CONNECTION(inst)</pre>
 <p>
 </p>
@@ -219,9 +170,7 @@ debugging output from within wocky-openssl.c as well.</p>
 <hr>
 <div class="refsect2" title="wocky_tls_connection_get_type ()">
 <a name="wocky-tls-connection-get-type"></a><h3>wocky_tls_connection_get_type ()</h3>
-<pre class="programlisting"><a
-href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"
->GType</a>               wocky_tls_connection_get_type       (void);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               wocky_tls_connection_get_type       (void);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -236,9 +185,7 @@ href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.h
 <hr>
 <div class="refsect2" title="wocky_tls_session_get_type ()">
 <a name="wocky-tls-session-get-type"></a><h3>wocky_tls_session_get_type ()</h3>
-<pre class="programlisting"><a
-href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"
->GType</a>               wocky_tls_session_get_type          (void);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               wocky_tls_session_get_type          (void);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -253,13 +200,9 @@ href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.h
 <hr>
 <div class="refsect2" title="wocky_tls_session_handshake ()">
 <a name="wocky-tls-session-handshake"></a><h3>wocky_tls_session_handshake ()</h3>
-<pre class="programlisting">WockyTLSConnection * wocky_tls_session_handshake        (WockyTLSSession *session,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);</pre>
+<pre class="programlisting"><a href="wocky-wocky-tls.html#WockyTLSConnection"><span class="returnvalue">WockyTLSConnection</span></a> * wocky_tls_session_handshake        (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -291,19 +234,11 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GEr
 <hr>
 <div class="refsect2" title="wocky_tls_session_handshake_async ()">
 <a name="wocky-tls-session-handshake-async"></a><h3>wocky_tls_session_handshake_async ()</h3>
-<pre class="programlisting">void                wocky_tls_session_handshake_async   (WockyTLSSession *session,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"
->gint</a> io_priority,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
->GAsyncReadyCallback</a> callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_tls_session_handshake_async   (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a> io_priority,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -340,13 +275,9 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 <hr>
 <div class="refsect2" title="wocky_tls_session_handshake_finish ()">
 <a name="wocky-tls-session-handshake-finish"></a><h3>wocky_tls_session_handshake_finish ()</h3>
-<pre class="programlisting">WockyTLSConnection * wocky_tls_session_handshake_finish (WockyTLSSession *session,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
->GAsyncResult</a> *result,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);</pre>
+<pre class="programlisting"><a href="wocky-wocky-tls.html#WockyTLSConnection"><span class="returnvalue">WockyTLSConnection</span></a> * wocky_tls_session_handshake_finish (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -378,9 +309,7 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GEr
 <hr>
 <div class="refsect2" title="wocky_tls_session_new ()">
 <a name="wocky-tls-session-new"></a><h3>wocky_tls_session_new ()</h3>
-<pre class="programlisting">WockyTLSSession *   wocky_tls_session_new               (<a
-href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
->GIOStream</a> *stream);</pre>
+<pre class="programlisting"><a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *   wocky_tls_session_new               (<a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="returnvalue">GIOStream</span></a> *stream);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -402,22 +331,12 @@ href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
 <hr>
 <div class="refsect2" title="wocky_tls_session_server_new ()">
 <a name="wocky-tls-session-server-new"></a><h3>wocky_tls_session_server_new ()</h3>
-<pre class="programlisting">WockyTLSSession *   wocky_tls_session_server_new        (<a
-href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
->GIOStream</a> *stream,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a> dhbits,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *key,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *cert);</pre>
+<pre class="programlisting"><a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *   wocky_tls_session_server_new        (<a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="returnvalue">GIOStream</span></a> *stream,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a> dhbits,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *key,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *cert);</pre>
 <p>
 Create a new TLS server session</p>
-<p>
-</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -443,7 +362,7 @@ Create a new TLS server session</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">WockyTLSSession</span> object
+<td> a <a href="wocky-wocky-tls.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> object
 </td>
 </tr>
 </tbody>
@@ -454,23 +373,19 @@ Create a new TLS server session</p>
 <a name="wocky-wocky-tls.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" title='The "session" property'>
 <a name="WockyTLSConnection--session"></a><h3>The <code class="literal">"session"</code> property</h3>
-<pre class="programlisting">  "session"                  WockyTLSSession*      : Write / Construct Only</pre>
+<pre class="programlisting">  "session"                  <a href="wocky-wocky-tls.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a>*      : Write / Construct Only</pre>
 <p>the TLS session object for this connection.</p>
 </div>
 <hr>
 <div class="refsect2" title='The "base-stream" property'>
 <a name="WockyTLSSession--base-stream"></a><h3>The <code class="literal">"base-stream"</code> property</h3>
-<pre class="programlisting">  "base-stream"              <a
-href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"
->GIOStream</a>*            : Write / Construct Only</pre>
+<pre class="programlisting">  "base-stream"              <a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="type">GIOStream</span></a>*            : Write / Construct Only</pre>
 <p>the stream that TLS communicates over.</p>
 </div>
 <hr>
 <div class="refsect2" title='The "dh-bits" property'>
 <a name="WockyTLSSession--dh-bits"></a><h3>The <code class="literal">"dh-bits"</code> property</h3>
-<pre class="programlisting">  "dh-bits"                  <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a>                 : Write / Construct Only</pre>
+<pre class="programlisting">  "dh-bits"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Write / Construct Only</pre>
 <p>Diffie-Hellmann bits: 768, 1024, 2048, 3072 0r 4096.</p>
 <p>Allowed values: [768,4096]</p>
 <p>Default value: 1024</p>
@@ -478,27 +393,21 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
 <hr>
 <div class="refsect2" title='The "server" property'>
 <a name="WockyTLSSession--server"></a><h3>The <code class="literal">"server"</code> property</h3>
-<pre class="programlisting">  "server"                   <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Write / Construct Only</pre>
+<pre class="programlisting">  "server"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Write / Construct Only</pre>
 <p>whether this is a server.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" title='The "x509-cert" property'>
 <a name="WockyTLSSession--x509-cert"></a><h3>The <code class="literal">"x509-cert"</code> property</h3>
-<pre class="programlisting">  "x509-cert"                <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write / Construct Only</pre>
+<pre class="programlisting">  "x509-cert"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write / Construct Only</pre>
 <p>x509 PEM certificate file.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2" title='The "x509-key" property'>
 <a name="WockyTLSSession--x509-key"></a><h3>The <code class="literal">"x509-key"</code> property</h3>
-<pre class="programlisting">  "x509-key"                 <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write / Construct Only</pre>
+<pre class="programlisting">  "x509-key"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write / Construct Only</pre>
 <p>x509 PEM key file.</p>
 <p>Default value: NULL</p>
 </div>
@@ -506,6 +415,6 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.13</div>
 </body>
 </html>

@@ -1,3 +1,278 @@
+commit 19fa30c84df6211b328cb4902ca2e841b7378881
+Merge: e5d1f92 1fb9673
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 19:09:27 +0000
+
+    Merge branch 'plugins'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 1fb967336847742c27612092a60b43ea782f92b9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 17:41:51 +0000
+
+    Link plugins as shared-only
+    
+    There's no point in building a static version of these plugins, and we
+    don't support platforms without shared library support.
+    
+    Also explain why I'm using -rpath, and remove unnecessary -lm from the
+    test plugin.
+
+commit e5d1f92c8df2467983a2df33bdcd7b5286c9e26a
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-23 12:20:59 -0500
+
+    use gabble_signal_connect_weak for jingle-factory since the channels get destroyed after jingle-factory when the connection is disposed, so when a channel holding a jingle session gets destroyed, it causes the terminated signal to be fired into the destroyed jingle-factory
+
+commit b0c6fccf696cc07001410824872dacf32e74c3d2
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 16:57:51 +0000
+
+    Separate ENABLE_PLUGINS from ENABLE_PLUGIN_API and turn the former on by default
+    
+    This means that a "normal" Gabble build will install the gateways plugin
+    (and any other plugins we add to the source tree), and have the code to
+    load it, but not install the pkg-config/headers for third-party plugins
+    to be written (we won't present a stable API until Wocky is stable).
+
+commit 9ab533db873892931c8b8d9b6bea107371bea1c1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-19 18:56:56 +0000
+
+    Don't install the gateways plugin if we're not going to build the loader
+    
+    Debian's packaged version of telepathy-gabble 0.9.4 contains the plugin,
+    but not the code to load it, which is confusing and unhelpful.
+
+commit 61d613f2f4c744f99147df37d778ba76cbac5474
+Merge: 073803f 68cc932
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 16:37:09 +0000
+
+    Merge branch 'gateway-presence'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 68cc9321da656841204c975b91ae4ab007c282fc
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-13 19:14:31 +0000
+
+    gateways test: carry out subscription exchange
+
+commit bee1d8797ebce01876884b8d0807b230c8a4f8ba
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-13 17:52:54 +0000
+
+    On successful gateway registration, exchange presence subscriptions
+
+commit 5c302d9fbf72165986f55691e68bc666aa497cbc
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-13 17:13:57 +0000
+
+    gateways: normalize the gateway's node name using Wocky
+
+commit 57ecb98c7743ca0decd399e5f15e02050f7606e3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-13 14:50:56 +0000
+
+    gateways: pass the name of the gateway through the registration process
+
+commit 875f2d9423032d513347ca5ec6f7e37df39b3eb3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-22 12:23:34 +0000
+
+    gateways: add some debug code
+
+commit 59d9c5a8a9ac40abf6b8739d06c5fb8c0b2dfa03
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-13 17:14:37 +0000
+
+    gabble_gateway_sidecar_dispose: chain up to parent class correctly
+
+commit 073803ff5eb70331619d11d07ff20ec19dce9056
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-02-22 09:37:50 +0100
+
+    tests: assert that modifying unsignalled content doesn't result in a crash
+
+commit 2b957a8122af00518f6c7fad623e8a0818ff8813
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-19 15:53:15 -0500
+
+    Fix f.d.o bug #26658 : block the reception on the transport if the bytestream is not open and unblock it once it's opened
+
+commit 26b57c59c28676eba5e2314fd08cba92bf046cda
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-19 15:53:00 -0500
+
+    Add a test for sending data over the socket before the FT channel is OPEN
+
+commit f76f40049505c14890fc9b1c38a4ddb6b99e6e26
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-19 21:02:38 +0000
+
+    Nano version
+
+commit d2c078940b06befd6f8ccd97892f4ccf9292e8c1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-19 20:35:59 +0000
+
+    Prepare version 0.9.5
+
+commit 13757b43e99578bde64c219dfb9cbebd93537da7
+Merge: e995c1c 9565ce0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-19 19:49:19 +0000
+
+    Merge branch 'decloak'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 9565ce08c927a6b2c38698a8e9cb16cf394f0084
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-19 18:48:37 +0000
+
+    GabblePresenceCache: re-order signal emission vs. removal of pending requests
+    
+    This fixes the following situation, which is difficult to test in the
+    regression tests without making them take even longer:
+    
+    * the global "unsure period" for the presence cache has finished
+      (5 seconds)
+    * we call a peer whose presence we do not have
+    * we ask that peer to decloak
+    * they do so, and give us a capabilities hash we don't already know about
+    * we send them a disco request to work out what it means
+    * they reply to the disco request
+    
+    Previously, we'd signal to the media channel that it should proceed with
+    the delayed request, but because the node (caps hash) was still in our
+    table of pending disco requests, when the media channel asked whether
+    the presence cache was sure about the contact's capabilities yet, the
+    presence cache would reply that it was not, because it was waiting for
+    a disco request.
+    
+    In the regression tests, this was masked by the fact that the
+    global "unsure period" had not finished. When it does, the media channel
+    sees this as another opportunity to retry pending calls, and by then,
+    the presence cache *does* consider itself to be sure about that contact.
+
+commit e995c1cb20fac30aa378365394aa986498658abb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-18 18:15:36 +0000
+
+    Also run the session-id-collision test
+
+commit f0cf067275ee70f45dcb7a4a12ae8a4f4b0ff982
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-18 18:15:15 +0000
+
+    Need to import constants if we want to use them
+
+commit f456a0e50336b47e335cc9bcebcb9b87da346b19
+Merge: 43f18c2 d31df2e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-18 16:22:40 +0000
+
+    Merge branch 'fix-tests-for-is-a-phone'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit d31df2ec564d9dd2c9cb6e2ba0c4e0a9e5cba98b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-18 16:08:23 +0000
+
+    Building stanzas with string concat makes me sad.
+
+commit 496e0dda1ba40aee12cc51bea0ea9e12ad7856f2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-18 16:04:13 +0000
+
+    Fix tests with --enable-is-a-phone
+    
+    Not only did two different C source files hardcode that Gabble is a PC,
+    but so did the test suite. This is why the tests passed when I only
+    changed one of the hardcoded C strings; I don't know why I thought they
+    passed when I fixed that, but... they didn't. :)
+
+commit 43f18c25fd7cbe7e0615947c2663ce4cbbe7e4cd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-12 14:17:56 +0000
+
+    Use correct client type when calculating hash.
+    
+    Previously, if you compiled with --enable-is-a-phone, Gabble would still
+    use "pc" when calculating its own hash. Bzzt.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit b791a28c76568e265637d12a3f4f128ac0c122c8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-03 16:36:54 +0000
+
+    Don't assume that GabbleXmppError is WockyXmppError
+    
+    (They're no longer identical.)
+
+commit 666095677d9fbd9e35e304a9e4e8328f8ca71d5c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-03 16:36:25 +0000
+
+    Update signature for WockyMuc:message-error handler
+
+commit fa97cd27a0a7446fa94b2676a83d75e395b38406
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-03 16:35:35 +0000
+
+    Remove references to app-specific WockyXmppErrors
+    
+    These have been broken out into their own enum, where they should have
+    lived all along.
+
+commit 4dbb0722ae1192b91c96f080c690388fab157b64
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-03 16:33:57 +0000
+
+    Use stanza_extract_errors() not stanza_to_gerror()
+    
+    The latter has been removed in favour of the former.
+
+commit 6ab282886ec05e3b58a91f1dbba52e382d1afb63
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-03 16:33:24 +0000
+
+    Update Wocky snapshot for new error wrangling code
+
+commit a36ae46b7127ce503c938211a6791362581e99b3
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-10 21:19:22 -0600
+
+    Fix a non-UTF-8 string being sent to the debug log.
+    
+    In the HTTP response for a Google relay session there is a
+    'magic_cookie' value which contains a binary 'magic' string. This
+    string, contained in the entire response, was being sent to the
+    debug log. If Empathy's debug window was open, this would cause
+    that string to be sent over DBus. Since the string wasn't valid
+    UTF-8, DBus dropped Gabble from the session bus. This patch escapes
+    the binary data in that output.
+
+commit b0798502c91f7aa7e50d78182e0b39a5149d01bb
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-02-08 18:48:33 +0000
+
+    Fix typo.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit e3921d8c6cfd8f1d4015eef85ab97af8dee78c93
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-28 17:31:40 +0000
+
+    bump nano version to 0.9.4.1
+
 commit a1b20303ad25d7d3c52f2cabfc4f72d84f699f23
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-01-28 15:58:56 +0000

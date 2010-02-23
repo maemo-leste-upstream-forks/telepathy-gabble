@@ -45,6 +45,7 @@ typedef enum {
   SIG_NICK_CHANGE,
   SIG_PERM_CHANGE,
   SIG_PRESENCE,
+  SIG_OWN_PRESENCE,
   SIG_PRESENCE_ERROR,
   SIG_JOINED,
   SIG_PARTED,
@@ -56,14 +57,6 @@ typedef enum {
 } WockyMucSig;
 
 static guint signals[SIG_NULL] = { 0 };
-
-typedef enum {
-  MUC_CREATED = 0,
-  MUC_INITIATED,
-  MUC_AUTH,
-  MUC_JOINED,
-  MUC_ENDED,
-} WockyMucState;
 
 typedef struct { const gchar *ns; WockyMucFeature flag; } feature;
 static const feature feature_map[] =
@@ -375,9 +368,15 @@ wocky_muc_class_init (WockyMucClass *klass)
 
   signals[SIG_PRESENCE] = g_signal_new ("presence", ctype,
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
-      _wocky_signals_marshal_VOID__POINTER_POINTER_POINTER,
+      _wocky_signals_marshal_VOID__OBJECT_BOXED_POINTER,
       G_TYPE_NONE, 3,
       WOCKY_TYPE_XMPP_STANZA, G_TYPE_HASH_TABLE, G_TYPE_POINTER);
+
+  signals[SIG_OWN_PRESENCE] = g_signal_new ("own-presence", ctype,
+      G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+      _wocky_signals_marshal_VOID__OBJECT_BOXED,
+      G_TYPE_NONE, 2,
+      WOCKY_TYPE_XMPP_STANZA, G_TYPE_HASH_TABLE);
 
   signals[SIG_JOINED] = g_signal_new ("joined", ctype,
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
@@ -435,7 +434,7 @@ wocky_muc_class_init (WockyMucClass *klass)
 
   signals[SIG_MSG_ERR] = g_signal_new ("message-error", ctype,
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
-      _wocky_signals_marshal_VOID__OBJECT_ENUM_STRING_LONG_POINTER_STRING_ENUM_STRING,
+      _wocky_signals_marshal_VOID__OBJECT_ENUM_STRING_LONG_POINTER_STRING_ENUM_ENUM,
       G_TYPE_NONE, 8,
       WOCKY_TYPE_XMPP_STANZA,
       WOCKY_TYPE_MUC_MSG_TYPE,    /* WockyMucMsgType  */
@@ -444,7 +443,7 @@ wocky_muc_class_init (WockyMucClass *klass)
       G_TYPE_POINTER, /* WockyMucMember * */
       G_TYPE_STRING,  /* content          */
       WOCKY_TYPE_XMPP_ERROR,    /* WockyXmppError   */
-      G_TYPE_STRING); /* error type       */
+      WOCKY_TYPE_XMPP_ERROR_TYPE); /* error type       */
 
   signals[SIG_FILL_PRESENCE] = g_signal_new ("fill-presence", ctype,
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
@@ -743,12 +742,12 @@ muc_disco_info (GObject *source,
           }
 
         wocky_xmpp_node_each_child (query, store_muc_disco_info, priv);
-        if (priv->state < MUC_INITIATED)
-          priv->state = MUC_INITIATED;
+        if (priv->state < WOCKY_MUC_INITIATED)
+          priv->state = WOCKY_MUC_INITIATED;
         break;
 
       case WOCKY_STANZA_SUB_TYPE_ERROR:
-        error = wocky_xmpp_stanza_to_gerror (iq);
+        wocky_xmpp_stanza_extract_errors (iq, NULL, &error, NULL, NULL);
         break;
 
       default:
@@ -1013,6 +1012,8 @@ handle_self_presence (WockyMuc *muc,
   gboolean permission_update = FALSE;
   WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
 
+  DEBUG ("Received our own presence");
+
   /* we already know if we changed our own status, so no signal for that */
   nick_update = wocky_strdiff (priv->nick, nick);
   REPLACE_STR (priv->nick, nick);
@@ -1083,7 +1084,7 @@ handle_user_presence (WockyMuc *muc,
 
   member->presence_stanza = g_object_ref (stanza);
 
-  if (priv->state >= MUC_JOINED)
+  if (priv->state >= WOCKY_MUC_JOINED)
     g_signal_emit (muc, signals[SIG_PRESENCE], 0, stanza, code, member);
 
   return TRUE;
@@ -1224,9 +1225,9 @@ handle_presence_standard (WockyMuc *muc,
               ok = handle_self_presence (muc, stanza,
                   pnic, r, a, ajid, why, msg, code);
 
-              if (priv->state < MUC_JOINED)
+              if (priv->state < WOCKY_MUC_JOINED)
                 {
-                  priv->state = MUC_JOINED;
+                  priv->state = WOCKY_MUC_JOINED;
                   if (priv->join_cb != NULL)
                     {
                       g_simple_async_result_complete (priv->join_cb);
@@ -1235,6 +1236,9 @@ handle_presence_standard (WockyMuc *muc,
                     }
                   g_signal_emit (muc, signals[SIG_JOINED], 0, stanza, code);
                 }
+              else
+                g_signal_emit (muc, signals[SIG_OWN_PRESENCE], 0,
+                  stanza, code);
             }
           /* if this is someone else's presence, update internal member list */
           else
@@ -1252,7 +1256,7 @@ handle_presence_standard (WockyMuc *muc,
         {
           if (self_presence)
             {
-              priv->state = MUC_ENDED;
+              priv->state = WOCKY_MUC_ENDED;
               priv->role = WOCKY_MUC_ROLE_NONE;
               g_signal_emit (muc, signals[SIG_PARTED], 0,
                   stanza, code, ajid, why, msg);
@@ -1295,13 +1299,9 @@ handle_presence_error (WockyMuc *muc,
   gchar *room = NULL;
   gchar *serv = NULL;
   gchar *nick = NULL;
-  const gchar *err = NULL;
-  WockyXmppNode *node = stanza->node;
-  WockyXmppNode *text = NULL;
-  const gchar *from = wocky_xmpp_node_get_attribute (node, "from");
+  const gchar *from = wocky_xmpp_node_get_attribute (stanza->node, "from");
   WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
-  WockyXmppError errnum = WOCKY_XMPP_ERROR_UNDEFINED_CONDITION;
-  const gchar *message = NULL;
+  GError *error = NULL;
 
   if (!wocky_decode_jid (from, &room, &serv, &nick))
     {
@@ -1315,24 +1315,19 @@ handle_presence_error (WockyMuc *muc,
       goto out;
     }
 
-  err = wocky_xmpp_error_unpack_node (node, NULL, &text, NULL, NULL, &errnum);
+  wocky_xmpp_stanza_extract_errors (stanza, NULL, &error, NULL, NULL);
 
-  if (err == NULL)
+  if (priv->state >= WOCKY_MUC_JOINED)
     {
-      DEBUG ("malformed error stanza");
-      goto out;
+      DEBUG ("presence error after joining; not handled");
+      DEBUG ("    %s: %s",
+          wocky_xmpp_error_string (error->code),
+          error->message);
     }
 
-  if (priv->state >= MUC_JOINED)
-    {
-      DEBUG ("presence error after joining: not handled");
-      if (text != NULL)
-        DEBUG ("    %s: %s", err, text->content);
-      goto out;
-    }
-
-  message = text ? text->content : err;
-  g_signal_emit (muc, signals[SIG_PRESENCE_ERROR], 0, stanza, errnum, message);
+  g_signal_emit (muc, signals[SIG_PRESENCE_ERROR], 0, stanza, error->code,
+      error->message);
+  g_clear_error (&error);
 
  out:
   g_free (room);
@@ -1389,7 +1384,6 @@ handle_message (WockyPorter *porter,
   WockyXmppNode *msg = stanza->node;
   const gchar *from = NULL;
   WockyXmppNode *child = NULL;
-  gboolean is_error = FALSE;
   gboolean from_self = FALSE;
   int x;
 
@@ -1400,9 +1394,6 @@ handle_message (WockyPorter *porter,
   WockyMucMember *who = NULL;
   WockyMucMsgType mtype = WOCKY_MUC_MSG_NOTICE;
   WockyMucMsgState mstate = WOCKY_MUC_MSG_STATE_NONE;
-
-  WockyXmppError xerr = NUM_WOCKY_XMPP_ERRORS;
-  const gchar *etype = NULL;
 
   wocky_xmpp_stanza_get_type_info (stanza, NULL, &stype);
 
@@ -1509,15 +1500,15 @@ handle_message (WockyPorter *porter,
         }
     }
 
-  /* is it an error? */
-  is_error =
-    wocky_xmpp_error_unpack_node (msg, &etype, NULL, NULL, NULL, &xerr) != NULL;
-  /* ********************************************************************** */
-  /* and finally the state: */
-  if (is_error)
+  if (stype == WOCKY_STANZA_SUB_TYPE_ERROR)
     {
+      WockyXmppErrorType etype;
+      GError *error = NULL;
+
+      wocky_xmpp_stanza_extract_errors (stanza, &etype, &error, NULL, NULL);
       g_signal_emit (muc, signals[SIG_MSG_ERR], 0,
-          stanza, mtype, id, stamp, who, body, xerr, etype);
+          stanza, mtype, id, stamp, who, body, error->code, etype);
+      g_clear_error (&error);
       goto out;
     }
 
@@ -1547,13 +1538,13 @@ wocky_muc_join (WockyMuc *muc,
 {
   WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
 
-  if (priv->state < MUC_INITIATED)
+  if (priv->state < WOCKY_MUC_INITIATED)
     {
       register_presence_handler (muc);
       register_message_handler (muc);
     }
 
-  priv->state = MUC_INITIATED;
+  priv->state = WOCKY_MUC_INITIATED;
 
 
   wocky_muc_send_presence (muc, WOCKY_STANZA_SUB_TYPE_NONE, NULL);
@@ -1597,6 +1588,14 @@ wocky_muc_members (WockyMuc *muc)
     return g_hash_table_ref (priv->members);
 
   return NULL;
+}
+
+WockyMucState
+wocky_muc_get_state (WockyMuc *muc)
+{
+  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+
+  return priv->state;
 }
 
 /* send message to muc */

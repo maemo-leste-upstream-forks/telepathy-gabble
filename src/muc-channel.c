@@ -358,7 +358,7 @@ static void handle_errmsg (GObject *source,
     WockyMucMember *who,
     const gchar *text,
     WockyXmppError error,
-    const gchar *etype,
+    WockyXmppErrorType etype,
     gpointer data);
 
 static GObject *
@@ -1966,33 +1966,31 @@ handle_error (GObject *source,
     {
       GError *tp_error /* doesn't need initializing */;
 
-      // FIXME, the wocky enum is identical to the gabble enum, but
-      // don't rely on this:
-      switch ((GabbleXmppError) errnum)
+      switch (errnum)
         {
-          case XMPP_ERROR_FORBIDDEN:
+          case WOCKY_XMPP_ERROR_FORBIDDEN:
             tp_error = g_error_new (TP_ERRORS, TP_ERROR_CHANNEL_BANNED,
                 "banned from room");
             reason = TP_CHANNEL_GROUP_CHANGE_REASON_BANNED;
             break;
-          case XMPP_ERROR_SERVICE_UNAVAILABLE:
+          case WOCKY_XMPP_ERROR_SERVICE_UNAVAILABLE:
             tp_error = g_error_new (TP_ERRORS, TP_ERROR_CHANNEL_FULL,
                 "room is full");
             break;
 
-          case XMPP_ERROR_REGISTRATION_REQUIRED:
+          case WOCKY_XMPP_ERROR_REGISTRATION_REQUIRED:
             tp_error = g_error_new (TP_ERRORS, TP_ERROR_CHANNEL_INVITE_ONLY,
                 "room is invite only");
             break;
 
-          case XMPP_ERROR_CONFLICT:
+          case WOCKY_XMPP_ERROR_CONFLICT:
             if (handle_nick_conflict (gmuc, &tp_error))
               return;
             break;
 
           default:
             tp_error = g_error_new (TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
-                "%s", gabble_xmpp_error_description (errnum));
+                "%s", wocky_xmpp_error_description (errnum));
             break;
         }
 
@@ -2611,14 +2609,13 @@ handle_errmsg (GObject *source,
     WockyMucMember *who,
     const gchar *text,
     WockyXmppError error,
-    const gchar *etype,
+    WockyXmppErrorType etype,
     gpointer data)
 {
   GabbleMucChannel *gmuc = GABBLE_MUC_CHANNEL (data);
   GabbleMucChannelPrivate *priv = GABBLE_MUC_CHANNEL_GET_PRIVATE (gmuc);
   TpBaseConnection *conn = (TpBaseConnection *) priv->conn;
   gboolean from_member = (who != NULL);
-  GabbleXmppErrorType status = XMPP_ERROR_TYPE_UNDEFINED;
   TpChannelTextSendError tp_err = TP_CHANNEL_TEXT_SEND_ERROR_UNKNOWN;
   TpDeliveryStatus ds = TP_DELIVERY_STATUS_DELIVERED;
   TpHandleRepoIface *repo = NULL;
@@ -2647,9 +2644,8 @@ handle_errmsg (GObject *source,
     }
 
   tp_err = gabble_tp_send_error_from_wocky_xmpp_error (error);
-  status = gabble_xmpp_error_type_to_enum (etype);
 
-  if (status == XMPP_ERROR_TYPE_WAIT)
+  if (etype == XMPP_ERROR_TYPE_WAIT)
     ds = TP_DELIVERY_STATUS_TEMPORARILY_FAILED;
   else
     ds = TP_DELIVERY_STATUS_PERMANENTLY_FAILED;

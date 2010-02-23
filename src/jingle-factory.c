@@ -555,8 +555,8 @@ gabble_jingle_factory_constructor (GType type,
   priv = self->priv;
 
   /* FIXME: why was this in _constructed in media factory? */
-  g_signal_connect (priv->conn,
-      "status-changed", (GCallback) connection_status_changed_cb, self);
+  gabble_signal_connect_weak (priv->conn, "status-changed",
+      (GCallback) connection_status_changed_cb, G_OBJECT (self));
 
   jingle_media_rtp_register (self);
   jingle_transport_google_register (self);
@@ -881,7 +881,8 @@ create_session (GabbleJingleFactory *fac,
 
   sess = gabble_jingle_session_new (priv->conn, sid_, local_initiator, peer,
       peer_resource, local_hold);
-  g_signal_connect (sess, "terminated", (GCallback) session_terminated_cb, fac);
+  gabble_signal_connect_weak (sess, "terminated",
+      (GCallback) session_terminated_cb, G_OBJECT (fac));
 
   /* Takes ownership of key */
   g_hash_table_insert (priv->sessions, key, sess);
@@ -1124,9 +1125,11 @@ on_http_response (SoupSession *soup,
       const gchar *relay_ssltcp_port;
       const gchar *username;
       const gchar *password;
+      gchar *escaped_str;
 
-      DEBUG ("Response from Google:\n====\n%s\n====",
-          msg->response_body->data);
+      escaped_str = g_strescape (msg->response_body->data, "\r\n");
+      DEBUG ("Response from Google:\n====\n%s\n====", escaped_str);
+      g_free (escaped_str);
 
       lines = g_strsplit (msg->response_body->data, "\n", 0);
 
