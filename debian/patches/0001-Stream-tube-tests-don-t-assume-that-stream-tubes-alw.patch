@@ -1,0 +1,99 @@
+From a528e43754ec40444026c27fe634fa22d28663a8 Mon Sep 17 00:00:00 2001
+From: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date: Thu, 10 Sep 2009 12:11:42 +0100
+Subject: [PATCH 1/3] Stream tube tests: don't assume that stream tubes always support credentials-passing
+
+That assumption will now fail on non-Linux.
+---
+ tests/twisted/constants.py                      |    1 +
+ tests/twisted/tubes/accept-muc-stream-tube.py   |    4 ++++
+ tests/twisted/tubes/test-get-available-tubes.py |   12 ++++++++++--
+ tests/twisted/tubes/tubetestutil.py             |    5 ++++-
+ 4 files changed, 19 insertions(+), 3 deletions(-)
+
+diff --git a/tests/twisted/constants.py b/tests/twisted/constants.py
+index b73d26c..cc0a637 100644
+--- a/tests/twisted/constants.py
++++ b/tests/twisted/constants.py
+@@ -80,6 +80,7 @@ STREAM_TUBE_SERVICE = CHANNEL_TYPE_STREAM_TUBE + '.Service'
+ DBUS_TUBE_SERVICE_NAME = CHANNEL_TYPE_DBUS_TUBE + '.ServiceName'
+ DBUS_TUBE_DBUS_NAMES = CHANNEL_TYPE_DBUS_TUBE + '.DBusNames'
+ DBUS_TUBE_SUPPORTED_ACCESS_CONTROLS = CHANNEL_TYPE_DBUS_TUBE + '.SupportedAccessControls'
++STREAM_TUBE_SUPPORTED_SOCKET_TYPES = CHANNEL_TYPE_STREAM_TUBE + '.SupportedSocketTypes'
+ 
+ TUBE_CHANNEL_STATE_LOCAL_PENDING = 0
+ TUBE_CHANNEL_STATE_REMOTE_PENDING = 1
+diff --git a/tests/twisted/tubes/accept-muc-stream-tube.py b/tests/twisted/tubes/accept-muc-stream-tube.py
+index 45807f2..5f726c4 100644
+--- a/tests/twisted/tubes/accept-muc-stream-tube.py
++++ b/tests/twisted/tubes/accept-muc-stream-tube.py
+@@ -1,5 +1,7 @@
+ """Test IBB stream tube support in the context of a MUC."""
+ 
++import sys
++
+ import dbus
+ 
+ from servicetest import call_async, EventPattern, EventProtocolClientFactory, unwrap, assertEquals
+@@ -168,6 +170,8 @@ def test(q, bus, conn, stream, bytestream_cls,
+     assert props[cs.TARGET_ID] == 'chat@conf.localhost'
+     assert props[cs.STREAM_TUBE_SERVICE] == 'echo'
+     assert props[cs.TUBE_PARAMETERS] == {'s': 'hello', 'ay': 'hello', 'u': 123, 'i': -123}
++    assert access_control in \
++            props[cs.STREAM_TUBE_SUPPORTED_SOCKET_TYPES][address_type]
+ 
+     tube_chan = bus.get_object(conn.bus_name, path)
+     tube_props = tube_chan.GetAll(cs.CHANNEL_IFACE_TUBE, dbus_interface=cs.PROPERTIES_IFACE,
+diff --git a/tests/twisted/tubes/test-get-available-tubes.py b/tests/twisted/tubes/test-get-available-tubes.py
+index 547cafe..af13da4 100644
+--- a/tests/twisted/tubes/test-get-available-tubes.py
++++ b/tests/twisted/tubes/test-get-available-tubes.py
+@@ -1,5 +1,7 @@
+ """Test GetAvailableStreamTubeTypes and GetAvailableTubeTypes"""
+ 
++import sys
++
+ import dbus
+ 
+ from servicetest import call_async, EventPattern, tp_name_prefix,\
+@@ -75,8 +77,14 @@ def test(q, bus, conn, stream):
+     # test GetAvailableStreamTubeTypes (old API)
+     stream_tubes_types = tubes_iface_muc.GetAvailableStreamTubeTypes()
+     assertLength(3, stream_tubes_types)
+-    assertEquals([cs.SOCKET_ACCESS_CONTROL_LOCALHOST, cs.SOCKET_ACCESS_CONTROL_CREDENTIALS],
+-        stream_tubes_types[cs.SOCKET_ADDRESS_TYPE_UNIX])
++    assert cs.SOCKET_ACCESS_CONTROL_LOCALHOST in \
++        stream_tubes_types[cs.SOCKET_ADDRESS_TYPE_UNIX], \
++        stream_tubes_types[cs.SOCKET_ADDRESS_TYPE_UNIX]
++    # so far we only guarantee to support credentials-passing on Linux
++    if sys.platform == 'linux2':
++        assert cs.SOCKET_ACCESS_CONTROL_CREDENTIALS in \
++            stream_tubes_types[cs.SOCKET_ADDRESS_TYPE_UNIX], \
++            stream_tubes_types[cs.SOCKET_ADDRESS_TYPE_UNIX]
+     assertEquals([cs.SOCKET_ACCESS_CONTROL_LOCALHOST, cs.SOCKET_ACCESS_CONTROL_PORT],
+         stream_tubes_types[cs.SOCKET_ADDRESS_TYPE_IPV4])
+     assertEquals([cs.SOCKET_ACCESS_CONTROL_LOCALHOST, cs.SOCKET_ACCESS_CONTROL_PORT],
+diff --git a/tests/twisted/tubes/tubetestutil.py b/tests/twisted/tubes/tubetestutil.py
+index 123bf29..9a325be 100644
+--- a/tests/twisted/tubes/tubetestutil.py
++++ b/tests/twisted/tubes/tubetestutil.py
+@@ -5,6 +5,7 @@ Helper functions for writing tubes tests
+ import errno
+ import os
+ import socket
++import sys
+ 
+ import dbus
+ 
+@@ -360,8 +361,10 @@ def exec_tube_test(test, *args):
+ def exec_stream_tube_test(test):
+     exec_tube_test(test, cs.SOCKET_ADDRESS_TYPE_UNIX, cs.SOCKET_ACCESS_CONTROL_LOCALHOST, "")
+     exec_tube_test(test, cs.SOCKET_ADDRESS_TYPE_IPV4, cs.SOCKET_ACCESS_CONTROL_LOCALHOST, "")
+-    exec_tube_test(test, cs.SOCKET_ADDRESS_TYPE_UNIX, cs.SOCKET_ACCESS_CONTROL_CREDENTIALS, dbus.Byte(77))
+     exec_tube_test(test, cs.SOCKET_ADDRESS_TYPE_IPV4, cs.SOCKET_ACCESS_CONTROL_PORT, ('127.0.0.1', dbus.UInt16(8631)))
++    # we only guarantee to support credentials-passing on Linux
++    if sys.platform == 'linux2':
++        exec_tube_test(test, cs.SOCKET_ADDRESS_TYPE_UNIX, cs.SOCKET_ACCESS_CONTROL_CREDENTIALS, dbus.Byte(77))
+ 
+ def exec_dbus_tube_test(test):
+     exec_tube_test(test, cs.SOCKET_ACCESS_CONTROL_CREDENTIALS)
