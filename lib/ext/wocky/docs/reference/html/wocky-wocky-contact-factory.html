@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-resource-contact.html" title="WockyResourceContact">
 <link rel="next" href="WockyPorter.html" title="WockyPorter">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.13 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="API Reference">
 <link rel="chapter" href="object-tree.html" title="Object Hierarchy">
@@ -25,12 +25,12 @@
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#wocky-wocky-contact-factory.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#wocky-wocky-contact-factory.description" class="shortcut">Description</a>
-                 | 
-                <a href="#wocky-wocky-contact-factory.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#wocky-wocky-contact-factory.signals" class="shortcut">Signals</a>
+                   | 
+                  <a href="#wocky-wocky-contact-factory.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#wocky-wocky-contact-factory.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#wocky-wocky-contact-factory.signals" class="shortcut">Signals</a>
 </td></tr>
 </table>
 <div class="refentry" title="wocky-contact-factory">
@@ -44,46 +44,35 @@
 </tr></table></div>
 <div class="refsynopsisdiv" title="Synopsis">
 <a name="wocky-wocky-contact-factory.synopsis"></a><h2>Synopsis</h2>
-<a name="WockyContactFactory"></a><pre class="synopsis">
-                    WockyContactFactory;
-                    WockyContactFactoryClass;
-WockyContactFactory * wocky_contact_factory_new         (void);
-WockyBareContact *  wocky_contact_factory_ensure_bare_contact
-                                                        (WockyContactFactory *factory,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *bare_jid);
-WockyResourceContact * wocky_contact_factory_ensure_resource_contact
-                                                        (WockyContactFactory *factory,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *full_jid);
-WockyBareContact *  wocky_contact_factory_lookup_bare_contact
-                                                        (WockyContactFactory *factory,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *bare_jid);
-WockyResourceContact * wocky_contact_factory_lookup_resource_contact
-                                                        (WockyContactFactory *factory,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *full_jid);
+<a name="WockyContactFactory"></a><pre class="synopsis">                    <a href="wocky-wocky-contact-factory.html#WockyContactFactory-struct">WockyContactFactory</a>;
+                    <a href="wocky-wocky-contact-factory.html#WockyContactFactoryClass">WockyContactFactoryClass</a>;
+<a href="wocky-wocky-contact-factory.html#WockyContactFactory"><span class="returnvalue">WockyContactFactory</span></a> * <a href="wocky-wocky-contact-factory.html#wocky-contact-factory-new">wocky_contact_factory_new</a>         (void);
+<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *  <a href="wocky-wocky-contact-factory.html#wocky-contact-factory-ensure-bare-contact">wocky_contact_factory_ensure_bare_contact</a>
+                                                        (<a href="wocky-wocky-contact-factory.html#WockyContactFactory"><span class="returnvalue">WockyContactFactory</span></a> *factory,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *bare_jid);
+<a href="wocky-wocky-resource-contact.html#WockyResourceContact"><span class="returnvalue">WockyResourceContact</span></a> * <a href="wocky-wocky-contact-factory.html#wocky-contact-factory-ensure-resource-contact">wocky_contact_factory_ensure_resource_contact</a>
+                                                        (<a href="wocky-wocky-contact-factory.html#WockyContactFactory"><span class="returnvalue">WockyContactFactory</span></a> *factory,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *full_jid);
+<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *  <a href="wocky-wocky-contact-factory.html#wocky-contact-factory-lookup-bare-contact">wocky_contact_factory_lookup_bare_contact</a>
+                                                        (<a href="wocky-wocky-contact-factory.html#WockyContactFactory"><span class="returnvalue">WockyContactFactory</span></a> *factory,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *bare_jid);
+<a href="wocky-wocky-resource-contact.html#WockyResourceContact"><span class="returnvalue">WockyResourceContact</span></a> * <a href="wocky-wocky-contact-factory.html#wocky-contact-factory-lookup-resource-contact">wocky_contact_factory_lookup_resource_contact</a>
+                                                        (<a href="wocky-wocky-contact-factory.html#WockyContactFactory"><span class="returnvalue">WockyContactFactory</span></a> *factory,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *full_jid);
 </pre>
 </div>
 <div class="refsect1" title="Object Hierarchy">
 <a name="wocky-wocky-contact-factory.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
    +----WockyContactFactory
 </pre>
 </div>
 <div class="refsect1" title="Signals">
 <a name="wocky-wocky-contact-factory.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-  "bare-contact-added"                             : Run Last
-  "resource-contact-added"                         : Run Last
+  "<a href="wocky-wocky-contact-factory.html#WockyContactFactory-bare-contact-added">bare-contact-added</a>"                             : Run Last
+  "<a href="wocky-wocky-contact-factory.html#WockyContactFactory-resource-contact-added">resource-contact-added</a>"                         : Run Last
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -112,7 +101,7 @@ href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Ty
 <hr>
 <div class="refsect2" title="wocky_contact_factory_new ()">
 <a name="wocky-contact-factory-new"></a><h3>wocky_contact_factory_new ()</h3>
-<pre class="programlisting">WockyContactFactory * wocky_contact_factory_new         (void);</pre>
+<pre class="programlisting"><a href="wocky-wocky-contact-factory.html#WockyContactFactory"><span class="returnvalue">WockyContactFactory</span></a> * wocky_contact_factory_new         (void);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -127,11 +116,9 @@ href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Ty
 <hr>
 <div class="refsect2" title="wocky_contact_factory_ensure_bare_contact ()">
 <a name="wocky-contact-factory-ensure-bare-contact"></a><h3>wocky_contact_factory_ensure_bare_contact ()</h3>
-<pre class="programlisting">WockyBareContact *  wocky_contact_factory_ensure_bare_contact
-                                                        (WockyContactFactory *factory,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *bare_jid);</pre>
+<pre class="programlisting"><a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *  wocky_contact_factory_ensure_bare_contact
+                                                        (<a href="wocky-wocky-contact-factory.html#WockyContactFactory"><span class="returnvalue">WockyContactFactory</span></a> *factory,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *bare_jid);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -158,11 +145,9 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
 <hr>
 <div class="refsect2" title="wocky_contact_factory_ensure_resource_contact ()">
 <a name="wocky-contact-factory-ensure-resource-contact"></a><h3>wocky_contact_factory_ensure_resource_contact ()</h3>
-<pre class="programlisting">WockyResourceContact * wocky_contact_factory_ensure_resource_contact
-                                                        (WockyContactFactory *factory,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *full_jid);</pre>
+<pre class="programlisting"><a href="wocky-wocky-resource-contact.html#WockyResourceContact"><span class="returnvalue">WockyResourceContact</span></a> * wocky_contact_factory_ensure_resource_contact
+                                                        (<a href="wocky-wocky-contact-factory.html#WockyContactFactory"><span class="returnvalue">WockyContactFactory</span></a> *factory,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *full_jid);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -189,11 +174,9 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
 <hr>
 <div class="refsect2" title="wocky_contact_factory_lookup_bare_contact ()">
 <a name="wocky-contact-factory-lookup-bare-contact"></a><h3>wocky_contact_factory_lookup_bare_contact ()</h3>
-<pre class="programlisting">WockyBareContact *  wocky_contact_factory_lookup_bare_contact
-                                                        (WockyContactFactory *factory,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *bare_jid);</pre>
+<pre class="programlisting"><a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *  wocky_contact_factory_lookup_bare_contact
+                                                        (<a href="wocky-wocky-contact-factory.html#WockyContactFactory"><span class="returnvalue">WockyContactFactory</span></a> *factory,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *bare_jid);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -220,11 +203,9 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
 <hr>
 <div class="refsect2" title="wocky_contact_factory_lookup_resource_contact ()">
 <a name="wocky-contact-factory-lookup-resource-contact"></a><h3>wocky_contact_factory_lookup_resource_contact ()</h3>
-<pre class="programlisting">WockyResourceContact * wocky_contact_factory_lookup_resource_contact
-                                                        (WockyContactFactory *factory,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *full_jid);</pre>
+<pre class="programlisting"><a href="wocky-wocky-resource-contact.html#WockyResourceContact"><span class="returnvalue">WockyResourceContact</span></a> * wocky_contact_factory_lookup_resource_contact
+                                                        (<a href="wocky-wocky-contact-factory.html#WockyContactFactory"><span class="returnvalue">WockyContactFactory</span></a> *factory,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *full_jid);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -253,13 +234,9 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
 <a name="wocky-wocky-contact-factory.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" title='The "bare-contact-added" signal'>
 <a name="WockyContactFactory-bare-contact-added"></a><h3>The <code class="literal">"bare-contact-added"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (WockyContactFactory *wockycontactfactory,
-                                                        <a
-href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>             *arg1,
-                                                        <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a>             user_data)                : Run Last</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a href="wocky-wocky-contact-factory.html#WockyContactFactory"><span class="type">WockyContactFactory</span></a> *wockycontactfactory,
+                                                        <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>             *arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>             user_data)                : Run Last</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -285,13 +262,9 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 <hr>
 <div class="refsect2" title='The "resource-contact-added" signal'>
 <a name="WockyContactFactory-resource-contact-added"></a><h3>The <code class="literal">"resource-contact-added"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (WockyContactFactory *wockycontactfactory,
-                                                        <a
-href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>             *arg1,
-                                                        <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a>             user_data)                : Run Last</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a href="wocky-wocky-contact-factory.html#WockyContactFactory"><span class="type">WockyContactFactory</span></a> *wockycontactfactory,
+                                                        <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>             *arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>             user_data)                : Run Last</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -318,6 +291,6 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.13</div>
 </body>
 </html>

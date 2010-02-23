@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-contact-factory.html" title="wocky-contact-factory">
 <link rel="next" href="WockyConnector.html" title="WockyConnector">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.13 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="API Reference">
 <link rel="chapter" href="object-tree.html" title="Object Hierarchy">
@@ -25,14 +25,14 @@
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#WockyPorter.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#WockyPorter.description" class="shortcut">Description</a>
-                 | 
-                <a href="#WockyPorter.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#WockyPorter.properties" class="shortcut">Properties</a>
-                 | 
-                <a href="#WockyPorter.signals" class="shortcut">Signals</a>
+                   | 
+                  <a href="#WockyPorter.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#WockyPorter.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#WockyPorter.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#WockyPorter.signals" class="shortcut">Signals</a>
 </td></tr>
 </table>
 <div class="refentry" title="WockyPorter">
@@ -40,164 +40,97 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="WockyPorter.top_of_page"></a>WockyPorter</span></h2>
-<p>WockyPorter — Wrapper around a <span class="type">WockyXmppConnection</span> providing a
+<p>WockyPorter — Wrapper around a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a> providing a
 higher level API.</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv" title="Synopsis">
 <a name="WockyPorter.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-enum                WockyPorterError;
-<a
-href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"
->GQuark</a>              wocky_porter_error_quark            (void);
-#define             WOCKY_PORTER_HANDLER_PRIORITY_MIN
-#define             WOCKY_PORTER_HANDLER_PRIORITY_NORMAL
-#define             WOCKY_PORTER_HANDLER_PRIORITY_MAX
-#define             WOCKY_PORTER_ERROR
-                    WockyPorter;
-                    WockyPorterClass;
-WockyPorter *       wocky_porter_new                    (WockyXmppConnection *connection);
-void                wocky_porter_send_async             (WockyPorter *porter,
-                                                         WockyXmppStanza *stanza,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
->GAsyncReadyCallback</a> callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);
-<a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>            wocky_porter_send_finish            (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
->GAsyncResult</a> *result,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);
-void                wocky_porter_send                   (WockyPorter *porter,
-                                                         WockyXmppStanza *stanza);
-void                wocky_porter_start                  (WockyPorter *porter);
-<a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>            (*WockyPorterHandlerFunc)           (WockyPorter *porter,
-                                                         WockyXmppStanza *stanza,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);
-<a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a>               wocky_porter_register_handler       (WockyPorter *porter,
-                                                         WockyStanzaType type,
-                                                         WockyStanzaSubType sub_type,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *from,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a> priority,
-                                                         WockyPorterHandlerFunc callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data,
-                                                         WockyBuildTag spec,
+<pre class="synopsis">enum                <a href="WockyPorter.html#WockyPorterError">WockyPorterError</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a href="WockyPorter.html#wocky-porter-error-quark">wocky_porter_error_quark</a>            (void);
+#define             <a href="WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MIN:CAPS">WOCKY_PORTER_HANDLER_PRIORITY_MIN</a>
+#define             <a href="WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</a>
+#define             <a href="WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MAX:CAPS">WOCKY_PORTER_HANDLER_PRIORITY_MAX</a>
+#define             <a href="WockyPorter.html#WOCKY-PORTER-ERROR:CAPS">WOCKY_PORTER_ERROR</a>
+                    <a href="WockyPorter.html#WockyPorter-struct">WockyPorter</a>;
+                    <a href="WockyPorter.html#WockyPorterClass">WockyPorterClass</a>;
+<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *       <a href="WockyPorter.html#wocky-porter-new">wocky_porter_new</a>                    (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection);
+<span class="returnvalue">void</span>                <a href="WockyPorter.html#wocky-porter-send-async">wocky_porter_send_async</a>             (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyPorter.html#wocky-porter-send-finish">wocky_porter_send_finish</a>            (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
+<span class="returnvalue">void</span>                <a href="WockyPorter.html#wocky-porter-send">wocky_porter_send</a>                   (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza);
+<span class="returnvalue">void</span>                <a href="WockyPorter.html#wocky-porter-start">wocky_porter_start</a>                  (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a href="WockyPorter.html#WockyPorterHandlerFunc">*WockyPorterHandlerFunc</a>)           (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a href="WockyPorter.html#wocky-porter-register-handler">wocky_porter_register_handler</a>       (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="WockyXmppStanza.html#WockyStanzaType"><span class="returnvalue">WockyStanzaType</span></a> type,
+                                                         <a href="WockyXmppStanza.html#WockyStanzaSubType"><span class="returnvalue">WockyStanzaSubType</span></a> sub_type,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *from,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a> priority,
+                                                         <a href="WockyPorter.html#WockyPorterHandlerFunc"><span class="returnvalue">WockyPorterHandlerFunc</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data,
+                                                         <a href="WockyXmppStanza.html#WockyBuildTag"><span class="returnvalue">WockyBuildTag</span></a> spec,
                                                          ...);
-void                wocky_porter_unregister_handler     (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a> id);
-void                wocky_porter_close_async            (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
->GAsyncReadyCallback</a> callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);
-<a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>            wocky_porter_close_finish           (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
->GAsyncResult</a> *result,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);
-void                wocky_porter_send_iq_async          (WockyPorter *porter,
-                                                         WockyXmppStanza *stanza,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
->GAsyncReadyCallback</a> callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);
-WockyXmppStanza *   wocky_porter_send_iq_finish         (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
->GAsyncResult</a> *result,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);
-void                wocky_porter_force_close_async      (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
->GAsyncReadyCallback</a> callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);
-<a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>            wocky_porter_force_close_finish     (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
->GAsyncResult</a> *result,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);
+<span class="returnvalue">void</span>                <a href="WockyPorter.html#wocky-porter-unregister-handler">wocky_porter_unregister_handler</a>     (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a> id);
+<span class="returnvalue">void</span>                <a href="WockyPorter.html#wocky-porter-close-async">wocky_porter_close_async</a>            (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyPorter.html#wocky-porter-close-finish">wocky_porter_close_finish</a>           (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
+<span class="returnvalue">void</span>                <a href="WockyPorter.html#wocky-porter-send-iq-async">wocky_porter_send_iq_async</a>          (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
+<a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *   <a href="WockyPorter.html#wocky-porter-send-iq-finish">wocky_porter_send_iq_finish</a>         (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
+<span class="returnvalue">void</span>                <a href="WockyPorter.html#wocky-porter-force-close-async">wocky_porter_force_close_async</a>      (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyPorter.html#wocky-porter-force-close-finish">wocky_porter_force_close_finish</a>     (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
 </pre>
 </div>
 <div class="refsect1" title="Object Hierarchy">
 <a name="WockyPorter.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
    +----WockyPorter
 </pre>
 </div>
 <div class="refsect1" title="Properties">
 <a name="WockyPorter.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "connection"               WockyXmppConnection*  : Read / Write / Construct Only
+  "<a href="WockyPorter.html#WockyPorter--connection">connection</a>"               <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>*  : Read / Write / Construct Only
 </pre>
 </div>
 <div class="refsect1" title="Signals">
 <a name="WockyPorter.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-  "closing"                                        : Run Last
-  "remote-closed"                                  : Run Last
-  "remote-error"                                   : Run Last
+  "<a href="WockyPorter.html#WockyPorter-closing">closing</a>"                                        : Run Last
+  "<a href="WockyPorter.html#WockyPorter-remote-closed">remote-closed</a>"                                  : Run Last
+  "<a href="WockyPorter.html#WockyPorter-remote-error">remote-error</a>"                                   : Run Last
 </pre>
 </div>
 <div class="refsect1" title="Description">
 <a name="WockyPorter.description"></a><h2>Description</h2>
 <p>
-Sends and receives <span class="type">WockyXmppStanza</span> from an underlying
-<span class="type">WockyXmppConnection</span>.</p>
-<p>
-</p>
+Sends and receives <a href="WockyXmppStanza.html"><span class="type">WockyXmppStanza</span></a> from an underlying
+<a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.</p>
 </div>
 <div class="refsect1" title="Details">
 <a name="WockyPorter.details"></a><h2>Details</h2>
@@ -217,13 +150,9 @@ Sends and receives <span class="type">WockyXmppStanza</span> from an underlying
 <hr>
 <div class="refsect2" title="wocky_porter_error_quark ()">
 <a name="wocky-porter-error-quark"></a><h3>wocky_porter_error_quark ()</h3>
-<pre class="programlisting"><a
-href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"
->GQuark</a>              wocky_porter_error_quark            (void);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_porter_error_quark            (void);</pre>
 <p>
 Get the error quark used by the porter.</p>
-<p>
-</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
@@ -235,7 +164,7 @@ Get the error quark used by the porter.</p>
 </div>
 <hr>
 <div class="refsect2" title="WOCKY_PORTER_HANDLER_PRIORITY_MIN">
-<a name="WOCKY-PORTER-HANDLER-PRIORITY-MIN--CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_MIN</h3>
+<a name="WOCKY-PORTER-HANDLER-PRIORITY-MIN:CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_MIN</h3>
 <pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_MIN 0
 </pre>
 <p>
@@ -243,7 +172,7 @@ Get the error quark used by the porter.</p>
 </div>
 <hr>
 <div class="refsect2" title="WOCKY_PORTER_HANDLER_PRIORITY_NORMAL">
-<a name="WOCKY-PORTER-HANDLER-PRIORITY-NORMAL--CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</h3>
+<a name="WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</h3>
 <pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_NORMAL (guint) (G_MAXUINT / 2)
 </pre>
 <p>
@@ -251,7 +180,7 @@ Get the error quark used by the porter.</p>
 </div>
 <hr>
 <div class="refsect2" title="WOCKY_PORTER_HANDLER_PRIORITY_MAX">
-<a name="WOCKY-PORTER-HANDLER-PRIORITY-MAX--CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_MAX</h3>
+<a name="WOCKY-PORTER-HANDLER-PRIORITY-MAX:CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_MAX</h3>
 <pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_MAX G_MAXUINT
 </pre>
 <p>
@@ -259,13 +188,11 @@ Get the error quark used by the porter.</p>
 </div>
 <hr>
 <div class="refsect2" title="WOCKY_PORTER_ERROR">
-<a name="WOCKY-PORTER-ERROR--CAPS"></a><h3>WOCKY_PORTER_ERROR</h3>
+<a name="WOCKY-PORTER-ERROR:CAPS"></a><h3>WOCKY_PORTER_ERROR</h3>
 <pre class="programlisting">#define WOCKY_PORTER_ERROR (wocky_porter_error_quark ())
 </pre>
 <p>
 Get access to the error quark of the xmpp porter.</p>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2" title="WockyPorter">
@@ -287,23 +214,21 @@ Get access to the error quark of the xmpp porter.</p>
 <hr>
 <div class="refsect2" title="wocky_porter_new ()">
 <a name="wocky-porter-new"></a><h3>wocky_porter_new ()</h3>
-<pre class="programlisting">WockyPorter *       wocky_porter_new                    (WockyXmppConnection *connection);</pre>
+<pre class="programlisting"><a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *       wocky_porter_new                    (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection);</pre>
 <p>
-Convenience function to create a new <span class="type">WockyPorter</span>.</p>
-<p>
-</p>
+Convenience function to create a new <a href="WockyPorter.html"><span class="type">WockyPorter</span></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td> <span class="type">WockyXmppConnection</span> which will be used to receive and send
-<span class="type">WockyXmppStanza</span>
+<td> <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a> which will be used to receive and send
+<a href="WockyXmppStanza.html"><span class="type">WockyXmppStanza</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new <span class="type">WockyPorter</span>.
+<td> a new <a href="WockyPorter.html"><span class="type">WockyPorter</span></a>.
 </td>
 </tr>
 </tbody>
@@ -312,17 +237,11 @@ Convenience function to create a new <span class="type">WockyPorter</span>.</p>
 <hr>
 <div class="refsect2" title="wocky_porter_send_async ()">
 <a name="wocky-porter-send-async"></a><h3>wocky_porter_send_async ()</h3>
-<pre class="programlisting">void                wocky_porter_send_async             (WockyPorter *porter,
-                                                         WockyXmppStanza *stanza,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
->GAsyncReadyCallback</a> callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_porter_send_async             (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -359,15 +278,9 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 <hr>
 <div class="refsect2" title="wocky_porter_send_finish ()">
 <a name="wocky-porter-send-finish"></a><h3>wocky_porter_send_finish ()</h3>
-<pre class="programlisting"><a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>            wocky_porter_send_finish            (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
->GAsyncResult</a> *result,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_porter_send_finish            (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -399,8 +312,8 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GEr
 <hr>
 <div class="refsect2" title="wocky_porter_send ()">
 <a name="wocky-porter-send"></a><h3>wocky_porter_send ()</h3>
-<pre class="programlisting">void                wocky_porter_send                   (WockyPorter *porter,
-                                                         WockyXmppStanza *stanza);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_porter_send                   (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -422,7 +335,7 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GEr
 <hr>
 <div class="refsect2" title="wocky_porter_start ()">
 <a name="wocky-porter-start"></a><h3>wocky_porter_start ()</h3>
-<pre class="programlisting">void                wocky_porter_start                  (WockyPorter *porter);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_porter_start                  (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -437,13 +350,9 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GEr
 <hr>
 <div class="refsect2" title="WockyPorterHandlerFunc ()">
 <a name="WockyPorterHandlerFunc"></a><h3>WockyPorterHandlerFunc ()</h3>
-<pre class="programlisting"><a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>            (*WockyPorterHandlerFunc)           (WockyPorter *porter,
-                                                         WockyXmppStanza *stanza,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*WockyPorterHandlerFunc)           (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -475,22 +384,14 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 <hr>
 <div class="refsect2" title="wocky_porter_register_handler ()">
 <a name="wocky-porter-register-handler"></a><h3>wocky_porter_register_handler ()</h3>
-<pre class="programlisting"><a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a>               wocky_porter_register_handler       (WockyPorter *porter,
-                                                         WockyStanzaType type,
-                                                         WockyStanzaSubType sub_type,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *from,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a> priority,
-                                                         WockyPorterHandlerFunc callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data,
-                                                         WockyBuildTag spec,
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               wocky_porter_register_handler       (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="WockyXmppStanza.html#WockyStanzaType"><span class="returnvalue">WockyStanzaType</span></a> type,
+                                                         <a href="WockyXmppStanza.html#WockyStanzaSubType"><span class="returnvalue">WockyStanzaSubType</span></a> sub_type,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *from,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a> priority,
+                                                         <a href="WockyPorter.html#WockyPorterHandlerFunc"><span class="returnvalue">WockyPorterHandlerFunc</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data,
+                                                         <a href="WockyXmppStanza.html#WockyBuildTag"><span class="returnvalue">WockyBuildTag</span></a> spec,
                                                          ...);</pre>
 <p>
 <em class="parameter"><code>spec</code></em> should be WOCKY_STANZA_END to specify no XMPP node matching details.
@@ -501,8 +402,6 @@ will be ignored: In other words, a handler registered against a bare JID
 will match _all_ stanzas from a JID with the same node and domain:
 "foo@bar.org" will match:
 "foo@bar.org", "foo@bar.org/moose" and so forth.</p>
-<p>
-</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -513,27 +412,27 @@ will match _all_ stanzas from a JID with the same node and domain:
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
-<td> A <span class="type">WockyStanzaSubType</span> value, stanza type to be handled WOCKY_STANZA_TYPE_NONE for all.
+<td> A <a href="WockyXmppStanza.html#WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> value, stanza type to be handled WOCKY_STANZA_TYPE_NONE for all.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>sub_type</code></em> :</span></p></td>
-<td> A <span class="type">WockyStanzaSubType</span> value, stanza sub type to be handled, WOCKY_STANZA_SUB_TYPE_NONE for all.
+<td> A <a href="WockyXmppStanza.html#WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> value, stanza sub type to be handled, WOCKY_STANZA_SUB_TYPE_NONE for all.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>from</code></em> :</span></p></td>
-<td> the JID whose messages this handler is intended for (or <code class="literal">NULL</code> for any).
+<td> the JID whose messages this handler is intended for (or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for any).
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>priority</code></em> :</span></p></td>
-<td> a priority between <code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_MIN</code> and <code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_MAX</code> (often <code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</code>).
+<td> a priority between <a href="WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MIN:CAPS"><code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_MIN</code></a> and <a href="WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MAX:CAPS"><code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_MAX</code></a> (often <a href="WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS"><code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</code></a>).
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
-<td> A <span class="type">WockyPorterHandlerFunc</span>, should return <code class="literal">FALSE</code> to decline the stanza and <code class="literal">TRUE</code> to stop further processing and free the stanza.
+<td> A <a href="WockyPorter.html#WockyPorterHandlerFunc"><span class="type">WockyPorterHandlerFunc</span></a>, should return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> to decline the stanza and <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to stop further processing and free the stanza.
 </td>
 </tr>
 <tr>
@@ -543,19 +442,17 @@ will match _all_ stanzas from a JID with the same node and domain:
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>spec</code></em> :</span></p></td>
-<td> the start of a <code class="function">wocky_xmpp_stanza_build()</code> specification. The handler will be a candidate only if the stanza received is a superset of the one built with <em class="parameter"><code>spec</code></em> and its subsequent arguments, as per <code class="function">wocky_xmpp_node_is_superset()</code>.
+<td> the start of a <a href="WockyXmppStanza.html#wocky-xmpp-stanza-build"><code class="function">wocky_xmpp_stanza_build()</code></a> specification. The handler will be a candidate only if the stanza received is a superset of the one built with <em class="parameter"><code>spec</code></em> and its subsequent arguments, as per <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-is-superset"><code class="function">wocky_xmpp_node_is_superset()</code></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
-<td> the rest of the args to <code class="function">wocky_xmpp_stanza_build()</code>.
+<td> the rest of the args to <a href="WockyXmppStanza.html#wocky-xmpp-stanza-build"><code class="function">wocky_xmpp_stanza_build()</code></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a non-zero <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
-><span class="type">guint</span></a> id for use with <code class="function">wocky_porter_unregister_handler()</code>.
+<td> a non-zero <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> id for use with <a href="WockyPorter.html#wocky-porter-unregister-handler"><code class="function">wocky_porter_unregister_handler()</code></a>.
 </td>
 </tr>
 </tbody>
@@ -564,10 +461,8 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
 <hr>
 <div class="refsect2" title="wocky_porter_unregister_handler ()">
 <a name="wocky-porter-unregister-handler"></a><h3>wocky_porter_unregister_handler ()</h3>
-<pre class="programlisting">void                wocky_porter_unregister_handler     (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a> id);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_porter_unregister_handler     (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a> id);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -589,16 +484,10 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
 <hr>
 <div class="refsect2" title="wocky_porter_close_async ()">
 <a name="wocky-porter-close-async"></a><h3>wocky_porter_close_async ()</h3>
-<pre class="programlisting">void                wocky_porter_close_async            (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
->GAsyncReadyCallback</a> callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_porter_close_async            (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -630,15 +519,9 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 <hr>
 <div class="refsect2" title="wocky_porter_close_finish ()">
 <a name="wocky-porter-close-finish"></a><h3>wocky_porter_close_finish ()</h3>
-<pre class="programlisting"><a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>            wocky_porter_close_finish           (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
->GAsyncResult</a> *result,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_porter_close_finish           (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -670,17 +553,11 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GEr
 <hr>
 <div class="refsect2" title="wocky_porter_send_iq_async ()">
 <a name="wocky-porter-send-iq-async"></a><h3>wocky_porter_send_iq_async ()</h3>
-<pre class="programlisting">void                wocky_porter_send_iq_async          (WockyPorter *porter,
-                                                         WockyXmppStanza *stanza,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
->GAsyncReadyCallback</a> callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_porter_send_iq_async          (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -717,13 +594,9 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 <hr>
 <div class="refsect2" title="wocky_porter_send_iq_finish ()">
 <a name="wocky-porter-send-iq-finish"></a><h3>wocky_porter_send_iq_finish ()</h3>
-<pre class="programlisting">WockyXmppStanza *   wocky_porter_send_iq_finish         (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
->GAsyncResult</a> *result,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);</pre>
+<pre class="programlisting"><a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *   wocky_porter_send_iq_finish         (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -755,16 +628,10 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GEr
 <hr>
 <div class="refsect2" title="wocky_porter_force_close_async ()">
 <a name="wocky-porter-force-close-async"></a><h3>wocky_porter_force_close_async ()</h3>
-<pre class="programlisting">void                wocky_porter_force_close_async      (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
->GAsyncReadyCallback</a> callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_porter_force_close_async      (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -796,15 +663,9 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 <hr>
 <div class="refsect2" title="wocky_porter_force_close_finish ()">
 <a name="wocky-porter-force-close-finish"></a><h3>wocky_porter_force_close_finish ()</h3>
-<pre class="programlisting"><a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>            wocky_porter_force_close_finish     (WockyPorter *porter,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
->GAsyncResult</a> *result,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_porter_force_close_finish     (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -838,7 +699,7 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GEr
 <a name="WockyPorter.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" title='The "connection" property'>
 <a name="WockyPorter--connection"></a><h3>The <code class="literal">"connection"</code> property</h3>
-<pre class="programlisting">  "connection"               WockyXmppConnection*  : Read / Write / Construct Only</pre>
+<pre class="programlisting">  "connection"               <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>*  : Read / Write / Construct Only</pre>
 <p>the XMPP connection used by this porter.</p>
 </div>
 </div>
@@ -846,10 +707,8 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GEr
 <a name="WockyPorter.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" title='The "closing" signal'>
 <a name="WockyPorter-closing"></a><h3>The <code class="literal">"closing"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (WockyPorter *wockyporter,
-                                                        <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a href="WockyPorter.html"><span class="type">WockyPorter</span></a> *wockyporter,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>     user_data)        : Run Last</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -870,10 +729,8 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 <hr>
 <div class="refsect2" title='The "remote-closed" signal'>
 <a name="WockyPorter-remote-closed"></a><h3>The <code class="literal">"remote-closed"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (WockyPorter *wockyporter,
-                                                        <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a href="WockyPorter.html"><span class="type">WockyPorter</span></a> *wockyporter,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>     user_data)        : Run Last</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -894,19 +751,11 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 <hr>
 <div class="refsect2" title='The "remote-error" signal'>
 <a name="WockyPorter-remote-error"></a><h3>The <code class="literal">"remote-error"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (WockyPorter *wockyporter,
-                                                        <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a>        arg1,
-                                                        <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"
->gint</a>         arg2,
-                                                        <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>       *arg3,
-                                                        <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a href="WockyPorter.html"><span class="type">WockyPorter</span></a> *wockyporter,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>        arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>         arg2,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>       *arg3,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>     user_data)        : Run Last</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -943,6 +792,6 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.13</div>
 </body>
 </html>

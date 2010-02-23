@@ -120,6 +120,7 @@ TWISTED_TESTS = \
 	jingle/outgoing-many-streams.py \
 	jingle/payload-types.py \
 	jingle/preload-caps-crash.py \
+	jingle/session-id-collision.py \
 	jingle/stream-handler-error.py \
 	jingle/test-content-adding-removal.py \
 	jingle/test-description-info.py \
@@ -143,6 +144,7 @@ TWISTED_TESTS = \
 	file-transfer/test-send-file-provide-immediately.py \
 	file-transfer/test-send-file-to-unknown-contact.py \
 	file-transfer/test-send-file-wait-to-provide.py \
+	file-transfer/test-send-file-send-before-accept.py \
 	test-debug.py \
 	connect/disconnect-timeout.py \
 	connect/test-fail.py \
@@ -213,6 +215,7 @@ endif
 config.py: Makefile
 	$(AM_V_GEN) { \
 		echo "PACKAGE_STRING = \"$(PACKAGE_STRING)\""; \
+		echo "CLIENT_TYPE = '$(CLIENT_TYPE)'"; \
 		echo "DEBUGGING = $(DEBUGGING_PYBOOL)"; \
 		echo "PLUGINS_ENABLED = $(PLUGINS_ENABLED_PYBOOL)"; \
 		echo "CHANNEL_TYPE_CALL_ENABLED = $(CHANNEL_TYPE_CALL_ENABLED_PYBOOL)"; \

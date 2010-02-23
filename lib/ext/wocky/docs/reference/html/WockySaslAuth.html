@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="ch01.html" title="API Reference">
 <link rel="next" href="WockyXmppReader.html" title="WockyXmppReader">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.13 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="API Reference">
 <link rel="chapter" href="object-tree.html" title="Object Hierarchy">
@@ -25,12 +25,12 @@
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#WockySaslAuth.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#WockySaslAuth.description" class="shortcut">Description</a>
-                 | 
-                <a href="#WockySaslAuth.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#WockySaslAuth.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#WockySaslAuth.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#WockySaslAuth.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#WockySaslAuth.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
 <div class="refentry" title="WockySaslAuth">
@@ -44,71 +44,40 @@
 </tr></table></div>
 <div class="refsynopsisdiv" title="Synopsis">
 <a name="WockySaslAuth.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-<a
-href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"
->GQuark</a>              wocky_sasl_auth_error_quark         (void);
-#define             WOCKY_SASL_AUTH_ERROR
-enum                WockySaslAuthError;
-                    WockySaslAuth;
-                    WockySaslAuthClass;
-WockySaslAuth *     wocky_sasl_auth_new                 (const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *server,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *username,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *password,
-                                                         WockyXmppConnection *connection);
-void                wocky_sasl_auth_authenticate_async  (WockySaslAuth *sasl,
-                                                         WockyXmppStanza *features,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a> allow_plain,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
->GAsyncReadyCallback</a> callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);
-<a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>            wocky_sasl_auth_authenticate_finish (WockySaslAuth *sasl,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
->GAsyncResult</a> *result,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);
+<pre class="synopsis"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a href="WockySaslAuth.html#wocky-sasl-auth-error-quark">wocky_sasl_auth_error_quark</a>         (void);
+#define             <a href="WockySaslAuth.html#WOCKY-SASL-AUTH-ERROR:CAPS">WOCKY_SASL_AUTH_ERROR</a>
+enum                <a href="WockySaslAuth.html#WockySaslAuthError">WockySaslAuthError</a>;
+                    <a href="WockySaslAuth.html#WockySaslAuth-struct">WockySaslAuth</a>;
+                    <a href="WockySaslAuth.html#WockySaslAuthClass">WockySaslAuthClass</a>;
+<a href="WockySaslAuth.html"><span class="returnvalue">WockySaslAuth</span></a> *     <a href="WockySaslAuth.html#wocky-sasl-auth-new">wocky_sasl_auth_new</a>                 (const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *server,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *username,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *password,
+                                                         <a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection);
+<span class="returnvalue">void</span>                <a href="WockySaslAuth.html#wocky-sasl-auth-authenticate-async">wocky_sasl_auth_authenticate_async</a>  (<a href="WockySaslAuth.html"><span class="returnvalue">WockySaslAuth</span></a> *sasl,
+                                                         <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *features,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a> allow_plain,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockySaslAuth.html#wocky-sasl-auth-authenticate-finish">wocky_sasl_auth_authenticate_finish</a> (<a href="WockySaslAuth.html"><span class="returnvalue">WockySaslAuth</span></a> *sasl,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
 </pre>
 </div>
 <div class="refsect1" title="Object Hierarchy">
 <a name="WockySaslAuth.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
    +----WockySaslAuth
 </pre>
 </div>
 <div class="refsect1" title="Properties">
 <a name="WockySaslAuth.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "connection"               WockyXmppConnection*  : Read / Write / Construct Only
-  "password"                 <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write / Construct
-  "server"                   <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Read / Write / Construct
-  "username"                 <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write / Construct
+  "<a href="WockySaslAuth.html#WockySaslAuth--connection">connection</a>"               <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>*  : Read / Write / Construct Only
+  "<a href="WockySaslAuth.html#WockySaslAuth--password">password</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write / Construct
+  "<a href="WockySaslAuth.html#WockySaslAuth--server">server</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct
+  "<a href="WockySaslAuth.html#WockySaslAuth--username">username</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write / Construct
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -120,9 +89,7 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
 <a name="WockySaslAuth.details"></a><h2>Details</h2>
 <div class="refsect2" title="wocky_sasl_auth_error_quark ()">
 <a name="wocky-sasl-auth-error-quark"></a><h3>wocky_sasl_auth_error_quark ()</h3>
-<pre class="programlisting"><a
-href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"
->GQuark</a>              wocky_sasl_auth_error_quark         (void);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_sasl_auth_error_quark         (void);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -136,7 +103,7 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"
 </div>
 <hr>
 <div class="refsect2" title="WOCKY_SASL_AUTH_ERROR">
-<a name="WOCKY-SASL-AUTH-ERROR--CAPS"></a><h3>WOCKY_SASL_AUTH_ERROR</h3>
+<a name="WOCKY-SASL-AUTH-ERROR:CAPS"></a><h3>WOCKY_SASL_AUTH_ERROR</h3>
 <pre class="programlisting">#define             WOCKY_SASL_AUTH_ERROR</pre>
 <p>
 </p>
@@ -189,16 +156,10 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"
 <hr>
 <div class="refsect2" title="wocky_sasl_auth_new ()">
 <a name="wocky-sasl-auth-new"></a><h3>wocky_sasl_auth_new ()</h3>
-<pre class="programlisting">WockySaslAuth *     wocky_sasl_auth_new                 (const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *server,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *username,
-                                                         const <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a> *password,
-                                                         WockyXmppConnection *connection);</pre>
+<pre class="programlisting"><a href="WockySaslAuth.html"><span class="returnvalue">WockySaslAuth</span></a> *     wocky_sasl_auth_new                 (const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *server,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *username,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *password,
+                                                         <a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -235,20 +196,12 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
 <hr>
 <div class="refsect2" title="wocky_sasl_auth_authenticate_async ()">
 <a name="wocky-sasl-auth-authenticate-async"></a><h3>wocky_sasl_auth_authenticate_async ()</h3>
-<pre class="programlisting">void                wocky_sasl_auth_authenticate_async  (WockySaslAuth *sasl,
-                                                         WockyXmppStanza *features,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a> allow_plain,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
->GCancellable</a> *cancellable,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"
->GAsyncReadyCallback</a> callback,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_sasl_auth_authenticate_async  (<a href="WockySaslAuth.html"><span class="returnvalue">WockySaslAuth</span></a> *sasl,
+                                                         <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *features,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a> allow_plain,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -290,15 +243,9 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 <hr>
 <div class="refsect2" title="wocky_sasl_auth_authenticate_finish ()">
 <a name="wocky-sasl-auth-authenticate-finish"></a><h3>wocky_sasl_auth_authenticate_finish ()</h3>
-<pre class="programlisting"><a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>            wocky_sasl_auth_authenticate_finish (WockySaslAuth *sasl,
-                                                         <a
-href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"
->GAsyncResult</a> *result,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
->GError</a> **error);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_sasl_auth_authenticate_finish (<a href="WockySaslAuth.html"><span class="returnvalue">WockySaslAuth</span></a> *sasl,
+                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -332,33 +279,27 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GEr
 <a name="WockySaslAuth.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" title='The "connection" property'>
 <a name="WockySaslAuth--connection"></a><h3>The <code class="literal">"connection"</code> property</h3>
-<pre class="programlisting">  "connection"               WockyXmppConnection*  : Read / Write / Construct Only</pre>
+<pre class="programlisting">  "connection"               <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>*  : Read / Write / Construct Only</pre>
 <p>The Xmpp connection to user.</p>
 </div>
 <hr>
 <div class="refsect2" title='The "password" property'>
 <a name="WockySaslAuth--password"></a><h3>The <code class="literal">"password"</code> property</h3>
-<pre class="programlisting">  "password"                 <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write / Construct</pre>
+<pre class="programlisting">  "password"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write / Construct</pre>
 <p>The password to authenticate with.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2" title='The "server" property'>
 <a name="WockySaslAuth--server"></a><h3>The <code class="literal">"server"</code> property</h3>
-<pre class="programlisting">  "server"                   <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Read / Write / Construct</pre>
+<pre class="programlisting">  "server"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct</pre>
 <p>The name of the server.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2" title='The "username" property'>
 <a name="WockySaslAuth--username"></a><h3>The <code class="literal">"username"</code> property</h3>
-<pre class="programlisting">  "username"                 <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write / Construct</pre>
+<pre class="programlisting">  "username"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write / Construct</pre>
 <p>The username to authenticate with.</p>
 <p>Default value: NULL</p>
 </div>
@@ -366,6 +307,6 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.13</div>
 </body>
 </html>
