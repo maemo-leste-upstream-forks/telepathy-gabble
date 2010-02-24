@@ -1,3 +1,11 @@
+telepathy-gabble (0.9.6-2) UNRELEASED; urgency=low
+
+  * "Officially" upload 0.9.x to unstable. I accidentally sent 0.9.6-1 to
+    unstable, but discussion with other upstream developers concluded that
+    0.9.x is suitable for sid/squeeze and we should keep it.
+
+ -- Simon McVittie <smcv@debian.org>  Wed, 24 Feb 2010 12:35:08 +0000
+
 telepathy-gabble (0.9.6-1) experimental; urgency=low
 
   * New upstream release
@@ -40,6 +48,66 @@ telepathy-gabble (0.9.0-1) experimental; urgency=low
     appears
 
  -- Simon McVittie <smcv@debian.org>  Wed, 16 Sep 2009 15:55:30 +0100
+
+telepathy-gabble (0.8.11-2) unstable; urgency=low
+
+  * Add three patches from upstream telepathy-gabble-0.8 branch
+    to disable Linux-specific credentials-passing code on non-Linux,
+    fixing compilation on kFreeBSD
+  * Standards-Version: 3.8.4, no changes needed
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 23 Feb 2010 18:42:23 +0000
+
+telepathy-gabble (0.8.11-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jonny Lamb <jonny@debian.org>  Thu, 18 Feb 2010 23:26:36 +0000
+
+telepathy-gabble (0.8.10-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+  * debian/patches/:
+    + Removed all patches from 0.8.9-1 as they're in this new release.
+  * debian/control: Add libsqlite3-dev build-dep for the new caps cache.
+
+ -- Jonny Lamb <jonny@debian.org>  Mon, 08 Feb 2010 18:23:42 +0000
+
+telepathy-gabble (0.8.9-1) unstable; urgency=low
+
+  * New upstream release
+  * Add a set of patches from upstream git to ensure we don't reset our VCard
+    on every login. Apart from saving bandwidth this also words around a
+    problem in OpenFire where it leaks memory every time the avatar gets reset:
+    - d/patches/0001-fd.o-25341-Always-sets-its-own-vcard-on-login.patch
+    - d/patches/0002-vcard-manager-Do-not-try-to-set-vcard-fields-not-sup.patch
+    - d/patches/0003-vcard-manager-Iterate-over-hashtable-instead-of-usin.patch
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Tue, 22 Dec 2009 15:32:23 +0000
+
+telepathy-gabble (0.8.7-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jonny Lamb <jonny@debian.org>  Wed, 14 Oct 2009 22:40:34 +0100
+
+telepathy-gabble (0.8.6-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Sat, 10 Oct 2009 17:04:38 -0400
+
+telepathy-gabble (0.8.5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Sat, 03 Oct 2009 18:03:48 +0100
+
+telepathy-gabble (0.8.4-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Dafydd Harries <daf@debian.org>  Tue, 29 Sep 2009 15:20:46 +0100
 
 telepathy-gabble (0.8.3-1) unstable; urgency=low
 
