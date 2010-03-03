@@ -62,8 +62,8 @@ am__EXEEXT_2 = wocky-xmpp-reader-test$(EXEEXT) \
 	wocky-resource-contact-test$(EXEEXT) \
 	wocky-contact-factory-test$(EXEEXT) \
 	wocky-session-test$(EXEEXT) wocky-pep-service-test$(EXEEXT) \
-	wocky-tls-test$(EXEEXT) wocky-connector-test$(EXEEXT) \
-	$(am__EXEEXT_1)
+	wocky-tls-test$(EXEEXT) wocky-data-forms-test$(EXEEXT) \
+	wocky-connector-test$(EXEEXT) $(am__EXEEXT_1)
 am_wocky_bare_contact_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-bare-contact-test.$(OBJEXT)
 wocky_bare_contact_test_OBJECTS =  \
@@ -90,6 +90,10 @@ am_wocky_contact_factory_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 wocky_contact_factory_test_OBJECTS =  \
 	$(am_wocky_contact_factory_test_OBJECTS)
 wocky_contact_factory_test_LDADD = $(LDADD)
+am_wocky_data_forms_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
+	wocky-test-stream.$(OBJEXT) wocky-data-forms-test.$(OBJEXT)
+wocky_data_forms_test_OBJECTS = $(am_wocky_data_forms_test_OBJECTS)
+wocky_data_forms_test_LDADD = $(LDADD)
 am_wocky_pep_service_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-pep-service-test.$(OBJEXT)
 wocky_pep_service_test_OBJECTS = $(am_wocky_pep_service_test_OBJECTS)
@@ -186,6 +190,7 @@ am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_connector_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
+	$(wocky_data_forms_test_SOURCES) \
 	$(wocky_pep_service_test_SOURCES) $(wocky_porter_test_SOURCES) \
 	$(wocky_resource_contact_test_SOURCES) \
 	$(wocky_roster_test_SOURCES) $(wocky_session_test_SOURCES) \
@@ -198,6 +203,7 @@ SOURCES = $(wocky_bare_contact_test_SOURCES) \
 DIST_SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_connector_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
+	$(wocky_data_forms_test_SOURCES) \
 	$(wocky_pep_service_test_SOURCES) $(wocky_porter_test_SOURCES) \
 	$(wocky_resource_contact_test_SOURCES) \
 	$(wocky_roster_test_SOURCES) $(wocky_session_test_SOURCES) \
@@ -414,8 +420,8 @@ TEST_PROGS = wocky-xmpp-reader-test wocky-xmpp-readwrite-test \
 	wocky-xmpp-node-test wocky-xmpp-stanza-test wocky-roster-test \
 	wocky-bare-contact-test wocky-resource-contact-test \
 	wocky-contact-factory-test wocky-session-test \
-	wocky-pep-service-test wocky-tls-test wocky-connector-test \
-	$(am__append_1)
+	wocky-pep-service-test wocky-tls-test wocky-data-forms-test \
+	wocky-connector-test $(am__append_1)
 wocky_tls_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_tls_test_SOURCES = \
   wocky-tls-test.c        \
@@ -521,6 +527,12 @@ wocky_pep_service_test_SOURCES = \
   wocky-test-stream.c wocky-test-stream.h \
   wocky-pep-service-test.c
 
+wocky_data_forms_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_data_forms_test_SOURCES = \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h \
+  wocky-data-forms-test.c
+
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@
 AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
 LDADD = $(top_builddir)/wocky/libwocky.la
@@ -596,6 +608,9 @@ wocky-connector-test$(EXEEXT): $(wocky_connector_test_OBJECTS) $(wocky_connector
 wocky-contact-factory-test$(EXEEXT): $(wocky_contact_factory_test_OBJECTS) $(wocky_contact_factory_test_DEPENDENCIES) 
 	@rm -f wocky-contact-factory-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_contact_factory_test_OBJECTS) $(wocky_contact_factory_test_LDADD) $(LIBS)
+wocky-data-forms-test$(EXEEXT): $(wocky_data_forms_test_OBJECTS) $(wocky_data_forms_test_DEPENDENCIES) 
+	@rm -f wocky-data-forms-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(wocky_data_forms_test_OBJECTS) $(wocky_data_forms_test_LDADD) $(LIBS)
 wocky-pep-service-test$(EXEEXT): $(wocky_pep_service_test_OBJECTS) $(wocky_pep_service_test_DEPENDENCIES) 
 	@rm -f wocky-pep-service-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_pep_service_test_OBJECTS) $(wocky_pep_service_test_LDADD) $(LIBS)
@@ -641,6 +656,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-bare-contact-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact-factory-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-forms-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-porter-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-resource-contact-test.Po@am__quote@

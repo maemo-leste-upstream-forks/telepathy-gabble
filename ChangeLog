@@ -1,3 +1,364 @@
+commit 5a1e8e9cfdb521df34182af13163c224cc4b374d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-03 18:38:42 +0000
+
+    Prepare version 0.9.7
+
+commit a12645aeef60778983233b2a7721e1e9a2f61991
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-03-03 14:39:36 +0100
+
+    location: remove the 'error' key
+    
+    It has been deprecated.
+
+commit 9b16d9a15dd957600845b7f4a7c413901c8847a0
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-03-03 14:36:24 +0100
+
+    location: countrycode has been added to XEP-0080
+
+commit 971b47e73da673632ea8719021fbaedb550fb2ec
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-03-03 14:33:40 +0100
+
+    location: implement the 'accuracy' key
+    
+    We forgot it for some reason.
+
+commit 11acbaf458dec6efa51d5a5404a7f048ba6731b6
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-26 16:03:41 -0500
+
+    telepathy-gabble now depends on telepathy-glib-0.9.2
+    
+    Gabble now uses tp_value_array_build() which was introduced in
+    version 0.9.2 of telepathy-glib
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit f570b6d73b086f165fcfeef00e8d1a230418d249
+Merge: 8d43e64 23290ae
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-25 18:38:49 -0500
+
+    Merge branch 'unit-tests'
+
+commit 23290aeaa7163e4fc6efc4e43a387c000ddbc55c
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-25 18:25:14 -0500
+
+    fix style, clearer code
+
+commit 8d43e64804d43aafe3ab6db69ecdd47395638955
+Merge: 8d48b82 a88baea
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-25 16:17:46 -0500
+
+    Merge branch 'email-notification'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit a88baea0dd8f3144678175cb871c84576a511c77
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-25 16:07:19 -0500
+
+    Made TpDBusDaemon globally accessible by all Connection extension
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 6fc6b04eae525a850a56628a71f834f68f31525a
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-25 16:00:03 -0500
+
+    Use a jid suffix instead of idx and check for i == 0 in only one place
+
+commit e64c9b8c021cb98a89c4e09537ba021d7f711459
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-25 15:59:13 -0500
+
+    Create a StreamFactory to replace the PresenceDispatcher
+    As requested by the review, this makes the code better/cleaner, no more need for presences global variable or to 'reset' it.
+
+commit 8917c1bf051e98ba31ac9ddc0d4e0e4f0f754299
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-25 15:53:21 -0500
+
+    conn-mail-notif.c: Use tp_value_array_build to simplify the code
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit a77a14a07d31adc4307ea4e45de789d5c1170e58
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-25 15:48:33 -0500
+
+    Renamed structure MailsHelperData into MailThreadCollector
+    
+    Also removed useless member unread_mails witch can already be accessed
+    inside conn member.
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 35909d9d4fbef4ac60752481efd6722eb6819326
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-25 15:32:24 -0500
+
+    Fixed copyright year to include 2010
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 30c5e0090ef173229e35fc945a9f990cc55b62af
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-25 14:31:56 -0500
+
+    Test MailNotification.MailAddress property
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit c7f2abcb7512560d6e5f1830c8caad28c90ecc14
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-25 14:31:24 -0500
+
+    Use SelfHandle instead of username@stream_server MailAddress
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit b59501b04c49753ef29829b8a42d4d53ea625db7
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-25 14:19:03 -0500
+
+    Test the value returned by MailNotification.RequestMailUrl
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 96f95e65e15ac4982846a6ef584588fbb3a4e005
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 19:15:44 -0500
+
+    User subscriber instead of sender for var name in conn-mail-notif.c
+    
+    sender was confusing variable name since it is used has one of the mail
+    attributes in mail hash table.
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 8cb822743f7cdf225750591f476908e0b1277cac
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 19:06:50 -0500
+
+    Don't use GNU extension operator ?: in conn-mail-notif.c
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit c57c0ba99d025b9bcca2ff7815650373f4722135
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 18:46:55 -0500
+
+    Use g_error if we cannot allocate TpDBusDaemon
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 7cb1dfee34c2d4d291e25716bcf6d46a8a2104d9
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 18:21:59 -0500
+
+    Explain why we convert Mail id from decimal to hexadecimal
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 567e11173b056021474920fe06d54ff3391a5687
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 18:02:03 -0500
+
+    Just use g_assert_not_reached() in conn-mail-notif.c property getter
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit eb7322589438fec6cc8faa375e3c347266075a2b
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 17:55:34 -0500
+
+    Use return value instead of in/out param in conn-mail-notif.c
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 90f889a2a7091df1cc22e8653957e255cf69021f
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 17:47:44 -0500
+
+    Use g_hash_table_steal () in conn-mail-notif.c
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 8486e8b712facf6188386b39e401c07da587a15c
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 17:39:42 -0500
+
+    Removed unneeded debug output in conn-mail-notif.c
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 7d2eaf1f9007b95b53c753804bf5d2b769288ea1
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 17:11:06 -0500
+
+    Remove static empty_array in conn-mail-notif.c
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 8efbc0cc9970a6bf471398ae6013d3ea3080aea7
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 16:58:44 -0500
+
+    Removed intl/fr from link to Google Mail extension doc
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit ecd6ad3a3549249f0b7fa32a6920d54f2b599748
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 16:57:15 -0500
+
+    Add blank lines around each if/while in conn-mail-notif.c
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 6c5206aaf5eec550b20377e7da69295184a16d56
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 16:48:07 -0500
+
+    conn-mail-notif.c: Add curly braces to "else", following coding style
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit f559057c3595d889c718c5b5d865586736fd6e41
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 16:40:54 -0500
+
+    Add explicit comparison in conn-mail-notif.c
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 8f2149dd2dd1d09b8154467a8573fdd8d97b824d
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 16:18:48 -0500
+
+    Fixed missing space before parenthesis in conn-mail-notif.c
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 73b70d450fc7decad161266c2a57c47cad8f355b
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 15:31:37 -0500
+
+    Fix conn-mail-notif.c headers ordering
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 17689c956b8a75f260ec1265608c3a1e6b88befc
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 15:06:37 -0500
+
+    Replaced glib.h with glib-object.h in conn-mail-notif.h
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 2c0244173331ac271f7ae33e89f7b9f27dad0d85
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 12:08:48 -0500
+
+    Renamed "mail-notif" debug section into "mail"
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit eae4bcd2d0bf6fc56385f4bb95f2a1d37f73f408
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 12:04:17 -0500
+
+    Renamed test-mail-notification.py into mail-notification.py
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 38dac29b3cc4b930f48d178ec526c667e8be29cc
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 11:57:16 -0500
+
+    Fixed mail-notification test for new spec
+    
+    Property Capabilities was renamed MailNotificationFlags and Mail_Type
+    was removed and set has a MailNotificationFlag. Also removed useless
+    comment.
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 057d73203e2d7c6fbdb3448808c9cc23f22d0e4e
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 11:43:09 -0500
+
+    Use cs.NOT_IMPLEMENTED instead of custom string
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit d36ade54d4f387b9de0143eb084c0c877eb330c7
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 11:33:44 -0500
+
+    Fixed various typos in mail-notifiaction test
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit d8ba1e12516fa0650d61d3f06dae8a481254ae0f
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 11:20:11 -0500
+
+    Fix python coding style in mail-notifiation test
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit a6559438a3128e4a2c5d69880bca13bada15e481
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-24 10:50:57 -0500
+
+    Removed trailing white space introduce by mail notification
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 4e675724217ece947e168bd9120f51100f3f67b6
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-25 15:24:25 -0500
+
+    Update MailNotification Spec 0.19.1
+    
+    The TP-Spec has been updated and uploaded upstream. The 'type' key of a
+    Mail along with Mail_Type enumeration was replaced by a global
+    MailNotificationFlag. Also, _request_mail_url() now receive a GValue
+    instead of a string for url_data.
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 8d48b82762275383debd8197e63f3c78e05c2f06
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 17:26:40 +0000
+
+    Update wocky to ef42dd2 for better gtk-doc
+
+commit 043fd44000518625f666d8542e34f95bd1a82f81
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-23 17:01:31 -0500
+
+    Add the proper dispatching of the unavailable presence whenever a client disconnects
+
+commit 52e78fa752ae5576a4ccc771c70fbca43de81483
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 21:24:21 +0000
+
+    Nano version
+
+commit e4a8e1f11b4d5c75578fc8d813849659cd4db2a7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 20:30:56 +0000
+
+    Prepare release 0.9.6
+
 commit 19fa30c84df6211b328cb4902ca2e841b7378881
 Merge: e5d1f92 1fb9673
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -6,6 +367,54 @@ Date:   2010-02-23 19:09:27 +0000
     Merge branch 'plugins'
     
     Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit fdd7bbdb511a7b5b14fb279b879ace868b5e0675
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-19 00:08:03 -0500
+
+    Need to reset the presence dispatcher's state whenever we start a new test
+
+commit fa16739f8b2f26188d785899e3eba516d8265335
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-17 16:57:45 -0500
+
+    Port test-nonblocking-tls and test-twice to use the new gabbletest API
+
+commit 8eb95f2f29328b96e2d34f8403a512886d0c7aee
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-17 16:56:23 -0500
+
+    remove the port from make_stream arguments as it's not used anymore
+
+commit 502ee9bd53d6b21ef944f913c0b901dae641f652
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-17 15:31:17 -0500
+
+    Make the first instance always use test@ instead of test0@ because it breaks other unit tests that expect the username to be test@
+
+commit caa2194a1f2be846319094ac6ab8c3d327ca66eb
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-17 16:55:44 -0500
+
+    do not add iq and presence observers if we only have one instance
+
+commit 903ed6c6a438611a4be96d93bd0923ebe896b577
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-17 15:16:35 -0500
+
+    Fix the jid being sent to the connection when authenticating.. this caused all connections to think they have the same jid. Also make the resource name nicer
+
+commit 3e6d4a22051f9cf9bc9d5abbe51510ec8a80c0e8
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-16 17:24:35 -0500
+
+    Add a num_instances argument to the test exec_test function to allow multiple connections to be running at the same time, and dispatch presence and messages from one instance to another
+
+commit 1d47a8266c899b23984f1686459d6729ebdc1d06
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-16 17:23:20 -0500
+
+    Add a 'stream' attribute to the stream-iq/stream-presence/stream-message
 
 commit 1fb967336847742c27612092a60b43ea782f92b9
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -53,6 +462,50 @@ Date:   2010-02-23 16:37:09 +0000
     Merge branch 'gateway-presence'
     
     Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 4b8741b6898cddb85db4bc9aa4ddb2c3262df58b
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-22 18:25:39 -0500
+
+    Added MailAddress to MailNotification interface
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit d328eceaf1ee9e6ef86fa5adadbb3f5b6c0435fe
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-22 17:08:34 -0500
+
+    Update MailNotification Spec, RequestMailURL may raise InvalidArgument
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 0d21034c6656a1d899eac4fbc1c3adf90c0c4e0e
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-22 16:50:59 -0500
+
+    Ported to latest version MailNotification Spec
+    
+    Major change is the property Capabilities renamed to MailNotificationFlags
+    and the prefix for MailNotificationFlags now being MAIL_NOTIFICATION_FLAG.
+    Other change are editorial changes.
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 4ee285565ef75a1b75859eab53c2fa82c986bc92
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-22 16:25:55 -0500
+
+    MailNotification.Unsubscribe now returns NotAvailable error
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 61d654a21cdd76b3032dce4bf38dbcfff8ccb1ec
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-02-22 16:16:46 -0500
+
+    MailNotification.Subscribe/Unsubscribe can now return Disconnected error
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
 
 commit 68cc9321da656841204c975b91ae4ab007c282fc
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -157,6 +610,247 @@ Date:   2010-02-19 18:48:37 +0000
     global "unsure period" had not finished. When it does, the media channel
     sees this as another opportunity to retry pending calls, and by then,
     the presence cache *does* consider itself to be sure about that contact.
+
+commit a20b89868b3ff53f02969e6b181475f53a57eeb3
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-01-27 17:20:52 -0500
+
+    Bumped to latest MailNotification.DRAFT
+    
+    - Subscribe/Unsubscribe is now refcounted
+    - Name or flags has been changed and flags exist for URL request
+    - Mail "snippet" is now stored in "content" with "truncated set to TRUE
+    - Mail "url_data" is now "url-data"
+    - Timestamps are now 64 bit signed integer
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit c8fa090fc69c804bb88be54398e9541ee8f91027
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-01-08 16:41:05 -0500
+
+    Ported Gabble Google Mail notification to new spec
+    
+    A modification was made to the Mail Notification spec to better support
+    URL with authentication token. Also, mail id has been retyped to string for
+    flexibility.
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 098bb736b1603f28c7574f186a6fa7c2ed797519
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-01-06 20:00:35 -0500
+
+    Adding unit test for Google mail notification
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit eef551694132681ac23f83777ce43e607842ef3e
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-01-05 18:23:58 -0500
+
+    Don't crash when attribute unread_mails HashTable is NULL
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 4818929192d43d8ae430e7948cd2c0dd05a66dbb
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-01-05 18:17:57 -0500
+
+    Disable all caps if server does not support mail notification
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 7735cf7073d05bbebbdf99c942380ebcf8d959b4
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-24 11:53:19 -0500
+
+    Mail Notification: More style fix and introduction comment on top
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 63ceaaa6ce74910e7d9c1e5454fb9b6e562ea9e6
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-24 11:38:28 -0500
+
+    Mail Notification: Highlight ownership passing with comments
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit a9a6f53a6b73f44ed1ca769e2a1005df08f48dea
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-24 11:28:14 -0500
+
+    Mail Notification: Fix memory leak on subcribe while already subscribed
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 085cf5e6907bf150a3d68d036a1d58889f963272
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-24 11:21:51 -0500
+
+    Mail Notification: Fix wrong cast and added object cast macro
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit b0011cfbe615adc6e3db123ff3813493d0f24bc0
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-23 22:25:54 -0500
+
+    Mail Notification: Fix coding style
+    
+    Removed trailing spaces. Put every function arguments of function
+    definition on it's own line. Added white line after local declaration.
+    Added a second white line between type definition block, static declaration
+    block, forward declaration block and function definition.
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 1b82ef746f09fa80c3203c4d08424deb4a19d0a5
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-23 21:53:48 -0500
+
+    Mail Notification: Replace g_string_append_printf by g_strdup_printf()
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit d8efecefc3ab316055ff7ec3ea31acc233cb0995
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-23 21:48:44 -0500
+
+    Moved macro CHECK_STR_EMPTY to util and use it where possible
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 0696b230303994342d1b3566d44b6fb805b29d98
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-23 21:32:57 -0500
+
+    Changed mails_subscribers into HashTable
+    
+    The mail subscribers where listed in GData with quarks for senders bus
+    name. These name are different for every client, wich make usage of quarks
+    inapropriate since the quark hash table tends to grow. Also fixed a leak
+    with confusing dbus_g_method_get_sender() that do a strdup().
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 530502c43f4b9aceae07d6c98b1e6173fad64475
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-22 18:57:18 -0500
+
+    Implemented getter for UnreadMails
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 776b4707861cfd54d8b506638c30bfeadd63d4cd
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-22 18:27:00 -0500
+
+    Added mail attributes url, senders, subject and snippet
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit c90cf44f0231d96bf1d7837aa6e7cfd98db9c7d4
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-22 18:10:44 -0500
+
+    Store unread mails information
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 8f52902aa9c0b8143fd033866517ff87ba9f6325
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-22 17:55:44 -0500
+
+    Added google new-mail notification and mail request
+    
+    Hook signal to the new-mail message sent with google mail notification
+    namespace and added mails data request.
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 68a5e1a8fd20e10784cc01aa47ba3d4bdd7a10dd
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-22 17:11:45 -0500
+
+    Added data structurs to store emails data
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 9a3928a2f779b69b8a659dd55cbf8750f22d827e
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-22 16:39:53 -0500
+
+    Revert "Adding Mail Notify test"
+    
+    This reverts commit af33be3e475574d016d502346d058c1d8e286ff4.
+
+commit 6c5703d040347acffb524c98d776b9915eb54853
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-22 16:15:30 -0500
+
+    Implemented MailNotification.Subscribe/Unsubscribe
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 707cfcb9316547ccf2a033ef12ab10b8701582c7
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-22 16:01:52 -0500
+
+    Adding Mail Notification properties stubs
+    
+    Also removed unneeded class_init() and rename finalize into
+    dispose() since it's most used name.
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 45f52585e5bb68caad719929a9f81e95a417a74b
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-22 15:21:59 -0500
+
+    Adding mail notification debug section
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit a3472435e7d2ec144b749ca9006e57094425fbfb
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-22 15:21:27 -0500
+
+    Update to latest MailNotification spec
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 298b5f51b0d033a47bbe5a2711181e072f8c7d5e
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-09 10:55:42 -0500
+
+    Adding Mail Notify test
+    
+    The Mail Notify test should help in testing Mail notification
+    in Gabble and other CMs. Currently, only connection tracking is
+    implemented.
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 3864cf8a8ce675a95f0ae35d33d7eed87453ad11
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-04 16:43:18 -0500
+
+    Added placeholder for google Mail Notification
+    
+    Added feature detection for "google:mail:notify" and pace holder for mail
+    notification interface implementation.
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 90faf659557fd583ad6fe29e553a2ec680d7ccac
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2009-12-04 16:36:50 -0500
+
+    Added Mail Notification to extensions
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
 
 commit e995c1cb20fac30aa378365394aa986498658abb
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>

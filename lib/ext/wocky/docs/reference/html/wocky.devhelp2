@@ -7,8 +7,8 @@
       <sub name="WockyXmppReader" link="WockyXmppReader.html"/>
       <sub name="WockyContact" link="WockyContact.html"/>
       <sub name="WockyBareContact" link="WockyBareContact.html"/>
-      <sub name="WockyResourceContact" link="wocky-wocky-resource-contact.html"/>
-      <sub name="wocky-contact-factory" link="wocky-wocky-contact-factory.html"/>
+      <sub name="WockyResourceContact" link="WockyResourceContact.html"/>
+      <sub name="wocky-contact-factory" link="WockyContactFactory.html"/>
       <sub name="WockyPorter" link="WockyPorter.html"/>
       <sub name="WockyConnector" link="WockyConnector.html"/>
       <sub name="WockyXmppStanza" link="WockyXmppStanza.html"/>
@@ -19,7 +19,6 @@
       <sub name="wocky-debug" link="wocky-wocky-debug.html"/>
       <sub name="wocky" link="wocky-wocky.html"/>
       <sub name="wocky-xmpp-reader-enumtypes" link="wocky-wocky-xmpp-reader-enumtypes.html"/>
-      <sub name="wocky-types" link="wocky-wocky-types.html"/>
       <sub name="wocky-namespaces" link="wocky-wocky-namespaces.html"/>
       <sub name="wocky-utils" link="wocky-wocky-utils.html"/>
       <sub name="wocky-xmpp-node" link="wocky-wocky-xmpp-node.html"/>
@@ -36,6 +35,7 @@
     <keyword type="struct" name="WockySaslAuth" link="WockySaslAuth.html#WockySaslAuth-struct"/>
     <keyword type="struct" name="WockySaslAuthClass" link="WockySaslAuth.html#WockySaslAuthClass"/>
     <keyword type="function" name="wocky_sasl_auth_new ()" link="WockySaslAuth.html#wocky-sasl-auth-new"/>
+    <keyword type="function" name="wocky_sasl_auth_add_handler ()" link="WockySaslAuth.html#wocky-sasl-auth-add-handler"/>
     <keyword type="function" name="wocky_sasl_auth_authenticate_async ()" link="WockySaslAuth.html#wocky-sasl-auth-authenticate-async"/>
     <keyword type="function" name="wocky_sasl_auth_authenticate_finish ()" link="WockySaslAuth.html#wocky-sasl-auth-authenticate-finish"/>
     <keyword type="property" name="The &quot;connection&quot; property" link="WockySaslAuth.html#WockySaslAuth--connection"/>
@@ -62,6 +62,8 @@
     <keyword type="property" name="The &quot;streaming-mode&quot; property" link="WockyXmppReader.html#WockyXmppReader--streaming-mode"/>
     <keyword type="property" name="The &quot;to&quot; property" link="WockyXmppReader.html#WockyXmppReader--to"/>
     <keyword type="property" name="The &quot;version&quot; property" link="WockyXmppReader.html#WockyXmppReader--version"/>
+    <keyword type="struct" name="WockyContact" link="WockyContact.html#WockyContact-struct"/>
+    <keyword type="struct" name="WockyContactClass" link="WockyContact.html#WockyContactClass"/>
     <keyword type="struct" name="WockyBareContact" link="WockyBareContact.html#WockyBareContact-struct"/>
     <keyword type="struct" name="WockyBareContactClass" link="WockyBareContact.html#WockyBareContactClass"/>
     <keyword type="function" name="wocky_bare_contact_new ()" link="WockyBareContact.html#wocky-bare-contact-new"/>
@@ -83,23 +85,23 @@
     <keyword type="property" name="The &quot;jid&quot; property" link="WockyBareContact.html#WockyBareContact--jid"/>
     <keyword type="property" name="The &quot;name&quot; property" link="WockyBareContact.html#WockyBareContact--name"/>
     <keyword type="property" name="The &quot;subscription&quot; property" link="WockyBareContact.html#WockyBareContact--subscription"/>
-    <keyword type="struct" name="WockyResourceContact" link="wocky-wocky-resource-contact.html#WockyResourceContact-struct"/>
-    <keyword type="struct" name="WockyResourceContactClass" link="wocky-wocky-resource-contact.html#WockyResourceContactClass"/>
-    <keyword type="function" name="wocky_resource_contact_new ()" link="wocky-wocky-resource-contact.html#wocky-resource-contact-new"/>
-    <keyword type="function" name="wocky_resource_contact_equal ()" link="wocky-wocky-resource-contact.html#wocky-resource-contact-equal"/>
-    <keyword type="function" name="wocky_resource_contact_get_bare_contact ()" link="wocky-wocky-resource-contact.html#wocky-resource-contact-get-bare-contact"/>
-    <keyword type="function" name="wocky_resource_contact_get_resource ()" link="wocky-wocky-resource-contact.html#wocky-resource-contact-get-resource"/>
-    <keyword type="property" name="The &quot;bare-contact&quot; property" link="wocky-wocky-resource-contact.html#WockyResourceContact--bare-contact"/>
-    <keyword type="property" name="The &quot;resource&quot; property" link="wocky-wocky-resource-contact.html#WockyResourceContact--resource"/>
-    <keyword type="struct" name="WockyContactFactory" link="wocky-wocky-contact-factory.html#WockyContactFactory-struct"/>
-    <keyword type="struct" name="WockyContactFactoryClass" link="wocky-wocky-contact-factory.html#WockyContactFactoryClass"/>
-    <keyword type="function" name="wocky_contact_factory_new ()" link="wocky-wocky-contact-factory.html#wocky-contact-factory-new"/>
-    <keyword type="function" name="wocky_contact_factory_ensure_bare_contact ()" link="wocky-wocky-contact-factory.html#wocky-contact-factory-ensure-bare-contact"/>
-    <keyword type="function" name="wocky_contact_factory_ensure_resource_contact ()" link="wocky-wocky-contact-factory.html#wocky-contact-factory-ensure-resource-contact"/>
-    <keyword type="function" name="wocky_contact_factory_lookup_bare_contact ()" link="wocky-wocky-contact-factory.html#wocky-contact-factory-lookup-bare-contact"/>
-    <keyword type="function" name="wocky_contact_factory_lookup_resource_contact ()" link="wocky-wocky-contact-factory.html#wocky-contact-factory-lookup-resource-contact"/>
-    <keyword type="signal" name="The &quot;bare-contact-added&quot; signal" link="wocky-wocky-contact-factory.html#WockyContactFactory-bare-contact-added"/>
-    <keyword type="signal" name="The &quot;resource-contact-added&quot; signal" link="wocky-wocky-contact-factory.html#WockyContactFactory-resource-contact-added"/>
+    <keyword type="struct" name="WockyResourceContact" link="WockyResourceContact.html#WockyResourceContact-struct"/>
+    <keyword type="struct" name="WockyResourceContactClass" link="WockyResourceContact.html#WockyResourceContactClass"/>
+    <keyword type="function" name="wocky_resource_contact_new ()" link="WockyResourceContact.html#wocky-resource-contact-new"/>
+    <keyword type="function" name="wocky_resource_contact_equal ()" link="WockyResourceContact.html#wocky-resource-contact-equal"/>
+    <keyword type="function" name="wocky_resource_contact_get_bare_contact ()" link="WockyResourceContact.html#wocky-resource-contact-get-bare-contact"/>
+    <keyword type="function" name="wocky_resource_contact_get_resource ()" link="WockyResourceContact.html#wocky-resource-contact-get-resource"/>
+    <keyword type="property" name="The &quot;bare-contact&quot; property" link="WockyResourceContact.html#WockyResourceContact--bare-contact"/>
+    <keyword type="property" name="The &quot;resource&quot; property" link="WockyResourceContact.html#WockyResourceContact--resource"/>
+    <keyword type="struct" name="WockyContactFactory" link="WockyContactFactory.html#WockyContactFactory-struct"/>
+    <keyword type="struct" name="WockyContactFactoryClass" link="WockyContactFactory.html#WockyContactFactoryClass"/>
+    <keyword type="function" name="wocky_contact_factory_new ()" link="WockyContactFactory.html#wocky-contact-factory-new"/>
+    <keyword type="function" name="wocky_contact_factory_ensure_bare_contact ()" link="WockyContactFactory.html#wocky-contact-factory-ensure-bare-contact"/>
+    <keyword type="function" name="wocky_contact_factory_ensure_resource_contact ()" link="WockyContactFactory.html#wocky-contact-factory-ensure-resource-contact"/>
+    <keyword type="function" name="wocky_contact_factory_lookup_bare_contact ()" link="WockyContactFactory.html#wocky-contact-factory-lookup-bare-contact"/>
+    <keyword type="function" name="wocky_contact_factory_lookup_resource_contact ()" link="WockyContactFactory.html#wocky-contact-factory-lookup-resource-contact"/>
+    <keyword type="signal" name="The &quot;bare-contact-added&quot; signal" link="WockyContactFactory.html#WockyContactFactory-bare-contact-added"/>
+    <keyword type="signal" name="The &quot;resource-contact-added&quot; signal" link="WockyContactFactory.html#WockyContactFactory-resource-contact-added"/>
     <keyword type="enum" name="enum WockyPorterError" link="WockyPorter.html#WockyPorterError"/>
     <keyword type="function" name="wocky_porter_error_quark ()" link="WockyPorter.html#wocky-porter-error-quark"/>
     <keyword type="macro" name="WOCKY_PORTER_HANDLER_PRIORITY_MIN" link="WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MIN:CAPS"/>
@@ -138,6 +140,8 @@
     <keyword type="function" name="wocky_connector_register_async ()" link="WockyConnector.html#wocky-connector-register-async"/>
     <keyword type="function" name="wocky_connector_unregister_async ()" link="WockyConnector.html#wocky-connector-unregister-async"/>
     <keyword type="function" name="wocky_connector_unregister_finish ()" link="WockyConnector.html#wocky-connector-unregister-finish"/>
+    <keyword type="function" name="wocky_connector_add_crl ()" link="WockyConnector.html#wocky-connector-add-crl"/>
+    <keyword type="function" name="wocky_connector_add_ca ()" link="WockyConnector.html#wocky-connector-add-ca"/>
     <keyword type="property" name="The &quot;email&quot; property" link="WockyConnector.html#WockyConnector--email"/>
     <keyword type="property" name="The &quot;encrypted-plain-auth-ok&quot; property" link="WockyConnector.html#WockyConnector--encrypted-plain-auth-ok"/>
     <keyword type="property" name="The &quot;features&quot; property" link="WockyConnector.html#WockyConnector--features"/>
@@ -164,6 +168,8 @@
     <keyword type="function" name="wocky_xmpp_stanza_build_va ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-build-va"/>
     <keyword type="function" name="wocky_xmpp_stanza_build_iq_result ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-build-iq-result"/>
     <keyword type="function" name="wocky_xmpp_stanza_build_iq_error ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-build-iq-error"/>
+    <keyword type="function" name="wocky_xmpp_stanza_extract_errors ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-extract-errors"/>
+    <keyword type="function" name="wocky_xmpp_stanza_extract_stream_error ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-extract-stream-error"/>
     <keyword type="struct" name="WockyXmppWriter" link="WockyXmppWriter.html#WockyXmppWriter-struct"/>
     <keyword type="struct" name="WockyXmppWriterClass" link="WockyXmppWriter.html#WockyXmppWriterClass"/>
     <keyword type="function" name="wocky_xmpp_writer_new ()" link="WockyXmppWriter.html#wocky-xmpp-writer-new"/>
@@ -206,6 +212,8 @@
     <keyword type="function" name="wocky_connector_register_async ()" link="WockyConnector.html#wocky-connector-register-async"/>
     <keyword type="function" name="wocky_connector_unregister_async ()" link="WockyConnector.html#wocky-connector-unregister-async"/>
     <keyword type="function" name="wocky_connector_unregister_finish ()" link="WockyConnector.html#wocky-connector-unregister-finish"/>
+    <keyword type="function" name="wocky_connector_add_crl ()" link="WockyConnector.html#wocky-connector-add-crl"/>
+    <keyword type="function" name="wocky_connector_add_ca ()" link="WockyConnector.html#wocky-connector-add-ca"/>
     <keyword type="property" name="The &quot;email&quot; property" link="WockyConnector.html#WockyConnector--email"/>
     <keyword type="property" name="The &quot;encrypted-plain-auth-ok&quot; property" link="WockyConnector.html#WockyConnector--encrypted-plain-auth-ok"/>
     <keyword type="property" name="The &quot;features&quot; property" link="WockyConnector.html#WockyConnector--features"/>
@@ -263,8 +271,6 @@
     <keyword type="macro" name="WOCKY_TYPE_XMPP_READER_STATE" link="wocky-wocky-xmpp-reader-enumtypes.html#WOCKY-TYPE-XMPP-READER-STATE:CAPS"/>
     <keyword type="function" name="wocky_xmpp_reader_error_get_type ()" link="wocky-wocky-xmpp-reader-enumtypes.html#wocky-xmpp-reader-error-get-type"/>
     <keyword type="macro" name="WOCKY_TYPE_XMPP_READER_ERROR" link="wocky-wocky-xmpp-reader-enumtypes.html#WOCKY-TYPE-XMPP-READER-ERROR:CAPS"/>
-    <keyword type="struct" name="WockyContact" link="wocky-wocky-types.html#WockyContact-struct"/>
-    <keyword type="struct" name="WockyContactClass" link="wocky-wocky-types.html#WockyContactClass"/>
     <keyword type="macro" name="WOCKY_XMPP_NS_JABBER_CLIENT" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JABBER-CLIENT:CAPS"/>
     <keyword type="macro" name="WOCKY_XMPP_NS_STREAM" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-STREAM:CAPS"/>
     <keyword type="macro" name="WOCKY_XMPP_NS_STREAMS" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-STREAMS:CAPS"/>
@@ -285,6 +291,7 @@
     <keyword type="macro" name="WOCKY_XMPP_NS_FEATURENEG" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-FEATURENEG:CAPS"/>
     <keyword type="macro" name="WOCKY_XMPP_NS_DATA" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-DATA:CAPS"/>
     <keyword type="macro" name="WOCKY_XMPP_NS_EVENT" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-EVENT:CAPS"/>
+    <keyword type="macro" name="WOCKY_XMPP_NS_DELAY" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-DELAY:CAPS"/>
     <keyword type="macro" name="WOCKY_XMPP_NS_STANZAS" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-STANZAS:CAPS"/>
     <keyword type="macro" name="WOCKY_XMPP_NS_OOB" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-OOB:CAPS"/>
     <keyword type="macro" name="WOCKY_XMPP_NS_JINGLE_ERRORS" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-ERRORS:CAPS"/>
@@ -294,8 +301,42 @@
     <keyword type="macro" name="WOCKY_JABBER_NS_AUTH_FEATURE" link="wocky-wocky-namespaces.html#WOCKY-JABBER-NS-AUTH-FEATURE:CAPS"/>
     <keyword type="macro" name="WOCKY_GOOGLE_NS_AUTH" link="wocky-wocky-namespaces.html#WOCKY-GOOGLE-NS-AUTH:CAPS"/>
     <keyword type="macro" name="WOCKY_XMPP_NS_ROSTER" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-ROSTER:CAPS"/>
+    <keyword type="macro" name="WOCKY_XMPP_NS_PUBSUB" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB:CAPS"/>
+    <keyword type="macro" name="WOCKY_XMPP_NS_PUBSUB_EVENT" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB-EVENT:CAPS"/>
+    <keyword type="macro" name="WOCKY_NS_MUC" link="wocky-wocky-namespaces.html#WOCKY-NS-MUC:CAPS"/>
+    <keyword type="macro" name="WOCKY_NS_MUC_USR" link="wocky-wocky-namespaces.html#WOCKY-NS-MUC-USR:CAPS"/>
+    <keyword type="macro" name="WOCKY_NS_MUC_ADM" link="wocky-wocky-namespaces.html#WOCKY-NS-MUC-ADM:CAPS"/>
+    <keyword type="macro" name="WOCKY_NS_MUC_OWN" link="wocky-wocky-namespaces.html#WOCKY-NS-MUC-OWN:CAPS"/>
+    <keyword type="macro" name="WOCKY_NS_MUC_UNIQ" link="wocky-wocky-namespaces.html#WOCKY-NS-MUC-UNIQ:CAPS"/>
+    <keyword type="macro" name="WOCKY_NS_CHATSTATE" link="wocky-wocky-namespaces.html#WOCKY-NS-CHATSTATE:CAPS"/>
+    <keyword type="macro" name="WOCKY_NS_GOOGLE_SESSION_PHONE" link="wocky-wocky-namespaces.html#WOCKY-NS-GOOGLE-SESSION-PHONE:CAPS"/>
+    <keyword type="macro" name="WOCKY_NS_GOOGLE_SESSION_VIDEO" link="wocky-wocky-namespaces.html#WOCKY-NS-GOOGLE-SESSION-VIDEO:CAPS"/>
+    <keyword type="macro" name="WOCKY_XMPP_NS_JINGLE" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE:CAPS"/>
+    <keyword type="macro" name="WOCKY_XMPP_NS_JINGLE_RTP" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP:CAPS"/>
+    <keyword type="macro" name="WOCKY_XMPP_NS_JINGLE_RTP_AUDIO" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP-AUDIO:CAPS"/>
+    <keyword type="macro" name="WOCKY_XMPP_NS_JINGLE_RTP_ERRORS" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP-ERRORS:CAPS"/>
+    <keyword type="macro" name="WOCKY_XMPP_NS_JINGLE_RTP_INFO" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP-INFO:CAPS"/>
+    <keyword type="macro" name="WOCKY_XMPP_NS_JINGLE_RTP_VIDEO" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP-VIDEO:CAPS"/>
     <keyword type="function" name="wocky_strdiff ()" link="wocky-wocky-utils.html#wocky-strdiff"/>
+    <keyword type="function" name="wocky_normalise_jid ()" link="wocky-wocky-utils.html#wocky-normalise-jid"/>
     <keyword type="function" name="wocky_decode_jid ()" link="wocky-wocky-utils.html#wocky-decode-jid"/>
+    <keyword type="function" name="wocky_g_value_slice_new ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new" since="0.5.14"/>
+    <keyword type="function" name="wocky_g_value_slice_new_boolean ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-boolean" since="0.7.27"/>
+    <keyword type="function" name="wocky_g_value_slice_new_int ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-int" since="0.7.27"/>
+    <keyword type="function" name="wocky_g_value_slice_new_int64 ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-int64" since="0.7.27"/>
+    <keyword type="function" name="wocky_g_value_slice_new_uint ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-uint" since="0.7.27"/>
+    <keyword type="function" name="wocky_g_value_slice_new_uint64 ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-uint64" since="0.7.27"/>
+    <keyword type="function" name="wocky_g_value_slice_new_double ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-double" since="0.7.27"/>
+    <keyword type="function" name="wocky_g_value_slice_new_string ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-string" since="0.7.27"/>
+    <keyword type="function" name="wocky_g_value_slice_new_static_string ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-static-string" since="0.7.27"/>
+    <keyword type="function" name="wocky_g_value_slice_new_take_string ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-take-string" since="0.7.27"/>
+    <keyword type="function" name="wocky_g_value_slice_new_boxed ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-boxed" since="0.7.27"/>
+    <keyword type="function" name="wocky_g_value_slice_new_static_boxed ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-static-boxed" since="0.7.27"/>
+    <keyword type="function" name="wocky_g_value_slice_new_take_boxed ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-take-boxed" since="0.7.27"/>
+    <keyword type="function" name="wocky_g_value_slice_free ()" link="wocky-wocky-utils.html#wocky-g-value-slice-free"/>
+    <keyword type="function" name="wocky_g_value_slice_dup ()" link="wocky-wocky-utils.html#wocky-g-value-slice-dup" since="0.5.14"/>
+    <keyword type="function" name="wocky_enum_from_nick ()" link="wocky-wocky-utils.html#wocky-enum-from-nick"/>
+    <keyword type="function" name="wocky_enum_to_nick ()" link="wocky-wocky-utils.html#wocky-enum-to-nick"/>
     <keyword type="struct" name="WockyXmppNode" link="wocky-wocky-xmpp-node.html#WockyXmppNode"/>
     <keyword type="function" name="wocky_xmpp_node_each_child_func ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-child-func"/>
     <keyword type="function" name="wocky_xmpp_node_each_attribute ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-attribute"/>
@@ -317,7 +358,10 @@
     <keyword type="function" name="wocky_xmpp_node_add_child_with_content ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-add-child-with-content"/>
     <keyword type="function" name="wocky_xmpp_node_add_child_with_content_ns ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-add-child-with-content-ns"/>
     <keyword type="function" name="wocky_xmpp_node_set_ns ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-ns"/>
+    <keyword type="function" name="wocky_xmpp_node_set_ns_q ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-ns-q"/>
     <keyword type="function" name="wocky_xmpp_node_get_ns ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-ns"/>
+    <keyword type="function" name="wocky_xmpp_node_has_ns ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-has-ns"/>
+    <keyword type="function" name="wocky_xmpp_node_has_ns_q ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-has-ns-q"/>
     <keyword type="function" name="wocky_xmpp_node_get_language ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-language"/>
     <keyword type="function" name="wocky_xmpp_node_set_language ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-language"/>
     <keyword type="function" name="wocky_xmpp_node_set_language_n ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-language-n"/>
@@ -331,26 +375,52 @@
     <keyword type="function" name="wocky_xmpp_node_is_superset ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-is-superset"/>
     <keyword type="function" name="wocky_xmpp_node_init ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-init"/>
     <keyword type="function" name="wocky_xmpp_node_deinit ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-deinit"/>
+    <keyword type="struct" name="WockyXmppNodeIter" link="wocky-wocky-xmpp-node.html#WockyXmppNodeIter"/>
+    <keyword type="function" name="wocky_xmpp_node_iter_init ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-iter-init"/>
+    <keyword type="function" name="wocky_xmpp_node_iter_next ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-iter-next"/>
+    <keyword type="enum" name="enum WockyXmppErrorType" link="wocky-wocky-xmpp-error.html#WockyXmppErrorType"/>
     <keyword type="enum" name="enum WockyXmppError" link="wocky-wocky-xmpp-error.html#WockyXmppError"/>
     <keyword type="function" name="wocky_xmpp_error_quark ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-quark"/>
     <keyword type="macro" name="WOCKY_XMPP_ERROR" link="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS"/>
+    <keyword type="struct" name="WockyXmppErrorSpecialization" link="wocky-wocky-xmpp-error.html#WockyXmppErrorSpecialization"/>
+    <keyword type="struct" name="WockyXmppErrorDomain" link="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain"/>
+    <keyword type="enum" name="enum WockyJingleError" link="wocky-wocky-xmpp-error.html#WockyJingleError"/>
+    <keyword type="function" name="wocky_jingle_error_quark ()" link="wocky-wocky-xmpp-error.html#wocky-jingle-error-quark"/>
+    <keyword type="macro" name="WOCKY_JINGLE_ERROR" link="wocky-wocky-xmpp-error.html#WOCKY-JINGLE-ERROR:CAPS"/>
+    <keyword type="enum" name="enum WockySIError" link="wocky-wocky-xmpp-error.html#WockySIError"/>
+    <keyword type="function" name="wocky_si_error_quark ()" link="wocky-wocky-xmpp-error.html#wocky-si-error-quark"/>
+    <keyword type="macro" name="WOCKY_SI_ERROR" link="wocky-wocky-xmpp-error.html#WOCKY-SI-ERROR:CAPS"/>
     <keyword type="enum" name="enum WockyXmppStreamError" link="wocky-wocky-xmpp-error.html#WockyXmppStreamError"/>
     <keyword type="function" name="wocky_xmpp_stream_error_quark ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-stream-error-quark"/>
     <keyword type="macro" name="WOCKY_XMPP_STREAM_ERROR" link="wocky-wocky-xmpp-error.html#WOCKY-XMPP-STREAM-ERROR:CAPS"/>
     <keyword type="function" name="wocky_xmpp_error_string ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-string"/>
     <keyword type="function" name="wocky_xmpp_error_description ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-description"/>
     <keyword type="function" name="wocky_xmpp_stream_error_from_node ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-stream-error-from-node"/>
+    <keyword type="function" name="wocky_stanza_error_to_node ()" link="wocky-wocky-xmpp-error.html#wocky-stanza-error-to-node"/>
+    <keyword type="function" name="wocky_xmpp_error_extract ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-extract"/>
+    <keyword type="function" name="wocky_xmpp_error_register_domain ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-register-domain"/>
+    <keyword type="function" name="wocky_xmpp_error_init ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-init"/>
+    <keyword type="function" name="wocky_xmpp_error_deinit ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-deinit"/>
     <keyword type="macro" name="WOCKY_TYPE_TLS_CONNECTION" link="wocky-wocky-tls.html#WOCKY-TYPE-TLS-CONNECTION:CAPS"/>
     <keyword type="macro" name="WOCKY_TYPE_TLS_SESSION" link="wocky-wocky-tls.html#WOCKY-TYPE-TLS-SESSION:CAPS"/>
     <keyword type="macro" name="WOCKY_TLS_SESSION()" link="wocky-wocky-tls.html#WOCKY-TLS-SESSION:CAPS"/>
     <keyword type="macro" name="WOCKY_TLS_CONNECTION()" link="wocky-wocky-tls.html#WOCKY-TLS-CONNECTION:CAPS"/>
     <keyword type="typedef" name="WockyTLSConnection" link="wocky-wocky-tls.html#WockyTLSConnection"/>
     <keyword type="typedef" name="WockyTLSSession" link="wocky-wocky-tls.html#WockyTLSSession"/>
+    <keyword type="enum" name="enum WockyTLSVerificationLevel" link="wocky-wocky-tls.html#WockyTLSVerificationLevel"/>
+    <keyword type="function" name="wocky_tls_cert_error_quark ()" link="wocky-wocky-tls.html#wocky-tls-cert-error-quark"/>
+    <keyword type="macro" name="WOCKY_TLS_CERT_ERROR" link="wocky-wocky-tls.html#WOCKY-TLS-CERT-ERROR:CAPS"/>
+    <keyword type="function" name="wocky_tls_error_quark ()" link="wocky-wocky-tls.html#wocky-tls-error-quark"/>
+    <keyword type="macro" name="WOCKY_TLS_ERROR" link="wocky-wocky-tls.html#WOCKY-TLS-ERROR:CAPS"/>
+    <keyword type="enum" name="enum WockyTLSCertStatus" link="wocky-wocky-tls.html#WockyTLSCertStatus"/>
     <keyword type="function" name="wocky_tls_connection_get_type ()" link="wocky-wocky-tls.html#wocky-tls-connection-get-type"/>
     <keyword type="function" name="wocky_tls_session_get_type ()" link="wocky-wocky-tls.html#wocky-tls-session-get-type"/>
+    <keyword type="function" name="wocky_tls_session_verify_peer ()" link="wocky-wocky-tls.html#wocky-tls-session-verify-peer"/>
     <keyword type="function" name="wocky_tls_session_handshake ()" link="wocky-wocky-tls.html#wocky-tls-session-handshake"/>
     <keyword type="function" name="wocky_tls_session_handshake_async ()" link="wocky-wocky-tls.html#wocky-tls-session-handshake-async"/>
     <keyword type="function" name="wocky_tls_session_handshake_finish ()" link="wocky-wocky-tls.html#wocky-tls-session-handshake-finish"/>
+    <keyword type="function" name="wocky_tls_session_add_ca ()" link="wocky-wocky-tls.html#wocky-tls-session-add-ca"/>
+    <keyword type="function" name="wocky_tls_session_add_crl ()" link="wocky-wocky-tls.html#wocky-tls-session-add-crl"/>
     <keyword type="function" name="wocky_tls_session_new ()" link="wocky-wocky-tls.html#wocky-tls-session-new"/>
     <keyword type="function" name="wocky_tls_session_server_new ()" link="wocky-wocky-tls.html#wocky-tls-session-server-new"/>
     <keyword type="property" name="The &quot;session&quot; property" link="wocky-wocky-tls.html#WockyTLSConnection--session"/>

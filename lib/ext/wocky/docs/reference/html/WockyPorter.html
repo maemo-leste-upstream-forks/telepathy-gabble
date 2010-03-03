@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="wocky-wocky-contact-factory.html" title="wocky-contact-factory">
+<link rel="prev" href="WockyContactFactory.html" title="wocky-contact-factory">
 <link rel="next" href="WockyConnector.html" title="WockyConnector">
 <meta name="generator" content="GTK-Doc V1.13 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -17,7 +17,7 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="wocky-wocky-contact-factory.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="WockyContactFactory.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">wocky Reference Manual</th>
@@ -70,7 +70,7 @@ higher level API.</p>
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a href="WockyPorter.html#WockyPorterHandlerFunc">*WockyPorterHandlerFunc</a>)           (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
                                                          <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a href="WockyPorter.html#wocky-porter-register-handler">wocky_porter_register_handler</a>       (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a href="WockyPorter.html#wocky-porter-register-handler">wocky_porter_register_handler</a>       (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *self,
                                                          <a href="WockyXmppStanza.html#WockyStanzaType"><span class="returnvalue">WockyStanzaType</span></a> type,
                                                          <a href="WockyXmppStanza.html#WockyStanzaSubType"><span class="returnvalue">WockyStanzaSubType</span></a> sub_type,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *from,
@@ -384,7 +384,7 @@ Convenience function to create a new <a href="WockyPorter.html"><span class="typ
 <hr>
 <div class="refsect2" title="wocky_porter_register_handler ()">
 <a name="wocky-porter-register-handler"></a><h3>wocky_porter_register_handler ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               wocky_porter_register_handler       (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *porter,
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               wocky_porter_register_handler       (<a href="WockyPorter.html"><span class="returnvalue">WockyPorter</span></a> *self,
                                                          <a href="WockyXmppStanza.html#WockyStanzaType"><span class="returnvalue">WockyStanzaType</span></a> type,
                                                          <a href="WockyXmppStanza.html#WockyStanzaSubType"><span class="returnvalue">WockyStanzaSubType</span></a> sub_type,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *from,
@@ -406,8 +406,8 @@ will match _all_ stanzas from a JID with the same node and domain:
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
-<td>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td> A <a href="WockyPorter.html"><span class="type">WockyPorter</span></a> instance (passed to <em class="parameter"><code>callback</code></em>).
 </td>
 </tr>
 <tr>

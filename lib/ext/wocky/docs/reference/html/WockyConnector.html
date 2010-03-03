@@ -75,6 +75,10 @@
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyConnector.html#wocky-connector-unregister-finish">wocky_connector_unregister_finish</a>   (<a href="WockyConnector.html"><span class="returnvalue">WockyConnector</span></a> *self,
                                                          <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *res,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyConnector.html#wocky-connector-add-crl">wocky_connector_add_crl</a>             (<a href="WockyConnector.html"><span class="returnvalue">WockyConnector</span></a> *self,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *path);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyConnector.html#wocky-connector-add-ca">wocky_connector_add_ca</a>              (<a href="WockyConnector.html"><span class="returnvalue">WockyConnector</span></a> *self,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *path);
 </pre>
 </div>
 <div class="refsect1" title="Object Hierarchy">
@@ -709,6 +713,76 @@ Called by the callback passed to <a href="WockyConnector.html#wocky-connector-un
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> value <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> (success), or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> (failure).
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_connector_add_crl ()">
+<a name="wocky-connector-add-crl"></a><h3>wocky_connector_add_crl ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_connector_add_crl             (<a href="WockyConnector.html"><span class="returnvalue">WockyConnector</span></a> *self,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *path);</pre>
+<p>
+This function does not descend subdirectories automatically.</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td> a <a href="WockyConnector.html"><span class="type">WockyConnector</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>path</code></em> :</span></p></td>
+<td> a path to a directory or file containing PEM encoded CRLs
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> indicating whether the path was resolved.
+Does not indicate that there was actually a file or directory there
+or that any CRLs were actually found. The CRLs won't actually be loaded
+until just before the TLS session setup is attempted.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_connector_add_ca ()">
+<a name="wocky-connector-add-ca"></a><h3>wocky_connector_add_ca ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_connector_add_ca              (<a href="WockyConnector.html"><span class="returnvalue">WockyConnector</span></a> *self,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *path);</pre>
+<p>
+Sensible default paths (under Debian derived distributions) are:
+</p>
+<p>
+* for gnutls:  /etc/ssl/certs/ca-certificates.crt
+* for openssl: /etc/ssl/certs
+</p>
+<p>
+Certificates my also be found under /usr/share/ca-certificates/...
+if the user wishes to pick and choose which CAs to use.</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td> a <a href="WockyConnector.html"><span class="type">WockyConnector</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>path</code></em> :</span></p></td>
+<td> a path to a directory or file containing PEM encoded CA certificates
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> indicating whether the path was resolved.
+Does not indicate that there was actually a file or directory there
+or that any CAs were actually found. The CAs won't actually be loaded
+until just before the TLS session setup is attempted.
 </td>
 </tr>
 </tbody>

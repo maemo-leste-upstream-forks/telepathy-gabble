@@ -89,6 +89,64 @@ wocky-tls
 
 </para>
 
+<!-- ##### ENUM WockyTLSVerificationLevel ##### -->
+<para>
+
+</para>
+
+@WOCKY_TLS_VERIFY_STRICT: 
+@WOCKY_TLS_VERIFY_NORMAL: 
+@WOCKY_TLS_VERIFY_LENIENT: 
+
+<!-- ##### FUNCTION wocky_tls_cert_error_quark ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### MACRO WOCKY_TLS_CERT_ERROR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION wocky_tls_error_quark ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### MACRO WOCKY_TLS_ERROR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM WockyTLSCertStatus ##### -->
+<para>
+
+</para>
+
+@WOCKY_TLS_CERT_OK: 
+@WOCKY_TLS_CERT_INVALID: 
+@WOCKY_TLS_CERT_NAME_MISMATCH: 
+@WOCKY_TLS_CERT_REVOKED: 
+@WOCKY_TLS_CERT_SIGNER_UNKNOWN: 
+@WOCKY_TLS_CERT_SIGNER_UNAUTHORISED: 
+@WOCKY_TLS_CERT_INSECURE: 
+@WOCKY_TLS_CERT_NOT_ACTIVE: 
+@WOCKY_TLS_CERT_EXPIRED: 
+@WOCKY_TLS_CERT_NO_CERTIFICATE: 
+@WOCKY_TLS_CERT_MAYBE_DOS: 
+@WOCKY_TLS_CERT_INTERNAL_ERROR: 
+@WOCKY_TLS_CERT_UNKNOWN_ERROR: 
+
 <!-- ##### FUNCTION wocky_tls_connection_get_type ##### -->
 <para>
 
@@ -102,6 +160,18 @@ wocky-tls
 
 </para>
 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_tls_session_verify_peer ##### -->
+<para>
+
+</para>
+
+@session: 
+@peername: 
+@level: 
+@status: 
 @Returns: 
 
 
@@ -137,6 +207,24 @@ wocky-tls
 @result: 
 @error: 
 @Returns: 
+
+
+<!-- ##### FUNCTION wocky_tls_session_add_ca ##### -->
+<para>
+
+</para>
+
+@session: 
+@path: 
+
+
+<!-- ##### FUNCTION wocky_tls_session_add_crl ##### -->
+<para>
+
+</para>
+
+@session: 
+@path: 
 
 
 <!-- ##### FUNCTION wocky_tls_session_new ##### -->

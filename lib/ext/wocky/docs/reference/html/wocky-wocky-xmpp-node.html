@@ -99,7 +99,13 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);
 <span class="returnvalue">void</span>                <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-ns">wocky_xmpp_node_set_ns</a>              (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);
+<span class="returnvalue">void</span>                <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-ns-q">wocky_xmpp_node_set_ns_q</a>            (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a> ns);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-ns">wocky_xmpp_node_get_ns</a>              (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-has-ns">wocky_xmpp_node_has_ns</a>              (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-has-ns-q">wocky_xmpp_node_has_ns_q</a>            (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a> ns);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-language">wocky_xmpp_node_get_language</a>        (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node);
 <span class="returnvalue">void</span>                <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-language">wocky_xmpp_node_set_language</a>        (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *lang);
@@ -119,9 +125,16 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-equal">wocky_xmpp_node_equal</a>               (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node0,
                                                          <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node1);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-is-superset">wocky_xmpp_node_is_superset</a>         (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
-                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *pattern);
+                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *subset);
 <span class="returnvalue">void</span>                <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-init">wocky_xmpp_node_init</a>                (void);
 <span class="returnvalue">void</span>                <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-deinit">wocky_xmpp_node_deinit</a>              (void);
+                    <a href="wocky-wocky-xmpp-node.html#WockyXmppNodeIter">WockyXmppNodeIter</a>;
+<span class="returnvalue">void</span>                <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-iter-init">wocky_xmpp_node_iter_init</a>           (<a href="wocky-wocky-xmpp-node.html#WockyXmppNodeIter"><span class="returnvalue">WockyXmppNodeIter</span></a> *iter,
+                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-iter-next">wocky_xmpp_node_iter_next</a>           (<a href="wocky-wocky-xmpp-node.html#WockyXmppNodeIter"><span class="returnvalue">WockyXmppNodeIter</span></a> *iter,
+                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> **next);
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -751,6 +764,29 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 </table></div>
 </div>
 <hr>
+<div class="refsect2" title="wocky_xmpp_node_set_ns_q ()">
+<a name="wocky-xmpp-node-set-ns-q"></a><h3>wocky_xmpp_node_set_ns_q ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_node_set_ns_q            (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a> ns);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
 <div class="refsect2" title="wocky_xmpp_node_get_ns ()">
 <a name="wocky-xmpp-node-get-ns"></a><h3>wocky_xmpp_node_get_ns ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_node_get_ns              (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node);</pre>
@@ -761,6 +797,62 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_xmpp_node_has_ns ()">
+<a name="wocky-xmpp-node-has-ns"></a><h3>wocky_xmpp_node_has_ns ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_xmpp_node_has_ns              (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_xmpp_node_has_ns_q ()">
+<a name="wocky-xmpp-node-has-ns-q"></a><h3>wocky_xmpp_node_has_ns_q ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_xmpp_node_has_ns_q            (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a> ns);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
@@ -1012,7 +1104,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <div class="refsect2" title="wocky_xmpp_node_is_superset ()">
 <a name="wocky-xmpp-node-is-superset"></a><h3>wocky_xmpp_node_is_superset ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_xmpp_node_is_superset         (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
-                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *pattern);</pre>
+                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *subset);</pre>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -1022,8 +1114,8 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pattern</code></em> :</span></p></td>
-<td>
+<td><p><span class="term"><em class="parameter"><code>subset</code></em> :</span></p></td>
+<td> the supposed subset
 </td>
 </tr>
 <tr>
@@ -1047,6 +1139,114 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_node_deinit              (void);</pre>
 <p>
 </p>
+</div>
+<hr>
+<div class="refsect2" title="WockyXmppNodeIter">
+<a name="WockyXmppNodeIter"></a><h3>WockyXmppNodeIter</h3>
+<pre class="programlisting">typedef struct {
+  GSList *pending;
+  const gchar *name;
+  GQuark ns;
+} WockyXmppNodeIter;
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="wocky_xmpp_node_iter_init ()">
+<a name="wocky-xmpp-node-iter-init"></a><h3>wocky_xmpp_node_iter_init ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_node_iter_init           (<a href="wocky-wocky-xmpp-node.html#WockyXmppNodeIter"><span class="returnvalue">WockyXmppNodeIter</span></a> *iter,
+                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);</pre>
+<p>
+Initializes an iterator that can be used to iterate over the children of
+<em class="parameter"><code>node</code></em>, filtered by <em class="parameter"><code>name</code></em> and <em class="parameter"><code>ns</code></em>
+</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10</pre></td>
+        <td class="listing_code"><pre class="programlisting">WockyXmppNodeIter iter<span class="symbol">;</span>
+WockyXmppNode <span class="symbol">*</span>child<span class="symbol">;</span>
+
+<span class="function"><a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-iter-init">wocky_xmpp_node_iter_init</a></span> <span class="symbol">(&amp;</span>iter<span class="symbol">,</span> stanza<span class="symbol">-&gt;</span>node<span class="symbol">,</span>
+   <span class="string">&quot;payload-type&quot;</span><span class="symbol">,</span>
+   WOCKY_XMPP_NS_JINGLE_RTP<span class="symbol">);</span>
+<span class="keyword">while</span> <span class="symbol">(</span><span class="function"><a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-iter-next">wocky_xmpp_node_iter_next</a></span> <span class="symbol">(</span>iter<span class="symbol">, &amp;</span>child<span class="symbol">))</span>
+  <span class="symbol">{</span>
+    <span class="comment">/* do something with the child */</span>
+  <span class="symbol">}</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>iter</code></em> :</span></p></td>
+<td> unitialized iterator
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td> Node whose children to iterate over
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
+<td> Name to filter on or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td> namespace to filter on or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_xmpp_node_iter_next ()">
+<a name="wocky-xmpp-node-iter-next"></a><h3>wocky_xmpp_node_iter_next ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_xmpp_node_iter_next           (<a href="wocky-wocky-xmpp-node.html#WockyXmppNodeIter"><span class="returnvalue">WockyXmppNodeIter</span></a> *iter,
+                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> **next);</pre>
+<p>
+Advances iter to the next child that matches its filter. if <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> is
+returned next is not set and the iterator becomes invalid</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>iter</code></em> :</span></p></td>
+<td> an initialized WockyXmppNodeIter
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>next</code></em> :</span></p></td>
+<td> a location to store the next child
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if the last child has been reached
+
+</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 </div>

@@ -69,6 +69,14 @@ enum                <a href="WockyXmppStanza.html#WockyBuildTag">WockyBuildTag</
 <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *   <a href="WockyXmppStanza.html#wocky-xmpp-stanza-build-iq-error">wocky_xmpp_stanza_build_iq_error</a>    (<a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *iq,
                                                          <a href="WockyXmppStanza.html#WockyBuildTag"><span class="returnvalue">WockyBuildTag</span></a> spec,
                                                          ...);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyXmppStanza.html#wocky-xmpp-stanza-extract-errors">wocky_xmpp_stanza_extract_errors</a>    (<a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
+                                                         <a href="wocky-wocky-xmpp-error.html#WockyXmppErrorType"><span class="returnvalue">WockyXmppErrorType</span></a> *type,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **core,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **specialized,
+                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> **specialized_node);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyXmppStanza.html#wocky-xmpp-stanza-extract-stream-error">wocky_xmpp_stanza_extract_stream_error</a>
+                                                        (<a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **stream_error);
 </pre>
 </div>
 <div class="refsect1" title="Object Hierarchy">
@@ -208,7 +216,7 @@ Example:
 <p>
 </p>
 <div class="example">
-<a name="id3130167"></a><p class="title"><b>Example 1. </b></p>
+<a name="id3022733"></a><p class="title"><b>Example 1. </b></p>
 <div class="example-contents">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -272,7 +280,9 @@ Example:
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>sub_type</code></em> :</span></p></td>
-<td>
+<td> The stanza's subtype; valid values depend on <em class="parameter"><code>type</code></em>. (For instance,
+          <span class="type">WOCKY_STANZA_TYPE_IQ</span> can use <span class="type">WOCKY_STANZA_SUB_TYPE_GET</span>, but not
+          <span class="type">WOCKY_STANZA_SUB_TYPE_SUBSCRIBED</span>.)
 </td>
 </tr>
 <tr>
@@ -287,17 +297,19 @@ Example:
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>spec</code></em> :</span></p></td>
-<td>
+<td> The beginning of a description of the stanza to build,
+ or <code class="literal">WOCKY_STANZA_END</code> to build an empty stanza
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
-<td>
+<td> The rest of the description of the stanza to build,
+ terminated with <code class="literal">WOCKY_STANZA_END</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> a new stanza object
 </td>
 </tr>
 </tbody>
@@ -447,6 +459,92 @@ Example:
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_xmpp_stanza_extract_errors ()">
+<a name="wocky-xmpp-stanza-extract-errors"></a><h3>wocky_xmpp_stanza_extract_errors ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_xmpp_stanza_extract_errors    (<a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
+                                                         <a href="wocky-wocky-xmpp-error.html#WockyXmppErrorType"><span class="returnvalue">WockyXmppErrorType</span></a> *type,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **core,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **specialized,
+                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> **specialized_node);</pre>
+<p>
+Given a message, iq or presence stanza with type='error', breaks it down
+into values describing the error. <em class="parameter"><code>type</code></em> and <em class="parameter"><code>core</code></em> are guaranteed to be set;
+<em class="parameter"><code>specialized</code></em> and <em class="parameter"><code>specialized_node</code></em> will be set if a recognised
+application-specific error is found, and the latter will be set to <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if
+no application-specific error is found.
+</p>
+<p>
+Any or all of the out parameters may be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore the value.  The
+value stored in <em class="parameter"><code>specialized_node</code></em> is borrowed from <em class="parameter"><code>stanza</code></em>, and is only
+valid as long as the latter is alive.</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td> a message/iq/presence stanza
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
+<td> location at which to store the error type
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>core</code></em> :</span></p></td>
+<td> location at which to store an error in the domain <a href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS"><span class="type">WOCKY_XMPP_ERROR</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>specialized</code></em> :</span></p></td>
+<td> location at which to store an error in an application-specific
+              domain, if one is found
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>specialized_node</code></em> :</span></p></td>
+<td> location at which to store the node representing an
+                   application-specific error, if one is found
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the stanza had type='error'; <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_xmpp_stanza_extract_stream_error ()">
+<a name="wocky-xmpp-stanza-extract-stream-error"></a><h3>wocky_xmpp_stanza_extract_stream_error ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_xmpp_stanza_extract_stream_error
+                                                        (<a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **stream_error);</pre>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td> a stanza
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stream_error</code></em> :</span></p></td>
+<td> location at which to store an error in domain
+               <a href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-STREAM-ERROR:CAPS"><span class="type">WOCKY_XMPP_STREAM_ERROR</span></a>, if one is found.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> and sets <em class="parameter"><code>stream_error</code></em> if the stanza was indeed a stream
+         error.
 </td>
 </tr>
 </tbody>
