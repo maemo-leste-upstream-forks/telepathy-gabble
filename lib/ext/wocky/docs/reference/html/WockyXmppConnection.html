@@ -116,7 +116,7 @@
                                                          <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
 <span class="returnvalue">void</span>                <a href="WockyXmppConnection.html#wocky-xmpp-connection-reset">wocky_xmpp_connection_reset</a>         (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a href="WockyXmppConnection.html#wocky-xmpp-connection-new-id">wocky_xmpp_connection_new_id</a>        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a href="WockyXmppConnection.html#wocky-xmpp-connection-new-id">wocky_xmpp_connection_new_id</a>        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *self);
 </pre>
 </div>
 <div class="refsect1" title="Object Hierarchy">
@@ -595,9 +595,7 @@ its operation.</p>
                                                          <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
 <p>
-Reset the XMPP Connection. After the reset the connection is back in its
-initial state (as if wocky_xmpp_connection_send_open_async and
-wocky_xmpp_connection_recv_open_async were never called).</p>
+Finishes receiving a stanza</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -608,17 +606,17 @@ wocky_xmpp_connection_recv_open_async were never called).</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
-<td>
+<td> a GAsyncResult.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>
+<td> a GError location to store the error occuring, or NULL to ignore.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> A <a href="WockyXmppStanza.html"><span class="type">WockyXmppStanza</span></a> or NULL on error (unref after usage)
 </td>
 </tr>
 </tbody>
@@ -778,12 +776,14 @@ Finishes send the xmpp stream close.</p>
 <a name="wocky-xmpp-connection-reset"></a><h3>wocky_xmpp_connection_reset ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_connection_reset         (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection);</pre>
 <p>
-</p>
+Reset the XMPP Connection. After the reset the connection is back in its
+initial state (as if wocky_xmpp_connection_send_open_async and
+wocky_xmpp_connection_recv_open_async were never called).</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td>
+<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.
 </td>
 </tr></tbody>
 </table></div>
@@ -791,13 +791,13 @@ Finishes send the xmpp stream close.</p>
 <hr>
 <div class="refsect2" title="wocky_xmpp_connection_new_id ()">
 <a name="wocky-xmpp-connection-new-id"></a><h3>wocky_xmpp_connection_new_id ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_xmpp_connection_new_id        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_xmpp_connection_new_id        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *self);</pre>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.
 </td>
 </tr>
 <tr>

@@ -71,14 +71,30 @@
 #define WOCKY_XMPP_NS_OOB \
   "jabber:iq:oob"
 
-#define WOCKY_XMPP_NS_JINGLE_ERRORS \
-  "http://jabber.org/protocol/jingle#errors"
 
 #define WOCKY_TELEPATHY_NS_CLIQUE \
   "http://telepathy.freedesktop.org/xmpp/clique"
 
 #define WOCKY_XEP77_NS_REGISTER \
   "jabber:iq:register"
+
+/* XEP-0166 Jingle */
+#define WOCKY_XMPP_NS_JINGLE \
+  "urn:xmpp:jingle:1"
+#define WOCKY_XMPP_NS_JINGLE_ERRORS \
+  "urn:xmpp:jingle:errors:1"
+
+/* XEP-0167 (Jingle RTP) */
+#define WOCKY_XMPP_NS_JINGLE_RTP \
+  "urn:xmpp:jingle:apps:rtp:1"
+#define WOCKY_XMPP_NS_JINGLE_RTP_ERRORS \
+  "urn:xmpp:jingle:apps:rtp:errors:1"
+#define WOCKY_XMPP_NS_JINGLE_RTP_INFO \
+  "urn:xmpp:jingle:apps:rtp:info:1"
+#define WOCKY_XMPP_NS_JINGLE_RTP_AUDIO \
+  "urn:xmpp:jingle:apps:rtp:audio"
+#define WOCKY_XMPP_NS_JINGLE_RTP_VIDEO \
+  "urn:xmpp:jingle:apps:rtp:video"
 
 /* legacy namespaces */
 #define WOCKY_JABBER_NS_AUTH \
@@ -116,6 +132,12 @@
 
 #define WOCKY_NS_CHATSTATE \
   "http://jabber.org/protocol/chatstates"
+
+#define WOCKY_NS_GOOGLE_SESSION_PHONE \
+  "http://www.google.com/session/phone"
+
+#define WOCKY_NS_GOOGLE_SESSION_VIDEO \
+  "http://www.google.com/session/video"
 
 
 #endif /* #ifndef __WOCKY_NAMESPACES_H__ */

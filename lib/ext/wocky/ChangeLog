@@ -1,3 +1,570 @@
+commit ef42dd2a68567774cc970a4d6b1918f3f9a5a640
+Merge: ef691f6 98d0bfa
+Author: Simon McVittie <smcv@debian.org>
+Date:   2010-02-25 17:24:13 +0000
+
+    Merge branch 'trivia'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 98d0bfa540b24083673126125339664ebf0ddd3e
+Author: Simon McVittie <smcv@debian.org>
+Date:   2010-02-25 17:20:47 +0000
+
+    wocky-connector-test: use g_get_current_dir instead of getcwd()
+    
+    PATH_MAX isn't defined on Hurd, so this was causing Gabble build failures
+    on the Debian Hurd buildds.
+    
+    Similarly, use g_stat() and g_unlink() instead of plain stat() and
+    unlink(), so that all of these consistently use the GLib filename
+    encoding if/when Wocky is built on Windows.
+
+ tests/wocky-connector-test.c |   21 ++++++++++++++-------
+ 1 files changed, 14 insertions(+), 7 deletions(-)
+
+commit 014c1b70b252a5094dc51d3d4798e9b8245e894e
+Author: Simon McVittie <smcv@debian.org>
+Date:   2010-02-25 17:14:08 +0000
+
+    Don't try to include FIXME.out in git
+
+ .gitignore |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 93c6d27b0930a0f72e2de7bc824e74592fcfb657
+Author: Simon McVittie <smcv@debian.org>
+Date:   2010-02-25 17:13:48 +0000
+
+    Fix various minor gtk-doc nits
+
+ wocky/wocky-porter.h          |    2 +-
+ wocky/wocky-sasl-auth.c       |    1 +
+ wocky/wocky-sasl-handler.h    |   12 +++++++++---
+ wocky/wocky-utils.c           |    2 ++
+ wocky/wocky-xmpp-connection.c |    2 +-
+ wocky/wocky-xmpp-connection.h |    2 +-
+ wocky/wocky-xmpp-error.c      |    4 ++--
+ wocky/wocky-xmpp-stanza.c     |    8 +++++++-
+ 8 files changed, 24 insertions(+), 9 deletions(-)
+
+commit 33ea2a8fc7baa62401820a9d73a57dff6f08be4b
+Author: Simon McVittie <smcv@debian.org>
+Date:   2010-02-25 17:13:08 +0000
+
+    wocky-docs.sgml: don't include XML for wocky-types, which is no longer of interest
+    
+    Everything in it is (almost by definition) documented somewhere else.
+
+ docs/reference/wocky-docs.sgml |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit f0eced5cab2c84ade9739447409886477966989a
+Author: Simon McVittie <smcv@debian.org>
+Date:   2010-02-25 17:12:36 +0000
+
+    wocky-sections.txt: catch up with the current state of Wocky
+
+ docs/reference/wocky-sections.txt |  270 +++++++++++++++++++++++++++++++++++--
+ 1 files changed, 257 insertions(+), 13 deletions(-)
+
+commit 5ea4b794e19c655f89c6717e6398ef513f003930
+Author: Simon McVittie <smcv@debian.org>
+Date:   2010-02-25 16:25:09 +0000
+
+    autogen.sh: prefer Automake 1.11 if we have it
+    
+    Same process and rationale as for Gabble, tp-glib, etc.
+
+ autogen.sh |   13 +++++++------
+ 1 files changed, 7 insertions(+), 6 deletions(-)
+
+commit d38daeeccafcf18eaf3857ac38875ea2efd19a6d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-01-13 18:22:04 +0000
+
+    wocky-muc.h: don't include config.h
+    
+    config.h is not installed, so it's inappropriate to include it in public
+    headers.
+
+ wocky/wocky-muc.h |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit ef691f605ccbb7306963aae03da33c3958f87e87
+Merge: 67c3401 1a12dad
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-24 18:07:27 +0000
+
+    Merge branch 'dataforms'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 67c34019bacaa8b0ae907dedca92ce5c23e95034
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-23 17:51:30 +0000
+
+    Fix coding style violations
+
+ wocky/wocky-muc.c          |    6 +++---
+ wocky/wocky-sasl-handler.h |    2 +-
+ wocky/wocky-xmpp-node.c    |    2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit f903a2add6f875356b59d2647ea700cf14d524e4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-23 17:46:28 +0000
+
+    Generate FIXME.out
+
+ Makefile.am |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 1a12dad94dce8207b2b17b0c176f94e3cd2bc152
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-22 17:22:49 +0000
+
+    Document wocky_data_forms_submit()
+
+ wocky/wocky-data-forms.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 37b2f7b8e22c9689ccced93c95511bfa3e70c7ed
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-22 17:08:42 +0000
+
+    Use iterators when parsing results
+
+ wocky/wocky-data-forms.c |   69 ++++++++++++++++++++++------------------------
+ 1 files changed, 33 insertions(+), 36 deletions(-)
+
+commit aad59510b15685168cad5147dee3aa0d44b4f305
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-22 16:46:11 +0000
+
+    Use WockyXmppNodeIter in a couple of places.
+
+ wocky/wocky-data-forms.c |   32 +++++++++++++-------------------
+ 1 files changed, 13 insertions(+), 19 deletions(-)
+
+commit 40107996ad14c16029474e21f5afa516be2307dc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-22 16:36:29 +0000
+
+    Use g_slist_foreach as appropriate.
+    
+    This makes the code clearer (there's less boilerplate clutter) and
+    shorter!
+
+ wocky/wocky-data-forms.c |   40 ++++++++++++----------------------------
+ 1 files changed, 12 insertions(+), 28 deletions(-)
+
+commit ee927a89e9c90e714a57890d92db3627230fd3f5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-22 16:11:15 +0000
+
+    Use g_assert_cmpstr () in data forms test
+
+ tests/wocky-data-forms-test.c |   83 ++++++++++++++++++----------------------
+ 1 files changed, 37 insertions(+), 46 deletions(-)
+
+commit 20e068bcbbd120ea93559f6535a37833dc36e562
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-22 17:13:39 +0000
+
+    Improve and correct documentation
+
+ wocky/wocky-data-forms.c |   20 +++++++++++++++-----
+ wocky/wocky-data-forms.h |    9 +++++----
+ 2 files changed, 20 insertions(+), 9 deletions(-)
+
+commit e5272a71e7f9f5be3c56e1fae618ec78708703da
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-22 14:58:56 +0000
+
+    Use GEnum for WockyDataFormsFieldType
+    
+    This saves manually writing the code to (de)stringify them. Also, get
+    rid of the unused INVALID member.
+
+ wocky/Makefile.am        |   10 +++--
+ wocky/wocky-data-forms.c |   85 ++++++++++------------------------------------
+ wocky/wocky-data-forms.h |   11 +++---
+ 3 files changed, 30 insertions(+), 76 deletions(-)
+
+commit 6fd4076b68e764b1481e8a12b6a2dfd15f93067d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-29 17:42:19 +0100
+
+    fix includes of Wocky files
+
+ wocky/wocky-data-forms.c |    4 ++--
+ wocky/wocky-data-forms.h |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 471c0a869338f4c3c20bae28c1e8ad79264b71f1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-29 14:38:13 +0100
+
+    wocky_data_forms_new_from_form: set an error if data forms can't be created
+
+ tests/wocky-data-forms-test.c |   27 +++++++++++++++++++--------
+ wocky/wocky-data-forms.c      |    8 +++++++-
+ wocky/wocky-data-forms.h      |    3 ++-
+ 3 files changed, 28 insertions(+), 10 deletions(-)
+
+commit 71fe96395e186c2e5a42845521469b930cd5abf7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-29 14:34:17 +0100
+
+    rename WOCKY_DATA_FORMS_ERROR_NOT_RESULT error to WOCKY_DATA_FORMS_ERROR_WRONG_TYPE
+
+ wocky/wocky-data-forms.c |    2 +-
+ wocky/wocky-data-forms.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 89c6ec74defc5036edb138a9268eb9d5c6bf7ac2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-29 12:38:02 +0100
+
+    pass the owernship of the value and default value to wocky_data_forms_field_new
+
+ wocky/wocky-data-forms.c |   15 +++------------
+ 1 files changed, 3 insertions(+), 12 deletions(-)
+
+commit 96df75e4793267c5f995e3b3c164843d573e46f4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-29 12:23:08 +0100
+
+    rename wocky_data_forms_field and wocky_data_forms_field_option to be camel-cased
+
+ tests/wocky-data-forms-test.c |   18 ++++++++--------
+ wocky/wocky-data-forms.c      |   46 ++++++++++++++++++++--------------------
+ wocky/wocky-data-forms.h      |    6 ++--
+ 3 files changed, 35 insertions(+), 35 deletions(-)
+
+commit d9cbe8b6f245ca0e17eda91b184d2b10c59ac9ca
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-29 12:15:45 +0100
+
+    fix typos
+
+ wocky/wocky-data-forms.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit a02edf09d4d37a86bccb9c543274d9dd6e77641e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-29 12:15:36 +0100
+
+    support '1' and '0' has boolean values
+
+ wocky/wocky-data-forms.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 806e012db9e6accc9e3ea7a6b042b45f7f3e660d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 15:47:32 +0100
+
+    wocky-data-forms-test: test wocky_data_forms_parse_result with a single result
+
+ tests/wocky-data-forms-test.c |   68 +++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 68 insertions(+), 0 deletions(-)
+
+commit 3eca00b5a1433ad529189c424c12a592b00a5288
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 15:45:37 +0100
+
+    wocky-data-forms: support result stanzas without item nodes
+    
+    If there is only one result, it can be reported as a child of the x
+    node, without reported and item nodes.
+
+ wocky/wocky-data-forms.c |   41 +++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 39 insertions(+), 2 deletions(-)
+
+commit 9c8ea2d5d9647ab7e689ff8b25bb6fad33e16e84
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 14:57:41 +0100
+
+    wocky-data-forms: foreach_item: don't leak the value
+
+ wocky/wocky-data-forms.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 52add0d77c63efd30ee649d6f0948951c78cf1d2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 14:57:23 +0100
+
+    wocky-data-forms-test: test wocky_data_forms_parse_result
+
+ tests/wocky-data-forms-test.c |  125 +++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 125 insertions(+), 0 deletions(-)
+
+commit daeda3372cb764d9121c433641758d4c7982cdf4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 14:29:06 +0100
+
+    wocky-data-forms-test: rename create_form_stanza to create_bot_creation_form_stanza
+
+ tests/wocky-data-forms-test.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit d6de371dcc583c79245b5d9bfad423a7b58314b7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 13:58:14 +0100
+
+    wocky-data-forms-test: test wocky_data_forms_submit
+
+ tests/wocky-data-forms-test.c |  174 +++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 174 insertions(+), 0 deletions(-)
+
+commit b1a520e7848cd7276d97fc0eaee77e24c0a73348
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 12:31:44 +0100
+
+    wocky-data-forms-test: factor out create_form_stanza
+
+ tests/wocky-data-forms-test.c |  101 +++++++++++++++++++++-------------------
+ 1 files changed, 53 insertions(+), 48 deletions(-)
+
+commit 2be4d00d5e02756aa4e59944df24fa8c8b5eb729
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 12:28:45 +0100
+
+    wocky-data-forms-test: set a default value to the boolean field
+
+ tests/wocky-data-forms-test.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 5c0c968e5c3c94ce9636b6ad8cfce9f5ee506ad7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 12:15:56 +0100
+
+    wocky-data-forms-test: add a jid-single field node in the form
+
+ tests/wocky-data-forms-test.c |   18 ++++++++++++++++--
+ 1 files changed, 16 insertions(+), 2 deletions(-)
+
+commit 35b316cc8a4c0a60a27fe4aa7aa1b103dfa53222
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 12:09:00 +0100
+
+    wocky-data-forms: fix style typo
+
+ wocky/wocky-data-forms.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 7f4a542db21d2e95bda64912bd0e2b9828934d21
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 11:59:47 +0100
+
+    wocky-data-forms-test: test wocky_data_forms_new_from_form
+
+ tests/wocky-data-forms-test.c |  259 +++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 259 insertions(+), 0 deletions(-)
+
+commit 0208279021b93783f651c7d5e75ad55380fec860
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 11:20:59 +0100
+
+    wocky_data_forms_field_new: set the description
+
+ wocky/wocky-data-forms.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 0c21af1956d6adfb4943f6d1063ac2d2aa83096c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 11:19:04 +0100
+
+    foreach_x_child: add the type of the field in the debug msg
+
+ wocky/wocky-data-forms.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 9ec21828b84654f4d7cb9d1de7122807d1d465c7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 10:49:11 +0100
+
+    extract_value_list: add trailing NULL to the strings array
+
+ wocky/wocky-data-forms.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 367137bd68baf3f6c41159e082cda0c076407f38
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-28 10:42:59 +0100
+
+    extract_options_list: add debug option
+
+ wocky/wocky-data-forms.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 9a1b02f8c35d4a31a17f1f3b06e805758a35bf15
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 16:22:45 +0100
+
+    wocky-data-forms: fix a typo in str_to_type
+
+ wocky/wocky-data-forms.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit cdf71f869bd972db052744ecddf058e5f53a1708
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 16:04:28 +0100
+
+    wocky-data-forms: add wocky_data_forms_get_{title,instructions}
+
+ wocky/wocky-data-forms.c |   16 ++++++++++++++++
+ wocky/wocky-data-forms.h |    4 ++++
+ 2 files changed, 20 insertions(+), 0 deletions(-)
+
+commit 38f36dd907fdade1756cb1bb82f0a05b91092fe6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 16:02:58 +0100
+
+    wocky-data-forms; transfer ownership of the fields to the list
+    
+    The hash table doesn't contain fixed fields (as they don't have a 'var'
+    attribute). Transfer the ownership of the fields to the list so the
+    fixed fields are properly freed.
+
+ wocky/wocky-data-forms.c |    5 +++--
+ wocky/wocky-data-forms.h |    4 ++--
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+commit 432db6d2df4d54606f267d94195d4ab3af09203d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 15:52:50 +0100
+
+    wocky-data-forms: check if var is NULL before adding the field to the hash table
+
+ wocky/wocky-data-forms.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 93cca1c0b5797487c512ea6c7987d4d3978bf768
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 14:56:17 +0100
+
+    add wocky-data-forms-test.c
+
+ .gitignore                    |    1 +
+ tests/Makefile.am             |    8 ++++-
+ tests/wocky-data-forms-test.c |   63 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 71 insertions(+), 1 deletions(-)
+
+commit a00881f8d5ae67fef9230985bb44115b1447e272
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 14:39:43 +0100
+
+    build wocky-data-forms
+
+ wocky/Makefile.am |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 7c0f242b6f61744689714b15d64202bd35959f6d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 14:39:38 +0100
+
+    wocky-data-forms: use wocky debug domain
+
+ wocky/wocky-data-forms.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 7e600fe989ce14dc8dcdd0c6a780bd13f3ad416c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 14:39:20 +0100
+
+    add dataforms debug domain
+
+ wocky/wocky-debug.c |    1 +
+ wocky/wocky-debug.h |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 8c275b7c4f6a424a80c08b37417835fa02057705
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2009-09-25 14:34:58 +0100
+
+    import wocky-data-forms.[ch] from Gabble
+
+ wocky/wocky-data-forms.c |  805 ++++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-data-forms.h |  123 +++++++
+ 2 files changed, 928 insertions(+), 0 deletions(-)
+
+commit 2be5deaeac50cc6d5d42b268dd815cee3b31fefd
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-16 11:59:02 +0000
+
+    Make the added Jingle namespaces more correct and consistent
+
+ wocky/wocky-namespaces.h |   16 +++++++---------
+ wocky/wocky-xmpp-node.c  |    2 +-
+ 2 files changed, 8 insertions(+), 10 deletions(-)
+
+commit b18c56f9e2b1ff27e5838d7a7afee9b0b03be7d5
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-16 11:58:13 +0000
+
+    Document that name and namespace are allowed to be NULL
+
+ wocky/wocky-xmpp-node.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit ee4b5cbcbf8f6db7d1d0cdf41f53b61a1de1c48a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-16 11:42:28 +0000
+
+    Fix typo
+
+ tests/wocky-xmpp-node-test.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 4732bab637b4d836e9c8a3c869374ba664428a14
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-15 14:57:36 +0000
+
+    Add a node iteration test
+
+ tests/wocky-xmpp-node-test.c |   94 ++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 94 insertions(+), 0 deletions(-)
+
+commit 50dbea42a8002bd76aa6c368c06c739bef4fb5a3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-15 14:56:50 +0000
+
+    Add the note iterator stuff in the documentation
+
+ docs/reference/wocky-sections.txt |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit e31b279f10e9b8a73bdeb66385f63dbdc35e475d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-15 14:56:32 +0000
+
+    Add node iterator utility functions
+
+ wocky/wocky-xmpp-node.c |   69 +++++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-xmpp-node.h |   17 +++++++++++-
+ 2 files changed, 85 insertions(+), 1 deletions(-)
+
+commit a8aef4efc124d2932301cd7634606ba505b53b77
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-15 14:54:57 +0000
+
+    Add jingle namespaces
+
+ wocky/wocky-namespaces.h |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
+
+commit e70f6fc191bc3516dfeb9f7dedf28cb70bb5d3f7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-12 19:18:28 +0000
+
+    Add google jingle session namespaces for use in tests later
+
+ wocky/wocky-namespaces.h |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
 commit 83221b4b791d2e00fc286694d9912832cca8305e
 Merge: db56fa0 f6842a6
 Author: Will Thompson <will.thompson@collabora.co.uk>

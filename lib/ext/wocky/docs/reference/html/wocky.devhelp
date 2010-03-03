@@ -7,8 +7,8 @@
       <sub name="WockyXmppReader" link="WockyXmppReader.html"/>
       <sub name="WockyContact" link="WockyContact.html"/>
       <sub name="WockyBareContact" link="WockyBareContact.html"/>
-      <sub name="WockyResourceContact" link="wocky-wocky-resource-contact.html"/>
-      <sub name="wocky-contact-factory" link="wocky-wocky-contact-factory.html"/>
+      <sub name="WockyResourceContact" link="WockyResourceContact.html"/>
+      <sub name="wocky-contact-factory" link="WockyContactFactory.html"/>
       <sub name="WockyPorter" link="WockyPorter.html"/>
       <sub name="WockyConnector" link="WockyConnector.html"/>
       <sub name="WockyXmppStanza" link="WockyXmppStanza.html"/>
@@ -19,7 +19,6 @@
       <sub name="wocky-debug" link="wocky-wocky-debug.html"/>
       <sub name="wocky" link="wocky-wocky.html"/>
       <sub name="wocky-xmpp-reader-enumtypes" link="wocky-wocky-xmpp-reader-enumtypes.html"/>
-      <sub name="wocky-types" link="wocky-wocky-types.html"/>
       <sub name="wocky-namespaces" link="wocky-wocky-namespaces.html"/>
       <sub name="wocky-utils" link="wocky-wocky-utils.html"/>
       <sub name="wocky-xmpp-node" link="wocky-wocky-xmpp-node.html"/>
@@ -36,6 +35,7 @@
     <function name="WockySaslAuth" link="WockySaslAuth.html#WockySaslAuth-struct"/>
     <function name="WockySaslAuthClass" link="WockySaslAuth.html#WockySaslAuthClass"/>
     <function name="wocky_sasl_auth_new ()" link="WockySaslAuth.html#wocky-sasl-auth-new"/>
+    <function name="wocky_sasl_auth_add_handler ()" link="WockySaslAuth.html#wocky-sasl-auth-add-handler"/>
     <function name="wocky_sasl_auth_authenticate_async ()" link="WockySaslAuth.html#wocky-sasl-auth-authenticate-async"/>
     <function name="wocky_sasl_auth_authenticate_finish ()" link="WockySaslAuth.html#wocky-sasl-auth-authenticate-finish"/>
     <function name="The &quot;connection&quot; property" link="WockySaslAuth.html#WockySaslAuth--connection"/>
@@ -62,6 +62,8 @@
     <function name="The &quot;streaming-mode&quot; property" link="WockyXmppReader.html#WockyXmppReader--streaming-mode"/>
     <function name="The &quot;to&quot; property" link="WockyXmppReader.html#WockyXmppReader--to"/>
     <function name="The &quot;version&quot; property" link="WockyXmppReader.html#WockyXmppReader--version"/>
+    <function name="WockyContact" link="WockyContact.html#WockyContact-struct"/>
+    <function name="WockyContactClass" link="WockyContact.html#WockyContactClass"/>
     <function name="WockyBareContact" link="WockyBareContact.html#WockyBareContact-struct"/>
     <function name="WockyBareContactClass" link="WockyBareContact.html#WockyBareContactClass"/>
     <function name="wocky_bare_contact_new ()" link="WockyBareContact.html#wocky-bare-contact-new"/>
@@ -83,23 +85,23 @@
     <function name="The &quot;jid&quot; property" link="WockyBareContact.html#WockyBareContact--jid"/>
     <function name="The &quot;name&quot; property" link="WockyBareContact.html#WockyBareContact--name"/>
     <function name="The &quot;subscription&quot; property" link="WockyBareContact.html#WockyBareContact--subscription"/>
-    <function name="WockyResourceContact" link="wocky-wocky-resource-contact.html#WockyResourceContact-struct"/>
-    <function name="WockyResourceContactClass" link="wocky-wocky-resource-contact.html#WockyResourceContactClass"/>
-    <function name="wocky_resource_contact_new ()" link="wocky-wocky-resource-contact.html#wocky-resource-contact-new"/>
-    <function name="wocky_resource_contact_equal ()" link="wocky-wocky-resource-contact.html#wocky-resource-contact-equal"/>
-    <function name="wocky_resource_contact_get_bare_contact ()" link="wocky-wocky-resource-contact.html#wocky-resource-contact-get-bare-contact"/>
-    <function name="wocky_resource_contact_get_resource ()" link="wocky-wocky-resource-contact.html#wocky-resource-contact-get-resource"/>
-    <function name="The &quot;bare-contact&quot; property" link="wocky-wocky-resource-contact.html#WockyResourceContact--bare-contact"/>
-    <function name="The &quot;resource&quot; property" link="wocky-wocky-resource-contact.html#WockyResourceContact--resource"/>
-    <function name="WockyContactFactory" link="wocky-wocky-contact-factory.html#WockyContactFactory-struct"/>
-    <function name="WockyContactFactoryClass" link="wocky-wocky-contact-factory.html#WockyContactFactoryClass"/>
-    <function name="wocky_contact_factory_new ()" link="wocky-wocky-contact-factory.html#wocky-contact-factory-new"/>
-    <function name="wocky_contact_factory_ensure_bare_contact ()" link="wocky-wocky-contact-factory.html#wocky-contact-factory-ensure-bare-contact"/>
-    <function name="wocky_contact_factory_ensure_resource_contact ()" link="wocky-wocky-contact-factory.html#wocky-contact-factory-ensure-resource-contact"/>
-    <function name="wocky_contact_factory_lookup_bare_contact ()" link="wocky-wocky-contact-factory.html#wocky-contact-factory-lookup-bare-contact"/>
-    <function name="wocky_contact_factory_lookup_resource_contact ()" link="wocky-wocky-contact-factory.html#wocky-contact-factory-lookup-resource-contact"/>
-    <function name="The &quot;bare-contact-added&quot; signal" link="wocky-wocky-contact-factory.html#WockyContactFactory-bare-contact-added"/>
-    <function name="The &quot;resource-contact-added&quot; signal" link="wocky-wocky-contact-factory.html#WockyContactFactory-resource-contact-added"/>
+    <function name="WockyResourceContact" link="WockyResourceContact.html#WockyResourceContact-struct"/>
+    <function name="WockyResourceContactClass" link="WockyResourceContact.html#WockyResourceContactClass"/>
+    <function name="wocky_resource_contact_new ()" link="WockyResourceContact.html#wocky-resource-contact-new"/>
+    <function name="wocky_resource_contact_equal ()" link="WockyResourceContact.html#wocky-resource-contact-equal"/>
+    <function name="wocky_resource_contact_get_bare_contact ()" link="WockyResourceContact.html#wocky-resource-contact-get-bare-contact"/>
+    <function name="wocky_resource_contact_get_resource ()" link="WockyResourceContact.html#wocky-resource-contact-get-resource"/>
+    <function name="The &quot;bare-contact&quot; property" link="WockyResourceContact.html#WockyResourceContact--bare-contact"/>
+    <function name="The &quot;resource&quot; property" link="WockyResourceContact.html#WockyResourceContact--resource"/>
+    <function name="WockyContactFactory" link="WockyContactFactory.html#WockyContactFactory-struct"/>
+    <function name="WockyContactFactoryClass" link="WockyContactFactory.html#WockyContactFactoryClass"/>
+    <function name="wocky_contact_factory_new ()" link="WockyContactFactory.html#wocky-contact-factory-new"/>
+    <function name="wocky_contact_factory_ensure_bare_contact ()" link="WockyContactFactory.html#wocky-contact-factory-ensure-bare-contact"/>
+    <function name="wocky_contact_factory_ensure_resource_contact ()" link="WockyContactFactory.html#wocky-contact-factory-ensure-resource-contact"/>
+    <function name="wocky_contact_factory_lookup_bare_contact ()" link="WockyContactFactory.html#wocky-contact-factory-lookup-bare-contact"/>
+    <function name="wocky_contact_factory_lookup_resource_contact ()" link="WockyContactFactory.html#wocky-contact-factory-lookup-resource-contact"/>
+    <function name="The &quot;bare-contact-added&quot; signal" link="WockyContactFactory.html#WockyContactFactory-bare-contact-added"/>
+    <function name="The &quot;resource-contact-added&quot; signal" link="WockyContactFactory.html#WockyContactFactory-resource-contact-added"/>
     <function name="enum WockyPorterError" link="WockyPorter.html#WockyPorterError"/>
     <function name="wocky_porter_error_quark ()" link="WockyPorter.html#wocky-porter-error-quark"/>
     <function name="WOCKY_PORTER_HANDLER_PRIORITY_MIN" link="WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MIN:CAPS"/>
@@ -138,6 +140,8 @@
     <function name="wocky_connector_register_async ()" link="WockyConnector.html#wocky-connector-register-async"/>
     <function name="wocky_connector_unregister_async ()" link="WockyConnector.html#wocky-connector-unregister-async"/>
     <function name="wocky_connector_unregister_finish ()" link="WockyConnector.html#wocky-connector-unregister-finish"/>
+    <function name="wocky_connector_add_crl ()" link="WockyConnector.html#wocky-connector-add-crl"/>
+    <function name="wocky_connector_add_ca ()" link="WockyConnector.html#wocky-connector-add-ca"/>
     <function name="The &quot;email&quot; property" link="WockyConnector.html#WockyConnector--email"/>
     <function name="The &quot;encrypted-plain-auth-ok&quot; property" link="WockyConnector.html#WockyConnector--encrypted-plain-auth-ok"/>
     <function name="The &quot;features&quot; property" link="WockyConnector.html#WockyConnector--features"/>
@@ -164,6 +168,8 @@
     <function name="wocky_xmpp_stanza_build_va ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-build-va"/>
     <function name="wocky_xmpp_stanza_build_iq_result ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-build-iq-result"/>
     <function name="wocky_xmpp_stanza_build_iq_error ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-build-iq-error"/>
+    <function name="wocky_xmpp_stanza_extract_errors ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-extract-errors"/>
+    <function name="wocky_xmpp_stanza_extract_stream_error ()" link="WockyXmppStanza.html#wocky-xmpp-stanza-extract-stream-error"/>
     <function name="WockyXmppWriter" link="WockyXmppWriter.html#WockyXmppWriter-struct"/>
     <function name="WockyXmppWriterClass" link="WockyXmppWriter.html#WockyXmppWriterClass"/>
     <function name="wocky_xmpp_writer_new ()" link="WockyXmppWriter.html#wocky-xmpp-writer-new"/>
@@ -206,6 +212,8 @@
     <function name="wocky_connector_register_async ()" link="WockyConnector.html#wocky-connector-register-async"/>
     <function name="wocky_connector_unregister_async ()" link="WockyConnector.html#wocky-connector-unregister-async"/>
     <function name="wocky_connector_unregister_finish ()" link="WockyConnector.html#wocky-connector-unregister-finish"/>
+    <function name="wocky_connector_add_crl ()" link="WockyConnector.html#wocky-connector-add-crl"/>
+    <function name="wocky_connector_add_ca ()" link="WockyConnector.html#wocky-connector-add-ca"/>
     <function name="The &quot;email&quot; property" link="WockyConnector.html#WockyConnector--email"/>
     <function name="The &quot;encrypted-plain-auth-ok&quot; property" link="WockyConnector.html#WockyConnector--encrypted-plain-auth-ok"/>
     <function name="The &quot;features&quot; property" link="WockyConnector.html#WockyConnector--features"/>
@@ -263,8 +271,6 @@
     <function name="WOCKY_TYPE_XMPP_READER_STATE" link="wocky-wocky-xmpp-reader-enumtypes.html#WOCKY-TYPE-XMPP-READER-STATE:CAPS"/>
     <function name="wocky_xmpp_reader_error_get_type ()" link="wocky-wocky-xmpp-reader-enumtypes.html#wocky-xmpp-reader-error-get-type"/>
     <function name="WOCKY_TYPE_XMPP_READER_ERROR" link="wocky-wocky-xmpp-reader-enumtypes.html#WOCKY-TYPE-XMPP-READER-ERROR:CAPS"/>
-    <function name="WockyContact" link="wocky-wocky-types.html#WockyContact-struct"/>
-    <function name="WockyContactClass" link="wocky-wocky-types.html#WockyContactClass"/>
     <function name="WOCKY_XMPP_NS_JABBER_CLIENT" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JABBER-CLIENT:CAPS"/>
     <function name="WOCKY_XMPP_NS_STREAM" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-STREAM:CAPS"/>
     <function name="WOCKY_XMPP_NS_STREAMS" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-STREAMS:CAPS"/>
@@ -285,6 +291,7 @@
     <function name="WOCKY_XMPP_NS_FEATURENEG" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-FEATURENEG:CAPS"/>
     <function name="WOCKY_XMPP_NS_DATA" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-DATA:CAPS"/>
     <function name="WOCKY_XMPP_NS_EVENT" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-EVENT:CAPS"/>
+    <function name="WOCKY_XMPP_NS_DELAY" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-DELAY:CAPS"/>
     <function name="WOCKY_XMPP_NS_STANZAS" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-STANZAS:CAPS"/>
     <function name="WOCKY_XMPP_NS_OOB" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-OOB:CAPS"/>
     <function name="WOCKY_XMPP_NS_JINGLE_ERRORS" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-ERRORS:CAPS"/>
@@ -294,8 +301,42 @@
     <function name="WOCKY_JABBER_NS_AUTH_FEATURE" link="wocky-wocky-namespaces.html#WOCKY-JABBER-NS-AUTH-FEATURE:CAPS"/>
     <function name="WOCKY_GOOGLE_NS_AUTH" link="wocky-wocky-namespaces.html#WOCKY-GOOGLE-NS-AUTH:CAPS"/>
     <function name="WOCKY_XMPP_NS_ROSTER" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-ROSTER:CAPS"/>
+    <function name="WOCKY_XMPP_NS_PUBSUB" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB:CAPS"/>
+    <function name="WOCKY_XMPP_NS_PUBSUB_EVENT" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB-EVENT:CAPS"/>
+    <function name="WOCKY_NS_MUC" link="wocky-wocky-namespaces.html#WOCKY-NS-MUC:CAPS"/>
+    <function name="WOCKY_NS_MUC_USR" link="wocky-wocky-namespaces.html#WOCKY-NS-MUC-USR:CAPS"/>
+    <function name="WOCKY_NS_MUC_ADM" link="wocky-wocky-namespaces.html#WOCKY-NS-MUC-ADM:CAPS"/>
+    <function name="WOCKY_NS_MUC_OWN" link="wocky-wocky-namespaces.html#WOCKY-NS-MUC-OWN:CAPS"/>
+    <function name="WOCKY_NS_MUC_UNIQ" link="wocky-wocky-namespaces.html#WOCKY-NS-MUC-UNIQ:CAPS"/>
+    <function name="WOCKY_NS_CHATSTATE" link="wocky-wocky-namespaces.html#WOCKY-NS-CHATSTATE:CAPS"/>
+    <function name="WOCKY_NS_GOOGLE_SESSION_PHONE" link="wocky-wocky-namespaces.html#WOCKY-NS-GOOGLE-SESSION-PHONE:CAPS"/>
+    <function name="WOCKY_NS_GOOGLE_SESSION_VIDEO" link="wocky-wocky-namespaces.html#WOCKY-NS-GOOGLE-SESSION-VIDEO:CAPS"/>
+    <function name="WOCKY_XMPP_NS_JINGLE" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE:CAPS"/>
+    <function name="WOCKY_XMPP_NS_JINGLE_RTP" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP:CAPS"/>
+    <function name="WOCKY_XMPP_NS_JINGLE_RTP_AUDIO" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP-AUDIO:CAPS"/>
+    <function name="WOCKY_XMPP_NS_JINGLE_RTP_ERRORS" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP-ERRORS:CAPS"/>
+    <function name="WOCKY_XMPP_NS_JINGLE_RTP_INFO" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP-INFO:CAPS"/>
+    <function name="WOCKY_XMPP_NS_JINGLE_RTP_VIDEO" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP-VIDEO:CAPS"/>
     <function name="wocky_strdiff ()" link="wocky-wocky-utils.html#wocky-strdiff"/>
+    <function name="wocky_normalise_jid ()" link="wocky-wocky-utils.html#wocky-normalise-jid"/>
     <function name="wocky_decode_jid ()" link="wocky-wocky-utils.html#wocky-decode-jid"/>
+    <function name="wocky_g_value_slice_new ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new"/>
+    <function name="wocky_g_value_slice_new_boolean ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-boolean"/>
+    <function name="wocky_g_value_slice_new_int ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-int"/>
+    <function name="wocky_g_value_slice_new_int64 ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-int64"/>
+    <function name="wocky_g_value_slice_new_uint ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-uint"/>
+    <function name="wocky_g_value_slice_new_uint64 ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-uint64"/>
+    <function name="wocky_g_value_slice_new_double ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-double"/>
+    <function name="wocky_g_value_slice_new_string ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-string"/>
+    <function name="wocky_g_value_slice_new_static_string ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-static-string"/>
+    <function name="wocky_g_value_slice_new_take_string ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-take-string"/>
+    <function name="wocky_g_value_slice_new_boxed ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-boxed"/>
+    <function name="wocky_g_value_slice_new_static_boxed ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-static-boxed"/>
+    <function name="wocky_g_value_slice_new_take_boxed ()" link="wocky-wocky-utils.html#wocky-g-value-slice-new-take-boxed"/>
+    <function name="wocky_g_value_slice_free ()" link="wocky-wocky-utils.html#wocky-g-value-slice-free"/>
+    <function name="wocky_g_value_slice_dup ()" link="wocky-wocky-utils.html#wocky-g-value-slice-dup"/>
+    <function name="wocky_enum_from_nick ()" link="wocky-wocky-utils.html#wocky-enum-from-nick"/>
+    <function name="wocky_enum_to_nick ()" link="wocky-wocky-utils.html#wocky-enum-to-nick"/>
     <function name="WockyXmppNode" link="wocky-wocky-xmpp-node.html#WockyXmppNode"/>
     <function name="wocky_xmpp_node_each_child_func ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-child-func"/>
     <function name="wocky_xmpp_node_each_attribute ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-attribute"/>
@@ -317,7 +358,10 @@
     <function name="wocky_xmpp_node_add_child_with_content ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-add-child-with-content"/>
     <function name="wocky_xmpp_node_add_child_with_content_ns ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-add-child-with-content-ns"/>
     <function name="wocky_xmpp_node_set_ns ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-ns"/>
+    <function name="wocky_xmpp_node_set_ns_q ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-ns-q"/>
     <function name="wocky_xmpp_node_get_ns ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-ns"/>
+    <function name="wocky_xmpp_node_has_ns ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-has-ns"/>
+    <function name="wocky_xmpp_node_has_ns_q ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-has-ns-q"/>
     <function name="wocky_xmpp_node_get_language ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-language"/>
     <function name="wocky_xmpp_node_set_language ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-language"/>
     <function name="wocky_xmpp_node_set_language_n ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-language-n"/>
@@ -331,26 +375,52 @@
     <function name="wocky_xmpp_node_is_superset ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-is-superset"/>
     <function name="wocky_xmpp_node_init ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-init"/>
     <function name="wocky_xmpp_node_deinit ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-deinit"/>
+    <function name="WockyXmppNodeIter" link="wocky-wocky-xmpp-node.html#WockyXmppNodeIter"/>
+    <function name="wocky_xmpp_node_iter_init ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-iter-init"/>
+    <function name="wocky_xmpp_node_iter_next ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-iter-next"/>
+    <function name="enum WockyXmppErrorType" link="wocky-wocky-xmpp-error.html#WockyXmppErrorType"/>
     <function name="enum WockyXmppError" link="wocky-wocky-xmpp-error.html#WockyXmppError"/>
     <function name="wocky_xmpp_error_quark ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-quark"/>
     <function name="WOCKY_XMPP_ERROR" link="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS"/>
+    <function name="WockyXmppErrorSpecialization" link="wocky-wocky-xmpp-error.html#WockyXmppErrorSpecialization"/>
+    <function name="WockyXmppErrorDomain" link="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain"/>
+    <function name="enum WockyJingleError" link="wocky-wocky-xmpp-error.html#WockyJingleError"/>
+    <function name="wocky_jingle_error_quark ()" link="wocky-wocky-xmpp-error.html#wocky-jingle-error-quark"/>
+    <function name="WOCKY_JINGLE_ERROR" link="wocky-wocky-xmpp-error.html#WOCKY-JINGLE-ERROR:CAPS"/>
+    <function name="enum WockySIError" link="wocky-wocky-xmpp-error.html#WockySIError"/>
+    <function name="wocky_si_error_quark ()" link="wocky-wocky-xmpp-error.html#wocky-si-error-quark"/>
+    <function name="WOCKY_SI_ERROR" link="wocky-wocky-xmpp-error.html#WOCKY-SI-ERROR:CAPS"/>
     <function name="enum WockyXmppStreamError" link="wocky-wocky-xmpp-error.html#WockyXmppStreamError"/>
     <function name="wocky_xmpp_stream_error_quark ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-stream-error-quark"/>
     <function name="WOCKY_XMPP_STREAM_ERROR" link="wocky-wocky-xmpp-error.html#WOCKY-XMPP-STREAM-ERROR:CAPS"/>
     <function name="wocky_xmpp_error_string ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-string"/>
     <function name="wocky_xmpp_error_description ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-description"/>
     <function name="wocky_xmpp_stream_error_from_node ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-stream-error-from-node"/>
+    <function name="wocky_stanza_error_to_node ()" link="wocky-wocky-xmpp-error.html#wocky-stanza-error-to-node"/>
+    <function name="wocky_xmpp_error_extract ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-extract"/>
+    <function name="wocky_xmpp_error_register_domain ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-register-domain"/>
+    <function name="wocky_xmpp_error_init ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-init"/>
+    <function name="wocky_xmpp_error_deinit ()" link="wocky-wocky-xmpp-error.html#wocky-xmpp-error-deinit"/>
     <function name="WOCKY_TYPE_TLS_CONNECTION" link="wocky-wocky-tls.html#WOCKY-TYPE-TLS-CONNECTION:CAPS"/>
     <function name="WOCKY_TYPE_TLS_SESSION" link="wocky-wocky-tls.html#WOCKY-TYPE-TLS-SESSION:CAPS"/>
     <function name="WOCKY_TLS_SESSION()" link="wocky-wocky-tls.html#WOCKY-TLS-SESSION:CAPS"/>
     <function name="WOCKY_TLS_CONNECTION()" link="wocky-wocky-tls.html#WOCKY-TLS-CONNECTION:CAPS"/>
     <function name="WockyTLSConnection" link="wocky-wocky-tls.html#WockyTLSConnection"/>
     <function name="WockyTLSSession" link="wocky-wocky-tls.html#WockyTLSSession"/>
+    <function name="enum WockyTLSVerificationLevel" link="wocky-wocky-tls.html#WockyTLSVerificationLevel"/>
+    <function name="wocky_tls_cert_error_quark ()" link="wocky-wocky-tls.html#wocky-tls-cert-error-quark"/>
+    <function name="WOCKY_TLS_CERT_ERROR" link="wocky-wocky-tls.html#WOCKY-TLS-CERT-ERROR:CAPS"/>
+    <function name="wocky_tls_error_quark ()" link="wocky-wocky-tls.html#wocky-tls-error-quark"/>
+    <function name="WOCKY_TLS_ERROR" link="wocky-wocky-tls.html#WOCKY-TLS-ERROR:CAPS"/>
+    <function name="enum WockyTLSCertStatus" link="wocky-wocky-tls.html#WockyTLSCertStatus"/>
     <function name="wocky_tls_connection_get_type ()" link="wocky-wocky-tls.html#wocky-tls-connection-get-type"/>
     <function name="wocky_tls_session_get_type ()" link="wocky-wocky-tls.html#wocky-tls-session-get-type"/>
+    <function name="wocky_tls_session_verify_peer ()" link="wocky-wocky-tls.html#wocky-tls-session-verify-peer"/>
     <function name="wocky_tls_session_handshake ()" link="wocky-wocky-tls.html#wocky-tls-session-handshake"/>
     <function name="wocky_tls_session_handshake_async ()" link="wocky-wocky-tls.html#wocky-tls-session-handshake-async"/>
     <function name="wocky_tls_session_handshake_finish ()" link="wocky-wocky-tls.html#wocky-tls-session-handshake-finish"/>
+    <function name="wocky_tls_session_add_ca ()" link="wocky-wocky-tls.html#wocky-tls-session-add-ca"/>
+    <function name="wocky_tls_session_add_crl ()" link="wocky-wocky-tls.html#wocky-tls-session-add-crl"/>
     <function name="wocky_tls_session_new ()" link="wocky-wocky-tls.html#wocky-tls-session-new"/>
     <function name="wocky_tls_session_server_new ()" link="wocky-wocky-tls.html#wocky-tls-session-server-new"/>
     <function name="The &quot;session&quot; property" link="wocky-wocky-tls.html#WockyTLSConnection--session"/>

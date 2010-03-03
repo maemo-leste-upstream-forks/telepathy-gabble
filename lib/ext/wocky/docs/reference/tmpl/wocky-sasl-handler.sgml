@@ -9,10 +9,12 @@ wocky-sasl-handler
 
 </para>
 
+
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
+
 
 <!-- ##### SECTION Stability_Level ##### -->
 
@@ -23,35 +25,14 @@ wocky-sasl-handler
 </para>
 
 
-<!-- ##### USER_FUNCTION WockySaslChallengeFunc ##### -->
-<para>
-
-</para>
-
-@handler: 
-@stanza: 
-@error: 
-@Returns: 
-
-
 <!-- ##### USER_FUNCTION WockySaslSuccessFunc ##### -->
 <para>
 
 </para>
 
 @handler: 
-@stanza: 
 @error: 
-
-
-<!-- ##### USER_FUNCTION WockySaslFailureFunc ##### -->
-<para>
-
-</para>
-
-@handler: 
-@stanza: 
-@error: 
+@Returns: 
 
 
 <!-- ##### FUNCTION wocky_sasl_handler_free ##### -->
@@ -80,35 +61,14 @@ wocky-sasl-handler
 @Returns: 
 
 
-<!-- ##### FUNCTION wocky_sasl_handler_handle_challenge ##### -->
-<para>
-
-</para>
-
-@handler: 
-@stanza: 
-@error: 
-@Returns: 
-
-
 <!-- ##### FUNCTION wocky_sasl_handler_handle_success ##### -->
 <para>
 
 </para>
 
 @handler: 
-@stanza: 
 @error: 
-
-
-<!-- ##### FUNCTION wocky_sasl_handler_handle_failure ##### -->
-<para>
-
-</para>
-
-@handler: 
-@stanza: 
-@error: 
+@Returns: 
 
 
 <!-- ##### STRUCT WockySaslHandlerIface ##### -->
@@ -119,7 +79,53 @@ wocky-sasl-handler
 @parent: 
 @mechanism: 
 @plain: 
-@challenge_func: 
+@initial_response_func: 
+@auth_data_func: 
 @success_func: 
-@failure_func: 
+
+<!-- ##### FUNCTION wocky_sasl_handler_get_initial_response ##### -->
+<para>
+
+</para>
+
+@handler: 
+@initial_data: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_sasl_handler_handle_auth_data ##### -->
+<para>
+
+</para>
+
+@handler: 
+@data: 
+@response: 
+@error: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION WockySaslInitialResponseFunc ##### -->
+<para>
+
+</para>
+
+@handler: 
+@initial_data: 
+@error: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION WockySaslAuthDataFunc ##### -->
+<para>
+
+</para>
+
+@handler: 
+@data: 
+@response: 
+@error: 
+@Returns: 
+
 

@@ -50,8 +50,18 @@
 #define             <a href="wocky-wocky-tls.html#WOCKY-TLS-CONNECTION:CAPS">WOCKY_TLS_CONNECTION</a>                (inst)
 typedef             <a href="wocky-wocky-tls.html#WockyTLSConnection">WockyTLSConnection</a>;
 typedef             <a href="wocky-wocky-tls.html#WockyTLSSession">WockyTLSSession</a>;
+enum                <a href="wocky-wocky-tls.html#WockyTLSVerificationLevel">WockyTLSVerificationLevel</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a href="wocky-wocky-tls.html#wocky-tls-cert-error-quark">wocky_tls_cert_error_quark</a>          (void);
+#define             <a href="wocky-wocky-tls.html#WOCKY-TLS-CERT-ERROR:CAPS">WOCKY_TLS_CERT_ERROR</a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a href="wocky-wocky-tls.html#wocky-tls-error-quark">wocky_tls_error_quark</a>               (void);
+#define             <a href="wocky-wocky-tls.html#WOCKY-TLS-ERROR:CAPS">WOCKY_TLS_ERROR</a>
+enum                <a href="wocky-wocky-tls.html#WockyTLSCertStatus">WockyTLSCertStatus</a>;
 <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               <a href="wocky-wocky-tls.html#wocky-tls-connection-get-type">wocky_tls_connection_get_type</a>       (void);
 <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               <a href="wocky-wocky-tls.html#wocky-tls-session-get-type">wocky_tls_session_get_type</a>          (void);
+<span class="returnvalue">int</span>                 <a href="wocky-wocky-tls.html#wocky-tls-session-verify-peer">wocky_tls_session_verify_peer</a>       (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *peername,
+                                                         <a href="wocky-wocky-tls.html#WockyTLSVerificationLevel"><span class="returnvalue">WockyTLSVerificationLevel</span></a> level,
+                                                         <a href="wocky-wocky-tls.html#WockyTLSCertStatus"><span class="returnvalue">WockyTLSCertStatus</span></a> *status);
 <a href="wocky-wocky-tls.html#WockyTLSConnection"><span class="returnvalue">WockyTLSConnection</span></a> * <a href="wocky-wocky-tls.html#wocky-tls-session-handshake">wocky_tls_session_handshake</a>        (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
                                                          <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
@@ -63,6 +73,10 @@ typedef             <a href="wocky-wocky-tls.html#WockyTLSSession">WockyTLSSessi
 <a href="wocky-wocky-tls.html#WockyTLSConnection"><span class="returnvalue">WockyTLSConnection</span></a> * <a href="wocky-wocky-tls.html#wocky-tls-session-handshake-finish">wocky_tls_session_handshake_finish</a> (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
                                                          <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
+<span class="returnvalue">void</span>                <a href="wocky-wocky-tls.html#wocky-tls-session-add-ca">wocky_tls_session_add_ca</a>            (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *path);
+<span class="returnvalue">void</span>                <a href="wocky-wocky-tls.html#wocky-tls-session-add-crl">wocky_tls_session_add_crl</a>           (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *path);
 <a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *   <a href="wocky-wocky-tls.html#wocky-tls-session-new">wocky_tls_session_new</a>               (<a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="returnvalue">GIOStream</span></a> *stream);
 <a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *   <a href="wocky-wocky-tls.html#wocky-tls-session-server-new">wocky_tls_session_server_new</a>        (<a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="returnvalue">GIOStream</span></a> *stream,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a> dhbits,
@@ -168,6 +182,88 @@ debugging output from within wocky-openssl.c as well.</p>
 </p>
 </div>
 <hr>
+<div class="refsect2" title="enum WockyTLSVerificationLevel">
+<a name="WockyTLSVerificationLevel"></a><h3>enum WockyTLSVerificationLevel</h3>
+<pre class="programlisting">typedef enum
+{
+  WOCKY_TLS_VERIFY_STRICT = 0,
+  WOCKY_TLS_VERIFY_NORMAL,
+  WOCKY_TLS_VERIFY_LENIENT,
+} WockyTLSVerificationLevel;
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="wocky_tls_cert_error_quark ()">
+<a name="wocky-tls-cert-error-quark"></a><h3>wocky_tls_cert_error_quark ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_tls_cert_error_quark          (void);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="WOCKY_TLS_CERT_ERROR">
+<a name="WOCKY-TLS-CERT-ERROR:CAPS"></a><h3>WOCKY_TLS_CERT_ERROR</h3>
+<pre class="programlisting">#define WOCKY_TLS_CERT_ERROR (wocky_tls_cert_error_quark ())
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="wocky_tls_error_quark ()">
+<a name="wocky-tls-error-quark"></a><h3>wocky_tls_error_quark ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_tls_error_quark               (void);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="WOCKY_TLS_ERROR">
+<a name="WOCKY-TLS-ERROR:CAPS"></a><h3>WOCKY_TLS_ERROR</h3>
+<pre class="programlisting">#define WOCKY_TLS_ERROR (wocky_tls_error_quark ())
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="enum WockyTLSCertStatus">
+<a name="WockyTLSCertStatus"></a><h3>enum WockyTLSCertStatus</h3>
+<pre class="programlisting">typedef enum
+{
+  WOCKY_TLS_CERT_OK = 0,
+  WOCKY_TLS_CERT_INVALID,
+  WOCKY_TLS_CERT_NAME_MISMATCH,
+  WOCKY_TLS_CERT_REVOKED,
+  WOCKY_TLS_CERT_SIGNER_UNKNOWN,
+  WOCKY_TLS_CERT_SIGNER_UNAUTHORISED,
+  WOCKY_TLS_CERT_INSECURE,
+  WOCKY_TLS_CERT_NOT_ACTIVE,
+  WOCKY_TLS_CERT_EXPIRED,
+  WOCKY_TLS_CERT_NO_CERTIFICATE,
+  WOCKY_TLS_CERT_MAYBE_DOS,
+  WOCKY_TLS_CERT_INTERNAL_ERROR,
+  WOCKY_TLS_CERT_UNKNOWN_ERROR,
+} WockyTLSCertStatus;
+</pre>
+<p>
+</p>
+</div>
+<hr>
 <div class="refsect2" title="wocky_tls_connection_get_type ()">
 <a name="wocky-tls-connection-get-type"></a><h3>wocky_tls_connection_get_type ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               wocky_tls_connection_get_type       (void);</pre>
@@ -195,6 +291,46 @@ debugging output from within wocky-openssl.c as well.</p>
 <td>
 </td>
 </tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_tls_session_verify_peer ()">
+<a name="wocky-tls-session-verify-peer"></a><h3>wocky_tls_session_verify_peer ()</h3>
+<pre class="programlisting"><span class="returnvalue">int</span>                 wocky_tls_session_verify_peer       (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *peername,
+                                                         <a href="wocky-wocky-tls.html#WockyTLSVerificationLevel"><span class="returnvalue">WockyTLSVerificationLevel</span></a> level,
+                                                         <a href="wocky-wocky-tls.html#WockyTLSCertStatus"><span class="returnvalue">WockyTLSCertStatus</span></a> *status);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>peername</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>level</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>status</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
 </table></div>
 </div>
 <hr>
@@ -300,6 +436,52 @@ debugging output from within wocky-openssl.c as well.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_tls_session_add_ca ()">
+<a name="wocky-tls-session-add-ca"></a><h3>wocky_tls_session_add_ca ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_tls_session_add_ca            (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *path);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>path</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_tls_session_add_crl ()">
+<a name="wocky-tls-session-add-crl"></a><h3>wocky_tls_session_add_crl ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_tls_session_add_crl           (<a href="wocky-wocky-tls.html#WockyTLSSession"><span class="returnvalue">WockyTLSSession</span></a> *session,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *path);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>path</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
