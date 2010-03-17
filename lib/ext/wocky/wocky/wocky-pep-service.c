@@ -19,6 +19,7 @@
 
 #include "wocky-pep-service.h"
 
+#include "wocky-pubsub-helpers.h"
 #include "wocky-porter.h"
 #include "wocky-utils.h"
 #include "wocky-namespaces.h"
@@ -283,8 +284,11 @@ send_query_cb (GObject *source,
       g_simple_async_result_set_from_error (result, error);
       g_error_free (error);
     }
+  else
+    {
+      g_simple_async_result_set_op_res_gpointer (result, reply, g_object_unref);
+    }
 
-  g_simple_async_result_set_op_res_gpointer (result, reply, NULL);
   g_simple_async_result_complete (result);
   g_object_unref (result);
 }
@@ -335,15 +339,15 @@ wocky_pep_service_get_finish (WockyPepService *self,
     GAsyncResult *result,
     GError **error)
 {
-  if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
-      error))
+  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (result);
+
+  if (g_simple_async_result_propagate_error (simple, error))
     return NULL;
 
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
     G_OBJECT (self), wocky_pep_service_get_finish), NULL);
 
-  return g_simple_async_result_get_op_res_gpointer (
-      G_SIMPLE_ASYNC_RESULT (result));
+  return g_object_ref (g_simple_async_result_get_op_res_gpointer (simple));
 }
 
 WockyXmppStanza *
@@ -352,16 +356,5 @@ wocky_pep_service_make_publish_stanza (WockyPepService *self,
 {
   WockyPepServicePrivate *priv = WOCKY_PEP_SERVICE_GET_PRIVATE (self);
 
-  return wocky_xmpp_stanza_build (
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
-      NULL, NULL,
-      WOCKY_NODE, "pubsub",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB,
-        WOCKY_NODE, "publish",
-          WOCKY_NODE_ATTRIBUTE, "node", priv->node,
-          WOCKY_NODE, "item",
-          WOCKY_NODE_ASSIGN_TO, item,
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+  return wocky_pubsub_make_publish_stanza (NULL, priv->node, NULL, NULL, item);
 }

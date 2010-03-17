@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>wocky-xmpp-node</title>
+<title>WockyXmppNode</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
@@ -29,22 +29,30 @@
                   <a href="#wocky-wocky-xmpp-node.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry" title="wocky-xmpp-node">
+<div class="refentry" title="WockyXmppNode">
 <a name="wocky-wocky-xmpp-node"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2><span class="refentrytitle"><a name="wocky-wocky-xmpp-node.top_of_page"></a>wocky-xmpp-node</span></h2>
-<p>wocky-xmpp-node</p>
+<h2><span class="refentrytitle"><a name="wocky-wocky-xmpp-node.top_of_page"></a>WockyXmppNode</span></h2>
+<p>WockyXmppNode — representation of a XMPP node</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv" title="Synopsis">
 <a name="wocky-wocky-xmpp-node.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">                    <a href="wocky-wocky-xmpp-node.html#WockyXmppNode">WockyXmppNode</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-child-func">*wocky_xmpp_node_each_child_func</a>)  (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
+<pre class="synopsis">
+#include &lt;wocky/wocky-xmpp-node.h&gt;
+
+                    <a href="wocky-wocky-xmpp-node.html#WockyXmppNode">WockyXmppNode</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-attr-func">*wocky_xmpp_node_each_attr_func</a>)   (const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *key,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *value,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *pref,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
 <span class="returnvalue">void</span>                <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-attribute">wocky_xmpp_node_each_attribute</a>      (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
-                                                         <span class="returnvalue">wocky_xmpp_node_each_attr_func</span> func,
+                                                         <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-attr-func"><span class="returnvalue">wocky_xmpp_node_each_attr_func</span></a> func,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-child-func">*wocky_xmpp_node_each_child_func</a>)  (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
 <span class="returnvalue">void</span>                <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-child">wocky_xmpp_node_each_child</a>          (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
                                                          <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-child-func"><span class="returnvalue">wocky_xmpp_node_each_child_func</span></a> func,
@@ -140,7 +148,9 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <div class="refsect1" title="Description">
 <a name="wocky-wocky-xmpp-node.description"></a><h2>Description</h2>
 <p>
-</p>
+Low level representation of a XMPP node. Provides ways to set various
+parameters on the node, such as content, language, namespaces and prefixes.
+It also offers methods to lookup children of a node.</p>
 </div>
 <div class="refsect1" title="Details">
 <a name="wocky-wocky-xmpp-node.details"></a><h2>Details</h2>
@@ -161,28 +171,46 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 </p>
 </div>
 <hr>
-<div class="refsect2" title="wocky_xmpp_node_each_child_func ()">
-<a name="wocky-xmpp-node-each-child-func"></a><h3>wocky_xmpp_node_each_child_func ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*wocky_xmpp_node_each_child_func)  (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
+<div class="refsect2" title="wocky_xmpp_node_each_attr_func ()">
+<a name="wocky-xmpp-node-each-attr-func"></a><h3>wocky_xmpp_node_each_attr_func ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*wocky_xmpp_node_each_attr_func)   (const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *key,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *value,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *pref,
+                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
 <p>
-</p>
+Specifies the type of functions passed to <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-attribute"><code class="function">wocky_xmpp_node_each_attribute()</code></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
+<td> the attribute's key
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> the attribute's value
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pref</code></em> :</span></p></td>
+<td> the attribute's prefix
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td> the attribute's namespace
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>
+<td> user data passed to <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-attribute"><code class="function">wocky_xmpp_node_each_attribute()</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> to stop further attributes from being examined.
 </td>
 </tr>
 </tbody>
@@ -192,26 +220,54 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <div class="refsect2" title="wocky_xmpp_node_each_attribute ()">
 <a name="wocky-xmpp-node-each-attribute"></a><h3>wocky_xmpp_node_each_attribute ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_node_each_attribute      (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
-                                                         <span class="returnvalue">wocky_xmpp_node_each_attr_func</span> func,
+                                                         <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-attr-func"><span class="returnvalue">wocky_xmpp_node_each_attr_func</span></a> func,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
 <p>
-</p>
+Calls a function for each attribute of a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
-<td>
+<td> the function to be called on each node's attribute
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>
+<td> user data to pass to the function
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_xmpp_node_each_child_func ()">
+<a name="wocky-xmpp-node-each-child-func"></a><h3>wocky_xmpp_node_each_child_func ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*wocky_xmpp_node_each_child_func)  (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+<p>
+Specifies the type of functions passed to <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-child"><code class="function">wocky_xmpp_node_each_child()</code></a>.</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td> user data passed to <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-child"><code class="function">wocky_xmpp_node_each_child()</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> to stop further children from being examined.
 </td>
 </tr>
 </tbody>
@@ -224,23 +280,23 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-child-func"><span class="returnvalue">wocky_xmpp_node_each_child_func</span></a> func,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
 <p>
-</p>
+Calls a function for each child of a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
-<td>
+<td> the function to be called on each node's child
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>
+<td> user data to pass to the function
 </td>
 </tr>
 </tbody>
@@ -252,23 +308,24 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_node_get_attribute       (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *key);</pre>
 <p>
-</p>
+Returns the value of an attribute in a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>
+<td> the attribute name
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> the value of the attribute <em class="parameter"><code>key</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em> doesn't
+have such attribute.
 </td>
 </tr>
 </tbody>
@@ -281,28 +338,31 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *key,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);</pre>
 <p>
-</p>
+Returns the value of an attribute in a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>, limiting the search
+within a specific namespace. If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent
+to <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-attribute"><code class="function">wocky_xmpp_node_get_attribute()</code></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>
+<td> the attribute name
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>
+<td> the namespace to search within, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> the value of the attribute <em class="parameter"><code>key</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em> doesn't
+have such attribute in <em class="parameter"><code>ns</code></em>.
 </td>
 </tr>
 </tbody>
@@ -315,23 +375,23 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *key,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *value);</pre>
 <p>
-</p>
+Sets an attribute in a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a> to a specific value.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>
+<td> the attribute name to set
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td>
+<td> the value to set
 </td>
 </tr>
 </tbody>
@@ -345,28 +405,30 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *value,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);</pre>
 <p>
-</p>
+Sets an attribute in a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>, within a specific namespace.
+If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent to
+<a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-attribute"><code class="function">wocky_xmpp_node_set_attribute()</code></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>
+<td> the attribute name to set
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td>
+<td> the value to set
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>
+<td> a namespace, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 </tbody>
@@ -380,28 +442,28 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *value,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="returnvalue">gsize</span></a> value_size);</pre>
 <p>
-</p>
+Sets a new attribute to a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>, with the supplied values.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>
+<td> the attribute to set
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td>
+<td> the value to set
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value_size</code></em> :</span></p></td>
-<td>
+<td> the number of bytes of <em class="parameter"><code>value</code></em> to set as a value
 </td>
 </tr>
 </tbody>
@@ -416,33 +478,35 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="returnvalue">gsize</span></a> value_size,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);</pre>
 <p>
-</p>
+Sets a new attribute to a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>, with the supplied values.
+If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent to
+<a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-set-attribute-n"><code class="function">wocky_xmpp_node_set_attribute_n()</code></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>
+<td> the attribute to set
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td>
+<td> the value to set
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value_size</code></em> :</span></p></td>
-<td>
+<td> the number of bytes of <em class="parameter"><code>value</code></em> to set as a value
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>
+<td> a namespace, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 </tbody>
@@ -454,18 +518,18 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_node_attribute_ns_get_prefix_from_urn
                                                         (const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *urn);</pre>
 <p>
-</p>
+Gets the prefix of the namespace identified by the URN.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>urn</code></em> :</span></p></td>
-<td>
+<td> a string containing an URN
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> a string containing the prefix of the namespace <em class="parameter"><code>urn</code></em>.
 </td>
 </tr>
 </tbody>
@@ -477,18 +541,18 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_node_attribute_ns_get_prefix_from_quark
                                                         (<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a> ns);</pre>
 <p>
-</p>
+Gets the prefix of the namespace identified by the quark.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>
+<td> a quark corresponding to an XML namespace URN
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> a string containing the prefix of the namespace <em class="parameter"><code>ns</code></em>.
 </td>
 </tr>
 </tbody>
@@ -501,18 +565,18 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                         (<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a> ns,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *prefix);</pre>
 <p>
-</p>
+Sets a desired prefix for a namespace.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>
+<td> a <a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>prefix</code></em> :</span></p></td>
-<td>
+<td> a string containing the desired prefix
 </td>
 </tr>
 </tbody>
@@ -524,23 +588,23 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <pre class="programlisting"><a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *     wocky_xmpp_node_get_child           (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name);</pre>
 <p>
-</p>
+Gets a child of a node, searching by name.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>
+<td> the name of the child to get
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.
 </td>
 </tr>
 </tbody>
@@ -553,28 +617,30 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);</pre>
 <p>
-</p>
+Gets the child of a node, searching by name and limiting the search
+to the specified namespace.
+If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent to <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-child"><code class="function">wocky_xmpp_node_get_child()</code></a></p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>
+<td> the name of the child to get
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>
+<td> the namespace of the child to get, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.
 </td>
 </tr>
 </tbody>
@@ -585,18 +651,18 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <a name="wocky-xmpp-node-get-first-child"></a><h3>wocky_xmpp_node_get_first_child ()</h3>
 <pre class="programlisting"><a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *     wocky_xmpp_node_get_first_child     (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node);</pre>
 <p>
-</p>
+Convenience function to return the first child of a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.
 </td>
 </tr>
 </tbody>
@@ -608,23 +674,23 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <pre class="programlisting"><a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *     wocky_xmpp_node_add_child           (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name);</pre>
 <p>
-</p>
+Adds a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a> with the specified name to an already existing node.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>
+<td> the name of the child to add
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> the newly added <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.
 </td>
 </tr>
 </tbody>
@@ -637,28 +703,30 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);</pre>
 <p>
-</p>
+Adds a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a> with the specified name to an already existing node,
+under the specified namespace. If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent
+to <a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-add-child"><code class="function">wocky_xmpp_node_add_child()</code></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>
+<td> the name of the child to add
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>
+<td> a namespace
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> the newly added <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.
 </td>
 </tr>
 </tbody>
@@ -672,28 +740,29 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name,
                                                          const <span class="returnvalue">char</span> *content);</pre>
 <p>
-</p>
+Adds a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a> with the specified name and containing the
+specified content to an already existing node.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>
+<td> the name of the child to add
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>content</code></em> :</span></p></td>
-<td>
+<td> the content of the child to add
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> the newly added <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.
 </td>
 </tr>
 </tbody>
@@ -708,33 +777,36 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *content,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);</pre>
 <p>
-</p>
+Adds a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a> with the specified name and the specified content
+to an already existing node, under the specified namespace.
+If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent to
+<a href="wocky-wocky-xmpp-node.html#wocky-xmpp-node-add-child-with-content"><code class="function">wocky_xmpp_node_add_child_with_content()</code></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>
+<td> the name of the child to add
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>content</code></em> :</span></p></td>
-<td>
+<td> the content of the child to add
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>
+<td> a namespace
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> the newly added <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.
 </td>
 </tr>
 </tbody>
@@ -746,18 +818,18 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_node_set_ns              (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *ns);</pre>
 <p>
-</p>
+Sets the namespace of a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>
+<td> a namespace
 </td>
 </tr>
 </tbody>
@@ -791,18 +863,18 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <a name="wocky-xmpp-node-get-ns"></a><h3>wocky_xmpp_node_get_ns ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_node_get_ns              (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node);</pre>
 <p>
-</p>
+Gets the namespace of a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a></p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> a string containing the namespace of the node.
 </td>
 </tr>
 </tbody>
@@ -869,18 +941,18 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <a name="wocky-xmpp-node-get-language"></a><h3>wocky_xmpp_node_get_language ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_node_get_language        (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node);</pre>
 <p>
-</p>
+Gets the language of a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a></p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> a string containing the language of the node.
 </td>
 </tr>
 </tbody>
@@ -892,18 +964,18 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_node_set_language        (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *lang);</pre>
 <p>
-</p>
+Sets the language of a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>lang</code></em> :</span></p></td>
-<td>
+<td> a <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>-terminated string containing the language
 </td>
 </tr>
 </tbody>
@@ -916,23 +988,23 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *lang,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="returnvalue">gsize</span></a> lang_size);</pre>
 <p>
-</p>
+Sets the language of a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>lang</code></em> :</span></p></td>
-<td>
+<td> a language
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>lang_size</code></em> :</span></p></td>
-<td>
+<td> the length of <em class="parameter"><code>lang</code></em>, in bytes.
 </td>
 </tr>
 </tbody>
@@ -944,18 +1016,18 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_node_set_content         (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *content);</pre>
 <p>
-</p>
+Sets the content of a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>content</code></em> :</span></p></td>
-<td>
+<td> the content to set to the node
 </td>
 </tr>
 </tbody>
@@ -967,18 +1039,18 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_node_append_content      (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node,
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *content);</pre>
 <p>
-</p>
+Appends some content to the content of a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>content</code></em> :</span></p></td>
-<td>
+<td> the content to append to the node
 </td>
 </tr>
 </tbody>
@@ -991,23 +1063,24 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *content,
                                                          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="returnvalue">gsize</span></a> size);</pre>
 <p>
-</p>
+Appends a specified number of content bytes to the content of a
+<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>content</code></em> :</span></p></td>
-<td>
+<td> the content to append to the node
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
-<td>
+<td> the size of the content to append
 </td>
 </tr>
 </tbody>
@@ -1018,18 +1091,19 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <a name="wocky-xmpp-node-to-string"></a><h3>wocky_xmpp_node_to_string ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_xmpp_node_to_string           (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node);</pre>
 <p>
-</p>
+Obtains a string representation of a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> a newly allocated string containing a serialization of
+the node.
 </td>
 </tr>
 </tbody>
@@ -1040,18 +1114,19 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <a name="wocky-xmpp-node-new"></a><h3>wocky_xmpp_node_new ()</h3>
 <pre class="programlisting"><a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *     wocky_xmpp_node_new                 (const <span class="returnvalue">char</span> *name);</pre>
 <p>
-</p>
+Convenience function which creates a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a> and sets its
+name to <em class="parameter"><code>name</code></em>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>
+<td> the node's name
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> a newly allocated <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.
 </td>
 </tr>
 </tbody>
@@ -1062,12 +1137,13 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <a name="wocky-xmpp-node-free"></a><h3>wocky_xmpp_node_free ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_node_free                (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node);</pre>
 <p>
-</p>
+Convenience function that frees the passed in <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a> and
+all of its children.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.
 </td>
 </tr></tbody>
 </table></div>
@@ -1078,23 +1154,23 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_xmpp_node_equal               (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node0,
                                                          <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node1);</pre>
 <p>
-</p>
+Compares two <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>s for equality.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node0</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node1</code></em> :</span></p></td>
-<td>
+<td> a <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a> to compare to <em class="parameter"><code>node0</code></em>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the two nodes are equal.
 </td>
 </tr>
 </tbody>
@@ -1115,7 +1191,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>subset</code></em> :</span></p></td>
-<td> the supposed subset
+<td>
 </td>
 </tr>
 <tr>
@@ -1131,14 +1207,15 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <a name="wocky-xmpp-node-init"></a><h3>wocky_xmpp_node_init ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_node_init                (void);</pre>
 <p>
-</p>
+Initializes the caches used by <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a>.
+This should be always called before using <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a> structs.</p>
 </div>
 <hr>
 <div class="refsect2" title="wocky_xmpp_node_deinit ()">
 <a name="wocky-xmpp-node-deinit"></a><h3>wocky_xmpp_node_deinit ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_node_deinit              (void);</pre>
 <p>
-</p>
+Releases all the resources used by the <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="type">WockyXmppNode</span></a> caches.</p>
 </div>
 <hr>
 <div class="refsect2" title="WockyXmppNodeIter">

@@ -8,7 +8,7 @@
       <sub name="WockyContact" link="WockyContact.html"/>
       <sub name="WockyBareContact" link="WockyBareContact.html"/>
       <sub name="WockyResourceContact" link="WockyResourceContact.html"/>
-      <sub name="wocky-contact-factory" link="WockyContactFactory.html"/>
+      <sub name="WockyContactFactory" link="WockyContactFactory.html"/>
       <sub name="WockyPorter" link="WockyPorter.html"/>
       <sub name="WockyConnector" link="WockyConnector.html"/>
       <sub name="WockyXmppStanza" link="WockyXmppStanza.html"/>
@@ -21,7 +21,7 @@
       <sub name="wocky-xmpp-reader-enumtypes" link="wocky-wocky-xmpp-reader-enumtypes.html"/>
       <sub name="wocky-namespaces" link="wocky-wocky-namespaces.html"/>
       <sub name="wocky-utils" link="wocky-wocky-utils.html"/>
-      <sub name="wocky-xmpp-node" link="wocky-wocky-xmpp-node.html"/>
+      <sub name="WockyXmppNode" link="wocky-wocky-xmpp-node.html"/>
       <sub name="wocky-xmpp-error" link="wocky-wocky-xmpp-error.html"/>
       <sub name="Wocky OpenSSL TLS" link="wocky-wocky-tls.html"/>
     </sub>
@@ -317,6 +317,9 @@
     <keyword type="macro" name="WOCKY_XMPP_NS_JINGLE_RTP_ERRORS" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP-ERRORS:CAPS"/>
     <keyword type="macro" name="WOCKY_XMPP_NS_JINGLE_RTP_INFO" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP-INFO:CAPS"/>
     <keyword type="macro" name="WOCKY_XMPP_NS_JINGLE_RTP_VIDEO" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP-VIDEO:CAPS"/>
+    <keyword type="macro" name="WOCKY_XMPP_NS_PUBSUB_ERRORS" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB-ERRORS:CAPS"/>
+    <keyword type="macro" name="WOCKY_XMPP_NS_PUBSUB_NODE_CONFIG" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB-NODE-CONFIG:CAPS"/>
+    <keyword type="macro" name="WOCKY_XMPP_NS_PUBSUB_OWNER" link="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB-OWNER:CAPS"/>
     <keyword type="function" name="wocky_strdiff ()" link="wocky-wocky-utils.html#wocky-strdiff"/>
     <keyword type="function" name="wocky_normalise_jid ()" link="wocky-wocky-utils.html#wocky-normalise-jid"/>
     <keyword type="function" name="wocky_decode_jid ()" link="wocky-wocky-utils.html#wocky-decode-jid"/>
@@ -338,8 +341,9 @@
     <keyword type="function" name="wocky_enum_from_nick ()" link="wocky-wocky-utils.html#wocky-enum-from-nick"/>
     <keyword type="function" name="wocky_enum_to_nick ()" link="wocky-wocky-utils.html#wocky-enum-to-nick"/>
     <keyword type="struct" name="WockyXmppNode" link="wocky-wocky-xmpp-node.html#WockyXmppNode"/>
-    <keyword type="function" name="wocky_xmpp_node_each_child_func ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-child-func"/>
+    <keyword type="function" name="wocky_xmpp_node_each_attr_func ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-attr-func"/>
     <keyword type="function" name="wocky_xmpp_node_each_attribute ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-attribute"/>
+    <keyword type="function" name="wocky_xmpp_node_each_child_func ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-child-func"/>
     <keyword type="function" name="wocky_xmpp_node_each_child ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-each-child"/>
     <keyword type="function" name="wocky_xmpp_node_get_attribute ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-attribute"/>
     <keyword type="function" name="wocky_xmpp_node_get_attribute_ns ()" link="wocky-wocky-xmpp-node.html#wocky-xmpp-node-get-attribute-ns"/>
@@ -435,6 +439,11 @@
     <keyword type="constant" name="WOCKY_XMPP_READER_STATE_ERROR" link="WockyXmppReader.html#WOCKY-XMPP-READER-STATE-ERROR:CAPS"/>
     <keyword type="constant" name="WOCKY_XMPP_READER_ERROR_INVALID_STREAM_START" link="WockyXmppReader.html#WOCKY-XMPP-READER-ERROR-INVALID-STREAM-START:CAPS"/>
     <keyword type="constant" name="WOCKY_XMPP_READER_ERROR_PARSE_ERROR" link="WockyXmppReader.html#WOCKY-XMPP-READER-ERROR-PARSE-ERROR:CAPS"/>
+    <keyword type="constant" name="WOCKY_PORTER_ERROR_NOT_STARTED" link="WockyPorter.html#WOCKY-PORTER-ERROR-NOT-STARTED:CAPS"/>
+    <keyword type="constant" name="WOCKY_PORTER_ERROR_CLOSING" link="WockyPorter.html#WOCKY-PORTER-ERROR-CLOSING:CAPS"/>
+    <keyword type="constant" name="WOCKY_PORTER_ERROR_CLOSED" link="WockyPorter.html#WOCKY-PORTER-ERROR-CLOSED:CAPS"/>
+    <keyword type="constant" name="WOCKY_PORTER_ERROR_NOT_IQ" link="WockyPorter.html#WOCKY-PORTER-ERROR-NOT-IQ:CAPS"/>
+    <keyword type="constant" name="WOCKY_PORTER_ERROR_FORCIBLY_CLOSED" link="WockyPorter.html#WOCKY-PORTER-ERROR-FORCIBLY-CLOSED:CAPS"/>
     <keyword type="constant" name="WOCKY_CONNECTOR_ERROR_UNKNOWN" link="WockyConnector.html#WOCKY-CONNECTOR-ERROR-UNKNOWN:CAPS"/>
     <keyword type="constant" name="WOCKY_CONNECTOR_ERROR_IN_PROGRESS" link="WockyConnector.html#WOCKY-CONNECTOR-ERROR-IN-PROGRESS:CAPS"/>
     <keyword type="constant" name="WOCKY_CONNECTOR_ERROR_BAD_JID" link="WockyConnector.html#WOCKY-CONNECTOR-ERROR-BAD-JID:CAPS"/>

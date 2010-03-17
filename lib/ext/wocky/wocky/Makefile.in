@@ -77,13 +77,18 @@ am__libwocky_la_SOURCES_DIST = wocky-types.h wocky.c wocky.h \
 	wocky-contact-factory.c wocky-contact-factory.h \
 	wocky-session.c wocky-session.h wocky-muc.h wocky-muc.c \
 	wocky-pep-service.c wocky-pep-service.h wocky-data-forms.c \
-	wocky-data-forms.h wocky-openssl.c wocky-tls.h \
+	wocky-data-forms.h wocky-pubsub-helpers.c \
+	wocky-pubsub-helpers.h wocky-pubsub-service.c \
+	wocky-pubsub-service.h wocky-pubsub-service-protected.h \
+	wocky-pubsub-node.c wocky-pubsub-node.h \
+	wocky-pubsub-node-protected.h wocky-openssl.c wocky-tls.h \
 	wocky-openssl-dh512.c wocky-openssl-dh1024.c \
 	wocky-openssl-dh2048.c wocky-openssl-dh4096.c wocky-tls.c \
 	wocky-signals-marshal.list wocky-signals-marshal.h \
 	wocky-signals-marshal.c wocky-data-forms-enumtypes.c \
 	wocky-data-forms-enumtypes.h wocky-muc-enumtypes.c \
-	wocky-muc-enumtypes.h wocky-xmpp-error-enumtypes.c \
+	wocky-muc-enumtypes.h wocky-pubsub-service-enumtypes.c \
+	wocky-pubsub-service-enumtypes.h wocky-xmpp-error-enumtypes.c \
 	wocky-xmpp-error-enumtypes.h wocky-xmpp-reader-enumtypes.c \
 	wocky-xmpp-reader-enumtypes.h
 am__objects_1 = wocky-openssl.lo wocky-openssl-dh512.lo \
@@ -101,10 +106,11 @@ am__objects_5 = wocky.lo wocky-connector.lo wocky-xmpp-connection.lo \
 	wocky-bare-contact.lo wocky-resource-contact.lo \
 	wocky-roster.lo wocky-contact-factory.lo wocky-session.lo \
 	wocky-muc.lo wocky-pep-service.lo wocky-data-forms.lo \
-	$(am__objects_2) $(am__objects_4)
+	wocky-pubsub-helpers.lo wocky-pubsub-service.lo \
+	wocky-pubsub-node.lo $(am__objects_2) $(am__objects_4)
 am__objects_6 = wocky-signals-marshal.lo wocky-data-forms-enumtypes.lo \
-	wocky-muc-enumtypes.lo wocky-xmpp-error-enumtypes.lo \
-	wocky-xmpp-reader-enumtypes.lo
+	wocky-muc-enumtypes.lo wocky-pubsub-service-enumtypes.lo \
+	wocky-xmpp-error-enumtypes.lo wocky-xmpp-reader-enumtypes.lo
 am_libwocky_la_OBJECTS = $(am__objects_5) $(am__objects_6)
 libwocky_la_OBJECTS = $(am_libwocky_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
@@ -291,6 +297,8 @@ BUILT_SOURCES = \
   wocky-data-forms-enumtypes.h \
   wocky-muc-enumtypes.c \
   wocky-muc-enumtypes.h \
+  wocky-pubsub-service-enumtypes.c \
+  wocky-pubsub-service-enumtypes.h \
   wocky-xmpp-error-enumtypes.c \
   wocky-xmpp-error-enumtypes.h \
   wocky-xmpp-reader-enumtypes.c \
@@ -322,7 +330,11 @@ HANDWRITTEN_SOURCES = wocky-types.h wocky.c wocky.h wocky-connector.c \
 	wocky-contact-factory.c wocky-contact-factory.h \
 	wocky-session.c wocky-session.h wocky-muc.h wocky-muc.c \
 	wocky-pep-service.c wocky-pep-service.h wocky-data-forms.c \
-	wocky-data-forms.h $(am__append_1) $(am__append_3)
+	wocky-data-forms.h wocky-pubsub-helpers.c \
+	wocky-pubsub-helpers.h wocky-pubsub-service.c \
+	wocky-pubsub-service.h wocky-pubsub-service-protected.h \
+	wocky-pubsub-node.c wocky-pubsub-node.h \
+	wocky-pubsub-node-protected.h $(am__append_1) $(am__append_3)
 libwocky_la_SOURCES = $(HANDWRITTEN_SOURCES) $(BUILT_SOURCES)
 
 # Coding style checks
@@ -406,6 +418,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-openssl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-porter.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-helpers.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-node.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-service-enumtypes.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-service.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-resource-contact.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-roster.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-sasl-auth.Plo@am__quote@
