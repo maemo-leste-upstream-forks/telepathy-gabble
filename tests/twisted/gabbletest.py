@@ -15,8 +15,8 @@ import ns
 import constants as cs
 import servicetest
 from servicetest import (
-    assertEquals, assertLength, assertContains, wrap_channel, EventPattern, call_async
-    )
+    assertEquals, assertLength, assertContains, wrap_channel,
+    EventPattern, call_async, unwrap, Event)
 import twisted
 from twisted.words.xish import domish, xpath
 from twisted.words.protocols.jabber.client import IQ
@@ -253,6 +253,9 @@ class StreamFactory(twisted.internet.protocol.Factory):
         self.factory_streams = list(streams)
         self.factory_streams.reverse()
 
+        # Do not add observers for single instances because it's unnecessary and
+        # some unit tests need to respond to the roster request, and we shouldn't
+        # answer it for them otherwise we break compatibility
         if len(streams) > 1:
             # We need to have a function here because lambda keeps a reference on
             # the stream and jid and in the for loop, there is no context
@@ -274,11 +277,12 @@ class StreamFactory(twisted.internet.protocol.Factory):
         self.presences[jid] = stanza
 
         for dest_jid  in self.presences.keys():
-            if dest_jid != jid:
-                # Dispatch the new presence to other clients
-                stanza.attributes['to'] = dest_jid
-                self.mappings[dest_jid].send(stanza)
+            # Dispatch the new presence to other clients
+            stanza.attributes['to'] = dest_jid
+            self.mappings[dest_jid].send(stanza)
 
+            # Don't echo the presence twice
+            if dest_jid != jid:
                 # Dispatch other client's presence to this stream
                 presence = self.presences[dest_jid]
                 presence.attributes['to'] = jid
@@ -474,17 +478,32 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
     factory = StreamFactory(streams, jids)
     port = reactor.listenTCP(4242, factory)
 
-    def name_owner_changed(name, old_name, new_name, **kw):
-        if new_name == '':
-            for i, conn in enumerate(conns):
-                stream = streams[i]
-                jid = jids[i]
-                if conn._requested_bus_name == name:
-                    factory.lost_presence(stream, jid)
-                    break
+    def signal_receiver(*args, **kw):
+        if kw['path'] == '/org/freedesktop/DBus' and \
+                kw['member'] == 'NameOwnerChanged':
+            bus_name, old_name, new_name = args
+            if new_name == '':
+                for i, conn in enumerate(conns):
+                    stream = streams[i]
+                    jid = jids[i]
+                    if conn._requested_bus_name == bus_name:
+                        factory.lost_presence(stream, jid)
+                        break
+        queue.append(Event('dbus-signal',
+                           path=unwrap(kw['path']),
+                           signal=kw['member'], args=map(unwrap, args),
+                           interface=kw['interface']))
 
-    bus.add_signal_receiver(name_owner_changed, 'NameOwnerChanged',
-                            'org.freedesktop.DBus', None)
+    bus.add_signal_receiver(
+        signal_receiver,
+        None,       # signal name
+        None,       # interface
+        None,
+        path_keyword='path',
+        member_keyword='member',
+        interface_keyword='interface',
+        byte_arrays=True
+        )
 
     error = None
 

@@ -35,7 +35,7 @@ build_triplet = @build@
 host_triplet = @host@
 @HAVE_LIBSASL2_TRUE@am__append_1 = wocky-test-sasl-auth
 check_PROGRAMS = $(am__EXEEXT_2)
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/tools/check-coding-style.mk
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -63,7 +63,9 @@ am__EXEEXT_2 = wocky-xmpp-reader-test$(EXEEXT) \
 	wocky-contact-factory-test$(EXEEXT) \
 	wocky-session-test$(EXEEXT) wocky-pep-service-test$(EXEEXT) \
 	wocky-tls-test$(EXEEXT) wocky-data-forms-test$(EXEEXT) \
-	wocky-connector-test$(EXEEXT) $(am__EXEEXT_1)
+	wocky-pubsub-service-test$(EXEEXT) \
+	wocky-pubsub-node-test$(EXEEXT) wocky-connector-test$(EXEEXT) \
+	$(am__EXEEXT_1)
 am_wocky_bare_contact_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-bare-contact-test.$(OBJEXT)
 wocky_bare_contact_test_OBJECTS =  \
@@ -102,6 +104,16 @@ am_wocky_porter_test_OBJECTS = wocky-porter-test.$(OBJEXT) \
 	wocky-test-helper.$(OBJEXT) wocky-test-stream.$(OBJEXT)
 wocky_porter_test_OBJECTS = $(am_wocky_porter_test_OBJECTS)
 wocky_porter_test_LDADD = $(LDADD)
+am_wocky_pubsub_node_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
+	wocky-test-stream.$(OBJEXT) wocky-pubsub-node-test.$(OBJEXT)
+wocky_pubsub_node_test_OBJECTS = $(am_wocky_pubsub_node_test_OBJECTS)
+wocky_pubsub_node_test_LDADD = $(LDADD)
+am_wocky_pubsub_service_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
+	wocky-test-stream.$(OBJEXT) \
+	wocky-pubsub-service-test.$(OBJEXT)
+wocky_pubsub_service_test_OBJECTS =  \
+	$(am_wocky_pubsub_service_test_OBJECTS)
+wocky_pubsub_service_test_LDADD = $(LDADD)
 am_wocky_resource_contact_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) \
 	wocky-resource-contact-test.$(OBJEXT)
@@ -192,6 +204,8 @@ SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
 	$(wocky_data_forms_test_SOURCES) \
 	$(wocky_pep_service_test_SOURCES) $(wocky_porter_test_SOURCES) \
+	$(wocky_pubsub_node_test_SOURCES) \
+	$(wocky_pubsub_service_test_SOURCES) \
 	$(wocky_resource_contact_test_SOURCES) \
 	$(wocky_roster_test_SOURCES) $(wocky_session_test_SOURCES) \
 	$(wocky_test_sasl_auth_SOURCES) $(wocky_tls_test_SOURCES) \
@@ -205,6 +219,8 @@ DIST_SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
 	$(wocky_data_forms_test_SOURCES) \
 	$(wocky_pep_service_test_SOURCES) $(wocky_porter_test_SOURCES) \
+	$(wocky_pubsub_node_test_SOURCES) \
+	$(wocky_pubsub_service_test_SOURCES) \
 	$(wocky_resource_contact_test_SOURCES) \
 	$(wocky_roster_test_SOURCES) $(wocky_session_test_SOURCES) \
 	$(wocky_test_sasl_auth_SOURCES) $(wocky_tls_test_SOURCES) \
@@ -421,6 +437,7 @@ TEST_PROGS = wocky-xmpp-reader-test wocky-xmpp-readwrite-test \
 	wocky-bare-contact-test wocky-resource-contact-test \
 	wocky-contact-factory-test wocky-session-test \
 	wocky-pep-service-test wocky-tls-test wocky-data-forms-test \
+	wocky-pubsub-service-test wocky-pubsub-node-test \
 	wocky-connector-test $(am__append_1)
 wocky_tls_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_tls_test_SOURCES = \
@@ -533,6 +550,18 @@ wocky_data_forms_test_SOURCES = \
   wocky-test-stream.c wocky-test-stream.h \
   wocky-data-forms-test.c
 
+wocky_pubsub_service_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_pubsub_service_test_SOURCES = \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h \
+  wocky-pubsub-service-test.c
+
+wocky_pubsub_node_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_pubsub_node_test_SOURCES = \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h \
+  wocky-pubsub-node-test.c
+
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@
 AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
 LDADD = $(top_builddir)/wocky/libwocky.la
@@ -545,11 +574,19 @@ check_c_sources = \
 
 
 ############################################################################
-SUPPRESSIONS = threadlocal.supp
+SUPPRESSIONS = \
+	threadlocal.supp \
+	gabble.supp \
+	tp-glib.supp
+
 CLEANFILES = test-report.xml \
 	sasl-test.db
 
 EXTRA_DIST = $(SUPPRESSIONS)     \
+	README \
+	connector-test-plan.txt \
+	summarise-tests.py \
+	wocky-dummy-xmpp-server.c \
 	$(wildcard $(srcdir)/certs/*.cfg)      \
 	$(wildcard $(srcdir)/certs/*.pem)      \
 	$(wildcard $(srcdir)/certs/cas/*.pem)  \
@@ -617,6 +654,12 @@ wocky-pep-service-test$(EXEEXT): $(wocky_pep_service_test_OBJECTS) $(wocky_pep_s
 wocky-porter-test$(EXEEXT): $(wocky_porter_test_OBJECTS) $(wocky_porter_test_DEPENDENCIES) 
 	@rm -f wocky-porter-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_porter_test_OBJECTS) $(wocky_porter_test_LDADD) $(LIBS)
+wocky-pubsub-node-test$(EXEEXT): $(wocky_pubsub_node_test_OBJECTS) $(wocky_pubsub_node_test_DEPENDENCIES) 
+	@rm -f wocky-pubsub-node-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(wocky_pubsub_node_test_OBJECTS) $(wocky_pubsub_node_test_LDADD) $(LIBS)
+wocky-pubsub-service-test$(EXEEXT): $(wocky_pubsub_service_test_OBJECTS) $(wocky_pubsub_service_test_DEPENDENCIES) 
+	@rm -f wocky-pubsub-service-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(wocky_pubsub_service_test_OBJECTS) $(wocky_pubsub_service_test_LDADD) $(LIBS)
 wocky-resource-contact-test$(EXEEXT): $(wocky_resource_contact_test_OBJECTS) $(wocky_resource_contact_test_DEPENDENCIES) 
 	@rm -f wocky-resource-contact-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_resource_contact_test_OBJECTS) $(wocky_resource_contact_test_LDADD) $(LIBS)
@@ -659,6 +702,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-forms-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-porter-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-node-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-service-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-resource-contact-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-roster-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-session-test.Po@am__quote@
@@ -1278,10 +1323,10 @@ $(CRL_DIR)/%.pem: $(CERT_DIR)/%.pem
 	G_SLICE=always-malloc               \
 	G_DEBUG=gc-friendly              \
 	valgrind -q \
-	$(foreach s,$(SUPPRESSIONS),--suppressions=$(s))   \
+	$(foreach s,$(SUPPRESSIONS),--suppressions=$(srcdir)/$(s))   \
 	--tool=memcheck --leak-check=full --trace-children=yes   \
 	--leak-resolution=high --num-callers=20         \
-	./$* 2>&1 | tee "valgrind.$*.log"
+	./$* $(TEST_ARGS) 2>&1 | tee "valgrind.$*.log"
 	@if grep "==" "valgrind.$*.log" > /dev/null 2>&1; then   \
 		exit 1;                \
 	fi

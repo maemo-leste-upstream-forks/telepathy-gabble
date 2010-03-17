@@ -1,3 +1,91 @@
+commit bcd6d11a5bb6810549d0903512638e336d68e339
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-16 20:13:14 +0000
+
+    Version 0.9.8
+
+commit a86dcaf8024cac347885b8c144adc46d854b274a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-16 20:02:36 +0000
+
+    NEWS for 0.9.8
+
+commit 429b09aedb1c2eefdb0b17c3b63db0bbb638bbbf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-16 17:26:05 +0000
+
+    Update Wocky snapshot: crash fix, PubSub
+    
+    This version of Wocky fixes a crash on disconnect in WockyPepService,
+    triggered by olpc/olpc-buddy-search.py. It also includes a bunch of new
+    API on WockyPubsubService and friends.
+
+commit db45d844d7229280a82acb998a76fe482f03c45f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-09 11:42:14 +0000
+
+    Update Wocky snapshot to fix an error-stanza crash
+
+commit 8fd51791a2631c8564e6180d2da61581a308a573
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-03 19:57:32 +0000
+
+    Correct typos detected by Lintian (separate, received)
+    
+    Reviewed-by: Youness Alaoui <youness.alaoui@collabora.co.uk>
+
+commit cc96074d878559625f524f03aa4cab9afbf5baff
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-03 15:07:09 -0500
+
+    replace the use of __dbus_object_path__ by the object_path property
+
+commit f04db7cb85f866bd0d9d6a8f65fb1131811beb59
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-26 15:26:50 -0500
+
+    fix unit test by waiting for NewChannels signals
+    This unit test stopped working after the fake server started echoing our presence. This actually caused a race condition that made the order of events to become inconsistent. The 'stream-authenticated' event is being sent locally by the fake server while the other events we are expecting are dbus-signals. Since the fake server now provides us with a roster, and echoes our presence there are a few more dbus signals that get sent (NewChannels and PresenceUpdated) which makes the StatusChanged dbus signal to arrive a bit 'late'.
+    By waiting for those bottleneck-ing signals before connecting the second account, it makes the race condition disappear
+
+commit 1da1b79e65c29edc51a256742883dd0f6be2a2b6
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-26 15:26:42 -0500
+
+    Echo one's presence to be more like a real xmpp server
+
+commit 2c450178b96eb3bfb3275fe0501d40491b4ea34d
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-26 15:24:43 -0500
+
+    Add a comment to explain why we don't add observers when num_instances == 1
+
+commit 5199acd9d65eb435bc467cbbc88d5120bbeb0b86
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-26 15:24:18 -0500
+
+    Add the dbus signal handler in test-nonblocking-tls since it doesn't call exec_test
+
+commit 4dff58aec5fbec867a24cadfe0b754a97e0922ad
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-26 15:19:20 -0500
+
+    Move the bus.add_signal_receiver from make_connection to exec_test
+    The reason is because when we create multiple instance, we get multiple signal receivers, so all the dbus signals get duplicated (or more, depending on how many instances get created).
+    Now we only add one listener, so if we enable CHECK_TWISTED_VERBOSE, the output won't have too much spam..
+
+commit f8eadee9604933ec6f6c4b273d8b5470015afa9b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-03 19:54:02 +0000
+
+    Nano version
+
+commit 8e842cef528ad7bbedd7d56fb519da9e010ae452
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-03 19:25:00 +0000
+
+    Distribute Mail_Notification, fixing distcheck
+
 commit 5a1e8e9cfdb521df34182af13163c224cc4b374d
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-03-03 18:38:42 +0000

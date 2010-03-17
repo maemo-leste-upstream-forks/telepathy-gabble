@@ -585,7 +585,7 @@ is_open:
   g_simple_async_report_error_in_idle (G_OBJECT (connection),
     callback, user_data,
     WOCKY_XMPP_CONNECTION_ERROR, WOCKY_XMPP_CONNECTION_ERROR_IS_OPEN,
-    "Connection has already recieved open");
+    "Connection has already received open");
   return;
 }
 
@@ -994,8 +994,8 @@ wocky_xmpp_connection_send_close_finish (WockyXmppConnection *connection,
  * @connection: a #WockyXmppConnection.
  *
  * Reset the XMPP Connection. After the reset the connection is back in its
- * initial state (as if wocky_xmpp_connection_send_open_async and
- * wocky_xmpp_connection_recv_open_async were never called).
+ * initial state (as if wocky_xmpp_connection_send_open_async() and
+ * wocky_xmpp_connection_recv_open_async() were never called).
  */
 void
 wocky_xmpp_connection_reset (WockyXmppConnection *connection)
@@ -1017,7 +1017,7 @@ wocky_xmpp_connection_reset (WockyXmppConnection *connection)
 
 /**
  * wocky_xmpp_connection_new_id:
- * @self: a #WockyXmppConnection.
+ * @connection: a #WockyXmppConnection.
  *
  * Returns: A short unique string for usage as the id attribute on a stanza
  * (free after usage).

@@ -68,6 +68,8 @@ TEST_PROGS = wocky-xmpp-reader-test \
   wocky-pep-service-test \
   wocky-tls-test \
   wocky-data-forms-test \
+  wocky-pubsub-service-test \
+  wocky-pubsub-node-test \
   wocky-connector-test
 
 wocky_tls_test_DEPENDENCIES = $(LIBWOCKY)
@@ -186,6 +188,18 @@ wocky_data_forms_test_SOURCES = \
   wocky-test-helper.c wocky-test-helper.h \
   wocky-test-stream.c wocky-test-stream.h \
   wocky-data-forms-test.c
+
+wocky_pubsub_service_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_pubsub_service_test_SOURCES = \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h \
+  wocky-pubsub-service-test.c
+
+wocky_pubsub_node_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_pubsub_node_test_SOURCES = \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h \
+  wocky-pubsub-node-test.c
 
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@
 AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
@@ -318,7 +332,10 @@ $(CRL_DIR)/%.pem: $(CERT_DIR)/%.pem
 
 ############################################################################
 
-SUPPRESSIONS=threadlocal.supp
+SUPPRESSIONS = \
+	threadlocal.supp \
+	gabble.supp \
+	tp-glib.supp
 
 CLEANFILES = test-report.xml \
 	sasl-test.db
@@ -328,10 +345,10 @@ CLEANFILES = test-report.xml \
 	G_SLICE=always-malloc               \
 	G_DEBUG=gc-friendly              \
 	valgrind -q \
-	$(foreach s,$(SUPPRESSIONS),--suppressions=$(s))   \
+	$(foreach s,$(SUPPRESSIONS),--suppressions=$(srcdir)/$(s))   \
 	--tool=memcheck --leak-check=full --trace-children=yes   \
 	--leak-resolution=high --num-callers=20         \
-	./$* 2>&1 | tee "valgrind.$*.log"
+	./$* $(TEST_ARGS) 2>&1 | tee "valgrind.$*.log"
 	@if grep "==" "valgrind.$*.log" > /dev/null 2>&1; then   \
 		exit 1;                \
 	fi
@@ -354,6 +371,10 @@ valgrind: $(TEST_PROGS)
 	fi
 
 EXTRA_DIST = $(SUPPRESSIONS)     \
+	README \
+	connector-test-plan.txt \
+	summarise-tests.py \
+	wocky-dummy-xmpp-server.c \
 	$(wildcard $(srcdir)/certs/*.cfg)      \
 	$(wildcard $(srcdir)/certs/*.pem)      \
 	$(wildcard $(srcdir)/certs/cas/*.pem)  \
