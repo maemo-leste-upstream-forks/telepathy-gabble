@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyPubsubNode-protected</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="WockyPubsubNode.html" title="WockyPubsubNode">
+<link rel="next" href="WockyPubsubService.html" title="WockyPubsubService">
+<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="WockyPubsubNode.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">wocky Reference Manual</th>
+<td><a accesskey="n" href="WockyPubsubService.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockyPubsubNode-protected.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockyPubsubNode-protected.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry" title="WockyPubsubNode-protected">
+<a name="wocky-WockyPubsubNode-protected"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockyPubsubNode-protected.top_of_page"></a>WockyPubsubNode-protected</span></h2>
+<p>WockyPubsubNode-protected</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="wocky-WockyPubsubNode-protected.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis"><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="returnvalue">WockyPorter</span></a> *       <a class="link" href="wocky-WockyPubsubNode-protected.html#wocky-pubsub-node-get-porter" title="wocky_pubsub_node_get_porter ()">wocky_pubsub_node_get_porter</a>        (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>);
+<a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="returnvalue">WockyXmppStanza</span></a> *   <a class="link" href="wocky-WockyPubsubNode-protected.html#wocky-pubsub-node-make-delete-stanza" title="wocky_pubsub_node_make_delete_stanza ()">wocky_pubsub_node_make_delete_stanza</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **pubsub_node</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **delete_node</code></em>);
+<a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="returnvalue">WockyXmppStanza</span></a> *   <a class="link" href="wocky-WockyPubsubNode-protected.html#wocky-pubsub-node-make-subscribe-stanza" title="wocky_pubsub_node_make_subscribe_stanza ()">wocky_pubsub_node_make_subscribe_stanza</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **pubsub_node</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **subscribe_node</code></em>);
+<a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="returnvalue">WockyXmppStanza</span></a> *   <a class="link" href="wocky-WockyPubsubNode-protected.html#wocky-pubsub-node-make-unsubscribe-stanza" title="wocky_pubsub_node_make_unsubscribe_stanza ()">wocky_pubsub_node_make_unsubscribe_stanza</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *subid</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **pubsub_node</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **unsubscribe_node</code></em>);
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="wocky-WockyPubsubNode-protected.description"></a><h2>Description</h2>
+<p>
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="wocky-WockyPubsubNode-protected.details"></a><h2>Details</h2>
+<div class="refsect2" title="wocky_pubsub_node_get_porter ()">
+<a name="wocky-pubsub-node-get-porter"></a><h3>wocky_pubsub_node_get_porter ()</h3>
+<pre class="programlisting"><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="returnvalue">WockyPorter</span></a> *       wocky_pubsub_node_get_porter        (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_pubsub_node_make_delete_stanza ()">
+<a name="wocky-pubsub-node-make-delete-stanza"></a><h3>wocky_pubsub_node_make_delete_stanza ()</h3>
+<pre class="programlisting"><a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="returnvalue">WockyXmppStanza</span></a> *   wocky_pubsub_node_make_delete_stanza
+                                                        (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **pubsub_node</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **delete_node</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pubsub_node</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>delete_node</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_pubsub_node_make_subscribe_stanza ()">
+<a name="wocky-pubsub-node-make-subscribe-stanza"></a><h3>wocky_pubsub_node_make_subscribe_stanza ()</h3>
+<pre class="programlisting"><a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="returnvalue">WockyXmppStanza</span></a> *   wocky_pubsub_node_make_subscribe_stanza
+                                                        (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **pubsub_node</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **subscribe_node</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pubsub_node</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>subscribe_node</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_pubsub_node_make_unsubscribe_stanza ()">
+<a name="wocky-pubsub-node-make-unsubscribe-stanza"></a><h3>wocky_pubsub_node_make_unsubscribe_stanza ()</h3>
+<pre class="programlisting"><a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="returnvalue">WockyXmppStanza</span></a> *   wocky_pubsub_node_make_unsubscribe_stanza
+                                                        (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *subid</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **pubsub_node</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **unsubscribe_node</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>subid</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pubsub_node</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>unsubscribe_node</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.14</div>
+</body>
+</html>

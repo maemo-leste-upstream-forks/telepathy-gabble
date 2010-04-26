@@ -6,22 +6,19 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="WockyConnector.html" title="WockyConnector">
-<link rel="next" href="wocky-wocky-debug.html" title="wocky-debug">
-<meta name="generator" content="GTK-Doc V1.13 (XML mode)">
+<link rel="prev" href="WockyResourceContact.html" title="WockyResourceContact">
+<link rel="next" href="wocky-wocky-sasl-auth.html" title="WockySaslAuth">
+<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="API Reference">
-<link rel="chapter" href="object-tree.html" title="Object Hierarchy">
-<link rel="index" href="api-index-full.html" title="API Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="WockyConnector.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="WockyResourceContact.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">wocky Reference Manual</th>
-<td><a accesskey="n" href="wocky-wocky-debug.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="wocky-wocky-sasl-auth.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#WockyRoster.synopsis" class="shortcut">Top</a>
@@ -46,75 +43,75 @@
 </tr></table></div>
 <div class="refsynopsisdiv" title="Synopsis">
 <a name="WockyRoster.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a href="WockyRoster.html#wocky-roster-error-quark">wocky_roster_error_quark</a>            (void);
-                    <a href="WockyRoster.html#WockyRoster-struct">WockyRoster</a>;
-                    <a href="WockyRoster.html#WockyRosterClass">WockyRosterClass</a>;
-enum                <a href="WockyRoster.html#WockyRosterSubscriptionFlags">WockyRosterSubscriptionFlags</a>;
-enum                <a href="WockyRoster.html#WockyRosterError">WockyRosterError</a>;
-#define             <a href="WockyRoster.html#WOCKY-ROSTER-ERROR:CAPS">WOCKY_ROSTER_ERROR</a>
-<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *       <a href="WockyRoster.html#wocky-roster-new">wocky_roster_new</a>                    (<span class="returnvalue">WockySession</span> *session);
-<span class="returnvalue">void</span>                <a href="WockyRoster.html#wocky-roster-fetch-roster-async">wocky_roster_fetch_roster_async</a>     (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyRoster.html#wocky-roster-fetch-roster-finish">wocky_roster_fetch_roster_finish</a>    (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
-<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *  <a href="WockyRoster.html#wocky-roster-get-contact">wocky_roster_get_contact</a>            (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *jid);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            <a href="WockyRoster.html#wocky-roster-get-all-contacts">wocky_roster_get_all_contacts</a>       (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self);
-<span class="returnvalue">void</span>                <a href="WockyRoster.html#wocky-roster-add-contact-async">wocky_roster_add_contact_async</a>      (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *jid,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> * const *groups,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyRoster.html#wocky-roster-add-contact-finish">wocky_roster_add_contact_finish</a>     (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
-<span class="returnvalue">void</span>                <a href="WockyRoster.html#wocky-roster-change-contact-name-async">wocky_roster_change_contact_name_async</a>
-                                                        (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyRoster.html#wocky-roster-change-contact-name-finish">wocky_roster_change_contact_name_finish</a>
-                                                        (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
-<span class="returnvalue">void</span>                <a href="WockyRoster.html#wocky-roster-contact-add-group-async">wocky_roster_contact_add_group_async</a>
-                                                        (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *group,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyRoster.html#wocky-roster-contact-add-group-finish">wocky_roster_contact_add_group_finish</a>
-                                                        (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
-<span class="returnvalue">void</span>                <a href="WockyRoster.html#wocky-roster-contact-remove-group-async">wocky_roster_contact_remove_group_async</a>
-                                                        (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *group,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyRoster.html#wocky-roster-contact-remove-group-finish">wocky_roster_contact_remove_group_finish</a>
-                                                        (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
-<span class="returnvalue">void</span>                <a href="WockyRoster.html#wocky-roster-remove-contact-async">wocky_roster_remove_contact_async</a>   (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyRoster.html#wocky-roster-remove-contact-finish">wocky_roster_remove_contact_finish</a>  (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a href="WockyRoster.html#wocky-roster-subscription-to-string">wocky_roster_subscription_to_string</a> (<a href="WockyRoster.html#WockyRosterSubscriptionFlags"><span class="returnvalue">WockyRosterSubscriptionFlags</span></a> subscription);
+<pre class="synopsis"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="WockyRoster.html#wocky-roster-error-quark" title="wocky_roster_error_quark ()">wocky_roster_error_quark</a>            (<em class="parameter"><code><span class="type">void</span></code></em>);
+                    <a class="link" href="WockyRoster.html#WockyRoster-struct" title="WockyRoster">WockyRoster</a>;
+                    <a class="link" href="WockyRoster.html#WockyRosterClass" title="WockyRosterClass">WockyRosterClass</a>;
+enum                <a class="link" href="WockyRoster.html#WockyRosterSubscriptionFlags" title="enum WockyRosterSubscriptionFlags">WockyRosterSubscriptionFlags</a>;
+enum                <a class="link" href="WockyRoster.html#WockyRosterError" title="enum WockyRosterError">WockyRosterError</a>;
+#define             <a class="link" href="WockyRoster.html#WOCKY-ROSTER-ERROR:CAPS" title="WOCKY_ROSTER_ERROR">WOCKY_ROSTER_ERROR</a>
+<a class="link" href="WockyRoster.html" title="WockyRoster"><span class="returnvalue">WockyRoster</span></a> *       <a class="link" href="WockyRoster.html#wocky-roster-new" title="wocky_roster_new ()">wocky_roster_new</a>                    (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyRoster.html#wocky-roster-fetch-roster-async" title="wocky_roster_fetch_roster_async ()">wocky_roster_fetch_roster_async</a>     (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyRoster.html#wocky-roster-fetch-roster-finish" title="wocky_roster_fetch_roster_finish ()">wocky_roster_fetch_roster_finish</a>    (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="returnvalue">WockyBareContact</span></a> *  <a class="link" href="WockyRoster.html#wocky-roster-get-contact" title="wocky_roster_get_contact ()">wocky_roster_get_contact</a>            (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            <a class="link" href="WockyRoster.html#wocky-roster-get-all-contacts" title="wocky_roster_get_all_contacts ()">wocky_roster_get_all_contacts</a>       (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyRoster.html#wocky-roster-add-contact-async" title="wocky_roster_add_contact_async ()">wocky_roster_add_contact_async</a>      (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> * const *groups</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyRoster.html#wocky-roster-add-contact-finish" title="wocky_roster_add_contact_finish ()">wocky_roster_add_contact_finish</a>     (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyRoster.html#wocky-roster-change-contact-name-async" title="wocky_roster_change_contact_name_async ()">wocky_roster_change_contact_name_async</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyRoster.html#wocky-roster-change-contact-name-finish" title="wocky_roster_change_contact_name_finish ()">wocky_roster_change_contact_name_finish</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyRoster.html#wocky-roster-contact-add-group-async" title="wocky_roster_contact_add_group_async ()">wocky_roster_contact_add_group_async</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *group</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyRoster.html#wocky-roster-contact-add-group-finish" title="wocky_roster_contact_add_group_finish ()">wocky_roster_contact_add_group_finish</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyRoster.html#wocky-roster-contact-remove-group-async" title="wocky_roster_contact_remove_group_async ()">wocky_roster_contact_remove_group_async</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *group</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyRoster.html#wocky-roster-contact-remove-group-finish" title="wocky_roster_contact_remove_group_finish ()">wocky_roster_contact_remove_group_finish</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyRoster.html#wocky-roster-remove-contact-async" title="wocky_roster_remove_contact_async ()">wocky_roster_remove_contact_async</a>   (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyRoster.html#wocky-roster-remove-contact-finish" title="wocky_roster_remove_contact_finish ()">wocky_roster_remove_contact_finish</a>  (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyRoster.html#wocky-roster-subscription-to-string" title="wocky_roster_subscription_to_string ()">wocky_roster_subscription_to_string</a> (<em class="parameter"><code><a class="link" href="WockyRoster.html#WockyRosterSubscriptionFlags" title="enum WockyRosterSubscriptionFlags"><span class="type">WockyRosterSubscriptionFlags</span></a> subscription</code></em>);
 </pre>
 </div>
 <div class="refsect1" title="Object Hierarchy">
@@ -127,28 +124,30 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <div class="refsect1" title="Properties">
 <a name="WockyRoster.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a href="WockyRoster.html#WockyRoster--session">session</a>"                  <span class="type">WockySession</span>*         : Read / Write / Construct Only
+  "<a class="link" href="WockyRoster.html#WockyRoster--session" title='The "session" property'>session</a>"                  <a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a>*         : Read / Write / Construct Only
 </pre>
 </div>
 <div class="refsect1" title="Signals">
 <a name="WockyRoster.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-  "<a href="WockyRoster.html#WockyRoster-added">added</a>"                                          : Run Last
-  "<a href="WockyRoster.html#WockyRoster-removed">removed</a>"                                        : Run Last
+  "<a class="link" href="WockyRoster.html#WockyRoster-added" title='The "added" signal'>added</a>"                                          : Run Last
+  "<a class="link" href="WockyRoster.html#WockyRoster-removed" title='The "removed" signal'>removed</a>"                                        : Run Last
 </pre>
 </div>
 <div class="refsect1" title="Description">
 <a name="WockyRoster.description"></a><h2>Description</h2>
 <p>
-TODO</p>
+TODO
+</p>
 </div>
 <div class="refsect1" title="Details">
 <a name="WockyRoster.details"></a><h2>Details</h2>
 <div class="refsect2" title="wocky_roster_error_quark ()">
 <a name="wocky-roster-error-quark"></a><h3>wocky_roster_error_quark ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_roster_error_quark            (void);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_roster_error_quark            (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
-Get the error quark used by the roster.</p>
+Get the error quark used by the roster.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
@@ -200,19 +199,20 @@ Get the error quark used by the roster.</p>
 } WockyRosterError;
 </pre>
 <p>
-The <a href="WockyRoster.html#WockyRosterError"><span class="type">WockyRosterError</span></a> specific errors.</p>
+The <a class="link" href="WockyRoster.html#WockyRosterError" title="enum WockyRosterError"><span class="type">WockyRosterError</span></a> specific errors.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><a name="WOCKY-ROSTER-ERROR-INVALID-STANZA:CAPS"></a><span class="term"><code class="literal">WOCKY_ROSTER_ERROR_INVALID_STANZA</code></span></p></td>
-<td> received an invalid roster stanza
+<td>received an invalid roster stanza
 from the server
 </td>
 </tr>
 <tr>
 <td><p><a name="WOCKY-ROSTER-ERROR-NOT-IN-ROSTER:CAPS"></a><span class="term"><code class="literal">WOCKY_ROSTER_ERROR_NOT_IN_ROSTER</code></span></p></td>
-<td> the contact is not in the roster
+<td>the contact is not in the roster
 </td>
 </tr>
 </tbody>
@@ -224,12 +224,13 @@ from the server
 <pre class="programlisting">#define WOCKY_ROSTER_ERROR (wocky_roster_error_quark ())
 </pre>
 <p>
-Get access to the error quark of the roster.</p>
+Get access to the error quark of the roster.
+</p>
 </div>
 <hr>
 <div class="refsect2" title="wocky_roster_new ()">
 <a name="wocky-roster-new"></a><h3>wocky_roster_new ()</h3>
-<pre class="programlisting"><a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *       wocky_roster_new                    (<span class="returnvalue">WockySession</span> *session);</pre>
+<pre class="programlisting"><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="returnvalue">WockyRoster</span></a> *       wocky_roster_new                    (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -251,10 +252,10 @@ Get access to the error quark of the roster.</p>
 <hr>
 <div class="refsect2" title="wocky_roster_fetch_roster_async ()">
 <a name="wocky-roster-fetch-roster-async"></a><h3>wocky_roster_fetch_roster_async ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_roster_fetch_roster_async     (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_roster_fetch_roster_async     (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -286,9 +287,9 @@ Get access to the error quark of the roster.</p>
 <hr>
 <div class="refsect2" title="wocky_roster_fetch_roster_finish ()">
 <a name="wocky-roster-fetch-roster-finish"></a><h3>wocky_roster_fetch_roster_finish ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_roster_fetch_roster_finish    (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_roster_fetch_roster_finish    (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -320,8 +321,8 @@ Get access to the error quark of the roster.</p>
 <hr>
 <div class="refsect2" title="wocky_roster_get_contact ()">
 <a name="wocky-roster-get-contact"></a><h3>wocky_roster_get_contact ()</h3>
-<pre class="programlisting"><a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *  wocky_roster_get_contact            (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *jid);</pre>
+<pre class="programlisting"><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="returnvalue">WockyBareContact</span></a> *  wocky_roster_get_contact            (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -348,7 +349,7 @@ Get access to the error quark of the roster.</p>
 <hr>
 <div class="refsect2" title="wocky_roster_get_all_contacts ()">
 <a name="wocky-roster-get-all-contacts"></a><h3>wocky_roster_get_all_contacts ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            wocky_roster_get_all_contacts       (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            wocky_roster_get_all_contacts       (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -370,13 +371,13 @@ Get access to the error quark of the roster.</p>
 <hr>
 <div class="refsect2" title="wocky_roster_add_contact_async ()">
 <a name="wocky-roster-add-contact-async"></a><h3>wocky_roster_add_contact_async ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_roster_add_contact_async      (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *jid,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> * const *groups,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_roster_add_contact_async      (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> * const *groups</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -423,9 +424,9 @@ Get access to the error quark of the roster.</p>
 <hr>
 <div class="refsect2" title="wocky_roster_add_contact_finish ()">
 <a name="wocky-roster-add-contact-finish"></a><h3>wocky_roster_add_contact_finish ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_roster_add_contact_finish     (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_roster_add_contact_finish     (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -458,12 +459,12 @@ Get access to the error quark of the roster.</p>
 <div class="refsect2" title="wocky_roster_change_contact_name_async ()">
 <a name="wocky-roster-change-contact-name-async"></a><h3>wocky_roster_change_contact_name_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_roster_change_contact_name_async
-                                                        (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -506,9 +507,9 @@ Get access to the error quark of the roster.</p>
 <div class="refsect2" title="wocky_roster_change_contact_name_finish ()">
 <a name="wocky-roster-change-contact-name-finish"></a><h3>wocky_roster_change_contact_name_finish ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_roster_change_contact_name_finish
-                                                        (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -541,12 +542,12 @@ Get access to the error quark of the roster.</p>
 <div class="refsect2" title="wocky_roster_contact_add_group_async ()">
 <a name="wocky-roster-contact-add-group-async"></a><h3>wocky_roster_contact_add_group_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_roster_contact_add_group_async
-                                                        (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *group,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *group</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -589,9 +590,9 @@ Get access to the error quark of the roster.</p>
 <div class="refsect2" title="wocky_roster_contact_add_group_finish ()">
 <a name="wocky-roster-contact-add-group-finish"></a><h3>wocky_roster_contact_add_group_finish ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_roster_contact_add_group_finish
-                                                        (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -624,12 +625,12 @@ Get access to the error quark of the roster.</p>
 <div class="refsect2" title="wocky_roster_contact_remove_group_async ()">
 <a name="wocky-roster-contact-remove-group-async"></a><h3>wocky_roster_contact_remove_group_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_roster_contact_remove_group_async
-                                                        (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *group,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *group</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -672,9 +673,9 @@ Get access to the error quark of the roster.</p>
 <div class="refsect2" title="wocky_roster_contact_remove_group_finish ()">
 <a name="wocky-roster-contact-remove-group-finish"></a><h3>wocky_roster_contact_remove_group_finish ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_roster_contact_remove_group_finish
-                                                        (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -706,11 +707,11 @@ Get access to the error quark of the roster.</p>
 <hr>
 <div class="refsect2" title="wocky_roster_remove_contact_async ()">
 <a name="wocky-roster-remove-contact-async"></a><h3>wocky_roster_remove_contact_async ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_roster_remove_contact_async   (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_roster_remove_contact_async   (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -747,9 +748,9 @@ Get access to the error quark of the roster.</p>
 <hr>
 <div class="refsect2" title="wocky_roster_remove_contact_finish ()">
 <a name="wocky-roster-remove-contact-finish"></a><h3>wocky_roster_remove_contact_finish ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_roster_remove_contact_finish  (<a href="WockyRoster.html"><span class="returnvalue">WockyRoster</span></a> *self,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_roster_remove_contact_finish  (<em class="parameter"><code><a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -781,7 +782,7 @@ Get access to the error quark of the roster.</p>
 <hr>
 <div class="refsect2" title="wocky_roster_subscription_to_string ()">
 <a name="wocky-roster-subscription-to-string"></a><h3>wocky_roster_subscription_to_string ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_roster_subscription_to_string (<a href="WockyRoster.html#WockyRosterSubscriptionFlags"><span class="returnvalue">WockyRosterSubscriptionFlags</span></a> subscription);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_roster_subscription_to_string (<em class="parameter"><code><a class="link" href="WockyRoster.html#WockyRosterSubscriptionFlags" title="enum WockyRosterSubscriptionFlags"><span class="type">WockyRosterSubscriptionFlags</span></a> subscription</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -805,7 +806,7 @@ Get access to the error quark of the roster.</p>
 <a name="WockyRoster.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" title='The "session" property'>
 <a name="WockyRoster--session"></a><h3>The <code class="literal">"session"</code> property</h3>
-<pre class="programlisting">  "session"                  <span class="type">WockySession</span>*         : Read / Write / Construct Only</pre>
+<pre class="programlisting">  "session"                  <a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a>*         : Read / Write / Construct Only</pre>
 <p>the wocky session used by this roster.</p>
 </div>
 </div>
@@ -813,7 +814,7 @@ Get access to the error quark of the roster.</p>
 <a name="WockyRoster.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" title='The "added" signal'>
 <a name="WockyRoster-added"></a><h3>The <code class="literal">"added"</code> signal</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a href="WockyRoster.html"><span class="type">WockyRoster</span></a> *wockyroster,
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *wockyroster,
                                                         <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>     *arg1,
                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>     user_data)        : Run Last</pre>
 <p>
@@ -841,7 +842,7 @@ Get access to the error quark of the roster.</p>
 <hr>
 <div class="refsect2" title='The "removed" signal'>
 <a name="WockyRoster-removed"></a><h3>The <code class="literal">"removed"</code> signal</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a href="WockyRoster.html"><span class="type">WockyRoster</span></a> *wockyroster,
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="WockyRoster.html" title="WockyRoster"><span class="type">WockyRoster</span></a> *wockyroster,
                                                         <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>     *arg1,
                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>     user_data)        : Run Last</pre>
 <p>
@@ -870,6 +871,6 @@ Get access to the error quark of the roster.</p>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.13</div>
+          Generated by GTK-Doc V1.14</div>
 </body>
 </html>

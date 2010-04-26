@@ -21,19 +21,24 @@
 #include "config.h"
 #include "bytestream-socks5.h"
 
-#include <arpa/inet.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <net/if.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include <gibber/gibber-sockets.h>
 
-#ifdef HAVE_GETIFADDRS
+#include <errno.h>
+
+/* on Darwin, net/if.h requires sys/sockets.h, which is included by
+ * gibber-sockets.h; so this must come after that header */
+#ifdef HAVE_NET_IF_H
+# include <net/if.h>
+#endif
+
+#include <string.h>
+#include <sys/types.h>
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
+#ifdef HAVE_IFADDRS_H
  #include <ifaddrs.h>
 #endif
 
@@ -120,14 +125,14 @@ struct _Streamhost
 {
   gchar *jid;
   gchar *host;
-  gchar *port;
+  guint16 port;
 };
 typedef struct _Streamhost Streamhost;
 
 static Streamhost *
 streamhost_new (const gchar *jid,
                 const gchar *host,
-                const gchar *port)
+                guint16 port)
 {
   Streamhost *streamhost;
 
@@ -137,7 +142,7 @@ streamhost_new (const gchar *jid,
   streamhost = g_slice_new0 (Streamhost);
   streamhost->jid = g_strdup (jid);
   streamhost->host = g_strdup (host);
-  streamhost->port = g_strdup (port);
+  streamhost->port = port;
 
   return streamhost;
 }
@@ -150,7 +155,7 @@ streamhost_free (Streamhost *streamhost)
 
   g_free (streamhost->jid);
   g_free (streamhost->host);
-  g_free (streamhost->port);
+
   g_slice_free (Streamhost, streamhost);
 }
 
@@ -1239,7 +1244,7 @@ socks5_connect (GabbleBytestreamSocks5 *self)
       return;
     }
 
-  DEBUG ("Trying streamhost %s on port %s", streamhost->host,
+  DEBUG ("Trying streamhost %s on port %d", streamhost->host,
       streamhost->port);
 
   transport = gibber_tcp_transport_new ();
@@ -1269,7 +1274,8 @@ gabble_bytestream_socks5_add_streamhost (GabbleBytestreamSocks5 *self,
   const gchar *zeroconf;
   const gchar *jid;
   const gchar *host;
-  const gchar *port;
+  const gchar *portstr;
+  gint64 port;
   Streamhost *streamhost;
 
   g_return_if_fail (!tp_strdiff (streamhost_node->name, "streamhost"));
@@ -1296,22 +1302,29 @@ gabble_bytestream_socks5_add_streamhost (GabbleBytestreamSocks5 *self,
       return;
     }
 
-  port = lm_message_node_get_attribute (streamhost_node, "port");
-  if (port == NULL)
+  portstr = lm_message_node_get_attribute (streamhost_node, "port");
+  if (portstr == NULL)
     {
       DEBUG ("streamhost doesn't contain a port");
       return;
     }
 
-  if (tp_strdiff (jid, priv->peer_jid) && priv->muc_contact)
+  port = g_ascii_strtoll (portstr, NULL, 10);
+  if (port <= 0 || port > G_MAXUINT16)
     {
-      DEBUG ("skip streamhost %s (%s:%s); we don't support relay with muc "
-          "contact", jid, host, port);
+      DEBUG ("Invalid port: %s", portstr);
       return;
     }
 
-  DEBUG ("streamhost with jid %s, host %s and port %s added", jid, host,
-      port);
+  if (tp_strdiff (jid, priv->peer_jid) && priv->muc_contact)
+    {
+      DEBUG ("skip streamhost %s (%s:%"G_GINT64_FORMAT
+          "); we don't support relay with muc contact", jid, host, port);
+      return;
+    }
+
+  DEBUG ("streamhost with jid %s, host %s and port %"G_GINT64_FORMAT" added",
+      jid, host, port);
 
   streamhost = streamhost_new (jid, host, port);
   priv->streamhosts = g_slist_append (priv->streamhosts, streamhost);
@@ -1536,7 +1549,7 @@ initiator_connected_to_proxy (GabbleBytestreamSocks5 *self)
       return;
     }
 
-  DEBUG ("connect to proxy: %s (%s:%s)", proxy->jid, proxy->host, proxy->port);
+  DEBUG ("connect to proxy: %s (%s:%d)", proxy->jid, proxy->host, proxy->port);
   priv->socks5_state = SOCKS5_STATE_INITIATOR_TRYING_CONNECT;
 
   transport = gibber_tcp_transport_new ();
@@ -1625,6 +1638,19 @@ socks5_init_error:
 
   return LM_HANDLER_RESULT_REMOVE_MESSAGE;
 }
+
+#ifdef G_OS_WIN32
+
+static GSList *
+get_local_interfaces_ips (void)
+{
+  /* FIXME: fd.o#24775: please implement this using ioctlsocket() and
+   * SIO_GET_INTERFACE_LIST, if you care about doing SOCKS5 bytestreams on
+   * Windows */
+  return NULL;
+}
+
+#else
 
 /* get_local_interfaces_ips original code from Farsight 2 (function
  * fs_interfaces_get_local_ips in /gst-libs/gst/farsight/fs-interfaces.c).
@@ -1776,6 +1802,8 @@ get_local_interfaces_ips (void)
 
 #endif /* ! HAVE_GETIFADDRS */
 
+#endif /* ! G_OS_WIN32 */
+
 static void
 new_connection_cb (GibberListener *listener,
                    GibberTransport *transport,
@@ -1876,17 +1904,21 @@ gabble_bytestream_socks5_initiate (GabbleBytestreamIface *iface)
       for (l = proxies; l != NULL; l = g_slist_next (l))
         {
           LmMessageNode *node;
+          gchar *portstr;
           GabbleSocks5Proxy *proxy = (GabbleSocks5Proxy *) l->data;
           NodeIter i = node_iter (msg->node);
 
           node = lm_message_node_add_child (node_iter_data (i),
               "streamhost", "");
 
+          portstr = g_strdup_printf ("%d", proxy->port);
+
           lm_message_node_set_attributes (node,
               "jid", proxy->jid,
               "host", proxy->host,
-              "port", proxy->port,
+              "port", portstr,
               NULL);
+          g_free (portstr);
         }
       g_slist_free (proxies);
     }

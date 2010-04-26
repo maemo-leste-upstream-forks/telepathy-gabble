@@ -18,7 +18,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#define _GNU_SOURCE /* for strptime */
 #include <string.h>
 #include <time.h>
 
@@ -609,7 +608,6 @@ static gboolean
 store_muc_disco_info_x (WockyXmppNode *field, gpointer data)
 {
   WockyMucPrivate *priv = data;
-  WockyXmppNode *val = NULL;
   const gchar *var = NULL;
 
   if (wocky_strdiff (field->name, "field"))
@@ -620,12 +618,8 @@ store_muc_disco_info_x (WockyXmppNode *field, gpointer data)
   if (wocky_strdiff (var, "muc#roominfo_description"))
     return TRUE;
 
-  val = wocky_xmpp_node_get_child (field, "value");
-
-  if (val == NULL)
-    return TRUE;
-
-  priv->desc = g_strdup (val->content);
+  priv->desc = g_strdup (
+      wocky_xmpp_node_get_content_from_child (field, "value"));
 
   return TRUE;
 }
@@ -913,7 +907,7 @@ presence_code (WockyXmppNode *node, gpointer data)
 
   if (code == NULL)    return TRUE;
 
-  cnum = g_ascii_strtoull (code, NULL, 10);
+  cnum = (gulong) g_ascii_strtoull (code, NULL, 10);
 
   if (cnum == 0)
     return TRUE;
@@ -1454,13 +1448,8 @@ handle_message (WockyPorter *porter,
         }
     }
 
-  child = wocky_xmpp_node_get_child (msg, "body");
-  if (child != NULL)
-    body = child->content;
-
-  child = wocky_xmpp_node_get_child (msg, "subject");
-  if (child != NULL)
-    subj = child->content;
+  body = wocky_xmpp_node_get_content_from_child (msg, "body");
+  subj = wocky_xmpp_node_get_content_from_child (msg, "subject");
 
   /* ********************************************************************** */
   /* parse timestap, if any */
@@ -1470,14 +1459,21 @@ handle_message (WockyPorter *porter,
     {
       const gchar *tm = wocky_xmpp_node_get_attribute (child, "stamp");
 
+      /* These timestamps do not contain a timezone, but are understood to be
+       * in GMT. They're in the format yyyymmddThhmmss, so if we append 'Z'
+       * we'll get (one of the many valid syntaxes for) an ISO-8601 timestamp.
+       */
       if (tm != NULL)
         {
-          struct tm when = { 0, };
-          char *ok = strptime (tm, "%Y%m%dT%T", &when);
-          if (ok == NULL || *ok != '\0')
+          GTimeVal timeval = { 0, 0 };
+          gchar *tm_dup = g_strdup_printf ("%sZ", tm);
+
+          if (!g_time_val_from_iso8601 (tm_dup, &timeval))
             DEBUG ("Malformed date string '%s' for " WOCKY_XMPP_NS_DELAY, tm);
           else
-            stamp = timegm (&when);
+            stamp = timeval.tv_sec;
+
+          g_free (tm_dup);
         }
     }
 

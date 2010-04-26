@@ -17,13 +17,37 @@ WockyPubsubNode
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT WockyPubsubNode ##### -->
 <para>
 
 </para>
 
 
+<!-- ##### SIGNAL WockyPubsubNode::deleted ##### -->
+<para>
+
+</para>
+
+@wockypubsubnode: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+
 <!-- ##### SIGNAL WockyPubsubNode::event-received ##### -->
+<para>
+
+</para>
+
+@wockypubsubnode: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@arg4: 
+
+<!-- ##### SIGNAL WockyPubsubNode::subscription-state-changed ##### -->
 <para>
 
 </para>
@@ -56,7 +80,7 @@ WockyPubsubNode
 
 </para>
 
-@node: 
+@self: 
 @Returns: 
 
 
@@ -65,7 +89,7 @@ WockyPubsubNode
 
 </para>
 
-@node: 
+@self: 
 @cancellable: 
 @callback: 
 @user_data: 
@@ -76,9 +100,226 @@ WockyPubsubNode
 
 </para>
 
-@node: 
+@self: 
 @result: 
 @error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_make_publish_stanza ##### -->
+<para>
+
+</para>
+
+@self: 
+@pubsub_out: 
+@publish_out: 
+@item_out: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_subscribe_async ##### -->
+<para>
+
+</para>
+
+@self: 
+@jid: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_subscribe_finish ##### -->
+<para>
+
+</para>
+
+@self: 
+@result: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_unsubscribe_async ##### -->
+<para>
+
+</para>
+
+@self: 
+@jid: 
+@subid: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_unsubscribe_finish ##### -->
+<para>
+
+</para>
+
+@self: 
+@result: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_list_affiliates_async ##### -->
+<para>
+
+</para>
+
+@self: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_list_affiliates_finish ##### -->
+<para>
+
+</para>
+
+@self: 
+@result: 
+@affiliates: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_list_subscribers_async ##### -->
+<para>
+
+</para>
+
+@self: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_list_subscribers_finish ##### -->
+<para>
+
+</para>
+
+@self: 
+@result: 
+@subscribers: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_make_list_affiliates_stanza ##### -->
+<para>
+
+</para>
+
+@self: 
+@pubsub_node: 
+@affiliations_node: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_make_list_subscribers_stanza ##### -->
+<para>
+
+</para>
+
+@self: 
+@pubsub_node: 
+@subscriptions_node: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_parse_affiliations ##### -->
+<para>
+
+</para>
+
+@self: 
+@affiliations_node: 
+@Returns: 
+
+
+<!-- ##### MACRO WOCKY_TYPE_PUBSUB_AFFILIATION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO WOCKY_TYPE_PUBSUB_AFFILIATION_STATE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT WockyPubsubAffiliation ##### -->
+<para>
+
+</para>
+
+@node: 
+@jid: 
+@state: 
+
+<!-- ##### ENUM WockyPubsubAffiliationState ##### -->
+<para>
+
+</para>
+
+@WOCKY_PUBSUB_AFFILIATION_OWNER: 
+@WOCKY_PUBSUB_AFFILIATION_PUBLISHER: 
+@WOCKY_PUBSUB_AFFILIATION_PUBLISH_ONLY: 
+@WOCKY_PUBSUB_AFFILIATION_MEMBER: 
+@WOCKY_PUBSUB_AFFILIATION_NONE: 
+@WOCKY_PUBSUB_AFFILIATION_OUTCAST: 
+
+<!-- ##### FUNCTION wocky_pubsub_affiliation_copy ##### -->
+<para>
+
+</para>
+
+@aff: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_affiliation_free ##### -->
+<para>
+
+</para>
+
+@aff: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_affiliation_list_copy ##### -->
+<para>
+
+</para>
+
+@affs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_affiliation_list_free ##### -->
+<para>
+
+</para>
+
+@affs: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_affiliation_new ##### -->
+<para>
+
+</para>
+
+@node: 
+@jid: 
+@state: 
 @Returns: 
 
 

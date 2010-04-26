@@ -1,3 +1,1004 @@
+commit 970a4d6f9c2c2f59d78d9e6b8e347b31440d0088
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 7 15:14:56 2010 +0100
+
+    Correctly scan generated code in out-of-tree builds
+
+ docs/reference/Makefile.am |   13 +++++++++++--
+ 1 files changed, 11 insertions(+), 2 deletions(-)
+
+commit f2dc3d965438fb69fcb516a76926dbf2671d0fd3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 7 15:13:16 2010 +0100
+
+    Fix typoes and missing params in pubsub documentation
+
+ wocky/wocky-pubsub-node.c    |   24 +++++++++++++++++++-----
+ wocky/wocky-pubsub-service.c |   10 ++++++----
+ 2 files changed, 25 insertions(+), 9 deletions(-)
+
+commit ec25e9372fd4fba4de419bffa6140b2861c0c17b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 7 15:09:16 2010 +0100
+
+    Consistently use 'self' in DataForm, PubsubNode, PubsubService
+    
+    These classes sometimes used 'self' as the first parameter to object
+    methods, and sometimes used 'form', 'node', 'service', etc. In some
+    cases, the parameter name was different between the declaration and
+    definition. This patch makes them always use 'self', and tweaks the
+    gtkdoc comments to match (some of which matched the definition rather
+    than the declaration, which makes gtkdoc cry).
+
+ wocky/wocky-data-form.c      |   52 +++++++++++++++++++++---------------------
+ wocky/wocky-data-form.h      |   16 ++++++------
+ wocky/wocky-pubsub-node.h    |    8 +++---
+ wocky/wocky-pubsub-service.c |    4 +-
+ wocky/wocky-pubsub-service.h |   16 ++++++------
+ 5 files changed, 48 insertions(+), 48 deletions(-)
+
+commit 6c18473e57612f9dc475ba79f5339b7f32a3bbfd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 7 15:03:38 2010 +0100
+
+    Add a bunch of new symbols to wocky-sections.txt
+
+ docs/reference/wocky-sections.txt |   26 ++++++++++++++++++++++++++
+ 1 files changed, 26 insertions(+), 0 deletions(-)
+
+commit a3646b39d2a493ed8d818f55b23d6cc9cc4b5503
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 7 15:00:05 2010 +0100
+
+    Remove non-existent sections from wocky-docs.sgml
+    
+    The WockyPubsubService enums are included in the WockyPubsubService
+    section, and wocky-types.h doesn't have any documentation of its own.
+
+ docs/reference/wocky-docs.sgml |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 6f5db6650014120076eff8e915a5ec666740ed6e
+Merge: 31ccb4e 8e6649d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 6 19:53:32 2010 +0100
+
+    Merge branch 'pubsub-notifications-subscribers-affiliates'
+    
+    Conflicts:
+    	wocky/wocky-utils.c
+    	wocky/wocky-utils.h
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 8e6649df9869c7db67e80136bca3d759c652c1ac
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 6 17:45:20 2010 +0100
+
+    Escape XMPP tags used in gtk-doc comments
+
+ wocky/wocky-pubsub-helpers.c |   36 +++++++++++++++++++-----------------
+ 1 files changed, 19 insertions(+), 17 deletions(-)
+
+commit 11a0b942304d367871606ccc3f3f929a3ba36155
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 6 17:35:58 2010 +0100
+
+    Un-magic-number the number of pubsub events
+
+ wocky/wocky-pubsub-node-protected.h |    3 ++-
+ wocky/wocky-pubsub-node.c           |    5 ++++-
+ wocky/wocky-pubsub-service.c        |    8 ++++----
+ 3 files changed, 10 insertions(+), 6 deletions(-)
+
+commit d4567f97cf4d99648281676c9b84fff59d33dbe8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 1 15:05:16 2010 +0100
+
+    Add API for retrieving affiliates to a node
+
+ tests/wocky-pubsub-node-test.c      |  125 +++++++++++++++++++++++++++++++
+ wocky/wocky-pubsub-node-protected.h |    9 ++
+ wocky/wocky-pubsub-node.c           |  139 +++++++++++++++++++++++++++++++++++
+ wocky/wocky-pubsub-node.h           |   12 +++
+ 4 files changed, 285 insertions(+), 0 deletions(-)
+
+commit 817566a768ae00128d805e278c3a433599c085c8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 1 14:21:35 2010 +0100
+
+    Use GQueue in subscription-parsing code.
+    
+    This looks more obviously right than prepend-and-reverse code, and is
+    shorter!
+
+ wocky/wocky-pubsub-service.c |   20 +++++++++-----------
+ 1 files changed, 9 insertions(+), 11 deletions(-)
+
+commit b9915ab9c21df0c5773cc1cd8f67524b1a237c21
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 1 11:48:55 2010 +0100
+
+    Macro-ify implementing a simple _finish() function
+    
+    I've written this function tens of times.
+
+ wocky/wocky-pubsub-node.c    |   19 +++----------------
+ wocky/wocky-pubsub-service.c |   19 +++----------------
+ wocky/wocky-utils.h          |   22 ++++++++++++++++++++++
+ 3 files changed, 28 insertions(+), 32 deletions(-)
+
+commit 3ab22ce66ab818fe6cfb58f121424110a65d63bc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 1 11:33:56 2010 +0100
+
+    Add types representing pubsub affiliations
+
+ wocky/Makefile.am         |    2 +
+ wocky/wocky-pubsub-node.c |   60 +++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-pubsub-node.h |   32 ++++++++++++++++++++++++
+ 3 files changed, 94 insertions(+), 0 deletions(-)
+
+commit 198f445aa1aba6812cc5812e9419e3c0ee18fdaf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 1 11:31:10 2010 +0100
+
+    Add a GList deep-copy convenience function
+
+ wocky/wocky-pubsub-service.c |    8 ++------
+ wocky/wocky-utils.c          |   15 +++++++++++++++
+ wocky/wocky-utils.h          |    2 ++
+ 3 files changed, 19 insertions(+), 6 deletions(-)
+
+commit af5f25d61f36e18755570fdea82e198ba74fa3d7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 31 20:23:57 2010 +0100
+
+    Add API for listing subscribers to a node.
+
+ tests/Makefile.am                   |    1 +
+ tests/wocky-pubsub-node-test.c      |  127 ++++++++++++++++++++++++++++++++++-
+ wocky/wocky-pubsub-node-protected.h |    5 ++
+ wocky/wocky-pubsub-node.c           |  109 ++++++++++++++++++++++++++++++
+ wocky/wocky-pubsub-node.h           |   12 +++
+ 5 files changed, 253 insertions(+), 1 deletions(-)
+
+commit f8db89859134b119413c37b5f95120350b1967a5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 31 20:22:31 2010 +0100
+
+    Extract test helper code for checking subscriptions
+    
+    This'll be needed in the node test in a moment...
+
+ tests/Makefile.am                 |    1 +
+ tests/wocky-pubsub-service-test.c |   47 +++----------------------------
+ tests/wocky-pubsub-test-helpers.c |   54 +++++++++++++++++++++++++++++++++++++
+ tests/wocky-pubsub-test-helpers.h |   24 ++++++++++++++++
+ 4 files changed, 84 insertions(+), 42 deletions(-)
+
+commit bd9ee1b6d58e3bec839a0abeb626d7bd3da68e94
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 31 17:49:51 2010 +0100
+
+    Reduce code duplication in creating pubsub stanzas
+
+ wocky/wocky-pubsub-helpers.c |   67 ++++++++++++++++++++++++++++++++----------
+ wocky/wocky-pubsub-helpers.h |    8 +++++
+ wocky/wocky-pubsub-node.c    |   54 ++++++++-------------------------
+ wocky/wocky-pubsub-service.c |   51 ++++++-------------------------
+ 4 files changed, 82 insertions(+), 98 deletions(-)
+
+commit ffbce9096ed2e437ce31100bc5bdb0c5af38887a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 31 16:28:15 2010 +0100
+
+    Add signals for node deletion notifications
+
+ tests/wocky-pubsub-node-test.c |  127 ++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-pubsub-node.c      |   29 +++++++++
+ wocky/wocky-pubsub-service.c   |   33 ++++++++++
+ 3 files changed, 189 insertions(+), 0 deletions(-)
+
+commit 40ece87dfbd7e0c68665bffaf9ae804a838217fb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 31 16:43:49 2010 +0100
+
+    Make node event handlers return void
+    
+    They all just returned TRUE anyway, which is conceptually correct: even
+    if they can't parse the stanza, they *are* handling it. And in any case
+    the stanza handler in WockyPubsubService ignored their return value and
+    returned TRUE too, for the same reason.
+
+ wocky/wocky-pubsub-node-protected.h |    2 +-
+ wocky/wocky-pubsub-node.c           |   11 ++---------
+ 2 files changed, 3 insertions(+), 10 deletions(-)
+
+commit 420ba1b755ade33e612703e65f57a31f380eabef
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 31 16:41:32 2010 +0100
+
+    Move list of event handlers into WockyPubsubNode
+
+ wocky/wocky-pubsub-node-protected.h |   20 ++++++++++--------
+ wocky/wocky-pubsub-node.c           |   20 +++++++++++++++---
+ wocky/wocky-pubsub-service.c        |   37 ++++++++++++++++------------------
+ 3 files changed, 44 insertions(+), 33 deletions(-)
+
+commit 1ffedc50a6d73dc2b8823b2da36e3f3a0c1a4360
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 31 15:48:41 2010 +0100
+
+    Remove duplicated handlers for PubSub events
+    
+    Given that the WockyPubsubService has to match these events *anyway* to
+    make the corresponding WockyPubsubNodes appear when necessary, there's
+    really no point in the nodes registering higher-priority handlers and
+    duplicating the stanza breakdown code.
+
+ wocky/wocky-pubsub-node.c |   79 +--------------------------------------------
+ 1 files changed, 1 insertions(+), 78 deletions(-)
+
+commit 8b7ef53909e58bc5f4cbcc55ec6ca9afba5dfdbb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 31 15:45:22 2010 +0100
+
+    Reduce repeated breakdown of event stanzas.
+
+ wocky/wocky-pubsub-node-protected.h |   15 +++++++++---
+ wocky/wocky-pubsub-node.c           |   43 ++++++++++++++++++++--------------
+ wocky/wocky-pubsub-service.c        |    2 +-
+ 3 files changed, 37 insertions(+), 23 deletions(-)
+
+commit f20b421e773a65a25dfdeb4f07c3cd0713e8c119
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 31 13:43:52 2010 +0100
+
+    Generalize event propagation from PubsubService to Node
+
+ wocky/wocky-pubsub-node-protected.h |    3 +
+ wocky/wocky-pubsub-service.c        |  131 ++++++++++++++++------------------
+ 2 files changed, 65 insertions(+), 69 deletions(-)
+
+commit 2a5f4f613af27951bd5f5833583e28a8ce1ec99d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 30 20:42:52 2010 +0100
+
+    Add WockyPubsubService::subscription-state-changed
+    
+    This works just like event-received. The slight duplication in handler
+    code between Service and Node bothers me a bit, as does the similarity
+    between pubsub_service_handle_subscription_event and the one for items
+    events. Maybe I'll extract some common code.
+
+ tests/wocky-pubsub-node-test.c |   52 ++++++++++++++++++++--
+ wocky/wocky-pubsub-service.c   |   93 +++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 135 insertions(+), 10 deletions(-)
+
+commit dd7d70d0a2475052246213e87d7f7aa361f79ca3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 30 20:20:42 2010 +0100
+
+    Add WockyPubsubNode::subscription-state-changed signal
+
+ tests/wocky-pubsub-node-test.c      |  102 +++++++++++++++++++++++++++++++++++
+ wocky/wocky-pubsub-node-protected.h |    3 +
+ wocky/wocky-pubsub-node.c           |   99 ++++++++++++++++++++++++++++++++-
+ 3 files changed, 201 insertions(+), 3 deletions(-)
+
+commit 31ccb4e3fcf90786da915228a6b579a6b457f914
+Merge: b1512ce f314881
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Apr 6 15:52:56 2010 +0100
+
+    Merge branch 'trivia'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit f3148819fa97949461532ae37d603d10a28b6909
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Apr 6 15:47:22 2010 +0100
+
+    Add missing bits of Wocky to sections.txt, docs.sgml
+
+ docs/reference/wocky-docs.sgml    |   24 ++++++++++++++++++++----
+ docs/reference/wocky-sections.txt |   29 +++++++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+), 4 deletions(-)
+
+commit 54499584f15f7609698d08cb152af6e603fd4ffa
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Apr 6 15:39:15 2010 +0100
+
+    Sort wocky-docs.sgml alphabetically by section, in the absence of any other obvious organisation
+
+ docs/reference/wocky-docs.sgml |   30 ++++++++++++++++--------------
+ 1 files changed, 16 insertions(+), 14 deletions(-)
+
+commit a4b03a44f568fd8cf33531bf65972ae056bb28a6
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Apr 6 15:36:51 2010 +0100
+
+    Revert "docs: ignore internal headers"
+    
+    This reverts commit 50d58d7fc610fa884f849df6103b533400bed52b.
+    Will tells me that *-protected.h are intended to be used in subclasses
+    (potentially external to Wocky), and pubsub-helpers.h is public too.
+
+ docs/reference/Makefile.am |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+commit b1512ce640bcd4eb23ba52b35457676378bea376
+Merge: e55140b 2565916
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Apr 6 15:28:44 2010 +0100
+
+    Merge branch 'oleavr-windows'
+    
+    Reviewed-by: Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 8ffde7f7b28635b308db32a35e316af33b0f4226
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Apr 6 15:17:00 2010 +0100
+
+    docs: add more recent API
+    
+    unused.txt is now empty.
+
+ docs/reference/wocky-sections.txt |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 50d58d7fc610fa884f849df6103b533400bed52b
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Apr 6 15:15:21 2010 +0100
+
+    docs: ignore internal headers
+    
+    From usage, I infer that wocky-pubsub-helpers.h is probably meant to
+    be internal?
+
+ docs/reference/Makefile.am |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 9d0ab4f57ecf752aedac931deb78f01fb66b5f14
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Apr 6 15:14:31 2010 +0100
+
+    docs: add some of the recent API
+
+ docs/reference/wocky-sections.txt |   19 +++++++++++++++++++
+ 1 files changed, 19 insertions(+), 0 deletions(-)
+
+commit 4bc0a267fec5864fca09bfcd31e0d1d2176b88ac
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Apr 6 15:14:11 2010 +0100
+
+    docs: adapt to WockyDataForm being singular
+
+ docs/reference/wocky-sections.txt |   54 ++++++++++++++++++++-----------------
+ 1 files changed, 29 insertions(+), 25 deletions(-)
+
+commit 16e729516b8f2a12e552a858005a70646497ee06
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Apr 6 14:53:21 2010 +0100
+
+    Remove wocky_pubsub_node_new from documentation
+
+ docs/reference/wocky-sections.txt |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit c0a5054d4ce403cd5fe8e8f97659da31fbf581cd
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Apr 6 14:48:14 2010 +0100
+
+    Don't distribute generated sources in the tarball
+
+ wocky/Makefile.am |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit f4be843b46d8fd78008300005811517944623ca9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Mar 29 19:19:50 2010 +0100
+
+    Rename handlers for <event><items/>
+    
+    We'll be handling other kinds of events soon, so these need less generic
+    names.
+
+ wocky/wocky-pubsub-node-protected.h |    2 +-
+ wocky/wocky-pubsub-node.c           |   10 +++++-----
+ wocky/wocky-pubsub-service.c        |    8 ++++----
+ 3 files changed, 10 insertions(+), 10 deletions(-)
+
+commit e55140b3c4599221e3be9fa28bab21ae6ee22e21
+Merge: f22cfb5 c05459d
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   Wed Mar 31 18:03:05 2010 -0400
+
+    Merge branch 'master' of git+ssh://git.collabora.co.uk/git/wocky
+
+commit c05459dd72d0fbc2c1f26ca75bf38a7a4802c946
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Mar 31 16:54:02 2010 +0100
+
+    Add debugging for the stream opening and closing we sent
+
+ wocky/wocky-xmpp-writer.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 2fb60d44bd9266d0847b99b0188ac3dbe461ebfa
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Mar 31 16:53:41 2010 +0100
+
+    Add debugging for the stream opening we receive
+
+ wocky/wocky-xmpp-reader.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+
+commit fec294eab0b20b654616f4496c271f18679fb199
+Author: Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
+Date:   Wed Mar 31 13:04:06 2010 +0200
+
+    Avoid redundant newlines in open stream stanza
+    
+    Openfire doesn't like them.
+
+ wocky/wocky-xmpp-writer.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+commit f22cfb549c19eb25e6f027a626c2133f60494def
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   Tue Mar 30 19:32:59 2010 -0400
+
+    Remove g_error_free after g_propagate_error.
+    g_propagate_error doesn't copy the error, it just sets it from dst
+    to src. So by freeing it here, it causes a double free later on which
+    causes wocky to segfault.
+
+ wocky/wocky-xmpp-connection.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit e9d31f1d3f075090dd3c18deda8112f7dca38cc2
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   Tue Mar 30 11:54:59 2010 -0400
+
+    Adding tests/wocky-data-form-test into .gitignore
+
+ .gitignore |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 01a69bedb2b77e31c60c9e489e99b625c59b7959
+Merge: bc9ae90 9d70d77
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 25 18:29:00 2010 +0000
+
+    Merge branch 'pubsub-create-delete-blind-form-submission'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 9d70d77cdb13aa56e989e52436cdc3dd9ba303e9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 25 18:01:53 2010 +0000
+
+    State that data form GValues are slice-allocated
+
+ wocky/wocky-data-form.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit b557c4daeab438588d6f75b2ead63d0e52f71abc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 25 17:59:45 2010 +0000
+
+    Correct over-zealous depluralizing of Data Forms
+
+ tests/wocky-data-form-test.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 921370d18d5633282c6d2e872879de691c215f58
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 25 15:01:51 2010 +0000
+
+    Add API for setting FORM_TYPE when blindly submitting
+
+ tests/wocky-data-form-test.c |   25 +++++++++++++++++++++----
+ wocky/wocky-data-form.c      |   37 +++++++++++++++++++++++++++++++++++++
+ wocky/wocky-data-form.h      |    3 +++
+ 3 files changed, 61 insertions(+), 4 deletions(-)
+
+commit 74072d08ab03f6f70513542728d5b0fdbfe33229
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 25 12:46:22 2010 +0000
+
+    Use get_content_from_child a bunch.
+    
+    I actually thought it would be useful in more places than this. Oh well.
+
+ wocky/wocky-data-form.c  |   36 ++++++++++--------------------------
+ wocky/wocky-muc.c        |   18 ++++--------------
+ wocky/wocky-xmpp-error.c |    7 ++-----
+ 3 files changed, 16 insertions(+), 45 deletions(-)
+
+commit e3b19005cc7512ae8bb37a6c949c08ce343b01ae
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 25 12:33:13 2010 +0000
+
+    Add helpers to get content from a child node.
+    
+    I've noticed a lot of code following this pattern:
+    
+      WockyXmppNode *foo_node;
+      const gchar *foo = NULL;
+    
+      foo_node = wocky_xmpp_node_get_child (parent, "foo");
+    
+      if (foo_node != NULL)
+        foo = foo_node->content;
+    
+    These helpers reduce the above to one line.
+
+ docs/reference/wocky-sections.txt |    2 +
+ wocky/wocky-xmpp-node.c           |   40 +++++++++++++++++++++++++++++++++++++
+ wocky/wocky-xmpp-node.h           |    8 +++++++
+ 3 files changed, 50 insertions(+), 0 deletions(-)
+
+commit f0d71429ea4111170f667868c3d161554da4a600
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 24 21:18:18 2010 +0000
+
+    Make form field generation data-driven.
+    
+    It's safer to drive this based on the type of the GValue rather than the
+    type of the field. If the API user messes up and sets a list of values
+    rather than a boolean, then, well, the server will get upset and tell
+    them they're wrong.
+
+ wocky/wocky-data-form.c |  111 ++++++++++++++--------------------------------
+ 1 files changed, 34 insertions(+), 77 deletions(-)
+
+commit d9cb86374cf098863de68e25b3b29c899d1d3044
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 24 20:36:16 2010 +0000
+
+    Add helpers to set data form fields' values
+    
+    Rootling around in a hash table to fish out the right struct and then
+    replacing one of its members looked kind of strange. This is more
+    obvious and easier. The API also supports filling in fields that the
+    WockyDataForm object doesn't know about; this is to support blindly
+    submitting forms with well-known fields (such as PubSub configuration)
+    without having to first ask the server for the form.
+    
+    This patch also adds a test for such blind submission.
+
+ tests/wocky-data-form-test.c      |  123 +++++++++++++++++++++++++++++++-----
+ tests/wocky-pubsub-service-test.c |   15 +++--
+ wocky/wocky-data-form.c           |  124 ++++++++++++++++++++++++++++++++++---
+ wocky/wocky-data-form.h           |   15 +++++
+ 4 files changed, 244 insertions(+), 33 deletions(-)
+
+commit e97bf5cba32d8b8bbb28a6be23c8f547d751129d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 24 19:52:21 2010 +0000
+
+    Parse each form field using a node iterator.
+    
+    I think this makes the code a lot clearer.
+
+ wocky/wocky-data-form.c |   59 +++++++++++++++++++++++++++-------------------
+ 1 files changed, 35 insertions(+), 24 deletions(-)
+
+commit 6ab8b7622f8e00a0c100fa5a218b932f67530dd1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 24 19:08:57 2010 +0000
+
+    Allow fields' type to be unspecified when submitting.
+    
+    When we parse incoming forms, we never produce fields with unspecified
+    type: if the XML doesn't specify the type, we default to text-single as
+    specified by XEP-0004. This is not completely satisfactory: when parsing
+    a form result, we should be able to pre-seed the WockyDataForm object
+    with prior knowledge about the types of fields. But it'll do for now.
+    
+    When submitting a form, we allow fields to have unspecified type, and
+    submit them with no type='' attribute. Quoth XEP-0004:
+    
+    > For data forms of type "submit", inclusion of the 'type' attribute is
+    > OPTIONAL, since the form-processing entity is assumed to understand
+    > the data types associated with forms that it processes.
+
+ wocky/wocky-data-form.c |   38 ++++++++++++++++++++++++++++++++++++--
+ wocky/wocky-data-form.h |    1 +
+ 2 files changed, 37 insertions(+), 2 deletions(-)
+
+commit 889fa983b3a959c15de2a24debb8457f783c1f11
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 24 19:04:49 2010 +0000
+
+    Support parsing fields with no type=''
+    
+    XEP-0004 specifies that fields in forms of type='form' (that is, the
+    form being presented to you by the server) which have no type=''
+    attribute default to being text-single.
+
+ tests/wocky-data-form-test.c |   18 ++++++++++++++++--
+ wocky/wocky-data-form.c      |   14 ++++++++------
+ 2 files changed, 24 insertions(+), 8 deletions(-)
+
+commit 9499619a157cd9003491f355ff12e0df45d9a00d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 24 16:09:25 2010 +0000
+
+    Rename WockyDataForms to WockyDataForm
+    
+    While XEP-0004 is plural, the class in Wocky represents a singular form.
+
+ tests/Makefile.am                      |    8 +-
+ tests/wocky-data-form-test.c           |  712 ++++++++++++++++++++++++++++
+ tests/wocky-data-forms-test.c          |  712 ----------------------------
+ tests/wocky-pubsub-service-test.c      |   36 +-
+ wocky/Makefile.am                      |    8 +-
+ wocky/wocky-data-form.c                |  811 ++++++++++++++++++++++++++++++++
+ wocky/wocky-data-form.h                |  130 +++++
+ wocky/wocky-data-forms.c               |  811 --------------------------------
+ wocky/wocky-data-forms.h               |  130 -----
+ wocky/wocky-debug.c                    |    2 +-
+ wocky/wocky-debug.h                    |    2 +-
+ wocky/wocky-pubsub-service-protected.h |    2 +-
+ wocky/wocky-pubsub-service.c           |   16 +-
+ wocky/wocky-pubsub-service.h           |    6 +-
+ 14 files changed, 1693 insertions(+), 1693 deletions(-)
+
+commit f902b05fd579f30ed35114e95a5f60eeb1991646
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 24 13:37:20 2010 +0000
+
+    Extract wocky_pubsub_node_make_delete_stanza()
+
+ wocky/wocky-pubsub-node-protected.h |    4 +++
+ wocky/wocky-pubsub-node.c           |   36 +++++++++++++++++++++++++++-------
+ 2 files changed, 32 insertions(+), 8 deletions(-)
+
+commit 2c7531fed7abf7ea154cf69ab7516d282f52ad3f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 24 13:07:23 2010 +0000
+
+    Refactor the bulk of parsing create node replies
+    
+    This allows subclasses to reuse it.
+
+ wocky/wocky-pubsub-service-protected.h |    7 +++
+ wocky/wocky-pubsub-service.c           |   86 +++++++++++++++++++------------
+ 2 files changed, 60 insertions(+), 33 deletions(-)
+
+commit 525126fe39bb4aa48e1546336d6d82f3dea29e3b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 24 02:13:14 2010 +0000
+
+    Deal with empty replies to create_node()
+    
+    When you ask a pubsub server to create you a node, in some circumstances
+    the IQ result contains <pubsub><create node='$NodeID'/></>, and in some
+    circumstances it does not:
+    
+    • If you included a NodeID in your request, and the server did exactly
+      as you asked and created that node, there's no need to include any
+      information in the result's body as you already know what it would
+      contain. (XEP-0060 actually goes further than this, and says that the
+      result MUST NOT have a body in this case, which seems overzealous.)
+    
+    • If you included a NodeID in your request, but the server created a
+      node with a different NodeID, then it MUST include a body in the
+      result to tell you the node's actual ID.
+    
+    • If you did not include a NodeID in your request (to create an "instant
+      node"), the server MUST include a body in the result to tell you the
+      ID it decided to use.
+    
+    We previously assumed that the result contains a body, so the first case
+    above wouldn't work with a fully-pedantic server. This patch fixes the
+    tests to test that case, fixes the implementation to support that case,
+    and adds a test for the second case.
+
+ tests/wocky-pubsub-service-test.c |   76 +++++++++++++++++++++++++++++++------
+ wocky/wocky-pubsub-service.c      |   36 +++++++++++++----
+ 2 files changed, 92 insertions(+), 20 deletions(-)
+
+commit f6f96522cc9ff0e7541f6087f254e62900454fbf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 24 02:09:21 2010 +0000
+
+    Add and use new variants of pubsub_distill_iq_reply
+    
+    Often, you don't care at all about what the iq reply contains, only
+    whether it's a result or an error. wocky_pubsub_distill_void_iq_reply()
+    deals with that case more clearly than the caller passing three NULL
+    arguments to wocky_pubsub_distill_iq_reply().
+    
+    Additionally, there exist cases where you're interested in the reply's
+    body if it's present, but the reply being empty is not an error.
+    wocky_pubsub_distill_ambivalent_iq_reply() handles this case.
+    
+    They are all implemented in terms of a slightly enhanced version of the
+    former body of wocky_pubsub_distill_iq_reply().
+
+ wocky/wocky-pubsub-helpers.c |  126 ++++++++++++++++++++++++++++++++++++++----
+ wocky/wocky-pubsub-helpers.h |   11 ++++
+ wocky/wocky-pubsub-node.c    |    4 +-
+ 3 files changed, 127 insertions(+), 14 deletions(-)
+
+commit ef53f61d5354999d0d934d4eacdc83d76fdde4ca
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 23 18:32:03 2010 +0000
+
+    Don't include empty <configure/> when creating a node
+    
+    XEP-0060 §8.1.2 Create a Node With Default Configuration says we should
+    just send <pubsub><create/></> if we don't want to deviate from the
+    default configuration.
+
+ wocky/wocky-pubsub-service.c |   12 +++++++-----
+ 1 files changed, 7 insertions(+), 5 deletions(-)
+
+commit 1913db9081a8f3269d4287294f2ec45fedc8fba7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 23 18:29:25 2010 +0000
+
+    Extract a create_create_node_stanza() helper
+    
+    I'm so happy these helpers create complete stanzas rather than just
+    WockyXmppNodes or the name would be ridiculous.
+
+ wocky/wocky-pubsub-service-protected.h |    7 +++++
+ wocky/wocky-pubsub-service.c           |   43 +++++++++++++++++++++++---------
+ 2 files changed, 38 insertions(+), 12 deletions(-)
+
+commit d9fa8f017ae22875a126b46d313b7bb097b509b9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 23 18:27:53 2010 +0000
+
+    Rename an internal PubsubService helper function
+    
+    create_node() clashed with a name I wanted to use for a WockyXmppNode *
+    for a <create/> element. It is unfortunate that node means two things.
+    :(
+
+ wocky/wocky-pubsub-service.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit f03f7f02d34ed55e9c2d5dc56f5f606d064088a6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 23 17:59:02 2010 +0000
+
+    Properly initialize an out parameter
+
+ wocky/wocky-pubsub-service.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 256591691c38f7b6fa99c18e71fb4ec764373a84
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Mar 23 15:17:34 2010 +0000
+
+    wocky_absolutize_path: check for errors and perhaps return NULL
+    
+    Both callers already check for NULL, so this is OK
+
+ wocky/wocky-utils.c |   17 +++++++++++++++--
+ 1 files changed, 15 insertions(+), 2 deletions(-)
+
+commit 875970a858a8a3769af9e0266ac6db274fb49f74
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Mar 23 15:10:42 2010 +0000
+
+    Replace uses of realpath() with a portable GFile-based version
+    
+    This doesn't resolve symlinks, because we don't really need to; it just
+    makes the filename absolute.
+    
+    Loosely based on code from Ole André Vadla Ravnås
+    <ole.andre.ravnas@tandberg.com> on fd.o #27244.
+
+ wocky/wocky-connector.c |    4 ++--
+ wocky/wocky-utils.c     |   30 ++++++++++++++++++++++++++++--
+ wocky/wocky-utils.h     |    2 ++
+ 3 files changed, 32 insertions(+), 4 deletions(-)
+
+commit 2dbbccf6744b448edda23b3f7acb666e70667a74
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Mar 23 14:52:34 2010 +0000
+
+    Parse MUC timestamps using g_time_val_from_iso8601, for portability
+    
+    Windows doesn't have strptime.
+    
+    Based on code from Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>,
+    and on code I wrote in a telepathy-gabble branch.
+
+ wocky/wocky-muc.c |   16 +++++++++++-----
+ 1 files changed, 11 insertions(+), 5 deletions(-)
+
+commit 5b4a65885d363e228c3a848407bfc1d6fb5664c4
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Mar 23 14:35:23 2010 +0000
+
+    wocky-openssl: in error_to_string, remove casts made unnecessary by Ole Andre's patch
+
+ wocky/wocky-openssl.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 224b568589a851924b6a2ee1a27065ae8d98e84e
+Author: Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
+Date:   Mon Mar 22 16:28:33 2010 +0100
+
+    Fix error_to_string() crash
+    
+    Declaring the static ssl_error array as const means that it may be read-
+    only at runtime, which is not what you want in this case.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ wocky/wocky-openssl.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a4a5211f12699cf85ad43d839254d2dc97132a0f
+Author: Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
+Date:   Mon Mar 22 16:26:35 2010 +0100
+
+    Replace isXXX() with g_ascii_isXXX() to improve portability
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ wocky/wocky-openssl.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 1e370d3be9ea5e14f0b24464cec387c78c9977ab
+Author: Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
+Date:   Mon Mar 22 16:25:56 2010 +0100
+
+    Avoid C99 named initializers
+    
+    MSVC doesn't support C99.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ wocky/wocky-sasl-handler.c |   19 ++++++++++---------
+ wocky/wocky-xmpp-reader.c  |   37 ++++++++++++++++++++++++++++++++-----
+ 2 files changed, 42 insertions(+), 14 deletions(-)
+
+commit 336bbbb4d1ca1dc04161307544939131c54e9f1e
+Author: Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
+Date:   Mon Mar 22 16:25:20 2010 +0100
+
+    Replace CA/CRL stat logic with g_file_test to improve portability
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ wocky/wocky-openssl.c |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
+
+commit 2b974812dd00dac400db215c42b9dfa283ac56f8
+Author: Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
+Date:   Mon Mar 22 16:24:08 2010 +0100
+
+    Fix OpenSSL include issue on Windows
+    
+    OpenSSL's Windows headers apparently require windows.h to be included
+    before including them. Yikes.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ wocky/wocky-openssl.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 4d8143fae323fd81331811024a694f855ff7ce30
+Author: Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
+Date:   Mon Mar 22 16:21:14 2010 +0100
+
+    Fix warnings related to DEBUG() usage without arguments
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ wocky/wocky-openssl.c |   26 +++++++++++++-------------
+ 1 files changed, 13 insertions(+), 13 deletions(-)
+
+commit b103a1940c2719123fff4e3ce79d4b76d21b70ce
+Author: Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
+Date:   Mon Mar 22 16:19:44 2010 +0100
+
+    Add a missing cast to make MSVC a bit happier warning-wise
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ wocky/wocky-muc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5669b94e7d0f22e5b7b0df861368a5228723fda7
+Author: Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
+Date:   Mon Mar 22 16:19:00 2010 +0100
+
+    Fix a trivial warning where guint was used instead of WockyTLSCertStatus
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ wocky/wocky-connector.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit fac774c5a3d09d51a16680eb7422f73b87bb86c2
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Mar 23 14:32:33 2010 +0000
+
+    In the files touched by Ole Andre's patch, put headers in the preferred order
+    
+    * config.h first of all
+    * header corresponding to the source next, to verify self-containedness
+    * system headers next, followed by conditional system headers (with a
+      bit more whitespace for clarity)
+    * library and internal headers last
+
+ wocky/wocky-bare-contact.c     |   12 +++++++-----
+ wocky/wocky-connector.c        |   10 ++++++----
+ wocky/wocky-contact-factory.c  |    8 +++++---
+ wocky/wocky-contact.c          |   10 ++++++----
+ wocky/wocky-openssl.c          |    7 ++++---
+ wocky/wocky-porter.c           |   10 ++++++----
+ wocky/wocky-resource-contact.c |   10 ++++++----
+ wocky/wocky-session.c          |    9 +++++----
+ wocky/wocky-xmpp-connection.c  |   10 ++++++----
+ 9 files changed, 51 insertions(+), 35 deletions(-)
+
+commit a4747da6af62731cbb5b77261064bef212691f29
+Author: Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
+Date:   Mon Mar 22 16:15:37 2010 +0100
+
+    Don't include unistd.h unless available
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ wocky/wocky-bare-contact.c     |    6 ++++++
+ wocky/wocky-connector.c        |    6 ++++++
+ wocky/wocky-contact-factory.c  |    6 ++++++
+ wocky/wocky-contact.c          |    6 ++++++
+ wocky/wocky-openssl.c          |    6 ++++++
+ wocky/wocky-porter.c           |    5 +++++
+ wocky/wocky-resource-contact.c |    6 ++++++
+ wocky/wocky-session.c          |    6 ++++++
+ wocky/wocky-xmpp-connection.c  |    5 +++++
+ 9 files changed, 52 insertions(+), 0 deletions(-)
+
+commit a59c4bf130f689e60c8a9ec4ce5e987aa00b7d83
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Mar 23 14:30:59 2010 +0000
+
+    configure.ac: check for unistd.h
+
+ configure.ac |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit aeac3aa08def7fd47e1a432005706433ff281440
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Mar 23 14:30:51 2010 +0000
+
+    configure.ac: work around mis-syntax-highlighting of apostrophe
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit bc9ae907cacffde000bb7daecaa4069cb00d5d83
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 18 16:19:48 2010 +0000
+
+    Make multi-line variables consistent
+    
+    The right-aligned backslashes are great and all, but when you add a new
+    header that's longer (as I did with wocky-pubsub-service-protected.h)
+    you have to adjust the whole list or it becomes inconsistent.
+    
+    Also the wocky-muc.c entry had a whole bunch of tabs rather than spaces
+    which made it not line up anyway.
+
+ wocky/Makefile.am |  118 ++++++++++++++++++++++++++--------------------------
+ 1 files changed, 59 insertions(+), 59 deletions(-)
+
 commit 6fdcb861bd5d01093b0ce2c2d5998df0595410cb
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Tue Mar 16 19:32:16 2010 +0000

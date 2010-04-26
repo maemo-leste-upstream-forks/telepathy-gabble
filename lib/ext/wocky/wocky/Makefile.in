@@ -76,21 +76,14 @@ am__libwocky_la_SOURCES_DIST = wocky-types.h wocky.c wocky.h \
 	wocky-resource-contact.h wocky-roster.c wocky-roster.h \
 	wocky-contact-factory.c wocky-contact-factory.h \
 	wocky-session.c wocky-session.h wocky-muc.h wocky-muc.c \
-	wocky-pep-service.c wocky-pep-service.h wocky-data-forms.c \
-	wocky-data-forms.h wocky-pubsub-helpers.c \
+	wocky-pep-service.c wocky-pep-service.h wocky-data-form.c \
+	wocky-data-form.h wocky-pubsub-helpers.c \
 	wocky-pubsub-helpers.h wocky-pubsub-service.c \
 	wocky-pubsub-service.h wocky-pubsub-service-protected.h \
 	wocky-pubsub-node.c wocky-pubsub-node.h \
 	wocky-pubsub-node-protected.h wocky-openssl.c wocky-tls.h \
 	wocky-openssl-dh512.c wocky-openssl-dh1024.c \
-	wocky-openssl-dh2048.c wocky-openssl-dh4096.c wocky-tls.c \
-	wocky-signals-marshal.list wocky-signals-marshal.h \
-	wocky-signals-marshal.c wocky-data-forms-enumtypes.c \
-	wocky-data-forms-enumtypes.h wocky-muc-enumtypes.c \
-	wocky-muc-enumtypes.h wocky-pubsub-service-enumtypes.c \
-	wocky-pubsub-service-enumtypes.h wocky-xmpp-error-enumtypes.c \
-	wocky-xmpp-error-enumtypes.h wocky-xmpp-reader-enumtypes.c \
-	wocky-xmpp-reader-enumtypes.h
+	wocky-openssl-dh2048.c wocky-openssl-dh4096.c wocky-tls.c
 am__objects_1 = wocky-openssl.lo wocky-openssl-dh512.lo \
 	wocky-openssl-dh1024.lo wocky-openssl-dh2048.lo \
 	wocky-openssl-dh4096.lo
@@ -105,14 +98,17 @@ am__objects_5 = wocky.lo wocky-connector.lo wocky-xmpp-connection.lo \
 	wocky-sasl-plain.lo wocky-porter.lo wocky-contact.lo \
 	wocky-bare-contact.lo wocky-resource-contact.lo \
 	wocky-roster.lo wocky-contact-factory.lo wocky-session.lo \
-	wocky-muc.lo wocky-pep-service.lo wocky-data-forms.lo \
+	wocky-muc.lo wocky-pep-service.lo wocky-data-form.lo \
 	wocky-pubsub-helpers.lo wocky-pubsub-service.lo \
 	wocky-pubsub-node.lo $(am__objects_2) $(am__objects_4)
-am__objects_6 = wocky-signals-marshal.lo wocky-data-forms-enumtypes.lo \
-	wocky-muc-enumtypes.lo wocky-pubsub-service-enumtypes.lo \
-	wocky-xmpp-error-enumtypes.lo wocky-xmpp-reader-enumtypes.lo
-am_libwocky_la_OBJECTS = $(am__objects_5) $(am__objects_6)
-libwocky_la_OBJECTS = $(am_libwocky_la_OBJECTS)
+am_libwocky_la_OBJECTS = $(am__objects_5)
+nodist_libwocky_la_OBJECTS = wocky-signals-marshal.lo \
+	wocky-data-form-enumtypes.lo wocky-muc-enumtypes.lo \
+	wocky-pubsub-service-enumtypes.lo \
+	wocky-pubsub-node-enumtypes.lo wocky-xmpp-error-enumtypes.lo \
+	wocky-xmpp-reader-enumtypes.lo
+libwocky_la_OBJECTS = $(am_libwocky_la_OBJECTS) \
+	$(nodist_libwocky_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -142,7 +138,7 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(libwocky_la_SOURCES)
+SOURCES = $(libwocky_la_SOURCES) $(nodist_libwocky_la_SOURCES)
 DIST_SOURCES = $(am__libwocky_la_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
@@ -289,24 +285,27 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LTLIBRARIES = libwocky.la
 EXTRA_DIST = $(am__append_2) $(am__append_4)
-BUILT_SOURCES = \
+nodist_libwocky_la_SOURCES = \
   wocky-signals-marshal.list \
   wocky-signals-marshal.h \
   wocky-signals-marshal.c \
-  wocky-data-forms-enumtypes.c \
-  wocky-data-forms-enumtypes.h \
+  wocky-data-form-enumtypes.c \
+  wocky-data-form-enumtypes.h \
   wocky-muc-enumtypes.c \
   wocky-muc-enumtypes.h \
   wocky-pubsub-service-enumtypes.c \
   wocky-pubsub-service-enumtypes.h \
+  wocky-pubsub-node-enumtypes.c \
+  wocky-pubsub-node-enumtypes.h \
   wocky-xmpp-error-enumtypes.c \
   wocky-xmpp-error-enumtypes.h \
   wocky-xmpp-reader-enumtypes.c \
   wocky-xmpp-reader-enumtypes.h
 
+BUILT_SOURCES = $(nodist_libwocky_la_SOURCES)
 OPENSSL_SRC = \
-  wocky-openssl.c        \
-  wocky-tls.h            \
+  wocky-openssl.c \
+  wocky-tls.h \
   wocky-openssl-dh512.c  \
   wocky-openssl-dh1024.c \
   wocky-openssl-dh2048.c \
@@ -329,13 +328,13 @@ HANDWRITTEN_SOURCES = wocky-types.h wocky.c wocky.h wocky-connector.c \
 	wocky-resource-contact.h wocky-roster.c wocky-roster.h \
 	wocky-contact-factory.c wocky-contact-factory.h \
 	wocky-session.c wocky-session.h wocky-muc.h wocky-muc.c \
-	wocky-pep-service.c wocky-pep-service.h wocky-data-forms.c \
-	wocky-data-forms.h wocky-pubsub-helpers.c \
+	wocky-pep-service.c wocky-pep-service.h wocky-data-form.c \
+	wocky-data-form.h wocky-pubsub-helpers.c \
 	wocky-pubsub-helpers.h wocky-pubsub-service.c \
 	wocky-pubsub-service.h wocky-pubsub-service-protected.h \
 	wocky-pubsub-node.c wocky-pubsub-node.h \
 	wocky-pubsub-node-protected.h $(am__append_1) $(am__append_3)
-libwocky_la_SOURCES = $(HANDWRITTEN_SOURCES) $(BUILT_SOURCES)
+libwocky_la_SOURCES = $(HANDWRITTEN_SOURCES)
 
 # Coding style checks
 check_c_sources = \
@@ -406,8 +405,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-connector.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-forms-enumtypes.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-forms.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form-enumtypes.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-muc-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-muc.Plo@am__quote@
@@ -419,6 +418,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-porter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-helpers.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-node-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-node.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-service-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-service.Plo@am__quote@

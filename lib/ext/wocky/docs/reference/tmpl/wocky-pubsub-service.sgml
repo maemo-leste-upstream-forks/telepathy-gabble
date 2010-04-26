@@ -17,6 +17,9 @@ WockyPubsubService
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT WockyPubsubService ##### -->
 <para>
 
@@ -24,6 +27,29 @@ WockyPubsubService
 
 
 <!-- ##### SIGNAL WockyPubsubService::event-received ##### -->
+<para>
+
+</para>
+
+@wockypubsubservice: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@arg4: 
+@arg5: 
+
+<!-- ##### SIGNAL WockyPubsubService::node-deleted ##### -->
+<para>
+
+</para>
+
+@wockypubsubservice: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@arg4: 
+
+<!-- ##### SIGNAL WockyPubsubService::subscription-state-changed ##### -->
 <para>
 
 </para>
@@ -68,7 +94,7 @@ WockyPubsubService
 
 </para>
 
-@service: 
+@self: 
 @name: 
 @config: 
 @cancellable: 
@@ -81,7 +107,7 @@ WockyPubsubService
 
 </para>
 
-@service: 
+@self: 
 @result: 
 @error: 
 @Returns: 
@@ -92,7 +118,7 @@ WockyPubsubService
 
 </para>
 
-@service: 
+@self: 
 @name: 
 @Returns: 
 
@@ -102,7 +128,7 @@ WockyPubsubService
 
 </para>
 
-@service: 
+@self: 
 @cancellable: 
 @callback: 
 @user_data: 
@@ -113,7 +139,7 @@ WockyPubsubService
 
 </para>
 
-@service: 
+@self: 
 @result: 
 @error: 
 @Returns: 
@@ -124,9 +150,120 @@ WockyPubsubService
 
 </para>
 
-@service: 
+@self: 
 @name: 
 @Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_service_retrieve_subscriptions_async ##### -->
+<para>
+
+</para>
+
+@self: 
+@node: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_service_retrieve_subscriptions_finish ##### -->
+<para>
+
+</para>
+
+@self: 
+@result: 
+@subscriptions: 
+@error: 
+@Returns: 
+
+
+<!-- ##### MACRO WOCKY_TYPE_PUBSUB_SUBSCRIPTION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT WockyPubsubSubscription ##### -->
+<para>
+
+</para>
+
+@node: 
+@jid: 
+@state: 
+@subid: 
+
+<!-- ##### FUNCTION wocky_pubsub_subscription_new ##### -->
+<para>
+
+</para>
+
+@node: 
+@jid: 
+@state: 
+@subid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_subscription_copy ##### -->
+<para>
+
+</para>
+
+@sub: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_subscription_free ##### -->
+<para>
+
+</para>
+
+@sub: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_subscription_list_copy ##### -->
+<para>
+
+</para>
+
+@subs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_subscription_list_free ##### -->
+<para>
+
+</para>
+
+@subs: 
+
+
+<!-- ##### MACRO WOCKY_TYPE_PUBSUB_SUBSCRIPTION_STATE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM WockyPubsubSubscriptionState ##### -->
+<para>
+
+</para>
+
+@WOCKY_PUBSUB_SUBSCRIPTION_NONE: 
+@WOCKY_PUBSUB_SUBSCRIPTION_PENDING: 
+@WOCKY_PUBSUB_SUBSCRIPTION_SUBSCRIBED: 
+@WOCKY_PUBSUB_SUBSCRIPTION_UNCONFIGURED: 
+
+<!-- ##### MACRO WOCKY_TYPE_PUBSUB_SERVICE_ERROR ##### -->
+<para>
+
+</para>
+
 
 
 <!-- ##### MACRO WOCKY_PUBSUB_SERVICE_ERROR ##### -->
