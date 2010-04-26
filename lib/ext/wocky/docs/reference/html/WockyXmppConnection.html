@@ -6,22 +6,19 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="WockyXmppWriter.html" title="WockyXmppWriter">
-<link rel="next" href="WockyConnector.html" title="WockyConnector">
-<meta name="generator" content="GTK-Doc V1.13 (XML mode)">
+<link rel="prev" href="wocky-wocky-utils.html" title="wocky-utils">
+<link rel="next" href="wocky-wocky-xmpp-error.html" title="wocky-xmpp-error">
+<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="API Reference">
-<link rel="chapter" href="object-tree.html" title="Object Hierarchy">
-<link rel="index" href="api-index-full.html" title="API Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="WockyXmppWriter.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="wocky-wocky-utils.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">wocky Reference Manual</th>
-<td><a accesskey="n" href="WockyConnector.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="wocky-wocky-xmpp-error.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#WockyXmppConnection.synopsis" class="shortcut">Top</a>
@@ -44,79 +41,79 @@
 </tr></table></div>
 <div class="refsynopsisdiv" title="Synopsis">
 <a name="WockyXmppConnection.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">enum                <a href="WockyXmppConnection.html#WockyXmppConnectionError">WockyXmppConnectionError</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a href="WockyXmppConnection.html#wocky-xmpp-connection-error-quark">wocky_xmpp_connection_error_quark</a>   (void);
-#define             <a href="WockyXmppConnection.html#WOCKY-XMPP-CONNECTION-ERROR:CAPS">WOCKY_XMPP_CONNECTION_ERROR</a>
-                    <a href="WockyXmppConnection.html#WockyXmppConnection-struct">WockyXmppConnection</a>;
-                    <a href="WockyXmppConnection.html#WockyXmppConnectionClass">WockyXmppConnectionClass</a>;
-<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> * <a href="WockyXmppConnection.html#wocky-xmpp-connection-new">wocky_xmpp_connection_new</a>         (<a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="returnvalue">GIOStream</span></a> *stream);
-<span class="returnvalue">void</span>                <a href="WockyXmppConnection.html#wocky-xmpp-connection-send-open-async">wocky_xmpp_connection_send_open_async</a>
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *to,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *from,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *version,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *lang,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *id,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyXmppConnection.html#wocky-xmpp-connection-send-open-finish">wocky_xmpp_connection_send_open_finish</a>
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
-<span class="returnvalue">void</span>                <a href="WockyXmppConnection.html#wocky-xmpp-connection-recv-open-async">wocky_xmpp_connection_recv_open_async</a>
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyXmppConnection.html#wocky-xmpp-connection-recv-open-finish">wocky_xmpp_connection_recv_open_finish</a>
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **to,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **from,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **version,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **lang,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **id,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
-<span class="returnvalue">void</span>                <a href="WockyXmppConnection.html#wocky-xmpp-connection-send-stanza-async">wocky_xmpp_connection_send_stanza_async</a>
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyXmppConnection.html#wocky-xmpp-connection-send-stanza-finish">wocky_xmpp_connection_send_stanza_finish</a>
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
-<span class="returnvalue">void</span>                <a href="WockyXmppConnection.html#wocky-xmpp-connection-recv-stanza-async">wocky_xmpp_connection_recv_stanza_async</a>
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *   <a href="WockyXmppConnection.html#wocky-xmpp-connection-recv-stanza-finish">wocky_xmpp_connection_recv_stanza_finish</a>
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
-<span class="returnvalue">void</span>                <a href="WockyXmppConnection.html#wocky-xmpp-connection-send-close-async">wocky_xmpp_connection_send_close_async</a>
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyXmppConnection.html#wocky-xmpp-connection-send-close-finish">wocky_xmpp_connection_send_close_finish</a>
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
-<span class="returnvalue">void</span>                <a href="WockyXmppConnection.html#wocky-xmpp-connection-force-close-async">wocky_xmpp_connection_force_close_async</a>
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyXmppConnection.html#wocky-xmpp-connection-force-close-finish">wocky_xmpp_connection_force_close_finish</a>
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);
-<span class="returnvalue">void</span>                <a href="WockyXmppConnection.html#wocky-xmpp-connection-reset">wocky_xmpp_connection_reset</a>         (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a href="WockyXmppConnection.html#wocky-xmpp-connection-new-id">wocky_xmpp_connection_new_id</a>        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *self);
+<pre class="synopsis">enum                <a class="link" href="WockyXmppConnection.html#WockyXmppConnectionError" title="enum WockyXmppConnectionError">WockyXmppConnectionError</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-error-quark" title="wocky_xmpp_connection_error_quark ()">wocky_xmpp_connection_error_quark</a>   (<em class="parameter"><code><span class="type">void</span></code></em>);
+#define             <a class="link" href="WockyXmppConnection.html#WOCKY-XMPP-CONNECTION-ERROR:CAPS" title="WOCKY_XMPP_CONNECTION_ERROR">WOCKY_XMPP_CONNECTION_ERROR</a>
+                    <a class="link" href="WockyXmppConnection.html#WockyXmppConnection-struct" title="WockyXmppConnection">WockyXmppConnection</a>;
+                    <a class="link" href="WockyXmppConnection.html#WockyXmppConnectionClass" title="WockyXmppConnectionClass">WockyXmppConnectionClass</a>;
+<a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="returnvalue">WockyXmppConnection</span></a> * <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-new" title="wocky_xmpp_connection_new ()">wocky_xmpp_connection_new</a>         (<em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="type">GIOStream</span></a> *stream</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-send-open-async" title="wocky_xmpp_connection_send_open_async ()">wocky_xmpp_connection_send_open_async</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *to</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *version</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *id</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-send-open-finish" title="wocky_xmpp_connection_send_open_finish ()">wocky_xmpp_connection_send_open_finish</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-recv-open-async" title="wocky_xmpp_connection_recv_open_async ()">wocky_xmpp_connection_recv_open_async</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-recv-open-finish" title="wocky_xmpp_connection_recv_open_finish ()">wocky_xmpp_connection_recv_open_finish</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **to</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **from</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **version</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **lang</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **id</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-send-stanza-async" title="wocky_xmpp_connection_send_stanza_async ()">wocky_xmpp_connection_send_stanza_async</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a> *stanza</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-send-stanza-finish" title="wocky_xmpp_connection_send_stanza_finish ()">wocky_xmpp_connection_send_stanza_finish</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-recv-stanza-async" title="wocky_xmpp_connection_recv_stanza_async ()">wocky_xmpp_connection_recv_stanza_async</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="returnvalue">WockyXmppStanza</span></a> *   <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-recv-stanza-finish" title="wocky_xmpp_connection_recv_stanza_finish ()">wocky_xmpp_connection_recv_stanza_finish</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-send-close-async" title="wocky_xmpp_connection_send_close_async ()">wocky_xmpp_connection_send_close_async</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-send-close-finish" title="wocky_xmpp_connection_send_close_finish ()">wocky_xmpp_connection_send_close_finish</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-force-close-async" title="wocky_xmpp_connection_force_close_async ()">wocky_xmpp_connection_force_close_async</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-force-close-finish" title="wocky_xmpp_connection_force_close_finish ()">wocky_xmpp_connection_force_close_finish</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-reset" title="wocky_xmpp_connection_reset ()">wocky_xmpp_connection_reset</a>         (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-new-id" title="wocky_xmpp_connection_new_id ()">wocky_xmpp_connection_new_id</a>        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *self</code></em>);
 </pre>
 </div>
 <div class="refsect1" title="Object Hierarchy">
@@ -129,13 +126,14 @@
 <div class="refsect1" title="Properties">
 <a name="WockyXmppConnection.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a href="WockyXmppConnection.html#WockyXmppConnection--base-stream">base-stream</a>"              <a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="type">GIOStream</span></a>*            : Read / Write / Construct Only
+  "<a class="link" href="WockyXmppConnection.html#WockyXmppConnection--base-stream" title='The "base-stream" property'>base-stream</a>"              <a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="type">GIOStream</span></a>*            : Read / Write / Construct Only
 </pre>
 </div>
 <div class="refsect1" title="Description">
 <a name="WockyXmppConnection.description"></a><h2>Description</h2>
 <p>
-Sends and receives <a href="WockyXmppStanza.html"><span class="type">WockyXmppStanzas</span></a> from an underlying GIOStream.</p>
+Sends and receives <a href="WockyXmppStanza.html"><span class="type">WockyXmppStanzas</span></a> from an underlying GIOStream.
+</p>
 </div>
 <div class="refsect1" title="Details">
 <a name="WockyXmppConnection.details"></a><h2>Details</h2>
@@ -150,37 +148,38 @@ Sends and receives <a href="WockyXmppStanza.html"><span class="type">WockyXmppSt
 } WockyXmppConnectionError;
 </pre>
 <p>
-The <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a> specific errors that can occur while
- reading a stream.</p>
+The <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> specific errors that can occur while
+ reading a stream.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><a name="WOCKY-XMPP-CONNECTION-ERROR-EOS:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_CONNECTION_ERROR_EOS</code></span></p></td>
-<td> Connection got closed before receiving
+<td>Connection got closed before receiving
                                    an XMPP stream close.
 </td>
 </tr>
 <tr>
 <td><p><a name="WOCKY-XMPP-CONNECTION-ERROR-CLOSED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_CONNECTION_ERROR_CLOSED</code></span></p></td>
-<td> Other side closed the xmpp stream.
+<td>Other side closed the xmpp stream.
 </td>
 </tr>
 <tr>
 <td><p><a name="WOCKY-XMPP-CONNECTION-ERROR-NOT-OPEN:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_CONNECTION_ERROR_NOT_OPEN</code></span></p></td>
-<td> Trying to send or receive while the
+<td>Trying to send or receive while the
 connection isn't open.
 </td>
 </tr>
 <tr>
 <td><p><a name="WOCKY-XMPP-CONNECTION-ERROR-IS-CLOSED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_CONNECTION_ERROR_IS_CLOSED</code></span></p></td>
-<td> Trying to send or receive
+<td>Trying to send or receive
 while the connection is closed.
 </td>
 </tr>
 <tr>
 <td><p><a name="WOCKY-XMPP-CONNECTION-ERROR-IS-OPEN:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_CONNECTION_ERROR_IS_OPEN</code></span></p></td>
-<td> Trying to send or receive
+<td>Trying to send or receive
 the connection opening when it's already open
 </td>
 </tr>
@@ -190,9 +189,10 @@ the connection opening when it's already open
 <hr>
 <div class="refsect2" title="wocky_xmpp_connection_error_quark ()">
 <a name="wocky-xmpp-connection-error-quark"></a><h3>wocky_xmpp_connection_error_quark ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_xmpp_connection_error_quark   (void);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_xmpp_connection_error_quark   (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
-Get the error quark used by the connection.</p>
+Get the error quark used by the connection.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
@@ -208,7 +208,8 @@ Get the error quark used by the connection.</p>
 <pre class="programlisting">#define WOCKY_XMPP_CONNECTION_ERROR (wocky_xmpp_connection_error_quark ())
 </pre>
 <p>
-Get access to the error quark of the xmpp connection.</p>
+Get access to the error quark of the xmpp connection.
+</p>
 </div>
 <hr>
 <div class="refsect2" title="WockyXmppConnection">
@@ -230,20 +231,21 @@ Get access to the error quark of the xmpp connection.</p>
 <hr>
 <div class="refsect2" title="wocky_xmpp_connection_new ()">
 <a name="wocky-xmpp-connection-new"></a><h3>wocky_xmpp_connection_new ()</h3>
-<pre class="programlisting"><a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> * wocky_xmpp_connection_new         (<a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="returnvalue">GIOStream</span></a> *stream);</pre>
+<pre class="programlisting"><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="returnvalue">WockyXmppConnection</span></a> * wocky_xmpp_connection_new         (<em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="type">GIOStream</span></a> *stream</code></em>);</pre>
 <p>
-Convenience function to create a new <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.</p>
+Convenience function to create a new <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>stream</code></em> :</span></p></td>
-<td> GIOStream over wich all the data will be sent/received.
+<td>GIOStream over wich all the data will be sent/received.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.
+<td> a new <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>.
 </td>
 </tr>
 </tbody>
@@ -253,65 +255,66 @@ Convenience function to create a new <a href="WockyXmppConnection.html"><span cl
 <div class="refsect2" title="wocky_xmpp_connection_send_open_async ()">
 <a name="wocky-xmpp-connection-send-open-async"></a><h3>wocky_xmpp_connection_send_open_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_connection_send_open_async
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *to,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *from,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *version,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *lang,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *id,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *to</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *version</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *id</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 Request asynchronous sending of an XMPP stream opening over the stream. When
 the operation is finished <em class="parameter"><code>callback</code></em> will be called. You can then call
-<a href="WockyXmppConnection.html#wocky-xmpp-connection-send-open-finish"><code class="function">wocky_xmpp_connection_send_open_finish()</code></a> to get the result of the operation.</p>
+<a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-send-open-finish" title="wocky_xmpp_connection_send_open_finish ()"><code class="function">wocky_xmpp_connection_send_open_finish()</code></a> to get the result of the operation.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.
+<td>a <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>to</code></em> :</span></p></td>
-<td> destination in the XMPP opening (can be NULL).
+<td>destination in the XMPP opening (can be NULL).
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>from</code></em> :</span></p></td>
-<td> sender in the XMPP opening (can be NULL).
+<td>sender in the XMPP opening (can be NULL).
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>version</code></em> :</span></p></td>
-<td> XMPP version sent (can be NULL).
+<td>XMPP version sent (can be NULL).
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>lang</code></em> :</span></p></td>
-<td> language sent (can be NULL).
+<td>language sent (can be NULL).
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>id</code></em> :</span></p></td>
-<td> XMPP Stream ID, if any, or NULL
+<td>XMPP Stream ID, if any, or NULL
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
-<td> optional GCancellable object, NULL to ignore.
+<td>optional GCancellable object, NULL to ignore.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
-<td> callback to call when the request is satisfied.
+<td>callback to call when the request is satisfied.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td> the data to pass to callback function.
+<td>the data to pass to callback function.
 </td>
 </tr>
 </tbody>
@@ -321,27 +324,28 @@ the operation is finished <em class="parameter"><code>callback</code></em> will 
 <div class="refsect2" title="wocky_xmpp_connection_send_open_finish ()">
 <a name="wocky-xmpp-connection-send-open-finish"></a><h3>wocky_xmpp_connection_send_open_finish ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_xmpp_connection_send_open_finish
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
-Finishes sending a stream opening.</p>
+Finishes sending a stream opening.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.
+<td>a <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
-<td> a GAsyncResult.
+<td>a GAsyncResult.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td> a GError location to store the error occuring, or NULL to ignore.
+<td>a GError location to store the error occuring, or NULL to ignore.
 </td>
 </tr>
 <tr>
@@ -356,35 +360,36 @@ Finishes sending a stream opening.</p>
 <div class="refsect2" title="wocky_xmpp_connection_recv_open_async ()">
 <a name="wocky-xmpp-connection-recv-open-async"></a><h3>wocky_xmpp_connection_recv_open_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_connection_recv_open_async
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 Request asynchronous receiving of an XMPP stream opening over the stream.
 When the operation is finished <em class="parameter"><code>callback</code></em> will be called. You can then call
-<a href="WockyXmppConnection.html#wocky-xmpp-connection-recv-open-finish"><code class="function">wocky_xmpp_connection_recv_open_finish()</code></a> to get the result of the operation.</p>
+<a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-recv-open-finish" title="wocky_xmpp_connection_recv_open_finish ()"><code class="function">wocky_xmpp_connection_recv_open_finish()</code></a> to get the result of the operation.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.
+<td>a <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
-<td> optional GCancellable object, NULL to ignore.
+<td>optional GCancellable object, NULL to ignore.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
-<td> callback to call when the request is satisfied.
+<td>callback to call when the request is satisfied.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td> the data to pass to callback function.
+<td>the data to pass to callback function.
 </td>
 </tr>
 </tbody>
@@ -394,62 +399,63 @@ When the operation is finished <em class="parameter"><code>callback</code></em> 
 <div class="refsect2" title="wocky_xmpp_connection_recv_open_finish ()">
 <a name="wocky-xmpp-connection-recv-open-finish"></a><h3>wocky_xmpp_connection_recv_open_finish ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_xmpp_connection_recv_open_finish
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **to,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **from,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **version,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **lang,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **id,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **to</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **from</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **version</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **lang</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **id</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
-Finishes receiving a stream opening.</p>
+Finishes receiving a stream opening.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.
+<td>a <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
-<td> a GAsyncResult.
+<td>a GAsyncResult.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>to</code></em> :</span></p></td>
-<td> Optional location to store the to attribute in the XMPP open stanza
+<td>Optional location to store the to attribute in the XMPP open stanza
  will be stored (free after usage).
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>from</code></em> :</span></p></td>
-<td> Optional location to store the from attribute in the XMPP open stanza
+<td>Optional location to store the from attribute in the XMPP open stanza
  will be stored (free after usage).
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>version</code></em> :</span></p></td>
-<td> Optional location to store the version attribute in the XMPP open
+<td>Optional location to store the version attribute in the XMPP open
  stanza will be stored (free after usage).
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>lang</code></em> :</span></p></td>
-<td> Optional location to store the lang attribute in the XMPP open
+<td>Optional location to store the lang attribute in the XMPP open
  stanza will be stored (free after usage).
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>id</code></em> :</span></p></td>
-<td> Optional location to store the Session ID of the XMPP stream
+<td>Optional location to store the Session ID of the XMPP stream
  (free after usage)
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td> a GError location to store the error occuring, or NULL to ignore.
+<td>a GError location to store the error occuring, or NULL to ignore.
 </td>
 </tr>
 <tr>
@@ -464,46 +470,48 @@ Finishes receiving a stream opening.</p>
 <div class="refsect2" title="wocky_xmpp_connection_send_stanza_async ()">
 <a name="wocky-xmpp-connection-send-stanza-async"></a><h3>wocky_xmpp_connection_send_stanza_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_connection_send_stanza_async
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *stanza,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a> *stanza</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
-Request asynchronous sending of a <a href="WockyXmppStanza.html"><span class="type">WockyXmppStanza</span></a>. When the operation is
+Request asynchronous sending of a <a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a>. When the operation is
 finished <em class="parameter"><code>callback</code></em> will be called. You can then call
-<a href="WockyXmppConnection.html#wocky-xmpp-connection-send-stanza-finish"><code class="function">wocky_xmpp_connection_send_stanza_finish()</code></a> to get the result of
+<a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-send-stanza-finish" title="wocky_xmpp_connection_send_stanza_finish ()"><code class="function">wocky_xmpp_connection_send_stanza_finish()</code></a> to get the result of
 the operation.
 </p>
 <p>
 Can only be called after wocky_xmpp_connection_send_open_async has finished
-its operation.</p>
+its operation.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>
+<td>a <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
-<td> <a href="WockyXmppStanza.html"><span class="type">WockyXmppStanza</span></a> to send.
+<td>
+<a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a> to send.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
-<td> optional GCancellable object, NULL to ignore.
+<td>optional GCancellable object, NULL to ignore.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
-<td> callback to call when the request is satisfied.
+<td>callback to call when the request is satisfied.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td> the data to pass to callback function.
+<td>the data to pass to callback function.
 </td>
 </tr>
 </tbody>
@@ -513,27 +521,28 @@ its operation.</p>
 <div class="refsect2" title="wocky_xmpp_connection_send_stanza_finish ()">
 <a name="wocky-xmpp-connection-send-stanza-finish"></a><h3>wocky_xmpp_connection_send_stanza_finish ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_xmpp_connection_send_stanza_finish
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
-Finishes sending a stanza.</p>
+Finishes sending a stanza.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.
+<td>a <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
-<td> a GAsyncResult.
+<td>a GAsyncResult.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td> a GError location to store the error occuring, or NULL to ignore.
+<td>a GError location to store the error occuring, or NULL to ignore.
 </td>
 </tr>
 <tr>
@@ -548,40 +557,41 @@ Finishes sending a stanza.</p>
 <div class="refsect2" title="wocky_xmpp_connection_recv_stanza_async ()">
 <a name="wocky-xmpp-connection-recv-stanza-async"></a><h3>wocky_xmpp_connection_recv_stanza_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_connection_recv_stanza_async
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
-Asynchronous receive a <a href="WockyXmppStanza.html"><span class="type">WockyXmppStanza</span></a>. When the operation is
+Asynchronous receive a <a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a>. When the operation is
 finished <em class="parameter"><code>callback</code></em> will be called. You can then call
-<a href="WockyXmppConnection.html#wocky-xmpp-connection-recv-stanza-finish"><code class="function">wocky_xmpp_connection_recv_stanza_finish()</code></a> to get the result of
+<a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-recv-stanza-finish" title="wocky_xmpp_connection_recv_stanza_finish ()"><code class="function">wocky_xmpp_connection_recv_stanza_finish()</code></a> to get the result of
 the operation.
 </p>
 <p>
 Can only be called after wocky_xmpp_connection_recv_open_async has finished
-its operation.</p>
+its operation.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>
+<td>a <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
-<td> optional GCancellable object, NULL to ignore.
+<td>optional GCancellable object, NULL to ignore.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
-<td> callback to call when the request is satisfied.
+<td>callback to call when the request is satisfied.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td> the data to pass to callback function.
+<td>the data to pass to callback function.
 </td>
 </tr>
 </tbody>
@@ -590,33 +600,34 @@ its operation.</p>
 <hr>
 <div class="refsect2" title="wocky_xmpp_connection_recv_stanza_finish ()">
 <a name="wocky-xmpp-connection-recv-stanza-finish"></a><h3>wocky_xmpp_connection_recv_stanza_finish ()</h3>
-<pre class="programlisting"><a href="WockyXmppStanza.html"><span class="returnvalue">WockyXmppStanza</span></a> *   wocky_xmpp_connection_recv_stanza_finish
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
+<pre class="programlisting"><a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="returnvalue">WockyXmppStanza</span></a> *   wocky_xmpp_connection_recv_stanza_finish
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
-Finishes receiving a stanza</p>
+Finishes receiving a stanza
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.
+<td>a <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
-<td> a GAsyncResult.
+<td>a GAsyncResult.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td> a GError location to store the error occuring, or NULL to ignore.
+<td>a GError location to store the error occuring, or NULL to ignore.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> A <a href="WockyXmppStanza.html"><span class="type">WockyXmppStanza</span></a> or NULL on error (unref after usage)
+<td> A <a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a> or NULL on error (unref after usage)
 </td>
 </tr>
 </tbody>
@@ -626,40 +637,41 @@ Finishes receiving a stanza</p>
 <div class="refsect2" title="wocky_xmpp_connection_send_close_async ()">
 <a name="wocky-xmpp-connection-send-close-async"></a><h3>wocky_xmpp_connection_send_close_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_connection_send_close_async
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 Request asynchronous sending of an XMPP stream close. When
 the operation is finished <em class="parameter"><code>callback</code></em> will be called. You can then call
-<a href="WockyXmppConnection.html#wocky-xmpp-connection-send-close-finish"><code class="function">wocky_xmpp_connection_send_close_finish()</code></a> to get the result of the
+<a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-send-close-finish" title="wocky_xmpp_connection_send_close_finish ()"><code class="function">wocky_xmpp_connection_send_close_finish()</code></a> to get the result of the
 operation.
 </p>
 <p>
 Can only be called after wocky_xmpp_connection_send_open_async has finished
-its operation.</p>
+its operation.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.
+<td>a <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
-<td> optional GCancellable object, NULL to ignore.
+<td>optional GCancellable object, NULL to ignore.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
-<td> callback to call when the request is satisfied.
+<td>callback to call when the request is satisfied.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td> the data to pass to callback function.
+<td>the data to pass to callback function.
 </td>
 </tr>
 </tbody>
@@ -669,27 +681,28 @@ its operation.</p>
 <div class="refsect2" title="wocky_xmpp_connection_send_close_finish ()">
 <a name="wocky-xmpp-connection-send-close-finish"></a><h3>wocky_xmpp_connection_send_close_finish ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_xmpp_connection_send_close_finish
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
-Finishes send the xmpp stream close.</p>
+Finishes send the xmpp stream close.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.
+<td>a <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
-<td> a GAsyncResult.
+<td>a GAsyncResult.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td> a GError location to store the error occuring, or NULL to ignore.
+<td>a GError location to store the error occuring, or NULL to ignore.
 </td>
 </tr>
 <tr>
@@ -704,10 +717,10 @@ Finishes send the xmpp stream close.</p>
 <div class="refsect2" title="wocky_xmpp_connection_force_close_async ()">
 <a name="wocky-xmpp-connection-force-close-async"></a><h3>wocky_xmpp_connection_force_close_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_connection_force_close_async
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="returnvalue">GCancellable</span></a> *cancellable,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="returnvalue">GAsyncReadyCallback</span></a> callback,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a> user_data);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -740,9 +753,9 @@ Finishes send the xmpp stream close.</p>
 <div class="refsect2" title="wocky_xmpp_connection_force_close_finish ()">
 <a name="wocky-xmpp-connection-force-close-finish"></a><h3>wocky_xmpp_connection_force_close_finish ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_xmpp_connection_force_close_finish
-                                                        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection,
-                                                         <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="returnvalue">GAsyncResult</span></a> *result,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **error);</pre>
+                                                        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -774,16 +787,17 @@ Finishes send the xmpp stream close.</p>
 <hr>
 <div class="refsect2" title="wocky_xmpp_connection_reset ()">
 <a name="wocky-xmpp-connection-reset"></a><h3>wocky_xmpp_connection_reset ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_connection_reset         (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *connection);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_connection_reset         (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>);</pre>
 <p>
 Reset the XMPP Connection. After the reset the connection is back in its
-initial state (as if <a href="WockyXmppConnection.html#wocky-xmpp-connection-send-open-async"><code class="function">wocky_xmpp_connection_send_open_async()</code></a> and
-<a href="WockyXmppConnection.html#wocky-xmpp-connection-recv-open-async"><code class="function">wocky_xmpp_connection_recv_open_async()</code></a> were never called).</p>
+initial state (as if <a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-send-open-async" title="wocky_xmpp_connection_send_open_async ()"><code class="function">wocky_xmpp_connection_send_open_async()</code></a> and
+<a class="link" href="WockyXmppConnection.html#wocky-xmpp-connection-recv-open-async" title="wocky_xmpp_connection_recv_open_async ()"><code class="function">wocky_xmpp_connection_recv_open_async()</code></a> were never called).
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
-<td> a <a href="WockyXmppConnection.html"><span class="type">WockyXmppConnection</span></a>.
+<td>a <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>.
 </td>
 </tr></tbody>
 </table></div>
@@ -791,7 +805,7 @@ initial state (as if <a href="WockyXmppConnection.html#wocky-xmpp-connection-sen
 <hr>
 <div class="refsect2" title="wocky_xmpp_connection_new_id ()">
 <a name="wocky-xmpp-connection-new-id"></a><h3>wocky_xmpp_connection_new_id ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_xmpp_connection_new_id        (<a href="WockyXmppConnection.html"><span class="returnvalue">WockyXmppConnection</span></a> *self);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_xmpp_connection_new_id        (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *self</code></em>);</pre>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -821,6 +835,6 @@ initial state (as if <a href="WockyXmppConnection.html#wocky-xmpp-connection-sen
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.13</div>
+          Generated by GTK-Doc V1.14</div>
 </body>
 </html>

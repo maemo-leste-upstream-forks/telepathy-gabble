@@ -69,11 +69,38 @@ static void _characters (void *user_data, const xmlChar *ch, int len);
 static void _error (void *user_data, xmlErrorPtr error);
 
 static xmlSAXHandler parser_handler = {
-  .initialized = XML_SAX2_MAGIC,
-  .startElementNs = _start_element_ns,
-  .endElementNs   = _end_element_ns,
-  .characters     = _characters,
-  .serror         = _error,
+  /* internalSubset         */ NULL,
+  /* isStandalone           */ NULL,
+  /* hasInternalSubset      */ NULL,
+  /* hasExternalSubset      */ NULL,
+  /* resolveEntity          */ NULL,
+  /* getEntity              */ NULL,
+  /* entityDecl             */ NULL,
+  /* notationDecl           */ NULL,
+  /* attributeDecl          */ NULL,
+  /* elementDecl            */ NULL,
+  /* unparsedEntityDecl     */ NULL,
+  /* setDocumentLocator     */ NULL,
+  /* startDocument          */ NULL,
+  /* endDocument            */ NULL,
+  /* startElement           */ NULL,
+  /* endElement             */ NULL,
+  /* reference              */ NULL,
+  /* characters             */ _characters,
+  /* ignorableWhitespace    */ NULL,
+  /* processingInstruction  */ NULL,
+  /* comment                */ NULL,
+  /* warning                */ NULL,
+  /* error                  */ NULL,
+  /* fatalError             */ NULL,
+  /* getParameterEntity     */ NULL,
+  /* cdataBlock             */ NULL,
+  /* externalSubset         */ NULL,
+  /* initialized            */ XML_SAX2_MAGIC,
+  /* _private               */ NULL,
+  /* startElementNs         */ _start_element_ns,
+  /* endElementNs           */ _end_element_ns,
+  /* serror                 */ _error
 };
 
 /* private structure */
@@ -400,10 +427,24 @@ _start_element_ns (void *user_data, const xmlChar *localname,
           return;
         }
 
+      DEBUG ("Received stream opening: %s, prefix: %s, uri: %s",
+        localname,
+        prefix != NULL ? (gchar *) prefix : "<no prefix>",
+        uri != NULL ? (gchar *) uri : "<no uri>");
+
       priv->state = WOCKY_XMPP_READER_STATE_OPENED;
 
       for (i = 0; i < nb_attributes * 5; i+=5)
         {
+          DEBUG ("Stream opening attribute: %s = '%.*s' (prefix: %s, uri: %s)",
+            attributes[i],
+            (int) (attributes[i+4] - attributes[i+3]),
+            attributes [i + 3],
+            attributes[i+1] != NULL ? (gchar *) attributes[i+1]
+                : "<no prefix>",
+            attributes[i+2] != NULL ? (gchar *) attributes[i+2]
+                : "<no uri>");
+
           if (!strcmp ((gchar *) attributes[i], "to"))
             {
               g_free (priv->to);

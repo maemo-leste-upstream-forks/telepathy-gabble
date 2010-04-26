@@ -1,3 +1,244 @@
+commit b616dec5b87bdc8f15260a570b98a740ad171ae8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-08 16:16:57 +0100
+
+    Version 0.9.10
+
+commit d69cd1802591ecd0e1e5525cc5a261e21fd3372c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-08 16:07:02 +0100
+
+    NEWS for 0.9.10
+
+commit d6eb01d685ede56ee8ce14b09a1a71c507601592
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-08 15:32:19 +0100
+
+    Correctly get test bus conf. from builddir
+
+commit 8caf31950d626d3b278e22794cae8e62df775398
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-08 14:05:51 +0100
+
+    Update Wocky for even more pubsub code!
+
+commit 46aa8f519b90c40f5a1db84125417292b1fd8c23
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-06 15:43:14 +0100
+
+    Remove the proxy from the potential proxies list if the result is invalid
+
+commit b52457c53eea23bb8fd224a04168a67036a05eaf
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-06 15:09:51 +0100
+
+    Make all checks run in a dbus session (some require it)
+
+commit 46eb2d453c9134797210e931d1725f0d76159dfb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-06 13:07:06 +0100
+
+    Use g_resolver_lookup_by_name instead of getaddrinfo in GibberTcpTransport
+
+commit 1fa446e22844127421287ad3bddc1d9e2e1cdc5d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-06 12:56:25 +0100
+
+    Also ignore ipv6 related errors when accepting a file
+
+commit fb4f4f2f9d98643578debdaaebd8e7b7ce75c64e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 20:19:02 +0100
+
+    Implement synchronous lookup_by_name method
+
+commit 66c48c2ca31593f24d0f03c5806b8ecb19747f73
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 17:36:27 +0100
+
+    Ignore errors if we can't listen on ipv6
+    
+    If a machine doesn't have lo configured with a localhost ipv6 address then
+    gabble will fail to listen on an ipv6 socket. Ignore the errors caused by this
+    and bail out of the test early
+
+commit 526d4ec1479ca7ddc3a9ec852ad14d1ef17d7193
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 17:33:28 +0100
+
+    Be more clear about which address family fails
+
+commit 7ad39cec98803f1da2fcbe8fe42b9575f274092c
+Merge: 5b14fc1 f7215f5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-04-06 14:19:16 +0100
+
+    Merge branch 'trivia'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit f7215f58589693d498ac8f675aba9e6c14a06bcf
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-04-06 13:38:52 +0100
+
+    configure.ac: use TP_COMPILER_WARNINGS
+    
+    The set of warnings used is taken from telepathy-glib, plus
+    -Wmissing-declarations which we already had.
+    
+    This results in the addition of the following warnings: sign-compare,
+    nested-externs, pointer-arith, format-security, init-self.
+
+commit 5af3fb342da510de94504d62996413d1ccebedae
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-04-06 13:38:25 +0100
+
+    GabblePrivateTubesFactory: avoid doing undefined void-pointer arithmetic
+    
+    get_contact_caps_foreach() used code of the form "ns + 3" where ns is a
+    void *, which is not portable (the effect of incrementing a void pointer
+    is undefined). This would fail -Wpointer-arith.
+
+commit 5b14fc14c6e2c7a3f54fc850c34254eb4bfd8ade
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-03-31 17:11:00 +0100
+
+    Recognize sasl auth and other auth failure errors
+
+commit 1be94c5db0631b8c52ea76fe56129f55e1d52465
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-30 19:45:45 -0400
+
+    Update wocky to master
+
+commit cc05275b74eaf4103716798d127584f0092c8e6a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-03-26 19:23:45 +0000
+
+    Bump nano-version to 0.9.9.1
+
+commit dcd2d3339c9d7488a18f48393d4bb2df134ac51c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-03-26 19:06:57 +0000
+
+    Update news and version
+
+commit 06e4c10fd76c90ad41fadce1d0ef04b285578f1f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-03-26 18:47:49 +0000
+
+    Fix refcounting of the JingleSession
+    
+    When asking the jingle factory to create a session it gives you back a object
+    you don't have a ref to, so first of all make sure we have a ref. And second,
+    do actually unref it when disposing the channel :)
+
+commit 7ee058820670fc379c0ae89d97f7cb71e5e59407
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-08 10:41:43 +0000
+
+    Expose “MUC full” as Busy on the Group interface
+    
+    There's no group change reason that corresponds exactly to the room
+    being full, but Busy seems like a reasonable approximation. It's
+    certainly better than None.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit b400522dc53c2b6ecd60f7931e08d7410bfa4b35
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-17 22:26:10 +0000
+
+    Test presence without caps doesn't remove caps
+    
+    I was suspicious of this, but it does work. It wasn't tested, though, so
+    I thought it worth adding a test, and also a comment explaining *why* it
+    works!
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit f9f54d473d58ac41c9a3fe4f95fcd22dae5f3ab4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-25 18:38:19 +0000
+
+    Update Wocky submodule for Pubsub/DataForm enhancements
+    
+    The big diff in wockyinclude_HEADERS is because I reformatted that block
+    in Wocky.
+
+commit 94a5ae457d2d344f7dc629e31a2db310066d293c
+Merge: ea68387 fe3052d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-25 19:30:32 +0000
+
+    Merge branch '09-portability'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk> (with minor changes)
+
+commit ea68387956aa019ab5eb467079fa2ade0e599c6a
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-03-25 15:27:37 -0400
+
+    Clean unread mails count when last subscriber calls Unsubscribe()
+    
+    This will fix mail-notification.py that fails since patch:
+    e817d77310d94c5e1aec42a848eacededd82f01c.
+
+commit fe3052d969bed92711e101be40a454235c902b07
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-25 17:58:59 +0000
+
+    Tweak comments as per wjt's review
+
+commit 87c86bf19e8a95b90812c1368bcc9103c48c3346
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-05 13:53:55 -0500
+
+    fix typo bytestrean/bytestream
+
+commit 9c299650beb99650c056c006a5650385c6ae0bdf
+Merge: 2304f34 2669ffe
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-22 17:00:11 +0000
+
+    Merge branch 'update-wocky-headers'
+
+commit 2304f3487445a909902103f58e870ca79df07bd5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-19 20:03:00 +0000
+
+    Remove redundant NULL checks before g_set_error()
+
+commit 2669ffe2aff452635539961b01527f50e4ad05c1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-18 16:37:16 +0000
+
+    Update installed Wocky headers
+
+commit 5e4381d13db560cd5ad50d364ab92af3ea7b0da1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-08 23:12:24 +0000
+
+    Script updating the Wocky header list
+
+commit e817d77310d94c5e1aec42a848eacededd82f01c
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-03-17 15:28:43 -0400
+
+    Fix unread mail count maxed to 30
+    
+    Now using the total-match mailbox XML node attribute to display the number
+    of unread count. Previous, the size of the unread_mails list was used but
+    this list is limited to 30 elements by the server.
+    
+    Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 1af8f89cc4833a0c553f693a2dd691ffccc7f694
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-16 21:13:23 +0000
+
+    Bump nano-version to 0.9.8.1
+
 commit bcd6d11a5bb6810549d0903512638e336d68e339
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-03-16 20:13:14 +0000
@@ -594,6 +835,212 @@ Date:   2010-02-22 16:16:46 -0500
     MailNotification.Subscribe/Unsubscribe can now return Disconnected error
     
     Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 7a44d70fe2ab993bb86627ecb787f27101f3d34e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 16:17:07 +0000
+
+    GibberTCPTransport: use gibber_socket_errno, gibber_socket_strerror
+    
+    errno and strerror won't work on Windows. *sigh*
+
+commit 10f19bf4faa9723891f05a0d27bf4865bd9a908f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 16:12:09 +0000
+
+    GibberListener: use gibber_socket_set_error
+
+commit 4f7e76768e97dbe98ac5f5f0de3525a2ba897c41
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 16:11:40 +0000
+
+    gibber_socket_set_error etc.: add wrappers for Winsock not returning errors in errno
+
+commit bdc2d946436da84ac114174ab1396c159306aea1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 15:48:38 +0000
+
+    gibber-listener: add_listener: use gibber_io_channel_new_from_socket
+    
+    We're listening on IPv4, IPv6 or Unix here, so we know it's a socket, not
+    some other sort of fd.
+
+commit 1417bcbe96d35aa601979409c302fd236f959e62
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 15:45:38 +0000
+
+    gibber_fd_transport_set_fd: take an is_socket parameter, and call Winsock-compatible functions if true
+    
+    For the moment I'm just skipping the "non-blocking I/O" fcntl for
+    non-sockets on Windows. In practice, this code path is never taken...
+
+commit 870ba1aea46029b9eda08c723d74ad6ce46f8038
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 15:40:05 +0000
+
+    gibber-tcp-transport: new_connect_attempt: use gibber-sockets.h wrappers
+
+commit da4c0d14ff4d1584a0686defdbb177af49fc6c84
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 15:38:42 +0000
+
+    gibber_socket_set_nonblocking: wrapper for fcntl or ioctlsocket as appropriate
+
+commit 35ed4900fe26f5ff80ba85ed20150eb77c54cf1e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 15:32:20 +0000
+
+    gibber_io_channel_new_from_socket: new wrapper function
+    
+    This should only be used if sockfd is known to be a socket.
+
+commit 7952ad60ff3ede802cb0d79c73bd5d5d6fff3443
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 15:02:30 +0000
+
+    bytestream-socks5: stub out get_local_interfaces_ips() on Windows
+    
+    Returning NULL seems to be handled correctly in the code that calls this
+    function, so that's a safe thing to do; SOCKS5 just won't work.
+
+commit a31d2263b800440f98533abbee9bc2f648c915a8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 15:01:45 +0000
+
+    gibber_connect_errno_requires_retry: wrap the difference between Winsock and Unix errno values
+
+commit 4b138f8fcd429d4dac3b9b06d7c648c35b66f546
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 14:38:24 +0000
+
+    gabble_ft_manager_get_tmp_dir: only define on Unix
+    
+    This uses mkdtemp(), which is POSIX but is not implemented on Windows.
+    However, we currently only need this function on Unix (for Unix sockets),
+    so rather than making it portable, we might as well just skip it for now.
+
+commit abfe0999077d768f0f27a2a23d8a736ffb5b595b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 14:32:59 +0000
+
+    debug: conditionally include fcntl.h
+
+commit 530166bfa33a99d26cf423d1488d17bdb1566800
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 13:26:51 +0000
+
+    bytestream-socks5: only include ifaddrs.h if we've checked for its header
+
+commit 433117fcd6ce24ad43da7714e1cbef4c0a9ec385
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 13:26:29 +0000
+
+    src: use gibber-sockets.h meta-header
+
+commit cdba831fa99b1d54fe02b2f5563856dd1bd0de8b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 13:25:44 +0000
+
+    gibber: use gibber-sockets.h instead of using most system headers directly
+    
+    One exception is in lib/gibber/gibber-unix-transport.c, which, by its very
+    nature, only works on Unix.
+
+commit 47b9c111a1ff5c0c653616786119d6c920eeea56
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 13:24:02 +0000
+
+    gibber-sockets.h: new meta-header for various system socket headers
+    
+    This wouldn't be a viable approach for a real library (it requires
+    including config.h in a header), but Gibber is just a convenience
+    library and will remain so until we've migrated out all its code, so
+    I think it's acceptable here.
+    
+    Can we have GNIO yet? :-(
+
+commit bab489016ed591d280d8d349b663b35a3878f0c8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-28 13:22:42 +0000
+
+    configure.ac: check for considerably more headers
+
+commit 8f7effba2bc1778d0f0b5e230891de5435689b78
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-13 19:48:50 +0100
+
+    Conditionalize inclusion of unistd.h
+
+commit 2f042014528670857c9c09f95b7b0d2ff2c47568
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-13 17:41:23 +0100
+
+    tube_msg_close: assert that close_node is null, not close(3)
+    
+    Obvious coding error from when we fixed -Wshadow.
+
+commit c95af3454d1e19c481daf34079a5eb9e79db68cb
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-13 16:24:01 +0100
+
+    GabbleTubeStream: stub out Unix socket support unless GIBBER_TYPE_UNIX_TRANSPORT was built
+
+commit 23f85904639efddec4cb5d7c959704bf31911ce1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-13 16:23:10 +0100
+
+    GabbleFileTransferChannel: stub out Unix socket support unless GIBBER_TYPE_UNIX_TRANSPORT was built
+
+commit 6444637f1dea0b632bf8edd8b7a1eeef324bc86f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-13 16:22:31 +0100
+
+    GibberListener: stub out Unix sockets unless GIBBER_TYPE_UNIX_TRANSPORT was built
+
+commit 1d0656f1c40d42801ec48f4fe44564f468e3818e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-13 16:21:46 +0100
+
+    GibberUnixTransport: don't build if not running on Unix
+
+commit a50f19112c25dc45a4e9f19429b63a2d274be36a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-13 17:24:53 +0100
+
+    Regression tests: don't assume we can do Unix sockets unless os.name is 'posix'
+
+commit 7c0dac9e3fb52cb1ef63eadb77776ddf2f5ef5d4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-13 15:48:56 +0100
+
+    gabble_message_util_parse_incoming_message: don't rely on strptime
+    
+    strptime is non-portable, and the syntax used by jabber:x:delay is close
+    enough to ISO-8601 that we can just append 'Z' and use
+    g_time_val_from_iso8601.
+
+commit b552a043575129b09438fdbe3b29c305929c5915
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-13 15:28:50 +0100
+
+    message-util.c: use ISO rather than gcc varargs for portability
+
+commit 6c78ad121e9ee017d6e3c616803e41b924eb50ef
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-13 15:28:20 +0100
+
+    Jingle: remove unused SET_FOO macros, and unused varargs capabilities
+    
+    These are using GNU varargs, which aren't portable to Windows.
+
+commit 5354de4fc7b9e696eeadabe4b997b3f5f9ab47bd
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2009-10-13 15:35:45 +0100
+
+    OLPC_Channel_Interface_View: remove mismatched tp:name-for-bindings
+    
+    tp:name-for-bindings isn't currently needed for properties, and this one
+    didn't match the property's actual name.
 
 commit 68cc9321da656841204c975b91ae4ab007c282fc
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>

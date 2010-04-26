@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockySession</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="wocky-wocky-sasl-plain.html" title="wocky-sasl-plain">
+<link rel="next" href="wocky-Wocky-OpenSSL-TLS.html" title="Wocky OpenSSL TLS">
+<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="wocky-wocky-sasl-plain.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">wocky Reference Manual</th>
+<td><a accesskey="n" href="wocky-Wocky-OpenSSL-TLS.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#WockySession.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#WockySession.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#WockySession.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#WockySession.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" title="WockySession">
+<a name="WockySession"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="WockySession.top_of_page"></a>WockySession</span></h2>
+<p>WockySession</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="WockySession.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+#include &lt;wocky/wocky-session.h&gt;
+
+                    <a class="link" href="WockySession.html#WockySession-struct" title="WockySession">WockySession</a>;
+                    <a class="link" href="WockySession.html#WockySessionClass" title="WockySessionClass">WockySessionClass</a>;
+<a class="link" href="WockySession.html" title="WockySession"><span class="returnvalue">WockySession</span></a> *      <a class="link" href="WockySession.html#wocky-session-new" title="wocky_session_new ()">wocky_session_new</a>                   (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *conn</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockySession.html#wocky-session-start" title="wocky_session_start ()">wocky_session_start</a>                 (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
+<a class="link" href="WockyPorter.html" title="WockyPorter"><span class="returnvalue">WockyPorter</span></a> *       <a class="link" href="WockySession.html#wocky-session-get-porter" title="wocky_session_get_porter ()">wocky_session_get_porter</a>            (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
+<a class="link" href="WockyContactFactory.html" title="WockyContactFactory"><span class="returnvalue">WockyContactFactory</span></a> * <a class="link" href="WockySession.html#wocky-session-get-contact-factory" title="wocky_session_get_contact_factory ()">wocky_session_get_contact_factory</a> (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="WockySession.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----WockySession
+</pre>
+</div>
+<div class="refsect1" title="Properties">
+<a name="WockySession.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="WockySession.html#WockySession--connection" title='The "connection" property'>connection</a>"               <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>*  : Read / Write / Construct Only
+  "<a class="link" href="WockySession.html#WockySession--contact-factory" title='The "contact-factory" property'>contact-factory</a>"          <a class="link" href="WockyContactFactory.html" title="WockyContactFactory"><span class="type">WockyContactFactory</span></a>*  : Read
+  "<a class="link" href="WockySession.html#WockySession--porter" title='The "porter" property'>porter</a>"                   <a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a>*          : Read
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="WockySession.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1" title="Details">
+<a name="WockySession.details"></a><h2>Details</h2>
+<div class="refsect2" title="WockySession">
+<a name="WockySession-struct"></a><h3>WockySession</h3>
+<pre class="programlisting">typedef struct _WockySession WockySession;</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WockySessionClass">
+<a name="WockySessionClass"></a><h3>WockySessionClass</h3>
+<pre class="programlisting">typedef struct {
+  GObjectClass parent_class;
+} WockySessionClass;
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="wocky_session_new ()">
+<a name="wocky-session-new"></a><h3>wocky_session_new ()</h3>
+<pre class="programlisting"><a class="link" href="WockySession.html" title="WockySession"><span class="returnvalue">WockySession</span></a> *      wocky_session_new                   (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *conn</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_session_start ()">
+<a name="wocky-session-start"></a><h3>wocky_session_start ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_session_start                 (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_session_get_porter ()">
+<a name="wocky-session-get-porter"></a><h3>wocky_session_get_porter ()</h3>
+<pre class="programlisting"><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="returnvalue">WockyPorter</span></a> *       wocky_session_get_porter            (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_session_get_contact_factory ()">
+<a name="wocky-session-get-contact-factory"></a><h3>wocky_session_get_contact_factory ()</h3>
+<pre class="programlisting"><a class="link" href="WockyContactFactory.html" title="WockyContactFactory"><span class="returnvalue">WockyContactFactory</span></a> * wocky_session_get_contact_factory (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="WockySession.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "connection" property'>
+<a name="WockySession--connection"></a><h3>The <code class="literal">"connection"</code> property</h3>
+<pre class="programlisting">  "connection"               <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>*  : Read / Write / Construct Only</pre>
+<p>The WockyXmppConnection associated with this session.</p>
+</div>
+<hr>
+<div class="refsect2" title='The "contact-factory" property'>
+<a name="WockySession--contact-factory"></a><h3>The <code class="literal">"contact-factory"</code> property</h3>
+<pre class="programlisting">  "contact-factory"          <a class="link" href="WockyContactFactory.html" title="WockyContactFactory"><span class="type">WockyContactFactory</span></a>*  : Read</pre>
+<p>The WockyContactFactory associated with this session.</p>
+</div>
+<hr>
+<div class="refsect2" title='The "porter" property'>
+<a name="WockySession--porter"></a><h3>The <code class="literal">"porter"</code> property</h3>
+<pre class="programlisting">  "porter"                   <a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a>*          : Read</pre>
+<p>The WockyPorter associated with this session.</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.14</div>
+</body>
+</html>

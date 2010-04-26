@@ -6,22 +6,19 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="WockyContact.html" title="WockyContact">
-<link rel="next" href="WockyResourceContact.html" title="WockyResourceContact">
-<meta name="generator" content="GTK-Doc V1.13 (XML mode)">
+<link rel="prev" href="wocky-wocky.html" title="wocky">
+<link rel="next" href="WockyConnector.html" title="WockyConnector">
+<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="API Reference">
-<link rel="chapter" href="object-tree.html" title="Object Hierarchy">
-<link rel="index" href="api-index-full.html" title="API Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="WockyContact.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="wocky-wocky.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">wocky Reference Manual</th>
-<td><a accesskey="n" href="WockyResourceContact.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="WockyConnector.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#WockyBareContact.synopsis" class="shortcut">Top</a>
@@ -47,56 +44,57 @@
 <pre class="synopsis">
 #include &lt;wocky/wocky-bare-contact.h&gt;
 
-                    <a href="WockyBareContact.html#WockyBareContact-struct">WockyBareContact</a>;
-                    <a href="WockyBareContact.html#WockyBareContactClass">WockyBareContactClass</a>;
-<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *  <a href="WockyBareContact.html#wocky-bare-contact-new">wocky_bare_contact_new</a>              (const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *jid);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a href="WockyBareContact.html#wocky-bare-contact-get-jid">wocky_bare_contact_get_jid</a>          (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a href="WockyBareContact.html#wocky-bare-contact-get-name">wocky_bare_contact_get_name</a>         (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact);
-<span class="returnvalue">void</span>                <a href="WockyBareContact.html#wocky-bare-contact-set-name">wocky_bare_contact_set_name</a>         (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name);
-<a href="WockyRoster.html#WockyRosterSubscriptionFlags"><span class="returnvalue">WockyRosterSubscriptionFlags</span></a>  <a href="WockyBareContact.html#wocky-bare-contact-get-subscription">wocky_bare_contact_get_subscription</a>
-                                                        (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact);
-<span class="returnvalue">void</span>                <a href="WockyBareContact.html#wocky-bare-contact-set-subscription">wocky_bare_contact_set_subscription</a> (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         <a href="WockyRoster.html#WockyRosterSubscriptionFlags"><span class="returnvalue">WockyRosterSubscriptionFlags</span></a> subscription);
-<span class="returnvalue">void</span>                <a href="WockyBareContact.html#wocky-bare-contact-set-groups">wocky_bare_contact_set_groups</a>       (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **groups);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyBareContact.html#wocky-bare-contact-equal">wocky_bare_contact_equal</a>            (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *a,
-                                                         <a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *b);
-<span class="returnvalue">void</span>                <a href="WockyBareContact.html#wocky-bare-contact-add-group">wocky_bare_contact_add_group</a>        (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *group);
-<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *  <a href="WockyBareContact.html#wocky-bare-contact-copy">wocky_bare_contact_copy</a>             (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact);
-<span class="returnvalue">void</span>                <a href="WockyBareContact.html#wocky-bare-contact-debug-print">wocky_bare_contact_debug_print</a>      (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a href="WockyBareContact.html#wocky-bare-contact-in-group">wocky_bare_contact_in_group</a>         (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *group);
-<span class="returnvalue">void</span>                <a href="WockyBareContact.html#wocky-bare-contact-remove-group">wocky_bare_contact_remove_group</a>     (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *group);
-<span class="returnvalue">void</span>                <a href="WockyBareContact.html#wocky-bare-contact-add-resource">wocky_bare_contact_add_resource</a>     (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         <a href="WockyResourceContact.html"><span class="returnvalue">WockyResourceContact</span></a> *resource);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            <a href="WockyBareContact.html#wocky-bare-contact-get-resources">wocky_bare_contact_get_resources</a>    (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact);
+                    <a class="link" href="WockyBareContact.html#WockyBareContact-struct" title="WockyBareContact">WockyBareContact</a>;
+                    <a class="link" href="WockyBareContact.html#WockyBareContactClass" title="WockyBareContactClass">WockyBareContactClass</a>;
+<a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="returnvalue">WockyBareContact</span></a> *  <a class="link" href="WockyBareContact.html#wocky-bare-contact-new" title="wocky_bare_contact_new ()">wocky_bare_contact_new</a>              (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyBareContact.html#wocky-bare-contact-get-jid" title="wocky_bare_contact_get_jid ()">wocky_bare_contact_get_jid</a>          (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyBareContact.html#wocky-bare-contact-get-name" title="wocky_bare_contact_get_name ()">wocky_bare_contact_get_name</a>         (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyBareContact.html#wocky-bare-contact-set-name" title="wocky_bare_contact_set_name ()">wocky_bare_contact_set_name</a>         (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
+<a class="link" href="WockyRoster.html#WockyRosterSubscriptionFlags" title="enum WockyRosterSubscriptionFlags"><span class="returnvalue">WockyRosterSubscriptionFlags</span></a>  <a class="link" href="WockyBareContact.html#wocky-bare-contact-get-subscription" title="wocky_bare_contact_get_subscription ()">wocky_bare_contact_get_subscription</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyBareContact.html#wocky-bare-contact-set-subscription" title="wocky_bare_contact_set_subscription ()">wocky_bare_contact_set_subscription</a> (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyRoster.html#WockyRosterSubscriptionFlags" title="enum WockyRosterSubscriptionFlags"><span class="type">WockyRosterSubscriptionFlags</span></a> subscription</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyBareContact.html#wocky-bare-contact-set-groups" title="wocky_bare_contact_set_groups ()">wocky_bare_contact_set_groups</a>       (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **groups</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyBareContact.html#wocky-bare-contact-equal" title="wocky_bare_contact_equal ()">wocky_bare_contact_equal</a>            (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *a</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *b</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyBareContact.html#wocky-bare-contact-add-group" title="wocky_bare_contact_add_group ()">wocky_bare_contact_add_group</a>        (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *group</code></em>);
+<a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="returnvalue">WockyBareContact</span></a> *  <a class="link" href="WockyBareContact.html#wocky-bare-contact-copy" title="wocky_bare_contact_copy ()">wocky_bare_contact_copy</a>             (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyBareContact.html#wocky-bare-contact-debug-print" title="wocky_bare_contact_debug_print ()">wocky_bare_contact_debug_print</a>      (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyBareContact.html#wocky-bare-contact-in-group" title="wocky_bare_contact_in_group ()">wocky_bare_contact_in_group</a>         (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *group</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyBareContact.html#wocky-bare-contact-remove-group" title="wocky_bare_contact_remove_group ()">wocky_bare_contact_remove_group</a>     (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *group</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyBareContact.html#wocky-bare-contact-add-resource" title="wocky_bare_contact_add_resource ()">wocky_bare_contact_add_resource</a>     (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="type">WockyResourceContact</span></a> *resource</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            <a class="link" href="WockyBareContact.html#wocky-bare-contact-get-resources" title="wocky_bare_contact_get_resources ()">wocky_bare_contact_get_resources</a>    (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>);
 </pre>
 </div>
 <div class="refsect1" title="Object Hierarchy">
 <a name="WockyBareContact.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="WockyContact.html">WockyContact</a>
+   +----<a class="link" href="WockyContact.html" title="WockyContact">WockyContact</a>
          +----WockyBareContact
 </pre>
 </div>
 <div class="refsect1" title="Properties">
 <a name="WockyBareContact.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a href="WockyBareContact.html#WockyBareContact--groups">groups</a>"                   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GStrv"><span class="type">GStrv</span></a>*                : Read / Write / Construct
-  "<a href="WockyBareContact.html#WockyBareContact--jid">jid</a>"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only
-  "<a href="WockyBareContact.html#WockyBareContact--name">name</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct
-  "<a href="WockyBareContact.html#WockyBareContact--subscription">subscription</a>"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write / Construct
+  "<a class="link" href="WockyBareContact.html#WockyBareContact--groups" title='The "groups" property'>groups</a>"                   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GStrv"><span class="type">GStrv</span></a>*                : Read / Write / Construct
+  "<a class="link" href="WockyBareContact.html#WockyBareContact--jid" title='The "jid" property'>jid</a>"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only
+  "<a class="link" href="WockyBareContact.html#WockyBareContact--name" title='The "name" property'>name</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct
+  "<a class="link" href="WockyBareContact.html#WockyBareContact--subscription" title='The "subscription" property'>subscription</a>"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write / Construct
 </pre>
 </div>
 <div class="refsect1" title="Description">
 <a name="WockyBareContact.description"></a><h2>Description</h2>
 <p>
 Stores information regarding a roster item and provides a higher level API
-for altering its details.</p>
+for altering its details.
+</p>
 </div>
 <div class="refsect1" title="Details">
 <a name="WockyBareContact.details"></a><h2>Details</h2>
@@ -119,20 +117,21 @@ for altering its details.</p>
 <hr>
 <div class="refsect2" title="wocky_bare_contact_new ()">
 <a name="wocky-bare-contact-new"></a><h3>wocky_bare_contact_new ()</h3>
-<pre class="programlisting"><a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *  wocky_bare_contact_new              (const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *jid);</pre>
+<pre class="programlisting"><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="returnvalue">WockyBareContact</span></a> *  wocky_bare_contact_new              (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);</pre>
 <p>
-Creates a new <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> for a given JID.</p>
+Creates a new <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> for a given JID.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
-<td> the JID of the contact to create
+<td>the JID of the contact to create
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a newly constructed <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a>
+<td> a newly constructed <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a>
 </td>
 </tr>
 </tbody>
@@ -141,15 +140,16 @@ Creates a new <a href="WockyBareContact.html"><span class="type">WockyBareContac
 <hr>
 <div class="refsect2" title="wocky_bare_contact_get_jid ()">
 <a name="wocky-bare-contact-get-jid"></a><h3>wocky_bare_contact_get_jid ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_bare_contact_get_jid          (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_bare_contact_get_jid          (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>);</pre>
 <p>
-Returns the JID of the contact wrapped by <em class="parameter"><code>contact</code></em>.</p>
+Returns the JID of the contact wrapped by <em class="parameter"><code>contact</code></em>.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
@@ -163,15 +163,17 @@ Returns the JID of the contact wrapped by <em class="parameter"><code>contact</c
 <hr>
 <div class="refsect2" title="wocky_bare_contact_get_name ()">
 <a name="wocky-bare-contact-get-name"></a><h3>wocky_bare_contact_get_name ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_bare_contact_get_name         (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_bare_contact_get_name         (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>);</pre>
 <p>
-Returns the name of the contact wrapped by <em class="parameter"><code>contact</code></em>.</p>
+Returns the name of the contact wrapped by <em class="parameter"><code>contact</code></em>.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>
+<a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
@@ -185,21 +187,22 @@ Returns the name of the contact wrapped by <em class="parameter"><code>contact</
 <hr>
 <div class="refsect2" title="wocky_bare_contact_set_name ()">
 <a name="wocky-bare-contact-set-name"></a><h3>wocky_bare_contact_set_name ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_set_name         (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *name);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_set_name         (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
 <p>
-Sets <em class="parameter"><code>contact</code></em>'s name to <em class="parameter"><code>name</code></em>.</p>
+Sets <em class="parameter"><code>contact</code></em>'s name to <em class="parameter"><code>name</code></em>.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td> the name to set <em class="parameter"><code>contact</code></em>
+<td>the name to set <em class="parameter"><code>contact</code></em>
 </td>
 </tr>
 </tbody>
@@ -208,16 +211,17 @@ Sets <em class="parameter"><code>contact</code></em>'s name to <em class="parame
 <hr>
 <div class="refsect2" title="wocky_bare_contact_get_subscription ()">
 <a name="wocky-bare-contact-get-subscription"></a><h3>wocky_bare_contact_get_subscription ()</h3>
-<pre class="programlisting"><a href="WockyRoster.html#WockyRosterSubscriptionFlags"><span class="returnvalue">WockyRosterSubscriptionFlags</span></a>  wocky_bare_contact_get_subscription
-                                                        (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact);</pre>
+<pre class="programlisting"><a class="link" href="WockyRoster.html#WockyRosterSubscriptionFlags" title="enum WockyRosterSubscriptionFlags"><span class="returnvalue">WockyRosterSubscriptionFlags</span></a>  wocky_bare_contact_get_subscription
+                                                        (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>);</pre>
 <p>
-Gets the subscription type <em class="parameter"><code>contact</code></em> has.</p>
+Gets the subscription type <em class="parameter"><code>contact</code></em> has.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
@@ -231,21 +235,22 @@ Gets the subscription type <em class="parameter"><code>contact</code></em> has.<
 <hr>
 <div class="refsect2" title="wocky_bare_contact_set_subscription ()">
 <a name="wocky-bare-contact-set-subscription"></a><h3>wocky_bare_contact_set_subscription ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_set_subscription (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         <a href="WockyRoster.html#WockyRosterSubscriptionFlags"><span class="returnvalue">WockyRosterSubscriptionFlags</span></a> subscription);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_set_subscription (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyRoster.html#WockyRosterSubscriptionFlags" title="enum WockyRosterSubscriptionFlags"><span class="type">WockyRosterSubscriptionFlags</span></a> subscription</code></em>);</pre>
 <p>
-Sets the subscription of <em class="parameter"><code>contact</code></em>.</p>
+Sets the subscription of <em class="parameter"><code>contact</code></em>.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>subscription</code></em> :</span></p></td>
-<td> the new subscription type
+<td>the new subscription type
 </td>
 </tr>
 </tbody>
@@ -254,21 +259,22 @@ Sets the subscription of <em class="parameter"><code>contact</code></em>.</p>
 <hr>
 <div class="refsect2" title="wocky_bare_contact_set_groups ()">
 <a name="wocky-bare-contact-set-groups"></a><h3>wocky_bare_contact_set_groups ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_set_groups       (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **groups);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_set_groups       (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **groups</code></em>);</pre>
 <p>
-Sets <em class="parameter"><code>contact</code></em>'s groups.</p>
+Sets <em class="parameter"><code>contact</code></em>'s groups.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>groups</code></em> :</span></p></td>
-<td> a list of groups
+<td>a list of groups
 </td>
 </tr>
 </tbody>
@@ -277,22 +283,23 @@ Sets <em class="parameter"><code>contact</code></em>'s groups.</p>
 <hr>
 <div class="refsect2" title="wocky_bare_contact_equal ()">
 <a name="wocky-bare-contact-equal"></a><h3>wocky_bare_contact_equal ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_bare_contact_equal            (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *a,
-                                                         <a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *b);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_bare_contact_equal            (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *a</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *b</code></em>);</pre>
 <p>
-Compares whether two <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instances refer to the same
-roster item.</p>
+Compares whether two <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instances refer to the same
+roster item.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>a</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>b</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance to compare with <em class="parameter"><code>a</code></em>
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance to compare with <em class="parameter"><code>a</code></em>
 </td>
 </tr>
 <tr>
@@ -306,21 +313,22 @@ roster item.</p>
 <hr>
 <div class="refsect2" title="wocky_bare_contact_add_group ()">
 <a name="wocky-bare-contact-add-group"></a><h3>wocky_bare_contact_add_group ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_add_group        (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *group);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_add_group        (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *group</code></em>);</pre>
 <p>
-Adds <em class="parameter"><code>group</code></em> to contact's groups.</p>
+Adds <em class="parameter"><code>group</code></em> to contact's groups.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>group</code></em> :</span></p></td>
-<td> a group
+<td>a group
 </td>
 </tr>
 </tbody>
@@ -329,20 +337,21 @@ Adds <em class="parameter"><code>group</code></em> to contact's groups.</p>
 <hr>
 <div class="refsect2" title="wocky_bare_contact_copy ()">
 <a name="wocky-bare-contact-copy"></a><h3>wocky_bare_contact_copy ()</h3>
-<pre class="programlisting"><a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *  wocky_bare_contact_copy             (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact);</pre>
+<pre class="programlisting"><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="returnvalue">WockyBareContact</span></a> *  wocky_bare_contact_copy             (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>);</pre>
 <p>
-Convenience function to obtain a copy of the given <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a>.</p>
+Convenience function to obtain a copy of the given <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a>.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a newly created <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> which is a copy of the given
+<td> a newly created <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> which is a copy of the given
 one.
 </td>
 </tr>
@@ -352,14 +361,15 @@ one.
 <hr>
 <div class="refsect2" title="wocky_bare_contact_debug_print ()">
 <a name="wocky-bare-contact-debug-print"></a><h3>wocky_bare_contact_debug_print ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_debug_print      (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_debug_print      (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>);</pre>
 <p>
-Prints debug information for the given <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a>.</p>
+Prints debug information for the given <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a>.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr></tbody>
 </table></div>
@@ -367,21 +377,22 @@ Prints debug information for the given <a href="WockyBareContact.html"><span cla
 <hr>
 <div class="refsect2" title="wocky_bare_contact_in_group ()">
 <a name="wocky-bare-contact-in-group"></a><h3>wocky_bare_contact_in_group ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_bare_contact_in_group         (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *group);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_bare_contact_in_group         (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *group</code></em>);</pre>
 <p>
-Determines whether the given contact is in <em class="parameter"><code>group</code></em>.</p>
+Determines whether the given contact is in <em class="parameter"><code>group</code></em>.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>group</code></em> :</span></p></td>
-<td> a group
+<td>a group
 </td>
 </tr>
 <tr>
@@ -395,21 +406,22 @@ Determines whether the given contact is in <em class="parameter"><code>group</co
 <hr>
 <div class="refsect2" title="wocky_bare_contact_remove_group ()">
 <a name="wocky-bare-contact-remove-group"></a><h3>wocky_bare_contact_remove_group ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_remove_group     (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *group);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_remove_group     (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *group</code></em>);</pre>
 <p>
-Removes <em class="parameter"><code>group</code></em> from the contact's groups.</p>
+Removes <em class="parameter"><code>group</code></em> from the contact's groups.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>group</code></em> :</span></p></td>
-<td> a group
+<td>a group
 </td>
 </tr>
 </tbody>
@@ -418,22 +430,23 @@ Removes <em class="parameter"><code>group</code></em> from the contact's groups.
 <hr>
 <div class="refsect2" title="wocky_bare_contact_add_resource ()">
 <a name="wocky-bare-contact-add-resource"></a><h3>wocky_bare_contact_add_resource ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_add_resource     (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact,
-                                                         <a href="WockyResourceContact.html"><span class="returnvalue">WockyResourceContact</span></a> *resource);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_bare_contact_add_resource     (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="type">WockyResourceContact</span></a> *resource</code></em>);</pre>
 <p>
 Adds <em class="parameter"><code>resource</code></em> to the contact's resources.
-The <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance doesn't assume a reference to <em class="parameter"><code>resource</code></em>.</p>
+The <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance doesn't assume a reference to <em class="parameter"><code>resource</code></em>.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>resource</code></em> :</span></p></td>
-<td> a <a href="WockyResourceContact.html"><span class="type">WockyResourceContact</span></a> instance
+<td>a <a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="type">WockyResourceContact</span></a> instance
 </td>
 </tr>
 </tbody>
@@ -442,21 +455,22 @@ The <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></
 <hr>
 <div class="refsect2" title="wocky_bare_contact_get_resources ()">
 <a name="wocky-bare-contact-get-resources"></a><h3>wocky_bare_contact_get_resources ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            wocky_bare_contact_get_resources    (<a href="WockyBareContact.html"><span class="returnvalue">WockyBareContact</span></a> *contact);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            wocky_bare_contact_get_resources    (<em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>);</pre>
 <p>
 Gets a <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="type">GSList</span></a> of all the contact's resources.
-You should call <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#g-slist-free"><span class="type">g_slist_free</span></a> on the list when done with it.</p>
+You should call <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#g-slist-free"><span class="type">g_slist_free</span></a> on the list when done with it.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
-<td> a <a href="WockyBareContact.html"><span class="type">WockyBareContact</span></a> instance
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="type">GSList</span></a> of <a href="WockyResourceContact.html"><span class="type">WockyResourceContact</span></a> objects.
+<td> a <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="type">GSList</span></a> of <a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="type">WockyResourceContact</span></a> objects.
 </td>
 </tr>
 </tbody>
@@ -469,14 +483,16 @@ You should call <a href="http://library.gnome.org/devel/glib/unstable/glib-Singl
 <a name="WockyBareContact--groups"></a><h3>The <code class="literal">"groups"</code> property</h3>
 <pre class="programlisting">  "groups"                   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GStrv"><span class="type">GStrv</span></a>*                : Read / Write / Construct</pre>
 <p>
-A list of the contact's groups, according to the roster.</p>
+A list of the contact's groups, according to the roster.
+</p>
 </div>
 <hr>
 <div class="refsect2" title='The "jid" property'>
 <a name="WockyBareContact--jid"></a><h3>The <code class="literal">"jid"</code> property</h3>
 <pre class="programlisting">  "jid"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only</pre>
 <p>
-The contact's bare JID, according to the roster.</p>
+The contact's bare JID, according to the roster.
+</p>
 <p>Default value: ""</p>
 </div>
 <hr>
@@ -484,7 +500,8 @@ The contact's bare JID, according to the roster.</p>
 <a name="WockyBareContact--name"></a><h3>The <code class="literal">"name"</code> property</h3>
 <pre class="programlisting">  "name"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct</pre>
 <p>
-The contact's name, according to the roster.</p>
+The contact's name, according to the roster.
+</p>
 <p>Default value: ""</p>
 </div>
 <hr>
@@ -492,7 +509,8 @@ The contact's name, according to the roster.</p>
 <a name="WockyBareContact--subscription"></a><h3>The <code class="literal">"subscription"</code> property</h3>
 <pre class="programlisting">  "subscription"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write / Construct</pre>
 <p>
-The subscription type of the contact, according to the roster.</p>
+The subscription type of the contact, according to the roster.
+</p>
 <p>Allowed values: &lt;= 3</p>
 <p>Default value: 0</p>
 </div>
@@ -500,6 +518,6 @@ The subscription type of the contact, according to the roster.</p>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.13</div>
+          Generated by GTK-Doc V1.14</div>
 </body>
 </html>

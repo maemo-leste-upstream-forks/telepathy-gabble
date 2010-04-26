@@ -4,24 +4,28 @@ noinst_LTLIBRARIES = libwocky.la
 
 EXTRA_DIST =
 
-BUILT_SOURCES = \
+nodist_libwocky_la_SOURCES = \
   wocky-signals-marshal.list \
   wocky-signals-marshal.h \
   wocky-signals-marshal.c \
-  wocky-data-forms-enumtypes.c \
-  wocky-data-forms-enumtypes.h \
+  wocky-data-form-enumtypes.c \
+  wocky-data-form-enumtypes.h \
   wocky-muc-enumtypes.c \
   wocky-muc-enumtypes.h \
   wocky-pubsub-service-enumtypes.c \
   wocky-pubsub-service-enumtypes.h \
+  wocky-pubsub-node-enumtypes.c \
+  wocky-pubsub-node-enumtypes.h \
   wocky-xmpp-error-enumtypes.c \
   wocky-xmpp-error-enumtypes.h \
   wocky-xmpp-reader-enumtypes.c \
   wocky-xmpp-reader-enumtypes.h
 
+BUILT_SOURCES = $(nodist_libwocky_la_SOURCES)
+
 OPENSSL_SRC = \
-  wocky-openssl.c        \
-  wocky-tls.h            \
+  wocky-openssl.c \
+  wocky-tls.h \
   wocky-openssl-dh512.c  \
   wocky-openssl-dh1024.c \
   wocky-openssl-dh2048.c \
@@ -29,64 +33,64 @@ OPENSSL_SRC = \
 
 GNUTLS_SRC = wocky-tls.c wocky-tls.h
 
-HANDWRITTEN_SOURCES =            \
-  wocky-types.h                  \
-  wocky.c                        \
-  wocky.h                        \
-  wocky-connector.c              \
-  wocky-connector.h              \
-  wocky-xmpp-connection.c        \
-  wocky-xmpp-connection.h        \
-  wocky-debug.c                  \
-  wocky-debug.h                  \
-  wocky-namespaces.h             \
-  wocky-utils.c                  \
-  wocky-utils.h                  \
-  wocky-xmpp-node.c              \
-  wocky-xmpp-node.h              \
-  wocky-xmpp-reader.c            \
-  wocky-xmpp-reader.h            \
-  wocky-xmpp-stanza.c            \
-  wocky-xmpp-stanza.h            \
-  wocky-xmpp-writer.c            \
-  wocky-xmpp-writer.h            \
-  wocky-xmpp-error.c             \
-  wocky-xmpp-error.h             \
-  wocky-sasl-auth.c              \
-  wocky-sasl-auth.h              \
-  wocky-sasl-digest-md5.h        \
-  wocky-sasl-digest-md5.c        \
-  wocky-sasl-handler.c           \
-  wocky-sasl-handler.h           \
-  wocky-sasl-plain.c             \
-  wocky-sasl-plain.h             \
-  wocky-porter.c                 \
-  wocky-porter.h                 \
-  wocky-contact.c                \
-  wocky-contact.h                \
-  wocky-bare-contact.c           \
-  wocky-bare-contact.h           \
-  wocky-resource-contact.c       \
-  wocky-resource-contact.h       \
-  wocky-roster.c                 \
-  wocky-roster.h                 \
-  wocky-contact-factory.c        \
-  wocky-contact-factory.h        \
-  wocky-session.c                \
-  wocky-session.h                \
-  wocky-muc.h                    \
-  wocky-muc.c					 \
-  wocky-pep-service.c            \
-  wocky-pep-service.h            \
-  wocky-data-forms.c             \
-  wocky-data-forms.h             \
-  wocky-pubsub-helpers.c         \
-  wocky-pubsub-helpers.h         \
-  wocky-pubsub-service.c         \
-  wocky-pubsub-service.h         \
+HANDWRITTEN_SOURCES = \
+  wocky-types.h \
+  wocky.c \
+  wocky.h \
+  wocky-connector.c \
+  wocky-connector.h \
+  wocky-xmpp-connection.c \
+  wocky-xmpp-connection.h \
+  wocky-debug.c \
+  wocky-debug.h \
+  wocky-namespaces.h \
+  wocky-utils.c \
+  wocky-utils.h \
+  wocky-xmpp-node.c \
+  wocky-xmpp-node.h \
+  wocky-xmpp-reader.c \
+  wocky-xmpp-reader.h \
+  wocky-xmpp-stanza.c \
+  wocky-xmpp-stanza.h \
+  wocky-xmpp-writer.c \
+  wocky-xmpp-writer.h \
+  wocky-xmpp-error.c \
+  wocky-xmpp-error.h \
+  wocky-sasl-auth.c \
+  wocky-sasl-auth.h \
+  wocky-sasl-digest-md5.h \
+  wocky-sasl-digest-md5.c \
+  wocky-sasl-handler.c \
+  wocky-sasl-handler.h \
+  wocky-sasl-plain.c \
+  wocky-sasl-plain.h \
+  wocky-porter.c \
+  wocky-porter.h \
+  wocky-contact.c \
+  wocky-contact.h \
+  wocky-bare-contact.c \
+  wocky-bare-contact.h \
+  wocky-resource-contact.c \
+  wocky-resource-contact.h \
+  wocky-roster.c \
+  wocky-roster.h \
+  wocky-contact-factory.c \
+  wocky-contact-factory.h \
+  wocky-session.c \
+  wocky-session.h \
+  wocky-muc.h \
+  wocky-muc.c \
+  wocky-pep-service.c \
+  wocky-pep-service.h \
+  wocky-data-form.c \
+  wocky-data-form.h \
+  wocky-pubsub-helpers.c \
+  wocky-pubsub-helpers.h \
+  wocky-pubsub-service.c \
+  wocky-pubsub-service.h \
   wocky-pubsub-service-protected.h \
-  wocky-pubsub-node.c            \
-  wocky-pubsub-node.h            \
+  wocky-pubsub-node.c \
+  wocky-pubsub-node.h \
   wocky-pubsub-node-protected.h
 
 if USING_OPENSSL
@@ -97,7 +101,7 @@ else
   EXTRA_DIST += $(OPENSSL_SRC)
 endif
 
-libwocky_la_SOURCES = $(HANDWRITTEN_SOURCES) $(BUILT_SOURCES)
+libwocky_la_SOURCES = $(HANDWRITTEN_SOURCES)
 
 # Coding style checks
 check_c_sources = \

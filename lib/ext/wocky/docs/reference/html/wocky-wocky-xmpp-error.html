@@ -6,22 +6,19 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="wocky-wocky-xmpp-node.html" title="WockyXmppNode">
-<link rel="next" href="wocky-wocky-tls.html" title="Wocky OpenSSL TLS">
-<meta name="generator" content="GTK-Doc V1.13 (XML mode)">
+<link rel="prev" href="WockyXmppConnection.html" title="WockyXmppConnection">
+<link rel="next" href="wocky-wocky-xmpp-error-enumtypes.html" title="wocky-xmpp-error-enumtypes">
+<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="API Reference">
-<link rel="chapter" href="object-tree.html" title="Object Hierarchy">
-<link rel="index" href="api-index-full.html" title="API Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="wocky-wocky-xmpp-node.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="WockyXmppConnection.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">wocky Reference Manual</th>
-<td><a accesskey="n" href="wocky-wocky-tls.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="wocky-wocky-xmpp-error-enumtypes.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#wocky-wocky-xmpp-error.synopsis" class="shortcut">Top</a>
@@ -40,34 +37,34 @@
 </tr></table></div>
 <div class="refsynopsisdiv" title="Synopsis">
 <a name="wocky-wocky-xmpp-error.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">enum                <a href="wocky-wocky-xmpp-error.html#WockyXmppErrorType">WockyXmppErrorType</a>;
-enum                <a href="wocky-wocky-xmpp-error.html#WockyXmppError">WockyXmppError</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-quark">wocky_xmpp_error_quark</a>              (void);
-#define             <a href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS">WOCKY_XMPP_ERROR</a>
-                    <a href="wocky-wocky-xmpp-error.html#WockyXmppErrorSpecialization">WockyXmppErrorSpecialization</a>;
-                    <a href="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain">WockyXmppErrorDomain</a>;
-enum                <a href="wocky-wocky-xmpp-error.html#WockyJingleError">WockyJingleError</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a href="wocky-wocky-xmpp-error.html#wocky-jingle-error-quark">wocky_jingle_error_quark</a>            (void);
-#define             <a href="wocky-wocky-xmpp-error.html#WOCKY-JINGLE-ERROR:CAPS">WOCKY_JINGLE_ERROR</a>
-enum                <a href="wocky-wocky-xmpp-error.html#WockySIError">WockySIError</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a href="wocky-wocky-xmpp-error.html#wocky-si-error-quark">wocky_si_error_quark</a>                (void);
-#define             <a href="wocky-wocky-xmpp-error.html#WOCKY-SI-ERROR:CAPS">WOCKY_SI_ERROR</a>
-enum                <a href="wocky-wocky-xmpp-error.html#WockyXmppStreamError">WockyXmppStreamError</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a href="wocky-wocky-xmpp-error.html#wocky-xmpp-stream-error-quark">wocky_xmpp_stream_error_quark</a>       (void);
-#define             <a href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-STREAM-ERROR:CAPS">WOCKY_XMPP_STREAM_ERROR</a>
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-string">wocky_xmpp_error_string</a>             (<a href="wocky-wocky-xmpp-error.html#WockyXmppError"><span class="returnvalue">WockyXmppError</span></a> error);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-description">wocky_xmpp_error_description</a>        (<a href="wocky-wocky-xmpp-error.html#WockyXmppError"><span class="returnvalue">WockyXmppError</span></a> error);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *            <a href="wocky-wocky-xmpp-error.html#wocky-xmpp-stream-error-from-node">wocky_xmpp_stream_error_from_node</a>   (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node);
-<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *     <a href="wocky-wocky-xmpp-error.html#wocky-stanza-error-to-node">wocky_stanza_error_to_node</a>          (const <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *error,
-                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *parent_node);
-<span class="returnvalue">void</span>                <a href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-extract">wocky_xmpp_error_extract</a>            (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *error,
-                                                         <a href="wocky-wocky-xmpp-error.html#WockyXmppErrorType"><span class="returnvalue">WockyXmppErrorType</span></a> *type,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **core,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **specialized,
-                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> **specialized_node);
-<span class="returnvalue">void</span>                <a href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-register-domain">wocky_xmpp_error_register_domain</a>    (<a href="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain"><span class="returnvalue">WockyXmppErrorDomain</span></a> *domain);
-<span class="returnvalue">void</span>                <a href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-init">wocky_xmpp_error_init</a>               (void);
-<span class="returnvalue">void</span>                <a href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-deinit">wocky_xmpp_error_deinit</a>             (void);
+<pre class="synopsis">enum                <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorType" title="enum WockyXmppErrorType">WockyXmppErrorType</a>;
+enum                <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError" title="enum WockyXmppError">WockyXmppError</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-quark" title="wocky_xmpp_error_quark ()">wocky_xmpp_error_quark</a>              (<em class="parameter"><code><span class="type">void</span></code></em>);
+#define             <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS" title="WOCKY_XMPP_ERROR">WOCKY_XMPP_ERROR</a>
+                    <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorSpecialization" title="WockyXmppErrorSpecialization">WockyXmppErrorSpecialization</a>;
+                    <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain" title="WockyXmppErrorDomain">WockyXmppErrorDomain</a>;
+enum                <a class="link" href="wocky-wocky-xmpp-error.html#WockyJingleError" title="enum WockyJingleError">WockyJingleError</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="wocky-wocky-xmpp-error.html#wocky-jingle-error-quark" title="wocky_jingle_error_quark ()">wocky_jingle_error_quark</a>            (<em class="parameter"><code><span class="type">void</span></code></em>);
+#define             <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-JINGLE-ERROR:CAPS" title="WOCKY_JINGLE_ERROR">WOCKY_JINGLE_ERROR</a>
+enum                <a class="link" href="wocky-wocky-xmpp-error.html#WockySIError" title="enum WockySIError">WockySIError</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="wocky-wocky-xmpp-error.html#wocky-si-error-quark" title="wocky_si_error_quark ()">wocky_si_error_quark</a>                (<em class="parameter"><code><span class="type">void</span></code></em>);
+#define             <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-SI-ERROR:CAPS" title="WOCKY_SI_ERROR">WOCKY_SI_ERROR</a>
+enum                <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppStreamError" title="enum WockyXmppStreamError">WockyXmppStreamError</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-stream-error-quark" title="wocky_xmpp_stream_error_quark ()">wocky_xmpp_stream_error_quark</a>       (<em class="parameter"><code><span class="type">void</span></code></em>);
+#define             <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-STREAM-ERROR:CAPS" title="WOCKY_XMPP_STREAM_ERROR">WOCKY_XMPP_STREAM_ERROR</a>
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-string" title="wocky_xmpp_error_string ()">wocky_xmpp_error_string</a>             (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError" title="enum WockyXmppError"><span class="type">WockyXmppError</span></a> error</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-description" title="wocky_xmpp_error_description ()">wocky_xmpp_error_description</a>        (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError" title="enum WockyXmppError"><span class="type">WockyXmppError</span></a> error</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *            <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-stream-error-from-node" title="wocky_xmpp_stream_error_from_node ()">wocky_xmpp_stream_error_from_node</a>   (<em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> *node</code></em>);
+<a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *     <a class="link" href="wocky-wocky-xmpp-error.html#wocky-stanza-error-to-node" title="wocky_stanza_error_to_node ()">wocky_stanza_error_to_node</a>          (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> *parent_node</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-extract" title="wocky_xmpp_error_extract ()">wocky_xmpp_error_extract</a>            (<em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorType" title="enum WockyXmppErrorType"><span class="type">WockyXmppErrorType</span></a> *type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **core</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **specialized</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **specialized_node</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-register-domain" title="wocky_xmpp_error_register_domain ()">wocky_xmpp_error_register_domain</a>    (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain" title="WockyXmppErrorDomain"><span class="type">WockyXmppErrorDomain</span></a> *domain</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-init" title="wocky_xmpp_error_init ()">wocky_xmpp_error_init</a>               (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-deinit" title="wocky_xmpp_error_deinit ()">wocky_xmpp_error_deinit</a>             (<em class="parameter"><code><span class="type">void</span></code></em>);
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -140,7 +137,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <hr>
 <div class="refsect2" title="wocky_xmpp_error_quark ()">
 <a name="wocky-xmpp-error-quark"></a><h3>wocky_xmpp_error_quark ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_xmpp_error_quark              (void);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_xmpp_error_quark              (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -201,7 +198,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <hr>
 <div class="refsect2" title="wocky_jingle_error_quark ()">
 <a name="wocky-jingle-error-quark"></a><h3>wocky_jingle_error_quark ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_jingle_error_quark            (void);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_jingle_error_quark            (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -235,7 +232,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <hr>
 <div class="refsect2" title="wocky_si_error_quark ()">
 <a name="wocky-si-error-quark"></a><h3>wocky_si_error_quark ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_si_error_quark                (void);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_si_error_quark                (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -287,14 +284,16 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 } WockyXmppStreamError;
 </pre>
 <p>
-Possible XMPP stream errors, as defined by RFC 3920 §4.7.</p>
+Possible XMPP stream errors, as defined by RFC 3920 §4.7.
+</p>
 </div>
 <hr>
 <div class="refsect2" title="wocky_xmpp_stream_error_quark ()">
 <a name="wocky-xmpp-stream-error-quark"></a><h3>wocky_xmpp_stream_error_quark ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_xmpp_stream_error_quark       (void);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_xmpp_stream_error_quark       (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
-Get the error quark used for stream errors</p>
+Get the error quark used for stream errors
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
@@ -310,20 +309,22 @@ Get the error quark used for stream errors</p>
 <pre class="programlisting">#define WOCKY_XMPP_STREAM_ERROR (wocky_xmpp_stream_error_quark ())
 </pre>
 <p>
-Get access to the error quark of the xmpp stream errors.</p>
+Get access to the error quark of the xmpp stream errors.
+</p>
 </div>
 <hr>
 <div class="refsect2" title="wocky_xmpp_error_string ()">
 <a name="wocky-xmpp-error-string"></a><h3>wocky_xmpp_error_string ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_error_string             (<a href="wocky-wocky-xmpp-error.html#WockyXmppError"><span class="returnvalue">WockyXmppError</span></a> error);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_error_string             (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError" title="enum WockyXmppError"><span class="type">WockyXmppError</span></a> error</code></em>);</pre>
 <p>
+
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td> a core stanza error
+<td>a core stanza error
 </td>
 </tr>
 <tr>
@@ -337,15 +338,16 @@ Get access to the error quark of the xmpp stream errors.</p>
 <hr>
 <div class="refsect2" title="wocky_xmpp_error_description ()">
 <a name="wocky-xmpp-error-description"></a><h3>wocky_xmpp_error_description ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_error_description        (<a href="wocky-wocky-xmpp-error.html#WockyXmppError"><span class="returnvalue">WockyXmppError</span></a> error);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_error_description        (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError" title="enum WockyXmppError"><span class="type">WockyXmppError</span></a> error</code></em>);</pre>
 <p>
+
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td> a core stanza error
+<td>a core stanza error
 </td>
 </tr>
 <tr>
@@ -359,7 +361,7 @@ Get access to the error quark of the xmpp stream errors.</p>
 <hr>
 <div class="refsect2" title="wocky_xmpp_stream_error_from_node ()">
 <a name="wocky-xmpp-stream-error-from-node"></a><h3>wocky_xmpp_stream_error_from_node ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *            wocky_xmpp_stream_error_from_node   (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *node);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *            wocky_xmpp_stream_error_from_node   (<em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> *node</code></em>);</pre>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -370,7 +372,7 @@ Get access to the error quark of the xmpp stream errors.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a GError in the <a href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-STREAM-ERROR:CAPS"><span class="type">WOCKY_XMPP_STREAM_ERROR</span></a> domain.
+<td> a GError in the <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-STREAM-ERROR:CAPS" title="WOCKY_XMPP_STREAM_ERROR"><span class="type">WOCKY_XMPP_STREAM_ERROR</span></a> domain.
 </td>
 </tr>
 </tbody>
@@ -379,8 +381,8 @@ Get access to the error quark of the xmpp stream errors.</p>
 <hr>
 <div class="refsect2" title="wocky_stanza_error_to_node ()">
 <a name="wocky-stanza-error-to-node"></a><h3>wocky_stanza_error_to_node ()</h3>
-<pre class="programlisting"><a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *     wocky_stanza_error_to_node          (const <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *error,
-                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *parent_node);</pre>
+<pre class="programlisting"><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *     wocky_stanza_error_to_node          (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> *parent_node</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -407,11 +409,11 @@ Get access to the error quark of the xmpp stream errors.</p>
 <hr>
 <div class="refsect2" title="wocky_xmpp_error_extract ()">
 <a name="wocky-xmpp-error-extract"></a><h3>wocky_xmpp_error_extract ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_extract            (<a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> *error,
-                                                         <a href="wocky-wocky-xmpp-error.html#WockyXmppErrorType"><span class="returnvalue">WockyXmppErrorType</span></a> *type,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **core,
-                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> **specialized,
-                                                         <a href="wocky-wocky-xmpp-node.html#WockyXmppNode"><span class="returnvalue">WockyXmppNode</span></a> **specialized_node);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_extract            (<em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> *error</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorType" title="enum WockyXmppErrorType"><span class="type">WockyXmppErrorType</span></a> *type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **core</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **specialized</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyXmppNode.html#WockyXmppNode" title="WockyXmppNode"><span class="type">WockyXmppNode</span></a> **specialized_node</code></em>);</pre>
 <p>
 Given an &lt;error/&gt; node, breaks it down into values describing the error.
 <em class="parameter"><code>type</code></em> and <em class="parameter"><code>core</code></em> are guaranteed to be set; <em class="parameter"><code>specialized</code></em> and <em class="parameter"><code>specialized_node</code></em>
@@ -421,34 +423,35 @@ latter will be set to <a href="http://library.gnome.org/devel/glib/unstable/glib
 <p>
 Any or all of the out parameters may be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore the value.  The
 value stored in <em class="parameter"><code>specialized_node</code></em> is borrowed from <em class="parameter"><code>stanza</code></em>, and is only
-valid as long as the latter is alive.</p>
+valid as long as the latter is alive.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td> the &lt;error/&gt; child of a stanza with type='error'
+<td>the &lt;error/&gt; child of a stanza with type='error'
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
-<td> location at which to store the error type
+<td>location at which to store the error type
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>core</code></em> :</span></p></td>
-<td> location at which to store an error in the domain <a href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS"><span class="type">WOCKY_XMPP_ERROR</span></a>
+<td>location at which to store an error in the domain <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS" title="WOCKY_XMPP_ERROR"><span class="type">WOCKY_XMPP_ERROR</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>specialized</code></em> :</span></p></td>
-<td> location at which to store an error in an application-specific
+<td>location at which to store an error in an application-specific
               domain, if one is found
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>specialized_node</code></em> :</span></p></td>
-<td> location at which to store the node representing an
+<td>location at which to store the node representing an
                    application-specific error, if one is found
 </td>
 </tr>
@@ -458,17 +461,18 @@ valid as long as the latter is alive.</p>
 <hr>
 <div class="refsect2" title="wocky_xmpp_error_register_domain ()">
 <a name="wocky-xmpp-error-register-domain"></a><h3>wocky_xmpp_error_register_domain ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_register_domain    (<a href="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain"><span class="returnvalue">WockyXmppErrorDomain</span></a> *domain);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_register_domain    (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain" title="WockyXmppErrorDomain"><span class="type">WockyXmppErrorDomain</span></a> *domain</code></em>);</pre>
 <p>
 Registers a new set of application-specific stanza errors. This allows
-GErrors in that domain to be passed to <a href="wocky-wocky-xmpp-error.html#wocky-stanza-error-to-node"><code class="function">wocky_stanza_error_to_node()</code></a>, and to
-be recognized and returned by <a href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-extract"><code class="function">wocky_xmpp_error_extract()</code></a> (and
-<a href="WockyXmppStanza.html#wocky-xmpp-stanza-extract-errors"><code class="function">wocky_xmpp_stanza_extract_errors()</code></a>, by extension).</p>
+GErrors in that domain to be passed to <a class="link" href="wocky-wocky-xmpp-error.html#wocky-stanza-error-to-node" title="wocky_stanza_error_to_node ()"><code class="function">wocky_stanza_error_to_node()</code></a>, and to
+be recognized and returned by <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-extract" title="wocky_xmpp_error_extract ()"><code class="function">wocky_xmpp_error_extract()</code></a> (and
+<a class="link" href="WockyXmppStanza.html#wocky-xmpp-stanza-extract-errors" title="wocky_xmpp_stanza_extract_errors ()"><code class="function">wocky_xmpp_stanza_extract_errors()</code></a>, by extension).
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>domain</code></em> :</span></p></td>
-<td> a description of the error domain
+<td>a description of the error domain
 </td>
 </tr></tbody>
 </table></div>
@@ -476,14 +480,14 @@ be recognized and returned by <a href="wocky-wocky-xmpp-error.html#wocky-xmpp-er
 <hr>
 <div class="refsect2" title="wocky_xmpp_error_init ()">
 <a name="wocky-xmpp-error-init"></a><h3>wocky_xmpp_error_init ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_init               (void);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_init               (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 </p>
 </div>
 <hr>
 <div class="refsect2" title="wocky_xmpp_error_deinit ()">
 <a name="wocky-xmpp-error-deinit"></a><h3>wocky_xmpp_error_deinit ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_deinit             (void);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_deinit             (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 </p>
 </div>
@@ -491,6 +495,6 @@ be recognized and returned by <a href="wocky-wocky-xmpp-error.html#wocky-xmpp-er
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.13</div>
+          Generated by GTK-Doc V1.14</div>
 </body>
 </html>
