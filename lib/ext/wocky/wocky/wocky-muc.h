@@ -29,6 +29,7 @@ G_BEGIN_DECLS
 
 typedef struct _WockyMuc WockyMuc;
 typedef struct _WockyMucClass WockyMucClass;
+typedef struct _WockyMucPrivate WockyMucPrivate;
 
 /**
  * WockyMucStatusCode:
@@ -142,7 +143,7 @@ typedef struct {
   WockyMucRole role;
   WockyMucAffiliation affiliation;
   gchar *status; /* user set status string */
-  WockyXmppStanza *presence_stanza;
+  WockyStanza *presence_stanza;
 } WockyMucMember;
 
 GType wocky_muc_get_type (void);
@@ -153,6 +154,7 @@ struct _WockyMucClass {
 
 struct _WockyMuc {
     GObject parent;
+    WockyMucPrivate *priv;
 };
 
 /* TYPE MACROS */
@@ -183,7 +185,7 @@ gboolean wocky_muc_disco_info_finish (WockyMuc *muc,
     GError **error);
 
 /* presence */
-WockyXmppStanza *wocky_muc_create_presence (WockyMuc *muc,
+WockyStanza *wocky_muc_create_presence (WockyMuc *muc,
     WockyStanzaSubType type,
     const gchar *status,
     const gchar *password);

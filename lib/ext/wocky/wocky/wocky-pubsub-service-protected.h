@@ -23,33 +23,32 @@
 
 #include "wocky-pubsub-service.h"
 
-WockyXmppStanza *wocky_pubsub_service_create_retrieve_subscriptions_stanza (
+WockyStanza *wocky_pubsub_service_create_retrieve_subscriptions_stanza (
     WockyPubsubService *self,
     WockyPubsubNode *node,
-    WockyXmppNode **pubsub_node,
-    WockyXmppNode **subscriptions_node);
+    WockyNode **pubsub_node,
+    WockyNode **subscriptions_node);
 
 WockyPubsubSubscription *
 wocky_pubsub_service_parse_subscription (WockyPubsubService *self,
-    WockyXmppNode *subscription_node,
+    WockyNode *subscription_node,
     const gchar *parent_node_attr,
     GError **error);
 
 GList * wocky_pubsub_service_parse_subscriptions (WockyPubsubService *self,
-    WockyXmppNode *subscriptions_node,
+    WockyNode *subscriptions_node,
     GList **subscription_nodes);
 
-WockyXmppStanza *wocky_pubsub_service_create_create_node_stanza (
+WockyStanza *wocky_pubsub_service_create_create_node_stanza (
     WockyPubsubService *self,
     const gchar *name,
     WockyDataForm *config,
-    WockyXmppNode **pubsub_node,
-    WockyXmppNode **create_node);
+    WockyNode **pubsub_node,
+    WockyNode **create_node);
 
 WockyPubsubNode *wocky_pubsub_service_handle_create_node_reply (
     WockyPubsubService *self,
-    GObject *source,
-    GAsyncResult *res,
+    WockyNodeTree *create_tree,
     const gchar *requested_name,
     GError **error);
 

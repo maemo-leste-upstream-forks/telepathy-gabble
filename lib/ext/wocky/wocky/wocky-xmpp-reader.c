@@ -23,7 +23,7 @@
  * @title: WockyXmppReader
  * @short_description: Xmpp XML to stanza deserializer
  *
- * The #WockyXmppReader deserializes XML to #WockyXmppStanza<!-- -->s,
+ * The #WockyXmppReader deserializes XML to #WockyStanza<!-- -->s,
  * misc, other
  */
 
@@ -38,7 +38,7 @@
 
 #include "wocky-namespaces.h"
 
-#include "wocky-xmpp-stanza.h"
+#include "wocky-stanza.h"
 
 #define DEBUG_FLAG DEBUG_XMPP_READER
 #include "wocky-debug.h"
@@ -104,14 +104,12 @@ static xmlSAXHandler parser_handler = {
 };
 
 /* private structure */
-typedef struct _WockyXmppReaderPrivate WockyXmppReaderPrivate;
-
 struct _WockyXmppReaderPrivate
 {
   xmlParserCtxtPtr parser;
   guint depth;
-  WockyXmppStanza *stanza;
-  WockyXmppNode *node;
+  WockyStanza *stanza;
+  WockyNode *node;
   GQueue *nodes;
   gchar *to;
   gchar *from;
@@ -143,14 +141,10 @@ wocky_xmpp_reader_error_quark (void)
   return quark;
 }
 
-#define WOCKY_XMPP_READER_GET_PRIVATE(o)  \
-  (G_TYPE_INSTANCE_GET_PRIVATE ((o), WOCKY_TYPE_XMPP_READER, \
-   WockyXmppReaderPrivate))
-
 static void
 wocky_init_xml_parser (WockyXmppReader *obj)
 {
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (obj);
+  WockyXmppReaderPrivate *priv = obj->priv;
 
   if (priv->parser != NULL)
     xmlFreeParserCtxt (priv->parser);
@@ -185,12 +179,15 @@ wocky_xmpp_reader_constructed (GObject *obj)
 }
 
 static void
-wocky_xmpp_reader_init (WockyXmppReader *obj)
+wocky_xmpp_reader_init (WockyXmppReader *self)
 {
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (obj);
+  WockyXmppReaderPrivate *priv;
 
-  /* allocate any data required by the object here */
-  wocky_init_xml_parser (obj);
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, WOCKY_TYPE_XMPP_READER,
+      WockyXmppReaderPrivate);
+  priv = self->priv;
+
+  wocky_init_xml_parser (self);
 
   priv->stanza = NULL;
   priv->nodes = g_queue_new ();
@@ -268,7 +265,7 @@ void
 wocky_xmpp_reader_dispose (GObject *object)
 {
   WockyXmppReader *self = WOCKY_XMPP_READER (object);
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (self);
+  WockyXmppReaderPrivate *priv = self->priv;
 
   if (priv->dispose_has_run)
     return;
@@ -300,7 +297,7 @@ void
 wocky_xmpp_reader_finalize (GObject *object)
 {
   WockyXmppReader *self = WOCKY_XMPP_READER (object);
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (self);
+  WockyXmppReaderPrivate *priv = self->priv;
 
   /* free any data held directly by the object here */
   if (priv->parser != NULL) {
@@ -328,7 +325,7 @@ wocky_xmpp_reader_set_property (GObject *object,
     GParamSpec *pspec)
 {
   WockyXmppReader *reader = WOCKY_XMPP_READER (object);
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (reader);
+  WockyXmppReaderPrivate *priv = reader->priv;
 
   switch (property_id)
     {
@@ -348,7 +345,7 @@ wocky_xmpp_reader_get_property (GObject *object,
     GParamSpec *pspec)
 {
   WockyXmppReader *reader = WOCKY_XMPP_READER (object);
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (reader);
+  WockyXmppReaderPrivate *priv = reader->priv;
 
   switch (property_id)
     {
@@ -412,7 +409,7 @@ _start_element_ns (void *user_data, const xmlChar *localname,
     const xmlChar **attributes)
 {
   WockyXmppReader *self = WOCKY_XMPP_READER (user_data);
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (self);
+  WockyXmppReaderPrivate *priv = self->priv;
   int i;
 
   if (priv->stream_mode && G_UNLIKELY (priv->depth == 0))
@@ -483,15 +480,27 @@ _start_element_ns (void *user_data, const xmlChar *localname,
 
   if (priv->stanza == NULL)
     {
-      priv->stanza = wocky_xmpp_stanza_new ((gchar *) localname);
-      priv->node = priv->stanza->node;
+      if (uri != NULL)
+        {
+          priv->stanza = wocky_stanza_new ((gchar *) localname, (gchar *) uri);
+        }
+      else
+        {
+          /* This can only happy in non-streaming mode when the top node
+           * of the document doesn't have a namespace. */
+          DEBUG ("Stanza without a namespace, using dummy namespace..");
+          priv->stanza = wocky_stanza_new ((gchar *) localname, (gchar *) "");
+        }
+
+      priv->node = wocky_stanza_get_top_node (priv->stanza);
     }
   else
     {
       g_queue_push_tail (priv->nodes, priv->node);
-      priv->node = wocky_xmpp_node_add_child (priv->node, (gchar *) localname);
+      priv->node = wocky_node_add_child_ns (priv->node,
+        (gchar *) localname,
+        (gchar *) uri);
     }
-  wocky_xmpp_node_set_ns (priv->node, (gchar *) uri);
 
   for (i = 0; i < nb_attributes * 5; i+=5)
     {
@@ -499,7 +508,7 @@ _start_element_ns (void *user_data, const xmlChar *localname,
       if (attributes[i+1] != NULL && !strcmp ((gchar *) attributes[i+1], "xml")
           && !strcmp ((gchar *) attributes[i], "lang"))
         {
-          wocky_xmpp_node_set_language_n (priv->node,
+          wocky_node_set_language_n (priv->node,
               (gchar *) attributes[i+3],
               (gsize) (attributes[i+4] - attributes[i+3]));
         }
@@ -511,10 +520,10 @@ _start_element_ns (void *user_data, const xmlChar *localname,
               const gchar *urn = (gchar *) attributes[i+2];
               const gchar *pre = (gchar *) attributes[i+1];
               GQuark ns = g_quark_from_string (urn);
-              wocky_xmpp_node_attribute_ns_set_prefix (ns, pre);
+              wocky_node_attribute_ns_set_prefix (ns, pre);
             }
 
-          wocky_xmpp_node_set_attribute_n_ns (priv->node,
+          wocky_node_set_attribute_n_ns (priv->node,
               (gchar *) attributes[i],                      /* key    */
               (gchar *) attributes[i+3],                    /* value  */
               (gsize)(attributes[i+4] - attributes[i+3]),   /* length */
@@ -528,11 +537,11 @@ static void
 _characters (void *user_data, const xmlChar *ch, int len)
 {
   WockyXmppReader *self = WOCKY_XMPP_READER (user_data);
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (self);
+  WockyXmppReaderPrivate *priv = self->priv;
 
   if (priv->node != NULL)
     {
-      wocky_xmpp_node_append_content_n (priv->node, (const gchar *)ch,
+      wocky_node_append_content_n (priv->node, (const gchar *)ch,
           (gsize)len);
     }
 }
@@ -542,7 +551,7 @@ _end_element_ns (void *user_data, const xmlChar *localname,
     const xmlChar *prefix, const xmlChar *uri)
 {
   WockyXmppReader *self = WOCKY_XMPP_READER (user_data);
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (self);
+  WockyXmppReaderPrivate *priv = self->priv;
 
   priv->depth--;
 
@@ -553,7 +562,7 @@ _end_element_ns (void *user_data, const xmlChar *localname,
       for (c = priv->node->content; *c != '\0' && g_ascii_isspace (*c); c++)
         ;
       if (*c == '\0')
-        wocky_xmpp_node_set_content (priv->node, NULL);
+        wocky_node_set_content (priv->node, NULL);
     }
 
   if (priv->stream_mode && priv->depth == 0)
@@ -571,7 +580,7 @@ _end_element_ns (void *user_data, const xmlChar *localname,
     }
   else
     {
-      priv->node = (WockyXmppNode *) g_queue_pop_tail (priv->nodes);
+      priv->node = (WockyNode *) g_queue_pop_tail (priv->nodes);
     }
 }
 
@@ -579,7 +588,7 @@ static void
 _error (void *user_data, xmlErrorPtr error)
 {
   WockyXmppReader *self = WOCKY_XMPP_READER (user_data);
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (self);
+  WockyXmppReaderPrivate *priv = self->priv;
 
   if (error->level < XML_ERR_ERROR)
     {
@@ -603,7 +612,7 @@ _error (void *user_data, xmlErrorPtr error)
 WockyXmppReaderState
 wocky_xmpp_reader_get_state (WockyXmppReader *reader)
 {
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (reader);
+  WockyXmppReaderPrivate *priv = reader->priv;
 
   return priv->state;
 }
@@ -615,7 +624,7 @@ wocky_xmpp_reader_get_state (WockyXmppReader *reader)
 static void
 wocky_xmpp_reader_check_eos (WockyXmppReader *reader)
 {
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (reader);
+  WockyXmppReaderPrivate *priv = reader->priv;
 
   if (!g_queue_is_empty (priv->stanzas)
       && g_queue_peek_head (priv->stanzas) == NULL)
@@ -637,7 +646,7 @@ void
 wocky_xmpp_reader_push (WockyXmppReader *reader, const guint8 *data,
     gsize length)
 {
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (reader);
+  WockyXmppReaderPrivate *priv = reader->priv;
   xmlParserCtxtPtr parser;
 
   g_return_if_fail (priv->state < WOCKY_XMPP_READER_STATE_CLOSED);
@@ -656,17 +665,17 @@ wocky_xmpp_reader_push (WockyXmppReader *reader, const guint8 *data,
  * wocky_xmpp_reader_peek_stanza:
  * @reader: a #WockyXmppReader
  *
- * Returns the first #WockyXmppStanza available from reader or NULL
+ * Returns the first #WockyStanza available from reader or NULL
  * if there are no available stanzas. The stanza is not removed from the
  * readers queue
  *
- * Returns: One #WockyXmppStanza or NULL if there are no available stanzas. The
+ * Returns: One #WockyStanza or NULL if there are no available stanzas. The
  * stanza is owned by the #WockyXmppReader
  */
-WockyXmppStanza *
+WockyStanza *
 wocky_xmpp_reader_peek_stanza (WockyXmppReader *reader)
 {
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (reader);
+  WockyXmppReaderPrivate *priv = reader->priv;
 
   return g_queue_peek_head (priv->stanzas);
 }
@@ -675,17 +684,17 @@ wocky_xmpp_reader_peek_stanza (WockyXmppReader *reader)
  * wocky_xmpp_reader_pop_stanza:
  * @reader: a #WockyXmppReader
  *
- * Gets one #WockyXmppStanza out of the reader or NULL if there are no
+ * Gets one #WockyStanza out of the reader or NULL if there are no
  * available stanzas.
  *
- * Returns: One #WockyXmppStanza or NULL if there are no available stanzas.
+ * Returns: One #WockyStanza or NULL if there are no available stanzas.
  * Caller owns the returned stanza.
  */
-WockyXmppStanza *
+WockyStanza *
 wocky_xmpp_reader_pop_stanza (WockyXmppReader *reader)
 {
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (reader);
-  WockyXmppStanza *s;
+  WockyXmppReaderPrivate *priv = reader->priv;
+  WockyStanza *s;
 
   if (g_queue_is_empty (priv->stanzas))
     return NULL;
@@ -714,7 +723,7 @@ wocky_xmpp_reader_pop_stanza (WockyXmppReader *reader)
 GError *
 wocky_xmpp_reader_get_error (WockyXmppReader *reader)
 {
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (reader);
+  WockyXmppReaderPrivate *priv = reader->priv;
 
   return priv->error == NULL ? NULL : g_error_copy (priv->error);
 }
@@ -729,7 +738,7 @@ wocky_xmpp_reader_get_error (WockyXmppReader *reader)
 void
 wocky_xmpp_reader_reset (WockyXmppReader *reader)
 {
-  WockyXmppReaderPrivate *priv = WOCKY_XMPP_READER_GET_PRIVATE (reader);
+  WockyXmppReaderPrivate *priv = reader->priv;
 
   DEBUG ("Resetting xmpp reader");
 

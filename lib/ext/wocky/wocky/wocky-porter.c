@@ -24,7 +24,7 @@
  * @short_description: Wrapper around a #WockyXmppConnection providing a
  * higher level API.
  *
- * Sends and receives #WockyXmppStanza from an underlying
+ * Sends and receives #WockyStanza from an underlying
  * #WockyXmppConnection.
  */
 
@@ -72,8 +72,6 @@ enum
 static guint signals[LAST_SIGNAL] = {0};
 
 /* private structure */
-typedef struct _WockyPorterPrivate WockyPorterPrivate;
-
 struct _WockyPorterPrivate
 {
   gboolean dispose_has_run;
@@ -120,14 +118,10 @@ wocky_porter_error_quark (void)
   return quark;
 }
 
-#define WOCKY_PORTER_GET_PRIVATE(o)  \
-    (G_TYPE_INSTANCE_GET_PRIVATE ((o), WOCKY_TYPE_PORTER, \
-    WockyPorterPrivate))
-
 typedef struct
 {
   WockyPorter *self;
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
   GCancellable *cancellable;
   GSimpleAsyncResult *result;
   gulong cancelled_sig_id;
@@ -135,7 +129,7 @@ typedef struct
 
 static sending_queue_elem *
 sending_queue_elem_new (WockyPorter *self,
-  WockyXmppStanza *stanza,
+  WockyStanza *stanza,
   GCancellable *cancellable,
   GAsyncReadyCallback callback,
   gpointer user_data)
@@ -178,7 +172,7 @@ typedef struct
   gchar *domain;
   gchar *resource;
   guint priority;
-  WockyXmppStanza *match;
+  WockyStanza *match;
   WockyPorterHandlerFunc callback;
   gpointer user_data;
 } StanzaHandler;
@@ -189,7 +183,7 @@ stanza_handler_new (
     WockyStanzaSubType sub_type,
     const gchar *from,
     guint priority,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     WockyPorterHandlerFunc callback,
     gpointer user_data)
 {
@@ -297,7 +291,7 @@ stanza_iq_handler_maybe_remove (StanzaIqHandler *handler)
    * completed the operation from the perspective of the API user */
   if (handler->sent && handler->result == NULL)
     {
-      WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (handler->self);
+      WockyPorterPrivate *priv = handler->self->priv;
       g_hash_table_remove (priv->iq_reply_handlers, handler->id);
     }
 }
@@ -309,17 +303,20 @@ static void send_stanza_cb (GObject *source,
 static void send_close (WockyPorter *self);
 
 static gboolean handle_iq_reply (WockyPorter *self,
-    WockyXmppStanza *reply,
+    WockyStanza *reply,
     gpointer user_data);
 
 static void remote_connection_closed (WockyPorter *self,
     GError *error);
 
 static void
-wocky_porter_init (WockyPorter *obj)
+wocky_porter_init (WockyPorter *self)
 {
-  WockyPorter *self = WOCKY_PORTER (obj);
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv;
+
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, WOCKY_TYPE_PORTER,
+      WockyPorterPrivate);
+  priv = self->priv;
 
   priv->sending_queue = g_queue_new ();
 
@@ -344,7 +341,7 @@ wocky_porter_set_property (GObject *object,
 {
   WockyPorter *connection = WOCKY_PORTER (object);
   WockyPorterPrivate *priv =
-      WOCKY_PORTER_GET_PRIVATE (connection);
+      connection->priv;
 
   switch (property_id)
     {
@@ -367,7 +364,7 @@ wocky_porter_get_property (GObject *object,
 {
   WockyPorter *connection = WOCKY_PORTER (object);
   WockyPorterPrivate *priv =
-      WOCKY_PORTER_GET_PRIVATE (connection);
+      connection->priv;
 
   switch (property_id)
     {
@@ -382,13 +379,13 @@ wocky_porter_get_property (GObject *object,
 
 static gboolean
 handle_stream_error (WockyPorter *self,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     gpointer user_data)
 {
   GError *error = NULL;
 
   DEBUG ("Received stream error; consider the remote connection as closed");
-  wocky_xmpp_stanza_extract_stream_error (stanza, &error);
+  wocky_stanza_extract_stream_error (stanza, &error);
   remote_connection_closed (self, error);
   g_error_free (error);
   return TRUE;
@@ -398,7 +395,7 @@ static void
 wocky_porter_constructed (GObject *object)
 {
   WockyPorter *self = WOCKY_PORTER (object);
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
 
   g_assert (priv->connection != NULL);
 
@@ -406,18 +403,18 @@ wocky_porter_constructed (GObject *object)
   wocky_porter_register_handler (self,
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_RESULT, NULL,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
-      handle_iq_reply, self, WOCKY_STANZA_END);
+      handle_iq_reply, self, NULL);
 
   wocky_porter_register_handler (self,
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_ERROR, NULL,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
-      handle_iq_reply, self, WOCKY_STANZA_END);
+      handle_iq_reply, self, NULL);
 
   /* Register the stream error handler */
   wocky_porter_register_handler (self,
       WOCKY_STANZA_TYPE_STREAM_ERROR, WOCKY_STANZA_SUB_TYPE_NONE, NULL,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
-      handle_stream_error, self, WOCKY_STANZA_END);
+      handle_stream_error, self, NULL);
 }
 
 static void
@@ -497,7 +494,7 @@ wocky_porter_dispose (GObject *object)
 {
   WockyPorter *self = WOCKY_PORTER (object);
   WockyPorterPrivate *priv =
-      WOCKY_PORTER_GET_PRIVATE (self);
+      self->priv;
 
   if (priv->dispose_has_run)
     return;
@@ -539,7 +536,7 @@ wocky_porter_finalize (GObject *object)
 {
   WockyPorter *self = WOCKY_PORTER (object);
   WockyPorterPrivate *priv =
-      WOCKY_PORTER_GET_PRIVATE (self);
+      self->priv;
 
   DEBUG ("finalize porter %p", self);
 
@@ -559,7 +556,7 @@ wocky_porter_finalize (GObject *object)
 /**
  * wocky_porter_new:
  * @connection: #WockyXmppConnection which will be used to receive and send
- * #WockyXmppStanza
+ * #WockyStanza
  *
  * Convenience function to create a new #WockyPorter.
  *
@@ -580,7 +577,7 @@ wocky_porter_new (WockyXmppConnection *connection)
 static void
 send_head_stanza (WockyPorter *self)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   sending_queue_elem *elem;
 
   elem = g_queue_peek_head (priv->sending_queue);
@@ -606,7 +603,7 @@ send_stanza_cb (GObject *source,
     gpointer user_data)
 {
   WockyPorter *self = WOCKY_PORTER (user_data);
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   sending_queue_elem *elem;
   GError *error = NULL;
 
@@ -661,8 +658,7 @@ send_cancelled_cb (GCancellable *cancellable,
     gpointer user_data)
 {
   sending_queue_elem *elem = (sending_queue_elem *) user_data;
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (
-      elem->self);
+  WockyPorterPrivate *priv = elem->self->priv;
   GError error = { G_IO_ERROR, G_IO_ERROR_CANCELLED, "Sending was cancelled" };
 
   g_simple_async_result_set_from_error (elem->result, &error);
@@ -675,24 +671,24 @@ send_cancelled_cb (GCancellable *cancellable,
 /**
  * wocky_porter_send_async:
  * @porter: a #WockyPorter
- * @stanza: the #WockyXmppStanza to send
+ * @stanza: the #WockyStanza to send
  * @cancellable: optional #GCancellable object, %NULL <!-- --> to ignore
  * @callback: callback to call when the request is satisfied
  * @user_data: the data to pass to callback function
  *
- * Request asynchronous sending of a #WockyXmppStanza.
+ * Request asynchronous sending of a #WockyStanza.
  * When the stanza has been sent callback will be called.
  * You can then call wocky_porter_send_finish() to get the result
  * of the operation.
  */
 void
 wocky_porter_send_async (WockyPorter *self,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   sending_queue_elem *elem;
 
   if (priv->close_result != NULL || priv->force_close_result != NULL)
@@ -726,7 +722,7 @@ wocky_porter_send_async (WockyPorter *self,
  * @error: a #GError location to store the error occuring, or %NULL <!-- -->to
  * ignore.
  *
- * Finishes sending a #WockyXmppStanza.
+ * Finishes sending a #WockyStanza.
  *
  * Returns: %TRUE on success or %FALSE on error.
  */
@@ -748,16 +744,16 @@ wocky_porter_send_finish (WockyPorter *self,
 /**
  * wocky_porter_send:
  * @porter: a #WockyPorter
- * @stanza: the #WockyXmppStanza to send
+ * @stanza: the #WockyStanza to send
  *
- * Send a #WockyXmppStanza.
+ * Send a #WockyStanza.
  * This is a convenient function to not have to call
  * wocky_porter_send_async() with lot of %NULL arguments if you don't care to
  * know when the stanza has been actually sent.
  */
 void
 wocky_porter_send (WockyPorter *self,
-    WockyXmppStanza *stanza)
+    WockyStanza *stanza)
 {
   wocky_porter_send_async (self, stanza, NULL, NULL, NULL);
 }
@@ -767,7 +763,7 @@ static void receive_stanza (WockyPorter *self);
 static void
 complete_close (WockyPorter *self)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   GSimpleAsyncResult *tmp;
 
   if (g_cancellable_is_cancelled (priv->close_cancellable))
@@ -787,15 +783,15 @@ complete_close (WockyPorter *self)
 
 static gboolean
 handle_iq_reply (WockyPorter *self,
-    WockyXmppStanza *reply,
+    WockyStanza *reply,
     gpointer user_data)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   const gchar *id, *from;
   StanzaIqHandler *handler;
   gboolean ret = FALSE;
 
-  id = wocky_xmpp_node_get_attribute (reply->node, "id");
+  id = wocky_node_get_attribute (wocky_stanza_get_top_node (reply), "id");
   if (id == NULL)
     {
       DEBUG ("Ignoring reply without IQ id");
@@ -810,7 +806,8 @@ handle_iq_reply (WockyPorter *self,
       return FALSE;
     }
 
-  from = wocky_xmpp_node_get_attribute (reply->node, "from");
+  from = wocky_node_get_attribute (wocky_stanza_get_top_node (reply),
+      "from");
   /* FIXME: If handler->recipient is NULL, we should check if the 'from' is
    * either NULL, our bare jid or our full jid. */
   if (handler->recipient != NULL &&
@@ -851,20 +848,21 @@ handle_iq_reply (WockyPorter *self,
 
 static void
 handle_stanza (WockyPorter *self,
-    WockyXmppStanza *stanza)
+    WockyStanza *stanza)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   GList *l;
   const gchar *from;
   WockyStanzaType type;
   WockyStanzaSubType sub_type;
   gchar *node = NULL, *domain = NULL, *resource = NULL;
 
-  wocky_xmpp_stanza_get_type_info (stanza, &type, &sub_type);
+  wocky_stanza_get_type_info (stanza, &type, &sub_type);
 
   /* The from attribute of the stanza need not always be present, for example
    * when receiving roster items, so don't enforce it. */
-  from = wocky_xmpp_node_get_attribute (stanza->node, "from");
+  from = wocky_node_get_attribute (wocky_stanza_get_top_node (stanza),
+      "from");
 
   if (from != NULL)
     wocky_decode_jid (from, &node, &domain, &resource);
@@ -901,7 +899,8 @@ handle_stanza (WockyPorter *self,
         }
 
       /* Check if the stanza matches the pattern */
-      if (!wocky_xmpp_node_is_superset (stanza->node, handler->match->node))
+      if (!wocky_node_is_superset (wocky_stanza_get_top_node (stanza),
+          wocky_stanza_get_top_node (handler->match)))
         continue;
 
       if (handler->callback (self, stanza, handler->user_data))
@@ -919,7 +918,7 @@ static void
 abort_pending_iqs (WockyPorter *self,
     GError *error)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   GHashTableIter iter;
   gpointer value;
 
@@ -949,7 +948,7 @@ static void
 remote_connection_closed (WockyPorter *self,
     GError *error)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   gboolean error_occured = TRUE;
 
   /* Completing a close operation, firing the remote-error signal could make the
@@ -1008,7 +1007,7 @@ connection_force_close_cb (GObject *source,
     gpointer user_data)
 {
   WockyPorter *self = WOCKY_PORTER (user_data);
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   GSimpleAsyncResult *r = priv->force_close_result;
   GError *error = NULL;
 
@@ -1049,8 +1048,8 @@ stanza_received_cb (GObject *source,
     gpointer user_data)
 {
   WockyPorter *self = WOCKY_PORTER (user_data);
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
-  WockyXmppStanza *stanza;
+  WockyPorterPrivate *priv = self->priv;
+  WockyStanza *stanza;
   GError *error = NULL;
 
   stanza = wocky_xmpp_connection_recv_stanza_finish (
@@ -1132,7 +1131,7 @@ stanza_received_cb (GObject *source,
 static void
 receive_stanza (WockyPorter *self)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
 
   wocky_xmpp_connection_recv_stanza_async (priv->connection,
       priv->receive_cancellable, stanza_received_cb, self);
@@ -1147,7 +1146,7 @@ receive_stanza (WockyPorter *self)
 void
 wocky_porter_start (WockyPorter *self)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
 
   if (priv->receive_cancellable != NULL)
     /* Porter has already been started */
@@ -1164,7 +1163,7 @@ close_sent_cb (GObject *source,
     gpointer user_data)
 {
   WockyPorter *self = WOCKY_PORTER (user_data);
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   GError *error = NULL;
 
   priv->local_closed = TRUE;
@@ -1198,7 +1197,7 @@ out:
 static void
 send_close (WockyPorter *self)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
 
   wocky_xmpp_connection_send_close_async (priv->connection,
       NULL, close_sent_cb, self);
@@ -1224,7 +1223,7 @@ wocky_porter_close_async (WockyPorter *self,
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
 
   if (priv->local_closed)
     {
@@ -1334,12 +1333,9 @@ compare_handler (StanzaHandler *a,
  *  the stanza (Wocky will continue to the next handler, if any), or %TRUE to
  *  stop further processing.
  * @user_data: Passed to @callback.
- * @spec: The start of a wocky_xmpp_stanza_build() specification. The handler
+ * @Varargs: a wocky_stanza_build() specification. The handler
  *  will match a stanza only if the stanza received is a superset of the one
- *  built with @spec and its subsequent arguments, as per
- *  wocky_xmpp_node_is_superset().
- * @Varargs: the rest of the args to wocky_xmpp_stanza_build(),
- *  terminated by %WOCKY_STANZA_END
+ *  passed to this function, as per wocky_node_is_superset().
  *
  * Register a new stanza handler.
  * Stanza handlers are called when the Porter receives a new stanza matching
@@ -1358,7 +1354,7 @@ compare_handler (StanzaHandler *a,
  * id = wocky_porter_register_handler (porter,
  *   WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE, NULL,
  *   WOCKY_PORTER_HANDLER_PRIORITY_NORMAL, message_received_cb, NULL,
- *   WOCKY_STANZA_END);
+ *   NULL);
  * ]|
  *
  * To register an IQ handler from Juliet for all the Jingle stanzas related
@@ -1369,10 +1365,10 @@ compare_handler (StanzaHandler *a,
  *   WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL,
  *   WOCKY_PORTER_HANDLER_PRIORITY_NORMAL, jingle_cb,
  *   "juliet@example.com/Balcony",
- *   WOCKY_NODE, "jingle",
- *     WOCKY_NODE_XMLNS, "urn:xmpp:jingle:1",
- *     WOCKY_NODE_ATTRIBUTE, "sid", "my_sid",
- *   WOCKY_NODE_END, WOCKY_STANZA_END);
+ *   '(', "jingle",
+ *     ':', "urn:xmpp:jingle:1",
+ *     '@', "sid", "my_sid",
+ *   ')', NULL);
  * ]|
  *
  * Returns: a non-zero ID for use with wocky_porter_unregister_handler().
@@ -1385,17 +1381,16 @@ wocky_porter_register_handler (WockyPorter *self,
     guint priority,
     WockyPorterHandlerFunc callback,
     gpointer user_data,
-    WockyBuildTag spec,
     ...)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   StanzaHandler *handler;
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
   va_list ap;
 
-  va_start (ap, spec);
-  stanza = wocky_xmpp_stanza_build_va (type, WOCKY_STANZA_SUB_TYPE_NONE,
-      NULL, NULL, spec, ap);
+  va_start (ap, user_data);
+  stanza = wocky_stanza_build_va (type, WOCKY_STANZA_SUB_TYPE_NONE,
+      NULL, NULL, ap);
   g_assert (stanza != NULL);
   va_end (ap);
 
@@ -1423,7 +1418,7 @@ void
 wocky_porter_unregister_handler (WockyPorter *self,
     guint id)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   StanzaHandler *handler;
 
   handler = g_hash_table_lookup (priv->handlers_by_id, GUINT_TO_POINTER (id));
@@ -1493,12 +1488,12 @@ finished:
 /**
  * wocky_porter_send_iq_async:
  * @porter: a #WockyPorter
- * @stanza: the #WockyXmppStanza to send
+ * @stanza: the #WockyStanza to send
  * @cancellable: optional #GCancellable object, %NULL to ignore
  * @callback: callback to call when the request is satisfied
  * @user_data: the data to pass to callback function
  *
- * Request asynchronous sending of a #WockyXmppStanza of type
+ * Request asynchronous sending of a #WockyStanza of type
  * %WOCKY_STANZA_TYPE_IQ and sub-type %WOCKY_STANZA_SUB_TYPE_GET or
  * %WOCKY_STANZA_SUB_TYPE_SET.
  * When the reply to this IQ has been received callback will be called.
@@ -1506,12 +1501,12 @@ finished:
  */
 void
 wocky_porter_send_iq_async (WockyPorter *self,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   StanzaIqHandler *handler;
   const gchar *recipient;
   gchar *id = NULL;
@@ -1523,9 +1518,9 @@ wocky_porter_send_iq_async (WockyPorter *self,
     {
       gchar *node = NULL;
 
-      g_assert (stanza != NULL && stanza->node != NULL);
+      g_assert (stanza != NULL && wocky_stanza_get_top_node (stanza) != NULL);
 
-      node = wocky_xmpp_node_to_string (stanza->node);
+      node = wocky_node_to_string (wocky_stanza_get_top_node (stanza));
       g_simple_async_report_error_in_idle (G_OBJECT (self), callback,
           user_data, WOCKY_PORTER_ERROR,
           WOCKY_PORTER_ERROR_CLOSING,
@@ -1535,7 +1530,7 @@ wocky_porter_send_iq_async (WockyPorter *self,
       return;
     }
 
-  wocky_xmpp_stanza_get_type_info (stanza, &type, &sub_type);
+  wocky_stanza_get_type_info (stanza, &type, &sub_type);
 
   if (type != WOCKY_STANZA_TYPE_IQ)
     goto wrong_stanza;
@@ -1544,7 +1539,8 @@ wocky_porter_send_iq_async (WockyPorter *self,
       sub_type != WOCKY_STANZA_SUB_TYPE_SET)
     goto wrong_stanza;
 
-  recipient = wocky_xmpp_node_get_attribute (stanza->node, "to");
+  recipient = wocky_node_get_attribute (
+      wocky_stanza_get_top_node (stanza), "to");
 
   /* Set an unique ID */
   do
@@ -1554,7 +1550,7 @@ wocky_porter_send_iq_async (WockyPorter *self,
     }
   while (g_hash_table_lookup (priv->iq_reply_handlers, id) != NULL);
 
-  wocky_xmpp_node_set_attribute (stanza->node, "id", id);
+  wocky_node_set_attribute (wocky_stanza_get_top_node (stanza), "id", id);
 
   result = g_simple_async_result_new (G_OBJECT (self),
     callback, user_data, wocky_porter_send_iq_finish);
@@ -1589,14 +1585,14 @@ wrong_stanza:
  *
  * Get the reply of an IQ query.
  *
- * Returns: a reffed #WockyXmppStanza on success, %NULL on error
+ * Returns: a reffed #WockyStanza on success, %NULL on error
  */
-WockyXmppStanza * wocky_porter_send_iq_finish (
+WockyStanza * wocky_porter_send_iq_finish (
     WockyPorter *self,
     GAsyncResult *result,
     GError **error)
 {
-  WockyXmppStanza *reply;
+  WockyStanza *reply;
 
   if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
       error))
@@ -1632,7 +1628,7 @@ wocky_porter_force_close_async (WockyPorter *self,
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
-  WockyPorterPrivate *priv = WOCKY_PORTER_GET_PRIVATE (self);
+  WockyPorterPrivate *priv = self->priv;
   sending_queue_elem *elem;
   GError err = { WOCKY_PORTER_ERROR, WOCKY_PORTER_ERROR_FORCIBLY_CLOSED,
       "Porter was closed forcibly" };

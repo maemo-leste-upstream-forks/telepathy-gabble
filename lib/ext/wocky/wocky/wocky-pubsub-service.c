@@ -33,7 +33,7 @@
 #include "wocky-debug.h"
 
 static gboolean pubsub_service_propagate_event (WockyPorter *porter,
-    WockyXmppStanza *event_stanza,
+    WockyStanza *event_stanza,
     gpointer user_data);
 
 G_DEFINE_TYPE (WockyPubsubService, wocky_pubsub_service, G_TYPE_OBJECT)
@@ -65,8 +65,6 @@ struct _EventTrampoline
   guint handler_id;
 };
 
-typedef struct _WockyPubsubServicePrivate WockyPubsubServicePrivate;
-
 struct _WockyPubsubServicePrivate
 {
   WockySession *session;
@@ -92,18 +90,14 @@ wocky_pubsub_service_error_quark (void)
 
   return quark;
 }
-
-#define WOCKY_PUBSUB_SERVICE_GET_PRIVATE(o)  \
-    (G_TYPE_INSTANCE_GET_PRIVATE ((o), WOCKY_TYPE_PUBSUB_SERVICE, \
-    WockyPubsubServicePrivate))
-
 static void
-wocky_pubsub_service_init (WockyPubsubService *obj)
+wocky_pubsub_service_init (WockyPubsubService *self)
 {
-  WockyPubsubService *self = WOCKY_PUBSUB_SERVICE (obj);
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
+      WOCKY_TYPE_PUBSUB_SERVICE, WockyPubsubServicePrivate);
 
-  priv->nodes = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+  self->priv->nodes = g_hash_table_new_full (g_str_hash, g_str_equal,
+      g_free, NULL);
 }
 
 static void
@@ -113,7 +107,7 @@ wocky_pubsub_service_set_property (GObject *object,
     GParamSpec *pspec)
 {
   WockyPubsubService *self = WOCKY_PUBSUB_SERVICE (object);
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
+  WockyPubsubServicePrivate *priv = self->priv;
 
   switch (property_id)
     {
@@ -136,7 +130,7 @@ wocky_pubsub_service_get_property (GObject *object,
     GParamSpec *pspec)
 {
   WockyPubsubService *self = WOCKY_PUBSUB_SERVICE (object);
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
+  WockyPubsubServicePrivate *priv = self->priv;
 
   switch (property_id)
     {
@@ -156,7 +150,7 @@ static void
 wocky_pubsub_service_dispose (GObject *object)
 {
   WockyPubsubService *self = WOCKY_PUBSUB_SERVICE (object);
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
+  WockyPubsubServicePrivate *priv = self->priv;
 
   if (priv->dispose_has_run)
     return;
@@ -190,7 +184,7 @@ static void
 wocky_pubsub_service_finalize (GObject *object)
 {
   WockyPubsubService *self = WOCKY_PUBSUB_SERVICE (object);
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
+  WockyPubsubServicePrivate *priv = self->priv;
 
   g_free (priv->jid);
   g_hash_table_unref (priv->nodes);
@@ -202,7 +196,7 @@ static void
 wocky_pubsub_service_constructed (GObject *object)
 {
   WockyPubsubService *self = WOCKY_PUBSUB_SERVICE (object);
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
+  WockyPubsubServicePrivate *priv = self->priv;
   const WockyPubsubNodeEventMapping *m;
   guint n_mappings;
 
@@ -226,11 +220,11 @@ wocky_pubsub_service_constructed (GObject *object)
           priv->jid,
           WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
           pubsub_service_propagate_event, t,
-            WOCKY_NODE, "event",
-              WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_EVENT,
-              WOCKY_NODE, m->action, WOCKY_NODE_END,
-            WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+            '(', "event",
+              ':', WOCKY_XMPP_NS_PUBSUB_EVENT,
+              '(', m->action, ')',
+            ')',
+          NULL);
 
       g_ptr_array_add (priv->trampolines, t);
     }
@@ -273,7 +267,7 @@ wocky_pubsub_service_class_init (
    * @event_stanza: the message/event stanza in its entirity
    * @event_node: the event node from the stanza
    * @items_node: the items node from the stanza
-   * @items: a list of WockyXmppNode *s for each item child of @items_node
+   * @items: a list of WockyNode *s for each item child of @items_node
    *
    * Emitted when an event is received for a node.
    */
@@ -281,7 +275,7 @@ wocky_pubsub_service_class_init (
       0, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__OBJECT_OBJECT_POINTER_POINTER_POINTER,
       G_TYPE_NONE, 5,
-      WOCKY_TYPE_PUBSUB_NODE, WOCKY_TYPE_XMPP_STANZA, G_TYPE_POINTER,
+      WOCKY_TYPE_PUBSUB_NODE, WOCKY_TYPE_STANZA, G_TYPE_POINTER,
       G_TYPE_POINTER, G_TYPE_POINTER);
 
   /**
@@ -297,7 +291,7 @@ wocky_pubsub_service_class_init (
       ctype, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__OBJECT_OBJECT_POINTER_POINTER_BOXED,
       G_TYPE_NONE, 5,
-      WOCKY_TYPE_PUBSUB_NODE, WOCKY_TYPE_XMPP_STANZA, G_TYPE_POINTER,
+      WOCKY_TYPE_PUBSUB_NODE, WOCKY_TYPE_STANZA, G_TYPE_POINTER,
       G_TYPE_POINTER, WOCKY_TYPE_PUBSUB_SUBSCRIPTION);
 
   /**
@@ -314,7 +308,7 @@ wocky_pubsub_service_class_init (
       ctype, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__OBJECT_OBJECT_POINTER_POINTER,
       G_TYPE_NONE, 4, WOCKY_TYPE_PUBSUB_NODE,
-      WOCKY_TYPE_XMPP_STANZA, G_TYPE_POINTER, G_TYPE_POINTER);
+      WOCKY_TYPE_STANZA, G_TYPE_POINTER, G_TYPE_POINTER);
 
   wocky_pubsub_service_class->node_object_type = WOCKY_TYPE_PUBSUB_NODE;
 }
@@ -344,7 +338,7 @@ node_disposed_cb (gpointer user_data,
     GObject *node)
 {
   WockyPubsubService *self = WOCKY_PUBSUB_SERVICE (user_data);
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
+  WockyPubsubServicePrivate *priv = self->priv;
 
   g_hash_table_foreach_remove (priv->nodes, remove_node, node);
 }
@@ -352,9 +346,9 @@ node_disposed_cb (gpointer user_data,
 static void
 pubsub_service_node_event_received_cb (
     WockyPubsubNode *node,
-    WockyXmppStanza *event_stanza,
-    WockyXmppNode *event_node,
-    WockyXmppNode *items_node,
+    WockyStanza *event_stanza,
+    WockyNode *event_node,
+    WockyNode *items_node,
     GList *items,
     gpointer user_data)
 {
@@ -367,9 +361,9 @@ pubsub_service_node_event_received_cb (
 static void
 pubsub_service_node_subscription_state_changed_cb (
     WockyPubsubNode *node,
-    WockyXmppStanza *stanza,
-    WockyXmppNode *event_node,
-    WockyXmppNode *subscription_node,
+    WockyStanza *stanza,
+    WockyNode *event_node,
+    WockyNode *subscription_node,
     WockyPubsubSubscription *subscription,
     gpointer user_data)
 {
@@ -382,9 +376,9 @@ pubsub_service_node_subscription_state_changed_cb (
 static void
 pubsub_service_node_deleted_cb (
     WockyPubsubNode *node,
-    WockyXmppStanza *stanza,
-    WockyXmppNode *event_node,
-    WockyXmppNode *delete_node,
+    WockyStanza *stanza,
+    WockyNode *event_node,
+    WockyNode *delete_node,
     gpointer user_data)
 {
   WockyPubsubService *self = WOCKY_PUBSUB_SERVICE (user_data);
@@ -397,7 +391,7 @@ static WockyPubsubNode *
 pubsub_service_create_node (WockyPubsubService *self,
     const gchar *name)
 {
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
+  WockyPubsubServicePrivate *priv = self->priv;
   WockyPubsubServiceClass *class = WOCKY_PUBSUB_SERVICE_GET_CLASS (self);
   WockyPubsubNode *node;
 
@@ -442,7 +436,7 @@ WockyPubsubNode *
 wocky_pubsub_service_ensure_node (WockyPubsubService *self,
     const gchar *name)
 {
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
+  WockyPubsubServicePrivate *priv = self->priv;
   WockyPubsubNode *node;
 
   node = g_hash_table_lookup (priv->nodes, name);
@@ -468,32 +462,33 @@ WockyPubsubNode *
 wocky_pubsub_service_lookup_node (WockyPubsubService *self,
     const gchar *name)
 {
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
+  WockyPubsubServicePrivate *priv = self->priv;
 
   return g_hash_table_lookup (priv->nodes, name);
 }
 
 static gboolean
 pubsub_service_propagate_event (WockyPorter *porter,
-    WockyXmppStanza *event_stanza,
+    WockyStanza *event_stanza,
     gpointer user_data)
 {
   EventTrampoline *trampoline = user_data;
   WockyPubsubService *self = trampoline->self;
-  WockyXmppNode *event_node, *action_node;
+  WockyNode *event_node, *action_node;
   const gchar *node_name;
   WockyPubsubNode *node;
 
   g_assert (WOCKY_IS_PUBSUB_SERVICE (self));
 
-  event_node = wocky_xmpp_node_get_child_ns (event_stanza->node, "event",
-      WOCKY_XMPP_NS_PUBSUB_EVENT);
+  event_node = wocky_node_get_child_ns (
+      wocky_stanza_get_top_node (event_stanza), "event",
+        WOCKY_XMPP_NS_PUBSUB_EVENT);
   g_return_val_if_fail (event_node != NULL, FALSE);
-  action_node = wocky_xmpp_node_get_child (event_node,
+  action_node = wocky_node_get_child (event_node,
       trampoline->mapping->action);
   g_return_val_if_fail (action_node != NULL, FALSE);
 
-  node_name = wocky_xmpp_node_get_attribute (action_node, "node");
+  node_name = wocky_node_get_attribute (action_node, "node");
 
   if (node_name == NULL)
     {
@@ -516,20 +511,21 @@ default_configuration_iq_cb (GObject *source,
 {
   GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (user_data);
   GError *error = NULL;
-  WockyXmppNode *node;
+  WockyNodeTree *default_tree;
   WockyDataForm *form;
 
-  if (!wocky_pubsub_distill_iq_reply (source, res,
-        WOCKY_XMPP_NS_PUBSUB_OWNER, "default", &node, &error))
-    goto out;
+  if (wocky_pubsub_distill_iq_reply (source, res,
+        WOCKY_XMPP_NS_PUBSUB_OWNER, "default", &default_tree, &error))
+    {
+      form = wocky_data_form_new_from_form (
+          wocky_node_tree_get_top_node (default_tree), &error);
 
-  form = wocky_data_form_new_from_form (node, &error);
-  if (form == NULL)
-    goto out;
+      if (form != NULL)
+        g_simple_async_result_set_op_res_gpointer (result, form, NULL);
 
-  g_simple_async_result_set_op_res_gpointer (result, form, NULL);
+      g_object_unref (default_tree);
+    }
 
-out:
   if (error != NULL)
     {
       g_simple_async_result_set_from_error (result, error);
@@ -547,8 +543,8 @@ wocky_pubsub_service_get_default_node_configuration_async (
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
-  WockyXmppStanza *stanza;
+  WockyPubsubServicePrivate *priv = self->priv;
+  WockyStanza *stanza;
   GSimpleAsyncResult *result;
 
   stanza = wocky_pubsub_make_stanza (priv->jid, WOCKY_STANZA_SUB_TYPE_GET,
@@ -583,15 +579,15 @@ wocky_pubsub_service_get_default_node_configuration_finish (
 
 WockyPubsubSubscription *
 wocky_pubsub_service_parse_subscription (WockyPubsubService *self,
-    WockyXmppNode *subscription_node,
+    WockyNode *subscription_node,
     const gchar *parent_node_attr,
     GError **error)
 {
   const gchar *node;
-  const gchar *jid = wocky_xmpp_node_get_attribute (subscription_node, "jid");
-  const gchar *subscription = wocky_xmpp_node_get_attribute (subscription_node,
+  const gchar *jid = wocky_node_get_attribute (subscription_node, "jid");
+  const gchar *subscription = wocky_node_get_attribute (subscription_node,
       "subscription");
-  const gchar *subid = wocky_xmpp_node_get_attribute (subscription_node,
+  const gchar *subid = wocky_node_get_attribute (subscription_node,
       "subid");
   WockyPubsubNode *node_obj;
   gint state;
@@ -600,7 +596,7 @@ wocky_pubsub_service_parse_subscription (WockyPubsubService *self,
   if (parent_node_attr != NULL)
     node = parent_node_attr;
   else
-    node = wocky_xmpp_node_get_attribute (subscription_node, "node");
+    node = wocky_node_get_attribute (subscription_node, "node");
 
 #define FAIL_IF_NULL(attr) \
   if (attr == NULL) \
@@ -636,19 +632,19 @@ wocky_pubsub_service_parse_subscription (WockyPubsubService *self,
 
 GList *
 wocky_pubsub_service_parse_subscriptions (WockyPubsubService *self,
-    WockyXmppNode *subscriptions_node,
+    WockyNode *subscriptions_node,
     GList **subscription_nodes)
 {
-  const gchar *parent_node_attr = wocky_xmpp_node_get_attribute (
+  const gchar *parent_node_attr = wocky_node_get_attribute (
       subscriptions_node, "node");
   GQueue subs = G_QUEUE_INIT;
   GQueue sub_nodes = G_QUEUE_INIT;
-  WockyXmppNode *n;
-  WockyXmppNodeIter i;
+  WockyNode *n;
+  WockyNodeIter i;
 
-  wocky_xmpp_node_iter_init (&i, subscriptions_node, "subscription", NULL);
+  wocky_node_iter_init (&i, subscriptions_node, "subscription", NULL);
 
-  while (wocky_xmpp_node_iter_next (&i, &n))
+  while (wocky_node_iter_next (&i, &n))
     {
       GError *error = NULL;
       WockyPubsubSubscription *sub = wocky_pubsub_service_parse_subscription (
@@ -682,16 +678,18 @@ receive_subscriptions_cb (GObject *source,
   GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (user_data);
   WockyPubsubService *self = WOCKY_PUBSUB_SERVICE (
       g_async_result_get_source_object (user_data));
-  WockyXmppNode *subscriptions_node;
+  WockyNodeTree *subs_tree;
   GError *error = NULL;
 
   if (wocky_pubsub_distill_iq_reply (source, res, WOCKY_XMPP_NS_PUBSUB,
-          "subscriptions", &subscriptions_node, &error))
+          "subscriptions", &subs_tree, &error))
     {
-      g_simple_async_result_set_op_res_gpointer (simple,
-          wocky_pubsub_service_parse_subscriptions (self, subscriptions_node,
-              NULL),
+      GList *subs = wocky_pubsub_service_parse_subscriptions (self,
+          wocky_node_tree_get_top_node (subs_tree), NULL);
+
+      g_simple_async_result_set_op_res_gpointer (simple, subs,
           (GDestroyNotify) wocky_pubsub_subscription_list_free);
+      g_object_unref (subs_tree);
     }
   else
     {
@@ -703,22 +701,22 @@ receive_subscriptions_cb (GObject *source,
   g_object_unref (simple);
 }
 
-WockyXmppStanza *
+WockyStanza *
 wocky_pubsub_service_create_retrieve_subscriptions_stanza (
     WockyPubsubService *self,
     WockyPubsubNode *node,
-    WockyXmppNode **pubsub_node,
-    WockyXmppNode **subscriptions_node)
+    WockyNode **pubsub_node,
+    WockyNode **subscriptions_node)
 {
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
-  WockyXmppStanza *stanza;
-  WockyXmppNode *subscriptions;
+  WockyPubsubServicePrivate *priv = self->priv;
+  WockyStanza *stanza;
+  WockyNode *subscriptions;
 
   stanza = wocky_pubsub_make_stanza (priv->jid, WOCKY_STANZA_SUB_TYPE_GET,
       WOCKY_XMPP_NS_PUBSUB, "subscriptions", pubsub_node, &subscriptions);
 
   if (node != NULL)
-    wocky_xmpp_node_set_attribute (subscriptions, "node",
+    wocky_node_set_attribute (subscriptions, "node",
         wocky_pubsub_node_get_name (node));
 
   if (subscriptions_node != NULL)
@@ -735,10 +733,10 @@ wocky_pubsub_service_retrieve_subscriptions_async (
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
+  WockyPubsubServicePrivate *priv = self->priv;
   GSimpleAsyncResult *simple = g_simple_async_result_new (G_OBJECT (self),
       callback, user_data, wocky_pubsub_service_retrieve_subscriptions_async);
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
 
   stanza = wocky_pubsub_service_create_retrieve_subscriptions_stanza (self,
       node, NULL, NULL);
@@ -761,28 +759,41 @@ wocky_pubsub_service_retrieve_subscriptions_finish (
       wocky_pubsub_subscription_list_copy, subscriptions)
 }
 
+/**
+ * wocky_pubsub_service_handle_create_node_reply:
+ * @self: a pubsub service
+ * @create_node: the &lt;create/&gt; tree from the reply to an attempt to
+ *               create a node, or %NULL if none was present in the reply.
+ * @requested_name: the name we asked the server to use for the node, or %NULL
+ *                  if we requested an instant node
+ * @error: location at which to store an error
+ *
+ * Handles the body of a reply to a create node request. This is
+ * ever-so-slightly involved, because the server is allowed to omit the body of
+ * the reply if you specified a node name and it created a node with that name,
+ * but it may also tell you "hey, you asked for 'ringo', but I gave you
+ * 'george'". Good times.
+ *
+ * Returns: a pubsub node if the reply made sense, or %NULL with @error set if
+ *          not.
+ */
 WockyPubsubNode *
 wocky_pubsub_service_handle_create_node_reply (
     WockyPubsubService *self,
-    GObject *source,
-    GAsyncResult *res,
+    WockyNodeTree *create_tree,
     const gchar *requested_name,
     GError **error)
 {
   WockyPubsubNode *node = NULL;
   const gchar *name = NULL;
-  WockyXmppNode *n;
 
-  if (!wocky_pubsub_distill_ambivalent_iq_reply (source, res,
-          WOCKY_XMPP_NS_PUBSUB, "create", &n, error))
-    return NULL;
-
-  if (n != NULL)
+  if (create_tree != NULL)
     {
       /* If the reply contained <pubsub><create>, it'd better contain the
        * nodeID.
        */
-      name = wocky_xmpp_node_get_attribute (n, "node");
+      name = wocky_node_get_attribute (
+          wocky_node_tree_get_top_node (create_tree), "node");
 
       if (name == NULL)
         g_set_error (error, WOCKY_PUBSUB_SERVICE_ERROR,
@@ -817,14 +828,23 @@ create_node_iq_cb (GObject *source,
 {
   GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (user_data);
   WockyPubsubService *self;
-  WockyPubsubNode *node;
+  WockyPubsubNode *node = NULL;
+  const gchar *requested_name;
+  WockyNodeTree *create_tree;
   GError *error = NULL;
 
   self = WOCKY_PUBSUB_SERVICE (g_async_result_get_source_object (user_data));
+  requested_name = g_object_get_data ((GObject *) result, "requested-name");
 
-  node = wocky_pubsub_service_handle_create_node_reply (self, source, res,
-      g_object_get_data ((GObject *) result, "requested-name"),
-      &error);
+  if (wocky_pubsub_distill_ambivalent_iq_reply (source, res,
+        WOCKY_XMPP_NS_PUBSUB, "create", &create_tree, &error))
+    {
+      node = wocky_pubsub_service_handle_create_node_reply (self,
+          create_tree, requested_name, &error);
+
+      if (create_tree != NULL)
+        g_object_unref (create_tree);
+    }
 
   if (node != NULL)
     {
@@ -844,26 +864,26 @@ create_node_iq_cb (GObject *source,
   g_object_unref (self);
 }
 
-WockyXmppStanza *
+WockyStanza *
 wocky_pubsub_service_create_create_node_stanza (
     WockyPubsubService *self,
     const gchar *name,
     WockyDataForm *config,
-    WockyXmppNode **pubsub_node,
-    WockyXmppNode **create_node)
+    WockyNode **pubsub_node,
+    WockyNode **create_node)
 {
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
-  WockyXmppStanza *stanza;
-  WockyXmppNode *pubsub, *create;
+  WockyPubsubServicePrivate *priv = self->priv;
+  WockyStanza *stanza;
+  WockyNode *pubsub, *create;
 
   stanza = wocky_pubsub_make_stanza (priv->jid, WOCKY_STANZA_SUB_TYPE_SET,
         WOCKY_XMPP_NS_PUBSUB, "create", &pubsub, &create);
 
   if (name != NULL)
-    wocky_xmpp_node_set_attribute (create, "node", name);
+    wocky_node_set_attribute (create, "node", name);
 
   if (config != NULL)
-    wocky_data_form_submit (config, wocky_xmpp_node_add_child (pubsub,
+    wocky_data_form_submit (config, wocky_node_add_child (pubsub,
         "configure"));
 
   if (pubsub_node != NULL)
@@ -883,8 +903,8 @@ wocky_pubsub_service_create_node_async (WockyPubsubService *self,
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
-  WockyXmppStanza *stanza = wocky_pubsub_service_create_create_node_stanza (
+  WockyPubsubServicePrivate *priv = self->priv;
+  WockyStanza *stanza = wocky_pubsub_service_create_create_node_stanza (
       self, name, config, NULL, NULL);
   GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self),
       callback, user_data, wocky_pubsub_service_create_node_async);
@@ -921,7 +941,7 @@ wocky_pubsub_service_create_node_finish (WockyPubsubService *self,
 WockyPorter *
 wocky_pubsub_service_get_porter (WockyPubsubService *self)
 {
-  WockyPubsubServicePrivate *priv = WOCKY_PUBSUB_SERVICE_GET_PRIVATE (self);
+  WockyPubsubServicePrivate *priv = self->priv;
 
   return priv->porter;
 }
@@ -1014,4 +1034,26 @@ wocky_pubsub_subscription_get_type (void)
  * listing your own subscriptions on a service with
  * wocky_pubsub_service_retrieve_subscriptions_async() or subscribing to a node
  * with wocky_pubsub_node_subscribe_async().
+ */
+
+/**
+ * WockyPubsubSubscriptionState:
+ * @WOCKY_PUBSUB_SUBSCRIPTION_NONE: The node MUST NOT send event notifications
+ *  or payloads to the Entity.
+ * @WOCKY_PUBSUB_SUBSCRIPTION_PENDING: An entity has requested to subscribe to
+ *  a node and the request has not yet been approved by a node owner. The node
+ *  MUST NOT send event notifications or payloads to the entity while it is in
+ *  this state.
+ * @WOCKY_PUBSUB_SUBSCRIPTION_SUBSCRIBED: An entity has subscribed but its
+ *  subscription options have not yet been configured. The node MAY send event
+ *  notifications or payloads to the entity while it is in this state. The
+ *  service MAY timeout unconfigured subscriptions.
+ * @WOCKY_PUBSUB_SUBSCRIPTION_UNCONFIGURED: An entity is subscribed to a node.
+ *  The node MUST send all event notifications (and, if configured, payloads)
+ *  to the entity while it is in this state (subject to subscriber
+ *  configuration and content filtering).
+ *
+ * Describes the state of a subscription to a node. Definitions are taken from
+ * <ulink url="xmpp.org/extensions/xep-0060.html#substates">XEP-0060
+ * §4.2</ulink>.
  */

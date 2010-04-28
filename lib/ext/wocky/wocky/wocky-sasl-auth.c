@@ -46,8 +46,6 @@ enum
 };
 
 /* private structure */
-typedef struct _WockySaslAuthPrivate WockySaslAuthPrivate;
-
 struct _WockySaslAuthPrivate
 {
   gboolean dispose_has_run;
@@ -61,8 +59,6 @@ struct _WockySaslAuthPrivate
   GSList *handlers;
 };
 
-#define WOCKY_SASL_AUTH_GET_PRIVATE(o)     (G_TYPE_INSTANCE_GET_PRIVATE ((o), WOCKY_TYPE_SASL_AUTH, WockySaslAuthPrivate))
-
 GQuark
 wocky_sasl_auth_error_quark (void) {
   static GQuark quark = 0;
@@ -74,11 +70,10 @@ wocky_sasl_auth_error_quark (void) {
 }
 
 static void
-wocky_sasl_auth_init (WockySaslAuth *obj)
+wocky_sasl_auth_init (WockySaslAuth *self)
 {
-  //WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE (obj);
-
-  /* allocate any data required by the object here */
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, WOCKY_TYPE_SASL_AUTH,
+      WockySaslAuthPrivate);
 }
 
 static void wocky_sasl_auth_dispose (GObject *object);
@@ -91,7 +86,7 @@ wocky_sasl_auth_set_property (GObject *object,
     GParamSpec *pspec)
 {
   WockySaslAuth *sasl = WOCKY_SASL_AUTH (object);
-  WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE (sasl);
+  WockySaslAuthPrivate *priv = sasl->priv;
 
   switch (property_id)
     {
@@ -123,7 +118,7 @@ wocky_sasl_auth_get_property (GObject *object,
     GParamSpec *pspec)
 {
   WockySaslAuth *sasl = WOCKY_SASL_AUTH (object);
-  WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE (sasl);
+  WockySaslAuthPrivate *priv = sasl->priv;
 
   switch (property_id)
     {
@@ -188,7 +183,7 @@ void
 wocky_sasl_auth_dispose (GObject *object)
 {
   WockySaslAuth *self = WOCKY_SASL_AUTH (object);
-  WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE (self);
+  WockySaslAuthPrivate *priv = self->priv;
 
   if (priv->dispose_has_run)
     return;
@@ -220,7 +215,7 @@ void
 wocky_sasl_auth_finalize (GObject *object)
 {
   WockySaslAuth *self = WOCKY_SASL_AUTH (object);
-  WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE (self);
+  WockySaslAuthPrivate *priv = self->priv;
 
   /* free any data held directly by the object here */
   g_free (priv->server);
@@ -233,7 +228,7 @@ wocky_sasl_auth_finalize (GObject *object)
 static void
 auth_reset (WockySaslAuth *sasl)
 {
-  WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE (sasl);
+  WockySaslAuthPrivate *priv = sasl->priv;
 
   g_free (priv->server);
   priv->server = NULL;
@@ -254,7 +249,7 @@ auth_reset (WockySaslAuth *sasl)
 static void
 auth_succeeded (WockySaslAuth *sasl)
 {
-  WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE (sasl);
+  WockySaslAuthPrivate *priv = sasl->priv;
   GSimpleAsyncResult *r;
 
   DEBUG ("Authentication succeeded");
@@ -273,7 +268,7 @@ auth_failed (WockySaslAuth *sasl, gint error, const gchar *format, ...)
   gchar *message;
   va_list args;
   GSimpleAsyncResult *r;
-  WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE (sasl);
+  WockySaslAuthPrivate *priv = sasl->priv;
 
   auth_reset (sasl);
 
@@ -296,15 +291,15 @@ auth_failed (WockySaslAuth *sasl, gint error, const gchar *format, ...)
 }
 
 static gboolean
-stream_error (WockySaslAuth *sasl, WockyXmppStanza *stanza)
+stream_error (WockySaslAuth *sasl, WockyStanza *stanza)
 {
   WockyStanzaType type = WOCKY_STANZA_TYPE_NONE;
-  WockyXmppNode *xmpp = NULL;
+  WockyNode *xmpp = NULL;
   GSList *item = NULL;
   const gchar *msg = NULL;
   const gchar *err = NULL;
-  WockyXmppNode *cond = NULL;
-  WockyXmppNode *text = NULL;
+  WockyNode *cond = NULL;
+  WockyNode *text = NULL;
 
   if (stanza == NULL)
     {
@@ -312,15 +307,15 @@ stream_error (WockySaslAuth *sasl, WockyXmppStanza *stanza)
       return TRUE;
     }
 
-  wocky_xmpp_stanza_get_type_info (stanza, &type, NULL);
+  wocky_stanza_get_type_info (stanza, &type, NULL);
 
   if (type == WOCKY_STANZA_TYPE_STREAM_ERROR)
     {
-      xmpp = stanza->node;
+      xmpp = wocky_stanza_get_top_node (stanza);
       for (item = xmpp->children; item != NULL; item = g_slist_next (item))
         {
-          WockyXmppNode *child = item->data;
-          const gchar *cns = wocky_xmpp_node_get_ns (child);
+          WockyNode *child = item->data;
+          const gchar *cns = wocky_node_get_ns (child);
 
           if (wocky_strdiff (cns, WOCKY_XMPP_NS_STREAMS))
             continue;
@@ -362,7 +357,7 @@ wocky_sasl_auth_new (const gchar *server,
 }
 
 static gboolean
-each_mechanism (WockyXmppNode *node, gpointer user_data)
+each_mechanism (WockyNode *node, gpointer user_data)
 {
   GSList **list = (GSList **)user_data;
   if (wocky_strdiff (node->name, "mechanism"))
@@ -374,14 +369,14 @@ each_mechanism (WockyXmppNode *node, gpointer user_data)
 }
 
 static GSList *
-wocky_sasl_auth_mechanisms_to_list (WockyXmppNode *mechanisms)
+wocky_sasl_auth_mechanisms_to_list (WockyNode *mechanisms)
 {
   GSList *result = NULL;
 
   if (mechanisms == NULL)
     return NULL;
 
-  wocky_xmpp_node_each_child (mechanisms, each_mechanism, &result);
+  wocky_node_each_child (mechanisms, each_mechanism, &result);
   return result;
 }
 
@@ -398,16 +393,17 @@ wocky_sasl_auth_has_mechanism (GSList *list, const gchar *mech) {
 
 static void
 sasl_auth_got_failure (WockySaslAuth *sasl,
-  WockyXmppStanza *stanza,
+  WockyStanza *stanza,
   GError **error)
 {
-  WockyXmppNode *reason = NULL;
+  WockyNode *reason = NULL;
 
-  if (stanza->node->children != NULL)
+  if (wocky_stanza_get_top_node (stanza)->children != NULL)
     {
       /* TODO add a wocky xmpp node utility to either get the first child or
        * iterate the children list */
-      reason = (WockyXmppNode *) stanza->node->children->data;
+      reason = (WockyNode *)
+          wocky_stanza_get_top_node (stanza)->children->data;
     }
     /* TODO Handle the different error cases in a different way. i.e.
      * make it clear for the user if it's credentials were wrong, if the server
@@ -425,8 +421,8 @@ sasl_auth_stanza_received (GObject *source,
   gpointer user_data)
 {
   WockySaslAuth *sasl = WOCKY_SASL_AUTH (user_data);
-  WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE (sasl);
-  WockyXmppStanza *stanza;
+  WockySaslAuthPrivate *priv = sasl->priv;
+  WockyStanza *stanza;
   GError *error = NULL;
 
   stanza = wocky_xmpp_connection_recv_stanza_finish (
@@ -436,7 +432,8 @@ sasl_auth_stanza_received (GObject *source,
     return;
 
   if (wocky_strdiff (
-      wocky_xmpp_node_get_ns (stanza->node), WOCKY_XMPP_NS_SASL_AUTH))
+      wocky_node_get_ns (wocky_stanza_get_top_node (stanza)),
+          WOCKY_XMPP_NS_SASL_AUTH))
     {
       auth_failed (sasl, WOCKY_SASL_AUTH_ERROR_INVALID_REPLY,
           "Server sent a reply not in the %s namespace",
@@ -447,22 +444,22 @@ sasl_auth_stanza_received (GObject *source,
   /* If the SASL async result is _complete()d in the handler, the SASL object *
    * will be unref'd, which means the ref count could fall to zero while we   *
    * are still using it. grab  aref to it and drop it after we are sure that  *
-   * we don't need it anymore:                                                */
+   * we don't need it anymore:
+   */
   g_object_ref (sasl);
 
-  if (!wocky_strdiff (stanza->node->name, "challenge"))
+  if (!wocky_strdiff (wocky_stanza_get_top_node (stanza)->name, "challenge"))
     {
-      WockyXmppStanza *response_stanza;
+      WockyStanza *response_stanza;
       gchar *response = NULL;
 
       if (!wocky_sasl_handler_handle_auth_data (priv->handler,
-          stanza->node->content, &response, &error))
+          wocky_stanza_get_top_node (stanza)->content, &response, &error))
         goto failure;
 
-      response_stanza = wocky_xmpp_stanza_new ("response");
-      wocky_xmpp_node_set_ns (
-         response_stanza->node, WOCKY_XMPP_NS_SASL_AUTH);
-      wocky_xmpp_node_set_content (response_stanza->node, response);
+      response_stanza = wocky_stanza_new ("response", WOCKY_XMPP_NS_SASL_AUTH);
+      wocky_node_set_content (wocky_stanza_get_top_node (response_stanza),
+        response);
 
        /* FIXME handle send error */
       wocky_xmpp_connection_send_stanza_async (
@@ -473,14 +470,14 @@ sasl_auth_stanza_received (GObject *source,
       wocky_xmpp_connection_recv_stanza_async (priv->connection,
           NULL, sasl_auth_stanza_received, sasl);
     }
-  else if (!wocky_strdiff (stanza->node->name, "success"))
+  else if (!wocky_strdiff (wocky_stanza_get_top_node (stanza)->name, "success"))
     {
-      if (stanza->node->content != NULL)
+      if (wocky_stanza_get_top_node (stanza)->content != NULL)
         {
           gchar *response = NULL;
 
           if (!wocky_sasl_handler_handle_auth_data (priv->handler,
-            stanza->node->content, &response, &error))
+            wocky_stanza_get_top_node (stanza)->content, &response, &error))
             goto failure;
 
           if (response != NULL)
@@ -497,7 +494,7 @@ sasl_auth_stanza_received (GObject *source,
       else
         auth_succeeded (sasl);
     }
-  else if (!wocky_strdiff (stanza->node->name, "failure"))
+  else if (!wocky_strdiff (wocky_stanza_get_top_node (stanza)->name, "failure"))
     {
       sasl_auth_got_failure (sasl, stanza, &error);
       goto failure;
@@ -506,7 +503,7 @@ sasl_auth_stanza_received (GObject *source,
     {
       auth_failed (sasl, WOCKY_SASL_AUTH_ERROR_INVALID_REPLY,
           "Server sent an invalid reply (%s)",
-          stanza->node->name);
+          wocky_stanza_get_top_node (stanza)->name);
     }
 
 out:
@@ -525,19 +522,18 @@ static gboolean
 wocky_sasl_auth_start_mechanism (WockySaslAuth *sasl,
     WockySaslHandler *handler)
 {
-  WockyXmppStanza *stanza;
-  WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE(sasl);
+  WockyStanza *stanza;
+  WockySaslAuthPrivate *priv = sasl->priv;
   gboolean ret = TRUE;
   gchar *initial_response = NULL;
   GError *error = NULL;
 
   priv->handler = handler;
 
-  stanza = wocky_xmpp_stanza_new ("auth");
-  wocky_xmpp_node_set_ns (stanza->node, WOCKY_XMPP_NS_SASL_AUTH);
+  stanza = wocky_stanza_new ("auth", WOCKY_XMPP_NS_SASL_AUTH);
 
   /* google JID domain discovery - client sets a namespaced attribute */
-  wocky_xmpp_node_set_attribute_ns (stanza->node,
+  wocky_node_set_attribute_ns (wocky_stanza_get_top_node (stanza),
       "client-uses-full-bind-result", "true", WOCKY_GOOGLE_NS_AUTH);
 
   if (!wocky_sasl_handler_get_initial_response (priv->handler,
@@ -549,12 +545,15 @@ wocky_sasl_auth_start_mechanism (WockySaslAuth *sasl,
 
   if (initial_response != NULL)
     {
-      wocky_xmpp_node_set_content (stanza->node, initial_response);
+      wocky_node_set_content (
+        wocky_stanza_get_top_node (stanza),
+        initial_response);
       g_free (initial_response);
     }
 
   /* FIXME handle send error */
-  wocky_xmpp_node_set_attribute (stanza->node, "mechanism",
+  wocky_node_set_attribute (wocky_stanza_get_top_node (stanza),
+    "mechanism",
     wocky_sasl_handler_get_mechanism (priv->handler));
   wocky_xmpp_connection_send_stanza_async (priv->connection, stanza,
     NULL, NULL, NULL);
@@ -586,7 +585,7 @@ static WockySaslHandler *
 wocky_sasl_auth_select_handler (
     WockySaslAuth *sasl, gboolean allow_plain, GSList *mechanisms)
 {
-  WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE (sasl);
+  WockySaslAuthPrivate *priv = sasl->priv;
   GSList *i, *k;
 
   for (k = priv->handlers; k != NULL; k = k->next)
@@ -634,21 +633,22 @@ wocky_sasl_auth_select_handler (
  * receiver from the server */
 void
 wocky_sasl_auth_authenticate_async (WockySaslAuth *sasl,
-    WockyXmppStanza *features, gboolean allow_plain,
+    WockyStanza *features, gboolean allow_plain,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
-  WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE (sasl);
-  WockyXmppNode *mech_node;
+  WockySaslAuthPrivate *priv = sasl->priv;
+  WockyNode *mech_node;
   GSList *mechanisms, *t;
   WockySaslHandler *handler = NULL;
 
   g_assert (sasl != NULL);
   g_assert (features != NULL);
 
-  mech_node = wocky_xmpp_node_get_child_ns (features->node, "mechanisms",
-      WOCKY_XMPP_NS_SASL_AUTH);
+  mech_node = wocky_node_get_child_ns (
+    wocky_stanza_get_top_node (features),
+    "mechanisms", WOCKY_XMPP_NS_SASL_AUTH);
 
   mechanisms = wocky_sasl_auth_mechanisms_to_list (mech_node);
 
@@ -702,7 +702,7 @@ out:
 void
 wocky_sasl_auth_add_handler (WockySaslAuth *auth, WockySaslHandler *handler)
 {
-  WockySaslAuthPrivate *priv = WOCKY_SASL_AUTH_GET_PRIVATE (auth);
+  WockySaslAuthPrivate *priv = auth->priv;
 
   g_object_ref (handler);
   priv->handlers = g_slist_append (priv->handlers, handler);

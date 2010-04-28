@@ -22,12 +22,14 @@
 #define __WOCKY_XMPP_READER_H__
 
 #include <glib-object.h>
-#include "wocky-xmpp-stanza.h"
+#include "wocky-stanza.h"
 
 G_BEGIN_DECLS
 
 typedef struct _WockyXmppReader WockyXmppReader;
 typedef struct _WockyXmppReaderClass WockyXmppReaderClass;
+typedef struct _WockyXmppReaderPrivate WockyXmppReaderPrivate;
+
 
 struct _WockyXmppReaderClass {
     GObjectClass parent_class;
@@ -35,6 +37,7 @@ struct _WockyXmppReaderClass {
 
 struct _WockyXmppReader {
     GObject parent;
+    WockyXmppReaderPrivate *priv;
 };
 
 /**
@@ -104,8 +107,8 @@ void wocky_xmpp_reader_push (WockyXmppReader *reader,
     const guint8 *data,
     gsize length);
 
-WockyXmppStanza *wocky_xmpp_reader_pop_stanza (WockyXmppReader *reader);
-WockyXmppStanza *wocky_xmpp_reader_peek_stanza (WockyXmppReader *reader);
+WockyStanza *wocky_xmpp_reader_pop_stanza (WockyXmppReader *reader);
+WockyStanza *wocky_xmpp_reader_peek_stanza (WockyXmppReader *reader);
 
 GError *wocky_xmpp_reader_get_error (WockyXmppReader *reader);
 void wocky_xmpp_reader_reset (WockyXmppReader *reader);

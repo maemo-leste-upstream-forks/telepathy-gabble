@@ -9,18 +9,33 @@ WockyDataForm
 
 </para>
 
-
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
-
 
 <!-- ##### SECTION Stability_Level ##### -->
 
 
 <!-- ##### SECTION Image ##### -->
 
+
+<!-- ##### ENUM WockyDataFormFieldType ##### -->
+<para>
+
+</para>
+
+@WOCKY_DATA_FORM_FIELD_TYPE_UNSPECIFIED: 
+@WOCKY_DATA_FORM_FIELD_TYPE_BOOLEAN: 
+@WOCKY_DATA_FORM_FIELD_TYPE_FIXED: 
+@WOCKY_DATA_FORM_FIELD_TYPE_HIDDEN: 
+@WOCKY_DATA_FORM_FIELD_TYPE_JID_MULTI: 
+@WOCKY_DATA_FORM_FIELD_TYPE_JID_SINGLE: 
+@WOCKY_DATA_FORM_FIELD_TYPE_LIST_MULTI: 
+@WOCKY_DATA_FORM_FIELD_TYPE_LIST_SINGLE: 
+@WOCKY_DATA_FORM_FIELD_TYPE_TEXT_MULTI: 
+@WOCKY_DATA_FORM_FIELD_TYPE_TEXT_PRIVATE: 
+@WOCKY_DATA_FORM_FIELD_TYPE_TEXT_SINGLE: 
 
 <!-- ##### STRUCT WockyDataForm ##### -->
 <para>
@@ -45,6 +60,12 @@ WockyDataForm
 
 @parent_class: 
 
+<!-- ##### STRUCT WockyDataFormPrivate ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### ENUM WockyDataFormError ##### -->
 <para>
 
@@ -53,39 +74,20 @@ WockyDataForm
 @WOCKY_DATA_FORM_ERROR_NOT_FORM: 
 @WOCKY_DATA_FORM_ERROR_WRONG_TYPE: 
 
-<!-- ##### ENUM WockyDataFormFieldType ##### -->
+<!-- ##### FUNCTION wocky_data_form_error_quark ##### -->
 <para>
 
 </para>
 
-@WOCKY_DATA_FORM_FIELD_TYPE_UNSPECIFIED: 
-@WOCKY_DATA_FORM_FIELD_TYPE_BOOLEAN: 
-@WOCKY_DATA_FORM_FIELD_TYPE_FIXED: 
-@WOCKY_DATA_FORM_FIELD_TYPE_HIDDEN: 
-@WOCKY_DATA_FORM_FIELD_TYPE_JID_MULTI: 
-@WOCKY_DATA_FORM_FIELD_TYPE_JID_SINGLE: 
-@WOCKY_DATA_FORM_FIELD_TYPE_LIST_MULTI: 
-@WOCKY_DATA_FORM_FIELD_TYPE_LIST_SINGLE: 
-@WOCKY_DATA_FORM_FIELD_TYPE_TEXT_MULTI: 
-@WOCKY_DATA_FORM_FIELD_TYPE_TEXT_PRIVATE: 
-@WOCKY_DATA_FORM_FIELD_TYPE_TEXT_SINGLE: 
-
-<!-- ##### FUNCTION wocky_data_form_get_instructions ##### -->
-<para>
-
-</para>
-
-@self: 
+@void: 
 @Returns: 
 
 
-<!-- ##### FUNCTION wocky_data_form_get_title ##### -->
+<!-- ##### MACRO WOCKY_DATA_FORM_ERROR ##### -->
 <para>
 
 </para>
 
-@self: 
-@Returns: 
 
 
 <!-- ##### FUNCTION wocky_data_form_new_from_form ##### -->
@@ -98,14 +100,13 @@ WockyDataForm
 @Returns: 
 
 
-<!-- ##### FUNCTION wocky_data_form_parse_result ##### -->
+<!-- ##### FUNCTION wocky_data_form_set_type ##### -->
 <para>
 
 </para>
 
 @self: 
-@node: 
-@error: 
+@form_type: 
 @Returns: 
 
 
@@ -145,16 +146,6 @@ WockyDataForm
 @Returns: 
 
 
-<!-- ##### FUNCTION wocky_data_form_set_type ##### -->
-<para>
-
-</para>
-
-@self: 
-@form_type: 
-@Returns: 
-
-
 <!-- ##### FUNCTION wocky_data_form_submit ##### -->
 <para>
 
@@ -162,5 +153,34 @@ WockyDataForm
 
 @self: 
 @node: 
+
+
+<!-- ##### FUNCTION wocky_data_form_parse_result ##### -->
+<para>
+
+</para>
+
+@self: 
+@node: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_data_form_get_title ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_data_form_get_instructions ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
 
 

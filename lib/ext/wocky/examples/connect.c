@@ -66,14 +66,17 @@ ssl_features_received_cb (GObject *source,
   GAsyncResult *result,
   gpointer user_data)
 {
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
+  WockyNode *node;
 
   stanza = wocky_xmpp_connection_recv_stanza_finish (conn, result, NULL);
 
   g_assert (stanza != NULL);
 
-  if (strcmp (stanza->node->name, "features")
-      || strcmp (wocky_xmpp_node_get_ns (stanza->node), WOCKY_XMPP_NS_STREAM))
+  node = wocky_stanza_get_top_node (stanza);
+
+  if (strcmp (node->name, "features")
+      || strcmp (wocky_node_get_ns (node), WOCKY_XMPP_NS_STREAM))
     {
       printf ("Didn't receive features stanza\n");
       g_main_loop_quit (mainloop);
@@ -143,15 +146,18 @@ tcp_start_tls_recv_cb (GObject *source,
   GAsyncResult *result,
   gpointer user_data)
 {
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
+  WockyNode *node;
   GError *error = NULL;
 
   stanza = wocky_xmpp_connection_recv_stanza_finish (conn, result, NULL);
 
   g_assert (stanza != NULL);
 
-  if (strcmp (stanza->node->name, "proceed")
-      || strcmp (wocky_xmpp_node_get_ns (stanza->node), WOCKY_XMPP_NS_TLS))
+  node = wocky_stanza_get_top_node (stanza);
+
+  if (strcmp (node->name, "proceed")
+      || strcmp (wocky_node_get_ns (node), WOCKY_XMPP_NS_TLS))
     {
       printf ("Server doesn't want to start tls");
       g_main_loop_quit (mainloop);
@@ -189,23 +195,25 @@ tcp_features_received_cb (GObject *source,
   GAsyncResult *result,
   gpointer user_data)
 {
-  WockyXmppStanza *stanza;
-  WockyXmppNode *tls;
-  WockyXmppStanza *starttls;
+  WockyStanza *stanza;
+  WockyNode *tls, *node;
+  WockyStanza *starttls;
 
   stanza = wocky_xmpp_connection_recv_stanza_finish (conn, result, NULL);
 
   g_assert (stanza != NULL);
 
-  if (strcmp (stanza->node->name, "features")
-      || strcmp (wocky_xmpp_node_get_ns (stanza->node), WOCKY_XMPP_NS_STREAM))
+  node = wocky_stanza_get_top_node (stanza);
+
+  if (strcmp (node->name, "features")
+      || strcmp (wocky_node_get_ns (node), WOCKY_XMPP_NS_STREAM))
     {
       printf ("Didn't receive features stanza\n");
       g_main_loop_quit (mainloop);
       return;
     }
 
-  tls = wocky_xmpp_node_get_child_ns (stanza->node, "starttls",
+  tls = wocky_node_get_child_ns (node, "starttls",
       WOCKY_XMPP_NS_TLS);
 
   if (tls == NULL)
@@ -214,8 +222,7 @@ tcp_features_received_cb (GObject *source,
       g_main_loop_quit (mainloop);
     }
 
-  starttls = wocky_xmpp_stanza_new ("starttls");
-  wocky_xmpp_node_set_ns (starttls->node, WOCKY_XMPP_NS_TLS);
+  starttls = wocky_stanza_new ("starttls", WOCKY_XMPP_NS_TLS);
 
   wocky_xmpp_connection_send_stanza_async (conn, starttls,
     NULL, tcp_start_tls_send_cb, NULL);

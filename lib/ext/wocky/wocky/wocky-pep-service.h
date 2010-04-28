@@ -22,13 +22,15 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
-#include "wocky-xmpp-stanza.h"
+#include "wocky-stanza.h"
 #include "wocky-session.h"
 
 G_BEGIN_DECLS
 
 typedef struct _WockyPepService WockyPepService;
 typedef struct _WockyPepServiceClass WockyPepServiceClass;
+typedef struct _WockyPepServicePrivate WockyPepServicePrivate;
+
 
 struct _WockyPepServiceClass {
   GObjectClass parent_class;
@@ -36,6 +38,8 @@ struct _WockyPepServiceClass {
 
 struct _WockyPepService {
   GObject parent;
+
+  WockyPepServicePrivate *priv;
 };
 
 GType wocky_pep_service_get_type (void);
@@ -68,12 +72,12 @@ void wocky_pep_service_get_async (WockyPepService *pep,
     GAsyncReadyCallback callback,
     gpointer user_data);
 
-WockyXmppStanza * wocky_pep_service_get_finish (WockyPepService *pep,
+WockyStanza * wocky_pep_service_get_finish (WockyPepService *pep,
     GAsyncResult *result,
     GError **error);
 
-WockyXmppStanza * wocky_pep_service_make_publish_stanza (WockyPepService *pep,
-    WockyXmppNode **item);
+WockyStanza * wocky_pep_service_make_publish_stanza (WockyPepService *pep,
+    WockyNode **item);
 
 G_END_DECLS
 

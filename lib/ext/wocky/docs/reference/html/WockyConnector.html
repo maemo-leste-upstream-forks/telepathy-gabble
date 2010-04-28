@@ -44,11 +44,12 @@
 <pre class="synopsis">
 #include &lt;wocky/wocky-connector.h&gt;
 
+                    <a class="link" href="WockyConnector.html#WockyConnector-struct" title="WockyConnector">WockyConnector</a>;
+                    <a class="link" href="WockyConnector.html#WockyConnectorClass" title="WockyConnectorClass">WockyConnectorClass</a>;
+                    <a class="link" href="WockyConnector.html#WockyConnectorPrivate" title="WockyConnectorPrivate">WockyConnectorPrivate</a>;
 enum                <a class="link" href="WockyConnector.html#WockyConnectorError" title="enum WockyConnectorError">WockyConnectorError</a>;
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="WockyConnector.html#wocky-connector-error-quark" title="wocky_connector_error_quark ()">wocky_connector_error_quark</a>         (<em class="parameter"><code><span class="type">void</span></code></em>);
 #define             <a class="link" href="WockyConnector.html#WOCKY-CONNECTOR-ERROR:CAPS" title="WOCKY_CONNECTOR_ERROR">WOCKY_CONNECTOR_ERROR</a>
-                    <a class="link" href="WockyConnector.html#WockyConnector-struct" title="WockyConnector">WockyConnector</a>;
-                    <a class="link" href="WockyConnector.html#WockyConnectorClass" title="WockyConnectorClass">WockyConnectorClass</a>;
 <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="returnvalue">WockyXmppConnection</span></a> * <a class="link" href="WockyConnector.html#wocky-connector-connect-finish" title="wocky_connector_connect_finish ()">wocky_connector_connect_finish</a>    (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>,
@@ -92,7 +93,7 @@ enum                <a class="link" href="WockyConnector.html#WockyConnectorErro
 <pre class="synopsis">
   "<a class="link" href="WockyConnector.html#WockyConnector--email" title='The "email" property'>email</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
   "<a class="link" href="WockyConnector.html#WockyConnector--encrypted-plain-auth-ok" title='The "encrypted-plain-auth-ok" property'>encrypted-plain-auth-ok</a>"  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write / Construct
-  "<a class="link" href="WockyConnector.html#WockyConnector--features" title='The "features" property'>features</a>"                 <a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a>*      : Read
+  "<a class="link" href="WockyConnector.html#WockyConnector--features" title='The "features" property'>features</a>"                 <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a>*          : Read
   "<a class="link" href="WockyConnector.html#WockyConnector--identity" title='The "identity" property'>identity</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
   "<a class="link" href="WockyConnector.html#WockyConnector--ignore-ssl-errors" title='The "ignore-ssl-errors" property'>ignore-ssl-errors</a>"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write / Construct
   "<a class="link" href="WockyConnector.html#WockyConnector--jid" title='The "jid" property'>jid</a>"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
@@ -113,7 +114,7 @@ enum                <a class="link" href="WockyConnector.html#WockyConnectorErro
 See: RFC3920 XEP-0077
 </p>
 <p>
-Sends and receives <a href="WockyXmppStanza.html"><span class="type">WockyXmppStanzas</span></a> from an underlying <a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="type">GIOStream</span></a>.
+Sends and receives <a href="WockyStanza.html"><span class="type">WockyStanzas</span></a> from an underlying <a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="type">GIOStream</span></a>.
 negotiating TLS if possible and completing authentication with the server
 by the "most suitable" method available.
 Returns a <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> object to the user on successful completion.
@@ -222,6 +223,30 @@ The flow of control during connection is roughly as follows:
 </div>
 <div class="refsect1" title="Details">
 <a name="WockyConnector.details"></a><h2>Details</h2>
+<div class="refsect2" title="WockyConnector">
+<a name="WockyConnector-struct"></a><h3>WockyConnector</h3>
+<pre class="programlisting">typedef struct _WockyConnector WockyConnector;</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WockyConnectorClass">
+<a name="WockyConnectorClass"></a><h3>WockyConnectorClass</h3>
+<pre class="programlisting">typedef struct {
+    GObjectClass parent_class;
+} WockyConnectorClass;
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WockyConnectorPrivate">
+<a name="WockyConnectorPrivate"></a><h3>WockyConnectorPrivate</h3>
+<pre class="programlisting">typedef struct _WockyConnectorPrivate WockyConnectorPrivate;</pre>
+<p>
+</p>
+</div>
+<hr>
 <div class="refsect2" title="enum WockyConnectorError">
 <a name="WockyConnectorError"></a><h3>enum WockyConnectorError</h3>
 <pre class="programlisting">typedef enum {
@@ -450,23 +475,6 @@ The <a class="link" href="WockyConnector.html" title="WockyConnector"><span clas
 </pre>
 <p>
 Get access to the error quark of the connector.
-</p>
-</div>
-<hr>
-<div class="refsect2" title="WockyConnector">
-<a name="WockyConnector-struct"></a><h3>WockyConnector</h3>
-<pre class="programlisting">typedef struct _WockyConnector WockyConnector;</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" title="WockyConnectorClass">
-<a name="WockyConnectorClass"></a><h3>WockyConnectorClass</h3>
-<pre class="programlisting">typedef struct {
-    GObjectClass parent_class;
-} WockyConnectorClass;
-</pre>
-<p>
 </p>
 </div>
 <hr>
@@ -824,9 +832,9 @@ Whether PLAINTEXT auth is ok when encrypted.
 <hr>
 <div class="refsect2" title='The "features" property'>
 <a name="WockyConnector--features"></a><h3>The <code class="literal">"features"</code> property</h3>
-<pre class="programlisting">  "features"                 <a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a>*      : Read</pre>
+<pre class="programlisting">  "features"                 <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a>*          : Read</pre>
 <p>
-A <a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a> instance, the last WockyXmppStanza instance received
+A <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a> instance, the last WockyStanza instance received
 by the connector during the connection procedure (there may be several,
 the most recent one always being the one we should refer to).
 </p>

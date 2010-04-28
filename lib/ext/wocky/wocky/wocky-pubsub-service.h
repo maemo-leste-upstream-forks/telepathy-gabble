@@ -23,7 +23,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include "wocky-xmpp-stanza.h"
+#include "wocky-stanza.h"
 #include "wocky-session.h"
 #include "wocky-types.h"
 #include "wocky-data-form.h"
@@ -32,6 +32,7 @@ G_BEGIN_DECLS
 
 typedef struct _WockyPubsubService WockyPubsubService;
 typedef struct _WockyPubsubServiceClass WockyPubsubServiceClass;
+typedef struct _WockyPubsubServicePrivate WockyPubsubServicePrivate;
 
 typedef enum {
   WOCKY_PUBSUB_SERVICE_ERROR_WRONG_REPLY,
@@ -48,6 +49,8 @@ struct _WockyPubsubServiceClass {
 
 struct _WockyPubsubService {
   GObject parent;
+
+  WockyPubsubServicePrivate *priv;
 };
 
 GType wocky_pubsub_service_get_type (void);

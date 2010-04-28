@@ -46,8 +46,6 @@ enum
 };
 
 /* private structure */
-typedef struct _WockyPepServicePrivate WockyPepServicePrivate;
-
 struct _WockyPepServicePrivate
 {
   WockySession *session;
@@ -61,17 +59,11 @@ struct _WockyPepServicePrivate
   gboolean dispose_has_run;
 };
 
-#define WOCKY_PEP_SERVICE_GET_PRIVATE(o)  \
-    (G_TYPE_INSTANCE_GET_PRIVATE ((o), WOCKY_TYPE_PEP_SERVICE, \
-    WockyPepServicePrivate))
-
 static void
-wocky_pep_service_init (WockyPepService *obj)
+wocky_pep_service_init (WockyPepService *self)
 {
-  /*
-  WockyPepService *self = WOCKY_PEP_SERVICE (obj);
-  WockyPepServicePrivate *priv = WOCKY_PEP_SERVICE_GET_PRIVATE (self);
-  */
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, WOCKY_TYPE_PEP_SERVICE,
+      WockyPepServicePrivate);
 }
 
 static void
@@ -81,7 +73,7 @@ wocky_pep_service_set_property (GObject *object,
     GParamSpec *pspec)
 {
   WockyPepService *self = WOCKY_PEP_SERVICE (object);
-  WockyPepServicePrivate *priv = WOCKY_PEP_SERVICE_GET_PRIVATE (self);
+  WockyPepServicePrivate *priv = self->priv;
 
   switch (property_id)
     {
@@ -104,7 +96,7 @@ wocky_pep_service_get_property (GObject *object,
     GParamSpec *pspec)
 {
   WockyPepService *self = WOCKY_PEP_SERVICE (object);
-  WockyPepServicePrivate *priv = WOCKY_PEP_SERVICE_GET_PRIVATE (self);
+  WockyPepServicePrivate *priv = self->priv;
 
   switch (property_id)
     {
@@ -125,7 +117,7 @@ static void
 wocky_pep_service_dispose (GObject *object)
 {
   WockyPepService *self = WOCKY_PEP_SERVICE (object);
-  WockyPepServicePrivate *priv = WOCKY_PEP_SERVICE_GET_PRIVATE (self);
+  WockyPepServicePrivate *priv = self->priv;
 
   if (priv->dispose_has_run)
     return;
@@ -150,7 +142,7 @@ static void
 wocky_pep_service_finalize (GObject *object)
 {
   WockyPepService *self = WOCKY_PEP_SERVICE (object);
-  WockyPepServicePrivate *priv = WOCKY_PEP_SERVICE_GET_PRIVATE (self);
+  WockyPepServicePrivate *priv = self->priv;
 
   g_free (priv->node);
 
@@ -161,7 +153,7 @@ static void
 wocky_pep_service_constructed (GObject *object)
 {
   WockyPepService *self = WOCKY_PEP_SERVICE (object);
-  WockyPepServicePrivate *priv = WOCKY_PEP_SERVICE_GET_PRIVATE (self);
+  WockyPepServicePrivate *priv = self->priv;
 
   g_assert (priv->node != NULL);
 }
@@ -214,15 +206,16 @@ wocky_pep_service_new (const gchar *node,
 
 static gboolean
 msg_event_cb (WockyPorter *porter,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     gpointer user_data)
 {
   WockyPepService *self = WOCKY_PEP_SERVICE (user_data);
-  WockyPepServicePrivate *priv = WOCKY_PEP_SERVICE_GET_PRIVATE (self);
+  WockyPepServicePrivate *priv = self->priv;
   const gchar *from;
   WockyBareContact *contact;
 
-  from = wocky_xmpp_node_get_attribute (stanza->node, "from");
+  from = wocky_node_get_attribute (wocky_stanza_get_top_node (stanza),
+      "from");
   if (from == NULL)
     {
       DEBUG ("No 'from' attribute; ignoring event");
@@ -242,7 +235,7 @@ void
 wocky_pep_service_start (WockyPepService *self,
     WockySession *session)
 {
-  WockyPepServicePrivate *priv = WOCKY_PEP_SERVICE_GET_PRIVATE (self);
+  WockyPepServicePrivate *priv = self->priv;
 
   g_assert (priv->session == NULL);
   priv->session = session;
@@ -258,13 +251,13 @@ wocky_pep_service_start (WockyPepService *self,
       WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE, NULL,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       msg_event_cb, self,
-      WOCKY_NODE, "event",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_EVENT,
-        WOCKY_NODE, "items",
-        WOCKY_NODE_ATTRIBUTE, "node", priv->node,
-        WOCKY_NODE_END,
-      WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+      '(', "event",
+        ':', WOCKY_XMPP_NS_PUBSUB_EVENT,
+        '(', "items",
+        '@', "node", priv->node,
+        ')',
+      ')',
+      NULL);
 
   /* TODO: subscribe to node if needed */
 }
@@ -276,7 +269,7 @@ send_query_cb (GObject *source,
 {
   GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (user_data);
   GError *error = NULL;
-  WockyXmppStanza *reply;
+  WockyStanza *reply;
 
   reply = wocky_porter_send_iq_finish (WOCKY_PORTER (source), res, &error);
   if (reply == NULL)
@@ -300,8 +293,8 @@ wocky_pep_service_get_async (WockyPepService *self,
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
-  WockyPepServicePrivate *priv = WOCKY_PEP_SERVICE_GET_PRIVATE (self);
-  WockyXmppStanza *msg;
+  WockyPepServicePrivate *priv = self->priv;
+  WockyStanza *msg;
   GSimpleAsyncResult *result;
   const gchar *jid;
 
@@ -315,15 +308,15 @@ wocky_pep_service_get_async (WockyPepService *self,
 
   jid = wocky_bare_contact_get_jid (contact);
 
-  msg = wocky_xmpp_stanza_build (
+  msg = wocky_stanza_build (
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
       NULL, jid,
-      WOCKY_NODE, "pubsub",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB,
-        WOCKY_NODE, "items",
-          WOCKY_NODE_ATTRIBUTE, "node", priv->node,
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB,
+        '(', "items",
+          '@', "node", priv->node,
+        ')',
+      ')', NULL);
 
   result = g_simple_async_result_new (G_OBJECT (self),
     callback, user_data, wocky_pep_service_get_finish);
@@ -334,7 +327,7 @@ wocky_pep_service_get_async (WockyPepService *self,
   g_object_unref (msg);
 }
 
-WockyXmppStanza *
+WockyStanza *
 wocky_pep_service_get_finish (WockyPepService *self,
     GAsyncResult *result,
     GError **error)
@@ -350,11 +343,11 @@ wocky_pep_service_get_finish (WockyPepService *self,
   return g_object_ref (g_simple_async_result_get_op_res_gpointer (simple));
 }
 
-WockyXmppStanza *
+WockyStanza *
 wocky_pep_service_make_publish_stanza (WockyPepService *self,
-    WockyXmppNode **item)
+    WockyNode **item)
 {
-  WockyPepServicePrivate *priv = WOCKY_PEP_SERVICE_GET_PRIVATE (self);
+  WockyPepServicePrivate *priv = self->priv;
 
   return wocky_pubsub_make_publish_stanza (NULL, priv->node, NULL, NULL, item);
 }

@@ -23,39 +23,46 @@
 
 #include <gio/gio.h>
 
-#include "wocky-xmpp-stanza.h"
+#include "wocky-stanza.h"
 
-WockyXmppStanza *wocky_pubsub_make_stanza (
+WockyStanza *wocky_pubsub_make_stanza (
     const gchar *service,
     WockyStanzaSubType sub_type,
     const gchar *pubsub_ns,
     const gchar *action_name,
-    WockyXmppNode **pubsub_node,
-    WockyXmppNode **action_node);
+    WockyNode **pubsub_node,
+    WockyNode **action_node);
 
-WockyXmppStanza *wocky_pubsub_make_publish_stanza (
+WockyStanza *wocky_pubsub_make_publish_stanza (
     const gchar *service,
     const gchar *node,
-    WockyXmppNode **pubsub_out,
-    WockyXmppNode **publish_out,
-    WockyXmppNode **item_out);
+    WockyNode **pubsub_out,
+    WockyNode **publish_out,
+    WockyNode **item_out);
 
 gboolean wocky_pubsub_distill_iq_reply (GObject *source,
     GAsyncResult *res,
     const gchar *pubsub_ns,
     const gchar *child_name,
-    WockyXmppNode **child_out,
+    WockyNodeTree **child_out,
     GError **error);
 
 gboolean wocky_pubsub_distill_ambivalent_iq_reply (GObject *source,
     GAsyncResult *res,
     const gchar *pubsub_ns,
     const gchar *child_name,
-    WockyXmppNode **child_out,
+    WockyNodeTree **child_out,
     GError **error);
 
 gboolean wocky_pubsub_distill_void_iq_reply (GObject *source,
     GAsyncResult *res,
+    GError **error);
+
+gboolean wocky_pubsub_distill_stanza (WockyStanza *result,
+    const gchar *pubsub_ns,
+    const gchar *child_name,
+    gboolean body_optional,
+    WockyNodeTree **child_out,
     GError **error);
 
 #endif /* WOCKY_PUBSUB_HELPERS_H */

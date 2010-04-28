@@ -36,24 +36,24 @@
  *
  * Returns: a new iq[type='set']/pubsub/publish/item stanza
  */
-WockyXmppStanza *
+WockyStanza *
 wocky_pubsub_make_publish_stanza (
     const gchar *service,
     const gchar *node,
-    WockyXmppNode **pubsub_out,
-    WockyXmppNode **publish_out,
-    WockyXmppNode **item_out)
+    WockyNode **pubsub_out,
+    WockyNode **publish_out,
+    WockyNode **item_out)
 {
-  WockyXmppStanza *stanza;
-  WockyXmppNode *publish, *item;
+  WockyStanza *stanza;
+  WockyNode *publish, *item;
 
   g_return_val_if_fail (node != NULL, NULL);
 
   stanza = wocky_pubsub_make_stanza (service, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_XMPP_NS_PUBSUB, "publish", pubsub_out, &publish);
 
-  wocky_xmpp_node_set_attribute (publish, "node", node);
-  item = wocky_xmpp_node_add_child (publish, "item");
+  wocky_node_set_attribute (publish, "node", node);
+  item = wocky_node_add_child (publish, "item");
 
   if (publish_out != NULL)
     *publish_out = publish;
@@ -77,32 +77,32 @@ wocky_pubsub_make_publish_stanza (
  *
  * Returns: a new iq[type='set']/pubsub/@action stanza
  */
-WockyXmppStanza *
+WockyStanza *
 wocky_pubsub_make_stanza (
     const gchar *service,
     WockyStanzaSubType sub_type,
     const gchar *pubsub_ns,
     const gchar *action_name,
-    WockyXmppNode **pubsub_node,
-    WockyXmppNode **action_node)
+    WockyNode **pubsub_node,
+    WockyNode **action_node)
 {
-  WockyXmppStanza *stanza;
-  WockyXmppNode *pubsub, *action;
+  WockyStanza *stanza;
+  WockyNode *pubsub, *action;
 
   g_assert (pubsub_ns != NULL);
   g_assert (action_name != NULL);
 
-  stanza = wocky_xmpp_stanza_build (
+  stanza = wocky_stanza_build (
       WOCKY_STANZA_TYPE_IQ, sub_type,
       NULL, service,
-        WOCKY_NODE, "pubsub",
-          WOCKY_NODE_XMLNS, pubsub_ns,
-          WOCKY_NODE_ASSIGN_TO, &pubsub,
-          WOCKY_NODE, action_name,
-            WOCKY_NODE_ASSIGN_TO, &action,
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+        '(', "pubsub",
+          ':', pubsub_ns,
+          '*', &pubsub,
+          '(', action_name,
+            '*', &action,
+          ')',
+        ')',
+      NULL);
 
   if (pubsub_node != NULL)
     *pubsub_node = pubsub;
@@ -114,17 +114,18 @@ wocky_pubsub_make_stanza (
 }
 
 static gboolean
-get_pubsub_child_node (WockyXmppStanza *reply,
+get_pubsub_child_node (WockyStanza *reply,
     const gchar *pubsub_ns,
     const gchar *child_name,
-    WockyXmppNode **child_out,
+    WockyNodeTree **child_out,
     GError **error)
 {
-  WockyXmppNode *n;
+  WockyNode *n;
 
   g_return_val_if_fail (reply != NULL, FALSE);
 
-  n = wocky_xmpp_node_get_child_ns (reply->node, "pubsub", pubsub_ns);
+  n = wocky_node_get_child_ns (
+    wocky_stanza_get_top_node (reply), "pubsub", pubsub_ns);
 
   if (n == NULL)
     {
@@ -134,7 +135,7 @@ get_pubsub_child_node (WockyXmppStanza *reply,
       return FALSE;
     }
 
-  n = wocky_xmpp_node_get_child (n, child_name);
+  n = wocky_node_get_child (n, child_name);
 
   if (n == NULL)
     {
@@ -145,7 +146,7 @@ get_pubsub_child_node (WockyXmppStanza *reply,
     }
 
   if (child_out != NULL)
-    *child_out = n;
+    *child_out = wocky_node_tree_new_from_node (n);
 
   return TRUE;
 }
@@ -156,10 +157,10 @@ wocky_pubsub_distill_iq_reply_internal (GObject *source,
     const gchar *pubsub_ns,
     const gchar *child_name,
     gboolean body_optional,
-    WockyXmppNode **child_out,
+    WockyNodeTree **child_out,
     GError **error)
 {
-  WockyXmppStanza *reply;
+  WockyStanza *reply;
   gboolean ret = FALSE;
 
   if (child_out != NULL)
@@ -171,36 +172,88 @@ wocky_pubsub_distill_iq_reply_internal (GObject *source,
    */
   reply = wocky_porter_send_iq_finish (WOCKY_PORTER (source), res, error);
 
-  if (reply == NULL)
-    return FALSE;
-
-  if (!wocky_xmpp_stanza_extract_errors (reply, NULL, error, NULL, NULL))
+  if (reply != NULL)
     {
-      ret = TRUE;
-
-      if (pubsub_ns != NULL)
+      if (!wocky_stanza_extract_errors (reply, NULL, error, NULL, NULL))
         {
-          /* A force of a thousand function calls will anchor the node to
-           * a resplendent out parameter modeled on the Dear Leader's hand.
-           */
-          ret = get_pubsub_child_node (reply, pubsub_ns, child_name, child_out,
-              error);
-
-          /* The People's Great and Harmonious Node Pointer of Peter
-           * Saint-Andre will conclude the most astonishing stanza breakdown
-           * ever witnessed by man.
-           */
-          if (!ret && body_optional)
-            {
-              /* “The stanza is perfect. We have already succeeded.” */
-              ret = TRUE;
-              g_clear_error (error);
-            }
+          if (pubsub_ns == NULL)
+            ret = TRUE;
+          else
+            ret = wocky_pubsub_distill_stanza (reply, pubsub_ns, child_name,
+                body_optional, child_out, error);
         }
+
+      g_object_unref (reply);
     }
 
-  g_object_unref (reply);
   return ret;
+}
+
+/**
+ * wocky_pubsub_distill_stanza:
+ * @result: an iq type='result'
+ * @pubsub_ns: the namespace of the &lt;pubsub/&gt; node expected in this reply
+ *             (such as #WOCKY_XMPP_NS_PUBSUB)
+ * @child_name: the name of the child of &lt;pubsub/&gt; expected in this reply
+ *              (such as "subscriptions")
+ * @body_optional: If %TRUE, the child being absent is not considered an error
+ * @child_out: location at which to store a reference to the node tree at
+ *             @child_name, if it is found, or to be set to %NULL if it is not.
+ * @error: location at which to store an error if the child node is not found
+ *         and @body_optional is %FALSE
+ *
+ * Helper function to extract a particular pubsub child node from a reply, if
+ * it is present. If @body_optional is %FALSE, the
+ * &lt;pubsub&gt;&lt;@child_name/&gt;&lt;/pubsub&gt; tree being absent is not
+ * considered an error: @child_out is set to %NULL and the function returns
+ * %TRUE.
+ *
+ * If you are happy to delegate calling wocky_porter_send_iq_finish() and
+ * extracting stanza errors, you would probably be better served by one of
+ * wocky_pubsub_distill_iq_reply() or
+ * wocky_pubsub_distill_ambivalent_iq_reply().
+ *
+ * Returns: %TRUE if the child was found or was optional; %FALSE with @error
+ *          set otherwise.
+ */
+gboolean
+wocky_pubsub_distill_stanza (WockyStanza *result,
+    const gchar *pubsub_ns,
+    const gchar *child_name,
+    gboolean body_optional,
+    WockyNodeTree **child_out,
+    GError **error)
+{
+  g_return_val_if_fail (pubsub_ns != NULL, FALSE);
+  g_return_val_if_fail (child_name != NULL, FALSE);
+
+  if (child_out != NULL)
+    *child_out = NULL;
+
+  /* A force of a thousand function calls will anchor the node to
+   * a resplendent out parameter modeled on the Dear Leader's hand.
+   */
+  if (get_pubsub_child_node (result, pubsub_ns, child_name, child_out, error))
+    {
+      /* The People's Great and Harmonious Node Pointer of Peter
+       * Saint-Andre will conclude the most astonishing stanza breakdown
+       * ever witnessed by man.
+       */
+      return TRUE;
+    }
+  else if (body_optional)
+    {
+      /* “The stanza is perfect. We have already succeeded.” */
+      g_clear_error (error);
+      return TRUE;
+    }
+  else
+    {
+      /* Meanwhile, the American president today revealed himself to be a
+       * lizard.
+       */
+      return FALSE;
+    }
 }
 
 /**
@@ -211,8 +264,8 @@ wocky_pubsub_distill_iq_reply_internal (GObject *source,
  *             (such as #WOCKY_XMPP_NS_PUBSUB), or %NULL if one is not expected
  * @child_name: the name of the child of &lt;pubsub/&gt; expected in this reply
  *              (such as "subscriptions"); ignored if @pubsub_ns is %NULL
- * @child_out: location at which to store a pointer to that child node, or
- *             %NULL if you don't need it
+ * @child_out: location at which to store a reference to the node tree at
+ *             @child_name, or %NULL if you don't need it.
  * @error: location at which to store an error if the call to
  *         wocky_porter_send_iq_async() returned an error, or if the reply was
  *         an error
@@ -229,7 +282,7 @@ wocky_pubsub_distill_iq_reply (GObject *source,
     GAsyncResult *res,
     const gchar *pubsub_ns,
     const gchar *child_name,
-    WockyXmppNode **child_out,
+    WockyNodeTree **child_out,
     GError **error)
 {
   return wocky_pubsub_distill_iq_reply_internal (source, res, pubsub_ns,
@@ -268,8 +321,8 @@ wocky_pubsub_distill_void_iq_reply (GObject *source,
  *             (such as #WOCKY_XMPP_NS_PUBSUB)
  * @child_name: the name of the child of &lt;pubsub/&gt; accepted in this reply
  *              (such as "subscriptions")
- * @child_out: location at which to store a pointer to the node named
- *             @child_name, if is found, or to be set to %NULL if it is not
+ * @child_out: location at which to store a reference to the node tree at
+ *             @child_name, if it is found, or to be set to %NULL if it is not
  *             found
  * @error: location at which to store an error if the call to
  *         wocky_porter_send_iq_async() returned an error, or if the reply was
@@ -289,7 +342,7 @@ wocky_pubsub_distill_ambivalent_iq_reply (GObject *source,
     GAsyncResult *res,
     const gchar *pubsub_ns,
     const gchar *child_name,
-    WockyXmppNode **child_out,
+    WockyNodeTree **child_out,
     GError **error)
 {
   return wocky_pubsub_distill_iq_reply_internal (source, res, pubsub_ns,

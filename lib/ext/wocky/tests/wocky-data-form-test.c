@@ -5,7 +5,7 @@
 #include <glib.h>
 
 #include <wocky/wocky-data-form.h>
-#include <wocky/wocky-xmpp-stanza.h>
+#include <wocky/wocky-stanza.h>
 #include <wocky/wocky-namespaces.h>
 #include <wocky/wocky-utils.h>
 
@@ -14,45 +14,50 @@
 static void
 test_new_from_form (void)
 {
-  WockyXmppStanza *stanza;
-  WockyXmppNode *node;
+  WockyStanza *stanza;
+  WockyNode *node;
   WockyDataForm *form;
   GError *error = NULL;
 
-  stanza = wocky_xmpp_stanza_build (
+  stanza = wocky_stanza_build (
       WOCKY_STANZA_TYPE_IQ,WOCKY_STANZA_SUB_TYPE_RESULT,
-      NULL, NULL, WOCKY_STANZA_END);
+      NULL, NULL, NULL);
 
   /* node doesn't contain a form */
-  form = wocky_data_form_new_from_form (stanza->node, &error);
+  form = wocky_data_form_new_from_form (wocky_stanza_get_top_node (stanza),
+      &error);
   g_assert (form == NULL);
   g_assert_error (error, WOCKY_DATA_FORM_ERROR,
       WOCKY_DATA_FORM_ERROR_NOT_FORM);
   g_clear_error (&error);
 
   /* add 'x' node */
-  node = wocky_xmpp_node_add_child_ns (stanza->node, "x", WOCKY_XMPP_NS_DATA);
+  node = wocky_node_add_child_ns (wocky_stanza_get_top_node (stanza),
+      "x", WOCKY_XMPP_NS_DATA);
 
   /* the x node doesn't have a 'type' attribute */
-  form = wocky_data_form_new_from_form (stanza->node, &error);
+  form = wocky_data_form_new_from_form (wocky_stanza_get_top_node (stanza),
+      &error);
   g_assert (form == NULL);
   g_assert_error (error, WOCKY_DATA_FORM_ERROR,
       WOCKY_DATA_FORM_ERROR_WRONG_TYPE);
   g_clear_error (&error);
 
   /* set wrong type */
-  wocky_xmpp_node_set_attribute (node, "type", "badger");
+  wocky_node_set_attribute (node, "type", "badger");
 
-  form = wocky_data_form_new_from_form (stanza->node, &error);
+  form = wocky_data_form_new_from_form (wocky_stanza_get_top_node (stanza),
+      &error);
   g_assert (form == NULL);
   g_assert_error (error, WOCKY_DATA_FORM_ERROR,
       WOCKY_DATA_FORM_ERROR_WRONG_TYPE);
   g_clear_error (&error);
 
   /* set the right type */
-  wocky_xmpp_node_set_attribute (node, "type", "form");
+  wocky_node_set_attribute (node, "type", "form");
 
-  form = wocky_data_form_new_from_form (stanza->node, &error);
+  form = wocky_data_form_new_from_form (wocky_stanza_get_top_node (stanza),
+      &error);
   g_assert (form != NULL);
   g_assert_no_error (error);
 
@@ -60,140 +65,140 @@ test_new_from_form (void)
   g_object_unref (stanza);
 }
 
-static WockyXmppStanza *
+static WockyStanza *
 create_bot_creation_form_stanza (void)
 {
   /* This stanza is inspired from Example 2 of XEP-0004: Data Forms */
-  return wocky_xmpp_stanza_build (
+  return wocky_stanza_build (
       WOCKY_STANZA_TYPE_IQ,WOCKY_STANZA_SUB_TYPE_RESULT,
       NULL, NULL,
-      WOCKY_NODE, "x",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_DATA,
-        WOCKY_NODE_ATTRIBUTE, "type", "form",
-        WOCKY_NODE, "title", WOCKY_NODE_TEXT, "My Title", WOCKY_NODE_END,
-        WOCKY_NODE, "instructions", WOCKY_NODE_TEXT, "Badger", WOCKY_NODE_END,
+      '(', "x",
+        ':', WOCKY_XMPP_NS_DATA,
+        '@', "type", "form",
+        '(', "title", '$', "My Title", ')',
+        '(', "instructions", '$', "Badger", ')',
         /* hidden field */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "hidden",
-          WOCKY_NODE_ATTRIBUTE, "var", "FORM_TYPE",
-          WOCKY_NODE, "value", WOCKY_NODE_TEXT, "jabber:bot", WOCKY_NODE_END,
-        WOCKY_NODE_END,
+        '(', "field",
+          '@', "type", "hidden",
+          '@', "var", "FORM_TYPE",
+          '(', "value", '$', "jabber:bot", ')',
+        ')',
         /* fixed field */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "fixed",
-          WOCKY_NODE, "value", WOCKY_NODE_TEXT, "fixed value", WOCKY_NODE_END,
-        WOCKY_NODE_END,
+        '(', "field",
+          '@', "type", "fixed",
+          '(', "value", '$', "fixed value", ')',
+        ')',
         /* text-single field */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "text-single",
-          WOCKY_NODE_ATTRIBUTE, "var", "botname",
-          WOCKY_NODE_ATTRIBUTE, "label", "The name of your bot",
-        WOCKY_NODE_END,
+        '(', "field",
+          '@', "type", "text-single",
+          '@', "var", "botname",
+          '@', "label", "The name of your bot",
+        ')',
         /* field with no type. type='' is only a SHOULD; the default is
          * text-single */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "var", "pseudonym",
-          WOCKY_NODE_ATTRIBUTE, "label", "Your bot's name at the weekend",
-        WOCKY_NODE_END,
+        '(', "field",
+          '@', "var", "pseudonym",
+          '@', "label", "Your bot's name at the weekend",
+        ')',
         /* text-multi field */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "text-multi",
-          WOCKY_NODE_ATTRIBUTE, "var", "description",
-          WOCKY_NODE_ATTRIBUTE, "label", "Helpful description of your bot",
-        WOCKY_NODE_END,
+        '(', "field",
+          '@', "type", "text-multi",
+          '@', "var", "description",
+          '@', "label", "Helpful description of your bot",
+        ')',
         /* boolean field */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "boolean",
-          WOCKY_NODE_ATTRIBUTE, "var", "public",
-          WOCKY_NODE_ATTRIBUTE, "label", "Public bot?",
-          WOCKY_NODE, "required", WOCKY_NODE_END,
-          WOCKY_NODE, "value", WOCKY_NODE_TEXT, "false", WOCKY_NODE_END,
-        WOCKY_NODE_END,
+        '(', "field",
+          '@', "type", "boolean",
+          '@', "var", "public",
+          '@', "label", "Public bot?",
+          '(', "required", ')',
+          '(', "value", '$', "false", ')',
+        ')',
         /* text-private field */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "text-private",
-          WOCKY_NODE_ATTRIBUTE, "var", "password",
-          WOCKY_NODE_ATTRIBUTE, "label", "Password for special access",
-        WOCKY_NODE_END,
+        '(', "field",
+          '@', "type", "text-private",
+          '@', "var", "password",
+          '@', "label", "Password for special access",
+        ')',
         /* list-multi field */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "list-multi",
-          WOCKY_NODE_ATTRIBUTE, "var", "features",
-          WOCKY_NODE_ATTRIBUTE, "label", "What features will the bot support?",
-          WOCKY_NODE, "option",
-            WOCKY_NODE_ATTRIBUTE, "label", "Contests",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "contests", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "option",
-            WOCKY_NODE_ATTRIBUTE, "label", "News",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "news", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "option",
-            WOCKY_NODE_ATTRIBUTE, "label", "Polls",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "polls", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "option",
-            WOCKY_NODE_ATTRIBUTE, "label", "Reminders",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "reminders", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "option",
-            WOCKY_NODE_ATTRIBUTE, "label", "Search",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "search", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "value", WOCKY_NODE_TEXT, "news", WOCKY_NODE_END,
-          WOCKY_NODE, "value", WOCKY_NODE_TEXT, "search", WOCKY_NODE_END,
-        WOCKY_NODE_END,
+        '(', "field",
+          '@', "type", "list-multi",
+          '@', "var", "features",
+          '@', "label", "What features will the bot support?",
+          '(', "option",
+            '@', "label", "Contests",
+            '(', "value", '$', "contests", ')',
+          ')',
+          '(', "option",
+            '@', "label", "News",
+            '(', "value", '$', "news", ')',
+          ')',
+          '(', "option",
+            '@', "label", "Polls",
+            '(', "value", '$', "polls", ')',
+          ')',
+          '(', "option",
+            '@', "label", "Reminders",
+            '(', "value", '$', "reminders", ')',
+          ')',
+          '(', "option",
+            '@', "label", "Search",
+            '(', "value", '$', "search", ')',
+          ')',
+          '(', "value", '$', "news", ')',
+          '(', "value", '$', "search", ')',
+        ')',
         /* list-single field */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "list-single",
-          WOCKY_NODE_ATTRIBUTE, "var", "maxsubs",
-          WOCKY_NODE_ATTRIBUTE, "label", "Maximum number of subscribers",
-          WOCKY_NODE, "value", WOCKY_NODE_TEXT, "20", WOCKY_NODE_END,
-          WOCKY_NODE, "option",
-            WOCKY_NODE_ATTRIBUTE, "label", "10",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "10", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "option",
-            WOCKY_NODE_ATTRIBUTE, "label", "20",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "20", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "option",
-            WOCKY_NODE_ATTRIBUTE, "label", "30",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "30", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "option",
-            WOCKY_NODE_ATTRIBUTE, "label", "50",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "50", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "option",
-            WOCKY_NODE_ATTRIBUTE, "label", "100",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "100", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "option",
-            WOCKY_NODE_ATTRIBUTE, "label", "None",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "none", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
+        '(', "field",
+          '@', "type", "list-single",
+          '@', "var", "maxsubs",
+          '@', "label", "Maximum number of subscribers",
+          '(', "value", '$', "20", ')',
+          '(', "option",
+            '@', "label", "10",
+            '(', "value", '$', "10", ')',
+          ')',
+          '(', "option",
+            '@', "label", "20",
+            '(', "value", '$', "20", ')',
+          ')',
+          '(', "option",
+            '@', "label", "30",
+            '(', "value", '$', "30", ')',
+          ')',
+          '(', "option",
+            '@', "label", "50",
+            '(', "value", '$', "50", ')',
+          ')',
+          '(', "option",
+            '@', "label", "100",
+            '(', "value", '$', "100", ')',
+          ')',
+          '(', "option",
+            '@', "label", "None",
+            '(', "value", '$', "none", ')',
+          ')',
+        ')',
         /* jid-multi field */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "jid-multi",
-          WOCKY_NODE_ATTRIBUTE, "var", "invitelist",
-          WOCKY_NODE_ATTRIBUTE, "label", "People to invite",
-          WOCKY_NODE, "desc", WOCKY_NODE_TEXT, "Tell friends", WOCKY_NODE_END,
-        WOCKY_NODE_END,
+        '(', "field",
+          '@', "type", "jid-multi",
+          '@', "var", "invitelist",
+          '@', "label", "People to invite",
+          '(', "desc", '$', "Tell friends", ')',
+        ')',
         /* jid-single field */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "jid-single",
-          WOCKY_NODE_ATTRIBUTE, "var", "botjid",
-          WOCKY_NODE_ATTRIBUTE, "label", "The JID of the bot",
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+        '(', "field",
+          '@', "type", "jid-single",
+          '@', "var", "botjid",
+          '@', "label", "The JID of the bot",
+        ')',
+      ')', NULL);
 }
 
 static void
 test_parse_form (void)
 {
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
   WockyDataForm *form;
   GSList *l;
   /* used to check that fields are stored in the right order */
@@ -241,7 +246,8 @@ test_parse_form (void)
   };
 
   stanza = create_bot_creation_form_stanza ();
-  form = wocky_data_form_new_from_form (stanza->node, NULL);
+  form = wocky_data_form_new_from_form (wocky_stanza_get_top_node (stanza),
+      NULL);
   g_assert (form != NULL);
   g_object_unref (stanza);
 
@@ -351,17 +357,19 @@ test_parse_form (void)
 static void
 test_submit (void)
 {
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
   WockyDataForm *form;
-  WockyXmppNode *x;
+  WockyNode *x;
   GSList *l;
   const gchar *description[] = { "Badger", "Mushroom", "Snake", NULL };
   const gchar *features[] = { "news", "search", NULL };
-  const gchar *invitees[] = { "juliet@example.org", "romeo@example.org", NULL };
+  const gchar *invitees[] = { "juliet@example.org",
+      "romeo@example.org", NULL };
   gboolean set_succeeded;
 
   stanza = create_bot_creation_form_stanza ();
-  form = wocky_data_form_new_from_form (stanza->node, NULL);
+  form = wocky_data_form_new_from_form (wocky_stanza_get_top_node (stanza),
+      NULL);
   g_assert (form != NULL);
   g_object_unref (stanza);
 
@@ -403,26 +411,27 @@ test_submit (void)
       "bobot@example.org", FALSE);
   g_assert (set_succeeded);
 
-  stanza = wocky_xmpp_stanza_build (
+  stanza = wocky_stanza_build (
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
-      NULL, NULL, WOCKY_STANZA_END);
-  wocky_data_form_submit (form, stanza->node);
+      NULL, NULL, NULL);
+  wocky_data_form_submit (form, wocky_stanza_get_top_node (stanza));
 
-  x = wocky_xmpp_node_get_child_ns (stanza->node, "x", WOCKY_XMPP_NS_DATA);
+  x = wocky_node_get_child_ns (wocky_stanza_get_top_node (stanza),
+      "x", WOCKY_XMPP_NS_DATA);
   g_assert (x != NULL);
-  g_assert_cmpstr (wocky_xmpp_node_get_attribute (x, "type"), ==, "submit");
+  g_assert_cmpstr (wocky_node_get_attribute (x, "type"), ==, "submit");
 
   for (l = x->children; l != NULL; l = g_slist_next (l))
     {
-      WockyXmppNode *v, *node = l->data;
+      WockyNode *v, *node = l->data;
       const gchar *var, *type, *value = NULL;
 
       g_assert_cmpstr (node->name, ==, "field");
-      var = wocky_xmpp_node_get_attribute (node, "var");
+      var = wocky_node_get_attribute (node, "var");
       g_assert (var != NULL);
-      type = wocky_xmpp_node_get_attribute (node, "type");
+      type = wocky_node_get_attribute (node, "type");
 
-      v = wocky_xmpp_node_get_child (node, "value");
+      v = wocky_node_get_child (node, "value");
       if (v != NULL)
         value = v->content;
 
@@ -444,7 +453,7 @@ test_submit (void)
           g_assert_cmpstr (type, ==, "text-multi");
           for (m = node->children; m != NULL; m = g_slist_next (m))
             {
-              WockyXmppNode *tmp = m->data;
+              WockyNode *tmp = m->data;
 
               g_assert_cmpstr (tmp->name, ==, "value");
               if (!wocky_strdiff (tmp->content, "Badger"))
@@ -476,7 +485,7 @@ test_submit (void)
           g_assert_cmpstr (type, ==, "list-multi");
           for (m = node->children; m != NULL; m = g_slist_next (m))
             {
-              WockyXmppNode *tmp = m->data;
+              WockyNode *tmp = m->data;
 
               g_assert_cmpstr (tmp->name, ==, "value");
               if (!wocky_strdiff (tmp->content, "news"))
@@ -501,7 +510,7 @@ test_submit (void)
           g_assert_cmpstr (type, ==, "jid-multi");
           for (m = node->children; m != NULL; m = g_slist_next (m))
             {
-              WockyXmppNode *tmp = m->data;
+              WockyNode *tmp = m->data;
 
               g_assert_cmpstr (tmp->name, ==, "value");
               if (!wocky_strdiff (tmp->content, "juliet@example.org"))
@@ -535,7 +544,7 @@ test_submit_blindly (void)
   WockyDataForm *form = g_object_new (WOCKY_TYPE_DATA_FORM, NULL);
   const gchar * const the_xx[] = { "Romy", "Oliver", "Jamie", NULL };
   gboolean succeeded;
-  WockyXmppStanza *stanza, *expected;
+  WockyStanza *stanza, *expected;
 
   /* We didn't actually parse a form, so it doesn't have any pre-defined
    * fields. Thus, the setters should all fail if we don't tell them to create
@@ -574,133 +583,135 @@ test_submit_blindly (void)
   succeeded = wocky_data_form_set_boolean (form, "is-meh", TRUE, TRUE);
   g_assert (succeeded);
 
-  stanza = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+  stanza = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
       WOCKY_STANZA_SUB_TYPE_SET, NULL, NULL,
-      WOCKY_STANZA_END);
-  wocky_data_form_submit (form, stanza->node);
+      NULL);
+  wocky_data_form_submit (form, wocky_stanza_get_top_node (stanza));
 
-  expected = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+  expected = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
       WOCKY_STANZA_SUB_TYPE_SET, NULL, NULL,
-      WOCKY_NODE, "x",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_DATA,
-        WOCKY_NODE_ATTRIBUTE, "type", "submit",
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "hidden",
-          WOCKY_NODE_ATTRIBUTE, "var", "FORM_TYPE",
-          WOCKY_NODE, "value",
-            WOCKY_NODE_TEXT, "http://example.com/band-info",
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "var", "band-name",
-          WOCKY_NODE, "value",
-            WOCKY_NODE_TEXT, "The XX",
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "var", "band-members",
-          WOCKY_NODE, "value",
-            WOCKY_NODE_TEXT, "Romy",
-          WOCKY_NODE_END,
-          WOCKY_NODE, "value",
-            WOCKY_NODE_TEXT, "Oliver",
-          WOCKY_NODE_END,
-          WOCKY_NODE, "value",
-            WOCKY_NODE_TEXT, "Jamie",
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "var", "is-meh",
-          WOCKY_NODE, "value",
-            WOCKY_NODE_TEXT, "1",
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-      WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+      '(', "x",
+        ':', WOCKY_XMPP_NS_DATA,
+        '@', "type", "submit",
+        '(', "field",
+          '@', "type", "hidden",
+          '@', "var", "FORM_TYPE",
+          '(', "value",
+            '$', "http://example.com/band-info",
+          ')',
+        ')',
+        '(', "field",
+          '@', "var", "band-name",
+          '(', "value",
+            '$', "The XX",
+          ')',
+        ')',
+        '(', "field",
+          '@', "var", "band-members",
+          '(', "value",
+            '$', "Romy",
+          ')',
+          '(', "value",
+            '$', "Oliver",
+          ')',
+          '(', "value",
+            '$', "Jamie",
+          ')',
+        ')',
+        '(', "field",
+          '@', "var", "is-meh",
+          '(', "value",
+            '$', "1",
+          ')',
+        ')',
+      ')',
+      NULL);
 
-  test_assert_stanzas_equal (expected, stanza);
+  test_assert_stanzas_equal_no_id (expected, stanza);
 
   g_object_unref (expected);
   g_object_unref (stanza);
   g_object_unref (form);
 }
 
-static WockyXmppStanza *
+static WockyStanza *
 create_search_form_stanza (void)
 {
   /* This stanza is inspired from Example 6 of XEP-0004: Data Forms */
-  return wocky_xmpp_stanza_build (
+  return wocky_stanza_build (
       WOCKY_STANZA_TYPE_IQ,WOCKY_STANZA_SUB_TYPE_RESULT,
       NULL, NULL,
-      WOCKY_NODE, "x",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_DATA,
-        WOCKY_NODE_ATTRIBUTE, "type", "form",
-        WOCKY_NODE, "title", WOCKY_NODE_TEXT, "My Title", WOCKY_NODE_END,
-        WOCKY_NODE, "instructions", WOCKY_NODE_TEXT, "Badger", WOCKY_NODE_END,
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "text-single",
-          WOCKY_NODE_ATTRIBUTE, "var", "search_request",
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+      '(', "x",
+        ':', WOCKY_XMPP_NS_DATA,
+        '@', "type", "form",
+        '(', "title", '$', "My Title", ')',
+        '(', "instructions", '$', "Badger", ')',
+        '(', "field",
+          '@', "type", "text-single",
+          '@', "var", "search_request",
+        ')',
+      ')', NULL);
 }
 
 static void
 test_parse_multi_result (void)
 {
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
   WockyDataForm *form;
   GSList *l;
   gboolean item1 = FALSE, item2 = FALSE;
 
   stanza = create_search_form_stanza ();
-  form = wocky_data_form_new_from_form (stanza->node, NULL);
+  form = wocky_data_form_new_from_form (wocky_stanza_get_top_node (stanza),
+      NULL);
   g_assert (form != NULL);
   g_object_unref (stanza);
 
   /* create the result stanza */
-  stanza = wocky_xmpp_stanza_build (
+  stanza = wocky_stanza_build (
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_RESULT,
       NULL, NULL,
-      WOCKY_NODE, "x",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_DATA,
-        WOCKY_NODE_ATTRIBUTE, "type", "result",
-        WOCKY_NODE, "title", WOCKY_NODE_TEXT, "Search result", WOCKY_NODE_END,
-        WOCKY_NODE, "reported",
-          WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "var", "name",
-          WOCKY_NODE_ATTRIBUTE, "type", "text-single",
-          WOCKY_NODE_END,
-          WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "var", "url",
-          WOCKY_NODE_ATTRIBUTE, "type", "text-single",
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
+      '(', "x",
+        ':', WOCKY_XMPP_NS_DATA,
+        '@', "type", "result",
+        '(', "title", '$', "Search result", ')',
+        '(', "reported",
+          '(', "field",
+          '@', "var", "name",
+          '@', "type", "text-single",
+          ')',
+          '(', "field",
+          '@', "var", "url",
+          '@', "type", "text-single",
+          ')',
+        ')',
         /* first item */
-        WOCKY_NODE, "item",
-          WOCKY_NODE, "field",
-            WOCKY_NODE_ATTRIBUTE, "var", "name",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "name1", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "field",
-            WOCKY_NODE_ATTRIBUTE, "var", "url",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "url1", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
+        '(', "item",
+          '(', "field",
+            '@', "var", "name",
+            '(', "value", '$', "name1", ')',
+          ')',
+          '(', "field",
+            '@', "var", "url",
+            '(', "value", '$', "url1", ')',
+          ')',
+        ')',
         /* second item */
-        WOCKY_NODE, "item",
-          WOCKY_NODE, "field",
-            WOCKY_NODE_ATTRIBUTE, "var", "name",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "name2", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "field",
-            WOCKY_NODE_ATTRIBUTE, "var", "url",
-            WOCKY_NODE, "value", WOCKY_NODE_TEXT, "url2", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-      WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+        '(', "item",
+          '(', "field",
+            '@', "var", "name",
+            '(', "value", '$', "name2", ')',
+          ')',
+          '(', "field",
+            '@', "var", "url",
+            '(', "value", '$', "url2", ')',
+          ')',
+        ')',
+      ')',
+      NULL);
 
-  g_assert (wocky_data_form_parse_result (form, stanza->node, NULL));
+  g_assert (wocky_data_form_parse_result (form,
+      wocky_stanza_get_top_node (stanza), NULL));
   g_object_unref (stanza);
 
   g_assert_cmpuint (g_slist_length (form->results), ==, 2);
@@ -750,38 +761,41 @@ test_parse_multi_result (void)
 static void
 test_parse_single_result (void)
 {
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
   WockyDataForm *form;
   GSList *result, *l;
   gboolean form_type = FALSE, botname = FALSE;
 
   stanza = create_bot_creation_form_stanza ();
-  form = wocky_data_form_new_from_form (stanza->node, NULL);
+  form = wocky_data_form_new_from_form (wocky_stanza_get_top_node (stanza),
+      NULL);
   g_assert (form != NULL);
   g_object_unref (stanza);
 
   /* create the result stanza */
-  stanza = wocky_xmpp_stanza_build (
+  stanza = wocky_stanza_build (
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_RESULT,
       NULL, NULL,
-      WOCKY_NODE, "x",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_DATA,
-        WOCKY_NODE_ATTRIBUTE, "type", "result",
+      '(', "x",
+        ':', WOCKY_XMPP_NS_DATA,
+        '@', "type", "result",
         /* hidden field */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "hidden",
-          WOCKY_NODE_ATTRIBUTE, "var", "FORM_TYPE",
-          WOCKY_NODE, "value", WOCKY_NODE_TEXT, "jabber:bot", WOCKY_NODE_END,
-        WOCKY_NODE_END,
+        '(', "field",
+          '@', "type", "hidden",
+          '@', "var", "FORM_TYPE",
+          '(', "value", '$', "jabber:bot", ')',
+        ')',
         /* text-single field */
-        WOCKY_NODE, "field",
-          WOCKY_NODE_ATTRIBUTE, "type", "text-single",
-          WOCKY_NODE_ATTRIBUTE, "var", "botname",
-          WOCKY_NODE, "value", WOCKY_NODE_TEXT, "The Bot", WOCKY_NODE_END,
-        WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+        '(', "field",
+          '@', "type", "text-single",
+          '@', "var", "botname",
+          '(', "value", '$', "The Bot", ')',
+        ')',
+      ')',
+      NULL);
 
-  g_assert (wocky_data_form_parse_result (form, stanza->node, NULL));
+  g_assert (wocky_data_form_parse_result (form,
+      wocky_stanza_get_top_node (stanza), NULL));
   g_object_unref (stanza);
 
   g_assert_cmpuint (g_slist_length (form->results), ==, 1);

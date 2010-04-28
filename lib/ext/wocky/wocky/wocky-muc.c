@@ -100,11 +100,11 @@ static void wocky_muc_set_property (GObject *object,
 
 /* private functions */
 static gboolean handle_presence (WockyPorter *porter,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     gpointer data);
 
 static gboolean handle_message (WockyPorter *porter,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     gpointer data);
 
 enum
@@ -126,8 +126,6 @@ enum
   PROP_ROLE,
   PROP_AFFILIATION,
 };
-
-typedef struct _WockyMucPrivate WockyMucPrivate;
 
 struct _WockyMucPrivate
 {
@@ -159,9 +157,6 @@ struct _WockyMucPrivate
   GSimpleAsyncResult *join_cb;
 };
 
-#define WOCKY_MUC_GET_PRIVATE(o) \
-  (G_TYPE_INSTANCE_GET_PRIVATE((o),WOCKY_TYPE_MUC,WockyMucPrivate))
-
 static void
 free_member (gpointer data)
 {
@@ -187,9 +182,10 @@ alloc_member (void)
 static void
 wocky_muc_init (WockyMuc *muc)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  muc->priv = G_TYPE_INSTANCE_GET_PRIVATE (muc, WOCKY_TYPE_MUC,
+      WockyMucPrivate);
 
-  priv->members = g_hash_table_new_full (g_str_hash,
+  muc->priv->members = g_hash_table_new_full (g_str_hash,
       g_str_equal,
       g_free,
       free_member);
@@ -199,7 +195,7 @@ static void
 wocky_muc_dispose (GObject *object)
 {
   WockyMuc *muc = WOCKY_MUC (object);
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
 
   if (priv->dispose_has_run)
     return;
@@ -232,7 +228,7 @@ static void
 wocky_muc_finalize (GObject *object)
 {
   WockyMuc *muc = WOCKY_MUC (object);
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
 
   GFREE_AND_FORGET (priv->user);
   GFREE_AND_FORGET (priv->jid);
@@ -363,45 +359,45 @@ wocky_muc_class_init (WockyMucClass *klass)
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__POINTER_POINTER,
       G_TYPE_NONE, 2,
-      WOCKY_TYPE_XMPP_STANZA, G_TYPE_HASH_TABLE);
+      WOCKY_TYPE_STANZA, G_TYPE_HASH_TABLE);
 
   signals[SIG_PRESENCE] = g_signal_new ("presence", ctype,
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__OBJECT_BOXED_POINTER,
       G_TYPE_NONE, 3,
-      WOCKY_TYPE_XMPP_STANZA, G_TYPE_HASH_TABLE, G_TYPE_POINTER);
+      WOCKY_TYPE_STANZA, G_TYPE_HASH_TABLE, G_TYPE_POINTER);
 
   signals[SIG_OWN_PRESENCE] = g_signal_new ("own-presence", ctype,
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__OBJECT_BOXED,
       G_TYPE_NONE, 2,
-      WOCKY_TYPE_XMPP_STANZA, G_TYPE_HASH_TABLE);
+      WOCKY_TYPE_STANZA, G_TYPE_HASH_TABLE);
 
   signals[SIG_JOINED] = g_signal_new ("joined", ctype,
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__POINTER_POINTER,
       G_TYPE_NONE, 2,
-      WOCKY_TYPE_XMPP_STANZA, G_TYPE_HASH_TABLE);
+      WOCKY_TYPE_STANZA, G_TYPE_HASH_TABLE);
 
   signals[SIG_PRESENCE_ERROR] = g_signal_new ("error", ctype,
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__OBJECT_ENUM_STRING,
       G_TYPE_NONE, 3,
-      WOCKY_TYPE_XMPP_STANZA, WOCKY_TYPE_XMPP_ERROR, G_TYPE_STRING);
+      WOCKY_TYPE_STANZA, WOCKY_TYPE_XMPP_ERROR, G_TYPE_STRING);
 
   /* These signals convey actor(jid) + reason */
   signals[SIG_PERM_CHANGE] = g_signal_new ("permissions", ctype,
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__POINTER_POINTER_POINTER_POINTER,
       G_TYPE_NONE, 4,
-      WOCKY_TYPE_XMPP_STANZA, G_TYPE_HASH_TABLE, G_TYPE_STRING, G_TYPE_STRING);
+      WOCKY_TYPE_STANZA, G_TYPE_HASH_TABLE, G_TYPE_STRING, G_TYPE_STRING);
 
   /* and these two pass on any message as well: */
   signals[SIG_PARTED] = g_signal_new ("parted", ctype,
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__OBJECT_BOXED_STRING_STRING_STRING,
       G_TYPE_NONE, 5,
-      WOCKY_TYPE_XMPP_STANZA,
+      WOCKY_TYPE_STANZA,
       G_TYPE_HASH_TABLE,
       G_TYPE_STRING,  /* actor jid */
       G_TYPE_STRING,  /* reason    */
@@ -411,7 +407,7 @@ wocky_muc_class_init (WockyMucClass *klass)
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__OBJECT_BOXED_POINTER_STRING_STRING_STRING,
       G_TYPE_NONE, 6,
-      WOCKY_TYPE_XMPP_STANZA,
+      WOCKY_TYPE_STANZA,
       G_TYPE_HASH_TABLE,
       G_TYPE_POINTER,  /* member struct   */
       G_TYPE_STRING,   /* actor jid       */
@@ -422,7 +418,7 @@ wocky_muc_class_init (WockyMucClass *klass)
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__OBJECT_ENUM_STRING_LONG_POINTER_STRING_STRING_ENUM,
       G_TYPE_NONE, 8,
-      WOCKY_TYPE_XMPP_STANZA,
+      WOCKY_TYPE_STANZA,
       WOCKY_TYPE_MUC_MSG_TYPE,    /* WockyMucMsgType  */
       G_TYPE_STRING,  /* XMPP msg ID      */
       G_TYPE_LONG,    /* time_t           */
@@ -435,7 +431,7 @@ wocky_muc_class_init (WockyMucClass *klass)
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       _wocky_signals_marshal_VOID__OBJECT_ENUM_STRING_LONG_POINTER_STRING_ENUM_ENUM,
       G_TYPE_NONE, 8,
-      WOCKY_TYPE_XMPP_STANZA,
+      WOCKY_TYPE_STANZA,
       WOCKY_TYPE_MUC_MSG_TYPE,    /* WockyMucMsgType  */
       G_TYPE_STRING,  /* XMPP msg ID      */
       G_TYPE_LONG,    /* time_t           */
@@ -448,7 +444,7 @@ wocky_muc_class_init (WockyMucClass *klass)
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
         _wocky_signals_marshal_VOID__OBJECT,
         G_TYPE_NONE, 1,
-        WOCKY_TYPE_XMPP_STANZA);
+        WOCKY_TYPE_STANZA);
 }
 
 static void
@@ -458,7 +454,7 @@ wocky_muc_set_property (GObject *object,
     GParamSpec *pspec)
 {
   WockyMuc *muc = WOCKY_MUC (object);
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
 
   switch (property_id)
     {
@@ -514,7 +510,7 @@ wocky_muc_get_property (GObject *object,
     GParamSpec *pspec)
 {
   WockyMuc *muc = WOCKY_MUC (object);
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
 
   switch (property_id)
     {
@@ -605,7 +601,7 @@ status_code_to_muc_flag (guint code)
 /* ************************************************************************ */
 /* check MUC exists/disco MUC info */
 static gboolean
-store_muc_disco_info_x (WockyXmppNode *field, gpointer data)
+store_muc_disco_info_x (WockyNode *field, gpointer data)
 {
   WockyMucPrivate *priv = data;
   const gchar *var = NULL;
@@ -613,26 +609,26 @@ store_muc_disco_info_x (WockyXmppNode *field, gpointer data)
   if (wocky_strdiff (field->name, "field"))
     return TRUE;
 
-  var = wocky_xmpp_node_get_attribute (field, "var");
+  var = wocky_node_get_attribute (field, "var");
 
   if (wocky_strdiff (var, "muc#roominfo_description"))
     return TRUE;
 
   priv->desc = g_strdup (
-      wocky_xmpp_node_get_content_from_child (field, "value"));
+      wocky_node_get_content_from_child (field, "value"));
 
   return TRUE;
 }
 
 static gboolean
-store_muc_disco_info (WockyXmppNode *feat, gpointer data)
+store_muc_disco_info (WockyNode *feat, gpointer data)
 {
   WockyMucPrivate *priv = data;
 
   if (!wocky_strdiff (feat->name, "feature"))
     {
       guint i;
-      const gchar *thing = wocky_xmpp_node_get_attribute (feat, "var");
+      const gchar *thing = wocky_node_get_attribute (feat, "var");
 
       if (thing == NULL)
         return TRUE;
@@ -647,7 +643,7 @@ store_muc_disco_info (WockyXmppNode *feat, gpointer data)
     }
 
   if (!wocky_strdiff (feat->name, "x"))
-    wocky_xmpp_node_each_child (feat, store_muc_disco_info_x, priv);
+    wocky_node_each_child (feat, store_muc_disco_info_x, priv);
 
   return TRUE;
 }
@@ -660,13 +656,13 @@ muc_disco_info (GObject *source,
   WockyMuc *muc;
   WockyMucPrivate *priv;
   GError *error = NULL;
-  WockyXmppStanza *iq;
+  WockyStanza *iq;
   WockyStanzaType type;
   WockyStanzaSubType sub;
   GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (data);
 
   muc = WOCKY_MUC (g_async_result_get_source_object (G_ASYNC_RESULT (result)));
-  priv = WOCKY_MUC_GET_PRIVATE (muc);
+  priv = muc->priv;
 
   iq = wocky_porter_send_iq_finish (priv->porter, res, &error);
 
@@ -684,7 +680,7 @@ muc_disco_info (GObject *source,
   if (iq == NULL)
     goto out;
 
-  wocky_xmpp_stanza_get_type_info (iq, &type, &sub);
+  wocky_stanza_get_type_info (iq, &type, &sub);
 
   if (type != WOCKY_STANZA_TYPE_IQ)
     {
@@ -695,11 +691,12 @@ muc_disco_info (GObject *source,
 
   switch (sub)
     {
-      WockyXmppNode *query;
-      WockyXmppNode *node;
+      WockyNode *query;
+      WockyNode *node;
 
       case WOCKY_STANZA_SUB_TYPE_RESULT:
-        query = wocky_xmpp_node_get_child_ns (iq->node, "query", NS_DISCO_INFO);
+        query = wocky_node_get_child_ns (
+          wocky_stanza_get_top_node (iq), "query", NS_DISCO_INFO);
 
         if (!query)
           {
@@ -709,7 +706,7 @@ muc_disco_info (GObject *source,
             goto out;
           }
 
-        node = wocky_xmpp_node_get_child (query, "identity");
+        node = wocky_node_get_child (query, "identity");
 
         if (!node)
           {
@@ -722,26 +719,26 @@ muc_disco_info (GObject *source,
           {
             const gchar *attr;
 
-            attr = wocky_xmpp_node_get_attribute (node, "category");
+            attr = wocky_node_get_attribute (node, "category");
             g_free (priv->id_category);
             priv->id_category = g_strdup (attr);
 
-            attr = wocky_xmpp_node_get_attribute (node, "name");
+            attr = wocky_node_get_attribute (node, "name");
             g_free (priv->id_name);
             priv->id_name = g_strdup (attr);
 
-            attr = wocky_xmpp_node_get_attribute (node, "type");
+            attr = wocky_node_get_attribute (node, "type");
             g_free (priv->id_type);
             priv->id_type = g_strdup (attr);
           }
 
-        wocky_xmpp_node_each_child (query, store_muc_disco_info, priv);
+        wocky_node_each_child (query, store_muc_disco_info, priv);
         if (priv->state < WOCKY_MUC_INITIATED)
           priv->state = WOCKY_MUC_INITIATED;
         break;
 
       case WOCKY_STANZA_SUB_TYPE_ERROR:
-        wocky_xmpp_stanza_extract_errors (iq, NULL, &error, NULL, NULL);
+        wocky_stanza_extract_errors (iq, NULL, &error, NULL, NULL);
         break;
 
       default:
@@ -782,16 +779,16 @@ wocky_muc_disco_info_async (WockyMuc *muc,
     GCancellable *cancel,
     gpointer data)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
   GSimpleAsyncResult *result;
-  WockyXmppStanza *iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+  WockyStanza *iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
       WOCKY_STANZA_SUB_TYPE_GET,
       priv->user,
       priv->jid,
-      WOCKY_NODE, "query",
-      WOCKY_NODE_XMLNS, NS_DISCO_INFO,
-      WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+      '(', "query",
+      ':', NS_DISCO_INFO,
+      ')',
+      NULL);
 
   result = g_simple_async_result_new (G_OBJECT (muc), callback, data,
     wocky_muc_disco_info_finish);
@@ -804,21 +801,22 @@ wocky_muc_disco_info_async (WockyMuc *muc,
 
 /* ************************************************************************ */
 /* send presence to MUC */
-WockyXmppStanza *
+WockyStanza *
 wocky_muc_create_presence (WockyMuc *muc,
     WockyStanzaSubType type,
     const gchar *status,
     const gchar *password)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
-  WockyXmppStanza *stanza =
-    wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_PRESENCE,
+  WockyMucPrivate *priv = muc->priv;
+  WockyStanza *stanza =
+    wocky_stanza_build (WOCKY_STANZA_TYPE_PRESENCE,
         type,
         priv->user,
         priv->jid,
-        WOCKY_STANZA_END);
-  WockyXmppNode *presence = stanza->node;
-  WockyXmppNode *x = wocky_xmpp_node_add_child_ns (presence, "x", WOCKY_NS_MUC);
+        NULL);
+  WockyNode *presence = wocky_stanza_get_top_node (stanza);
+  WockyNode *x = wocky_node_add_child_ns (presence,
+      "x", WOCKY_NS_MUC);
 
 
   /* There should be separate API to leave a room, but atm there isn't... so
@@ -828,7 +826,7 @@ wocky_muc_create_presence (WockyMuc *muc,
 
   if (status != NULL)
     {
-      wocky_xmpp_node_add_child_with_content (presence, "status", status);
+      wocky_node_add_child_with_content (presence, "status", status);
     }
   else
     {
@@ -836,7 +834,7 @@ wocky_muc_create_presence (WockyMuc *muc,
     }
 
   if (password != NULL)
-    wocky_xmpp_node_add_child_with_content (x, "password", password);
+    wocky_node_add_child_with_content (x, "password", password);
 
   return stanza;
 }
@@ -846,8 +844,8 @@ wocky_muc_send_presence (WockyMuc *muc,
     WockyStanzaSubType type,
     const gchar *status)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
-  WockyXmppStanza *pres = wocky_muc_create_presence (muc, type, status,
+  WockyMucPrivate *priv = muc->priv;
+  WockyStanza *pres = wocky_muc_create_presence (muc, type, status,
       priv->pass);
 
   wocky_porter_send (priv->porter, pres);
@@ -858,7 +856,7 @@ wocky_muc_send_presence (WockyMuc *muc,
 static guint
 register_presence_handler (WockyMuc *muc)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
 
   if (priv->pres_handler == 0)
     priv->pres_handler = wocky_porter_register_handler (priv->porter,
@@ -867,7 +865,7 @@ register_presence_handler (WockyMuc *muc)
         priv->rjid,
         WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
         handle_presence, muc,
-        WOCKY_STANZA_END);
+        NULL);
 
   return priv->pres_handler;
 }
@@ -877,7 +875,7 @@ register_presence_handler (WockyMuc *muc)
 static guint
 register_message_handler (WockyMuc *muc)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
 
   if (priv->mesg_handler == 0)
     priv->mesg_handler = wocky_porter_register_handler (priv->porter,
@@ -886,7 +884,7 @@ register_message_handler (WockyMuc *muc)
         priv->rjid,
         WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
         handle_message, muc,
-        WOCKY_STANZA_END);
+        NULL);
 
     return priv->mesg_handler;
 }
@@ -894,7 +892,7 @@ register_message_handler (WockyMuc *muc)
 /* ************************************************************************ */
 /* handle presence from MUC */
 static gboolean
-presence_code (WockyXmppNode *node, gpointer data)
+presence_code (WockyNode *node, gpointer data)
 {
   const gchar *code = NULL;
   GHashTable *status = data;
@@ -903,7 +901,7 @@ presence_code (WockyXmppNode *node, gpointer data)
   if (wocky_strdiff (node->name, "status"))
     return TRUE;
 
-  code = wocky_xmpp_node_get_attribute (node, "code");
+  code = wocky_node_get_attribute (node, "code");
 
   if (code == NULL)    return TRUE;
 
@@ -934,7 +932,7 @@ presence_code (WockyXmppNode *node, gpointer data)
 }
 
 static gboolean
-presence_status (WockyXmppNode *node, gpointer data)
+presence_status (WockyNode *node, gpointer data)
 {
   GString **status = data;
 
@@ -995,7 +993,7 @@ presence_features (gpointer key,
 
 static gboolean
 handle_self_presence (WockyMuc *muc,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     const gchar *nick,
     WockyMucRole role,
     WockyMucAffiliation aff,
@@ -1006,7 +1004,7 @@ handle_self_presence (WockyMuc *muc,
 {
   gboolean nick_update = FALSE;
   gboolean permission_update = FALSE;
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
 
   DEBUG ("Received our own presence");
 
@@ -1037,7 +1035,7 @@ handle_self_presence (WockyMuc *muc,
 
 static gboolean
 handle_user_presence (WockyMuc *muc,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     const gchar *from,
     const gchar *jid,
     const gchar *nick,
@@ -1048,7 +1046,7 @@ handle_user_presence (WockyMuc *muc,
     const gchar *status,
     GHashTable *code)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
   WockyMucMember *member = NULL;
 
   if (nick == NULL)
@@ -1121,17 +1119,18 @@ string_to_aff (const gchar *aff)
 
 static gboolean
 handle_presence_standard (WockyMuc *muc,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     WockyStanzaSubType type)
 {
   gchar *room = NULL;
   gchar *serv = NULL;
   gchar *nick = NULL;
   gboolean ok = FALSE;
-  WockyXmppNode *node = stanza->node;
-  WockyXmppNode *x = wocky_xmpp_node_get_child_ns (node, "x", WOCKY_NS_MUC_USR);
-  WockyXmppNode *item = NULL;
-  const gchar *from = wocky_xmpp_node_get_attribute (node, "from");
+  WockyNode *node = wocky_stanza_get_top_node (stanza);
+  WockyNode *x = wocky_node_get_child_ns (node,
+      "x", WOCKY_NS_MUC_USR);
+  WockyNode *item = NULL;
+  const gchar *from = wocky_node_get_attribute (node, "from");
   const gchar *pjid = NULL;
   const gchar *pnic = NULL;
   const gchar *role = NULL;
@@ -1139,7 +1138,7 @@ handle_presence_standard (WockyMuc *muc,
   GHashTable *code = NULL;
   const gchar *ajid = NULL;
   const gchar *why = NULL;
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
   WockyMucRole r = WOCKY_MUC_ROLE_NONE;
   WockyMucAffiliation a = WOCKY_MUC_AFFILIATION_NONE;
   gboolean self_presence = FALSE;
@@ -1160,31 +1159,31 @@ handle_presence_standard (WockyMuc *muc,
       return FALSE;
     }
 
-  wocky_xmpp_node_each_child (node, presence_status, &status_msg);
+  wocky_node_each_child (node, presence_status, &status_msg);
   if (status_msg != NULL)
     msg = g_string_free (status_msg, FALSE);
 
   if (x != NULL)
     {
-      item = wocky_xmpp_node_get_child (x, "item");
+      item = wocky_node_get_child (x, "item");
 
       if (item != NULL)
         {
-          WockyXmppNode *actor = NULL;
-          WockyXmppNode *cause = NULL;
+          WockyNode *actor = NULL;
+          WockyNode *cause = NULL;
 
-          pjid = wocky_xmpp_node_get_attribute (item, "jid");
-          pnic = wocky_xmpp_node_get_attribute (item, "nick");
-          role = wocky_xmpp_node_get_attribute (item, "role");
-          aff = wocky_xmpp_node_get_attribute (item, "affiliation");
-          actor = wocky_xmpp_node_get_child (item, "actor");
-          cause = wocky_xmpp_node_get_child (item, "reason");
+          pjid = wocky_node_get_attribute (item, "jid");
+          pnic = wocky_node_get_attribute (item, "nick");
+          role = wocky_node_get_attribute (item, "role");
+          aff = wocky_node_get_attribute (item, "affiliation");
+          actor = wocky_node_get_child (item, "actor");
+          cause = wocky_node_get_child (item, "reason");
 
           r = string_to_role (role);
           a = string_to_aff (aff);
 
           if (actor != NULL)
-            ajid = wocky_xmpp_node_get_attribute (actor, "jid");
+            ajid = wocky_node_get_attribute (actor, "jid");
 
           if (cause != NULL)
             why = cause->content;
@@ -1195,7 +1194,7 @@ handle_presence_standard (WockyMuc *muc,
         pnic = nick;
 
       code = g_hash_table_new (g_direct_hash, NULL);
-      wocky_xmpp_node_each_child (x, presence_code, code);
+      wocky_node_each_child (x, presence_code, code);
       /* belt and braces: it is possible OWN_PRESENCE is not set, as it is   *
        * only a SHOULD in the RFC: check the 'from' stanza attribute and the *
        * jid item node attribute against the MUC jid and the users full jid  *
@@ -1288,15 +1287,16 @@ handle_presence_standard (WockyMuc *muc,
 
 static gboolean
 handle_presence_error (WockyMuc *muc,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     WockyStanzaSubType type)
 {
   gboolean ok = FALSE;
   gchar *room = NULL;
   gchar *serv = NULL;
   gchar *nick = NULL;
-  const gchar *from = wocky_xmpp_node_get_attribute (stanza->node, "from");
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  const gchar *from = wocky_node_get_attribute (
+      wocky_stanza_get_top_node (stanza), "from");
+  WockyMucPrivate *priv = muc->priv;
   GError *error = NULL;
 
   if (!wocky_decode_jid (from, &room, &serv, &nick))
@@ -1311,7 +1311,7 @@ handle_presence_error (WockyMuc *muc,
       goto out;
     }
 
-  wocky_xmpp_stanza_extract_errors (stanza, NULL, &error, NULL, NULL);
+  wocky_stanza_extract_errors (stanza, NULL, &error, NULL, NULL);
 
   if (priv->state >= WOCKY_MUC_JOINED)
     {
@@ -1334,7 +1334,7 @@ handle_presence_error (WockyMuc *muc,
 
 static gboolean
 handle_presence (WockyPorter *porter,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     gpointer data)
 {
   WockyMuc *muc = WOCKY_MUC (data);
@@ -1342,11 +1342,12 @@ handle_presence (WockyPorter *porter,
   WockyStanzaSubType subtype;
   gboolean handled = FALSE;
 
-  wocky_xmpp_stanza_get_type_info (stanza, &type, &subtype);
+  wocky_stanza_get_type_info (stanza, &type, &subtype);
 
   if (type != WOCKY_STANZA_TYPE_PRESENCE)
     {
-      g_warning ("presence handler received '%s' stanza", stanza->node->name);
+      g_warning ("presence handler received '%s' stanza",
+          wocky_stanza_get_top_node (stanza)->name);
       return FALSE;
     }
 
@@ -1371,15 +1372,15 @@ handle_presence (WockyPorter *porter,
 /* handle message from MUC */
 static gboolean
 handle_message (WockyPorter *porter,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     gpointer data)
 {
   WockyMuc *muc = WOCKY_MUC (data);
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
   WockyStanzaSubType stype;
-  WockyXmppNode *msg = stanza->node;
+  WockyNode *msg = wocky_stanza_get_top_node (stanza);
   const gchar *from = NULL;
-  WockyXmppNode *child = NULL;
+  WockyNode *child = NULL;
   gboolean from_self = FALSE;
   int x;
 
@@ -1391,20 +1392,20 @@ handle_message (WockyPorter *porter,
   WockyMucMsgType mtype = WOCKY_MUC_MSG_NOTICE;
   WockyMucMsgState mstate = WOCKY_MUC_MSG_STATE_NONE;
 
-  wocky_xmpp_stanza_get_type_info (stanza, NULL, &stype);
+  wocky_stanza_get_type_info (stanza, NULL, &stype);
 
   /* ***************************************************************** *
    * HACK: we interrupt this function for a HACK:                      *
    * google servers send offline messags w/o a type; kludge it:        */
   if (stype == WOCKY_STANZA_SUB_TYPE_NONE &&
-      wocky_xmpp_node_get_child_ns (msg, "time", "google:timestamp") != NULL &&
-      wocky_xmpp_node_get_child_ns (msg, "x", WOCKY_XMPP_NS_DELAY) != NULL)
+      wocky_node_get_child_ns (msg, "time", "google:timestamp") != NULL &&
+      wocky_node_get_child_ns (msg, "x", WOCKY_XMPP_NS_DELAY) != NULL)
     stype = WOCKY_STANZA_SUB_TYPE_GROUPCHAT;
 
   /* ***************************************************************** *
    * we now return you to your regular logic                           */
-  id = wocky_xmpp_node_get_attribute (msg, "id");
-  from = wocky_xmpp_node_get_attribute (msg, "from");
+  id = wocky_node_get_attribute (msg, "id");
+  from = wocky_node_get_attribute (msg, "from");
 
   /* if the message purports to be from a MUC member, treat as such: */
   if (strchr (from, '/') != NULL)
@@ -1448,16 +1449,16 @@ handle_message (WockyPorter *porter,
         }
     }
 
-  body = wocky_xmpp_node_get_content_from_child (msg, "body");
-  subj = wocky_xmpp_node_get_content_from_child (msg, "subject");
+  body = wocky_node_get_content_from_child (msg, "body");
+  subj = wocky_node_get_content_from_child (msg, "subject");
 
   /* ********************************************************************** */
   /* parse timestap, if any */
-  child = wocky_xmpp_node_get_child_ns (msg, "x", WOCKY_XMPP_NS_DELAY);
+  child = wocky_node_get_child_ns (msg, "x", WOCKY_XMPP_NS_DELAY);
 
   if (child != NULL)
     {
-      const gchar *tm = wocky_xmpp_node_get_attribute (child, "stamp");
+      const gchar *tm = wocky_node_get_attribute (child, "stamp");
 
       /* These timestamps do not contain a timezone, but are understood to be
        * in GMT. They're in the format yyyymmddThhmmss, so if we append 'Z'
@@ -1503,7 +1504,7 @@ handle_message (WockyPorter *porter,
       WockyXmppErrorType etype;
       GError *error = NULL;
 
-      wocky_xmpp_stanza_extract_errors (stanza, &etype, &error, NULL, NULL);
+      wocky_stanza_extract_errors (stanza, &etype, &error, NULL, NULL);
       g_signal_emit (muc, signals[SIG_MSG_ERR], 0,
           stanza, mtype, id, stamp, who, body, error->code, etype);
       g_clear_error (&error);
@@ -1513,7 +1514,7 @@ handle_message (WockyPorter *porter,
   for (x = 0; msg_state[x].name != NULL; x++)
     {
       const gchar *item = msg_state[x].name;
-      child = wocky_xmpp_node_get_child_ns (msg, item, WOCKY_NS_CHATSTATE);
+      child = wocky_node_get_child_ns (msg, item, WOCKY_NS_CHATSTATE);
       if (child != NULL)
         break;
     }
@@ -1534,7 +1535,7 @@ void
 wocky_muc_join (WockyMuc *muc,
     GCancellable *cancel)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
 
   if (priv->state < WOCKY_MUC_INITIATED)
     {
@@ -1552,35 +1553,35 @@ wocky_muc_join (WockyMuc *muc,
 const gchar *
 wocky_muc_jid (WockyMuc *muc)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
   return priv->jid;
 }
 
 WockyMucRole
 wocky_muc_role (WockyMuc *muc)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
   return priv->role;
 }
 
 WockyMucAffiliation
 wocky_muc_affiliation (WockyMuc *muc)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
   return priv->affiliation;
 }
 
 const gchar *
 wocky_muc_user (WockyMuc *muc)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
   return priv->user;
 }
 
 GHashTable *
 wocky_muc_members (WockyMuc *muc)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
 
   if (priv->members != NULL)
     return g_hash_table_ref (priv->members);
@@ -1591,7 +1592,7 @@ wocky_muc_members (WockyMuc *muc)
 WockyMucState
 wocky_muc_get_state (WockyMuc *muc)
 {
-  WockyMucPrivate *priv = WOCKY_MUC_GET_PRIVATE (muc);
+  WockyMucPrivate *priv = muc->priv;
 
   return priv->state;
 }

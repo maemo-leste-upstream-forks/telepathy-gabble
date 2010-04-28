@@ -51,8 +51,8 @@ test_make_publish_stanza (void)
   WockyTestStream *stream;
   WockySession *session;
   WockyPubsubNode *node;
-  WockyXmppStanza *stanza, *expected;
-  WockyXmppNode *pubsub_node, *publish, *item;
+  WockyStanza *stanza, *expected;
+  WockyNode *pubsub_node, *publish, *item;
 
   stream = g_object_new (WOCKY_TYPE_TEST_STREAM, NULL);
   connection = wocky_xmpp_connection_new (stream->stream0);
@@ -69,33 +69,33 @@ test_make_publish_stanza (void)
 
   /* I've embraced and extended pubsub, and want to put stuff on the <pubsub>
    * and <publish> nodes... */
-  wocky_xmpp_node_set_attribute (pubsub_node, "gig", "tomorrow");
-  wocky_xmpp_node_set_attribute (publish, "kaki", "king");
+  wocky_node_set_attribute (pubsub_node, "gig", "tomorrow");
+  wocky_node_set_attribute (publish, "kaki", "king");
 
   /* Oh, and I should probably publish something. */
-  wocky_xmpp_node_add_child_with_content_ns (item, "castle", "bone chaos",
+  wocky_node_add_child_with_content_ns (item, "castle", "bone chaos",
       "urn:example:songs");
 
-  expected = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+  expected = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
       WOCKY_STANZA_SUB_TYPE_SET,
       NULL, "pubsub.localhost",
-        WOCKY_NODE, "pubsub",
-          WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB,
-          WOCKY_NODE_ATTRIBUTE, "gig", "tomorrow",
-          WOCKY_NODE, "publish",
-            WOCKY_NODE_ATTRIBUTE, "kaki", "king",
-            WOCKY_NODE_ATTRIBUTE, "node", "track1",
-            WOCKY_NODE, "item",
-              WOCKY_NODE, "castle",
-                WOCKY_NODE_XMLNS, "urn:example:songs",
-                WOCKY_NODE_TEXT, "bone chaos",
-              WOCKY_NODE_END,
-            WOCKY_NODE_END,
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+        '(', "pubsub",
+          ':', WOCKY_XMPP_NS_PUBSUB,
+          '@', "gig", "tomorrow",
+          '(', "publish",
+            '@', "kaki", "king",
+            '@', "node", "track1",
+            '(', "item",
+              '(', "castle",
+                ':', "urn:example:songs",
+                '$', "bone chaos",
+              ')',
+            ')',
+          ')',
+        ')',
+      NULL);
 
-  test_assert_nodes_equal (stanza->node, expected->node);
+  test_assert_stanzas_equal (stanza, expected);
 
   g_object_unref (expected);
   g_object_unref (stanza);
@@ -109,22 +109,22 @@ test_make_publish_stanza (void)
 /* Test subscribing to a node. */
 static gboolean
 test_subscribe_iq_cb (WockyPorter *porter,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     gpointer user_data)
 {
   test_data_t *test = (test_data_t *) user_data;
-  WockyXmppStanza *reply;
+  WockyStanza *reply;
 
-  reply = wocky_xmpp_stanza_build_iq_result (stanza,
-        WOCKY_NODE, "pubsub",
-          WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB,
-          WOCKY_NODE, "subscription",
-            WOCKY_NODE_ATTRIBUTE, "node", "node1",
-            WOCKY_NODE_ATTRIBUTE, "jid", "mighty@pirate.lit",
-            WOCKY_NODE_ATTRIBUTE, "subscription", "subscribed",
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+  reply = wocky_stanza_build_iq_result (stanza,
+        '(', "pubsub",
+          ':', WOCKY_XMPP_NS_PUBSUB,
+          '(', "subscription",
+            '@', "node", "node1",
+            '@', "jid", "mighty@pirate.lit",
+            '@', "subscription", "subscribed",
+          ')',
+        ')',
+      NULL);
   wocky_porter_send (porter, reply);
   g_object_unref (reply);
 
@@ -174,13 +174,13 @@ test_subscribe (void)
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       test_subscribe_iq_cb, test,
-      WOCKY_NODE, "pubsub",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB,
-        WOCKY_NODE, "subscribe",
-          WOCKY_NODE_ATTRIBUTE, "node", "node1",
-          WOCKY_NODE_ATTRIBUTE, "jid", "mighty@pirate.lit",
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB,
+        '(', "subscribe",
+          '@', "node", "node1",
+          '@', "jid", "mighty@pirate.lit",
+        ')',
+      ')', NULL);
 
   node = wocky_pubsub_service_ensure_node (pubsub, "node1");
   g_assert (node != NULL);
@@ -208,29 +208,29 @@ typedef struct {
 
 static gboolean
 test_unsubscribe_iq_cb (WockyPorter *porter,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     gpointer user_data)
 {
   TestUnsubscribeCtx *ctx = user_data;
   test_data_t *test = ctx->test;
-  WockyXmppNode *unsubscribe;
+  WockyNode *unsubscribe;
   const gchar *subid;
-  WockyXmppStanza *reply;
+  WockyStanza *reply;
 
-  unsubscribe = wocky_xmpp_node_get_child (
-      wocky_xmpp_node_get_child_ns (stanza->node,
+  unsubscribe = wocky_node_get_child (
+      wocky_node_get_child_ns (wocky_stanza_get_top_node (stanza),
           "pubsub", WOCKY_XMPP_NS_PUBSUB),
       "unsubscribe");
   g_assert (unsubscribe != NULL);
 
-  subid = wocky_xmpp_node_get_attribute (unsubscribe, "subid");
+  subid = wocky_node_get_attribute (unsubscribe, "subid");
 
   if (ctx->expect_subid)
     g_assert_cmpstr (EXPECTED_SUBID, ==, subid);
   else
     g_assert_cmpstr (NULL, ==, subid);
 
-  reply = wocky_xmpp_stanza_build_iq_result (stanza, WOCKY_STANZA_END);
+  reply = wocky_stanza_build_iq_result (stanza, NULL);
   wocky_porter_send (porter, reply);
   g_object_unref (reply);
 
@@ -275,13 +275,13 @@ test_unsubscribe (void)
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       test_unsubscribe_iq_cb, &ctx,
-      WOCKY_NODE, "pubsub",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB,
-        WOCKY_NODE, "unsubscribe",
-          WOCKY_NODE_ATTRIBUTE, "node", "node1",
-          WOCKY_NODE_ATTRIBUTE, "jid", "mighty@pirate.lit",
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB,
+        '(', "unsubscribe",
+          '@', "node", "node1",
+          '@', "jid", "mighty@pirate.lit",
+        ')',
+      ')', NULL);
 
   node = wocky_pubsub_service_ensure_node (pubsub, "node1");
   g_assert (node != NULL);
@@ -310,13 +310,13 @@ test_unsubscribe (void)
 /* test wocky_pubsub_node_delete_async */
 static gboolean
 test_delete_iq_cb (WockyPorter *porter,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     gpointer user_data)
 {
   test_data_t *test = (test_data_t *) user_data;
-  WockyXmppStanza *reply;
+  WockyStanza *reply;
 
-  reply = wocky_xmpp_stanza_build_iq_result (stanza, WOCKY_STANZA_END);
+  reply = wocky_stanza_build_iq_result (stanza, NULL);
   wocky_porter_send (porter, reply);
   g_object_unref (reply);
 
@@ -357,12 +357,12 @@ test_delete (void)
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       test_delete_iq_cb, test,
-      WOCKY_NODE, "pubsub",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_OWNER,
-        WOCKY_NODE, "delete",
-          WOCKY_NODE_ATTRIBUTE, "node", "node1",
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
+        '(', "delete",
+          '@', "node", "node1",
+        ')',
+      ')', NULL);
 
   node = wocky_pubsub_service_ensure_node (pubsub, "node1");
   g_assert (node != NULL);
@@ -406,34 +406,34 @@ static CannedSubscriptions example_183[] = {
 
 static gboolean
 test_list_subscribers_iq_cb (WockyPorter *porter,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     gpointer user_data)
 {
   test_data_t *test = (test_data_t *) user_data;
-  WockyXmppStanza *expected, *reply;
-  WockyXmppNode *subscriptions;
+  WockyStanza *expected, *reply;
+  WockyNode *subscriptions;
 
-  expected = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+  expected = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
       WOCKY_STANZA_SUB_TYPE_GET, NULL, "pubsub.localhost",
-      WOCKY_NODE, "pubsub",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_OWNER,
-        WOCKY_NODE, "subscriptions",
-          WOCKY_NODE_ATTRIBUTE, "node", "princely_musings",
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
+        '(', "subscriptions",
+          '@', "node", "princely_musings",
+        ')',
+      ')', NULL);
 
-  test_assert_stanzas_equal (stanza, expected);
+  test_assert_stanzas_equal_no_id (stanza, expected);
 
   g_object_unref (expected);
 
-  reply = wocky_xmpp_stanza_build_iq_result (stanza,
-      WOCKY_NODE, "pubsub",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_OWNER,
-        WOCKY_NODE, "subscriptions",
-          WOCKY_NODE_ATTRIBUTE, "node", "princely_musings",
-          WOCKY_NODE_ASSIGN_TO, &subscriptions,
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+  reply = wocky_stanza_build_iq_result (stanza,
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
+        '(', "subscriptions",
+          '@', "node", "princely_musings",
+          '*', &subscriptions,
+        ')',
+      ')', NULL);
   test_pubsub_add_subscription_nodes (subscriptions, example_183, FALSE);
   wocky_porter_send (porter, reply);
   g_object_unref (reply);
@@ -478,12 +478,12 @@ test_list_subscribers (void)
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET, NULL,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       test_list_subscribers_iq_cb, test,
-      WOCKY_NODE, "pubsub",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_OWNER,
-        WOCKY_NODE, "subscriptions",
-          WOCKY_NODE_ATTRIBUTE, "node", "princely_musings",
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
+        '(', "subscriptions",
+          '@', "node", "princely_musings",
+        ')',
+      ')', NULL);
 
   node = wocky_pubsub_service_ensure_node (pubsub, "princely_musings");
   g_assert (node != NULL);
@@ -509,40 +509,40 @@ test_list_subscribers (void)
 
 static gboolean
 test_list_affiliates_iq_cb (WockyPorter *porter,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     gpointer user_data)
 {
   test_data_t *test = (test_data_t *) user_data;
-  WockyXmppStanza *expected, *reply;
+  WockyStanza *expected, *reply;
 
-  expected = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+  expected = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
       WOCKY_STANZA_SUB_TYPE_GET, NULL, "pubsub.localhost",
-      WOCKY_NODE, "pubsub",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_OWNER,
-        WOCKY_NODE, "affiliations",
-          WOCKY_NODE_ATTRIBUTE, "node", "princely_musings",
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
+        '(', "affiliations",
+          '@', "node", "princely_musings",
+        ')',
+      ')', NULL);
 
-  test_assert_stanzas_equal (stanza, expected);
+  test_assert_stanzas_equal_no_id (stanza, expected);
 
   g_object_unref (expected);
 
-  reply = wocky_xmpp_stanza_build_iq_result (stanza,
-      WOCKY_NODE, "pubsub",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_OWNER,
-        WOCKY_NODE, "affiliations",
-          WOCKY_NODE_ATTRIBUTE, "node", "princely_musings",
-          WOCKY_NODE, "affiliation",
-            WOCKY_NODE_ATTRIBUTE, "jid", "hamlet@denmark.lit",
-            WOCKY_NODE_ATTRIBUTE, "affiliation", "owner",
-          WOCKY_NODE_END,
-          WOCKY_NODE, "affiliation",
-            WOCKY_NODE_ATTRIBUTE, "jid", "polonius@denmark.lit",
-            WOCKY_NODE_ATTRIBUTE, "affiliation", "outcast",
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+  reply = wocky_stanza_build_iq_result (stanza,
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
+        '(', "affiliations",
+          '@', "node", "princely_musings",
+          '(', "affiliation",
+            '@', "jid", "hamlet@denmark.lit",
+            '@', "affiliation", "owner",
+          ')',
+          '(', "affiliation",
+            '@', "jid", "polonius@denmark.lit",
+            '@', "affiliation", "outcast",
+          ')',
+        ')',
+      ')', NULL);
 
   wocky_porter_send (porter, reply);
   g_object_unref (reply);
@@ -602,18 +602,260 @@ test_list_affiliates (void)
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET, NULL,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       test_list_affiliates_iq_cb, test,
-      WOCKY_NODE, "pubsub",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_OWNER,
-        WOCKY_NODE, "affiliations",
-          WOCKY_NODE_ATTRIBUTE, "node", "princely_musings",
-        WOCKY_NODE_END,
-      WOCKY_NODE_END, WOCKY_STANZA_END);
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
+        '(', "affiliations",
+          '@', "node", "princely_musings",
+        ')',
+      ')', NULL);
 
   node = wocky_pubsub_service_ensure_node (pubsub, "princely_musings");
   g_assert (node != NULL);
 
   wocky_pubsub_node_list_affiliates_async (node, NULL,
       test_list_affiliates_cb, test);
+
+  test->outstanding += 2;
+  test_wait_pending (test);
+
+  g_object_unref (node);
+  g_object_unref (pubsub);
+
+  test_close_both_porters (test);
+  teardown_test (test);
+}
+
+/* Test modifying the entities affiliated to a node that you own. See §8.9.2
+ * Modify Affiliation. */
+
+static gboolean
+test_modify_affiliates_iq_cb (WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  test_data_t *test = (test_data_t *) user_data;
+  WockyStanza *expected, *reply;
+
+  expected = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_SET, NULL, "pubsub.localhost",
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
+        '(', "affiliations",
+          '@', "node", "princely_musings",
+          '(', "affiliation",
+            '@', "jid", "hamlet@denmark.lit",
+            '@', "affiliation", "none",
+          ')',
+          '(', "affiliation",
+            '@', "jid", "polonius@denmark.lit",
+            '@', "affiliation", "none",
+          ')',
+          '(', "affiliation",
+            '@', "jid", "bard@shakespeare.lit",
+            '@', "affiliation", "publisher",
+          ')',
+        ')',
+      ')', NULL);
+
+  test_assert_stanzas_equal_no_id (stanza, expected);
+
+  g_object_unref (expected);
+
+  reply = wocky_stanza_build_iq_result (stanza, NULL);
+  wocky_porter_send (porter, reply);
+  g_object_unref (reply);
+
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+  return TRUE;
+}
+
+static void
+test_modify_affiliates_cb (GObject *source,
+    GAsyncResult *res,
+    gpointer user_data)
+{
+  test_data_t *test = (test_data_t *) user_data;
+
+  g_assert (wocky_pubsub_node_modify_affiliates_finish (
+      WOCKY_PUBSUB_NODE (source), res, NULL));
+
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+}
+
+static void
+test_modify_affiliates (void)
+{
+  test_data_t *test = setup_test ();
+  WockyPubsubService *pubsub;
+  WockyPubsubNode *node;
+  GList *snakes = NULL;
+
+  test_open_both_connections (test);
+
+  wocky_porter_start (test->sched_out);
+  wocky_session_start (test->session_in);
+
+  pubsub = wocky_pubsub_service_new (test->session_in, "pubsub.localhost");
+
+  wocky_porter_register_handler (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+      WOCKY_PORTER_HANDLER_PRIORITY_MAX,
+      test_modify_affiliates_iq_cb, test,
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
+        '(', "affiliations",
+          '@', "node", "princely_musings",
+        ')',
+      ')', NULL);
+
+  node = wocky_pubsub_service_ensure_node (pubsub, "princely_musings");
+  g_assert (node != NULL);
+
+  snakes = g_list_append (snakes,
+      wocky_pubsub_affiliation_new (node, "hamlet@denmark.lit",
+          WOCKY_PUBSUB_AFFILIATION_NONE));
+  snakes = g_list_append (snakes,
+      wocky_pubsub_affiliation_new (node, "polonius@denmark.lit",
+          WOCKY_PUBSUB_AFFILIATION_NONE));
+  snakes = g_list_append (snakes,
+      wocky_pubsub_affiliation_new (node, "bard@shakespeare.lit",
+          WOCKY_PUBSUB_AFFILIATION_PUBLISHER));
+
+  wocky_pubsub_node_modify_affiliates_async (node, snakes,
+      NULL, test_modify_affiliates_cb, test);
+
+  wocky_pubsub_affiliation_list_free (snakes);
+  snakes = NULL;
+
+  test->outstanding += 2;
+  test_wait_pending (test);
+
+  g_object_unref (node);
+  g_object_unref (pubsub);
+
+  test_close_both_porters (test);
+  teardown_test (test);
+}
+
+/* Tests retrieving a node's current configuration.
+ *
+ * Since data forms are reasonably exhaustively tested elsewhere, this test
+ * uses a very simple configuration form.
+ */
+static gboolean
+test_get_configuration_iq_cb (WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  test_data_t *test = (test_data_t *) user_data;
+  WockyStanza *expected, *reply;
+
+  expected = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, NULL, "pubsub.localhost",
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
+        '(', "configure",
+          '@', "node", "princely_musings",
+        ')',
+      ')', NULL);
+
+  test_assert_stanzas_equal_no_id (stanza, expected);
+
+  g_object_unref (expected);
+
+  reply = wocky_stanza_build_iq_result (stanza,
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
+        '(', "configure",
+          '(', "x",
+            ':', WOCKY_XMPP_NS_DATA,
+            '@', "type", "form",
+            '(', "field",
+              '@', "type", "hidden",
+              '@', "var", "FORM_TYPE",
+              '(', "value",
+                '$', WOCKY_XMPP_NS_PUBSUB_NODE_CONFIG,
+              ')',
+            ')',
+            '(', "field",
+              '@', "var", "pubsub#title",
+              '@', "type", "text-single",
+              '(', "value", '$', "Hello thar", ')',
+            ')',
+            '(', "field",
+              '@', "var", "pubsub#deliver_notifications",
+              '@', "type", "boolean",
+              '@', "label", "Deliver event notifications",
+              '(', "value", '$', "1", ')',
+            ')',
+          ')',
+        ')',
+      ')', NULL);
+
+  wocky_porter_send (porter, reply);
+  g_object_unref (reply);
+
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+  return TRUE;
+}
+
+static void
+test_get_configuration_cb (GObject *source,
+    GAsyncResult *res,
+    gpointer user_data)
+{
+  test_data_t *test = (test_data_t *) user_data;
+  WockyDataForm *form;
+  GError *error = NULL;
+
+  form = wocky_pubsub_node_get_configuration_finish (
+      WOCKY_PUBSUB_NODE (source), res, &error);
+
+  g_assert_no_error (error);
+  g_assert (form != NULL);
+
+  /* Don't bother testing too much, it's tested elsewhere. */
+  g_assert_cmpuint (3, ==, g_hash_table_size (form->fields));
+
+  g_object_unref (form);
+
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+}
+
+static void
+test_get_configuration (void)
+{
+  test_data_t *test = setup_test ();
+  WockyPubsubService *pubsub;
+  WockyPubsubNode *node;
+
+  test_open_both_connections (test);
+
+  wocky_porter_start (test->sched_out);
+  wocky_session_start (test->session_in);
+
+  pubsub = wocky_pubsub_service_new (test->session_in, "pubsub.localhost");
+
+  wocky_porter_register_handler (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET, NULL,
+      WOCKY_PORTER_HANDLER_PRIORITY_MAX,
+      test_get_configuration_iq_cb, test,
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
+        '(', "configure",
+          '@', "node", "princely_musings",
+        ')',
+      ')', NULL);
+
+  node = wocky_pubsub_service_ensure_node (pubsub, "princely_musings");
+  g_assert (node != NULL);
+
+  wocky_pubsub_node_get_configuration_async (node, NULL,
+      test_get_configuration_cb, test);
 
   test->outstanding += 2;
   test_wait_pending (test);
@@ -635,13 +877,13 @@ WockyPubsubNode *expected_node;
 static void
 service_event_received_cb (WockyPubsubService *service,
     WockyPubsubNode *node,
-    WockyXmppStanza *event_stanza,
-    WockyXmppNode *event_node,
-    WockyXmppNode *items_node,
+    WockyStanza *event_stanza,
+    WockyNode *event_node,
+    WockyNode *items_node,
     GList *items,
     test_data_t *test)
 {
-  WockyXmppNode *item;
+  WockyNode *item;
 
   /* Check that we're not winding up with multiple nodes for the same thing. */
   if (expected_node != NULL)
@@ -653,11 +895,11 @@ service_event_received_cb (WockyPubsubService *service,
 
   item = g_list_nth_data (items, 0);
   g_assert_cmpstr ("item", ==, item->name);
-  g_assert_cmpstr ("1", ==, wocky_xmpp_node_get_attribute (item, "id"));
+  g_assert_cmpstr ("1", ==, wocky_node_get_attribute (item, "id"));
 
   item = g_list_nth_data (items, 1);
   g_assert_cmpstr ("item", ==, item->name);
-  g_assert_cmpstr ("snakes", ==, wocky_xmpp_node_get_attribute (item, "id"));
+  g_assert_cmpstr ("snakes", ==, wocky_node_get_attribute (item, "id"));
 
   test->outstanding--;
   g_main_loop_quit (test->loop);
@@ -666,13 +908,13 @@ service_event_received_cb (WockyPubsubService *service,
 
 static void
 node_event_received_cb (WockyPubsubNode *node,
-    WockyXmppStanza *event_stanza,
-    WockyXmppNode *event_node,
-    WockyXmppNode *items_node,
+    WockyStanza *event_stanza,
+    WockyNode *event_node,
+    WockyNode *items_node,
     GList *items,
     test_data_t *test)
 {
-  WockyXmppNode *item;
+  WockyNode *item;
 
   g_assert_cmpstr ("event", ==, event_node->name);
   g_assert_cmpstr ("items", ==, items_node->name);
@@ -680,11 +922,11 @@ node_event_received_cb (WockyPubsubNode *node,
 
   item = g_list_nth_data (items, 0);
   g_assert_cmpstr ("item", ==, item->name);
-  g_assert_cmpstr ("1", ==, wocky_xmpp_node_get_attribute (item, "id"));
+  g_assert_cmpstr ("1", ==, wocky_node_get_attribute (item, "id"));
 
   item = g_list_nth_data (items, 1);
   g_assert_cmpstr ("item", ==, item->name);
-  g_assert_cmpstr ("snakes", ==, wocky_xmpp_node_get_attribute (item, "id"));
+  g_assert_cmpstr ("snakes", ==, wocky_node_get_attribute (item, "id"));
 
   test->outstanding--;
   g_main_loop_quit (test->loop);
@@ -696,26 +938,26 @@ send_pubsub_event (WockyPorter *porter,
     const gchar *service,
     const gchar *node)
 {
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
 
-  stanza = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
+  stanza = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
       WOCKY_STANZA_SUB_TYPE_NONE,
       service, NULL,
-      WOCKY_NODE, "event",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_EVENT,
-        WOCKY_NODE, "items",
-        WOCKY_NODE_ATTRIBUTE, "node", node,
-          WOCKY_NODE, "item",
-            WOCKY_NODE_ATTRIBUTE, "id", "1",
-            WOCKY_NODE, "payload", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "item",
-            WOCKY_NODE_ATTRIBUTE, "id", "snakes",
-            WOCKY_NODE, "payload", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-      WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+      '(', "event",
+        ':', WOCKY_XMPP_NS_PUBSUB_EVENT,
+        '(', "items",
+        '@', "node", node,
+          '(', "item",
+            '@', "id", "1",
+            '(', "payload", ')',
+          ')',
+          '(', "item",
+            '@', "id", "snakes",
+            '(', "payload", ')',
+          ')',
+        ')',
+      ')',
+      NULL);
 
   wocky_porter_send (porter, stanza);
   g_object_unref (stanza);
@@ -798,20 +1040,20 @@ send_subscription_state_change (WockyPorter *porter,
     const gchar *node,
     const gchar *state)
 {
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
 
-  stanza = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
+  stanza = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
       WOCKY_STANZA_SUB_TYPE_NONE,
       service, NULL,
-      WOCKY_NODE, "event",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_EVENT,
-        WOCKY_NODE, "subscription",
-          WOCKY_NODE_ATTRIBUTE, "node", node,
-          WOCKY_NODE_ATTRIBUTE, "jid", "mighty@pirate.lit",
-          WOCKY_NODE_ATTRIBUTE, "subscription", state,
-        WOCKY_NODE_END,
-      WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+      '(', "event",
+        ':', WOCKY_XMPP_NS_PUBSUB_EVENT,
+        '(', "subscription",
+          '@', "node", node,
+          '@', "jid", "mighty@pirate.lit",
+          '@', "subscription", state,
+        ')',
+      ')',
+      NULL);
 
   wocky_porter_send (porter, stanza);
   g_object_unref (stanza);
@@ -821,9 +1063,9 @@ static void
 service_subscription_state_changed_cb (
     WockyPubsubService *service,
     WockyPubsubNode *node,
-    WockyXmppStanza *stanza,
-    WockyXmppNode *event_node,
-    WockyXmppNode *subscription_node,
+    WockyStanza *stanza,
+    WockyNode *event_node,
+    WockyNode *subscription_node,
     WockyPubsubSubscription *subscription,
     TestSSCCtx *ctx)
 {
@@ -833,7 +1075,7 @@ service_subscription_state_changed_cb (
       ctx->expecting_service_ssc_received_for);
 
   g_assert_cmpstr (event_node->name, ==, "event");
-  g_assert_cmpstr (wocky_xmpp_node_get_ns (event_node), ==,
+  g_assert_cmpstr (wocky_node_get_ns (event_node), ==,
       WOCKY_XMPP_NS_PUBSUB_EVENT);
 
   g_assert_cmpstr (subscription_node->name, ==, "subscription");
@@ -851,9 +1093,9 @@ service_subscription_state_changed_cb (
 static void
 node_subscription_state_changed_cb (
     WockyPubsubNode *node,
-    WockyXmppStanza *stanza,
-    WockyXmppNode *event_node,
-    WockyXmppNode *subscription_node,
+    WockyStanza *stanza,
+    WockyNode *event_node,
+    WockyNode *subscription_node,
     WockyPubsubSubscription *subscription,
     TestSSCCtx *ctx)
 {
@@ -863,7 +1105,7 @@ node_subscription_state_changed_cb (
   g_assert_cmpstr (wocky_pubsub_node_get_name (node), ==, "dairy-farmer");
 
   g_assert_cmpstr (event_node->name, ==, "event");
-  g_assert_cmpstr (wocky_xmpp_node_get_ns (event_node), ==,
+  g_assert_cmpstr (wocky_node_get_ns (event_node), ==,
       WOCKY_XMPP_NS_PUBSUB_EVENT);
 
   g_assert_cmpstr (subscription_node->name, ==, "subscription");
@@ -938,18 +1180,18 @@ send_deleted (WockyPorter *porter,
     const gchar *service,
     const gchar *node)
 {
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
 
-  stanza = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
+  stanza = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
       WOCKY_STANZA_SUB_TYPE_NONE,
       service, NULL,
-      WOCKY_NODE, "event",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_EVENT,
-        WOCKY_NODE, "delete",
-          WOCKY_NODE_ATTRIBUTE, "node", node,
-        WOCKY_NODE_END,
-      WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+      '(', "event",
+        ':', WOCKY_XMPP_NS_PUBSUB_EVENT,
+        '(', "delete",
+          '@', "node", node,
+        ')',
+      ')',
+      NULL);
 
   wocky_porter_send (porter, stanza);
   g_object_unref (stanza);
@@ -959,9 +1201,9 @@ static void
 service_node_deleted_cb (
     WockyPubsubService *service,
     WockyPubsubNode *node,
-    WockyXmppStanza *stanza,
-    WockyXmppNode *event_node,
-    WockyXmppNode *delete_node,
+    WockyStanza *stanza,
+    WockyNode *event_node,
+    WockyNode *delete_node,
     TestDeletedCtx *ctx)
 {
   g_assert (ctx->expecting_service_node_deleted_for != NULL);
@@ -970,7 +1212,7 @@ service_node_deleted_cb (
       ctx->expecting_service_node_deleted_for);
 
   g_assert_cmpstr (event_node->name, ==, "event");
-  g_assert_cmpstr (wocky_xmpp_node_get_ns (event_node), ==,
+  g_assert_cmpstr (wocky_node_get_ns (event_node), ==,
       WOCKY_XMPP_NS_PUBSUB_EVENT);
 
   g_assert_cmpstr (delete_node->name, ==, "delete");
@@ -983,9 +1225,9 @@ service_node_deleted_cb (
 static void
 node_deleted_cb (
     WockyPubsubNode *node,
-    WockyXmppStanza *stanza,
-    WockyXmppNode *event_node,
-    WockyXmppNode *delete_node,
+    WockyStanza *stanza,
+    WockyNode *event_node,
+    WockyNode *delete_node,
     TestDeletedCtx *ctx)
 {
   g_assert (ctx->expecting_node_deleted);
@@ -994,7 +1236,7 @@ node_deleted_cb (
   g_assert_cmpstr (wocky_pubsub_node_get_name (node), ==, "dairy-farmer");
 
   g_assert_cmpstr (event_node->name, ==, "event");
-  g_assert_cmpstr (wocky_xmpp_node_get_ns (event_node), ==,
+  g_assert_cmpstr (wocky_node_get_ns (event_node), ==,
       WOCKY_XMPP_NS_PUBSUB_EVENT);
 
   g_assert_cmpstr (delete_node->name, ==, "delete");
@@ -1066,6 +1308,8 @@ main (int argc, char **argv)
 
   g_test_add_func ("/pubsub-node/list-subscribers", test_list_subscribers);
   g_test_add_func ("/pubsub-node/list-affiliates", test_list_affiliates);
+  g_test_add_func ("/pubsub-node/modify-affiliates", test_modify_affiliates);
+  g_test_add_func ("/pubsub-node/get-configuration", test_get_configuration);
 
   g_test_add_func ("/pubsub-node/receive-event", test_receive_event);
   g_test_add_func ("/pubsub-node/subscription-state-changed",

@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-data-form-enumtypes.html" title="wocky-data-form-enumtypes">
-<link rel="next" href="wocky-wocky-muc.html" title="WockyMuc">
+<link rel="next" href="WockyMuc.html" title="WockyMuc">
 <meta name="generator" content="GTK-Doc V1.14 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
@@ -18,7 +18,7 @@
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">wocky Reference Manual</th>
-<td><a accesskey="n" href="wocky-wocky-muc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="WockyMuc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#wocky-wocky-debug.synopsis" class="shortcut">Top</a>
@@ -46,12 +46,19 @@
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
                                                          <em class="parameter"><code>...</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug-stanza" title="wocky_debug_stanza ()">wocky_debug_stanza</a>                  (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#DebugFlags" title="enum DebugFlags"><span class="type">DebugFlags</span></a> flag</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a> *stanza</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a> *stanza</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug-node-tree" title="wocky_debug_node_tree ()">wocky_debug_node_tree</a>               (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#DebugFlags" title="enum DebugFlags"><span class="type">DebugFlags</span></a> flag</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *tree</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
                                                          <em class="parameter"><code>...</code></em>);
 #define             <a class="link" href="wocky-wocky-debug.html#DEBUG:CAPS" title="DEBUG()">DEBUG</a>                               (format,
                                                          ...)
 #define             <a class="link" href="wocky-wocky-debug.html#DEBUG-STANZA:CAPS" title="DEBUG_STANZA()">DEBUG_STANZA</a>                        (stanza,
+                                                         format,
+                                                         ...)
+#define             <a class="link" href="wocky-wocky-debug.html#DEBUG-NODE-TREE:CAPS" title="DEBUG_NODE_TREE()">DEBUG_NODE_TREE</a>                     (tree,
                                                          format,
                                                          ...)
 #define             <a class="link" href="wocky-wocky-debug.html#DEBUGGING:CAPS" title="DEBUGGING">DEBUGGING</a>
@@ -177,7 +184,7 @@
 <div class="refsect2" title="wocky_debug_stanza ()">
 <a name="wocky-debug-stanza"></a><h3>wocky_debug_stanza ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_stanza                  (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#DebugFlags" title="enum DebugFlags"><span class="type">DebugFlags</span></a> flag</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a> *stanza</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a> *stanza</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
                                                          <em class="parameter"><code>...</code></em>);</pre>
 <p>
@@ -192,6 +199,41 @@
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_debug_node_tree ()">
+<a name="wocky-debug-node-tree"></a><h3>wocky_debug_node_tree ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_node_tree               (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#DebugFlags" title="enum DebugFlags"><span class="type">DebugFlags</span></a> flag</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *tree</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>flag</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>tree</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
@@ -241,6 +283,33 @@
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="DEBUG_NODE_TREE()">
+<a name="DEBUG-NODE-TREE:CAPS"></a><h3>DEBUG_NODE_TREE()</h3>
+<pre class="programlisting">#define             DEBUG_NODE_TREE(tree, format, ...)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>tree</code></em> :</span></p></td>
 <td>
 </td>
 </tr>

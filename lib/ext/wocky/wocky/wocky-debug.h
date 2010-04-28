@@ -6,7 +6,7 @@
 
 #include <glib.h>
 
-#include "wocky-xmpp-stanza.h"
+#include "wocky-stanza.h"
 
 G_BEGIN_DECLS
 
@@ -40,7 +40,10 @@ void wocky_debug_set_flags (DebugFlags flags);
 gboolean wocky_debug_flag_is_set (DebugFlags flag);
 void wocky_debug (DebugFlags flag, const gchar *format, ...)
     G_GNUC_PRINTF (2, 3);
-void wocky_debug_stanza (DebugFlags flag, WockyXmppStanza *stanza,
+void wocky_debug_stanza (DebugFlags flag, WockyStanza *stanza,
+    const gchar *format, ...)
+    G_GNUC_PRINTF (3, 4);
+void wocky_debug_node_tree (DebugFlags flag, WockyNodeTree *tree,
     const gchar *format, ...)
     G_GNUC_PRINTF (3, 4);
 
@@ -52,6 +55,10 @@ void wocky_debug_stanza (DebugFlags flag, WockyXmppStanza *stanza,
 
 #define DEBUG_STANZA(stanza, format, ...) \
   wocky_debug_stanza (DEBUG_FLAG, stanza, "%s: " format, G_STRFUNC,\
+      ##__VA_ARGS__)
+
+#define DEBUG_NODE_TREE(tree, format, ...) \
+  wocky_debug_node_tree (DEBUG_FLAG, tree, "%s: " format, G_STRFUNC,\
       ##__VA_ARGS__)
 
 #define DEBUGGING debug_flag_is_set(DEBUG_FLAG)
@@ -66,6 +73,9 @@ void wocky_debug_stanza (DebugFlags flag, WockyXmppStanza *stanza,
   G_STMT_START { } G_STMT_END
 
 #define DEBUG_STANZA(stanza, format, ...) \
+  G_STMT_START { } G_STMT_END
+
+#define DEBUG_NODE_TREE(stanza, format, ...) \
   G_STMT_START { } G_STMT_END
 
 #define DEBUGGING 0

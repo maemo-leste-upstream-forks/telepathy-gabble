@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="wocky-WockyXmppNode.html" title="WockyXmppNode">
+<link rel="prev" href="wocky-WockyNode.html" title="WockyNode">
 <link rel="next" href="wocky-wocky-xmpp-reader-enumtypes.html" title="wocky-xmpp-reader-enumtypes">
 <meta name="generator" content="GTK-Doc V1.14 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -14,7 +14,7 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="wocky-WockyXmppNode.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="wocky-WockyNode.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">wocky Reference Manual</th>
@@ -43,6 +43,7 @@
 <a name="WockyXmppReader.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">                    <a class="link" href="WockyXmppReader.html#WockyXmppReader-struct" title="WockyXmppReader">WockyXmppReader</a>;
                     <a class="link" href="WockyXmppReader.html#WockyXmppReaderClass" title="WockyXmppReaderClass">WockyXmppReaderClass</a>;
+                    <a class="link" href="WockyXmppReader.html#WockyXmppReaderPrivate" title="WockyXmppReaderPrivate">WockyXmppReaderPrivate</a>;
 enum                <a class="link" href="WockyXmppReader.html#WockyXmppReaderState" title="enum WockyXmppReaderState">WockyXmppReaderState</a>;
 enum                <a class="link" href="WockyXmppReader.html#WockyXmppReaderError" title="enum WockyXmppReaderError">WockyXmppReaderError</a>;
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="WockyXmppReader.html#wocky-xmpp-reader-error-quark" title="wocky_xmpp_reader_error_quark ()">wocky_xmpp_reader_error_quark</a>       (<em class="parameter"><code><span class="type">void</span></code></em>);
@@ -53,8 +54,8 @@ enum                <a class="link" href="WockyXmppReader.html#WockyXmppReaderEr
 <span class="returnvalue">void</span>                <a class="link" href="WockyXmppReader.html#wocky-xmpp-reader-push" title="wocky_xmpp_reader_push ()">wocky_xmpp_reader_push</a>              (<em class="parameter"><code><a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> *reader</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint8"><span class="type">guint8</span></a> *data</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> length</code></em>);
-<a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="returnvalue">WockyXmppStanza</span></a> *   <a class="link" href="WockyXmppReader.html#wocky-xmpp-reader-pop-stanza" title="wocky_xmpp_reader_pop_stanza ()">wocky_xmpp_reader_pop_stanza</a>        (<em class="parameter"><code><a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> *reader</code></em>);
-<a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="returnvalue">WockyXmppStanza</span></a> *   <a class="link" href="WockyXmppReader.html#wocky-xmpp-reader-peek-stanza" title="wocky_xmpp_reader_peek_stanza ()">wocky_xmpp_reader_peek_stanza</a>       (<em class="parameter"><code><a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> *reader</code></em>);
+<a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *       <a class="link" href="WockyXmppReader.html#wocky-xmpp-reader-pop-stanza" title="wocky_xmpp_reader_pop_stanza ()">wocky_xmpp_reader_pop_stanza</a>        (<em class="parameter"><code><a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> *reader</code></em>);
+<a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *       <a class="link" href="WockyXmppReader.html#wocky-xmpp-reader-peek-stanza" title="wocky_xmpp_reader_peek_stanza ()">wocky_xmpp_reader_peek_stanza</a>       (<em class="parameter"><code><a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> *reader</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *            <a class="link" href="WockyXmppReader.html#wocky-xmpp-reader-get-error" title="wocky_xmpp_reader_get_error ()">wocky_xmpp_reader_get_error</a>         (<em class="parameter"><code><a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> *reader</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyXmppReader.html#wocky-xmpp-reader-reset" title="wocky_xmpp_reader_reset ()">wocky_xmpp_reader_reset</a>             (<em class="parameter"><code><a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> *reader</code></em>);
 </pre>
@@ -80,7 +81,7 @@ enum                <a class="link" href="WockyXmppReader.html#WockyXmppReaderEr
 <div class="refsect1" title="Description">
 <a name="WockyXmppReader.description"></a><h2>Description</h2>
 <p>
-The <a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> deserializes XML to <a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a>s,
+The <a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> deserializes XML to <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a>s,
 misc, other
 </p>
 </div>
@@ -99,6 +100,13 @@ misc, other
     GObjectClass parent_class;
 } WockyXmppReaderClass;
 </pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WockyXmppReaderPrivate">
+<a name="WockyXmppReaderPrivate"></a><h3>WockyXmppReaderPrivate</h3>
+<pre class="programlisting">typedef struct _WockyXmppReaderPrivate WockyXmppReaderPrivate;</pre>
 <p>
 </p>
 </div>
@@ -279,9 +287,9 @@ Push an amount of data to parse.
 <hr>
 <div class="refsect2" title="wocky_xmpp_reader_pop_stanza ()">
 <a name="wocky-xmpp-reader-pop-stanza"></a><h3>wocky_xmpp_reader_pop_stanza ()</h3>
-<pre class="programlisting"><a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="returnvalue">WockyXmppStanza</span></a> *   wocky_xmpp_reader_pop_stanza        (<em class="parameter"><code><a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> *reader</code></em>);</pre>
+<pre class="programlisting"><a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *       wocky_xmpp_reader_pop_stanza        (<em class="parameter"><code><a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> *reader</code></em>);</pre>
 <p>
-Gets one <a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a> out of the reader or NULL if there are no
+Gets one <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a> out of the reader or NULL if there are no
 available stanzas.
 </p>
 <div class="variablelist"><table border="0">
@@ -294,7 +302,7 @@ available stanzas.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> One <a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a> or NULL if there are no available stanzas.
+<td> One <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a> or NULL if there are no available stanzas.
 Caller owns the returned stanza.
 </td>
 </tr>
@@ -304,9 +312,9 @@ Caller owns the returned stanza.
 <hr>
 <div class="refsect2" title="wocky_xmpp_reader_peek_stanza ()">
 <a name="wocky-xmpp-reader-peek-stanza"></a><h3>wocky_xmpp_reader_peek_stanza ()</h3>
-<pre class="programlisting"><a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="returnvalue">WockyXmppStanza</span></a> *   wocky_xmpp_reader_peek_stanza       (<em class="parameter"><code><a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> *reader</code></em>);</pre>
+<pre class="programlisting"><a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *       wocky_xmpp_reader_peek_stanza       (<em class="parameter"><code><a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a> *reader</code></em>);</pre>
 <p>
-Returns the first <a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a> available from reader or NULL
+Returns the first <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a> available from reader or NULL
 if there are no available stanzas. The stanza is not removed from the
 readers queue
 </p>
@@ -320,7 +328,7 @@ readers queue
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> One <a class="link" href="WockyXmppStanza.html" title="WockyXmppStanza"><span class="type">WockyXmppStanza</span></a> or NULL if there are no available stanzas. The
+<td> One <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a> or NULL if there are no available stanzas. The
 stanza is owned by the <a class="link" href="WockyXmppReader.html" title="WockyXmppReader"><span class="type">WockyXmppReader</span></a>
 </td>
 </tr>

@@ -1,3 +1,844 @@
+commit 6ecfe095bb7178adea752d8a30d3f4a125f8f10f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 22 23:31:34 2010 +0100
+
+    Return node trees from the distillery
+    
+    Previously all these functions were technically incorrect: they were
+    calling wocky_porter_send_iq_finish(), and if it yielded a stanza,
+    they'd grab a WockyNode * out of the stanza, *unref the stanza*, and
+    then return the pointer to the caller. So, this relied on the stanza
+    happening to stay alive long enough for the caller to frob the nodes.
+    
+    This makes some code a bit more verbose, but not much.
+
+ wocky/wocky-pubsub-helpers.c           |   28 +++++++++--------
+ wocky/wocky-pubsub-helpers.h           |    6 ++--
+ wocky/wocky-pubsub-node.c              |   46 ++++++++++++++++++---------
+ wocky/wocky-pubsub-service-protected.h |    2 +-
+ wocky/wocky-pubsub-service.c           |   53 ++++++++++++++++++-------------
+ 5 files changed, 81 insertions(+), 54 deletions(-)
+
+commit 513d075b5bfbdb0dc1038c947b360912d3fd8e5d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 22 23:12:06 2010 +0100
+
+    Deconstruct the PubSub distillery a bit.
+    
+    This exposes a function which accepts a stanza that you've already
+    verified is an iq type=result, and pulls out a child node. Previously,
+    if you weren't happy with wocky_pubsub_distill_iq_reply() and friends'
+    conversion from an <error/> element to a GError, you had to re-do the
+    breakdown, because these guts weren't exposed.
+
+ wocky/wocky-pubsub-helpers.c |   98 +++++++++++++++++++++++++++++++----------
+ wocky/wocky-pubsub-helpers.h |    7 +++
+ 2 files changed, 81 insertions(+), 24 deletions(-)
+
+commit 58a14ddab2a60819050542ee2345473a1f2a5a9d
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   Fri Apr 23 23:46:26 2010 -0500
+
+    Fix example program listing for wocky_node_tree_new.
+
+ wocky/wocky-node-tree.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 3aeeababb953192e6846c01c81497f6e64daf2d2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 22 14:25:36 2010 +0100
+
+    Coding style: space after cast
+
+ wocky/wocky-node.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 04deb877174b42ccd19ec7473c523d5af8a49cfd
+Merge: efb168b 47b9aac
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Apr 22 14:21:54 2010 +0100
+
+    Merge branch 'pubsub-modify-affiliates-and-node-config'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit efb168b1eb7d20da6b83eacdf3a5a19398eed9ac
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Apr 20 17:14:05 2010 +0100
+
+    Document when we would have to fallback to a dummy namespace
+
+ wocky/wocky-xmpp-reader.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 47b9aac9083fe57984822b94bdfa7e417100f194
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 20 16:41:47 2010 +0100
+
+    Document WockyPubsubSubscriptionState
+
+ wocky/wocky-pubsub-service.c |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
+
+commit c2ecec40c3e82d44d34c7ff3cd50d8ee61f3b303
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Apr 19 19:41:15 2010 +0100
+
+    Refactor handling <create/> reply
+    
+    All the WockyPubsubNode helpers for handling replies start from a node
+    you've retrieved (presumably with a _distill_ function).
+    wocky_pubsub_service_handle_create_node_reply() did not; this patch
+    brings it in line with the others.
+
+ wocky/wocky-pubsub-service-protected.h |    3 +-
+ wocky/wocky-pubsub-service.c           |   42 ++++++++++++++++++++++----------
+ 2 files changed, 30 insertions(+), 15 deletions(-)
+
+commit 3388359119c424236db9a4813b1a1d9a96c7abfb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Apr 19 17:30:32 2010 +0100
+
+    Implement retrieving a node's configuration
+
+ tests/wocky-pubsub-node-test.c      |  129 +++++++++++++++++++++++++++++++++++
+ wocky/wocky-pubsub-node-protected.h |    5 ++
+ wocky/wocky-pubsub-node.c           |   96 ++++++++++++++++++++++++++
+ wocky/wocky-pubsub-node.h           |   11 +++
+ 4 files changed, 241 insertions(+), 0 deletions(-)
+
+commit 8072b3d85b9f6ddd6729c0b18bcb1c869871dbcb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Apr 19 17:30:08 2010 +0100
+
+    Add a _finish macro that returns a copy of a pointer
+
+ wocky/wocky-utils.h |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 0b22a79a042f3ab3f1b284b52030b4c21231a399
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Apr 19 15:14:25 2010 +0100
+
+    Implement modifying affiliates
+
+ tests/wocky-pubsub-node-test.c      |  115 +++++++++++++++++++++++++++++++++
+ wocky/wocky-pubsub-node-protected.h |    6 ++
+ wocky/wocky-pubsub-node.c           |  122 +++++++++++++++++++++++++++++++++++
+ wocky/wocky-pubsub-node.h           |   12 ++++
+ 4 files changed, 255 insertions(+), 0 deletions(-)
+
+commit 3aa9ac4cd18ecdce04bdd2ad3d528377c82284b7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Apr 20 15:45:29 2010 +0100
+
+    Update .gitignore
+
+ .gitignore |   16 +++++++++-------
+ 1 files changed, 9 insertions(+), 7 deletions(-)
+
+commit e5b3f9dd089521582d652dda8fe442e066ec7bae
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Apr 20 15:20:56 2010 +0100
+
+    Can't have tags with spaces
+
+ tests/wocky-node-tree-test.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 871837f00a03a6b833430ae60f5b4677126395c7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Apr 20 15:19:26 2010 +0100
+
+    Fix wocky_node_tree_new example
+
+ wocky/wocky-node-tree.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit abedf45b2cc49ef54a582a3547d94a42dddac9bf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Apr 19 15:25:07 2010 +0100
+
+    pubsub_affiliation_new: log more clearly if @node is NULL
+    
+    Ahem.
+
+ wocky/wocky-pubsub-node.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit aa2858852d3c4496e0d3cf9a5ad3fdb328ce2377
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Apr 19 15:14:07 2010 +0100
+
+    Document WockyPubsubAffiliation and related methods.
+
+ wocky/wocky-pubsub-node.c |   69 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 69 insertions(+), 0 deletions(-)
+
+commit cde08a5279cd9dad033a456a2043e70395375441
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Apr 19 13:38:41 2010 +0100
+
+    Generalize returning TRUE or an error from _finish()
+
+ wocky/wocky-pubsub-node.c |   18 ++----------------
+ wocky/wocky-utils.h       |    8 ++++++++
+ 2 files changed, 10 insertions(+), 16 deletions(-)
+
+commit 028f7ad09c8afe242acc9a30c0e32f741b2bcee0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Apr 19 12:00:25 2010 +0100
+
+    PubsubNode: Generalize void IQ reply handler
+
+ wocky/wocky-pubsub-node.c |   30 ++++--------------------------
+ 1 files changed, 4 insertions(+), 26 deletions(-)
+
+commit df2d8f060ae37d2ced635b54407b944d64425673
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Apr 20 14:42:51 2010 +0100
+
+    Add a test for wocky_node_add_node_tree
+
+ tests/wocky-node-tree-test.c |   33 +++++++++++++++++++++++++++++++++
+ 1 files changed, 33 insertions(+), 0 deletions(-)
+
+commit 93459fda35b00a0be13e732ffcce90261c16d41b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Apr 20 14:42:23 2010 +0100
+
+    Add API to insert a NodeTree under a node
+
+ wocky/wocky-node-tree.h |    2 +-
+ wocky/wocky-node.c      |   20 ++++++++++++++++++++
+ wocky/wocky-node.h      |    4 ++++
+ wocky/wocky-types.h     |    1 +
+ 4 files changed, 26 insertions(+), 1 deletions(-)
+
+commit 993ce5af20442183443594d09d467d53c9f3df45
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 18:18:41 2010 +0100
+
+    Add API to serialize node trees
+
+ wocky/wocky-xmpp-writer.c |   64 ++++++++++++++++++++++++++++++++++----------
+ wocky/wocky-xmpp-writer.h |    6 ++++
+ 2 files changed, 55 insertions(+), 15 deletions(-)
+
+commit 535645889d2c94673518da10282d1007eb9eac48
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 18:18:25 2010 +0100
+
+    Add debug helpers for node trees
+
+ wocky/wocky-debug.c |   39 +++++++++++++++++++++++++++++++--------
+ wocky/wocky-debug.h |   10 ++++++++++
+ 2 files changed, 41 insertions(+), 8 deletions(-)
+
+commit 57a525b9032020ade15fa0311498997716f0a2ef
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 17:48:26 2010 +0100
+
+    Add API to make new NodeTrees with copies of a given node
+
+ tests/wocky-node-tree-test.c |   23 +++++++++++++++++++++++
+ wocky/wocky-node-tree.c      |   18 ++++++++++++++++++
+ wocky/wocky-node-tree.h      |    2 ++
+ 3 files changed, 43 insertions(+), 0 deletions(-)
+
+commit f8b9994ad7b31b7b4d1e2df7603c2083e60932e1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 17:42:08 2010 +0100
+
+    Add an internal node copy function
+
+ wocky/Makefile.am          |    1 +
+ wocky/wocky-node-private.h |   33 +++++++++++++++++++++++++++++++++
+ wocky/wocky-node.c         |   31 +++++++++++++++++++++++++++++++
+ 3 files changed, 65 insertions(+), 0 deletions(-)
+
+commit 53e19d288d9d453d8c3df88b442495d22d7014af
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 17:11:24 2010 +0100
+
+    Add a simple test for the nodetree building functions
+
+ tests/Makefile.am            |    7 +++++
+ tests/wocky-node-tree-test.c |   54 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 61 insertions(+), 0 deletions(-)
+
+commit 842b0082806d9ed928d19f59ae38b045d09f7dad
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 16:46:56 2010 +0100
+
+    Add API to access the top node of a WockyNodeTree
+
+ wocky/wocky-node-tree.c |   18 +++++++++++-------
+ wocky/wocky-node-tree.h |    3 ++-
+ wocky/wocky-stanza.c    |    2 +-
+ 3 files changed, 14 insertions(+), 9 deletions(-)
+
+commit 360d7e1a3183932dcc0198e4ec94fe553cdc4e97
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 16:43:33 2010 +0100
+
+    Add API to create node-trees
+
+ wocky/wocky-node-tree.c |   52 +++++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-node-tree.h |    8 +++++++
+ 2 files changed, 60 insertions(+), 0 deletions(-)
+
+commit c22f6ccec7eeac006ca4cd1b85bffc6be7aa9bc2
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 15:58:20 2010 +0100
+
+    Disallow changing the namespace of a node
+    
+    As we assert that a node should always have a namespace allowing the API
+    user to set it later doesn't make that much sense. Remove the API to set
+    and add some utility API to make setting the correct namespace at node
+    creation time easier.
+
+ wocky/wocky-node.c |   72 +++++++++++++++++++++++++++++++++------------------
+ wocky/wocky-node.h |   11 ++++++--
+ 2 files changed, 54 insertions(+), 29 deletions(-)
+
+commit ba3be5104d9e30fb74d9d61fd992db7bb11e0c1d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 15:57:48 2010 +0100
+
+    Always directly set the namespace when adding children
+
+ wocky/wocky-xmpp-error.c |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
+
+commit 969a12f4e13a46f0ccef3f125232811a32b94aa0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 15:39:23 2010 +0100
+
+    Require nodes to always have a namespace
+
+ wocky/wocky-node.c |   33 +++++++++++++++++++++++----------
+ 1 files changed, 23 insertions(+), 10 deletions(-)
+
+commit 4f0b7b2163b1b0e9666189ad9cddc90d52cba96b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 15:38:49 2010 +0100
+
+    Make sure nodes/stanzas we create always have a namespace
+
+ tests/wocky-test-connector-server.c |    4 +++-
+ tests/wocky-xmpp-node-test.c        |    2 +-
+ wocky/wocky-xmpp-reader.c           |   11 ++++++++++-
+ 3 files changed, 14 insertions(+), 3 deletions(-)
+
+commit 97268cafb36e19ca0b1fe21662ac6a36f444b26c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Apr 16 19:04:58 2010 +0100
+
+    Add a top-node constuct time property to NodeTree
+
+ wocky/wocky-node-tree.c |   55 +++++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-stanza.c    |    5 ++-
+ 2 files changed, 58 insertions(+), 2 deletions(-)
+
+commit 4829c453b09a295d634bfff2bf152dbf0c1bca5a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 19:59:43 2010 +0100
+
+    Add a test for wocky_node_add_build
+
+ tests/wocky-xmpp-node-test.c |   27 +++++++++++++++++++++++++++
+ 1 files changed, 27 insertions(+), 0 deletions(-)
+
+commit a058dde837493cbf9fe3ae0923904e8ff77fd69e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 19:57:39 2010 +0100
+
+    Remove the first_tag argument from node_add_build
+    
+    Because of the first_tag argument we can't pass things on nicely to _build_va,
+    but given that this is the same pattern as several other function leaving it
+    out should be fine.
+
+ wocky/wocky-node.c |    4 +---
+ wocky/wocky-node.h |    3 +--
+ 2 files changed, 2 insertions(+), 5 deletions(-)
+
+commit af2c1fbf65edd1936a50e3cf89bd1270840f6ae5
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 19:10:42 2010 +0100
+
+    Let gtk-doc take care of building the sections file
+
+ docs/reference/Makefile.am        |    4 +-
+ docs/reference/wocky-sections.txt |  833 -------------------------------------
+ 2 files changed, 2 insertions(+), 835 deletions(-)
+
+commit 3de8b93eee0c99e70af5795f253bf509aeb67ede
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 19:10:10 2010 +0100
+
+    Documentation tweaks
+
+ wocky/wocky-node.c |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
+
+commit c33a0fc75ba253de97c69b0f462400b29ca01644
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 19:09:56 2010 +0100
+
+    g_quark_from_string is NULL safe
+
+ wocky/wocky-node.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit eddd4264a08422a72f88b1f70004a3062801d567
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 19:09:29 2010 +0100
+
+    Remove unimplemented functions
+
+ wocky/wocky-node-tree.h |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+commit 125e505715d1f4d8a4148627d8d17c6c4dba0296
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Apr 19 18:33:06 2010 +0100
+
+    Correct copyright years
+
+ wocky/wocky-node-tree.c |    2 +-
+ wocky/wocky-node-tree.h |    2 +-
+ wocky/wocky-node.c      |    2 +-
+ wocky/wocky-node.h      |    2 +-
+ wocky/wocky-stanza.c    |    2 +-
+ wocky/wocky-stanza.h    |    2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 2f934083b56111eb99ff6039d876282d2f5b13da
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Apr 16 15:54:29 2010 +0100
+
+    Add documentation for wocky_node_add_build
+
+ wocky/wocky-node.c |   25 +++++++++++++++++++++++++
+ 1 files changed, 25 insertions(+), 0 deletions(-)
+
+commit 9fb0f63eb4967cd0aa752b2ff70ac6ab84ee6006
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Apr 16 15:50:34 2010 +0100
+
+    Fixup the documentation of wocky_stanza_build
+
+ wocky/wocky-stanza.c |    8 +++-----
+ 1 files changed, 3 insertions(+), 5 deletions(-)
+
+commit f3d7246436753078db1093e5ea5ad28946c01c77
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 15 14:56:13 2010 +0100
+
+    Update wocky-docs.sgml
+
+ docs/reference/wocky-docs.sgml |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit c9aaac580d008d7f1c0e110f5cdd8706741dc72f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 15 14:41:44 2010 +0100
+
+    Rename WockyXmppNode to WockyNode
+
+ examples/connect.c                     |   14 +-
+ tests/wocky-data-form-test.c           |   28 +-
+ tests/wocky-pep-service-test.c         |   10 +-
+ tests/wocky-porter-test.c              |   20 +-
+ tests/wocky-pubsub-node-test.c         |   62 +-
+ tests/wocky-pubsub-service-test.c      |   42 +-
+ tests/wocky-pubsub-test-helpers.c      |   12 +-
+ tests/wocky-pubsub-test-helpers.h      |    2 +-
+ tests/wocky-roster-test.c              |   86 ++--
+ tests/wocky-stanza-test.c              |    2 +-
+ tests/wocky-test-connector-server.c    |   82 ++--
+ tests/wocky-test-helper.h              |   24 +-
+ tests/wocky-test-sasl-auth-server.c    |   22 +-
+ tests/wocky-xmpp-node-test.c           |   98 ++--
+ tests/wocky-xmpp-readwrite-test.c      |   28 +-
+ wocky/Makefile.am                      |    4 +-
+ wocky/wocky-connector.c                |   58 +-
+ wocky/wocky-data-form.c                |  126 ++--
+ wocky/wocky-data-form.h                |    8 +-
+ wocky/wocky-debug.c                    |    2 +-
+ wocky/wocky-muc.c                      |   98 ++--
+ wocky/wocky-node-tree.c                |    2 +-
+ wocky/wocky-node-tree.h                |    4 +-
+ wocky/wocky-node.c                     | 1240 ++++++++++++++++++++++++++++++++
+ wocky/wocky-node.h                     |  206 ++++++
+ wocky/wocky-pep-service.c              |    4 +-
+ wocky/wocky-pep-service.h              |    2 +-
+ wocky/wocky-porter.c                   |   16 +-
+ wocky/wocky-pubsub-helpers.c           |   32 +-
+ wocky/wocky-pubsub-helpers.h           |   14 +-
+ wocky/wocky-pubsub-node-protected.h    |   26 +-
+ wocky/wocky-pubsub-node.c              |   90 ++--
+ wocky/wocky-pubsub-node.h              |    6 +-
+ wocky/wocky-pubsub-service-protected.h |   12 +-
+ wocky/wocky-pubsub-service.c           |   70 +-
+ wocky/wocky-roster.c                   |   52 +-
+ wocky/wocky-sasl-auth.c                |   34 +-
+ wocky/wocky-stanza.c                   |   30 +-
+ wocky/wocky-stanza.h                   |    4 +-
+ wocky/wocky-xmpp-error.c               |   46 +-
+ wocky/wocky-xmpp-error.h               |   12 +-
+ wocky/wocky-xmpp-node.c                | 1240 --------------------------------
+ wocky/wocky-xmpp-node.h                |  206 ------
+ wocky/wocky-xmpp-reader.c              |   16 +-
+ wocky/wocky-xmpp-writer.c              |   14 +-
+ wocky/wocky.c                          |    6 +-
+ 46 files changed, 2106 insertions(+), 2106 deletions(-)
+
+commit 7b4549cf87a279d157d09618f3b39f702ae475ce
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 15 13:24:51 2010 +0100
+
+    Split out a base NodeTree object from Stanza
+    
+    Add a seperate NodeTree object as a parent to Stanza. This NodeTree object can
+    later be used as a container for subtrees to copy out or into Stanzas
+    
+    Also move add_build* to WockyXmppNode as it can be useful in user code as well
+
+ wocky/Makefile.am       |    2 +
+ wocky/wocky-node-tree.c |   85 +++++++++++++++++++++++++++++++++++
+ wocky/wocky-node-tree.h |   73 ++++++++++++++++++++++++++++++
+ wocky/wocky-stanza.c    |  114 ++---------------------------------------------
+ wocky/wocky-stanza.h    |   18 +------
+ wocky/wocky-xmpp-node.c |  105 +++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-xmpp-node.h |   18 +++++++
+ 7 files changed, 290 insertions(+), 125 deletions(-)
+
+commit 7487f34f12c940e332b52277098c59186f3a5eb5
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 15 12:40:20 2010 +0100
+
+    Check all tests for coding style and fix the style a bit
+
+ tests/Makefile.am                  |   21 ++++++++++++++++++---
+ tests/wocky-contact-factory-test.c |    4 ++--
+ tests/wocky-stanza-test.c          |    4 ++--
+ tests/wocky-tls-test.c             |    4 ++--
+ 4 files changed, 24 insertions(+), 9 deletions(-)
+
+commit b596cd12bb602dd95e610de82b7a3c119fede879
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 15 12:38:01 2010 +0100
+
+    Use wocky_stanza_get_top_node instead of ->node
+
+ examples/connect.c                  |   24 ++++++++++++------
+ tests/wocky-data-form-test.c        |   43 ++++++++++++++++++++++------------
+ tests/wocky-pep-service-test.c      |    4 +-
+ tests/wocky-porter-test.c           |   28 +++++++++++++--------
+ tests/wocky-pubsub-node-test.c      |    2 +-
+ tests/wocky-pubsub-service-test.c   |   23 +++++++++--------
+ tests/wocky-roster-test.c           |   32 ++++++++++++++-----------
+ tests/wocky-stanza-test.c           |    4 +-
+ tests/wocky-test-connector-server.c |   26 +++++++++++---------
+ tests/wocky-test-helper.c           |    3 +-
+ tests/wocky-test-helper.h           |   12 +++++----
+ tests/wocky-test-sasl-auth-server.c |   39 +++++++++++++++++-------------
+ tests/wocky-xmpp-node-test.c        |   35 ++++++++++++++++------------
+ tests/wocky-xmpp-readwrite-test.c   |   11 +++++---
+ wocky/wocky-connector.c             |   25 ++++++++++++--------
+ wocky/wocky-debug.c                 |    3 +-
+ wocky/wocky-muc.c                   |   21 ++++++++++------
+ wocky/wocky-pep-service.c           |    3 +-
+ wocky/wocky-porter.c                |   20 +++++++++------
+ wocky/wocky-pubsub-helpers.c        |    3 +-
+ wocky/wocky-pubsub-service.c        |    5 ++-
+ wocky/wocky-roster.c                |   10 ++++---
+ wocky/wocky-sasl-auth.c             |   44 ++++++++++++++++++++--------------
+ wocky/wocky-stanza.c                |   33 ++++++++++++++++----------
+ wocky/wocky-xmpp-node.c             |    2 +-
+ wocky/wocky-xmpp-writer.c           |    2 +-
+ 26 files changed, 271 insertions(+), 186 deletions(-)
+
+commit 71d195fd71886cdea3275dd9a2763ba26bbf6e6b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Apr 14 14:19:18 2010 +0100
+
+    Add a namespace argument to wocky_stanza_new
+
+ examples/connect.c                  |    3 +--
+ tests/wocky-test-connector-server.c |   14 +++++---------
+ tests/wocky-test-sasl-auth-server.c |   15 +++++----------
+ tests/wocky-xmpp-node-test.c        |    2 +-
+ wocky/wocky-connector.c             |    3 +--
+ wocky/wocky-sasl-auth.c             |    7 ++-----
+ wocky/wocky-stanza.c                |    7 +++----
+ wocky/wocky-stanza.h                |    2 +-
+ wocky/wocky-xmpp-node.c             |   12 ++++++------
+ wocky/wocky-xmpp-node.h             |    2 +-
+ wocky/wocky-xmpp-reader.c           |    9 +++++----
+ 11 files changed, 31 insertions(+), 45 deletions(-)
+
+commit 8368ca138c8b0a39cb07598a2001cbb83bff7228
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Apr 14 14:08:42 2010 +0100
+
+    Add shorthand for testing (in)equality of stanzas
+
+ tests/wocky-porter-test.c         |    4 ++--
+ tests/wocky-pubsub-node-test.c    |    2 +-
+ tests/wocky-stanza-test.c         |   14 +++++++-------
+ tests/wocky-test-helper.h         |    7 +++++++
+ tests/wocky-xmpp-node-test.c      |   22 ++++++++++++----------
+ tests/wocky-xmpp-readwrite-test.c |    6 +++---
+ 6 files changed, 32 insertions(+), 23 deletions(-)
+
+commit a7ae4097134b1d2078689c192000f93e48e17aad
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Apr 14 13:56:46 2010 +0100
+
+    Introduce wocky_stanza_get_top_node
+
+ wocky/wocky-stanza.c |   12 ++++++++++++
+ wocky/wocky-stanza.h |    4 +++-
+ 2 files changed, 15 insertions(+), 1 deletions(-)
+
+commit 8c9b3ae6101cea9187741d6794ee984483275555
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed Apr 14 11:30:25 2010 +0100
+
+    Rename _stanzas_equal to _stanzas_equal_no_id
+
+ tests/wocky-data-form-test.c      |    2 +-
+ tests/wocky-pubsub-node-test.c    |    4 ++--
+ tests/wocky-pubsub-service-test.c |    2 +-
+ tests/wocky-test-helper.h         |    3 ++-
+ 4 files changed, 6 insertions(+), 5 deletions(-)
+
+commit 3d6c227b84555e16a0fafea4839ef7debda1299e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Apr 13 16:23:20 2010 +0100
+
+    Rename WockyXmppStanza to WockyStanza
+
+ docs/reference/wocky-docs.sgml         |    2 +-
+ docs/reference/wocky-sections.txt      |   38 +-
+ examples/connect.c                     |   10 +-
+ tests/Makefile.am                      |    8 +-
+ tests/wocky-connector-test.c           |    4 +-
+ tests/wocky-data-form-test.c           |   34 +-
+ tests/wocky-pep-service-test.c         |   22 +-
+ tests/wocky-porter-test.c              |  234 ++++++------
+ tests/wocky-pubsub-node-test.c         |   62 ++--
+ tests/wocky-pubsub-service-test.c      |   58 ++--
+ tests/wocky-roster-test.c              |   56 ++--
+ tests/wocky-stanza-test.c              |  579 ++++++++++++++++++++++++++++
+ tests/wocky-test-connector-server.c    |  128 ++++----
+ tests/wocky-test-helper.c              |    8 +-
+ tests/wocky-test-helper.h              |    2 +-
+ tests/wocky-test-sasl-auth-server.c    |   36 +-
+ tests/wocky-test-sasl-auth-server.h    |    6 +-
+ tests/wocky-test-sasl-auth.c           |    4 +-
+ tests/wocky-xmpp-connection-test.c     |   32 +-
+ tests/wocky-xmpp-node-test.c           |   32 +-
+ tests/wocky-xmpp-reader-test.c         |    4 +-
+ tests/wocky-xmpp-readwrite-test.c      |   10 +-
+ tests/wocky-xmpp-stanza-test.c         |  579 ----------------------------
+ wocky/Makefile.am                      |    4 +-
+ wocky/wocky-connector.c                |   94 +++---
+ wocky/wocky-connector.h                |    2 +-
+ wocky/wocky-debug.c                    |    2 +-
+ wocky/wocky-debug.h                    |    4 +-
+ wocky/wocky-muc.c                      |   62 ++--
+ wocky/wocky-muc.h                      |    4 +-
+ wocky/wocky-pep-service.c              |   12 +-
+ wocky/wocky-pep-service.h              |    6 +-
+ wocky/wocky-porter.c                   |   60 ++--
+ wocky/wocky-porter.h                   |   18 +-
+ wocky/wocky-pubsub-helpers.c           |   16 +-
+ wocky/wocky-pubsub-helpers.h           |    6 +-
+ wocky/wocky-pubsub-node-protected.h    |   12 +-
+ wocky/wocky-pubsub-node.c              |   44 ++--
+ wocky/wocky-pubsub-node.h              |    2 +-
+ wocky/wocky-pubsub-service-protected.h |    4 +-
+ wocky/wocky-pubsub-service.c           |   30 +-
+ wocky/wocky-pubsub-service.h           |    2 +-
+ wocky/wocky-roster.c                   |   48 ++--
+ wocky/wocky-sasl-auth.c                |   18 +-
+ wocky/wocky-sasl-auth.h                |    4 +-
+ wocky/wocky-sasl-handler.h             |    2 +-
+ wocky/wocky-stanza.c                   |  650 +++++++++++++++++++++++++++++++
+ wocky/wocky-stanza.h                   |  147 +++++++
+ wocky/wocky-xmpp-connection.c          |   18 +-
+ wocky/wocky-xmpp-connection.h          |    6 +-
+ wocky/wocky-xmpp-error.c               |    2 +-
+ wocky/wocky-xmpp-reader.c              |   22 +-
+ wocky/wocky-xmpp-reader.h              |    6 +-
+ wocky/wocky-xmpp-stanza.c              |  652 --------------------------------
+ wocky/wocky-xmpp-stanza.h              |  147 -------
+ wocky/wocky-xmpp-writer.c              |    4 +-
+ wocky/wocky-xmpp-writer.h              |    4 +-
+ 57 files changed, 2030 insertions(+), 2032 deletions(-)
+
+commit 9c489c118b7aa339d9a08cd7e749b486c412650c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 13 15:58:45 2010 +0100
+
+    Use G_TYPE_INSTANCE_GET_PRIVATE() correctly.
+    
+    Rather than repeatedly calling that macro (which is reasonably
+    expensive), it should be called once in the object's _init() function
+    and stored in a pointer in the public structure. This patch changes the
+    whole of Wocky to do this correctly!
+
+ tests/wocky-test-connector-server.c |   73 ++++++++++++-------------
+ tests/wocky-test-connector-server.h |    3 +
+ tests/wocky-test-sasl-auth-server.c |   57 +++++++++----------
+ tests/wocky-test-sasl-auth-server.h |    4 ++
+ wocky/wocky-bare-contact.c          |   56 +++++++++-----------
+ wocky/wocky-bare-contact.h          |    3 +
+ wocky/wocky-connector.c             |  101 +++++++++++++++++------------------
+ wocky/wocky-connector.h             |    2 +
+ wocky/wocky-contact-factory.c       |   27 ++++-----
+ wocky/wocky-contact-factory.h       |    2 +
+ wocky/wocky-contact.c               |   22 +++-----
+ wocky/wocky-contact.h               |    3 +
+ wocky/wocky-data-form.c             |   30 ++++------
+ wocky/wocky-data-form.h             |    3 +
+ wocky/wocky-muc.c                   |   54 +++++++++----------
+ wocky/wocky-muc.h                   |    2 +
+ wocky/wocky-pep-service.c           |   32 ++++-------
+ wocky/wocky-pep-service.h           |    4 ++
+ wocky/wocky-porter.c                |   68 +++++++++++------------
+ wocky/wocky-porter.h                |    2 +
+ wocky/wocky-pubsub-node.c           |   48 +++++++----------
+ wocky/wocky-pubsub-node.h           |    4 ++
+ wocky/wocky-pubsub-service.c        |   46 +++++++---------
+ wocky/wocky-pubsub-service.h        |    3 +
+ wocky/wocky-resource-contact.c      |   32 ++++-------
+ wocky/wocky-resource-contact.h      |    4 ++
+ wocky/wocky-roster.c                |   54 +++++++++----------
+ wocky/wocky-roster.h                |    3 +
+ wocky/wocky-sasl-auth.c             |   35 +++++-------
+ wocky/wocky-sasl-auth.h             |    4 ++
+ wocky/wocky-session.c               |   34 +++++-------
+ wocky/wocky-session.h               |    4 ++
+ wocky/wocky-xmpp-connection.c       |   56 +++++++++----------
+ wocky/wocky-xmpp-connection.h       |    3 +
+ wocky/wocky-xmpp-reader.c           |   49 ++++++++---------
+ wocky/wocky-xmpp-reader.h           |    3 +
+ wocky/wocky-xmpp-stanza.c           |   14 ++---
+ wocky/wocky-xmpp-stanza.h           |    4 ++
+ wocky/wocky-xmpp-writer.c           |   35 ++++++-------
+ wocky/wocky-xmpp-writer.h           |    4 ++
+ 40 files changed, 480 insertions(+), 507 deletions(-)
+
+commit 2e47a76da94cc4945fc32fc6b8c2c56b99a156cf
+Merge: 970a4d6 ff4b9ff
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Apr 13 15:59:52 2010 +0100
+
+    Merge branch 'dsl'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit ff4b9ff64dc9af98ccd39d4d4a852d711cee271d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Apr 10 01:23:22 2010 +0100
+
+    Use ASCII mnemonics throughout.
+
+ tests/wocky-data-form-test.c        |  406 +++++++++++++++++-----------------
+ tests/wocky-pep-service-test.c      |   40 ++--
+ tests/wocky-porter-test.c           |  142 ++++++------
+ tests/wocky-pubsub-node-test.c      |  230 ++++++++++----------
+ tests/wocky-pubsub-service-test.c   |  198 +++++++++---------
+ tests/wocky-roster-test.c           |  172 ++++++++--------
+ tests/wocky-test-connector-server.c |  218 ++++++++++----------
+ tests/wocky-test-sasl-auth-server.c |    2 +-
+ tests/wocky-xmpp-connection-test.c  |   10 +-
+ tests/wocky-xmpp-node-test.c        |   52 +++---
+ tests/wocky-xmpp-readwrite-test.c   |   10 +-
+ tests/wocky-xmpp-stanza-test.c      |  276 ++++++++++++------------
+ wocky/wocky-connector.c             |   66 +++---
+ wocky/wocky-muc.c                   |    6 +-
+ wocky/wocky-pep-service.c           |   24 +-
+ wocky/wocky-porter.c                |    8 +-
+ wocky/wocky-pubsub-helpers.c        |   14 +-
+ wocky/wocky-pubsub-service.c        |    8 +-
+ wocky/wocky-roster.c                |   40 ++--
+ 19 files changed, 961 insertions(+), 961 deletions(-)
+
+commit 4e1c0ad275c1a7c3cb4f225e845cac73ab10ffb7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Apr 10 01:18:31 2010 +0100
+
+    Use G_GNUC_NULL_TERMINATED for build spec-cy functions
+    
+    Unfortunately, the functions' previous signatures were awkward for
+    NULL-termination: because the first tag in the specification was an
+    explicit non-pointer argument, if you didn't actually want the stanza to
+    have a body you had to say:
+    
+      wocky_xmpp_stanza_build_iq_result (..., WOCKY_STANZA_END, NULL);
+    
+    You couldn't use NULL in place of WOCKY_STANZA_END because WockyBuildTag
+    isn't a pointer type; and you couldn't omit it because then the varargs
+    aren't NULL-terminated. So, this patch removes the explicit first tag
+    argument. While this may be slightly worse from a documentation point of
+    view, I think it's better than having to document the special case
+    above.
+
+ tests/wocky-data-form-test.c        |   16 ++--
+ tests/wocky-pep-service-test.c      |    6 +-
+ tests/wocky-porter-test.c           |  146 +++++++++++++++++-----------------
+ tests/wocky-pubsub-node-test.c      |   32 ++++----
+ tests/wocky-pubsub-service-test.c   |   30 ++++----
+ tests/wocky-roster-test.c           |   42 +++++-----
+ tests/wocky-test-connector-server.c |   52 ++++++------
+ tests/wocky-test-sasl-auth-server.c |    2 +-
+ tests/wocky-xmpp-connection-test.c  |   12 ++--
+ tests/wocky-xmpp-node-test.c        |   16 ++--
+ tests/wocky-xmpp-readwrite-test.c   |    2 +-
+ tests/wocky-xmpp-stanza-test.c      |   58 +++++++-------
+ wocky/wocky-connector.c             |   16 ++--
+ wocky/wocky-muc.c                   |    8 +-
+ wocky/wocky-pep-service.c           |    4 +-
+ wocky/wocky-porter.c                |   22 ++---
+ wocky/wocky-porter.h                |    3 +-
+ wocky/wocky-pubsub-helpers.c        |    2 +-
+ wocky/wocky-pubsub-service.c        |    2 +-
+ wocky/wocky-roster.c                |   12 ++--
+ wocky/wocky-xmpp-stanza.c           |   39 ++++------
+ wocky/wocky-xmpp-stanza.h           |   10 +--
+ 22 files changed, 258 insertions(+), 274 deletions(-)
+
+commit 6fb6e88edc7542a209e547796f5827a6af0af5be
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 16 22:11:05 2010 +0000
+
+    Permit ASCII mnemonics for stanza build specs
+
+ wocky/wocky-xmpp-stanza.c |   18 ++++++++++++++++++
+ wocky/wocky-xmpp-stanza.h |   14 +++++++-------
+ 2 files changed, 25 insertions(+), 7 deletions(-)
+
+commit 244e55ba32a6ed4ad6b9709167332d671cc5e752
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 16 22:04:44 2010 +0000
+
+    Detect (and fix) misbalanced stanza build specs
+
+ tests/wocky-data-form-test.c        |    1 +
+ tests/wocky-pubsub-service-test.c   |   14 ++++++++++----
+ tests/wocky-test-connector-server.c |   11 +++++++++--
+ tests/wocky-xmpp-node-test.c        |    1 +
+ wocky/wocky-xmpp-stanza.c           |   17 +++++++++++++++++
+ 5 files changed, 38 insertions(+), 6 deletions(-)
+
 commit 970a4d6f9c2c2f59d78d9e6b8e347b31440d0088
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Wed Apr 7 15:14:56 2010 +0100
