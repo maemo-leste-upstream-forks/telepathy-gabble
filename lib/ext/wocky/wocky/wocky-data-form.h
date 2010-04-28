@@ -23,7 +23,7 @@
 
 #include <glib-object.h>
 
-#include "wocky-xmpp-node.h"
+#include "wocky-node.h"
 
 G_BEGIN_DECLS
 
@@ -65,6 +65,7 @@ typedef struct
 
 typedef struct _WockyDataForm WockyDataForm;
 typedef struct _WockyDataFormClass WockyDataFormClass;
+typedef struct _WockyDataFormPrivate WockyDataFormPrivate;
 
 typedef enum {
   WOCKY_DATA_FORM_ERROR_NOT_FORM,
@@ -92,6 +93,8 @@ struct _WockyDataForm {
   /* list of GSList * of (WockyDataFormField *), representing one or more sets
    * of results */
   GSList *results;
+
+  WockyDataFormPrivate *priv;
 };
 
 GType wocky_data_form_get_type (void);
@@ -112,7 +115,7 @@ GType wocky_data_form_get_type (void);
   (G_TYPE_INSTANCE_GET_CLASS ((obj), WOCKY_TYPE_DATA_FORM, \
    WockyDataFormClass))
 
-WockyDataForm * wocky_data_form_new_from_form (WockyXmppNode *node,
+WockyDataForm * wocky_data_form_new_from_form (WockyNode *node,
     GError **error);
 
 gboolean wocky_data_form_set_type (WockyDataForm *self,
@@ -134,10 +137,10 @@ gboolean wocky_data_form_set_strv (WockyDataForm *self,
     gboolean create_if_missing);
 
 void wocky_data_form_submit (WockyDataForm *self,
-    WockyXmppNode *node);
+    WockyNode *node);
 
 gboolean wocky_data_form_parse_result (WockyDataForm *self,
-    WockyXmppNode *node,
+    WockyNode *node,
     GError **error);
 
 const gchar *wocky_data_form_get_title (WockyDataForm *self);

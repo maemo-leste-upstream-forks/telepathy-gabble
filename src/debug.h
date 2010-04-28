@@ -52,6 +52,9 @@ G_END_DECLS
 
 #define DEBUGGING gabble_debug_flag_is_set (DEBUG_FLAG)
 
+#define STANZA_DEBUG(st, s) \
+  NODE_DEBUG (wocky_stanza_get_top_node (st), s)
+
 #define NODE_DEBUG(n, s) \
 G_STMT_START { \
   gchar *debug_tmp = lm_message_node_to_string (n); \
@@ -68,6 +71,8 @@ G_STMT_START { \
 #define DEBUG(format, ...) G_STMT_START { } G_STMT_END
 
 #define DEBUGGING 0
+
+#define STANZA_DEBUG(st, s) G_STMT_START { } G_STMT_END
 
 #define NODE_DEBUG(n, s) G_STMT_START { } G_STMT_END
 

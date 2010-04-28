@@ -1,6 +1,6 @@
 /*
- * wocky-xmpp-node.c - Code for Wocky xmpp nodes
- * Copyright (C) 2006 Collabora Ltd.
+ * wocky-node.c - Code for Wocky xmpp nodes
+ * Copyright (C) 2006-2010 Collabora Ltd.
  * @author Sjoerd Simons <sjoerd@luon.net>
  *
  * This library is free software; you can redistribute it and/or
@@ -21,15 +21,17 @@
 #include <glib.h>
 #include <string.h>
 
-#include "wocky-xmpp-node.h"
+#include "wocky-node.h"
+#include "wocky-node-private.h"
+#include "wocky-node-tree.h"
 #include "wocky-utils.h"
 #include "wocky-namespaces.h"
 
 /**
- * SECTION: wocky-xmpp-node
- * @title: WockyXmppNode
+ * SECTION: wocky-node
+ * @title: WockyNode
  * @short_description: representation of a XMPP node
- * @include: wocky/wocky-xmpp-node.h
+ * @include: wocky/wocky-node.h
  *
  * Low level representation of a XMPP node. Provides ways to set various
  * parameters on the node, such as content, language, namespaces and prefixes.
@@ -61,23 +63,38 @@ static NSPrefix default_attr_ns_prefixes[] =
 static GHashTable *user_ns_prefixes = NULL;
 static GHashTable *default_ns_prefixes = NULL;
 
-/**
- * wocky_xmpp_node_new:
- * @name: the node's name
- *
- * Convenience function which creates a #WockyXmppNode and sets its
- * name to @name.
- *
- * Returns: a newly allocated #WockyXmppNode.
- */
-WockyXmppNode *
-wocky_xmpp_node_new (const char *name)
+static WockyNode *
+new_node (const char *name, GQuark ns)
 {
-  WockyXmppNode *result = g_slice_new0 (WockyXmppNode);
+  WockyNode *result;
+
+  g_return_val_if_fail (name != NULL, NULL);
+  g_return_val_if_fail (ns != 0, NULL);
+
+  result = g_slice_new0 (WockyNode);
 
   result->name = g_strdup (name);
+  result->ns = ns;
 
   return result;
+}
+
+/**
+ * wocky_node_new:
+ * @name: the node's name (may not be NULL)
+ * @ns: the nodes namespace (may not be NULL)
+ *
+ * Convenience function which creates a #WockyNode and sets its
+ * name to @name.
+ *
+ * Returns: a newly allocated #WockyNode.
+ */
+WockyNode *
+wocky_node_new (const char *name, const gchar *ns)
+{
+  g_return_val_if_fail (ns != NULL, NULL);
+
+  return new_node (name, g_quark_from_string (ns));
 }
 
 static void
@@ -90,14 +107,14 @@ attribute_free (Attribute *a)
 }
 
 /**
- * wocky_xmpp_node_free:
- * @node: a #WockyXmppNode.
+ * wocky_node_free:
+ * @node: a #WockyNode.
  *
- * Convenience function that frees the passed in #WockyXmppNode and
+ * Convenience function that frees the passed in #WockyNode and
  * all of its children.
  */
 void
-wocky_xmpp_node_free (WockyXmppNode *node)
+wocky_node_free (WockyNode *node)
 {
   GSList *l;
 
@@ -112,7 +129,7 @@ wocky_xmpp_node_free (WockyXmppNode *node)
 
   for (l = node->children; l != NULL ; l = l->next)
     {
-      wocky_xmpp_node_free ((WockyXmppNode *) l->data);
+      wocky_node_free ((WockyNode *) l->data);
     }
   g_slist_free (node->children);
 
@@ -123,20 +140,20 @@ wocky_xmpp_node_free (WockyXmppNode *node)
     }
   g_slist_free (node->attributes);
 
-  g_slice_free (WockyXmppNode, node);
+  g_slice_free (WockyNode, node);
 }
 
 /**
- * wocky_xmpp_node_each_attribute:
- * @node: a #WockyXmppNode
+ * wocky_node_each_attribute:
+ * @node: a #WockyNode
  * @func: the function to be called on each node's attribute
  * @user_data: user data to pass to the function
  *
- * Calls a function for each attribute of a #WockyXmppNode.
+ * Calls a function for each attribute of a #WockyNode.
  */
 void
-wocky_xmpp_node_each_attribute (WockyXmppNode *node,
-    wocky_xmpp_node_each_attr_func func, gpointer user_data)
+wocky_node_each_attribute (WockyNode *node,
+    wocky_node_each_attr_func func, gpointer user_data)
 {
   GSList *l;
 
@@ -152,22 +169,22 @@ wocky_xmpp_node_each_attribute (WockyXmppNode *node,
 }
 
 /**
- * wocky_xmpp_node_each_child:
- * @node: a #WockyXmppNode
+ * wocky_node_each_child:
+ * @node: a #WockyNode
  * @func: the function to be called on each node's child
  * @user_data: user data to pass to the function
  *
- * Calls a function for each child of a #WockyXmppNode.
+ * Calls a function for each child of a #WockyNode.
  */
 void
-wocky_xmpp_node_each_child (WockyXmppNode *node,
-    wocky_xmpp_node_each_child_func func, gpointer user_data)
+wocky_node_each_child (WockyNode *node,
+    wocky_node_each_child_func func, gpointer user_data)
 {
   GSList *l;
 
   for (l = node->children; l != NULL ; l = l->next)
     {
-      WockyXmppNode *n = (WockyXmppNode *) l->data;
+      WockyNode *n = (WockyNode *) l->data;
       if (!func (n, user_data))
         {
           return;
@@ -190,20 +207,20 @@ attribute_compare (gconstpointer a, gconstpointer b)
 }
 
 /**
- * wocky_xmpp_node_get_attribute_ns:
- * @node: a #WockyXmppNode
+ * wocky_node_get_attribute_ns:
+ * @node: a #WockyNode
  * @key: the attribute name
  * @ns: the namespace to search within, or %NULL
  *
- * Returns the value of an attribute in a #WockyXmppNode, limiting the search
+ * Returns the value of an attribute in a #WockyNode, limiting the search
  * within a specific namespace. If the namespace is %NULL, this is equivalent
- * to wocky_xmpp_node_get_attribute().
+ * to wocky_node_get_attribute().
  *
  * Returns: the value of the attribute @key, or %NULL if @node doesn't
  * have such attribute in @ns.
  */
 const gchar *
-wocky_xmpp_node_get_attribute_ns (WockyXmppNode *node,
+wocky_node_get_attribute_ns (WockyNode *node,
     const gchar *key, const gchar *ns)
 {
   GSList *link;
@@ -218,53 +235,53 @@ wocky_xmpp_node_get_attribute_ns (WockyXmppNode *node,
 }
 
 /**
- * wocky_xmpp_node_get_attribute:
- * @node: a #WockyXmppNode
+ * wocky_node_get_attribute:
+ * @node: a #WockyNode
  * @key: the attribute name
  *
- * Returns the value of an attribute in a #WockyXmppNode.
+ * Returns the value of an attribute in a #WockyNode.
  *
  * Returns: the value of the attribute @key, or %NULL if @node doesn't
  * have such attribute.
  */
 const gchar *
-wocky_xmpp_node_get_attribute (WockyXmppNode *node, const gchar *key)
+wocky_node_get_attribute (WockyNode *node, const gchar *key)
 {
-  return wocky_xmpp_node_get_attribute_ns (node, key, NULL);
+  return wocky_node_get_attribute_ns (node, key, NULL);
 }
 
 /**
- * wocky_xmpp_node_set_attribute:
- * @node: a #WockyXmppNode
+ * wocky_node_set_attribute:
+ * @node: a #WockyNode
  * @key: the attribute name to set
  * @value: the value to set
  *
- * Sets an attribute in a #WockyXmppNode to a specific value.
+ * Sets an attribute in a #WockyNode to a specific value.
  */
 void
-wocky_xmpp_node_set_attribute (WockyXmppNode *node,
+wocky_node_set_attribute (WockyNode *node,
     const gchar *key, const gchar *value)
 {
   g_assert (value != NULL);
-  wocky_xmpp_node_set_attribute_n_ns (node, key, value, strlen (value), NULL);
+  wocky_node_set_attribute_n_ns (node, key, value, strlen (value), NULL);
 }
 
 /**
- * wocky_xmpp_node_set_attribute_ns:
- * @node: a #WockyXmppNode
+ * wocky_node_set_attribute_ns:
+ * @node: a #WockyNode
  * @key: the attribute name to set
  * @value: the value to set
  * @ns: a namespace, or %NULL
  *
- * Sets an attribute in a #WockyXmppNode, within a specific namespace.
+ * Sets an attribute in a #WockyNode, within a specific namespace.
  * If the namespace is %NULL, this is equivalent to
- * wocky_xmpp_node_set_attribute().
+ * wocky_node_set_attribute().
  */
 void
-wocky_xmpp_node_set_attribute_ns (WockyXmppNode *node, const gchar *key,
+wocky_node_set_attribute_ns (WockyNode *node, const gchar *key,
     const gchar *value, const gchar *ns)
 {
-  wocky_xmpp_node_set_attribute_n_ns (node,
+  wocky_node_set_attribute_n_ns (node,
       key, value, strlen (value), ns);
 }
 
@@ -386,7 +403,7 @@ _attribute_ns_get_prefix (GQuark ns,
 }
 
 /**
- * wocky_xmpp_node_attribute_ns_get_prefix_from_quark:
+ * wocky_node_attribute_ns_get_prefix_from_quark:
  * @ns: a quark corresponding to an XML namespace URN
  *
  * Gets the prefix of the namespace identified by the quark.
@@ -394,7 +411,7 @@ _attribute_ns_get_prefix (GQuark ns,
  * Returns: a string containing the prefix of the namespace @ns.
  */
 const gchar *
-wocky_xmpp_node_attribute_ns_get_prefix_from_quark (GQuark ns)
+wocky_node_attribute_ns_get_prefix_from_quark (GQuark ns)
 {
   const gchar *urn;
 
@@ -409,7 +426,7 @@ wocky_xmpp_node_attribute_ns_get_prefix_from_quark (GQuark ns)
 }
 
 /**
- * wocky_xmpp_node_attribute_ns_get_prefix_from_urn:
+ * wocky_node_attribute_ns_get_prefix_from_urn:
  * @urn: a string containing an URN
  *
  * Gets the prefix of the namespace identified by the URN.
@@ -417,7 +434,7 @@ wocky_xmpp_node_attribute_ns_get_prefix_from_quark (GQuark ns)
  * Returns: a string containing the prefix of the namespace @urn.
  */
 const gchar *
-wocky_xmpp_node_attribute_ns_get_prefix_from_urn (const gchar *urn)
+wocky_node_attribute_ns_get_prefix_from_urn (const gchar *urn)
 {
   GQuark ns;
 
@@ -432,14 +449,14 @@ wocky_xmpp_node_attribute_ns_get_prefix_from_urn (const gchar *urn)
 }
 
 /**
- * wocky_xmpp_node_attribute_ns_set_prefix:
+ * wocky_node_attribute_ns_set_prefix:
  * @ns: a #GQuark
  * @prefix: a string containing the desired prefix
  *
  * Sets a desired prefix for a namespace.
  */
 void
-wocky_xmpp_node_attribute_ns_set_prefix (GQuark ns, const gchar *prefix)
+wocky_node_attribute_ns_set_prefix (GQuark ns, const gchar *prefix)
 {
   const gchar *urn = g_quark_to_string (ns);
 
@@ -448,19 +465,19 @@ wocky_xmpp_node_attribute_ns_set_prefix (GQuark ns, const gchar *prefix)
 }
 
 /**
- * wocky_xmpp_node_set_attribute_n_ns:
- * @node: a #WockyXmppNode
+ * wocky_node_set_attribute_n_ns:
+ * @node: a #WockyNode
  * @key: the attribute to set
  * @value: the value to set
  * @value_size: the number of bytes of @value to set as a value
  * @ns: a namespace, or %NULL
  *
- * Sets a new attribute to a #WockyXmppNode, with the supplied values.
+ * Sets a new attribute to a #WockyNode, with the supplied values.
  * If the namespace is %NULL, this is equivalent to
- * wocky_xmpp_node_set_attribute_n().
+ * wocky_node_set_attribute_n().
  */
 void
-wocky_xmpp_node_set_attribute_n_ns (WockyXmppNode *node, const gchar *key,
+wocky_node_set_attribute_n_ns (WockyNode *node, const gchar *key,
     const gchar *value, gsize value_size, const gchar *ns)
 {
   Attribute *a = g_slice_new0 (Attribute);
@@ -469,7 +486,7 @@ wocky_xmpp_node_set_attribute_n_ns (WockyXmppNode *node, const gchar *key,
 
   a->key = g_strdup (key);
   a->value = g_strndup (value, value_size);
-  a->prefix = g_strdup (wocky_xmpp_node_attribute_ns_get_prefix_from_urn (ns));
+  a->prefix = g_strdup (wocky_node_attribute_ns_get_prefix_from_urn (ns));
   a->ns = (ns != NULL) ? g_quark_from_string (ns) : 0;
 
   /* Remove the old attribute if needed */
@@ -487,25 +504,25 @@ wocky_xmpp_node_set_attribute_n_ns (WockyXmppNode *node, const gchar *key,
 }
 
 /**
- * wocky_xmpp_node_set_attribute_n:
- * @node: a #WockyXmppNode
+ * wocky_node_set_attribute_n:
+ * @node: a #WockyNode
  * @key: the attribute to set
  * @value: the value to set
  * @value_size: the number of bytes of @value to set as a value
  *
- * Sets a new attribute to a #WockyXmppNode, with the supplied values.
+ * Sets a new attribute to a #WockyNode, with the supplied values.
  */
 void
-wocky_xmpp_node_set_attribute_n (WockyXmppNode *node, const gchar *key,
+wocky_node_set_attribute_n (WockyNode *node, const gchar *key,
     const gchar *value, gsize value_size)
 {
-  wocky_xmpp_node_set_attribute_n_ns (node, key, value, value_size, NULL);
+  wocky_node_set_attribute_n_ns (node, key, value, value_size, NULL);
 }
 
 static gint
 node_compare_child (gconstpointer a, gconstpointer b)
 {
-  const WockyXmppNode *node = (const WockyXmppNode *)a;
+  const WockyNode *node = (const WockyNode *)a;
   Tuple *target = (Tuple *) b;
 
   if (target->ns != 0 && target->ns != node->ns)
@@ -517,19 +534,19 @@ node_compare_child (gconstpointer a, gconstpointer b)
 }
 
 /**
- * wocky_xmpp_node_get_child_ns:
- * @node: a #WockyXmppNode
+ * wocky_node_get_child_ns:
+ * @node: a #WockyNode
  * @name: the name of the child to get
  * @ns: the namespace of the child to get, or %NULL
  *
  * Gets the child of a node, searching by name and limiting the search
  * to the specified namespace.
- * If the namespace is %NULL, this is equivalent to wocky_xmpp_node_get_child()
+ * If the namespace is %NULL, this is equivalent to wocky_node_get_child()
  *
- * Returns: a #WockyXmppNode.
+ * Returns: a #WockyNode.
  */
-WockyXmppNode *
-wocky_xmpp_node_get_child_ns (WockyXmppNode *node, const gchar *name,
+WockyNode *
+wocky_node_get_child_ns (WockyNode *node, const gchar *name,
      const gchar *ns)
 {
   GSList *link;
@@ -540,43 +557,43 @@ wocky_xmpp_node_get_child_ns (WockyXmppNode *node, const gchar *name,
 
   link = g_slist_find_custom (node->children, &t, node_compare_child);
 
-  return (link == NULL) ? NULL : (WockyXmppNode *) (link->data);
+  return (link == NULL) ? NULL : (WockyNode *) (link->data);
 }
 
 /**
- * wocky_xmpp_node_get_child:
- * @node: a #WockyXmppNode
+ * wocky_node_get_child:
+ * @node: a #WockyNode
  * @name: the name of the child to get
  *
  * Gets a child of a node, searching by name.
  *
- * Returns: a #WockyXmppNode.
+ * Returns: a #WockyNode.
  */
-WockyXmppNode *
-wocky_xmpp_node_get_child (WockyXmppNode *node, const gchar *name)
+WockyNode *
+wocky_node_get_child (WockyNode *node, const gchar *name)
 {
-  return wocky_xmpp_node_get_child_ns (node, name, NULL);
+  return wocky_node_get_child_ns (node, name, NULL);
 }
 
 /**
- * wocky_xmpp_node_get_first_child:
- * @node: a #WockyXmppNode
+ * wocky_node_get_first_child:
+ * @node: a #WockyNode
  *
- * Convenience function to return the first child of a #WockyXmppNode.
+ * Convenience function to return the first child of a #WockyNode.
  *
- * Returns: a #WockyXmppNode.
+ * Returns: a #WockyNode.
  */
-WockyXmppNode *
-wocky_xmpp_node_get_first_child (WockyXmppNode *node)
+WockyNode *
+wocky_node_get_first_child (WockyNode *node)
 {
   g_return_val_if_fail (node != NULL, NULL);
   g_return_val_if_fail (node->children != NULL, NULL);
-  return (WockyXmppNode *) node->children->data;
+  return (WockyNode *) node->children->data;
 }
 
 /**
- * wocky_xmpp_node_get_content_from_child:
- * @node: a #WockyXmppNode
+ * wocky_node_get_content_from_child:
+ * @node: a #WockyNode
  * @name: the name of the child whose content to retrieve
  *
  * Retrieves the content from a child of a node, if it exists.
@@ -585,15 +602,15 @@ wocky_xmpp_node_get_first_child (WockyXmppNode *node)
  *          has no such child.
  */
 const gchar *
-wocky_xmpp_node_get_content_from_child (WockyXmppNode *node,
+wocky_node_get_content_from_child (WockyNode *node,
     const gchar *name)
 {
-  return wocky_xmpp_node_get_content_from_child_ns (node, name, NULL);
+  return wocky_node_get_content_from_child_ns (node, name, NULL);
 }
 
 /**
- * wocky_xmpp_node_get_content_from_child_ns:
- * @node: a #WockyXmppNode
+ * wocky_node_get_content_from_child_ns:
+ * @node: a #WockyNode
  * @name: the name of the child whose content to retrieve
  * @ns: the namespace of the child whose content to retrieve
  *
@@ -602,11 +619,11 @@ wocky_xmpp_node_get_content_from_child (WockyXmppNode *node,
  * Returns: the content of the child of @node named @name in @ns, or %NULL if
  *          @node has no such child.
  */
-const gchar *wocky_xmpp_node_get_content_from_child_ns (WockyXmppNode *node,
+const gchar *wocky_node_get_content_from_child_ns (WockyNode *node,
     const gchar *name,
     const gchar *ns)
 {
-  WockyXmppNode *child = wocky_xmpp_node_get_child_ns (node, name, ns);
+  WockyNode *child = wocky_node_get_child_ns (node, name, ns);
 
   if (child == NULL)
     return NULL;
@@ -615,158 +632,176 @@ const gchar *wocky_xmpp_node_get_content_from_child_ns (WockyXmppNode *node,
 }
 
 /**
- * wocky_xmpp_node_add_child:
- * @node: a #WockyXmppNode
+ * wocky_node_add_child:
+ * @node: a #WockyNode
  * @name: the name of the child to add
  *
- * Adds a #WockyXmppNode with the specified name to an already existing node.
+ * Adds a #WockyNode with the specified name to an already existing node.
  *
- * Returns: the newly added #WockyXmppNode.
+ * Returns: the newly added #WockyNode.
  */
-WockyXmppNode *
-wocky_xmpp_node_add_child (WockyXmppNode *node, const gchar *name)
+WockyNode *
+wocky_node_add_child (WockyNode *node, const gchar *name)
 {
-  return wocky_xmpp_node_add_child_with_content_ns (node, name, NULL, NULL);
+  return wocky_node_add_child_with_content_ns_q (node, name, NULL, 0);
 }
 
 /**
- * wocky_xmpp_node_add_child_ns:
- * @node: a #WockyXmppNode
+ * wocky_node_add_child_ns:
+ * @node: a #WockyNode
  * @name: the name of the child to add
  * @ns: a namespace
  *
- * Adds a #WockyXmppNode with the specified name to an already existing node,
+ * Adds a #WockyNode with the specified name to an already existing node,
  * under the specified namespace. If the namespace is %NULL, this is equivalent
- * to wocky_xmpp_node_add_child().
+ * to wocky_node_add_child().
  *
- * Returns: the newly added #WockyXmppNode.
+ * Returns: the newly added #WockyNode.
  */
-WockyXmppNode *
-wocky_xmpp_node_add_child_ns (WockyXmppNode *node, const gchar *name,
+WockyNode *
+wocky_node_add_child_ns (WockyNode *node, const gchar *name,
     const gchar *ns)
 {
-  return wocky_xmpp_node_add_child_with_content_ns (node, name, NULL, ns);
+  return wocky_node_add_child_with_content_ns (node, name, NULL, ns);
+}
+/**
+ * wocky_node_add_child_ns_q:
+ * @node: a #WockyNode
+ * @name: the name of the child to add
+ * @ns: a namespace
+ *
+ * Adds a #WockyNode with the specified name to an already existing node,
+ * under the specified namespace. If the namespace is 0, this is equivalent
+ * to wocky_node_add_child().
+ *
+ * Returns: the newly added #WockyNode.
+ */
+WockyNode *
+wocky_node_add_child_ns_q (WockyNode *node,
+    const gchar *name,
+    GQuark ns)
+{
+  return wocky_node_add_child_with_content_ns_q (node, name, NULL, ns);
 }
 
 /**
- * wocky_xmpp_node_add_child_with_content:
- * @node: a #WockyXmppNode
+ * wocky_node_add_child_with_content:
+ * @node: a #WockyNode
  * @name: the name of the child to add
  * @content: the content of the child to add
  *
- * Adds a #WockyXmppNode with the specified name and containing the
+ * Adds a #WockyNode with the specified name and containing the
  * specified content to an already existing node.
  *
- * Returns: the newly added #WockyXmppNode.
+ * Returns: the newly added #WockyNode.
  */
-WockyXmppNode *
-wocky_xmpp_node_add_child_with_content (WockyXmppNode *node,
+WockyNode *
+wocky_node_add_child_with_content (WockyNode *node,
      const gchar *name, const char *content)
 {
-  return wocky_xmpp_node_add_child_with_content_ns (node, name,
-      content, NULL);
+  return wocky_node_add_child_with_content_ns_q (node, name,
+      content, 0);
 }
 
 /**
- * wocky_xmpp_node_add_child_with_content_ns:
- * @node: a #WockyXmppNode
+ * wocky_node_add_child_with_content_ns:
+ * @node: a #WockyNode
  * @name: the name of the child to add
  * @content: the content of the child to add
  * @ns: a namespace
  *
- * Adds a #WockyXmppNode with the specified name and the specified content
+ * Adds a #WockyNode with the specified name and the specified content
  * to an already existing node, under the specified namespace.
  * If the namespace is %NULL, this is equivalent to
- * wocky_xmpp_node_add_child_with_content().
+ * wocky_node_add_child_with_content().
  *
- * Returns: the newly added #WockyXmppNode.
+ * Returns: the newly added #WockyNode.
  */
-WockyXmppNode *
-wocky_xmpp_node_add_child_with_content_ns (WockyXmppNode *node,
+WockyNode *
+wocky_node_add_child_with_content_ns (WockyNode *node,
     const gchar *name, const gchar *content, const gchar *ns)
 {
-  WockyXmppNode *result = wocky_xmpp_node_new (name);
+  return wocky_node_add_child_with_content_ns_q (node, name, content,
+    ns != NULL ? g_quark_from_string (ns) : 0);
+}
 
-  wocky_xmpp_node_set_content (result, content);
-  if (ns != NULL)
-    wocky_xmpp_node_set_ns (result, ns);
-  else
-    result->ns = node->ns;
+/**
+ * wocky_node_add_child_with_content_ns_q:
+ * @node: a #WockyNode
+ * @name: the name of the child to add
+ * @content: the content of the child to add
+ * @ns: a namespace
+ *
+ * Adds a #WockyNode with the specified name and the specified content
+ * to an already existing node, under the specified namespace.
+ * If the namespace is 0, this is equivalent to
+ * wocky_node_add_child_with_content().
+ *
+ * Returns: the newly added #WockyNode.
+ */
+WockyNode *
+wocky_node_add_child_with_content_ns_q (WockyNode *node,
+    const gchar *name, const gchar *content, GQuark ns)
+{
+  WockyNode *result = new_node (name, ns != 0 ? ns : node->ns);
+
+  wocky_node_set_content (result, content);
 
   node->children = g_slist_append (node->children, result);
   return result;
 }
 
 /**
- * wocky_xmpp_node_set_ns:
- * @node: a #WockyXmppNode
- * @ns: a namespace
+ * wocky_node_get_ns:
+ * @node: a #WockyNode
  *
- * Sets the namespace of a #WockyXmppNode.
- */
-void
-wocky_xmpp_node_set_ns (WockyXmppNode *node, const gchar *ns)
-{
-  wocky_xmpp_node_set_ns_q (node, g_quark_from_string (ns));
-}
-
-void
-wocky_xmpp_node_set_ns_q (WockyXmppNode *node, GQuark ns)
-{
-  node->ns = ns;
-}
-
-/**
- * wocky_xmpp_node_get_ns:
- * @node: a #WockyXmppNode
- *
- * Gets the namespace of a #WockyXmppNode
+ * Gets the namespace of a #WockyNode
  *
  * Returns: a string containing the namespace of the node.
  */
 const gchar *
-wocky_xmpp_node_get_ns (WockyXmppNode *node)
+wocky_node_get_ns (WockyNode *node)
 {
   return g_quark_to_string (node->ns);
 }
 
 gboolean
-wocky_xmpp_node_has_ns (WockyXmppNode *node, const gchar *ns)
+wocky_node_has_ns (WockyNode *node, const gchar *ns)
 {
-  return wocky_xmpp_node_has_ns_q (node, g_quark_try_string (ns));
+  return wocky_node_has_ns_q (node, g_quark_try_string (ns));
 }
 
 gboolean
-wocky_xmpp_node_has_ns_q (WockyXmppNode *node, GQuark ns)
+wocky_node_has_ns_q (WockyNode *node, GQuark ns)
 {
   return node->ns == ns;
 }
 
 /**
- * wocky_xmpp_node_get_language:
- * @node: a #WockyXmppNode
+ * wocky_node_get_language:
+ * @node: a #WockyNode
  *
- * Gets the language of a #WockyXmppNode
+ * Gets the language of a #WockyNode
  *
  * Returns: a string containing the language of the node.
  */
 const gchar *
-wocky_xmpp_node_get_language (WockyXmppNode *node)
+wocky_node_get_language (WockyNode *node)
 {
   g_return_val_if_fail (node != NULL, NULL);
   return node->language;
 }
 
 /**
- * wocky_xmpp_node_set_language_n:
- * @node: a #WockyXmppNode
+ * wocky_node_set_language_n:
+ * @node: a #WockyNode
  * @lang: a language
  * @lang_size: the length of @lang, in bytes.
  *
- * Sets the language of a #WockyXmppNode.
+ * Sets the language of a #WockyNode.
  */
 void
-wocky_xmpp_node_set_language_n (WockyXmppNode *node, const gchar *lang,
+wocky_node_set_language_n (WockyNode *node, const gchar *lang,
     gsize lang_size)
 {
   g_free (node->language);
@@ -774,45 +809,45 @@ wocky_xmpp_node_set_language_n (WockyXmppNode *node, const gchar *lang,
 }
 
 /**
- * wocky_xmpp_node_set_language:
- * @node: a #WockyXmppNode
+ * wocky_node_set_language:
+ * @node: a #WockyNode
  * @lang: a %NULL-terminated string containing the language
  *
- * Sets the language of a #WockyXmppNode.
+ * Sets the language of a #WockyNode.
  */
 void
-wocky_xmpp_node_set_language (WockyXmppNode *node, const gchar *lang)
+wocky_node_set_language (WockyNode *node, const gchar *lang)
 {
   gsize lang_size = 0;
   if (lang != NULL) {
     lang_size = strlen (lang);
   }
-  wocky_xmpp_node_set_language_n (node, lang, lang_size);
+  wocky_node_set_language_n (node, lang, lang_size);
 }
 
 /**
- * wocky_xmpp_node_set_content:
- * @node: a #WockyXmppNode
+ * wocky_node_set_content:
+ * @node: a #WockyNode
  * @content: the content to set to the node
  *
- * Sets the content of a #WockyXmppNode.
+ * Sets the content of a #WockyNode.
  */
 void
-wocky_xmpp_node_set_content (WockyXmppNode *node, const gchar *content)
+wocky_node_set_content (WockyNode *node, const gchar *content)
 {
   g_free (node->content);
   node->content = g_strdup (content);
 }
 
 /**
- * wocky_xmpp_node_append_content:
- * @node: a #WockyXmppNode
+ * wocky_node_append_content:
+ * @node: a #WockyNode
  * @content: the content to append to the node
  *
- * Appends some content to the content of a #WockyXmppNode.
+ * Appends some content to the content of a #WockyNode.
  */
 void
-wocky_xmpp_node_append_content (WockyXmppNode *node,
+wocky_node_append_content (WockyNode *node,
     const gchar *content)
 {
   gchar *t = node->content;
@@ -821,16 +856,16 @@ wocky_xmpp_node_append_content (WockyXmppNode *node,
 }
 
 /**
- * wocky_xmpp_node_append_content_n:
- * @node: a #WockyXmppNode
+ * wocky_node_append_content_n:
+ * @node: a #WockyNode
  * @content: the content to append to the node
  * @size: the size of the content to append
  *
  * Appends a specified number of content bytes to the content of a
- * #WockyXmppNode.
+ * #WockyNode.
  */
 void
-wocky_xmpp_node_append_content_n (WockyXmppNode *node, const gchar *content,
+wocky_node_append_content_n (WockyNode *node, const gchar *content,
     gsize size)
 {
   gsize csize = node->content != NULL ? strlen (node->content) : 0;
@@ -860,7 +895,7 @@ attribute_to_string (const gchar *key, const gchar *value,
 }
 
 static gboolean
-node_to_string (WockyXmppNode *node,
+node_to_string (WockyNode *node,
     GQuark parent_ns,
     const gchar *prefix,
     GString *str)
@@ -872,11 +907,11 @@ node_to_string (WockyXmppNode *node,
 
   if (parent_ns != node->ns)
     {
-      const gchar *ns = wocky_xmpp_node_get_ns (node);
+      const gchar *ns = wocky_node_get_ns (node);
       g_string_append_printf (str, " xmlns='%s'", ns);
     }
 
-  wocky_xmpp_node_each_attribute (node, attribute_to_string, str);
+  wocky_node_each_attribute (node, attribute_to_string, str);
   g_string_append_c (str, '\n');
 
   nprefix = g_strdup_printf ("%s    ", prefix);
@@ -892,16 +927,16 @@ node_to_string (WockyXmppNode *node,
 }
 
 /**
- * wocky_xmpp_node_to_string:
- * @node: a #WockyXmppNode
+ * wocky_node_to_string:
+ * @node: a #WockyNode
  *
- * Obtains a string representation of a #WockyXmppNode.
+ * Obtains a string representation of a #WockyNode.
  *
  * Returns: a newly allocated string containing a serialization of
  * the node.
  */
 gchar *
-wocky_xmpp_node_to_string (WockyXmppNode *node)
+wocky_node_to_string (WockyNode *node)
 {
   GString *str;
   gchar *result;
@@ -916,17 +951,17 @@ wocky_xmpp_node_to_string (WockyXmppNode *node)
 }
 
 /**
- * wocky_xmpp_node_equal:
- * @node0: a #WockyXmppNode
- * @node1: a #WockyXmppNode to compare to @node0
+ * wocky_node_equal:
+ * @node0: a #WockyNode
+ * @node1: a #WockyNode to compare to @node0
  *
- * Compares two #WockyXmppNode<!-- -->s for equality.
+ * Compares two #WockyNode<!-- -->s for equality.
  *
  * Returns: %TRUE if the two nodes are equal.
  */
 gboolean
-wocky_xmpp_node_equal (WockyXmppNode *node0,
-    WockyXmppNode *node1)
+wocky_node_equal (WockyNode *node0,
+    WockyNode *node1)
 {
   GSList *l0, *l1;
 
@@ -951,7 +986,7 @@ wocky_xmpp_node_equal (WockyXmppNode *node0,
       Attribute *a = (Attribute *) l0->data;
       const gchar *c;
 
-      c = wocky_xmpp_node_get_attribute_ns (node1, a->key,
+      c = wocky_node_get_attribute_ns (node1, a->key,
         a->ns == 0 ? NULL : g_quark_to_string (a->ns));
 
       if (wocky_strdiff (a->value, c))
@@ -963,10 +998,10 @@ wocky_xmpp_node_equal (WockyXmppNode *node0,
       l0 != NULL && l1 != NULL;
       l0 = g_slist_next (l0), l1 = g_slist_next (l1))
     {
-      WockyXmppNode *c0 = (WockyXmppNode *) l0->data;
-      WockyXmppNode *c1 = (WockyXmppNode *) l1->data;
+      WockyNode *c0 = (WockyNode *) l0->data;
+      WockyNode *c1 = (WockyNode *) l1->data;
 
-      if (!wocky_xmpp_node_equal (c0, c1))
+      if (!wocky_node_equal (c0, c1))
         return FALSE;
     }
 
@@ -977,15 +1012,15 @@ wocky_xmpp_node_equal (WockyXmppNode *node0,
 }
 
 /**
- * wocky_xmpp_node_is_superset:
- * @node: the #WockyXmppNode to test
+ * wocky_node_is_superset:
+ * @node: the #WockyNode to test
  * @pattern: the supposed subset
  *
  * Returns: %TRUE if @node is a superset of @subset.
  */
 gboolean
-wocky_xmpp_node_is_superset (WockyXmppNode *node,
-    WockyXmppNode *subset)
+wocky_node_is_superset (WockyNode *node,
+    WockyNode *subset)
 {
   GSList *l;
 
@@ -1017,7 +1052,7 @@ wocky_xmpp_node_is_superset (WockyXmppNode *node,
       Attribute *a = (Attribute *) l->data;
       const gchar *c;
 
-      c = wocky_xmpp_node_get_attribute_ns (node, a->key,
+      c = wocky_node_get_attribute_ns (node, a->key,
         a->ns == 0 ? NULL : g_quark_to_string (a->ns));
 
       if (wocky_strdiff (a->value, c))
@@ -1027,13 +1062,13 @@ wocky_xmpp_node_is_superset (WockyXmppNode *node,
   /* Recursively check children; order doesn't matter */
   for (l = subset->children; l != NULL; l = g_slist_next (l))
     {
-      WockyXmppNode *pattern_child = (WockyXmppNode *) l->data;
-      WockyXmppNode *node_child;
+      WockyNode *pattern_child = (WockyNode *) l->data;
+      WockyNode *node_child;
 
-      node_child = wocky_xmpp_node_get_child_ns (node, pattern_child->name,
-          wocky_xmpp_node_get_ns (pattern_child));
+      node_child = wocky_node_get_child_ns (node, pattern_child->name,
+          wocky_node_get_ns (pattern_child));
 
-      if (!wocky_xmpp_node_is_superset (node_child, pattern_child))
+      if (!wocky_node_is_superset (node_child, pattern_child))
         return FALSE;
     }
 
@@ -1041,7 +1076,7 @@ wocky_xmpp_node_is_superset (WockyXmppNode *node,
 }
 
 /**
- * wocky_xmpp_node_iter_init:
+ * wocky_node_iter_init:
  * @iter: unitialized iterator
  * @node: Node whose children to iterate over
  * @name: Name to filter on or %NULL
@@ -1050,21 +1085,21 @@ wocky_xmpp_node_is_superset (WockyXmppNode *node,
  * Initializes an iterator that can be used to iterate over the children of
  * @node, filtered by @name and @ns
  * |[
- * WockyXmppNodeIter iter;
- * WockyXmppNode *child;
+ * WockyNodeIter iter;
+ * WockyNode *child;
  *
- * wocky_xmpp_node_iter_init (&iter, stanza->node,
+ * wocky_node_iter_init (&iter, wocky_stanza_get_top_node (stanza),
  *    "payload-type",
  *    WOCKY_XMPP_NS_JINGLE_RTP);
- * while (wocky_xmpp_node_iter_next (iter, &child))
+ * while (wocky_node_iter_next (iter, &child))
  *   {
  *     /<!-- -->* do something with the child *<!-- -->/
  *   }
  * ]|
  */
 void
-wocky_xmpp_node_iter_init (WockyXmppNodeIter *iter,
-    WockyXmppNode *node,
+wocky_node_iter_init (WockyNodeIter *iter,
+    WockyNode *node,
     const gchar *name,
     const gchar *ns)
 {
@@ -1074,8 +1109,8 @@ wocky_xmpp_node_iter_init (WockyXmppNodeIter *iter,
 }
 
 /**
- * wocky_xmpp_node_iter_next:
- * @iter: an initialized WockyXmppNodeIter
+ * wocky_node_iter_next:
+ * @iter: an initialized WockyNodeIter
  * @next: a location to store the next child
  *
  * Advances iter to the next child that matches its filter. if %FALSE is
@@ -1085,12 +1120,12 @@ wocky_xmpp_node_iter_init (WockyXmppNodeIter *iter,
  *
  */
 gboolean
-wocky_xmpp_node_iter_next (WockyXmppNodeIter *iter,
-    WockyXmppNode **next)
+wocky_node_iter_next (WockyNodeIter *iter,
+    WockyNode **next)
 {
   while (iter->pending != NULL)
     {
-      WockyXmppNode *ln = (WockyXmppNode *) iter->pending->data;
+      WockyNode *ln = (WockyNode *) iter->pending->data;
 
       iter->pending  = g_slist_next (iter->pending);
 
@@ -1110,25 +1145,201 @@ wocky_xmpp_node_iter_next (WockyXmppNodeIter *iter,
 }
 
 /**
- * wocky_xmpp_node_init:
+ * wocky_node_add_build:
+ * @node: The node under which to add a new subtree
+ * @Varargs: the description of the stanza to build,
+ *  terminated with %NULL
  *
- * Initializes the caches used by #WockyXmppNode.
- * This should be always called before using #WockyXmppNode structs.
+ * Add a node subtree to an existing parent node.
+ * <example><programlisting>
+ * wocky_node_add_build (node,
+ *    '(', "body",
+ *        '$', "Telepathy rocks!",
+ *    ')',
+ *   NULL);
+ * </programlisting></example>
+ *
+ * The above examples adds the following subtree under the given node:
+ * <programlisting language="xml">
+ * &lt;body&gt;
+ *    Telepathy rocks!
+ * &lt;/body&gt;
+ * </programlisting>
+ *
  */
 void
-wocky_xmpp_node_init ()
+wocky_node_add_build (WockyNode *node,
+    ...)
+{
+  va_list ap;
+
+  va_start (ap, node);
+  wocky_node_add_build_va (node, ap);
+  va_end (ap);
+}
+
+void
+wocky_node_add_build_va (WockyNode *node, va_list ap)
+{
+  GSList *stack = NULL;
+  WockyNodeBuildTag arg;
+
+  stack = g_slist_prepend (stack, node);
+
+  while ((arg = va_arg (ap, WockyNodeBuildTag)) != 0)
+    {
+      switch (arg)
+        {
+        case WOCKY_NODE_ATTRIBUTE:
+          {
+            gchar *key = va_arg (ap, gchar *);
+            gchar *value = va_arg (ap, gchar *);
+
+            g_assert (key != NULL);
+            g_assert (value != NULL);
+            wocky_node_set_attribute (stack->data, key, value);
+          }
+          break;
+
+        case WOCKY_NODE_START:
+          {
+            gchar *name = va_arg (ap, gchar *);
+            WockyNode *child;
+
+            g_assert (name != NULL);
+            child = wocky_node_add_child (stack->data, name);
+            stack = g_slist_prepend (stack, child);
+          }
+          break;
+
+        case WOCKY_NODE_TEXT:
+          {
+            gchar *txt = va_arg (ap, gchar *);
+
+            g_assert (txt != NULL);
+            wocky_node_set_content (stack->data, txt);
+          }
+          break;
+
+        case WOCKY_NODE_XMLNS:
+          {
+            gchar *ns = va_arg (ap, gchar *);
+
+            g_assert (ns != NULL);
+            ((WockyNode *) stack->data)->ns = g_quark_from_string (ns);
+          }
+          break;
+
+        case WOCKY_NODE_END:
+          {
+            /* delete the top of the stack */
+            stack = g_slist_delete_link (stack, stack);
+            g_warn_if_fail (stack != NULL);
+          }
+          break;
+
+        case WOCKY_NODE_ASSIGN_TO:
+          {
+            WockyNode **dest = va_arg (ap, WockyNode **);
+
+            g_assert (dest != NULL);
+            *dest = stack->data;
+          }
+          break;
+
+        default:
+          g_assert_not_reached ();
+        }
+    }
+
+  if (G_UNLIKELY (stack != NULL && stack->data != node))
+    {
+      GString *still_open = g_string_new ("");
+
+      while (stack != NULL && stack->data != node)
+        {
+          WockyNode *unclosed = stack->data;
+
+          g_string_append_printf (still_open, "</%s> ", unclosed->name);
+          stack = stack->next;
+        }
+
+      g_warning ("improperly nested build spec! unclosed: %s", still_open->str);
+      g_string_free (still_open, TRUE);
+    }
+
+  g_slist_free (stack);
+}
+
+WockyNode *
+_wocky_node_copy (WockyNode *node)
+{
+  WockyNode *result = new_node (node->name, node->ns);
+  GSList *l;
+
+  result->content = g_strdup (node->content);
+  result->language = g_strdup (node->language);
+
+  for (l = node->attributes ; l != NULL; l = g_slist_next (l))
+    {
+      Attribute *a = l->data;
+      Attribute *b = g_slice_new0 (Attribute);
+
+      b->key = g_strdup (a->key);
+      b->value = g_strdup (a->value);
+      b->prefix = g_strdup (a->prefix);
+      b->ns = a->ns;
+
+      result->attributes = g_slist_append (result->attributes, b);
+    }
+
+  for (l = node->children ; l != NULL; l = g_slist_next (l))
+    result->children = g_slist_append (result->children,
+      _wocky_node_copy ((WockyNode *) l->data));
+
+  return result;
+}
+
+/**
+ * wocky_node_add_node_tree:
+ * @node: A node
+ * @tree: The node tree to add
+ *
+ * Copies the nodes from @tree adds them as a child of @node.
+ *
+ */
+void
+wocky_node_add_node_tree (WockyNode *node, WockyNodeTree *tree)
+{
+  WockyNode *copy;
+
+  g_return_if_fail (node != NULL);
+  g_return_if_fail (tree != NULL);
+
+  copy = _wocky_node_copy (wocky_node_tree_get_top_node (tree));
+  node->children = g_slist_append (node->children, copy);
+}
+
+/**
+ * wocky_node_init:
+ *
+ * Initializes the caches used by #WockyNode.
+ * This should be always called before using #WockyNode structs.
+ */
+void
+wocky_node_init ()
 {
   _init_user_prefix_table ();
   _init_default_prefix_table ();
 }
 
 /**
- * wocky_xmpp_node_deinit:
+ * wocky_node_deinit:
  *
- * Releases all the resources used by the #WockyXmppNode caches.
+ * Releases all the resources used by the #WockyNode caches.
  */
 void
-wocky_xmpp_node_deinit ()
+wocky_node_deinit ()
 {
   g_hash_table_unref (user_ns_prefixes);
   g_hash_table_unref (default_ns_prefixes);

@@ -1,6 +1,6 @@
 /*
- * wocky-xmpp-stanza.h - Header for WockyXmppStanza
- * Copyright (C) 2006 Collabora Ltd.
+ * wocky-stanza.h - Header for WockyStanza
+ * Copyright (C) 2006-2010 Collabora Ltd.
  * @author Sjoerd Simons <sjoerd@luon.net>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,45 +18,47 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __WOCKY_XMPP_STANZA_H__
-#define __WOCKY_XMPP_STANZA_H__
+#ifndef __WOCKY_STANZA_H__
+#define __WOCKY_STANZA_H__
 
 #include <stdarg.h>
 
 #include <glib-object.h>
-#include "wocky-xmpp-node.h"
+#include "wocky-node-tree.h"
 #include "wocky-xmpp-error.h"
 
 G_BEGIN_DECLS
 
-typedef struct _WockyXmppStanza WockyXmppStanza;
-typedef struct _WockyXmppStanzaClass WockyXmppStanzaClass;
+typedef struct _WockyStanzaPrivate WockyStanzaPrivate;
+typedef struct _WockyStanza WockyStanza;
+typedef struct _WockyStanzaClass WockyStanzaClass;
 
-struct _WockyXmppStanzaClass {
-    GObjectClass parent_class;
+struct _WockyStanzaClass {
+    WockyNodeTreeClass parent_class;
 };
 
-struct _WockyXmppStanza {
-    GObject parent;
-    WockyXmppNode *node;
+struct _WockyStanza {
+    WockyNodeTree parent;
+
+    WockyStanzaPrivate *priv;
 };
 
-GType wocky_xmpp_stanza_get_type (void);
+GType wocky_stanza_get_type (void);
 
 /* TYPE MACROS */
-#define WOCKY_TYPE_XMPP_STANZA \
-  (wocky_xmpp_stanza_get_type ())
-#define WOCKY_XMPP_STANZA(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj), WOCKY_TYPE_XMPP_STANZA, \
-   WockyXmppStanza))
-#define WOCKY_XMPP_STANZA_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass), WOCKY_TYPE_XMPP_STANZA, WockyXmppStanzaClass))
-#define WOCKY_IS_XMPP_STANZA(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj), WOCKY_TYPE_XMPP_STANZA))
-#define WOCKY_IS_XMPP_STANZA_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE((klass), WOCKY_TYPE_XMPP_STANZA))
-#define WOCKY_XMPP_STANZA_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), WOCKY_TYPE_XMPP_STANZA, WockyXmppStanzaClass))
+#define WOCKY_TYPE_STANZA \
+  (wocky_stanza_get_type ())
+#define WOCKY_STANZA(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), WOCKY_TYPE_STANZA, \
+   WockyStanza))
+#define WOCKY_STANZA_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST((klass), WOCKY_TYPE_STANZA, WockyStanzaClass))
+#define WOCKY_IS_STANZA(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj), WOCKY_TYPE_STANZA))
+#define WOCKY_IS_STANZA_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE((klass), WOCKY_TYPE_STANZA))
+#define WOCKY_STANZA_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), WOCKY_TYPE_STANZA, WockyStanzaClass))
 
 typedef enum
 {
@@ -98,48 +100,38 @@ typedef enum
   NUM_WOCKY_STANZA_SUB_TYPE
 } WockyStanzaSubType;
 
-typedef enum
-{
-  WOCKY_NODE,
-  WOCKY_NODE_TEXT,
-  WOCKY_NODE_END,
-  WOCKY_NODE_ATTRIBUTE,
-  WOCKY_NODE_XMLNS,
-  WOCKY_NODE_ASSIGN_TO,
-  WOCKY_STANZA_END
-} WockyBuildTag;
+WockyStanza * wocky_stanza_new (const gchar *name, const gchar *ns);
 
-WockyXmppStanza * wocky_xmpp_stanza_new (const gchar *name);
+WockyNode *wocky_stanza_get_top_node (WockyStanza *self);
 
-WockyXmppStanza * wocky_xmpp_stanza_build (WockyStanzaType type,
+WockyStanza * wocky_stanza_build (WockyStanzaType type,
     WockyStanzaSubType sub_type, const gchar *from, const gchar *to,
-    WockyBuildTag spec, ...);
+    ...) G_GNUC_NULL_TERMINATED;
 
-void wocky_xmpp_stanza_get_type_info (WockyXmppStanza *stanza,
+void wocky_stanza_get_type_info (WockyStanza *stanza,
     WockyStanzaType *type, WockyStanzaSubType *sub_type);
 
-WockyXmppStanza * wocky_xmpp_stanza_build_va (WockyStanzaType type,
+WockyStanza * wocky_stanza_build_va (WockyStanzaType type,
     WockyStanzaSubType sub_type,
     const gchar *from,
     const gchar *to,
-    WockyBuildTag spec,
     va_list ap);
 
-WockyXmppStanza * wocky_xmpp_stanza_build_iq_result (WockyXmppStanza *iq,
-    WockyBuildTag spec, ...);
+WockyStanza * wocky_stanza_build_iq_result (WockyStanza *iq,
+    ...) G_GNUC_NULL_TERMINATED;
 
-WockyXmppStanza * wocky_xmpp_stanza_build_iq_error (WockyXmppStanza *iq,
-    WockyBuildTag spec, ...);
+WockyStanza * wocky_stanza_build_iq_error (WockyStanza *iq,
+    ...) G_GNUC_NULL_TERMINATED;
 
-gboolean wocky_xmpp_stanza_extract_errors (WockyXmppStanza *stanza,
+gboolean wocky_stanza_extract_errors (WockyStanza *stanza,
     WockyXmppErrorType *type,
     GError **core,
     GError **specialized,
-    WockyXmppNode **specialized_node);
+    WockyNode **specialized_node);
 
-gboolean wocky_xmpp_stanza_extract_stream_error (WockyXmppStanza *stanza,
+gboolean wocky_stanza_extract_stream_error (WockyStanza *stanza,
     GError **stream_error);
 
 G_END_DECLS
 
-#endif /* #ifndef __WOCKY_XMPP_STANZA_H__*/
+#endif /* #ifndef __WOCKY_STANZA_H__*/

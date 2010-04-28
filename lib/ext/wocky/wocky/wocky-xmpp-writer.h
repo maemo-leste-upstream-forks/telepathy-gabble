@@ -23,12 +23,15 @@
 
 #include <glib-object.h>
 
-#include "wocky-xmpp-stanza.h"
+#include "wocky-stanza.h"
+#include "wocky-node-tree.h"
 
 G_BEGIN_DECLS
 
 typedef struct _WockyXmppWriter WockyXmppWriter;
 typedef struct _WockyXmppWriterClass WockyXmppWriterClass;
+typedef struct _WockyXmppWriterPrivate WockyXmppWriterPrivate;
+
 
 struct _WockyXmppWriterClass {
     GObjectClass parent_class;
@@ -36,6 +39,8 @@ struct _WockyXmppWriterClass {
 
 struct _WockyXmppWriter {
     GObject parent;
+
+    WockyXmppWriterPrivate *priv;
 };
 
 GType wocky_xmpp_writer_get_type (void);
@@ -74,7 +79,12 @@ void wocky_xmpp_writer_stream_close (WockyXmppWriter *writer,
     const guint8 **data, gsize *length);
 
 void wocky_xmpp_writer_write_stanza (WockyXmppWriter *writer,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
+    const guint8 **data,
+    gsize *length);
+
+void wocky_xmpp_writer_write_node_tree (WockyXmppWriter *writer,
+    WockyNodeTree *tree,
     const guint8 **data,
     gsize *length);
 

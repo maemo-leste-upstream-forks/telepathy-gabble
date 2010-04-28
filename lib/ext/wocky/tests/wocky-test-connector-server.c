@@ -28,7 +28,7 @@
 
 #include "wocky-test-connector-server.h"
 
-#include <wocky/wocky-xmpp-stanza.h>
+#include <wocky/wocky-stanza.h>
 #include <wocky/wocky-xmpp-connection.h>
 
 #include <wocky/wocky-namespaces.h>
@@ -43,7 +43,7 @@
 
 G_DEFINE_TYPE (TestConnectorServer, test_connector_server, G_TYPE_OBJECT);
 
-typedef void (*stanza_func)(TestConnectorServer *self, WockyXmppStanza *xml);
+typedef void (*stanza_func)(TestConnectorServer *self, WockyStanza *xml);
 typedef struct _stanza_handler stanza_handler;
 struct _stanza_handler {
   const gchar *ns;
@@ -85,8 +85,6 @@ static struct { CertSet set; const gchar *key; const gchar *crt; } certs[] =
     { CERT_REVOKED,  TLS_REV_KEY_FILE,     TLS_REV_CRT_FILE     },
     { CERT_NONE,     NULL,                 NULL                 } };
 
-typedef struct _TestConnectorServerPrivate TestConnectorServerPrivate;
-
 struct _TestConnectorServerPrivate
 {
   gboolean dispose_has_run;
@@ -115,15 +113,11 @@ struct _TestConnectorServerPrivate
   struct { ServerProblem sasl; ConnectorProblem *connector; } problem;
 };
 
-#define TEST_CONNECTOR_SERVER_GET_PRIVATE(o)  \
-  (G_TYPE_INSTANCE_GET_PRIVATE ((o), TEST_TYPE_CONNECTOR_SERVER, \
-   TestConnectorServerPrivate))
-
 static void
 test_connector_server_dispose (GObject *object)
 {
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (object);
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
 
   if (priv->dispose_has_run)
     return;
@@ -151,7 +145,7 @@ static void
 test_connector_server_finalise (GObject *object)
 {
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (object);
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   /* free any data held directly by the object here */
   g_free (priv->mech);
   g_free (priv->user);
@@ -163,9 +157,14 @@ test_connector_server_finalise (GObject *object)
 }
 
 static void
-test_connector_server_init (TestConnectorServer *obj)
+test_connector_server_init (TestConnectorServer *self)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (obj);
+  TestConnectorServerPrivate *priv;
+
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, TEST_TYPE_CONNECTOR_SERVER,
+      TestConnectorServerPrivate);
+  priv = self->priv;
+
   priv->tls_started = FALSE;
   priv->authed      = FALSE;
   priv->cancellable = g_cancellable_new ();
@@ -188,9 +187,9 @@ static void xmpp_handler (GObject *source,
     GAsyncResult *result,
     gpointer user_data);
 static void handle_auth     (TestConnectorServer *self,
-    WockyXmppStanza *xml);
+    WockyStanza *xml);
 static void handle_starttls (TestConnectorServer *self,
-    WockyXmppStanza *xml);
+    WockyStanza *xml);
 
 static void
 after_auth (GObject *source,
@@ -204,18 +203,18 @@ static void xmpp_closed (GObject *source,
     gpointer data);
 
 static void iq_get_query_JABBER_AUTH (TestConnectorServer *self,
-    WockyXmppStanza *xml);
+    WockyStanza *xml);
 static void iq_set_query_JABBER_AUTH (TestConnectorServer *self,
-    WockyXmppStanza *xml);
+    WockyStanza *xml);
 static void iq_set_bind_XMPP_BIND (TestConnectorServer *self,
-    WockyXmppStanza *xml);
+    WockyStanza *xml);
 static void iq_set_session_XMPP_SESSION (TestConnectorServer *self,
-    WockyXmppStanza *xml);
+    WockyStanza *xml);
 
 static void iq_get_query_XEP77_REGISTER (TestConnectorServer *self,
-    WockyXmppStanza *xml);
+    WockyStanza *xml);
 static void iq_set_query_XEP77_REGISTER (TestConnectorServer *self,
-    WockyXmppStanza *xml);
+    WockyStanza *xml);
 
 static void iq_sent (GObject *source,
     GAsyncResult *result,
@@ -249,22 +248,21 @@ static iq_handler iq_handlers[] =
 
 /* ************************************************************************* */
 /* error stanza                                                              */
-static WockyXmppStanza *
+static WockyStanza *
 error_stanza (const gchar *cond,
     const gchar *msg, gboolean extended)
 {
-  WockyXmppStanza *error = wocky_xmpp_stanza_new ("error");
-  WockyXmppNode *node = error->node;
+  WockyStanza *error = wocky_stanza_new ("error", WOCKY_XMPP_NS_STREAM);
+  WockyNode *node = wocky_stanza_get_top_node (error);
 
-  wocky_xmpp_node_set_ns (node, WOCKY_XMPP_NS_STREAM);
-  wocky_xmpp_node_add_child_ns (node, cond, WOCKY_XMPP_NS_STREAMS);
+  wocky_node_add_child_ns (node, cond, WOCKY_XMPP_NS_STREAMS);
 
   if ((msg != NULL) && (*msg != '\0'))
-    wocky_xmpp_node_add_child_with_content_ns (node, "text", msg,
+    wocky_node_add_child_with_content_ns (node, "text", msg,
         WOCKY_XMPP_NS_STREAMS);
 
   if (extended)
-    wocky_xmpp_node_add_child_with_content_ns (node, "something", "blah",
+    wocky_node_add_child_with_content_ns (node, "something", "blah",
         "urn:ietf:a:namespace:I:made:up");
 
   return error;
@@ -273,65 +271,66 @@ error_stanza (const gchar *cond,
 /* ************************************************************************* */
 static void
 iq_set_query_XEP77_REGISTER (TestConnectorServer *self,
-    WockyXmppStanza *xml)
+    WockyStanza *xml)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   WockyXmppConnection *conn = priv->conn;
-  WockyXmppStanza *iq = NULL;
-  WockyXmppNode *env = xml->node;
-  WockyXmppNode *query = wocky_xmpp_node_get_child (env, "query");
-  const gchar *id = wocky_xmpp_node_get_attribute (env, "id");
+  WockyStanza *iq = NULL;
+  WockyNode *env = wocky_stanza_get_top_node (xml);
+  WockyNode *query = wocky_node_get_child (env, "query");
+  const gchar *id = wocky_node_get_attribute (env, "id");
   gpointer cb = iq_sent;
 
   DEBUG ("");
 
   if (priv->problem.connector->xep77 & XEP77_PROBLEM_ALREADY)
     {
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_RESULT,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "query", WOCKY_NODE_XMLNS, WOCKY_XEP77_NS_REGISTER,
-          WOCKY_NODE, "registered", WOCKY_NODE_END,
-          WOCKY_NODE, "username", WOCKY_NODE_TEXT, "foo", WOCKY_NODE_END,
-          WOCKY_NODE, "password", WOCKY_NODE_TEXT, "bar", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "query", ':', WOCKY_XEP77_NS_REGISTER,
+          '(', "registered", ')',
+          '(', "username", '$', "foo", ')',
+          '(', "password", '$', "bar", ')',
+          ')',
+          NULL);
     }
   else if (priv->problem.connector->xep77 & XEP77_PROBLEM_FAIL_CONFLICT)
     {
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_ERROR,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "error", WOCKY_NODE_ATTRIBUTE, "type", "cancel",
-          WOCKY_NODE, "conflict",
-          WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STANZAS,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "error", '@', "type", "cancel",
+          '(', "conflict",
+          ':', WOCKY_XMPP_NS_STANZAS,
+          ')',
+          ')',
+          NULL);
     }
   else if (priv->problem.connector->xep77 & XEP77_PROBLEM_FAIL_REJECTED)
     {
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_ERROR,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "error", WOCKY_NODE_ATTRIBUTE, "type", "modify",
-          WOCKY_NODE, "not-acceptable",
-          WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STANZAS,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "error", '@', "type", "modify",
+          '(', "not-acceptable",
+          ':', WOCKY_XMPP_NS_STANZAS,
+          ')',
+          ')',
+          NULL);
     }
   else
     {
-      if (wocky_xmpp_node_get_child (query, "remove") == NULL)
+      if (wocky_node_get_child (query, "remove") == NULL)
         {
-          iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+          iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
               WOCKY_STANZA_SUB_TYPE_RESULT,
               NULL, NULL,
-              WOCKY_NODE_ATTRIBUTE, "id", id,
-              WOCKY_NODE_END,
-              WOCKY_STANZA_END);
+              '@', "id", id,
+              NULL);
         }
       else
         {
@@ -367,16 +366,17 @@ iq_set_query_XEP77_REGISTER (TestConnectorServer *self,
                 }
 
               DEBUG ("error: %s/%s", error, etype);
-              iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+              iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
                   WOCKY_STANZA_SUB_TYPE_ERROR,
                   NULL, NULL,
-                  WOCKY_NODE_ATTRIBUTE, "id", id,
-                  WOCKY_NODE, "error",
-                  WOCKY_NODE_ATTRIBUTE, "type", etype,
-                  WOCKY_NODE_ATTRIBUTE, "code", ecode,
-                  WOCKY_NODE, error, WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STANZAS,
-                  WOCKY_NODE_END,
-                  WOCKY_STANZA_END);
+                  '@', "id", id,
+                  '(', "error",
+                  '@', "type", etype,
+                  '@', "code", ecode,
+                  '(', error, ':', WOCKY_XMPP_NS_STANZAS,
+                  ')',
+                  ')',
+                  NULL);
             }
           else
             {
@@ -388,12 +388,11 @@ iq_set_query_XEP77_REGISTER (TestConnectorServer *self,
               else
                 {
                   cb = iq_sent_unregistered;
-                  iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+                  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
                       WOCKY_STANZA_SUB_TYPE_RESULT,
                       NULL, NULL,
-                      WOCKY_NODE_ATTRIBUTE, "id", id,
-                      WOCKY_NODE_END,
-                      WOCKY_STANZA_END);
+                      '@', "id", id,
+                      NULL);
                 }
             }
         }
@@ -408,72 +407,74 @@ iq_set_query_XEP77_REGISTER (TestConnectorServer *self,
 
 static void
 iq_get_query_XEP77_REGISTER (TestConnectorServer *self,
-    WockyXmppStanza *xml)
+    WockyStanza *xml)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   WockyXmppConnection *conn = priv->conn;
-  WockyXmppStanza *iq = NULL;
-  WockyXmppNode *env = xml->node;
-  WockyXmppNode *query = NULL;
-  const gchar *id = wocky_xmpp_node_get_attribute (env, "id");
+  WockyStanza *iq = NULL;
+  WockyNode *env = wocky_stanza_get_top_node (xml);
+  WockyNode *query = NULL;
+  const gchar *id = wocky_node_get_attribute (env, "id");
 
   DEBUG ("");
   if (priv->problem.connector->xep77 & XEP77_PROBLEM_NOT_AVAILABLE)
     {
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_ERROR,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "error", WOCKY_NODE_ATTRIBUTE, "type", "cancel",
-          WOCKY_NODE, "service-unavailable",
-          WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STANZAS,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "error", '@', "type", "cancel",
+          '(', "service-unavailable",
+          ':', WOCKY_XMPP_NS_STANZAS,
+          ')',
+          ')',
+          NULL);
     }
   else if (priv->problem.connector->xep77 & XEP77_PROBLEM_QUERY_NONSENSE)
     {
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
           WOCKY_STANZA_SUB_TYPE_NONE,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "plankton", WOCKY_NODE_XMLNS, WOCKY_XEP77_NS_REGISTER,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "plankton", ':', WOCKY_XEP77_NS_REGISTER,
+          ')',
+          NULL);
     }
   else if (priv->problem.connector->xep77 & XEP77_PROBLEM_QUERY_ALREADY)
     {
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_RESULT,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "query", WOCKY_NODE_XMLNS, WOCKY_XEP77_NS_REGISTER,
-          WOCKY_NODE, "registered", WOCKY_NODE_END,
-          WOCKY_NODE, "username", WOCKY_NODE_TEXT, "foo", WOCKY_NODE_END,
-          WOCKY_NODE, "password", WOCKY_NODE_TEXT, "bar", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "query", ':', WOCKY_XEP77_NS_REGISTER,
+          '(', "registered", ')',
+          '(', "username", '$', "foo", ')',
+          '(', "password", '$', "bar", ')',
+          ')',
+          NULL);
     }
   else
     {
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_RESULT,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "query", WOCKY_NODE_XMLNS, WOCKY_XEP77_NS_REGISTER,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "query", ':', WOCKY_XEP77_NS_REGISTER,
+          ')',
+          NULL);
 
-      query = wocky_xmpp_node_get_child (iq->node, "query");
+      query = wocky_node_get_child (wocky_stanza_get_top_node (iq),
+          "query");
 
       if (!(priv->problem.connector->xep77 & XEP77_PROBLEM_NO_ARGS))
         {
-          wocky_xmpp_node_add_child (query, "username");
-          wocky_xmpp_node_add_child (query, "password");
+          wocky_node_add_child (query, "username");
+          wocky_node_add_child (query, "password");
 
           if (priv->problem.connector->xep77 & XEP77_PROBLEM_EMAIL_ARG)
-            wocky_xmpp_node_add_child (query, "email");
+            wocky_node_add_child (query, "email");
           if (priv->problem.connector->xep77 & XEP77_PROBLEM_STRANGE_ARG)
-            wocky_xmpp_node_add_child (query, "wildebeest");
+            wocky_node_add_child (query, "wildebeest");
         }
     }
 
@@ -485,69 +486,71 @@ iq_get_query_XEP77_REGISTER (TestConnectorServer *self,
 
 static void
 iq_get_query_JABBER_AUTH (TestConnectorServer *self,
-    WockyXmppStanza *xml)
+    WockyStanza *xml)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   WockyXmppConnection *conn = priv->conn;
-  WockyXmppStanza *iq = NULL;
-  WockyXmppNode *env = xml->node;
-  const gchar *id = wocky_xmpp_node_get_attribute (env, "id");
-  WockyXmppNode *query = wocky_xmpp_node_get_child (env, "query");
-  WockyXmppNode *user  = (query != NULL) ?
-    wocky_xmpp_node_get_child (query, "username") : NULL;
+  WockyStanza *iq = NULL;
+  WockyNode *env = wocky_stanza_get_top_node (xml);
+  const gchar *id = wocky_node_get_attribute (env, "id");
+  WockyNode *query = wocky_node_get_child (env, "query");
+  WockyNode *user  = (query != NULL) ?
+    wocky_node_get_child (query, "username") : NULL;
   const gchar *name = (user != NULL) ? user->content : NULL;
 
   DEBUG ("");
   if (priv->problem.connector->jabber & JABBER_PROBLEM_AUTH_NIH)
     {
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_ERROR,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "error", WOCKY_NODE_ATTRIBUTE, "type", "cancel",
-          WOCKY_NODE, "service-unavailable",
-          WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STANZAS,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "error", '@', "type", "cancel",
+          '(', "service-unavailable",
+          ':', WOCKY_XMPP_NS_STANZAS,
+          ')',
+          ')',
+          NULL);
     }
   else if (name == NULL || *name == '\0')
     {
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_ERROR,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "error", WOCKY_NODE_ATTRIBUTE, "type", "modify",
-          WOCKY_NODE, "not-acceptable",
-          WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STANZAS,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "error", '@', "type", "modify",
+          '(', "not-acceptable",
+          ':', WOCKY_XMPP_NS_STANZAS,
+          ')',
+          ')',
+          NULL);
     }
   else if (priv->mech != NULL)
     {
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_RESULT,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "query", WOCKY_NODE_XMLNS, WOCKY_JABBER_NS_AUTH,
-          WOCKY_NODE, "username", WOCKY_NODE_END,
-          WOCKY_NODE, priv->mech, WOCKY_NODE_END,
-          WOCKY_NODE, "resource", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "query", ':', WOCKY_JABBER_NS_AUTH,
+          '(', "username", ')',
+          '(', priv->mech, ')',
+          '(', "resource", ')',
+          ')',
+          NULL);
     }
   else
     {
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_RESULT,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "query", WOCKY_NODE_XMLNS, WOCKY_JABBER_NS_AUTH,
-          WOCKY_NODE, "username", WOCKY_NODE_END,
-          WOCKY_NODE, "password", WOCKY_NODE_END,
-          WOCKY_NODE, "resource", WOCKY_NODE_END,
-          WOCKY_NODE, "digest", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "query", ':', WOCKY_JABBER_NS_AUTH,
+          '(', "username", ')',
+          '(', "password", ')',
+          '(', "resource", ')',
+          '(', "digest", ')',
+          ')',
+          NULL);
     }
 
   DEBUG ("responding to iq get");
@@ -561,20 +564,20 @@ iq_get_query_JABBER_AUTH (TestConnectorServer *self,
 
 static void
 iq_set_query_JABBER_AUTH (TestConnectorServer *self,
-    WockyXmppStanza *xml)
+    WockyStanza *xml)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   WockyXmppConnection *conn = priv->conn;
-  WockyXmppStanza *iq = NULL;
-  WockyXmppNode *env = xml->node;
-  WockyXmppNode *qry = wocky_xmpp_node_get_child (env, "query");
+  WockyStanza *iq = NULL;
+  WockyNode *env = wocky_stanza_get_top_node (xml);
+  WockyNode *qry = wocky_node_get_child (env, "query");
   JabberProblem problems = priv->problem.connector->jabber;
   JabberProblem jp = JABBER_PROBLEM_NONE;
-  WockyXmppNode *username = wocky_xmpp_node_get_child (qry, "username");
-  WockyXmppNode *password = wocky_xmpp_node_get_child (qry, "password");
-  WockyXmppNode *resource = wocky_xmpp_node_get_child (qry, "resource");
-  WockyXmppNode *sha1hash = wocky_xmpp_node_get_child (qry, "digest");
-  const gchar *id = wocky_xmpp_node_get_attribute (env, "id");
+  WockyNode *username = wocky_node_get_child (qry, "username");
+  WockyNode *password = wocky_node_get_child (qry, "password");
+  WockyNode *resource = wocky_node_get_child (qry, "resource");
+  WockyNode *sha1hash = wocky_node_get_child (qry, "digest");
+  const gchar *id = wocky_node_get_attribute (env, "id");
 
   DEBUG ("");
   if (username == NULL || resource == NULL)
@@ -634,47 +637,48 @@ iq_set_query_JABBER_AUTH (TestConnectorServer *self,
         }
 
       DEBUG ("error: %s/%s", error, etype);
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_ERROR,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "error",
-          WOCKY_NODE_ATTRIBUTE, "type", etype,
-          WOCKY_NODE_ATTRIBUTE, "code", ecode,
-          WOCKY_NODE, error, WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STANZAS,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "error",
+          '@', "type", etype,
+          '@', "code", ecode,
+          '(', error, ':', WOCKY_XMPP_NS_STANZAS,
+          ')',
+          ')',
+          NULL);
     }
   else if (problems & JABBER_PROBLEM_AUTH_STRANGE)
     {
       DEBUG ("auth WEIRD");
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_SET,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "surstromming", WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_BIND,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "surstromming", ':', WOCKY_XMPP_NS_BIND,
+          ')',
+          NULL);
     }
   else if (problems & JABBER_PROBLEM_AUTH_NONSENSE)
     {
       DEBUG ("auth NONSENSE");
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
           WOCKY_STANZA_SUB_TYPE_NONE,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_NODE, "surstromming", WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_BIND,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          '(', "surstromming", ':', WOCKY_XMPP_NS_BIND,
+          ')',
+          NULL);
     }
   else
     {
       DEBUG ("auth OK");
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_RESULT,
           NULL, NULL,
-          WOCKY_NODE_ATTRIBUTE, "id", id,
-          WOCKY_STANZA_END);
+          '@', "id", id,
+          NULL);
     }
 
   server_enc_outstanding (self);
@@ -686,11 +690,11 @@ iq_set_query_JABBER_AUTH (TestConnectorServer *self,
 
 static void
 iq_set_bind_XMPP_BIND (TestConnectorServer *self,
-    WockyXmppStanza *xml)
+    WockyStanza *xml)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   WockyXmppConnection *conn = priv->conn;
-  WockyXmppStanza *iq = NULL;
+  WockyStanza *iq = NULL;
   BindProblem problems = priv->problem.connector->bind;
   BindProblem bp = BIND_PROBLEM_NONE;
 
@@ -720,35 +724,36 @@ iq_set_bind_XMPP_BIND (TestConnectorServer *self,
           error = "badger-badger-badger-mushroom";
           etype = "moomins";
         }
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_ERROR,
           NULL, NULL,
-          WOCKY_NODE, "bind", WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_BIND,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "error", WOCKY_NODE_ATTRIBUTE, "type", etype,
-          WOCKY_NODE, error, WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STANZAS,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '(', "bind", ':', WOCKY_XMPP_NS_BIND,
+          ')',
+          '(', "error", '@', "type", etype,
+          '(', error, ':', WOCKY_XMPP_NS_STANZAS,
+          ')',
+          ')',
+          NULL);
     }
   else if (problems & BIND_PROBLEM_FAILED)
     {
       /* deliberately nonsensical response */
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_SET,
           NULL, NULL,
-          WOCKY_NODE, "bind", WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_BIND,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '(', "bind", ':', WOCKY_XMPP_NS_BIND,
+          ')',
+          NULL);
     }
   else if (problems & BIND_PROBLEM_NONSENSE)
     {
       /* deliberately nonsensical response */
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
           WOCKY_STANZA_SUB_TYPE_NONE,
           NULL, NULL,
-          WOCKY_NODE, "bind", WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_BIND,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '(', "bind", ':', WOCKY_XMPP_NS_BIND,
+          ')',
+          NULL);
     }
   else if (problems & BIND_PROBLEM_CLASH)
     {
@@ -756,10 +761,10 @@ iq_set_bind_XMPP_BIND (TestConnectorServer *self,
     }
   else
     {
-      WockyXmppNode *ciq = xml->node;
-      WockyXmppNode *bind =
-        wocky_xmpp_node_get_child_ns (ciq, "bind", WOCKY_XMPP_NS_BIND);
-      WockyXmppNode *res = wocky_xmpp_node_get_child (bind, "resource");
+      WockyNode *ciq = wocky_stanza_get_top_node (xml);
+      WockyNode *bind =
+        wocky_node_get_child_ns (ciq, "bind", WOCKY_XMPP_NS_BIND);
+      WockyNode *res = wocky_node_get_child (bind, "resource");
       const gchar *uniq = NULL;
       gchar *jid = NULL;
 
@@ -770,21 +775,21 @@ iq_set_bind_XMPP_BIND (TestConnectorServer *self,
 
       if (problems & BIND_PROBLEM_NO_JID)
         {
-          iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+          iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
               WOCKY_STANZA_SUB_TYPE_RESULT, NULL, NULL,
-              WOCKY_NODE, "bind", WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_BIND,
-              WOCKY_NODE_END, WOCKY_STANZA_END);
+              '(', "bind", ':', WOCKY_XMPP_NS_BIND,
+              ')', NULL);
         }
       else
         {
           jid = g_strdup_printf ("user@some.doma.in/%s", uniq);
-          iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+          iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
               WOCKY_STANZA_SUB_TYPE_RESULT,
               NULL, NULL,
-              WOCKY_NODE, "bind", WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_BIND,
-              WOCKY_NODE, "jid", WOCKY_NODE_TEXT, jid, WOCKY_NODE_END,
-              WOCKY_NODE_END,
-              WOCKY_STANZA_END);
+              '(', "bind", ':', WOCKY_XMPP_NS_BIND,
+              '(', "jid", '$', jid, ')',
+              ')',
+              NULL);
           g_free (jid);
         }
     }
@@ -798,11 +803,11 @@ iq_set_bind_XMPP_BIND (TestConnectorServer *self,
 
 static void
 iq_set_session_XMPP_SESSION (TestConnectorServer *self,
-    WockyXmppStanza *xml)
+    WockyStanza *xml)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   WockyXmppConnection *conn = priv->conn;
-  WockyXmppStanza *iq = NULL;
+  WockyStanza *iq = NULL;
   SessionProblem problems = priv->problem.connector->session;
   SessionProblem sp = SESSION_PROBLEM_NONE;
 
@@ -833,15 +838,16 @@ iq_set_session_XMPP_SESSION (TestConnectorServer *self,
           etype = "mushroom";
           break;
         }
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_ERROR,
           NULL, NULL,
-          WOCKY_NODE, "session", WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_SESSION,
-          WOCKY_NODE_END,
-          WOCKY_NODE, "error", WOCKY_NODE_ATTRIBUTE, "type", etype,
-          WOCKY_NODE, error, WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_STANZAS,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '(', "session", ':', WOCKY_XMPP_NS_SESSION,
+          ')',
+          '(', "error", '@', "type", etype,
+          '(', error, ':', WOCKY_XMPP_NS_STANZAS,
+          ')',
+          ')',
+          NULL);
     }
   else if (problems & SESSION_PROBLEM_NO_SESSION)
     {
@@ -850,21 +856,21 @@ iq_set_session_XMPP_SESSION (TestConnectorServer *self,
   else if (problems & SESSION_PROBLEM_NONSENSE)
     {
       /* deliberately nonsensical response */
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
           WOCKY_STANZA_SUB_TYPE_NONE,
           NULL, NULL,
-          WOCKY_NODE, "surstromming", WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_BIND,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '(', "surstromming", ':', WOCKY_XMPP_NS_BIND,
+          ')',
+          NULL);
     }
   else
     {
-      iq = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
           WOCKY_STANZA_SUB_TYPE_RESULT,
           NULL, NULL,
-          WOCKY_NODE, "session", WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_SESSION,
-          WOCKY_NODE_END,
-          WOCKY_STANZA_END);
+          '(', "session", ':', WOCKY_XMPP_NS_SESSION,
+          ')',
+          NULL);
     }
 
   server_enc_outstanding (self);
@@ -880,9 +886,9 @@ iq_sent_unregistered (GObject *source,
 {
   GError *error = NULL;
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   WockyXmppConnection *conn = priv->conn;
-  WockyXmppStanza *es = NULL;
+  WockyStanza *es = NULL;
 
   DEBUG("");
 
@@ -912,7 +918,7 @@ iq_sent (GObject *source,
 {
   GError *error = NULL;
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (data);
+  TestConnectorServerPrivate *priv = self->priv;
   WockyXmppConnection *conn = priv->conn;
 
   DEBUG("");
@@ -937,9 +943,9 @@ iq_sent (GObject *source,
 
 static void
 handle_auth (TestConnectorServer *self,
-    WockyXmppStanza *xml)
+    WockyStanza *xml)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE(self);
+  TestConnectorServerPrivate *priv = self->priv;
   GObject *sasl = G_OBJECT (priv->sasl);
 
   DEBUG ("");
@@ -955,16 +961,16 @@ handle_auth (TestConnectorServer *self,
 
 static void
 handle_starttls (TestConnectorServer *self,
-    WockyXmppStanza *xml)
+    WockyStanza *xml)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
 
   DEBUG ("");
   if (!priv->tls_started)
     {
       WockyXmppConnection *conn = priv->conn;
       ConnectorProblem *problem = priv->problem.connector;
-      WockyXmppStanza *reply = NULL;
+      WockyStanza *reply = NULL;
       GAsyncReadyCallback cb = finished;
 
       if (problem->xmpp & XMPP_PROBLEM_TLS_LOAD)
@@ -973,13 +979,11 @@ handle_starttls (TestConnectorServer *self,
         }
       else if (problem->xmpp & XMPP_PROBLEM_TLS_REFUSED)
         {
-          reply = wocky_xmpp_stanza_new ("failure");
-          wocky_xmpp_node_set_ns (reply->node, WOCKY_XMPP_NS_TLS);
+          reply = wocky_stanza_new ("failure", WOCKY_XMPP_NS_TLS);
         }
       else
         {
-          reply = wocky_xmpp_stanza_new ("proceed");
-          wocky_xmpp_node_set_ns (reply->node, WOCKY_XMPP_NS_TLS);
+          reply = wocky_stanza_new ("proceed", WOCKY_XMPP_NS_TLS);
           cb = starttls;
           /* set up the tls server session */
           /* gnutls_global_set_log_function ((gnutls_log_func)debug_gnutls);
@@ -1021,7 +1025,7 @@ finished (GObject *source,
     gpointer data)
 {
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   DEBUG ("");
 
   if (server_dec_outstanding (self))
@@ -1037,7 +1041,7 @@ quit (GObject *source,
     gpointer data)
 {
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   GError *error = NULL;
 
   DEBUG ("");
@@ -1051,7 +1055,7 @@ handshake_cb (GObject *source,
     gpointer user_data)
 {
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (user_data);
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   GError *error = NULL;
 
   DEBUG ("TLS/SSL handshake finished");
@@ -1087,7 +1091,7 @@ starttls (GObject *source,
     gpointer data)
 {
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   WockyXmppConnection *conn = WOCKY_XMPP_CONNECTION (source);
   GError *error = NULL;
 
@@ -1119,7 +1123,7 @@ xmpp_handler (GObject *source,
 {
   TestConnectorServer *self;
   TestConnectorServerPrivate *priv;
-  WockyXmppStanza *xml = NULL;
+  WockyStanza *xml = NULL;
   WockyXmppConnection *conn = NULL;
   const gchar *ns = NULL;
   const gchar *name = NULL;
@@ -1131,7 +1135,7 @@ xmpp_handler (GObject *source,
 
   DEBUG ("");
   self = TEST_CONNECTOR_SERVER (user_data);
-  priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  priv = self->priv;
   conn = priv->conn;
   xml  = wocky_xmpp_connection_recv_stanza_finish (conn, result, &error);
 
@@ -1151,9 +1155,9 @@ xmpp_handler (GObject *source,
   if (server_dec_outstanding (self))
     return;
 
-  ns   = wocky_xmpp_node_get_ns (xml->node);
-  name = xml->node->name;
-  wocky_xmpp_stanza_get_type_info (xml, &type, &subtype);
+  ns   = wocky_node_get_ns (wocky_stanza_get_top_node (xml));
+  name = wocky_stanza_get_top_node (xml)->name;
+  wocky_stanza_get_type_info (xml, &type, &subtype);
 
   /* if we find a handler, the handler is responsible for listening for the
      next stanza and setting up the next callback in the chain: */
@@ -1161,8 +1165,9 @@ xmpp_handler (GObject *source,
     for (i = 0; iq_handlers[i].payload != NULL; i++)
       {
         iq_handler *iq = &iq_handlers[i];
-        WockyXmppNode *payload =
-          wocky_xmpp_node_get_child_ns (xml->node, iq->payload, iq->ns);
+        WockyNode *payload =
+          wocky_node_get_child_ns (wocky_stanza_get_top_node (xml),
+              iq->payload, iq->ns);
         /* namespace, stanza subtype and payload tag name must match: */
         if ((payload == NULL) || (subtype != iq->subtype))
           continue;
@@ -1201,11 +1206,11 @@ after_auth (GObject *source,
     gpointer data)
 {
   GError *error = NULL;
-  WockyXmppStanza *feat = NULL;
-  WockyXmppNode *node = NULL;
+  WockyStanza *feat = NULL;
+  WockyNode *node = NULL;
   TestSaslAuthServer *tsas = TEST_SASL_AUTH_SERVER (source);
   TestConnectorServer *tcs = TEST_CONNECTOR_SERVER (data);
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (tcs);
+  TestConnectorServerPrivate *priv = tcs->priv;
   WockyXmppConnection *conn = priv->conn;
 
   DEBUG ("Auth finished: %d", priv->outstanding);
@@ -1232,14 +1237,16 @@ after_auth (GObject *source,
   if (server_dec_outstanding (tcs))
     return;
 
-  feat = wocky_xmpp_stanza_new ("stream:features");
-  node = feat->node;
+  feat = wocky_stanza_build (WOCKY_STANZA_TYPE_STREAM_FEATURES,
+      WOCKY_STANZA_SUB_TYPE_NONE, NULL, NULL, NULL);
+
+  node = wocky_stanza_get_top_node (feat);
 
   if (!(priv->problem.connector->xmpp & XMPP_PROBLEM_NO_SESSION))
-    wocky_xmpp_node_add_child_ns (node, "session", WOCKY_XMPP_NS_SESSION);
+    wocky_node_add_child_ns (node, "session", WOCKY_XMPP_NS_SESSION);
 
   if (!(priv->problem.connector->xmpp & XMPP_PROBLEM_CANNOT_BIND))
-    wocky_xmpp_node_add_child_ns (node, "bind", WOCKY_XMPP_NS_BIND);
+    wocky_node_add_child_ns (node, "bind", WOCKY_XMPP_NS_BIND);
 
   priv->state = SERVER_STATE_FEATURES_SENT;
 
@@ -1252,25 +1259,24 @@ after_auth (GObject *source,
 
 /* ************************************************************************* */
 /* initial XMPP stream setup, up to sending features stanza */
-static WockyXmppStanza *
+static WockyStanza *
 feature_stanza (TestConnectorServer *self)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   XmppProblem problem = priv->problem.connector->xmpp;
   const gchar *name = NULL;
-  WockyXmppStanza *feat = NULL;
-  WockyXmppNode *node = NULL;
+  WockyStanza *feat = NULL;
+  WockyNode *node = NULL;
 
   DEBUG ("");
   if (problem & XMPP_PROBLEM_OTHER_HOST)
     return error_stanza ("host-unknown", "some sort of DNS error", TRUE);
 
   name = (problem & XMPP_PROBLEM_FEATURES) ? "badger" : "features";
-  feat = wocky_xmpp_stanza_new (name);
-  node = feat->node;
+  feat = wocky_stanza_new (name, WOCKY_XMPP_NS_STREAM);
+  node = wocky_stanza_get_top_node (feat);
 
   DEBUG ("constructing <%s...>... stanza", name);
-  wocky_xmpp_node_set_ns (node, WOCKY_XMPP_NS_STREAM);
 
   if (priv->problem.sasl != SERVER_PROBLEM_NO_SASL)
     {
@@ -1280,10 +1286,10 @@ feature_stanza (TestConnectorServer *self)
     }
 
   if (problem & XMPP_PROBLEM_OLD_AUTH_FEATURE)
-    wocky_xmpp_node_add_child_ns (node, "auth", WOCKY_JABBER_NS_AUTH_FEATURE);
+    wocky_node_add_child_ns (node, "auth", WOCKY_JABBER_NS_AUTH_FEATURE);
 
   if (!(problem & XMPP_PROBLEM_NO_TLS) && !priv->tls_started)
-    wocky_xmpp_node_add_child_ns (node, "starttls", WOCKY_XMPP_NS_TLS);
+    wocky_node_add_child_ns (node, "starttls", WOCKY_XMPP_NS_TLS);
 
   return feat;
 }
@@ -1294,7 +1300,7 @@ xmpp_close (GObject *source,
     gpointer data)
 {
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
 
   DEBUG ("Closing connection");
   wocky_xmpp_connection_send_close_async (priv->conn, NULL, xmpp_closed, self);
@@ -1307,14 +1313,14 @@ xmpp_closed (GObject *source,
 {
   GError *error = NULL;
   TestConnectorServer *self = TEST_CONNECTOR_SERVER (data);
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   DEBUG ("Connection closed");
   wocky_xmpp_connection_send_close_finish (priv->conn, result, &error);
 }
 
 static void startssl (TestConnectorServer *self)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   ConnectorProblem *problem = priv->problem.connector;
 
   g_assert (!priv->tls_started);
@@ -1375,11 +1381,11 @@ xmpp_init (GObject *source,
 {
   TestConnectorServer *self;
   TestConnectorServerPrivate *priv;
-  WockyXmppStanza *xml;
+  WockyStanza *xml;
   WockyXmppConnection *conn;
 
   self = TEST_CONNECTOR_SERVER (data);
-  priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  priv = self->priv;
   conn = priv->conn;
 
   DEBUG ("test_connector_server:xmpp_init %d", priv->state);
@@ -1505,7 +1511,7 @@ test_connector_server_new (GIOStream *stream,
   DEBUG ("test_connector_server_new");
 
   self = g_object_new (TEST_TYPE_CONNECTOR_SERVER, NULL);
-  priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  priv = self->priv;
 
   priv->stream = g_object_ref (stream);
   priv->mech   = g_strdup (mech);
@@ -1529,7 +1535,7 @@ test_connector_server_new (GIOStream *stream,
 static void
 server_enc_outstanding (TestConnectorServer *self)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   priv->outstanding++;
 
   DEBUG ("Upped outstanding to %d", priv->outstanding);
@@ -1538,7 +1544,7 @@ server_enc_outstanding (TestConnectorServer *self)
 static gboolean
 server_dec_outstanding (TestConnectorServer *self)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
 
   priv->outstanding--;
   g_assert (priv->outstanding >= 0);
@@ -1566,7 +1572,7 @@ test_connector_server_teardown (TestConnectorServer *self,
   GAsyncReadyCallback callback,
   gpointer user_data)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
   GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self),
     callback, user_data, test_connector_server_teardown_finish);
 
@@ -1606,7 +1612,7 @@ test_connector_server_start (TestConnectorServer *self)
 
   DEBUG("test_connector_server_start");
 
-  priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  priv = self->priv;
   priv->state = SERVER_STATE_START;
   DEBUG ("connection: %p", priv->conn);
   if (priv->problem.connector->xmpp & XMPP_PROBLEM_OLD_SSL)
@@ -1622,7 +1628,7 @@ test_connector_server_start (TestConnectorServer *self)
 const gchar *
 test_connector_server_get_used_mech (TestConnectorServer *self)
 {
-  TestConnectorServerPrivate *priv = TEST_CONNECTOR_SERVER_GET_PRIVATE (self);
+  TestConnectorServerPrivate *priv = self->priv;
 
   return priv->used_mech;
 }

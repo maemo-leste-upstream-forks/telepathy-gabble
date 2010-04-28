@@ -30,6 +30,8 @@
 G_BEGIN_DECLS
 
 typedef struct _WockyPubsubNodeClass WockyPubsubNodeClass;
+typedef struct _WockyPubsubNodePrivate WockyPubsubNodePrivate;
+
 
 struct _WockyPubsubNodeClass {
   GObjectClass parent_class;
@@ -37,6 +39,8 @@ struct _WockyPubsubNodeClass {
 
 struct _WockyPubsubNode {
   GObject parent;
+
+  WockyPubsubNodePrivate *priv;
 };
 
 GType wocky_pubsub_node_get_type (void);
@@ -59,10 +63,10 @@ GType wocky_pubsub_node_get_type (void);
 
 const gchar * wocky_pubsub_node_get_name (WockyPubsubNode *self);
 
-WockyXmppStanza *wocky_pubsub_node_make_publish_stanza (WockyPubsubNode *self,
-    WockyXmppNode **pubsub_out,
-    WockyXmppNode **publish_out,
-    WockyXmppNode **item_out);
+WockyStanza *wocky_pubsub_node_make_publish_stanza (WockyPubsubNode *self,
+    WockyNode **pubsub_out,
+    WockyNode **publish_out,
+    WockyNode **item_out);
 
 void wocky_pubsub_node_subscribe_async (WockyPubsubNode *self,
     const gchar *jid,
@@ -150,6 +154,29 @@ gboolean wocky_pubsub_node_list_affiliates_finish (
     WockyPubsubNode *self,
     GAsyncResult *result,
     GList **affiliates,
+    GError **error);
+
+void wocky_pubsub_node_modify_affiliates_async (
+    WockyPubsubNode *self,
+    const GList *affiliates,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+gboolean wocky_pubsub_node_modify_affiliates_finish (
+    WockyPubsubNode *self,
+    GAsyncResult *result,
+    GError **error);
+
+void wocky_pubsub_node_get_configuration_async (
+    WockyPubsubNode *self,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+WockyDataForm *wocky_pubsub_node_get_configuration_finish (
+    WockyPubsubNode *self,
+    GAsyncResult *result,
     GError **error);
 
 G_END_DECLS

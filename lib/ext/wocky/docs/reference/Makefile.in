@@ -242,7 +242,8 @@ SCANGOBJ_OPTIONS =
 #
 # If we're building in-tree, well, we'd just better hope gtkdoc doesn't mind
 # scanning stuff twice.
-SCAN_OPTIONS = --rebuild-types --source-dir=$(abs_top_builddir)/wocky
+SCAN_OPTIONS = --rebuild-types --rebuild-sections \
+	--source-dir=$(abs_top_builddir)/wocky
 
 # Extra options to supply to gtkdoc-mkdb.
 # e.g. MKDB_OPTIONS=--sgml-mode --output-format=xml
@@ -333,6 +334,11 @@ CLEANFILES = $(SCANOBJ_FILES) $(REPORT_FILES) $(DOC_STAMPS)
 @ENABLE_GTK_DOC_TRUE@@GTK_DOC_BUILD_HTML_TRUE@HTML_BUILD_STAMP = html-build.stamp
 @ENABLE_GTK_DOC_TRUE@@GTK_DOC_BUILD_PDF_FALSE@PDF_BUILD_STAMP = 
 @ENABLE_GTK_DOC_TRUE@@GTK_DOC_BUILD_PDF_TRUE@PDF_BUILD_STAMP = pdf-build.stamp
+
+# Files not to distribute
+# for --rebuild-types in $(SCAN_OPTIONS), e.g. $(DOC_MODULE).types
+# for --rebuild-sections in $(SCAN_OPTIONS) e.g. $(DOC_MODULE)-sections.txt
+DISTCLEANFILES = wocky-sections.txt wocky.types
 all: all-am
 
 .SUFFIXES:
@@ -439,6 +445,7 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -683,11 +690,6 @@ dist-hook: dist-check-gtkdoc dist-hook-local
 	$(GTKDOC_REBASE) --online --relative --html-dir=$(distdir)/html
 
 .PHONY : dist-hook-local docs
-
-# Files not to distribute
-# for --rebuild-types in $(SCAN_OPTIONS), e.g. $(DOC_MODULE).types
-# for --rebuild-sections in $(SCAN_OPTIONS) e.g. $(DOC_MODULE)-sections.txt
-#DISTCLEANFILES +=
 
 # Comment this out if you want your docs-status tested during 'make check'
 #TESTS = $(GTKDOC_CHECK)

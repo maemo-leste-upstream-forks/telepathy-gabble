@@ -25,7 +25,7 @@
 
 #include "wocky-sasl-auth.h"
 #include "wocky-xmpp-connection.h"
-#include "wocky-xmpp-stanza.h"
+#include "wocky-stanza.h"
 
 #include "wocky-tls.h"
 
@@ -33,6 +33,7 @@ G_BEGIN_DECLS
 
 typedef struct _WockyConnector WockyConnector;
 typedef struct _WockyConnectorClass WockyConnectorClass;
+typedef struct _WockyConnectorPrivate WockyConnectorPrivate;
 
 /**
  * WockyConnectorError:
@@ -121,6 +122,7 @@ struct _WockyConnectorClass {
 
 struct _WockyConnector {
     GObject parent;
+    WockyConnectorPrivate *priv;
 };
 
 GType wocky_connector_get_type (void);

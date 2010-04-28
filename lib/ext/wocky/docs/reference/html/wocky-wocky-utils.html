@@ -70,12 +70,17 @@
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-wocky-utils.html#wocky-enum-to-nick" title="wocky_enum_to_nick ()">wocky_enum_to_nick</a>                  (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> enum_type</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> value</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="wocky-wocky-utils.html#wocky-absolutize-path" title="wocky_absolutize_path ()">wocky_absolutize_path</a>               (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="wocky-wocky-utils.html#wocky-list-deep-copy" title="wocky_list_deep_copy ()">wocky_list_deep_copy</a>                (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GBoxedCopyFunc"><span class="type">GBoxedCopyFunc</span></a> copy</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *items</code></em>);
+#define             <a class="link" href="wocky-wocky-utils.html#wocky-implement-finish-void" title="wocky_implement_finish_void()">wocky_implement_finish_void</a>         (source,
+                                                         tag)
 #define             <a class="link" href="wocky-wocky-utils.html#wocky-implement-finish-copy-pointer" title="wocky_implement_finish_copy_pointer()">wocky_implement_finish_copy_pointer</a> (source,
                                                          tag,
                                                          copy_func,
                                                          out_param)
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="wocky-wocky-utils.html#wocky-list-deep-copy" title="wocky_list_deep_copy ()">wocky_list_deep_copy</a>                (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GBoxedCopyFunc"><span class="type">GBoxedCopyFunc</span></a> copy</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *items</code></em>);
+#define             <a class="link" href="wocky-wocky-utils.html#wocky-implement-finish-return-copy-pointer" title="wocky_implement_finish_return_copy_pointer()">wocky_implement_finish_return_copy_pointer</a>(source,
+                                                         tag,
+                                                         copy_func)
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -704,6 +709,56 @@ does not necessarily resolve symlinks.
 </table></div>
 </div>
 <hr>
+<div class="refsect2" title="wocky_list_deep_copy ()">
+<a name="wocky-list-deep-copy"></a><h3>wocky_list_deep_copy ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_list_deep_copy                (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GBoxedCopyFunc"><span class="type">GBoxedCopyFunc</span></a> copy</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *items</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>copy</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>items</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_implement_finish_void()">
+<a name="wocky-implement-finish-void"></a><h3>wocky_implement_finish_void()</h3>
+<pre class="programlisting">#define             wocky_implement_finish_void(source, tag)</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>source</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>tag</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
 <div class="refsect2" title="wocky_implement_finish_copy_pointer()">
 <a name="wocky-implement-finish-copy-pointer"></a><h3>wocky_implement_finish_copy_pointer()</h3>
 <pre class="programlisting">#define             wocky_implement_finish_copy_pointer(source, tag, copy_func, \
@@ -737,27 +792,26 @@ does not necessarily resolve symlinks.
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="wocky_list_deep_copy ()">
-<a name="wocky-list-deep-copy"></a><h3>wocky_list_deep_copy ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_list_deep_copy                (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GBoxedCopyFunc"><span class="type">GBoxedCopyFunc</span></a> copy</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *items</code></em>);</pre>
+<div class="refsect2" title="wocky_implement_finish_return_copy_pointer()">
+<a name="wocky-implement-finish-return-copy-pointer"></a><h3>wocky_implement_finish_return_copy_pointer()</h3>
+<pre class="programlisting">#define             wocky_implement_finish_return_copy_pointer(source, tag, copy_func)</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>copy</code></em> :</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>source</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>items</code></em> :</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>tag</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>copy_func</code></em> :</span></p></td>
 <td>
 </td>
 </tr>

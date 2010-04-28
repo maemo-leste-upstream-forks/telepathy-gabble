@@ -20,54 +20,6 @@ WockyPubsubNode
 <!-- ##### SECTION Image ##### -->
 
 
-<!-- ##### STRUCT WockyPubsubNode ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### SIGNAL WockyPubsubNode::deleted ##### -->
-<para>
-
-</para>
-
-@wockypubsubnode: the object which received the signal.
-@arg1: 
-@arg2: 
-@arg3: 
-
-<!-- ##### SIGNAL WockyPubsubNode::event-received ##### -->
-<para>
-
-</para>
-
-@wockypubsubnode: the object which received the signal.
-@arg1: 
-@arg2: 
-@arg3: 
-@arg4: 
-
-<!-- ##### SIGNAL WockyPubsubNode::subscription-state-changed ##### -->
-<para>
-
-</para>
-
-@wockypubsubnode: the object which received the signal.
-@arg1: 
-@arg2: 
-@arg3: 
-@arg4: 
-
-<!-- ##### ARG WockyPubsubNode:name ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG WockyPubsubNode:service ##### -->
-<para>
-
-</para>
-
 <!-- ##### STRUCT WockyPubsubNodeClass ##### -->
 <para>
 
@@ -75,34 +27,18 @@ WockyPubsubNode
 
 @parent_class: 
 
+<!-- ##### STRUCT WockyPubsubNodePrivate ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### FUNCTION wocky_pubsub_node_get_name ##### -->
 <para>
 
 </para>
 
 @self: 
-@Returns: 
-
-
-<!-- ##### FUNCTION wocky_pubsub_node_delete_async ##### -->
-<para>
-
-</para>
-
-@self: 
-@cancellable: 
-@callback: 
-@user_data: 
-
-
-<!-- ##### FUNCTION wocky_pubsub_node_delete_finish ##### -->
-<para>
-
-</para>
-
-@self: 
-@result: 
-@error: 
 @Returns: 
 
 
@@ -165,7 +101,7 @@ WockyPubsubNode
 @Returns: 
 
 
-<!-- ##### FUNCTION wocky_pubsub_node_list_affiliates_async ##### -->
+<!-- ##### FUNCTION wocky_pubsub_node_delete_async ##### -->
 <para>
 
 </para>
@@ -176,14 +112,13 @@ WockyPubsubNode
 @user_data: 
 
 
-<!-- ##### FUNCTION wocky_pubsub_node_list_affiliates_finish ##### -->
+<!-- ##### FUNCTION wocky_pubsub_node_delete_finish ##### -->
 <para>
 
 </para>
 
 @self: 
 @result: 
-@affiliates: 
 @error: 
 @Returns: 
 
@@ -211,61 +146,6 @@ WockyPubsubNode
 @Returns: 
 
 
-<!-- ##### FUNCTION wocky_pubsub_node_make_list_affiliates_stanza ##### -->
-<para>
-
-</para>
-
-@self: 
-@pubsub_node: 
-@affiliations_node: 
-@Returns: 
-
-
-<!-- ##### FUNCTION wocky_pubsub_node_make_list_subscribers_stanza ##### -->
-<para>
-
-</para>
-
-@self: 
-@pubsub_node: 
-@subscriptions_node: 
-@Returns: 
-
-
-<!-- ##### FUNCTION wocky_pubsub_node_parse_affiliations ##### -->
-<para>
-
-</para>
-
-@self: 
-@affiliations_node: 
-@Returns: 
-
-
-<!-- ##### MACRO WOCKY_TYPE_PUBSUB_AFFILIATION ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO WOCKY_TYPE_PUBSUB_AFFILIATION_STATE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### STRUCT WockyPubsubAffiliation ##### -->
-<para>
-
-</para>
-
-@node: 
-@jid: 
-@state: 
-
 <!-- ##### ENUM WockyPubsubAffiliationState ##### -->
 <para>
 
@@ -277,6 +157,42 @@ WockyPubsubNode
 @WOCKY_PUBSUB_AFFILIATION_MEMBER: 
 @WOCKY_PUBSUB_AFFILIATION_NONE: 
 @WOCKY_PUBSUB_AFFILIATION_OUTCAST: 
+
+<!-- ##### STRUCT WockyPubsubAffiliation ##### -->
+<para>
+
+</para>
+
+@node: 
+@jid: 
+@state: 
+
+<!-- ##### MACRO WOCKY_TYPE_PUBSUB_AFFILIATION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION wocky_pubsub_affiliation_get_type ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_affiliation_new ##### -->
+<para>
+
+</para>
+
+@node: 
+@jid: 
+@state: 
+@Returns: 
+
 
 <!-- ##### FUNCTION wocky_pubsub_affiliation_copy ##### -->
 <para>
@@ -312,14 +228,71 @@ WockyPubsubNode
 @affs: 
 
 
-<!-- ##### FUNCTION wocky_pubsub_affiliation_new ##### -->
+<!-- ##### FUNCTION wocky_pubsub_node_list_affiliates_async ##### -->
 <para>
 
 </para>
 
-@node: 
-@jid: 
-@state: 
+@self: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_list_affiliates_finish ##### -->
+<para>
+
+</para>
+
+@self: 
+@result: 
+@affiliates: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_modify_affiliates_async ##### -->
+<para>
+
+</para>
+
+@self: 
+@affiliates: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_modify_affiliates_finish ##### -->
+<para>
+
+</para>
+
+@self: 
+@result: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_get_configuration_async ##### -->
+<para>
+
+</para>
+
+@self: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION wocky_pubsub_node_get_configuration_finish ##### -->
+<para>
+
+</para>
+
+@self: 
+@result: 
+@error: 
 @Returns: 
 
 

@@ -27,9 +27,9 @@
 
 typedef void (*WockyPubsubNodeEventHandler) (
     WockyPubsubNode *self,
-    WockyXmppStanza *event_stanza,
-    WockyXmppNode *event_node,
-    WockyXmppNode *action_node);
+    WockyStanza *event_stanza,
+    WockyNode *event_node,
+    WockyNode *action_node);
 
 typedef struct {
     const gchar *action;
@@ -43,35 +43,46 @@ const WockyPubsubNodeEventMapping *_wocky_pubsub_node_get_event_mappings (
 
 WockyPorter *wocky_pubsub_node_get_porter (WockyPubsubNode *self);
 
-WockyXmppStanza *wocky_pubsub_node_make_subscribe_stanza (WockyPubsubNode *self,
+WockyStanza *wocky_pubsub_node_make_subscribe_stanza (WockyPubsubNode *self,
     const gchar *jid,
-    WockyXmppNode **pubsub_node,
-    WockyXmppNode **subscribe_node);
+    WockyNode **pubsub_node,
+    WockyNode **subscribe_node);
 
-WockyXmppStanza *wocky_pubsub_node_make_unsubscribe_stanza (
+WockyStanza *wocky_pubsub_node_make_unsubscribe_stanza (
     WockyPubsubNode *self,
     const gchar *jid,
     const gchar *subid,
-    WockyXmppNode **pubsub_node,
-    WockyXmppNode **unsubscribe_node);
+    WockyNode **pubsub_node,
+    WockyNode **unsubscribe_node);
 
-WockyXmppStanza *wocky_pubsub_node_make_delete_stanza (
+WockyStanza *wocky_pubsub_node_make_delete_stanza (
     WockyPubsubNode *self,
-    WockyXmppNode **pubsub_node,
-    WockyXmppNode **delete_node);
+    WockyNode **pubsub_node,
+    WockyNode **delete_node);
 
-WockyXmppStanza *wocky_pubsub_node_make_list_subscribers_stanza (
+WockyStanza *wocky_pubsub_node_make_list_subscribers_stanza (
     WockyPubsubNode *self,
-    WockyXmppNode **pubsub_node,
-    WockyXmppNode **subscriptions_node);
+    WockyNode **pubsub_node,
+    WockyNode **subscriptions_node);
 
-WockyXmppStanza *wocky_pubsub_node_make_list_affiliates_stanza (
+WockyStanza *wocky_pubsub_node_make_list_affiliates_stanza (
     WockyPubsubNode *self,
-    WockyXmppNode **pubsub_node,
-    WockyXmppNode **affiliations_node);
+    WockyNode **pubsub_node,
+    WockyNode **affiliations_node);
 
 GList *wocky_pubsub_node_parse_affiliations (
     WockyPubsubNode *self,
-    WockyXmppNode *affiliations_node);
+    WockyNode *affiliations_node);
+
+WockyStanza *wocky_pubsub_node_make_modify_affiliates_stanza (
+    WockyPubsubNode *self,
+    const GList *affiliates,
+    WockyNode **pubsub_node,
+    WockyNode **affiliations_node);
+
+WockyStanza *wocky_pubsub_node_make_get_configuration_stanza (
+    WockyPubsubNode *self,
+    WockyNode **pubsub_node,
+    WockyNode **configure_node);
 
 #endif /* WOCKY_PUBSUB_NODE_PROTECTED_H */

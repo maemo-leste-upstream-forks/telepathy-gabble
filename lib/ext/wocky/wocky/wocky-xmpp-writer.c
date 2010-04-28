@@ -23,7 +23,7 @@
  * @title: WockyXmppWriter
  * @short_description: Xmpp stanza to XML serializer
  *
- * The #WockyXmppWriter serializes #WockyXmppStanzas and xmpp stream opening
+ * The #WockyXmppWriter serializes #WockyStanzas and xmpp stream opening
  * and closing to raw XML. The various functions provide a pointer to an
  * internal buffer, which remains valid until the next call to the writer.
  */
@@ -47,8 +47,6 @@ enum {
 };
 
 /* private structure */
-typedef struct _WockyXmppWriterPrivate WockyXmppWriterPrivate;
-
 struct _WockyXmppWriterPrivate
 {
   gboolean dispose_has_run;
@@ -59,16 +57,15 @@ struct _WockyXmppWriterPrivate
   xmlBufferPtr buffer;
 };
 
-#define WOCKY_XMPP_WRITER_GET_PRIVATE(o) \
-  (G_TYPE_INSTANCE_GET_PRIVATE ((o), WOCKY_TYPE_XMPP_WRITER, \
-   WockyXmppWriterPrivate))
-
 static void
-wocky_xmpp_writer_init (WockyXmppWriter *obj)
+wocky_xmpp_writer_init (WockyXmppWriter *self)
 {
-  WockyXmppWriterPrivate *priv = WOCKY_XMPP_WRITER_GET_PRIVATE (obj);
+  WockyXmppWriterPrivate *priv;
 
-  /* allocate any data required by the object here */
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, WOCKY_TYPE_XMPP_WRITER,
+      WockyXmppWriterPrivate);
+  priv = self->priv;
+
   priv->current_ns = 0;
   priv->stream_ns = 0;
   priv->buffer = xmlBufferCreate ();
@@ -116,7 +113,7 @@ void
 wocky_xmpp_writer_dispose (GObject *object)
 {
   WockyXmppWriter *self = WOCKY_XMPP_WRITER (object);
-  WockyXmppWriterPrivate *priv = WOCKY_XMPP_WRITER_GET_PRIVATE (self);
+  WockyXmppWriterPrivate *priv = self->priv;
 
   if (priv->dispose_has_run)
     return;
@@ -132,7 +129,7 @@ void
 wocky_xmpp_writer_finalize (GObject *object)
 {
   WockyXmppWriter *self = WOCKY_XMPP_WRITER (object);
-  WockyXmppWriterPrivate *priv = WOCKY_XMPP_WRITER_GET_PRIVATE (self);
+  WockyXmppWriterPrivate *priv = self->priv;
 
   /* free any data held directly by the object here */
   xmlFreeTextWriter (priv->xmlwriter);
@@ -148,7 +145,7 @@ wocky_xmpp_write_set_property (GObject *object,
     GParamSpec *pspec)
 {
   WockyXmppWriter *writer = WOCKY_XMPP_WRITER (object);
-  WockyXmppWriterPrivate *priv = WOCKY_XMPP_WRITER_GET_PRIVATE (writer);
+  WockyXmppWriterPrivate *priv = writer->priv;
 
   switch (property_id)
     {
@@ -168,7 +165,7 @@ wocky_xmpp_write_get_property (GObject *object,
     GParamSpec *pspec)
 {
   WockyXmppWriter *writer = WOCKY_XMPP_WRITER (object);
-  WockyXmppWriterPrivate *priv = WOCKY_XMPP_WRITER_GET_PRIVATE (writer);
+  WockyXmppWriterPrivate *priv = writer->priv;
 
   switch (property_id)
     {
@@ -235,7 +232,7 @@ wocky_xmpp_writer_stream_open (WockyXmppWriter *writer,
     const guint8 **data,
     gsize *length)
 {
-  WockyXmppWriterPrivate *priv = WOCKY_XMPP_WRITER_GET_PRIVATE (writer);
+  WockyXmppWriterPrivate *priv = writer->priv;
 
   g_assert (priv->stream_mode);
 
@@ -317,7 +314,7 @@ void
 wocky_xmpp_writer_stream_close (WockyXmppWriter *writer,
     const guint8 **data, gsize *length)
 {
-  WockyXmppWriterPrivate *priv = WOCKY_XMPP_WRITER_GET_PRIVATE (writer);
+  WockyXmppWriterPrivate *priv = writer->priv;
   static const guint8 *close = (const guint8 *)"</stream:stream>\n";
 
   g_assert (priv->stream_mode);
@@ -329,7 +326,7 @@ wocky_xmpp_writer_stream_close (WockyXmppWriter *writer,
 }
 
 static void
-_xml_write_node (WockyXmppWriter *writer, WockyXmppNode *node);
+_xml_write_node (WockyXmppWriter *writer, WockyNode *node);
 
 static gboolean
 _write_attr (const gchar *key, const gchar *value,
@@ -337,7 +334,7 @@ _write_attr (const gchar *key, const gchar *value,
     gpointer user_data)
 {
   WockyXmppWriter *self = WOCKY_XMPP_WRITER (user_data);
-  WockyXmppWriterPrivate *priv = WOCKY_XMPP_WRITER_GET_PRIVATE (self);
+  WockyXmppWriterPrivate *priv = self->priv;
   GQuark attrns = 0;
 
   if (ns != NULL)
@@ -367,18 +364,18 @@ _write_attr (const gchar *key, const gchar *value,
 }
 
 static gboolean
-_write_child (WockyXmppNode *node, gpointer user_data)
+_write_child (WockyNode *node, gpointer user_data)
 {
   _xml_write_node (WOCKY_XMPP_WRITER (user_data), node);
   return TRUE;
 }
 
 static void
-_xml_write_node (WockyXmppWriter *writer, WockyXmppNode *node)
+_xml_write_node (WockyXmppWriter *writer, WockyNode *node)
 {
   const gchar *l;
   GQuark oldns;
-  WockyXmppWriterPrivate *priv = WOCKY_XMPP_WRITER_GET_PRIVATE (writer);
+  WockyXmppWriterPrivate *priv = writer->priv;
 
   oldns = priv->current_ns;
 
@@ -398,12 +395,12 @@ _xml_write_node (WockyXmppWriter *writer, WockyXmppNode *node)
       priv->current_ns = node->ns;
       xmlTextWriterStartElementNS (priv->xmlwriter,
           NULL, (const xmlChar *) node->name,
-          (const xmlChar *) wocky_xmpp_node_get_ns (node));
+          (const xmlChar *) wocky_node_get_ns (node));
     }
 
-  wocky_xmpp_node_each_attribute (node, _write_attr, writer);
+  wocky_node_each_attribute (node, _write_attr, writer);
 
-  l = wocky_xmpp_node_get_language (node);
+  l = wocky_node_get_language (node);
 
   if (l != NULL)
     {
@@ -412,7 +409,7 @@ _xml_write_node (WockyXmppWriter *writer, WockyXmppNode *node)
           (const xmlChar *)l);
     }
 
-  wocky_xmpp_node_each_child (node, _write_child, writer);
+  wocky_node_each_child (node, _write_child, writer);
 
   if (node->content)
     {
@@ -424,34 +421,24 @@ _xml_write_node (WockyXmppWriter *writer, WockyXmppNode *node)
   priv->current_ns = oldns;
 }
 
-/**
- * wocky_xmpp_writer_write_stanza:
- * @writer: a WockyXmppWriter
- * @stanza: the target of the stream opening (usually the xmpp server name)
- * @data: location to store a pointer to the data buffer
- * @length: length of the data buffer
- *
- * Serialize the @stanza to XML. The result is available in the
- * @data buffer. The buffer is only valid until the next call to a function
- */
-void
-wocky_xmpp_writer_write_stanza (WockyXmppWriter *writer,
-    WockyXmppStanza *stanza,
+static void
+_write_node_tree (WockyXmppWriter *writer,
+    WockyNodeTree *tree,
     const guint8 **data,
     gsize *length)
 {
-  WockyXmppWriterPrivate *priv = WOCKY_XMPP_WRITER_GET_PRIVATE (writer);
+  WockyXmppWriterPrivate *priv = writer->priv;
 
   xmlBufferEmpty (priv->buffer);
 
-  DEBUG_STANZA (stanza, "Serializing stanza:");
+  DEBUG_NODE_TREE (tree, "Serializing tree:");
 
   if (!priv->stream_mode)
     {
       xmlTextWriterStartDocument (priv->xmlwriter, "1.0", "utf-8", NULL);
     }
 
-  _xml_write_node (writer, stanza->node);
+  _xml_write_node (writer, wocky_node_tree_get_top_node (tree));
 
   if (!priv->stream_mode)
     {
@@ -468,6 +455,50 @@ wocky_xmpp_writer_write_stanza (WockyXmppWriter *writer,
 }
 
 /**
+ * wocky_xmpp_writer_write_stanza:
+ * @writer: a WockyXmppWriter
+ * @stanza: the stanza to serialize
+ * @data: location to store a pointer to the data buffer
+ * @length: length of the data buffer
+ *
+ * Serialize the @stanza to XML. The result is available in the
+ * @data buffer. The buffer is only valid until the next call to a function
+ */
+void
+wocky_xmpp_writer_write_stanza (WockyXmppWriter *writer,
+    WockyStanza *stanza,
+    const guint8 **data,
+    gsize *length)
+{
+  _write_node_tree (writer, WOCKY_NODE_TREE (stanza), data, length);
+}
+
+/**
+ * wocky_xmpp_writer_write_node_tree:
+ * @writer: a WockyXmppWriter
+ * @tree: the node tree to serialize
+ * @data: location to store a pointer to the data buffer
+ * @length: length of the data buffer
+ *
+ * Serialize the @tree to XML. The result is available in the
+ * @data buffer. The buffer is only valid until the next call to a function.
+ * This function may only be called in non-streaming mode.
+ */
+void
+wocky_xmpp_writer_write_node_tree (WockyXmppWriter *writer,
+    WockyNodeTree *tree,
+    const guint8 **data,
+    gsize *length)
+{
+  *data = NULL;
+  *length = 0;
+
+  g_return_if_fail (!writer->priv->stream_mode);
+
+  _write_node_tree (writer, tree, data, length);
+}
+
+/**
  * wocky_xmpp_writer_flush:
  * @writer: a WockyXmppWriter
  *
@@ -476,7 +507,7 @@ wocky_xmpp_writer_write_stanza (WockyXmppWriter *writer,
 void
 wocky_xmpp_writer_flush (WockyXmppWriter *writer)
 {
-  WockyXmppWriterPrivate *priv = WOCKY_XMPP_WRITER_GET_PRIVATE (writer);
+  WockyXmppWriterPrivate *priv = writer->priv;
 
   xmlBufferFree (priv->buffer);
   priv->buffer = xmlBufferCreate ();

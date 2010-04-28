@@ -63,27 +63,28 @@ libwocky_la_LIBADD =
 am__libwocky_la_SOURCES_DIST = wocky-types.h wocky.c wocky.h \
 	wocky-connector.c wocky-connector.h wocky-xmpp-connection.c \
 	wocky-xmpp-connection.h wocky-debug.c wocky-debug.h \
-	wocky-namespaces.h wocky-utils.c wocky-utils.h \
-	wocky-xmpp-node.c wocky-xmpp-node.h wocky-xmpp-reader.c \
-	wocky-xmpp-reader.h wocky-xmpp-stanza.c wocky-xmpp-stanza.h \
+	wocky-namespaces.h wocky-node-tree.c wocky-node-tree.h \
+	wocky-utils.c wocky-utils.h wocky-node.c wocky-node.h \
+	wocky-node-private.h wocky-xmpp-reader.c wocky-xmpp-reader.h \
 	wocky-xmpp-writer.c wocky-xmpp-writer.h wocky-xmpp-error.c \
 	wocky-xmpp-error.h wocky-sasl-auth.c wocky-sasl-auth.h \
 	wocky-sasl-digest-md5.h wocky-sasl-digest-md5.c \
 	wocky-sasl-handler.c wocky-sasl-handler.h wocky-sasl-plain.c \
-	wocky-sasl-plain.h wocky-porter.c wocky-porter.h \
-	wocky-contact.c wocky-contact.h wocky-bare-contact.c \
-	wocky-bare-contact.h wocky-resource-contact.c \
-	wocky-resource-contact.h wocky-roster.c wocky-roster.h \
-	wocky-contact-factory.c wocky-contact-factory.h \
-	wocky-session.c wocky-session.h wocky-muc.h wocky-muc.c \
-	wocky-pep-service.c wocky-pep-service.h wocky-data-form.c \
-	wocky-data-form.h wocky-pubsub-helpers.c \
-	wocky-pubsub-helpers.h wocky-pubsub-service.c \
-	wocky-pubsub-service.h wocky-pubsub-service-protected.h \
-	wocky-pubsub-node.c wocky-pubsub-node.h \
-	wocky-pubsub-node-protected.h wocky-openssl.c wocky-tls.h \
-	wocky-openssl-dh512.c wocky-openssl-dh1024.c \
-	wocky-openssl-dh2048.c wocky-openssl-dh4096.c wocky-tls.c
+	wocky-sasl-plain.h wocky-stanza.c wocky-stanza.h \
+	wocky-porter.c wocky-porter.h wocky-contact.c wocky-contact.h \
+	wocky-bare-contact.c wocky-bare-contact.h \
+	wocky-resource-contact.c wocky-resource-contact.h \
+	wocky-roster.c wocky-roster.h wocky-contact-factory.c \
+	wocky-contact-factory.h wocky-session.c wocky-session.h \
+	wocky-muc.h wocky-muc.c wocky-pep-service.c \
+	wocky-pep-service.h wocky-data-form.c wocky-data-form.h \
+	wocky-pubsub-helpers.c wocky-pubsub-helpers.h \
+	wocky-pubsub-service.c wocky-pubsub-service.h \
+	wocky-pubsub-service-protected.h wocky-pubsub-node.c \
+	wocky-pubsub-node.h wocky-pubsub-node-protected.h \
+	wocky-openssl.c wocky-tls.h wocky-openssl-dh512.c \
+	wocky-openssl-dh1024.c wocky-openssl-dh2048.c \
+	wocky-openssl-dh4096.c wocky-tls.c
 am__objects_1 = wocky-openssl.lo wocky-openssl-dh512.lo \
 	wocky-openssl-dh1024.lo wocky-openssl-dh2048.lo \
 	wocky-openssl-dh4096.lo
@@ -91,14 +92,14 @@ am__objects_1 = wocky-openssl.lo wocky-openssl-dh512.lo \
 am__objects_3 = wocky-tls.lo
 @USING_OPENSSL_FALSE@am__objects_4 = $(am__objects_3)
 am__objects_5 = wocky.lo wocky-connector.lo wocky-xmpp-connection.lo \
-	wocky-debug.lo wocky-utils.lo wocky-xmpp-node.lo \
-	wocky-xmpp-reader.lo wocky-xmpp-stanza.lo wocky-xmpp-writer.lo \
-	wocky-xmpp-error.lo wocky-sasl-auth.lo \
-	wocky-sasl-digest-md5.lo wocky-sasl-handler.lo \
-	wocky-sasl-plain.lo wocky-porter.lo wocky-contact.lo \
-	wocky-bare-contact.lo wocky-resource-contact.lo \
-	wocky-roster.lo wocky-contact-factory.lo wocky-session.lo \
-	wocky-muc.lo wocky-pep-service.lo wocky-data-form.lo \
+	wocky-debug.lo wocky-node-tree.lo wocky-utils.lo wocky-node.lo \
+	wocky-xmpp-reader.lo wocky-xmpp-writer.lo wocky-xmpp-error.lo \
+	wocky-sasl-auth.lo wocky-sasl-digest-md5.lo \
+	wocky-sasl-handler.lo wocky-sasl-plain.lo wocky-stanza.lo \
+	wocky-porter.lo wocky-contact.lo wocky-bare-contact.lo \
+	wocky-resource-contact.lo wocky-roster.lo \
+	wocky-contact-factory.lo wocky-session.lo wocky-muc.lo \
+	wocky-pep-service.lo wocky-data-form.lo \
 	wocky-pubsub-helpers.lo wocky-pubsub-service.lo \
 	wocky-pubsub-node.lo $(am__objects_2) $(am__objects_4)
 am_libwocky_la_OBJECTS = $(am__objects_5)
@@ -315,25 +316,26 @@ GNUTLS_SRC = wocky-tls.c wocky-tls.h
 HANDWRITTEN_SOURCES = wocky-types.h wocky.c wocky.h wocky-connector.c \
 	wocky-connector.h wocky-xmpp-connection.c \
 	wocky-xmpp-connection.h wocky-debug.c wocky-debug.h \
-	wocky-namespaces.h wocky-utils.c wocky-utils.h \
-	wocky-xmpp-node.c wocky-xmpp-node.h wocky-xmpp-reader.c \
-	wocky-xmpp-reader.h wocky-xmpp-stanza.c wocky-xmpp-stanza.h \
+	wocky-namespaces.h wocky-node-tree.c wocky-node-tree.h \
+	wocky-utils.c wocky-utils.h wocky-node.c wocky-node.h \
+	wocky-node-private.h wocky-xmpp-reader.c wocky-xmpp-reader.h \
 	wocky-xmpp-writer.c wocky-xmpp-writer.h wocky-xmpp-error.c \
 	wocky-xmpp-error.h wocky-sasl-auth.c wocky-sasl-auth.h \
 	wocky-sasl-digest-md5.h wocky-sasl-digest-md5.c \
 	wocky-sasl-handler.c wocky-sasl-handler.h wocky-sasl-plain.c \
-	wocky-sasl-plain.h wocky-porter.c wocky-porter.h \
-	wocky-contact.c wocky-contact.h wocky-bare-contact.c \
-	wocky-bare-contact.h wocky-resource-contact.c \
-	wocky-resource-contact.h wocky-roster.c wocky-roster.h \
-	wocky-contact-factory.c wocky-contact-factory.h \
-	wocky-session.c wocky-session.h wocky-muc.h wocky-muc.c \
-	wocky-pep-service.c wocky-pep-service.h wocky-data-form.c \
-	wocky-data-form.h wocky-pubsub-helpers.c \
-	wocky-pubsub-helpers.h wocky-pubsub-service.c \
-	wocky-pubsub-service.h wocky-pubsub-service-protected.h \
-	wocky-pubsub-node.c wocky-pubsub-node.h \
-	wocky-pubsub-node-protected.h $(am__append_1) $(am__append_3)
+	wocky-sasl-plain.h wocky-stanza.c wocky-stanza.h \
+	wocky-porter.c wocky-porter.h wocky-contact.c wocky-contact.h \
+	wocky-bare-contact.c wocky-bare-contact.h \
+	wocky-resource-contact.c wocky-resource-contact.h \
+	wocky-roster.c wocky-roster.h wocky-contact-factory.c \
+	wocky-contact-factory.h wocky-session.c wocky-session.h \
+	wocky-muc.h wocky-muc.c wocky-pep-service.c \
+	wocky-pep-service.h wocky-data-form.c wocky-data-form.h \
+	wocky-pubsub-helpers.c wocky-pubsub-helpers.h \
+	wocky-pubsub-service.c wocky-pubsub-service.h \
+	wocky-pubsub-service-protected.h wocky-pubsub-node.c \
+	wocky-pubsub-node.h wocky-pubsub-node-protected.h \
+	$(am__append_1) $(am__append_3)
 libwocky_la_SOURCES = $(HANDWRITTEN_SOURCES)
 
 # Coding style checks
@@ -410,6 +412,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-muc-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-muc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-node-tree.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-node.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-openssl-dh1024.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-openssl-dh2048.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-openssl-dh4096.Plo@am__quote@
@@ -430,15 +434,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-sasl-plain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-session.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-signals-marshal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-stanza.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-tls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xmpp-connection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xmpp-error-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xmpp-error.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xmpp-node.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xmpp-reader-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xmpp-reader.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xmpp-stanza.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xmpp-writer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky.Plo@am__quote@
 

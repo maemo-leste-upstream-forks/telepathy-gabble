@@ -1,3 +1,260 @@
+commit c2ac9a3ce6bfc03bf758adc4d77b50c351088fab
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-26 18:39:54 +0100
+
+    Version 0.9.11
+
+commit 1933006e153b807ab366bdf7e2506a5def805117
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-26 19:00:02 +0100
+
+    Fix compilation with --disable-debug
+
+commit ad788bc0a7d94c4cc769caca7f0f6d8264658583
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-26 17:59:21 +0100
+
+    Fix a race in vcard/set-contact-info.py
+
+commit f2ac35824adae95917ccaba94b16530ad1ec9a95
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-26 14:22:58 +0100
+
+    Whoops. Update Wocky to a real commit ID.
+
+commit e9f9fd564e18efd8dd78f8bd1afed18e1df4ed89
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-22 17:12:14 +0100
+
+    Update Wocky
+    
+    More Pubsubby stuff:
+    
+    • support modifying node affiliates
+    • support retrieving node configuration
+    • refactor wocky_pubsub_service_handle_create_node_reply()
+    • modify the distillery to return WockyNodeTrees
+    
+    Oh, and added a couple more macros for implementing _finish()
+    functions, and updated the wocky headers to install.
+
+commit 4929db20f95a0be610a90363e304a7defcee6137
+Merge: 78ab4a0 c4ad10c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-04-22 14:56:46 +0100
+
+    Merge branch 'tests'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit c4ad10c1dfef8fabe5b8711f8e13461595aa2409
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-04-22 14:52:14 +0100
+
+    jingle/call-codecoffer.py: don't assume our telepathy-glib is < 0.11.3
+    
+    Connections have more properties now.
+
+commit 17b0726429aa4308374484c64b1728d0fe26be84
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-04-22 14:21:28 +0100
+
+    avatar-requirements.py: test GetAll both before and after connecting
+    
+    The initial implementation of this feature in Haze crashed if these
+    properties were retrieved before connecting.
+
+commit 9ec4c0ea7d6a0142f5e4aa62a71dd35a76afb0f3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-04-22 14:19:14 +0100
+
+    Sync constants.py back from Haze, which added "CM"
+
+commit 78ab4a0feee01b68bf38977b23011614417d0b38
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-20 15:47:17 +0100
+
+    Update wocky
+
+commit 2b378679e0868d72be70dd7889de254d6fcd2f81
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-20 15:15:10 +0100
+
+    Set the namespace directly in the node
+    
+    Newer Wocky API mandates always setting the namespace of a node upon creation
+    time, unfortunately we can't do that when trying to be compatible with
+    loudmouth. Luckily we can still cheat ;)
+
+commit 901aa0b14a5392e596c32c04a6285947534f292e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-20 15:13:45 +0100
+
+    Set the namespace as soon as we create a node
+
+commit b009397934830635416101c370fae88ad6532261
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-20 15:12:04 +0100
+
+    No need to special-case xmlns and xml:lang
+    
+    lm_message_node_set_attribute already special-cases xmlns and xml:lang for us,
+    so code calling it shouldn't have to do that
+
+commit 1689ff96955211f553b524be0e062a88dbdc0206
+Merge: 8f265fa 30eafcc
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-20 12:36:50 +0100
+
+    Merge branch 'wocky-node-tree'
+
+commit 30eafcc8eed22bf3913b642de9e31c4844b939e0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-15 19:31:42 +0100
+
+    Rename to WockyStanza, WockyNode and related changes
+
+commit a19b8f0f19c12f8f3d7cd9dac4daf25d620049bf
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-15 18:47:51 +0100
+
+    Add a debug macro for stanza debugging
+
+commit 42664792ef326b984d4a6e61e4520e5aa8967590
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-15 15:06:02 +0100
+
+    Update wocky
+
+commit 8f265fadcec1ee261c0783e08e24b54227193b1a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-04-16 16:21:39 +0200
+
+    test that GetContactAttributes returns an empty location if there is no location
+
+commit 09eaa624cf17ee35115a61c4d0d1d2f08f5b97ae
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-04-16 16:25:54 +0200
+
+    location: return an empty hash to GetContactAttributes if there is no location
+    
+    Fix fdo #27694
+
+commit 5b250eb3e3cc4b7d21ab96c4de5fc86571b60fca
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-04-16 16:33:41 +0200
+
+    location: ref the conn while wocky_pep_service_get_async is running (fdo #25775)
+
+commit 73513877b368d78cf5f9573b9498468b754a5a9a
+Merge: a21a226 dfa0b47
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-04-16 13:06:20 +0100
+
+    Merge branch 'undraft'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit dfa0b478e567cc8282524388f47401db57da1269
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-04-15 22:25:59 +0100
+
+    Spec 0.19.5, even...
+
+commit 53fe575bc5eb420fc97274d224c70dcd486ec6e5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-04-15 21:47:25 +0100
+
+    Update ContactInfo, MailNotification to spec 0.19.4
+
+commit a21a2267a66e9e37fbff0ad01cc542427304ff65
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-04-14 15:56:40 -0300
+
+    vcard/overlapping-sets.py: Removed check for dbus-return of SetAliases.
+
+commit a5db596dbf859525e7fc5229b54477ac5cb9a2e7
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-04-14 15:55:12 -0300
+
+    vcard/overlapping-sets.py: Use _ instead of ev for variables that we ignore.
+
+commit e9e8ad9af5d81842caf7a0c39afe5a5d6a171030
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-04-14 15:45:28 -0300
+
+    vcard/overlapping-sets.py: Fixed racy.
+
+commit 52679ccc631a6b8544cf5ce373fca6b22501fb4b
+Merge: 32c575e ac51631
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-04-14 13:24:02 -0300
+
+    Merge branch 'contact-info'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit ac516315a046e0e086822c7aba97df63b890eea3
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-04-14 13:12:18 -0300
+
+    vcard/refresh-contact-info.py: Added test for RefreshContactInfo.
+
+commit 5980bd382c182eac9bf4407e83eef5a953190021
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-04-14 13:11:03 -0300
+
+    vcard/get-contact-info.py: GetContactInfo should always read from cache. Use RefreshContactInfo to update the cache.
+
+commit a7be2238e5c3fab825e1e0d3601967533dcee74c
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-04-14 12:41:32 -0300
+
+    conn-contact-info: Implement RefreshContactInfo.
+
+commit ab817641a5bb942bd61967148a96083ebfe7a816
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-04-14 12:40:33 -0300
+
+    conn-contact-info: GetContactInfo should only return cached data and not request from network.
+
+commit 9ae9a59c1ea988ba9409cbc3f9d0bcc714e6beea
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-04-14 11:50:09 -0300
+
+    Updated Connection_Interface_Contact_Info.xml and implementation according to changes from fd.o#13350.
+
+commit 4386861eee00e6a0a7c72105550edd89aed88037
+Merge: 32c575e b01c1ce
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-04-14 11:26:40 -0300
+
+    Merge remote branch 'smcv/contact-info' into contact-info
+
+commit 32c575e530251420d69c24c2768517ce5e07b889
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-13 16:06:46 +0100
+
+    Update Gabble for _stanza_build() changes.
+
+commit 664c839cebc6689b264b7b8615371fbb366d3963
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-13 16:03:30 +0100
+
+    Update Wocky for _stanza_build() changes
+
+commit ebc20b8e9e0a077c2961c1993e3010091673502d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-13 12:17:52 +0100
+
+    Correct a mis-shaped call to wocky_xmpp_stanza_build()
+
+commit c68c4fc192ba8bb5770ba4500e1c33a6d25f5c99
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-08 16:20:13 +0100
+
+    bump nano-version to 0.9.10.1
+
 commit b616dec5b87bdc8f15260a570b98a740ad171ae8
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-04-08 16:16:57 +0100
@@ -221,6 +478,21 @@ Date:   2010-03-08 23:12:24 +0000
 
     Script updating the Wocky header list
 
+commit b01c1ce6681cbeabbf7eab88ade442ee78ef97de
+Merge: 1af8f89 74e7c0e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-18 15:36:19 +0000
+
+    Merge branch 'contact-info' into master
+    
+    Reviewed-by: Andre Moreira Magalhaes
+    Test-failure: vcard/overlapping-sets.py fails, but only during
+            distcheck; needs resolving before merge
+    Conflicts:
+    	NEWS (trivial)
+    	configure.ac (trivial)
+    	src/connection.h (master and contact-info both added members to priv)
+
 commit e817d77310d94c5e1aec42a848eacededd82f01c
 Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
 Date:   2010-03-17 15:28:43 -0400
@@ -355,6 +627,183 @@ Date:   2010-03-03 14:33:40 +0100
     
     We forgot it for some reason.
 
+commit 74e7c0e13f454a2a8fb35f4bbee10d6da98c3af0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 20:16:25 +0000
+
+    Improve ContactInfo test coverage
+
+commit 5a31da7e215533bc83317c18a78ab2fa2fb44d67
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 20:15:58 +0000
+
+    gabble_connection_set_contact_info: reject vCard fields not supported by the server
+    
+    So far, this is only significant for Google servers.
+
+commit 78a121b90fbb794aaa0bdfec0c2a6dec7bdc806d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 18:48:31 +0000
+
+    _create_contact_field_extended: remove unnecessary copy/free cycle
+
+commit 14a0314dd7cbbde530ede88a55d5d6531a7c6369
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 18:44:41 +0000
+
+    _create_contact_field_extended: coding style
+
+commit 867969e44ae3efdaa413e1ab505208c40680fe2f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 18:41:46 +0000
+
+    _insert_contact_field: remove unnecessary box/unbox operations
+
+commit 263291be18cb0c62de5a66c23b3a67d70adc1a68
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 18:32:55 +0000
+
+    GabbleVCardManager: use a doubly-linked list for edits
+    
+    We both append and prepend to this list, so it's considerably more
+    efficient to use a doubly-linked list.
+
+commit 8fffd27b95ac4f917e0e4c7b20dab6713e3ba623
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 18:26:36 +0000
+
+    Remove now-unused variable empty_strv
+
+commit eec64db0a2410e0937ab7869d74aa7f24363a141
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 18:25:29 +0000
+
+    Flatten conn_contact_info_edit_add_type_params into conn_contact_info_new_edit
+
+commit 6d94760b0e8634199a1af99a660a5a42a9f8afd6
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 18:22:26 +0000
+
+    gabble_connection_set_contact_info: factor out appending edit_info to list
+
+commit c0f8fcb6f314424c63a5ab9a70a93584be384e22
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 18:16:04 +0000
+
+    gabble_connection_set_contact_info: inline _insert_edit_info, which no longer saves a significant amount of code
+
+commit 34e804a5b8a8195bd5306a9f26d554087c003ab7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 18:08:47 +0000
+
+    gabble_connection_set_contact_info: avoid unnecessary dup/free of struct contents
+
+commit 2353eab8b18d496046bdf905df29d13ea6f73f7e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 18:05:21 +0000
+
+    conn_contact_info_edit_add_type_params: give a better debug message for entirely unexpected type-parameters
+
+commit 5bb87c946934ba76c1d092e968d504e88c0d6c4c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 18:04:06 +0000
+
+    gabble_connection_set_contact_info: don't leak field name/params/values on error
+
+commit b7ad66c98b9a745dae83b2c0a937985324bff7fa
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 17:57:05 +0000
+
+    Test some unrecognised vCard type-parameters
+
+commit b10328aed91b3eff7065a2232f76fa4fbdd0bb1e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 17:56:41 +0000
+
+    gabble_connection_set_contact_info: fail on unrecognised type-parameters
+    
+    This requires removing 'language=ja' from the test, since that will now
+    fail (XMPP vCards don't understand the LANGUAGE type-parameter).
+
+commit 518d7fcf9a47ba3d78620953157799f93d9f777d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 17:37:39 +0000
+
+    vcard/set-contact-info: check various invalid inputs
+
+commit 4732714775b2e3d2cf02852a97aec466a178466d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 17:28:07 +0000
+
+    gabble_connection_set_contact_info: raise InvalidArgument for ("org", anything, [])
+
+commit 7c6fb7919db5b1ed19c4238ddff7a53c9af04dcd
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 17:26:43 +0000
+
+    gabble_connection_set_contact_info: raise InvalidArgument on multi-valued fields that ought to have one value
+
+commit 5304886f016819c88402076bdf620aaf552b6c83
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 17:26:20 +0000
+
+    gabble_connection_set_contact_info: raise InvalidArgument on unknown vCard fields
+
+commit 398865a57dc7ad77d81c77166e53ff3f1f43e1be
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 17:18:01 +0000
+
+    Add a regression test for ContactInfo.SupportedFields
+
+commit d7e1a73650388a43478e401ebe72fdb37854a3ac
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 16:35:49 +0000
+
+    conn_contact_info_build_supported_fields: set Parameters_Mandatory on every field with no type-params
+
+commit 40aee275c4203ba7b8c8145e429d14d9f8f186a4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 16:30:36 +0000
+
+    ContactInfo.SupportedFields: advertise the correct list of type-params
+
+commit 0dcb7a07ac6e07c8851c8f51f2027049b0af702a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 16:29:16 +0000
+
+    Change VCardField->types to be a list of "type=xxx"
+    
+    Also change conn_contact_info_edit_add_type_params to check
+    type-parameters against the whitelist, rather than assuming that (say)
+    type=stoat produces a <STOAT/> element.
+
+commit 257fd26332c9a61339f4a90ac92f286040798106
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 15:37:18 +0000
+
+    Name the ContactInfo tests without a test- prefix, which annoys tab-completion users
+
+commit 1410c37eb74e9849a466200520fff54e3e41fdf1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 15:33:30 +0000
+
+    Set a more limited ContactInfo.SupportedFields for Google connections
+
+commit abc3cf0671efbdf726d027172be83c6b2cb28703
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 15:30:49 +0000
+
+    gabble_vcard_manager_has_limited_vcard_fields: add
+
+commit 1c905e6c7c0c5fd9011198c2833d0b200be90165
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-03-01 15:30:32 +0000
+
+    ContactInfo: have a connection-specific value for SupportedFields
+    
+    If the connection-specific value is NULL (which it always is at the
+    moment), fall back to the global static value.
+
 commit 11acbaf458dec6efa51d5a5404a7f048ba6731b6
 Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
 Date:   2010-02-26 16:03:41 -0500
@@ -379,6 +828,54 @@ Date:   2010-02-25 18:25:14 -0500
 
     fix style, clearer code
 
+commit d30dd6966976c16856a66420a16a6d0f666f7200
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 21:47:30 +0000
+
+    GabbleVCardManager: improve whitespace
+
+commit 596dcbf64fc17c6f6c9a2111f20fd2504b450e1e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 21:40:36 +0000
+
+    conn-contact-info: avoid using assignments within expressions
+
+commit 4c4209b0bf70485dd1cde97ada9aa654eed7cda0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 21:40:20 +0000
+
+    conn-contact-info: improve coding style for comparisons
+
+commit ba1d472d2726df7e0427a669ae10be14c415e78d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 21:40:02 +0000
+
+    conn-contact-info: remove unnecessary casts
+
+commit 83cbf0c6d23cc75f3c7d597041a76bd751388649
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 21:39:15 +0000
+
+    conn-contact-info: improve indentation/spacing
+
+commit 43fc0ac57944fe79be4e21140f949188c7457c91
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 21:38:00 +0000
+
+    conn-contact-info: document more
+
+commit aeb02dc809d0654bfcfedc863c8039ae277b19f5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 21:37:41 +0000
+
+    gabble_connection_set_avatar: fix indentation and misleading debug message
+
+commit 33dd83e60a270bda5e74eaeca1288f3d2a9d17ca
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 21:21:26 +0000
+
+    vcard/test-set-contact-info.py: enhance to cover ContactInfoChanged
+
 commit 8d43e64804d43aafe3ab6db69ecdd47395638955
 Merge: 8d48b82 a88baea
 Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
@@ -395,6 +892,14 @@ Date:   2010-02-25 16:07:19 -0500
     Made TpDBusDaemon globally accessible by all Connection extension
     
     Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit bf501979663ecef56926c4f2f32e2ad79004a0a6
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 21:04:02 +0000
+
+    observe_vcard: emit VCARD_UPDATE before checking to see if the nickname changed
+    
+    Otherwise, we'd omit the VCARD_UPDATE when the alias hadn't changed...
 
 commit 6fc6b04eae525a850a56628a71f834f68f31525a
 Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
@@ -664,11 +1169,273 @@ Date:   2010-02-25 15:24:25 -0500
     
     Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
 
+commit 11831830a72fc6764ded29d6bba8f2106526c284
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 20:24:21 +0000
+
+    After a SetContactInfo, fix a missing nickname if necessary
+    
+    Otherwise, SetContactInfo would (in practice) result in discarding the
+    nickname.
+    
+    In the process, introduce a new SET_ALIAS edit type, and use that for
+    Aliasing instead of ...edit_alias.
+    
+    This alters the behaviour of test-set-contact-info.py (to be more useful).
+
+commit 88a1f373b8cf5e4c24eaf7b9c8a45f1d9c340a9d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 19:01:56 +0000
+
+    gabble_vcard_manager_edit: remove the replace_vcard parameter
+    
+    The one caller interested in clearing the vCard (ContactInfo) can
+    explicitly push a CLEAR operation onto @edits, instead.
+
+commit d44a59b4ee0ef829e492b14c7327d8cc11765b40
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 18:39:27 +0000
+
+    conn-contact-info.c: express in terms of Wocky
+    
+    There's no point in using the pseudo-Loudmouth layer in new code.
+
+commit 1f6e1b8a3faa2d23a10f3ec631ce439a2eff7234
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 18:34:18 +0000
+
+    lm_message_node_unlink: remove
+    
+    This function is no longer used by the vCard manager, which is just as
+    well, since it manipulated internal data fields in the message nodes.
+
+commit b0a8cc06c4e81ab39c9aa720c698dd69c4473b67
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 18:30:23 +0000
+
+    Update copyright years for ContactInfo
+
+commit 4fe5fa27a0186c9edab2ffc8ec38c21ce2416f37
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 18:26:09 +0000
+
+    SetAliases: When connected to GTalk, set the FN instead of the NICKNAME
+    
+    Google's servers won't let us change fields other than N, FN and PHOTO,
+    so this is the best we can do.
+    
+    This requires the test in vcard/redundant-set.py to be made more
+    realistic.
+
+commit 8aad28fecf3717ec06941a5d4ea7a4deb4e0cc75
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 18:07:25 +0000
+
+    Factor out GTalk-vCard-field-forbidding into a function
+
 commit 8d48b82762275383debd8197e63f3c78e05c2f06
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-02-25 17:26:40 +0000
 
     Update wocky to ef42dd2 for better gtk-doc
+
+commit 1390380faf7b2de1f077a0f72a9e4552acbdbc89
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 16:11:52 +0000
+
+    Reinstate a pre-check for insignificant edits, but explicitly design it to cover only the edits we know we'll do frequently
+
+commit 0292b548319bf20eb250f84214d47bf76398eab6
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 15:16:20 +0000
+
+    gabble_vcard_manager_edit_info_apply: work out whether the edit was non-trivial as a side-effect
+
+commit 2b17d8f34a0c2c6da1c069d86ebf3e896d033356
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 15:14:30 +0000
+
+    vcard/overlapping-sets.py: check that SetAvatar([], '') deletes the <PHOTO/> entirely
+
+commit b503fb973ea947a76bdbeb8a7977343c909f5914
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 15:13:57 +0000
+
+    gabble_connection_set_avatar: delete the <PHOTO/> entirely if the byte-array is empty
+    
+    Previously this method checked for a NULL GArray, but I don't think
+    dbus-glib will ever actually provide such a thing.
+
+commit 0ca2b8d467e0c2573c67ccef2a9c8c82da612f46
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 15:07:46 +0000
+
+    gabble_vcard_manager_edit_info_apply: don't create an empty <FOO/> if asked to delete all <FOO> elements
+    
+    In practice, this would only happen when unsetting the <PHOTO/>.
+
+commit 59158d6deff69e68f2ec515a2765b7f4d38d7053
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 14:43:48 +0000
+
+    vcard/test-set-contact-info.py: exercise ORGs with 0 and 2 ORGUNITs
+
+commit 83db45e8cf3e67ba2c5ceea6abe02d3d44058d8b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 14:43:25 +0000
+
+    Special-case the serialization of <ORG> into a vCard
+    
+    This means we can deal with ORGs with a number of ORGUNITs that differs
+    from 1.
+
+commit 40dbeb2a20ab107c1d0b03d1ef81c5d253c900dc
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 14:35:18 +0000
+
+    vcard/test-contact-info.py: assert that <ORG> can be unserialized
+
+commit 594f20ca45c8aa05782bdd20877c2003b872c80c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 14:34:59 +0000
+
+    Special-case unserialization of <ORG> in vCards
+    
+    ORG has the (so far) unique semantics of having one ORGNAME, then zero or
+    more ORGUNITs.
+
+commit 4f04c9ce12fc47ba71fcf4081e134a9d916a4a7c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 14:18:00 +0000
+
+    Test that vCard LABELs are serialized correctly
+
+commit a84803493e049c9cbccc30c49eee134c88a19a18
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 14:17:48 +0000
+
+    Add a special case for LABEL in vCards, so it gets serialized correctly
+
+commit c5bf6297bd09cb1ca3eaea05a478d3b3c369bf0a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 14:14:50 +0000
+
+    Replace patch_vcard_node_foreach by just appending children to the node
+    
+    Now that we're always constructing a new replacement node, nothing is
+    gained by trying to preserve existing children, and doing so would
+    prevent us from having a repeated child node, which is needed for
+    LABEL/LINE and ORG/ORGUNIT.
+
+commit 54c9622763c3893686dfac933488cfbf82140e82
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 14:12:32 +0000
+
+    gabble_vcard_manager_edit_info_apply: implement REPLACE and DELETE in terms of excluding nodes from copying
+    
+    This avoids having to unlink child nodes using non-public API.
+
+commit 92cec2dba8dbe407aa41a4f1ebc1c60dc189d2b8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 14:04:17 +0000
+
+    vcard/test-set-contact-info.py: expect SetContactInfo([]) to clear the vCard
+
+commit a1dfcc5ecb208f41bc95618c6670235e78f04fb2
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 13:56:39 +0000
+
+    GabbleVCardManager: turn clearing the vCard into just another edit operation
+
+commit 46603239119d78fcb5c704414175839b09bb2f71
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 13:49:56 +0000
+
+    Change gabble_vcard_manager_edit_info_apply so it always copies the message, then edits the copy
+    
+    Eventually, this can change to not doing unsupported in-place edits on
+    messages at all.
+
+commit 764d459eea8dd9aba3c84e384ae293aacf9c4405
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 13:30:26 +0000
+
+    patch_vcard_foreach: change signature, rename to gabble_vcard_manager_edit_info_apply
+
+commit 0661a1589d019b707dbdf5f486890abc5e395d5b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 12:56:38 +0000
+
+    gabble_connection_set_contact_info: don't optimize out an empty set of edits
+    
+    SetContactInfo([]) should clear the vCard (apart from the fields that
+    are special to the rest of Gabble); optimizing away an empty set of
+    edits breaks that.
+
+commit 1283f6545c980fb7b4172ad220e49d5520d52810
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-24 19:05:37 +0000
+
+    conn_contact_info_edit_add_type_params: factor out
+
+commit 01826d249150004190f438d2e99dcb023620a6ed
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-25 12:39:36 +0000
+
+    conn_contact_info_new_edit: factor out
+
+commit 409ed0ac22a244ecc900f683b2e7b107872820f3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-24 18:02:12 +0000
+
+    GabbleVCardManagerEditInfo: convert child elements into a list
+    
+    This allows them to be repeated (multiple LINEs in a LABEL), and preserves
+    order (important for LABELs!)
+
+commit 4e645be80875fd0ee7410f5407231c87f8616ccf
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-24 17:57:51 +0000
+
+    GabbleVCardManager: push unit-test-only API down to the bottom of the header
+
+commit b702bc0a243ad7aaaf963ffeb2abd882245f3f0f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-24 17:21:42 +0000
+
+    vcard/test-contact-info.py: parse a vCard with a <LABEL/>
+
+commit a5ac4a6708d9af4c9801405ea8ed41b12f083821
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-24 17:21:20 +0000
+
+    When parsing a vCard <LABEL/>, correctly join the lines with newlines
+
+commit be7b10081703d5eccef7f28b0c6738dfc293854b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-24 16:38:39 +0000
+
+    Make label and org vCard fields into special cases
+    
+    These don't really have the same semantics after all.
+
+commit c57ac26edfd2bc4f8eb9bdf5fb29aeedc2594907
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 16:27:14 +0000
+
+    Document the contents of VCardField
+
+commit f6c12bf1452b99292ea048624678fad8e969025f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 16:24:31 +0000
+
+    Tell Telepathy clients that FN, N, GEO can only appear once each
+
+commit b5f6f4cf4fa4fda8a431782c937228da53ef6fcb
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-24 16:46:38 +0000
+
+    When calling SetContactInfo, only allow FN once
 
 commit 043fd44000518625f666d8542e34f95bd1a82f81
 Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
@@ -792,6 +1559,69 @@ Date:   2010-02-23 16:37:09 +0000
     
     Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
 
+commit 064569cc063296553703cebbd201559776cd5669
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 16:19:38 +0000
+
+    Treat vCard <NICKNAME/> as a single string, not as comma-separated strings
+    
+    Also allow simple fields like (now) <NICKNAME/> to be repeated.
+    
+    The DTD in the XEP says NICKNAME can be a comma-separated list, but
+    this usage seems highly unlikely, and prevents us from representing
+    any nicknames that contain commas (since no escaping mechanism is
+    specified).
+    
+    Pidgin, Psi, Gajim and ejabberd don't seem to give <NICKNAME/> any
+    special treatment in practice.
+
+commit d713851d20713c308b0f09a6203e4c61eca8141b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 13:57:02 +0000
+
+    _insert_edit_info: ignore type-parameters not starting with type=
+    
+    The terminology is confusing. A vCard field (e.g. ADR) is called a "type"
+    in the jargon of RFC 2426; types have type parameters, which are key-value
+    pairs. The only key that has a mapping into XMPP is TYPE, which is defined
+    for several types including ADR; keys that we don't support include
+    LANGUAGE, ENCODING and VALUE.
+
+commit ed86dfe8f1ee5afd3a024800026c0f02cbbe9efe
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 13:52:15 +0000
+
+    _insert_edit_info: don't pass in redundant information
+
+commit 19f309fa989cd6339d10c702a4514f5f4908f56d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 13:42:40 +0000
+
+    _insert_edit_info: take a VCardField rather than a field name
+
+commit 757099cb9aaf6d5d574cb23ba5d946697e1492f4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 12:17:42 +0000
+
+    ContactInfo: populate SupportedFields from the lookup table
+
+commit 931d8763006ca873d8009107f74ca51e669c014f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 12:17:10 +0000
+
+    Allow XMPP and vCard fields' names to differ. Map <JABBERID/> to X-JABBER and <DESC/> to X-DESC
+    
+    X-JABBER is conventional usage. There seems to be no common equivalent
+    of <DESC/>, so we'll have to invent one...
+
+commit 0d54485f0a0f61d0b83d7cd6720707afd2210353
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-23 11:46:59 +0000
+
+    vcard/test-set-contact-info.py: expand coverage
+    
+    Also note some remaining problems, notably a race condition.
+
 commit 4b8741b6898cddb85db4bc9aa4ddb2c3262df58b
 Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
 Date:   2010-02-22 18:25:39 -0500
@@ -835,6 +1665,87 @@ Date:   2010-02-22 16:16:46 -0500
     MailNotification.Subscribe/Unsubscribe can now return Disconnected error
     
     Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit a9ad7f275a700a579aca2b2e639bb9795575514f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-22 21:10:00 +0000
+
+    gabble_connection_set_contact_info: implement in terms of the table of vCard fields
+
+commit 65c4c5cb5219f2221ba5ff4b02942b4ba053cace
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-22 21:09:40 +0000
+
+    _parse_vcard: implement in terms of the table of vCard fields
+
+commit c5167d1269f4f36206cb1e40c4b876cc19d0f505
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-22 21:08:45 +0000
+
+    ContactInfo: add a lookup table for known vCard fields
+    
+    This contains everything that the current code hard-codes support for,
+    except KEY for which I don't think we have an adequate Telepathy
+    representation (it contains a Base64 blob, and exposing that on D-Bus
+    seems wrong).
+    
+    Also, cache that information in hash tables keyed by the upper-case and
+    lower-case field names, as used in XMPP and Telepathy respectively.
+
+commit b5829c5a03e92bed294e9dac6f87696428677155
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-22 21:04:53 +0000
+
+    _insert_contact_field: document
+
+commit 57dc7b50174ce1307f339330225b56be5cf4bea4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-22 19:13:14 +0000
+
+    Merge the two booleans in GabbleVCardManagerEditInfo into an "edit type" enum
+    
+    (TRUE, TRUE) wasn't a valid editing mode, and it's clearer what's going
+    on this way.
+
+commit c1db0c0ebc56442df321860dcac829bc7564aca0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-22 18:58:36 +0000
+
+    vcard/overlapping-sets.py: assert about the stanzas' contents
+
+commit 03c1e3dab35c12b094e79e1bb194e89728191d35
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-22 18:43:11 +0000
+
+    Make vcard/overlapping-sets.py pass (by removing an extra expect() call)
+    
+    Also add comments to indicate what's going on!
+
+commit d8ee1d0db1d29e959ccda6abf394591bd660452f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-22 17:30:02 +0000
+
+    gabble_vcard_manager_edit_info_new: disallow combining to_del with accept_multiple, element_value or any sub-field edits
+
+commit 37f106f83d3f295957f2d880077d8bb4a8ea177f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-22 17:29:27 +0000
+
+    _GabbleVCardManagerPrivate: correct description of @edits
+
+commit 539157b11cfd7dcfe384050ee0f7aa40885efa0e
+Merge: 67017d0 d2c0789
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-02-22 17:28:39 +0000
+
+    Merge commit 'telepathy-gabble-0.9.5' (+ nano version) into contact-info
+    
+    Conflicts:
+    	src/connection.c
+    Edits:
+            fix tp:name-for-bindings of ContactInfoChanged
+            fix whitespace in conn-contact-info _insert_edit_info
+            rewrite vcard_node_changed() for the new data structure
 
 commit 7a44d70fe2ab993bb86627ecb787f27101f3d34e
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -3661,6 +4572,75 @@ Date:   2009-12-14 17:55:40 +0000
 
     Test that the fix for fd.o#25341 works.
 
+commit 67017d09534c017ea549dfecb10047373cef15fb
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-10 14:09:19 -0300
+
+    conn-contact-info: Improved error handling for RequestContactInfo.
+
+commit 06679b0d02f0c5c7099d76fc491827537f17fb01
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-10 14:02:50 -0300
+
+    twisted tests: Improved test for overlapping SetAvatar/SetAliases/SetContactInfo.
+
+commit eb9811cc84881464ff338652cfd399935650b73b
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-10 13:52:10 -0300
+
+    twisted tests: Improved test for getting contact info with plural nicknames.
+
+commit c4769783012ae2a196b30fd5a1e6691ebd6bffef
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-10 12:45:09 -0300
+
+    conn-contact-info: Proper parse nicknames with escaped commas.
+
+commit 302307ff5037ca159e521577c5a15cf452902979
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-10 12:28:05 -0300
+
+    conn-contact-info: Removed redundant call to _gabble_connection_signal_own_presence.
+
+commit 985b495e6b797bd95c90d866f9d4a2fd11288ef2
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-10 12:26:20 -0300
+
+    vcard-manager: Removed redundant if clause.
+
+commit f64983e1649b616e1b414b80cc4906f1607fa831
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-10 12:01:42 -0300
+
+    vcard-manager: Document gabble_vcard_manager_edit.
+    
+    Document gabble_vcard_manager_edit to indicate it takes ownership of the list of
+    GabbleVCardManagerEditInfo and its contents.
+
+commit 63c22bd7582e1b143abb7496a2878284f5352726
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-10 11:44:55 -0300
+
+    vcard-manager: Renamed gabble_vcard_manager_edit_extended to gabble_vcard_manager_edit.
+
+commit 08681e74f44bdcb7f5fbbced238bc58f41a5b959
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-10 11:42:11 -0300
+
+    vcard-manager: Renamed gabble_vcard_manager_edit to gabble_vcard_manager_edit_one.
+
+commit 987bbcdbcecab467a5fd40ddf767f2be0d7faf12
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-10 11:35:27 -0300
+
+    Use newly added method gabble_vcard_manager_edit_info_new/free.
+
+commit 8009fae014445b6bd9e37625967db36d0f0d1711
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-10 11:35:08 -0300
+
+    vcard-manager: Added gabble_vcard_manager_edit_info_new/free helper methods.
+
 commit b81ea4e2153f4fed9f81addb4ac7b20c63f23bf8
 Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
 Date:   2009-12-09 14:15:48 -0300
@@ -3794,6 +4774,12 @@ Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   2009-12-07 18:25:48 +0000
 
     Update the Call spec to the 0.19.0 version
+
+commit 32b969078b19cf682be3dfaf287c3fb590be1682
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-08 10:55:43 -0300
+
+    conn-contact-info: Removed TODO.
 
 commit f474c0bc6827ea0b5b5926b29eca07e9c96eabdc
 Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
@@ -4870,6 +5856,153 @@ Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
 Date:   2009-12-01 19:41:13 -0600
 
     Resync with wocky master which doesn't chain up to the real resolver.
+
+commit 6192ebbd3122bd8227cc13a845b04353d1645d79
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-01 13:05:58 -0300
+
+    vcard-manager: Do not replace PHOTO element when replacing the full vcard (gabble_connection_set_contact_info).
+
+commit c5edf2254622527b2f54062055a9849ee2bf0100
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-01 13:04:46 -0300
+
+    conn-contact-info: Fixed deletion of 'nicknames' array of strings in gabble_connection_set_contact_info.
+
+commit 48b99325a3ae497719197892009f1fc05230262a
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-01 12:45:14 -0300
+
+    vcard-manager: Proper replace the avatar when requested.
+    
+    Make sure multiple calls for gabble_vcard_manager_edit_extended with
+    replace_vcard set to TRUE respect the last resquest.
+
+commit 2683135083b89e692473c0c946f9fabfa89d74b0
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-01 04:26:32 -0300
+
+    twisted tests: Added test for setting contact info.
+
+commit a3144888bf96df120dce6359267c224e316a11ea
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-01 04:25:07 -0300
+
+    twisted tests: Added test for getting contact info.
+
+commit aa115293888a29ea86e071f44968687acd2a4e15
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-01 04:23:16 -0300
+
+    twisted tests: Added ContactInfo.DRAFT constant and add it as supported ifaces.
+
+commit 5056ea610fd325b0da541e46bc15589e86115a99
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-01 02:42:09 -0300
+
+    conn-contact-info: Updated TODO to use C style comments.
+
+commit 82f1f24af4e6ead47236b6a5d2434ad56cb21248
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-01 02:35:33 -0300
+
+    conn-contact-info: Added SetContactInfo support.
+
+commit 77cc12b00569fdd5b482a6eb0015290d3baba8dc
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-12-01 02:26:00 -0300
+
+    vcard-manager: Added support for fully editing vcard.
+
+commit 968fd1b8139dd6d71d95cd63fd45d033c3a7db60
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 20:24:03 -0300
+
+    conn-contact-info: Proper set ContactInfoFlags as XMPP shouldn't have the Push flag set.
+
+commit ee39e8b3bb39594217b71cd8ea98ecc20768b966
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 20:22:51 -0300
+
+    conn-contact-info: Moved supported_fields initialization to conn_contact_info_class_init and change it to use GPtrArray * instead of GValue.
+
+commit 79cdd7a8e11d873bf24fa516ec65f2ebe2573f1b
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 19:58:22 -0300
+
+    conn-contact-info: Refactor _request_vcard_cb.
+    
+    Split _request_vcard_cb in 2 method (_return_from_request_contact_info and
+    _request_vcard_cb) and call _return_from_request_contact_info when a vcard
+    request arrives. Use _return_from_request_contact_info directly when there is a
+    cached vcard for a contact when calling RequestContactInfo.
+
+commit 95b66496782592364b60f0b47ba32b0d3efcb8aa
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 19:37:06 -0300
+
+    conn-contact-info: Removed unnecessary RequestVCardContext usage/definition.
+
+commit 8b009dcd49920030210424631d437289424c9a25
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 19:29:18 -0300
+
+    conn-contact-info: Added debug for when a contact vcard is cached but cannot be parsed.
+
+commit c8f0d5edf194c45d884132e275e6a11d154540e4
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 19:24:39 -0300
+
+    conn-contact-info: No need to go via GValue to make a GABBLE_HASH_TYPE_CONTACT_INFO_MAP.
+
+commit 1d2100734c2cf4897b095108a84668b46317aa4a
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 19:20:04 -0300
+
+    conn-contact-info: Fixed KEY element parsing, was checking against ORG instead of KEY.
+
+commit 3aa81c30b0d2d2ed3aec1ed5789b24a765c3534d
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 19:18:03 -0300
+
+    conn-contact-info: Refactor nickname parsing by iterating nicknames directly instead of using a vector approach.
+
+commit 8b416e2de4b90c8f9046dd7575384d1a5f8672e0
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 19:14:12 -0300
+
+    conn-contact-info: Refactor _create_contact_field_extended.
+    
+    Refactor _create_contact_field_extended to use GPtrArray *
+    for params and receive const gchar * const for types and values.
+
+commit 4d6d402586f38c7eae8293cee5373ae24f893775
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 18:36:20 -0300
+
+    conn-contact-info: Make _insert_contact_field receive const gchar * const * instead of gchar ** for params and values.
+
+commit 0d1b3acb471fe049a0557526bd70b677242eae0b
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 18:24:37 -0300
+
+    conn-contact-info: Make _parse_vcard return a new GPtrArray * containing the contact info.
+    
+    Make _parse_vcard return a new GPtrArray *, or NULL if it can't
+    parse the vCard for some reason, rather than accepting a pointer to one and
+    poking stuff into it.
+
+commit 6f9788d7a041283050976573ad662b783fbbdf59
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 18:16:03 -0300
+
+    conn-contact-info: No need to go via GValue to make a GABBLE_ARRAY_TYPE_CONTACT_INFO_FIELD_LIST.
+
+commit 6de446f70802f6564a54c14d2e2f99c0e0c9e722
+Author: Andre Moreira Magalhaes (andrunko) <andrunko@andrunko.cbg.collabora.co.uk>
+Date:   2009-11-30 20:33:12 -0300
+
+    Added initial ContactInfo iface support.
 
 commit 10de892c149a6848bbf4177fc32b36e33a46b3f8
 Author: Will Thompson <will.thompson@collabora.co.uk>

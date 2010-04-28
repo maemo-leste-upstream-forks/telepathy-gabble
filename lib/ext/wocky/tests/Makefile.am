@@ -59,7 +59,8 @@ TEST_PROGS = wocky-xmpp-reader-test \
   wocky-xmpp-connection-test \
   wocky-porter-test \
   wocky-xmpp-node-test \
-  wocky-xmpp-stanza-test \
+  wocky-node-tree-test \
+  wocky-stanza-test \
   wocky-roster-test \
   wocky-bare-contact-test \
   wocky-resource-contact-test \
@@ -142,11 +143,17 @@ wocky_xmpp_node_test_SOURCES = \
   wocky-test-stream.c wocky-test-stream.h \
   wocky-xmpp-node-test.c
 
-wocky_xmpp_stanza_test_DEPENDENCIES = $(LIBWOCKY)
-wocky_xmpp_stanza_test_SOURCES = \
+wocky_node_tree_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_node_tree_test_SOURCES = \
   wocky-test-helper.c wocky-test-helper.h \
   wocky-test-stream.c wocky-test-stream.h \
-  wocky-xmpp-stanza-test.c
+  wocky-node-tree-test.c
+
+wocky_stanza_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_stanza_test_SOURCES = \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h \
+  wocky-stanza-test.c
 
 wocky_roster_test_SOURCES = \
   wocky-roster-test.c \
@@ -210,11 +217,26 @@ LDADD = $(top_builddir)/wocky/libwocky.la
 check_PROGRAMS = $(TEST_PROGS)
 
 check_c_sources = \
-  $(wocky_connector_test_SOURCES) \
-  $(wocky_test_sasl_auth_SOURCES) \
+  $(wocky_tls_test_SOURCES) \
+  $(wocky_xmpp_reader_test_SOURCES) \
   $(wocky_xmpp_connection_test_SOURCES) \
   $(wocky_xmpp_readwrite_test_SOURCES) \
-  $(wocky_xmpp_reader_test_SOURCES)
+  $(wocky_xmpp_reader_test_SOURCES) \
+  $(wocky_connector_test_SOURCES) \
+  $(wocky_test_sasl_auth_SOURCES) \
+  $(wocky_porter_test_SOURCES) \
+  $(wocky_xmpp_node_test_SOURCES) \
+  $(wocky_stanza_test_SOURCES) \
+  $(wocky_roster_test_SOURCES) \
+  $(wocky_bare_contact_test_SOURCES) \
+  $(wocky_resource_contact_test_SOURCES) \
+  $(wocky_contact_factory_test_SOURCES) \
+  $(wocky_session_test_SOURCES) \
+  $(wocky_pep_service_test_SOURCES) \
+  $(wocky_data_form_test_SOURCES) \
+  $(wocky_pubsub_service_test_SOURCES) \
+  $(wocky_pubsub_node_test_SOURCES)
+
 
 .PRECIOUS: %.pem
 

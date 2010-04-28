@@ -4,7 +4,7 @@
 
 #include <glib.h>
 
-#include <wocky/wocky-xmpp-stanza.h>
+#include <wocky/wocky-stanza.h>
 #include <wocky/wocky-utils.h>
 #include <wocky/wocky-namespaces.h>
 #include <wocky/wocky-xmpp-error.h>
@@ -17,52 +17,80 @@
 static void
 test_node_equal (void)
 {
-  WockyXmppStanza *a, *b;
+  WockyStanza *a, *b;
 
   /* Simple IQ node */
-  a = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
-      "juliet@example.com", "romeo@example.org", WOCKY_STANZA_END);
-  test_assert_nodes_equal (a->node, (a->node));
+  a = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
+      "juliet@example.com", "romeo@example.org", NULL);
+  test_assert_stanzas_equal (a, a);
 
   /* Same as 'a' but with an ID attribute */
-  b = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
+  b = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       "juliet@example.com", "romeo@example.org",
-      WOCKY_NODE_ATTRIBUTE, "id", "one",
-      WOCKY_STANZA_END);
-  test_assert_nodes_equal (b->node, b->node);
+      '@', "id", "one",
+      NULL);
+  test_assert_stanzas_equal (b, b);
 
-  test_assert_nodes_not_equal (a->node, b->node);
-  test_assert_nodes_not_equal (b->node, a->node);
+  test_assert_stanzas_not_equal (a, b);
+  test_assert_stanzas_not_equal (b, a);
 
   g_object_unref (a);
   g_object_unref (b);
 }
 
 static void
+test_node_add_build (void)
+{
+  WockyNode *n, *child;
+
+  n = wocky_node_new ("testtree", DUMMY_NS_A);
+  wocky_node_add_build (n,
+      '(', "testnode", '@', "test", "attribute",
+        '$', "testcontent",
+      ')',
+    NULL);
+
+  g_assert_cmpint (g_slist_length (n->children), ==, 1);
+
+  child = wocky_node_get_first_child (n);
+  g_assert_cmpstr (child->name, ==, "testnode");
+  g_assert_cmpstr (wocky_node_get_ns (child), ==, DUMMY_NS_A);
+  g_assert_cmpstr (child->content, ==, "testcontent");
+
+  g_assert_cmpint (g_slist_length (child->attributes), ==, 1);
+  g_assert_cmpstr (wocky_node_get_attribute (child, "test"),
+      ==, "attribute");
+
+  wocky_node_free (n);
+}
+
+static void
 test_set_attribute (void)
 {
-  WockyXmppStanza *a, *b, *c;
+  WockyStanza *a, *b, *c;
 
-  a = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
-      "juliet@example.com", "romeo@example.org", WOCKY_STANZA_END);
+  a = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
+      "juliet@example.com", "romeo@example.org", NULL);
 
-  b = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
+  b = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       "juliet@example.com", "romeo@example.org",
-      WOCKY_NODE_ATTRIBUTE, "foo", "badger",
-      WOCKY_STANZA_END);
+      '@', "foo", "badger",
+      NULL);
 
-  test_assert_nodes_not_equal (a->node, b->node);
-  wocky_xmpp_node_set_attribute (a->node, "foo", "badger");
-  test_assert_nodes_equal (a->node, b->node);
+  test_assert_stanzas_not_equal (a, b);
+  wocky_node_set_attribute (wocky_stanza_get_top_node (a),
+      "foo", "badger");
+  test_assert_stanzas_equal (a, b);
 
-  c = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
+  c = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       "juliet@example.com", "romeo@example.org",
-      WOCKY_NODE_ATTRIBUTE, "foo", "snake",
-      WOCKY_STANZA_END);
+      '@', "foo", "snake",
+      NULL);
 
-  test_assert_nodes_not_equal (b->node, c->node);
-  wocky_xmpp_node_set_attribute (b->node, "foo", "snake");
-  test_assert_nodes_equal (b->node, c->node);
+  test_assert_stanzas_not_equal (b, c);
+  wocky_node_set_attribute (wocky_stanza_get_top_node (b),
+      "foo", "snake");
+  test_assert_stanzas_equal (b, c);
 
   g_object_unref (a);
   g_object_unref (b);
@@ -93,20 +121,21 @@ _check_attr_prefix (const gchar *urn,
 static void
 test_append_content_n (void)
 {
-  WockyXmppStanza *a;
+  WockyStanza *a;
   const gchar *content = "badger badger badger";
   guint i;
   size_t l;
 
-  a = wocky_xmpp_stanza_new ("message");
+  a = wocky_stanza_new ("message", WOCKY_XMPP_NS_JABBER_CLIENT);
 
   l = strlen (content);
   /* Append content byte by byte */
   for (i = 0; i < l; i++)
     {
-      wocky_xmpp_node_append_content_n (a->node, content + i, 1);
+      wocky_node_append_content_n (wocky_stanza_get_top_node (a),
+          content + i, 1);
     }
-  g_assert (!wocky_strdiff (a->node->content, content));
+  g_assert (!wocky_strdiff (wocky_stanza_get_top_node (a)->content, content));
 
   g_object_unref (a);
 }
@@ -114,10 +143,10 @@ test_append_content_n (void)
 static void
 test_set_attribute_ns (void)
 {
-  WockyXmppStanza *sa;
-  WockyXmppStanza *sb;
-  WockyXmppNode *na;
-  WockyXmppNode *nb;
+  WockyStanza *sa;
+  WockyStanza *sb;
+  WockyNode *na;
+  WockyNode *nb;
   const gchar *ca;
   const gchar *cb;
   const gchar *cx;
@@ -128,21 +157,21 @@ test_set_attribute_ns (void)
   gchar *pb;
   GQuark qa;
 
-  sa = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
-      "juliet@example.com", "romeo@example.org", WOCKY_STANZA_END);
-  sb = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
-      "juliet@example.com", "romeo@example.org", WOCKY_STANZA_END);
-  na = sa->node;
-  nb = sb->node;
+  sa = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
+      "juliet@example.com", "romeo@example.org", NULL);
+  sb = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
+      "juliet@example.com", "romeo@example.org", NULL);
+  na = wocky_stanza_get_top_node (sa);
+  nb = wocky_stanza_get_top_node (sb);
 
   test_assert_nodes_equal (na, nb);
 
   /* *********************************************************************** */
-  wocky_xmpp_node_set_attribute_ns (na, "one", "1", DUMMY_NS_A);
-  ca = wocky_xmpp_node_get_attribute_ns (na, "one", DUMMY_NS_A);
-  cb = wocky_xmpp_node_get_attribute_ns (nb, "one", DUMMY_NS_A);
-  cx = wocky_xmpp_node_get_attribute_ns (na, "one", DUMMY_NS_B);
-  cy = wocky_xmpp_node_get_attribute (na, "one");
+  wocky_node_set_attribute_ns (na, "one", "1", DUMMY_NS_A);
+  ca = wocky_node_get_attribute_ns (na, "one", DUMMY_NS_A);
+  cb = wocky_node_get_attribute_ns (nb, "one", DUMMY_NS_A);
+  cx = wocky_node_get_attribute_ns (na, "one", DUMMY_NS_B);
+  cy = wocky_node_get_attribute (na, "one");
 
   test_assert_nodes_not_equal (na, nb);
   g_assert (ca != NULL);
@@ -153,11 +182,11 @@ test_set_attribute_ns (void)
 
   /* *********************************************************************** */
   /* set the attribute in the second node to make them equal again           */
-  wocky_xmpp_node_set_attribute_ns (nb, "one", "1", DUMMY_NS_A);
-  ca = wocky_xmpp_node_get_attribute_ns (na, "one", DUMMY_NS_A);
-  cb = wocky_xmpp_node_get_attribute_ns (nb, "one", DUMMY_NS_A);
-  cx = wocky_xmpp_node_get_attribute_ns (na, "one", DUMMY_NS_B);
-  cy = wocky_xmpp_node_get_attribute (na, "one");
+  wocky_node_set_attribute_ns (nb, "one", "1", DUMMY_NS_A);
+  ca = wocky_node_get_attribute_ns (na, "one", DUMMY_NS_A);
+  cb = wocky_node_get_attribute_ns (nb, "one", DUMMY_NS_A);
+  cx = wocky_node_get_attribute_ns (na, "one", DUMMY_NS_B);
+  cy = wocky_node_get_attribute (na, "one");
 
   test_assert_nodes_equal (na, nb);
   g_assert (ca != NULL);
@@ -167,8 +196,8 @@ test_set_attribute_ns (void)
   g_assert (!strcmp (ca, "1"));
   g_assert (!strcmp (ca, cb));
 
-  wocky_xmpp_node_set_attribute_ns (nb, "one", "1", DUMMY_NS_A);
-  cb = wocky_xmpp_node_get_attribute_ns (nb, "one", DUMMY_NS_A);
+  wocky_node_set_attribute_ns (nb, "one", "1", DUMMY_NS_A);
+  cb = wocky_node_get_attribute_ns (nb, "one", DUMMY_NS_A);
 
   test_assert_nodes_equal (na, nb);
   g_assert (cb != NULL);
@@ -176,11 +205,11 @@ test_set_attribute_ns (void)
 
   /* *********************************************************************** */
   /* change the namespaced atttribute                                        */
-  wocky_xmpp_node_set_attribute_ns (na, "one", "2", DUMMY_NS_A);
-  ca = wocky_xmpp_node_get_attribute_ns (na, "one", DUMMY_NS_A);
-  cb = wocky_xmpp_node_get_attribute_ns (nb, "one", DUMMY_NS_A);
-  cx = wocky_xmpp_node_get_attribute_ns (na, "one", DUMMY_NS_B);
-  cy = wocky_xmpp_node_get_attribute (na, "one");
+  wocky_node_set_attribute_ns (na, "one", "2", DUMMY_NS_A);
+  ca = wocky_node_get_attribute_ns (na, "one", DUMMY_NS_A);
+  cb = wocky_node_get_attribute_ns (nb, "one", DUMMY_NS_A);
+  cx = wocky_node_get_attribute_ns (na, "one", DUMMY_NS_B);
+  cy = wocky_node_get_attribute (na, "one");
 
   test_assert_nodes_not_equal (na, nb);
   g_assert (ca != NULL);
@@ -192,11 +221,11 @@ test_set_attribute_ns (void)
 
   /* *********************************************************************** */
   /* add another attribute in a different namespace                          */
-  wocky_xmpp_node_set_attribute_ns (na, "one", "3", DUMMY_NS_B);
-  ca = wocky_xmpp_node_get_attribute_ns (na, "one", DUMMY_NS_A);
-  cb = wocky_xmpp_node_get_attribute_ns (nb, "one", DUMMY_NS_A);
-  cx = wocky_xmpp_node_get_attribute_ns (na, "one", DUMMY_NS_B);
-  cy = wocky_xmpp_node_get_attribute (na, "one");
+  wocky_node_set_attribute_ns (na, "one", "3", DUMMY_NS_B);
+  ca = wocky_node_get_attribute_ns (na, "one", DUMMY_NS_A);
+  cb = wocky_node_get_attribute_ns (nb, "one", DUMMY_NS_A);
+  cx = wocky_node_get_attribute_ns (na, "one", DUMMY_NS_B);
+  cy = wocky_node_get_attribute (na, "one");
 
   test_assert_nodes_not_equal (na, nb);
   g_assert (ca != NULL);
@@ -212,18 +241,18 @@ test_set_attribute_ns (void)
   /* then check to see the right prefixes were assigned                      */
   qa = g_quark_from_string (DUMMY_NS_B);
 
-  xml_a = wocky_xmpp_node_to_string (na);
-  pa = g_strdup (wocky_xmpp_node_attribute_ns_get_prefix_from_urn (DUMMY_NS_B));
-  pb = g_strdup (wocky_xmpp_node_attribute_ns_get_prefix_from_quark (qa));
+  xml_a = wocky_node_to_string (na);
+  pa = g_strdup (wocky_node_attribute_ns_get_prefix_from_urn (DUMMY_NS_B));
+  pb = g_strdup (wocky_node_attribute_ns_get_prefix_from_quark (qa));
 
   g_assert (!strcmp (pa, pb));
   g_free (pb);
 
   /* change the prefix and re-write the attribute */
-  wocky_xmpp_node_attribute_ns_set_prefix (qa, "moose");
-  wocky_xmpp_node_set_attribute_ns (na, "one", "1", DUMMY_NS_B);
-  xml_b = wocky_xmpp_node_to_string (na);
-  pb = g_strdup (wocky_xmpp_node_attribute_ns_get_prefix_from_quark (qa));
+  wocky_node_attribute_ns_set_prefix (qa, "moose");
+  wocky_node_set_attribute_ns (na, "one", "1", DUMMY_NS_B);
+  xml_b = wocky_node_to_string (na);
+  pb = g_strdup (wocky_node_attribute_ns_get_prefix_from_quark (qa));
 
   g_assert (strcmp (pa, pb));
   g_assert (_check_attr_prefix (DUMMY_NS_B, pa, "one", xml_a));
@@ -235,8 +264,8 @@ test_set_attribute_ns (void)
   g_free (xml_b);
 
   /* *********************************************************************** */
-  wocky_xmpp_node_set_attribute_ns (na, "one", "4", DUMMY_NS_B);
-  cx = wocky_xmpp_node_get_attribute_ns (na, "one", DUMMY_NS_B);
+  wocky_node_set_attribute_ns (na, "one", "4", DUMMY_NS_B);
+  cx = wocky_node_get_attribute_ns (na, "one", DUMMY_NS_B);
   g_assert (cx != NULL);
   g_assert (!strcmp (cx, "4"));
 
@@ -245,17 +274,17 @@ test_set_attribute_ns (void)
 }
 
 static void
-do_test_iteration (WockyXmppNodeIter *iter, const gchar **names)
+do_test_iteration (WockyNodeIter *iter, const gchar **names)
 {
-  WockyXmppNode *node;
+  WockyNode *node;
   int i = 0;
 
-  while (wocky_xmpp_node_iter_next (iter, &node))
+  while (wocky_node_iter_next (iter, &node))
     {
       g_assert (names[i] != NULL && "Unexpected node");
 
       g_assert_cmpstr (names[i], ==,
-        wocky_xmpp_node_get_attribute (node, "name"));
+        wocky_node_get_attribute (node, "name"));
       i++;
     }
 
@@ -265,8 +294,8 @@ do_test_iteration (WockyXmppNodeIter *iter, const gchar **names)
 static void
 test_node_iteration (void)
 {
-  WockyXmppStanza *stanza;
-  WockyXmppNodeIter iter;
+  WockyStanza *stanza;
+  WockyNodeIter iter;
   const gchar *all[] = { "SPEEX", "THEORA", "GSM", "H264",
                           "VIDEO?", "other", NULL };
   const gchar *payloads[] = { "SPEEX", "THEORA", "GSM", "H264", NULL };
@@ -275,65 +304,70 @@ test_node_iteration (void)
   const gchar *video_ns[] = { "THEORA", "H264", "VIDEO?", NULL };
   const gchar *nothing[] = { NULL };
 
-  stanza = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_IQ,
+  stanza = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
     WOCKY_STANZA_SUB_TYPE_SET, "to", "from",
-    WOCKY_NODE, "payload-type",
-      WOCKY_NODE_XMLNS, WOCKY_NS_GOOGLE_SESSION_PHONE,
-      WOCKY_NODE_ATTRIBUTE, "name", "SPEEX",
-    WOCKY_NODE_END,
-    WOCKY_NODE, "payload-type",
-      WOCKY_NODE_XMLNS, WOCKY_NS_GOOGLE_SESSION_VIDEO,
-      WOCKY_NODE_ATTRIBUTE, "name", "THEORA",
-    WOCKY_NODE_END,
-    WOCKY_NODE, "payload-type",
-      WOCKY_NODE_XMLNS, WOCKY_NS_GOOGLE_SESSION_PHONE,
-      WOCKY_NODE_ATTRIBUTE, "name", "GSM",
-    WOCKY_NODE_END,
-    WOCKY_NODE, "payload-type",
-      WOCKY_NODE_XMLNS, WOCKY_NS_GOOGLE_SESSION_VIDEO,
-      WOCKY_NODE_ATTRIBUTE, "name", "H264",
-    WOCKY_NODE_END,
-    WOCKY_NODE, "video",
-      WOCKY_NODE_XMLNS, WOCKY_NS_GOOGLE_SESSION_VIDEO,
-      WOCKY_NODE_ATTRIBUTE, "name", "VIDEO?",
-    WOCKY_NODE_END,
-    WOCKY_NODE, "misc",
-      WOCKY_NODE_ATTRIBUTE, "name", "other",
-    WOCKY_STANZA_END);
+    '(', "payload-type",
+      ':', WOCKY_NS_GOOGLE_SESSION_PHONE,
+      '@', "name", "SPEEX",
+    ')',
+    '(', "payload-type",
+      ':', WOCKY_NS_GOOGLE_SESSION_VIDEO,
+      '@', "name", "THEORA",
+    ')',
+    '(', "payload-type",
+      ':', WOCKY_NS_GOOGLE_SESSION_PHONE,
+      '@', "name", "GSM",
+    ')',
+    '(', "payload-type",
+      ':', WOCKY_NS_GOOGLE_SESSION_VIDEO,
+      '@', "name", "H264",
+    ')',
+    '(', "video",
+      ':', WOCKY_NS_GOOGLE_SESSION_VIDEO,
+      '@', "name", "VIDEO?",
+    ')',
+    '(', "misc",
+      '@', "name", "other",
+    ')',
+    NULL);
 
   /* All children */
-  wocky_xmpp_node_iter_init (&iter, stanza->node, NULL, NULL);
+  wocky_node_iter_init (&iter, wocky_stanza_get_top_node (stanza),
+      NULL, NULL);
   do_test_iteration (&iter, all);
 
   /* Only the payloads */
-  wocky_xmpp_node_iter_init (&iter, stanza->node, "payload-type", NULL);
+  wocky_node_iter_init (&iter, wocky_stanza_get_top_node (stanza),
+      "payload-type", NULL);
   do_test_iteration (&iter, payloads);
 
   /* Only phone payloads */
-  wocky_xmpp_node_iter_init (&iter, stanza->node, "payload-type",
-    WOCKY_NS_GOOGLE_SESSION_PHONE);
+  wocky_node_iter_init (&iter, wocky_stanza_get_top_node (stanza),
+      "payload-type", WOCKY_NS_GOOGLE_SESSION_PHONE);
   do_test_iteration (&iter, audio);
 
   /* Only nodes with the phone namespace */
-  wocky_xmpp_node_iter_init (&iter, stanza->node, NULL,
+  wocky_node_iter_init (&iter, wocky_stanza_get_top_node (stanza), NULL,
     WOCKY_NS_GOOGLE_SESSION_PHONE);
   do_test_iteration (&iter, audio);
 
   /* only video payloads */
-  wocky_xmpp_node_iter_init (&iter, stanza->node, "payload-type",
-    WOCKY_NS_GOOGLE_SESSION_VIDEO);
+  wocky_node_iter_init (&iter, wocky_stanza_get_top_node (stanza),
+      "payload-type", WOCKY_NS_GOOGLE_SESSION_VIDEO);
   do_test_iteration (&iter, video);
 
   /* only nodes with the video namespace */
-  wocky_xmpp_node_iter_init (&iter, stanza->node, NULL,
-    WOCKY_NS_GOOGLE_SESSION_VIDEO);
+  wocky_node_iter_init (&iter, wocky_stanza_get_top_node (stanza), NULL,
+      WOCKY_NS_GOOGLE_SESSION_VIDEO);
   do_test_iteration (&iter, video_ns);
 
   /* nothing */
-  wocky_xmpp_node_iter_init (&iter, stanza->node, "badgers", NULL);
+  wocky_node_iter_init (&iter, wocky_stanza_get_top_node (stanza),
+      "badgers", NULL);
   do_test_iteration (&iter, nothing);
 
-  wocky_xmpp_node_iter_init (&iter, stanza->node, NULL, "snakes");
+  wocky_node_iter_init (&iter, wocky_stanza_get_top_node (stanza), NULL,
+      "snakes");
   do_test_iteration (&iter, nothing);
 
   g_object_unref (stanza);
@@ -347,6 +381,7 @@ main (int argc, char **argv)
   test_init (argc, argv);
 
   g_test_add_func ("/xmpp-node/node-equal", test_node_equal);
+  g_test_add_func ("/xmpp-node/add-build", test_node_add_build);
   g_test_add_func ("/xmpp-node/set-attribute", test_set_attribute);
   g_test_add_func ("/xmpp-node/append-content-n", test_append_content_n);
   g_test_add_func ("/xmpp-node/set-attribute-ns", test_set_attribute_ns);

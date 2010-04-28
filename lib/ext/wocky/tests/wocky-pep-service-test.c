@@ -32,7 +32,7 @@ gboolean event_received;
 static void
 test_changed_signal_cb (WockyPepService *pep,
     WockyBareContact *contact,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     test_data_t *test)
 {
   g_assert (!wocky_strdiff (wocky_bare_contact_get_jid (contact),
@@ -47,22 +47,22 @@ static void
 send_pep_event (WockyPorter *porter,
     const gchar *node)
 {
-  WockyXmppStanza *stanza;
+  WockyStanza *stanza;
 
-  stanza = wocky_xmpp_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
+  stanza = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
       WOCKY_STANZA_SUB_TYPE_NONE,
       "alice@example.org", NULL,
-      WOCKY_NODE, "event",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB_EVENT,
-        WOCKY_NODE, "items",
-        WOCKY_NODE_ATTRIBUTE, "node", node,
-          WOCKY_NODE, "item",
-          WOCKY_NODE_ATTRIBUTE, "id", "1",
-            WOCKY_NODE, "payload", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-      WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+      '(', "event",
+        ':', WOCKY_XMPP_NS_PUBSUB_EVENT,
+        '(', "items",
+        '@', "node", node,
+          '(', "item",
+          '@', "id", "1",
+            '(', "payload", ')',
+          ')',
+        ')',
+      ')',
+      NULL);
 
   wocky_porter_send (porter, stanza);
   g_object_unref (stanza);
@@ -112,7 +112,7 @@ test_send_query_cb (GObject *source_object,
     gpointer user_data)
 {
   test_data_t *test = (test_data_t *) user_data;
-  WockyXmppStanza *reply;
+  WockyStanza *reply;
   WockyStanzaType type;
   WockyStanzaSubType sub_type;
 
@@ -120,7 +120,7 @@ test_send_query_cb (GObject *source_object,
       NULL);
   g_assert (reply != NULL);
 
-  wocky_xmpp_stanza_get_type_info (reply, &type, &sub_type);
+  wocky_stanza_get_type_info (reply, &type, &sub_type);
   g_assert (type == WOCKY_STANZA_TYPE_IQ);
   g_assert (sub_type == WOCKY_STANZA_SUB_TYPE_RESULT);
 
@@ -132,24 +132,24 @@ test_send_query_cb (GObject *source_object,
 
 static gboolean
 test_send_query_stanza_received_cb (WockyPorter *porter,
-    WockyXmppStanza *stanza,
+    WockyStanza *stanza,
     gpointer user_data)
 {
   test_data_t *test = (test_data_t *) user_data;
-  WockyXmppStanza *reply;
+  WockyStanza *reply;
 
-  reply = wocky_xmpp_stanza_build_iq_result (stanza,
-      WOCKY_NODE, "pubsub",
-        WOCKY_NODE_XMLNS, WOCKY_XMPP_NS_PUBSUB,
-        WOCKY_NODE, "items",
-          WOCKY_NODE_ATTRIBUTE, "node", "node1",
-          WOCKY_NODE, "item",
-            WOCKY_NODE_ATTRIBUTE, "id", "1",
-            WOCKY_NODE, "payload", WOCKY_NODE_END,
-          WOCKY_NODE_END,
-        WOCKY_NODE_END,
-      WOCKY_NODE_END,
-      WOCKY_STANZA_END);
+  reply = wocky_stanza_build_iq_result (stanza,
+      '(', "pubsub",
+        ':', WOCKY_XMPP_NS_PUBSUB,
+        '(', "items",
+          '@', "node", "node1",
+          '(', "item",
+            '@', "id", "1",
+            '(', "payload", ')',
+          ')',
+        ')',
+      ')',
+      NULL);
 
   wocky_porter_send (porter, reply);
   g_object_unref (reply);
@@ -165,7 +165,7 @@ test_send_query_failed_cb (GObject *source_object,
     gpointer user_data)
 {
   test_data_t *test = (test_data_t *) user_data;
-  WockyXmppStanza *reply;
+  WockyStanza *reply;
   GError *error = NULL;
 
   reply = wocky_pep_service_get_finish (WOCKY_PEP_SERVICE (source_object), res,
@@ -198,7 +198,7 @@ test_get (void)
   handler_id = wocky_porter_register_handler (test->sched_out,
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET, NULL,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
-      test_send_query_stanza_received_cb, test, WOCKY_STANZA_END);
+      test_send_query_stanza_received_cb, test, NULL);
 
   contact_factory = wocky_session_get_contact_factory (test->session_in);
   contact = wocky_contact_factory_ensure_bare_contact (contact_factory,
@@ -228,8 +228,8 @@ static void
 test_make_publish_stanza (void)
 {
   WockyPepService *pep;
-  WockyXmppStanza *stanza;
-  WockyXmppNode *item = NULL, *n;
+  WockyStanza *stanza;
+  WockyNode *item = NULL, *n;
   WockyStanzaType type;
   WockyStanzaSubType sub_type;
 
@@ -239,20 +239,20 @@ test_make_publish_stanza (void)
 
   g_assert (stanza != NULL);
 
-  wocky_xmpp_stanza_get_type_info (stanza, &type, &sub_type);
+  wocky_stanza_get_type_info (stanza, &type, &sub_type);
   g_assert (type == WOCKY_STANZA_TYPE_IQ);
   g_assert (sub_type == WOCKY_STANZA_SUB_TYPE_SET);
 
-  n = wocky_xmpp_node_get_child_ns (stanza->node, "pubsub",
-      WOCKY_XMPP_NS_PUBSUB);
+  n = wocky_node_get_child_ns (wocky_stanza_get_top_node (stanza),
+      "pubsub", WOCKY_XMPP_NS_PUBSUB);
   g_assert (n != NULL);
 
-  n = wocky_xmpp_node_get_child (n, "publish");
+  n = wocky_node_get_child (n, "publish");
   g_assert (n != NULL);
-  g_assert (!wocky_strdiff (wocky_xmpp_node_get_attribute (n, "node"),
+  g_assert (!wocky_strdiff (wocky_node_get_attribute (n, "node"),
         TEST_NODE1));
 
-  n = wocky_xmpp_node_get_child (n, "item");
+  n = wocky_node_get_child (n, "item");
   g_assert (n != NULL);
   g_assert (n == item);
 
