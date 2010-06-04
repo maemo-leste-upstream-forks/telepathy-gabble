@@ -9,10 +9,14 @@ libexec_PROGRAMS=telepathy-gabble
 noinst_PROGRAMS = write-mgr-file
 
 libgabble_convenience_la_SOURCES = \
+    auth-manager.h \
+    auth-manager.c \
     base64.h \
     base64.c \
     base-channel.h \
     base-channel.c \
+    base-call-channel.h \
+    base-call-channel.c \
     bytestream-factory.h \
     bytestream-factory.c \
     bytestream-ibb.h \
@@ -31,12 +35,20 @@ libgabble_convenience_la_SOURCES = \
     call-content-codecoffer.c \
     call-channel.h \
     call-channel.c \
+    call-muc-channel.h \
+    call-muc-channel.c \
+    call-member.h \
+    call-member.c \
+    call-member-content.h \
+    call-member-content.c \
     call-stream.h \
     call-stream.c \
     call-stream-endpoint.h \
     call-stream-endpoint.c \
     capabilities.h \
     capabilities.c \
+    caps-cache.h \
+    caps-cache.c \
     caps-hash.h \
     caps-hash.c \
     caps-channel-manager.h \
@@ -142,6 +154,8 @@ libgabble_convenience_la_SOURCES = \
     search-channel.c \
     search-manager.h \
     search-manager.c \
+    server-sasl-channel.h \
+    server-sasl-channel.c \
     $(top_srcdir)/gabble/sidecar.h \
     sidecar.c \
     tube-iface.h \
@@ -191,13 +205,14 @@ AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
 	    @SOUP_CFLAGS@ @UUID_CFLAGS@ @GMODULE_CFLAGS@ \
+	    @SQLITE_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
 	    -I $(top_srcdir)/gabble \
 	    -DG_LOG_DOMAIN=\"gabble\" \
 	    -DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\"
 
 ALL_LIBS =  @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
-	    @SOUP_LIBS@ @UUID_LIBS@ @GMODULE_LIBS@
+	    @SOUP_LIBS@ @UUID_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
 
 # build gibber first
 all: gibber

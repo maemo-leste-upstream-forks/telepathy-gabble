@@ -410,7 +410,15 @@ def make_connection(bus, event_func, params=None, suffix=''):
     if params:
         default_params.update(params)
 
-    jid = default_params['account']
+     # Allow omitting the 'password' param
+    if default_params['password'] is None:
+        del default_params['password']
+
+     # Allow omitting the 'account' param
+    if default_params['account'] is None:
+        del default_params['account']
+
+    jid = default_params.get('account', None)
     conn =  servicetest.make_connection(bus, event_func, 'gabble', 'jabber',
                                         default_params)
     return (conn, jid)
@@ -521,12 +529,6 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
 
     d = port.stopListening()
 
-    if error is None:
-        d.addBoth((lambda *args: reactor.crash()))
-    else:
-        # please ignore the POSIX behind the curtain
-        d.addBoth((lambda *args: os._exit(1)))
-
     # Does the Connection object still exist?
     for i, conn in enumerate(conns):
         if not bus.name_has_owner(conn.object.bus_name):
@@ -541,6 +543,22 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
                 conn.Disconnect()
         except dbus.DBusException, e:
             pass
+
+        try:
+            conn.Disconnect()
+            raise AssertionError("Connection didn't disappear")
+        except dbus.DBusException, e:
+            pass
+        except Exception, e:
+            traceback.print_exc()
+            error = e
+
+    if error is None:
+        d.addBoth((lambda *args: reactor.crash()))
+    else:
+        # please ignore the POSIX behind the curtain
+        d.addBoth((lambda *args: os._exit(1)))
+
 
 def exec_test(fun, params=None, protocol=None, timeout=None,
               authenticator=None, num_instances=1):

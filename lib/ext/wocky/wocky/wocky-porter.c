@@ -66,6 +66,7 @@ enum
     REMOTE_CLOSED,
     REMOTE_ERROR,
     CLOSING,
+    SENDING,
     LAST_SIGNAL
 };
 
@@ -383,9 +384,14 @@ handle_stream_error (WockyPorter *self,
     gpointer user_data)
 {
   GError *error = NULL;
+  gboolean ret = wocky_stanza_extract_stream_error (stanza, &error);
 
-  DEBUG ("Received stream error; consider the remote connection as closed");
-  wocky_stanza_extract_stream_error (stanza, &error);
+  /* If wocky_stanza_extract_stream_error() failed, @stanza wasn't a stream
+   * error, in which case we are broken.
+   */
+  g_return_val_if_fail (ret, FALSE);
+
+  DEBUG ("Received stream error; consider the remote connection to be closed");
   remote_connection_closed (self, error);
   g_error_free (error);
   return TRUE;
@@ -471,6 +477,19 @@ wocky_porter_class_init (
    * can't be used to send stanzas any more.
    */
   signals[CLOSING] = g_signal_new ("closing",
+      G_OBJECT_CLASS_TYPE (wocky_porter_class),
+      G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+      g_cclosure_marshal_VOID__VOID,
+      G_TYPE_NONE, 0);
+
+  /**
+   * WockyPorter::sending:
+   * @porter: the object on which the signal is emitted
+   *
+   * The ::writing signal is emitted whenever #WockyPorter sends data
+   * on the XMPP connection.
+   */
+  signals[SENDING] = g_signal_new ("sending",
       G_OBJECT_CLASS_TYPE (wocky_porter_class),
       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
       g_cclosure_marshal_VOID__VOID,
@@ -595,6 +614,8 @@ send_head_stanza (WockyPorter *self)
 
   wocky_xmpp_connection_send_stanza_async (priv->connection,
       elem->stanza, elem->cancellable, send_stanza_cb, self);
+
+  g_signal_emit (self, signals[SENDING], 0);
 }
 
 static void

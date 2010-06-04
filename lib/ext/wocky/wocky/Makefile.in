@@ -15,6 +15,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -34,8 +35,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/wocky-uninstalled.pc.in \
+DIST_COMMON = $(am__libwocky_la_HEADERS_DIST) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/wocky-uninstalled.pc.in \
 	$(top_srcdir)/tools/check-coding-style.mk \
 	$(top_srcdir)/tools/flymake.mk
 @USING_OPENSSL_TRUE@am__append_1 = $(OPENSSL_SRC)
@@ -60,56 +61,68 @@ CONFIG_CLEAN_FILES = wocky-uninstalled.pc
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libwocky_la_LIBADD =
-am__libwocky_la_SOURCES_DIST = wocky-types.h wocky.c wocky.h \
-	wocky-connector.c wocky-connector.h wocky-xmpp-connection.c \
-	wocky-xmpp-connection.h wocky-debug.c wocky-debug.h \
-	wocky-namespaces.h wocky-node-tree.c wocky-node-tree.h \
-	wocky-utils.c wocky-utils.h wocky-node.c wocky-node.h \
-	wocky-node-private.h wocky-xmpp-reader.c wocky-xmpp-reader.h \
-	wocky-xmpp-writer.c wocky-xmpp-writer.h wocky-xmpp-error.c \
-	wocky-xmpp-error.h wocky-sasl-auth.c wocky-sasl-auth.h \
-	wocky-sasl-digest-md5.h wocky-sasl-digest-md5.c \
-	wocky-sasl-handler.c wocky-sasl-handler.h wocky-sasl-plain.c \
-	wocky-sasl-plain.h wocky-stanza.c wocky-stanza.h \
-	wocky-porter.c wocky-porter.h wocky-contact.c wocky-contact.h \
-	wocky-bare-contact.c wocky-bare-contact.h \
-	wocky-resource-contact.c wocky-resource-contact.h \
-	wocky-roster.c wocky-roster.h wocky-contact-factory.c \
-	wocky-contact-factory.h wocky-session.c wocky-session.h \
-	wocky-muc.h wocky-muc.c wocky-pep-service.c \
-	wocky-pep-service.h wocky-data-form.c wocky-data-form.h \
-	wocky-pubsub-helpers.c wocky-pubsub-helpers.h \
-	wocky-pubsub-service.c wocky-pubsub-service.h \
-	wocky-pubsub-service-protected.h wocky-pubsub-node.c \
-	wocky-pubsub-node.h wocky-pubsub-node-protected.h \
-	wocky-openssl.c wocky-tls.h wocky-openssl-dh512.c \
+am__libwocky_la_SOURCES_DIST = wocky.c wocky-auth-handler.c \
+	wocky-auth-registry.c wocky-bare-contact.c wocky-connector.c \
+	wocky-contact.c wocky-contact-factory.c wocky-data-form.c \
+	wocky-debug.c wocky-jabber-auth.c wocky-jabber-auth-digest.c \
+	wocky-jabber-auth-password.c wocky-muc.c wocky-node.c \
+	wocky-node-tree.c wocky-pep-service.c wocky-ping.c \
+	wocky-porter.c wocky-pubsub-helpers.c wocky-pubsub-node.c \
+	wocky-pubsub-service.c wocky-resource-contact.c wocky-roster.c \
+	wocky-sasl-auth.c wocky-sasl-digest-md5.c wocky-sasl-plain.c \
+	wocky-session.c wocky-stanza.c wocky-utils.c \
+	wocky-xmpp-connection.c wocky-xmpp-error.c wocky-xmpp-reader.c \
+	wocky-xmpp-writer.c wocky-openssl.c wocky-openssl-dh512.c \
 	wocky-openssl-dh1024.c wocky-openssl-dh2048.c \
-	wocky-openssl-dh4096.c wocky-tls.c
+	wocky-openssl-dh4096.c wocky-tls.c wocky-data-form-enumtypes.c \
+	wocky-muc-enumtypes.c wocky-pubsub-node-enumtypes.c \
+	wocky-pubsub-service-enumtypes.c wocky-signals-marshal.c \
+	wocky-signals-marshal.list wocky-xmpp-error-enumtypes.c \
+	wocky-xmpp-reader-enumtypes.c wocky.h wocky-auth-handler.h \
+	wocky-auth-registry.h wocky-bare-contact.h wocky-connector.h \
+	wocky-contact.h wocky-contact-factory.h wocky-data-form.h \
+	wocky-debug.h wocky-jabber-auth.h wocky-jabber-auth-digest.h \
+	wocky-jabber-auth-password.h wocky-muc.h wocky-namespaces.h \
+	wocky-node.h wocky-node-private.h wocky-node-tree.h \
+	wocky-pep-service.h wocky-ping.h wocky-porter.h \
+	wocky-pubsub-helpers.h wocky-pubsub-node.h \
+	wocky-pubsub-node-protected.h wocky-pubsub-service.h \
+	wocky-pubsub-service-protected.h wocky-resource-contact.h \
+	wocky-roster.h wocky-sasl-auth.h wocky-sasl-digest-md5.h \
+	wocky-sasl-plain.h wocky-session.h wocky-stanza.h wocky-tls.h \
+	wocky-types.h wocky-utils.h wocky-xmpp-connection.h \
+	wocky-xmpp-error.h wocky-xmpp-reader.h wocky-xmpp-writer.h \
+	wocky-data-form-enumtypes.h wocky-muc-enumtypes.h \
+	wocky-pubsub-node-enumtypes.h wocky-pubsub-service-enumtypes.h \
+	wocky-signals-marshal.h wocky-xmpp-error-enumtypes.h \
+	wocky-xmpp-reader-enumtypes.h
 am__objects_1 = wocky-openssl.lo wocky-openssl-dh512.lo \
 	wocky-openssl-dh1024.lo wocky-openssl-dh2048.lo \
 	wocky-openssl-dh4096.lo
 @USING_OPENSSL_TRUE@am__objects_2 = $(am__objects_1)
 am__objects_3 = wocky-tls.lo
 @USING_OPENSSL_FALSE@am__objects_4 = $(am__objects_3)
-am__objects_5 = wocky.lo wocky-connector.lo wocky-xmpp-connection.lo \
-	wocky-debug.lo wocky-node-tree.lo wocky-utils.lo wocky-node.lo \
-	wocky-xmpp-reader.lo wocky-xmpp-writer.lo wocky-xmpp-error.lo \
-	wocky-sasl-auth.lo wocky-sasl-digest-md5.lo \
-	wocky-sasl-handler.lo wocky-sasl-plain.lo wocky-stanza.lo \
-	wocky-porter.lo wocky-contact.lo wocky-bare-contact.lo \
-	wocky-resource-contact.lo wocky-roster.lo \
-	wocky-contact-factory.lo wocky-session.lo wocky-muc.lo \
-	wocky-pep-service.lo wocky-data-form.lo \
-	wocky-pubsub-helpers.lo wocky-pubsub-service.lo \
-	wocky-pubsub-node.lo $(am__objects_2) $(am__objects_4)
-am_libwocky_la_OBJECTS = $(am__objects_5)
-nodist_libwocky_la_OBJECTS = wocky-signals-marshal.lo \
-	wocky-data-form-enumtypes.lo wocky-muc-enumtypes.lo \
-	wocky-pubsub-service-enumtypes.lo \
-	wocky-pubsub-node-enumtypes.lo wocky-xmpp-error-enumtypes.lo \
-	wocky-xmpp-reader-enumtypes.lo
-libwocky_la_OBJECTS = $(am_libwocky_la_OBJECTS) \
-	$(nodist_libwocky_la_OBJECTS)
+am__objects_5 = wocky.lo wocky-auth-handler.lo wocky-auth-registry.lo \
+	wocky-bare-contact.lo wocky-connector.lo wocky-contact.lo \
+	wocky-contact-factory.lo wocky-data-form.lo wocky-debug.lo \
+	wocky-jabber-auth.lo wocky-jabber-auth-digest.lo \
+	wocky-jabber-auth-password.lo wocky-muc.lo wocky-node.lo \
+	wocky-node-tree.lo wocky-pep-service.lo wocky-ping.lo \
+	wocky-porter.lo wocky-pubsub-helpers.lo wocky-pubsub-node.lo \
+	wocky-pubsub-service.lo wocky-resource-contact.lo \
+	wocky-roster.lo wocky-sasl-auth.lo wocky-sasl-digest-md5.lo \
+	wocky-sasl-plain.lo wocky-session.lo wocky-stanza.lo \
+	wocky-utils.lo wocky-xmpp-connection.lo wocky-xmpp-error.lo \
+	wocky-xmpp-reader.lo wocky-xmpp-writer.lo $(am__objects_2) \
+	$(am__objects_4)
+am__objects_6 = wocky-data-form-enumtypes.lo wocky-muc-enumtypes.lo \
+	wocky-pubsub-node-enumtypes.lo \
+	wocky-pubsub-service-enumtypes.lo wocky-signals-marshal.lo \
+	wocky-xmpp-error-enumtypes.lo wocky-xmpp-reader-enumtypes.lo
+am__objects_7 =
+am_libwocky_la_OBJECTS = $(am__objects_5) $(am__objects_6) \
+	$(am__objects_7) $(am__objects_7)
+libwocky_la_OBJECTS = $(am_libwocky_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -139,8 +152,49 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(libwocky_la_SOURCES) $(nodist_libwocky_la_SOURCES)
+SOURCES = $(libwocky_la_SOURCES)
 DIST_SOURCES = $(am__libwocky_la_SOURCES_DIST)
+am__libwocky_la_HEADERS_DIST = wocky.h wocky-auth-handler.h \
+	wocky-auth-registry.h wocky-bare-contact.h wocky-connector.h \
+	wocky-contact.h wocky-contact-factory.h wocky-data-form.h \
+	wocky-debug.h wocky-jabber-auth.h wocky-jabber-auth-digest.h \
+	wocky-jabber-auth-password.h wocky-muc.h wocky-namespaces.h \
+	wocky-node.h wocky-node-private.h wocky-node-tree.h \
+	wocky-pep-service.h wocky-ping.h wocky-porter.h \
+	wocky-pubsub-helpers.h wocky-pubsub-node.h \
+	wocky-pubsub-node-protected.h wocky-pubsub-service.h \
+	wocky-pubsub-service-protected.h wocky-resource-contact.h \
+	wocky-roster.h wocky-sasl-auth.h wocky-sasl-digest-md5.h \
+	wocky-sasl-plain.h wocky-session.h wocky-stanza.h wocky-tls.h \
+	wocky-types.h wocky-utils.h wocky-xmpp-connection.h \
+	wocky-xmpp-error.h wocky-xmpp-reader.h wocky-xmpp-writer.h \
+	wocky-data-form-enumtypes.h wocky-muc-enumtypes.h \
+	wocky-pubsub-node-enumtypes.h wocky-pubsub-service-enumtypes.h \
+	wocky-signals-marshal.h wocky-xmpp-error-enumtypes.h \
+	wocky-xmpp-reader-enumtypes.h
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__installdirs = "$(DESTDIR)$(libwocky_ladir)"
+HEADERS = $(libwocky_la_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -185,6 +239,7 @@ GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
+HEADER_DIR = @HEADER_DIR@
 HTML_DIR = @HTML_DIR@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -222,6 +277,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -286,63 +343,102 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LTLIBRARIES = libwocky.la
 EXTRA_DIST = $(am__append_2) $(am__append_4)
-nodist_libwocky_la_SOURCES = \
-  wocky-signals-marshal.list \
-  wocky-signals-marshal.h \
-  wocky-signals-marshal.c \
-  wocky-data-form-enumtypes.c \
+built_headers = \
   wocky-data-form-enumtypes.h \
-  wocky-muc-enumtypes.c \
   wocky-muc-enumtypes.h \
-  wocky-pubsub-service-enumtypes.c \
-  wocky-pubsub-service-enumtypes.h \
-  wocky-pubsub-node-enumtypes.c \
   wocky-pubsub-node-enumtypes.h \
-  wocky-xmpp-error-enumtypes.c \
+  wocky-pubsub-service-enumtypes.h \
+  wocky-signals-marshal.h \
   wocky-xmpp-error-enumtypes.h \
-  wocky-xmpp-reader-enumtypes.c \
   wocky-xmpp-reader-enumtypes.h
 
-BUILT_SOURCES = $(nodist_libwocky_la_SOURCES)
+built_sources = \
+  wocky-data-form-enumtypes.c \
+  wocky-muc-enumtypes.c \
+  wocky-pubsub-node-enumtypes.c \
+  wocky-pubsub-service-enumtypes.c \
+  wocky-signals-marshal.c \
+  wocky-signals-marshal.list \
+  wocky-xmpp-error-enumtypes.c \
+  wocky-xmpp-reader-enumtypes.c
+
+BUILT_SOURCES = $(built_headers) $(built_sources)
 OPENSSL_SRC = \
   wocky-openssl.c \
-  wocky-tls.h \
   wocky-openssl-dh512.c  \
   wocky-openssl-dh1024.c \
   wocky-openssl-dh2048.c \
   wocky-openssl-dh4096.c
 
-GNUTLS_SRC = wocky-tls.c wocky-tls.h
-HANDWRITTEN_SOURCES = wocky-types.h wocky.c wocky.h wocky-connector.c \
-	wocky-connector.h wocky-xmpp-connection.c \
-	wocky-xmpp-connection.h wocky-debug.c wocky-debug.h \
-	wocky-namespaces.h wocky-node-tree.c wocky-node-tree.h \
-	wocky-utils.c wocky-utils.h wocky-node.c wocky-node.h \
-	wocky-node-private.h wocky-xmpp-reader.c wocky-xmpp-reader.h \
-	wocky-xmpp-writer.c wocky-xmpp-writer.h wocky-xmpp-error.c \
-	wocky-xmpp-error.h wocky-sasl-auth.c wocky-sasl-auth.h \
-	wocky-sasl-digest-md5.h wocky-sasl-digest-md5.c \
-	wocky-sasl-handler.c wocky-sasl-handler.h wocky-sasl-plain.c \
-	wocky-sasl-plain.h wocky-stanza.c wocky-stanza.h \
-	wocky-porter.c wocky-porter.h wocky-contact.c wocky-contact.h \
-	wocky-bare-contact.c wocky-bare-contact.h \
-	wocky-resource-contact.c wocky-resource-contact.h \
-	wocky-roster.c wocky-roster.h wocky-contact-factory.c \
-	wocky-contact-factory.h wocky-session.c wocky-session.h \
-	wocky-muc.h wocky-muc.c wocky-pep-service.c \
-	wocky-pep-service.h wocky-data-form.c wocky-data-form.h \
-	wocky-pubsub-helpers.c wocky-pubsub-helpers.h \
-	wocky-pubsub-service.c wocky-pubsub-service.h \
-	wocky-pubsub-service-protected.h wocky-pubsub-node.c \
-	wocky-pubsub-node.h wocky-pubsub-node-protected.h \
-	$(am__append_1) $(am__append_3)
-libwocky_la_SOURCES = $(HANDWRITTEN_SOURCES)
+GNUTLS_SRC = wocky-tls.c
+handwritten_headers = \
+  wocky.h \
+  wocky-auth-handler.h \
+  wocky-auth-registry.h \
+  wocky-bare-contact.h \
+  wocky-connector.h \
+  wocky-contact.h \
+  wocky-contact-factory.h \
+  wocky-data-form.h \
+  wocky-debug.h \
+  wocky-jabber-auth.h \
+  wocky-jabber-auth-digest.h \
+  wocky-jabber-auth-password.h \
+  wocky-muc.h \
+  wocky-namespaces.h \
+  wocky-node.h \
+  wocky-node-private.h \
+  wocky-node-tree.h \
+  wocky-pep-service.h \
+  wocky-ping.h \
+  wocky-porter.h \
+  wocky-pubsub-helpers.h \
+  wocky-pubsub-node.h \
+  wocky-pubsub-node-protected.h \
+  wocky-pubsub-service.h \
+  wocky-pubsub-service-protected.h \
+  wocky-resource-contact.h \
+  wocky-roster.h \
+  wocky-sasl-auth.h \
+  wocky-sasl-digest-md5.h \
+  wocky-sasl-plain.h \
+  wocky-session.h \
+  wocky-stanza.h \
+  wocky-tls.h \
+  wocky-types.h \
+  wocky-utils.h \
+  wocky-xmpp-connection.h \
+  wocky-xmpp-error.h \
+  wocky-xmpp-reader.h \
+  wocky-xmpp-writer.h
+
+handwritten_sources = wocky.c wocky-auth-handler.c \
+	wocky-auth-registry.c wocky-bare-contact.c wocky-connector.c \
+	wocky-contact.c wocky-contact-factory.c wocky-data-form.c \
+	wocky-debug.c wocky-jabber-auth.c wocky-jabber-auth-digest.c \
+	wocky-jabber-auth-password.c wocky-muc.c wocky-node.c \
+	wocky-node-tree.c wocky-pep-service.c wocky-ping.c \
+	wocky-porter.c wocky-pubsub-helpers.c wocky-pubsub-node.c \
+	wocky-pubsub-service.c wocky-resource-contact.c wocky-roster.c \
+	wocky-sasl-auth.c wocky-sasl-digest-md5.c wocky-sasl-plain.c \
+	wocky-session.c wocky-stanza.c wocky-utils.c \
+	wocky-xmpp-connection.c wocky-xmpp-error.c wocky-xmpp-reader.c \
+	wocky-xmpp-writer.c $(am__append_1) $(am__append_3)
+libwocky_la_SOURCES = $(handwritten_sources) $(built_sources) \
+                      $(handwritten_headers) $(built_headers)
+
+@INSTALL_HEADERS_TRUE@libwocky_la_HEADERS = $(handwritten_headers) $(built_headers)
+@INSTALL_HEADERS_TRUE@libwocky_ladir = $(HEADER_DIR)/wocky
 
 # Coding style checks
 check_c_sources = \
-  $(filter-out wocky-openssl%,$(filter-out wocky-tls.%, $(HANDWRITTEN_SOURCES)))
+  $(filter-out wocky-openssl%, \
+    $(filter-out wocky-tls.%, \
+      $(handwritten_sources) $(handwritten_headers) \
+     ) \
+   )
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(built_sources) $(built_headers)
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) \
             @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ \
             -DG_LOG_DOMAIN=\"wocky\"
@@ -403,6 +499,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-auth-handler.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-auth-registry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-bare-contact.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-connector.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact-factory.Plo@am__quote@
@@ -410,6 +508,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-debug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jabber-auth-digest.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jabber-auth-password.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jabber-auth.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-muc-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-muc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-node-tree.Plo@am__quote@
@@ -420,6 +521,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-openssl-dh512.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-openssl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-ping.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-porter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-node-enumtypes.Plo@am__quote@
@@ -430,7 +532,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-roster.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-sasl-auth.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-sasl-digest-md5.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-sasl-handler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-sasl-plain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-session.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-signals-marshal.Plo@am__quote@
@@ -474,6 +575,26 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-libwocky_laHEADERS: $(libwocky_la_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(libwocky_ladir)" || $(MKDIR_P) "$(DESTDIR)$(libwocky_ladir)"
+	@list='$(libwocky_la_HEADERS)'; test -n "$(libwocky_ladir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libwocky_ladir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libwocky_ladir)" || exit $$?; \
+	done
+
+uninstall-libwocky_laHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(libwocky_la_HEADERS)'; test -n "$(libwocky_ladir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(libwocky_ladir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(libwocky_ladir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -564,8 +685,11 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
+	for dir in "$(DESTDIR)$(libwocky_ladir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) install-am
 install-exec: install-exec-am
@@ -618,7 +742,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-libwocky_laHEADERS
 
 install-dvi: install-dvi-am
 
@@ -664,7 +788,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am:
+uninstall-am: uninstall-libwocky_laHEADERS
 
 .MAKE: all check check-am install install-am install-strip
 
@@ -675,12 +799,13 @@ uninstall-am:
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am
+	install-info-am install-libwocky_laHEADERS install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags uninstall uninstall-am \
+	uninstall-libwocky_laHEADERS
 
 check-syntax:
 	$(CC) $(AM_CPPFLAGS) $(AM_CFLAGS) -fsyntax-only $(CHK_SOURCES)
@@ -706,12 +831,12 @@ check-coding-style:
 
 check-local: check-coding-style
 dist-hook:
-	$(shell for x in $(BUILT_SOURCES); do rm -f $(distdir)/$$x ; done)
+	$(shell for x in $(CLEANFILES); do rm -f $(distdir)/$$x ; done)
 
-wocky-signals-marshal.list: $(HANDWRITTEN_SOURCES) Makefile.am
+wocky-signals-marshal.list: $(handwritten_sources) Makefile.am
 	$(AM_V_GEN)( cd $(srcdir) && \
 	sed -n -e 's/.*_wocky_signals_marshal_\([[:upper:][:digit:]]*__[[:upper:][:digit:]_]*\).*/\1/p' \
-	$(HANDWRITTEN_SOURCES) ) \
+	$(handwritten_sources) ) \
 	| sed -e 's/__/:/' -e 'y/_/,/' | sort -u > $@.tmp
 	@if cmp -s $@.tmp $@; then \
 		rm $@.tmp; \
@@ -730,7 +855,7 @@ wocky-signals-marshal.list: $(HANDWRITTEN_SOURCES) Makefile.am
 # rules for making the glib enum objects
 # The shell variable $long is something like WOCKY_XMPP_ERROR for
 # wocky-xmpp-error-enumtypes.h, and $short is WOCKY.
-$(filter %-enumtypes.h,$(BUILT_SOURCES)): %-enumtypes.h: %.h Makefile.in
+$(filter %-enumtypes.h,$(built_headers)): %-enumtypes.h: %.h Makefile.in
 	$(AM_V_GEN)set -e; \
 	long=`echo $* | tr [:lower:]- [:upper:]_`; \
 	short=$${long%%_*}; \
@@ -742,7 +867,7 @@ $(filter %-enumtypes.h,$(BUILT_SOURCES)): %-enumtypes.h: %.h Makefile.in
 	--ftail "G_END_DECLS\n\n#endif" \
 	$< > $@
 
-$(filter %-enumtypes.c,$(BUILT_SOURCES)): %-enumtypes.c: %.h Makefile.in
+$(filter %-enumtypes.c,$(built_sources)): %-enumtypes.c: %.h Makefile.in
 	$(AM_V_GEN)glib-mkenums \
 	--fhead "#include <$*.h>\n#include <$*-enumtypes.h>" \
 	--fprod "\n/* enumerations from \"@filename@\" */" \

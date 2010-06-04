@@ -35,6 +35,8 @@
 #define QUIRK_OMITS_CONTENT_CREATORS "\x07omits-content-creators"
 /* The Google Webmail client doesn't support some features */
 #define QUIRK_GOOGLE_WEBMAIL_CLIENT "\x07google-webmail-client"
+/* This client says it's a phone! */
+#define QUIRK_IS_A_PHONE QUIRK_PREFIX "is-a-phone"
 
 /**
  * GabbleCapabilitySet:
@@ -58,7 +60,7 @@ void gabble_capability_set_exclude (GabbleCapabilitySet *caps,
     const GabbleCapabilitySet *removed);
 void gabble_capability_set_intersect (GabbleCapabilitySet *target,
     const GabbleCapabilitySet *source);
-gboolean gabble_capability_set_is_empty (const GabbleCapabilitySet *caps);
+gint gabble_capability_set_size (const GabbleCapabilitySet *caps);
 gboolean gabble_capability_set_has (const GabbleCapabilitySet *caps,
     const gchar *cap);
 gboolean gabble_capability_set_has_one (const GabbleCapabilitySet *caps,

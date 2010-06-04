@@ -61,11 +61,13 @@ libgabble_convenience_la_DEPENDENCIES =  \
 	$(top_builddir)/lib/gibber/libgibber.la \
 	$(top_builddir)/lib/loudmouth/libloudmouth.la \
 	$(am__DEPENDENCIES_1)
-am_libgabble_convenience_la_OBJECTS = base64.lo base-channel.lo \
-	bytestream-factory.lo bytestream-ibb.lo bytestream-iface.lo \
-	bytestream-muc.lo bytestream-multiple.lo bytestream-socks5.lo \
-	call-content.lo call-content-codecoffer.lo call-channel.lo \
-	call-stream.lo call-stream-endpoint.lo capabilities.lo \
+am_libgabble_convenience_la_OBJECTS = auth-manager.lo base64.lo \
+	base-channel.lo base-call-channel.lo bytestream-factory.lo \
+	bytestream-ibb.lo bytestream-iface.lo bytestream-muc.lo \
+	bytestream-multiple.lo bytestream-socks5.lo call-content.lo \
+	call-content-codecoffer.lo call-channel.lo call-muc-channel.lo \
+	call-member.lo call-member-content.lo call-stream.lo \
+	call-stream-endpoint.lo capabilities.lo caps-cache.lo \
 	caps-hash.lo caps-channel-manager.lo conn-aliasing.lo \
 	conn-avatars.lo conn-contact-info.lo conn-location.lo \
 	conn-olpc.lo conn-presence.lo conn-sidecars.lo \
@@ -82,8 +84,9 @@ am_libgabble_convenience_la_OBJECTS = base64.lo base-channel.lo \
 	presence.lo presence-cache.lo private-tubes-factory.lo \
 	request-pipeline.lo roster.lo roster-channel.lo \
 	roomlist-channel.lo roomlist-manager.lo search-channel.lo \
-	search-manager.lo sidecar.lo tube-iface.lo tubes-channel.lo \
-	tube-dbus.lo tube-stream.lo util.lo vcard-manager.lo
+	search-manager.lo server-sasl-channel.lo sidecar.lo \
+	tube-iface.lo tubes-channel.lo tube-dbus.lo tube-stream.lo \
+	util.lo vcard-manager.lo
 am__objects_1 = gabble-signals-marshal.lo
 nodist_libgabble_convenience_la_OBJECTS = $(am__objects_1)
 libgabble_convenience_la_OBJECTS =  \
@@ -205,6 +208,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 PYTHON = @PYTHON@
 PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
@@ -216,6 +221,8 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SOUP_CFLAGS = @SOUP_CFLAGS@
 SOUP_LIBS = @SOUP_LIBS@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TEST_PYTHON = @TEST_PYTHON@
 TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
@@ -289,10 +296,14 @@ BUILT_SOURCES = \
 
 CLEANFILES = $(BUILT_SOURCES)
 libgabble_convenience_la_SOURCES = \
+    auth-manager.h \
+    auth-manager.c \
     base64.h \
     base64.c \
     base-channel.h \
     base-channel.c \
+    base-call-channel.h \
+    base-call-channel.c \
     bytestream-factory.h \
     bytestream-factory.c \
     bytestream-ibb.h \
@@ -311,12 +322,20 @@ libgabble_convenience_la_SOURCES = \
     call-content-codecoffer.c \
     call-channel.h \
     call-channel.c \
+    call-muc-channel.h \
+    call-muc-channel.c \
+    call-member.h \
+    call-member.c \
+    call-member-content.h \
+    call-member-content.c \
     call-stream.h \
     call-stream.c \
     call-stream-endpoint.h \
     call-stream-endpoint.c \
     capabilities.h \
     capabilities.c \
+    caps-cache.h \
+    caps-cache.c \
     caps-hash.h \
     caps-hash.c \
     caps-channel-manager.h \
@@ -422,6 +441,8 @@ libgabble_convenience_la_SOURCES = \
     search-channel.c \
     search-manager.h \
     search-manager.c \
+    server-sasl-channel.h \
+    server-sasl-channel.c \
     $(top_srcdir)/gabble/sidecar.h \
     sidecar.c \
     tube-iface.h \
@@ -464,13 +485,14 @@ AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
 	    @SOUP_CFLAGS@ @UUID_CFLAGS@ @GMODULE_CFLAGS@ \
+	    @SQLITE_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
 	    -I $(top_srcdir)/gabble \
 	    -DG_LOG_DOMAIN=\"gabble\" \
 	    -DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\"
 
 ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
-	    @SOUP_LIBS@ @UUID_LIBS@ @GMODULE_LIBS@
+	    @SOUP_LIBS@ @UUID_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -583,6 +605,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/auth-manager.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base-call-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bytestream-factory.Plo@am__quote@
@@ -594,9 +618,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-content-codecoffer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-content.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-member-content.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-member.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-muc-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-stream-endpoint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/capabilities.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/caps-cache.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/caps-channel-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/caps-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-aliasing.Plo@am__quote@
@@ -651,6 +679,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roster.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/search-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/search-manager.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server-sasl-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sidecar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-dbus.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-iface.Plo@am__quote@

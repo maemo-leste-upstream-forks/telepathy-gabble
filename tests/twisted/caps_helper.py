@@ -128,6 +128,11 @@ def compute_caps_hash(identities, features, dataforms):
     components = []
 
     for identity in sorted(identities):
+        if len(identity.split('/')) != 4:
+            raise ValueError(
+                "expecting identities of the form " +
+                "'category/type/lang/client': got " + repr(identity))
+
         components.append(identity)
 
     for feature in sorted(features):
@@ -149,9 +154,16 @@ def compute_caps_hash(identities, features, dataforms):
     m.update(S.encode('utf-8'))
     return base64.b64encode(m.digest())
 
-def make_caps_disco_reply(stream, req, features, dataforms={}):
+def make_caps_disco_reply(stream, req, identities, features, dataforms={}):
     iq = make_result_iq(stream, req)
     query = iq.firstChildElement()
+
+    for identity in identities:
+        category, type_, lang, name = identity.split('/')
+        el = query.addElement('identity')
+        el['category'] = category
+        el['type'] = type_
+        el['name'] = name
 
     for f in features:
         el = domish.Element((None, 'feature'))
@@ -245,16 +257,19 @@ def caps_contain(event, cap):
     return var == cap
 
 def presence_and_disco(q, conn, stream, contact, disco,
-                       client, caps, features, dataforms={}, initial=True):
-    h = send_presence(q, conn, stream, contact, caps, initial=initial)
+                       client, caps,
+                       features, identities=[], dataforms={},
+                       initial=True, show=None):
+    h = send_presence(q, conn, stream, contact, caps, initial=initial,
+        show=show)
 
     if disco:
         stanza = expect_disco(q, contact, client, caps)
-        send_disco_reply(stream, stanza, features, dataforms)
+        send_disco_reply(stream, stanza, identities, features, dataforms)
 
     return h
 
-def send_presence(q, conn, stream, contact, caps, initial=True):
+def send_presence(q, conn, stream, contact, caps, initial=True, show=None):
     h = conn.RequestHandles(cs.HT_CONTACT, [contact])[0]
 
     if initial:
@@ -273,7 +288,7 @@ def send_presence(q, conn, stream, contact, caps, initial=True):
             conn.Capabilities.GetCapabilities([h]))
 
     # send updated presence with caps info
-    stream.send(make_presence(contact, status='hello', caps=caps))
+    stream.send(make_presence(contact, show=show, status='hello', caps=caps))
 
     return h
 
@@ -284,10 +299,9 @@ def expect_disco(q, contact, client, caps):
 
     return event.stanza
 
-def send_disco_reply(stream, stanza, features, dataforms={}):
-    # send good reply
-    result = make_caps_disco_reply(stream, stanza, features, dataforms)
-    stream.send(result)
+def send_disco_reply(stream, stanza, identities, features, dataforms={}):
+    stream.send(
+        make_caps_disco_reply(stream, stanza, identities, features, dataforms))
 
 if __name__ == '__main__':
     # example from XEP-0115

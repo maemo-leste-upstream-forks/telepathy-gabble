@@ -36,8 +36,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = gabble
-DIST_COMMON = $(am__gabbleinclude_HEADERS_DIST) \
-	$(am__wockyinclude_HEADERS_DIST) $(srcdir)/Makefile.am \
+DIST_COMMON = $(am__gabbleinclude_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in \
 	$(srcdir)/telepathy-gabble-uninstalled.pc.in \
 	$(srcdir)/telepathy-gabble.pc.in
@@ -86,44 +85,10 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(pkgconfigdir)" \
-	"$(DESTDIR)$(gabbleincludedir)" "$(DESTDIR)$(wockyincludedir)"
+	"$(DESTDIR)$(gabbleincludedir)"
 DATA = $(pkgconfig_DATA)
 am__gabbleinclude_HEADERS_DIST = error.h gabble.h plugin.h sidecar.h
-am__wockyinclude_HEADERS_DIST =  \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-types.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-connector.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-xmpp-connection.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-debug.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-namespaces.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-node-tree.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-utils.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-node.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-node-private.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-xmpp-reader.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-xmpp-writer.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-xmpp-error.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-sasl-auth.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-sasl-digest-md5.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-sasl-handler.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-sasl-plain.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-stanza.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-porter.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-contact.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-bare-contact.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-resource-contact.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-roster.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-contact-factory.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-session.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-muc.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-pep-service.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-data-form.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-pubsub-helpers.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-pubsub-service.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-pubsub-service-protected.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-pubsub-node.h \
-	$(top_srcdir)/lib/ext/wocky/wocky/wocky-pubsub-node-protected.h
-HEADERS = $(gabbleinclude_HEADERS) $(wockyinclude_HEADERS)
+HEADERS = $(gabbleinclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -194,6 +159,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 PYTHON = @PYTHON@
 PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
@@ -205,6 +172,8 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SOUP_CFLAGS = @SOUP_CFLAGS@
 SOUP_LIBS = @SOUP_LIBS@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TEST_PYTHON = @TEST_PYTHON@
 TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
@@ -271,9 +240,6 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = \
-    generate-wockyinclude_HEADERS
-
 @ENABLE_PLUGIN_API_TRUE@pkgconfigdir = $(libdir)/pkgconfig
 @ENABLE_PLUGIN_API_TRUE@pkgconfig_DATA = telepathy-gabble.pc
 @ENABLE_PLUGIN_API_TRUE@gabbleincludedir = $(includedir)/telepathy-gabble-0/gabble
@@ -282,46 +248,6 @@ EXTRA_DIST = \
 @ENABLE_PLUGIN_API_TRUE@    gabble.h \
 @ENABLE_PLUGIN_API_TRUE@    plugin.h \
 @ENABLE_PLUGIN_API_TRUE@    sidecar.h
-
-
-# We install these headers alongside gabble's so that an actual separate Wocky
-# installation won't clash with them. Update with:
-#   % ./gabble/generate-wockyinclude_HEADERS
-@ENABLE_PLUGIN_API_TRUE@wockyincludedir = $(includedir)/telepathy-gabble-0/wocky
-@ENABLE_PLUGIN_API_TRUE@wockyinclude_HEADERS = \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-types.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-connector.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-xmpp-connection.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-debug.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-namespaces.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-node-tree.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-utils.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-node.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-node-private.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-xmpp-reader.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-xmpp-writer.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-xmpp-error.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-sasl-auth.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-sasl-digest-md5.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-sasl-handler.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-sasl-plain.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-stanza.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-porter.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-contact.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-bare-contact.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-resource-contact.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-roster.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-contact-factory.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-session.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-muc.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-pep-service.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-data-form.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-pubsub-helpers.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-pubsub-service.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-pubsub-service-protected.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-pubsub-node.h \
-@ENABLE_PLUGIN_API_TRUE@    $(top_srcdir)/lib/ext/wocky/wocky/wocky-pubsub-node-protected.h
 
 all: all-am
 
@@ -406,26 +332,6 @@ uninstall-gabbleincludeHEADERS:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(gabbleincludedir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(gabbleincludedir)" && rm -f $$files
-install-wockyincludeHEADERS: $(wockyinclude_HEADERS)
-	@$(NORMAL_INSTALL)
-	test -z "$(wockyincludedir)" || $(MKDIR_P) "$(DESTDIR)$(wockyincludedir)"
-	@list='$(wockyinclude_HEADERS)'; test -n "$(wockyincludedir)" || list=; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(wockyincludedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(wockyincludedir)" || exit $$?; \
-	done
-
-uninstall-wockyincludeHEADERS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(wockyinclude_HEADERS)'; test -n "$(wockyincludedir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(wockyincludedir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(wockyincludedir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -513,7 +419,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(gabbleincludedir)" "$(DESTDIR)$(wockyincludedir)"; do \
+	for dir in "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(gabbleincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -561,8 +467,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-gabbleincludeHEADERS install-pkgconfigDATA \
-	install-wockyincludeHEADERS
+install-data-am: install-gabbleincludeHEADERS install-pkgconfigDATA
 
 install-dvi: install-dvi-am
 
@@ -606,8 +511,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-gabbleincludeHEADERS uninstall-pkgconfigDATA \
-	uninstall-wockyincludeHEADERS
+uninstall-am: uninstall-gabbleincludeHEADERS uninstall-pkgconfigDATA
 
 .MAKE: install-am install-strip
 
@@ -619,12 +523,11 @@ uninstall-am: uninstall-gabbleincludeHEADERS uninstall-pkgconfigDATA \
 	install-exec-am install-gabbleincludeHEADERS install-html \
 	install-html-am install-info install-info-am install-man \
 	install-pdf install-pdf-am install-pkgconfigDATA install-ps \
-	install-ps-am install-strip install-wockyincludeHEADERS \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-gabbleincludeHEADERS \
-	uninstall-pkgconfigDATA uninstall-wockyincludeHEADERS
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am tags uninstall uninstall-am \
+	uninstall-gabbleincludeHEADERS uninstall-pkgconfigDATA
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

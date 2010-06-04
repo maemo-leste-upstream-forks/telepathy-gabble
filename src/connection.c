@@ -31,6 +31,7 @@
 #include <glib-object.h>
 #include <loudmouth/loudmouth.h>
 #include <wocky/wocky-connector.h>
+#include <wocky/wocky-ping.h>
 #include <wocky/wocky-xmpp-error.h>
 #include <telepathy-glib/channel-manager.h>
 #include <telepathy-glib/dbus.h>
@@ -50,6 +51,7 @@
 #include "capabilities.h"
 #include "caps-channel-manager.h"
 #include "caps-hash.h"
+#include "auth-manager.h"
 #include "conn-aliasing.h"
 #include "conn-avatars.h"
 #include "conn-contact-info.h"
@@ -162,6 +164,7 @@ struct _GabbleConnectionPrivate
 {
   WockyConnector *connector;
   WockyPorter *porter;
+  WockyPing *pinger;
 
   LmMessageHandler *iq_disco_cb;
   LmMessageHandler *iq_unknown_cb;
@@ -228,6 +231,9 @@ struct _GabbleConnectionPrivate
   /* the union of the above */
   GabbleCapabilitySet *all_caps;
 
+  /* auth manager */
+  GabbleAuthManager *auth_manager;
+
   /* stream id returned by the connector */
   gchar *stream_id;
 
@@ -273,6 +279,10 @@ _gabble_connection_create_channel_managers (TpBaseConnection *conn)
       g_object_new (GABBLE_TYPE_SEARCH_MANAGER,
         "connection", self,
         NULL));
+
+  self->priv->auth_manager = g_object_new (GABBLE_TYPE_AUTH_MANAGER,
+      "connection", self, NULL);
+  g_ptr_array_add (channel_managers, self->priv->auth_manager);
 
   self->muc_factory = g_object_new (GABBLE_TYPE_MUC_FACTORY,
       "connection", self,
@@ -641,6 +651,9 @@ gabble_connection_set_property (GObject      *object,
       break;
     case PROP_KEEPALIVE_INTERVAL:
       priv->keepalive_interval = g_value_get_uint (value);
+      if (priv->pinger != NULL)
+        g_object_set (priv->pinger, "ping-interval",
+            priv->keepalive_interval, NULL);
       break;
 
     case PROP_DECLOAK_AUTOMATICALLY:
@@ -665,9 +678,17 @@ static gchar *
 gabble_connection_get_unique_name (TpBaseConnection *self)
 {
   GabbleConnectionPrivate *priv = GABBLE_CONNECTION (self)->priv;
+  gchar *unique_name = gabble_encode_jid (priv->username, priv->stream_server,
+      priv->resource);
 
-  return gabble_encode_jid (
-      priv->username, priv->stream_server, priv->resource);
+  if (priv->username == NULL)
+    {
+      gchar *tmp = unique_name;
+      unique_name = g_strdup_printf ("%s_%p", tmp, self);
+      g_free (tmp);
+    }
+
+  return unique_name;
 }
 
 /* must be in the same order as GabbleListHandle in connection.h */
@@ -1031,6 +1052,7 @@ gabble_connection_dispose (GObject *object)
   self->roster = NULL;
   self->muc_factory = NULL;
   self->private_tubes_factory = NULL;
+  priv->auth_manager = NULL;
 
   if (self->self_presence != NULL)
     g_object_unref (self->self_presence);
@@ -1189,11 +1211,10 @@ _gabble_connection_set_properties_from_account (GabbleConnection *conn,
   username = server = resource = NULL;
   result = TRUE;
 
-  if (!gabble_decode_jid (account, &username, &server, &resource) ||
-      username == NULL)
+  if (!gabble_decode_jid (account, &username, &server, &resource))
     {
       g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
-          "unable to get username and server from account");
+          "unable to extract JID from account name");
       result = FALSE;
       goto OUT;
     }
@@ -1534,15 +1555,13 @@ connector_error_disconnect (GabbleConnection *self,
 
   DEBUG ("connection failed: %s", error->message);
 
-  if (error->domain == WOCKY_SASL_AUTH_ERROR)
+  if (error->domain == WOCKY_AUTH_ERROR)
     {
       switch (error->code)
         {
-          case WOCKY_SASL_AUTH_ERROR_NETWORK:
-          case WOCKY_SASL_AUTH_ERROR_CONNRESET:
-          case WOCKY_SASL_AUTH_ERROR_STREAM:
-          case WOCKY_SASL_AUTH_ERROR_INVALID_REPLY:
-          case WOCKY_SASL_AUTH_ERROR_NO_SUPPORTED_MECHANISMS:
+          case WOCKY_AUTH_ERROR_NETWORK:
+          case WOCKY_AUTH_ERROR_CONNRESET:
+          case WOCKY_AUTH_ERROR_STREAM:
             reason = TP_CONNECTION_STATUS_REASON_NETWORK_ERROR;
             break;
           default:
@@ -1555,7 +1574,6 @@ connector_error_disconnect (GabbleConnection *self,
       switch (error->code)
         {
           case WOCKY_CONNECTOR_ERROR_SESSION_DENIED:
-          case WOCKY_CONNECTOR_ERROR_JABBER_AUTH_REJECTED:
             reason = TP_CONNECTION_STATUS_REASON_AUTHENTICATION_FAILED;
             break;
 
@@ -1685,6 +1703,7 @@ connector_connected (GabbleConnection *self,
 
   self->session = wocky_session_new (conn);
   priv->porter = wocky_session_get_porter (self->session);
+  priv->pinger = wocky_ping_new (priv->porter, priv->keepalive_interval);
 
   g_signal_connect (priv->porter, "remote-closed",
       G_CALLBACK (remote_closed_cb), self);
@@ -1833,6 +1852,8 @@ disconnect_callbacks (TpBaseConnection *base)
   GabbleConnection *conn = GABBLE_CONNECTION (base);
   GabbleConnectionPrivate *priv = conn->priv;
 
+  DEBUG ("");
+
   g_assert (priv->iq_disco_cb != NULL);
   g_assert (priv->iq_unknown_cb != NULL);
   g_assert (priv->olpc_msg_cb != NULL);
@@ -1883,12 +1904,11 @@ _gabble_connection_connect (TpBaseConnection *base,
   g_assert (priv->connector == NULL);
   g_assert (priv->port <= G_MAXUINT16);
   g_assert (priv->stream_server != NULL);
-  g_assert (priv->username != NULL);
-  g_assert (priv->password != NULL);
   g_assert (priv->resource != NULL);
 
   jid = gabble_encode_jid (priv->username, priv->stream_server, NULL);
-  priv->connector = wocky_connector_new (jid, priv->password, priv->resource);
+  priv->connector = wocky_connector_new (jid, priv->password, priv->resource,
+      gabble_auth_manager_get_auth_registry (priv->auth_manager));
   g_free (jid);
 
   /* system certs */
@@ -2047,6 +2067,12 @@ connection_shut_down (TpBaseConnection *base)
 
   priv->closing = TRUE;
 
+  if (priv->pinger != NULL)
+    {
+      g_object_unref (priv->pinger);
+      priv->pinger = NULL;
+    }
+
   if (priv->porter != NULL)
     {
       DEBUG ("connection may still be open; closing it: %p", base);
@@ -2071,23 +2097,7 @@ connection_shut_down (TpBaseConnection *base)
   tp_base_connection_finish_shutdown (base);
 }
 
-gboolean
-gabble_connection_visible_to (GabbleConnection *self,
-    TpHandle recipient)
-{
-  if (self->self_presence->status == GABBLE_PRESENCE_HIDDEN)
-    return FALSE;
-
-  if ((gabble_roster_handle_get_subscription (self->roster, recipient)
-      & GABBLE_ROSTER_SUBSCRIPTION_FROM) == 0)
-    return FALSE;
-
-  /* FIXME: other reasons they might not be able to see our presence? */
-
-  return TRUE;
-}
-
-static void
+void
 gabble_connection_fill_in_caps (GabbleConnection *self,
     LmMessage *presence_message)
 {
@@ -2146,7 +2156,7 @@ gabble_connection_send_capabilities (GabbleConnection *self,
    * getting our presence... */
   handle = tp_handle_lookup (contact_repo, recipient, NULL, NULL);
 
-  if (handle != 0 && gabble_connection_visible_to (self, handle))
+  if (handle != 0 && conn_presence_visible_to (self, handle))
     {
       /* nothing to do, they should already have had our presence */
       return TRUE;
@@ -2161,51 +2171,6 @@ gabble_connection_send_capabilities (GabbleConnection *self,
   ret = _gabble_connection_send (self, message, error);
 
   lm_message_unref (message);
-
-  return ret;
-}
-
-/**
- * _gabble_connection_signal_own_presence:
- * @self: A #GabbleConnection
- * @to: bare or full JID for directed presence, or NULL
- * @error: pointer in which to return a GError in case of failure.
- *
- * Signal the user's stored presence to @to, or to the jabber server
- *
- * Retuns: FALSE if an error occurred
- */
-gboolean
-_gabble_connection_signal_own_presence (GabbleConnection *self,
-    const gchar *to,
-    GError **error)
-{
-  GabblePresence *presence = self->self_presence;
-  LmMessage *message = gabble_presence_as_message (presence, to);
-  gboolean ret;
-
-  if (presence->status == GABBLE_PRESENCE_HIDDEN)
-    {
-      if ((self->features & GABBLE_CONNECTION_FEATURES_PRESENCE_INVISIBLE) != 0
-          && to == NULL)
-        lm_message_node_set_attribute (lm_message_get_node (message),
-            "type", "invisible");
-      /* FIXME: or if sending directed presence, should we add
-       * <show>away</show>? */
-    }
-
-  gabble_connection_fill_in_caps (self, message);
-
-  ret = _gabble_connection_send (self, message, error);
-
-  lm_message_unref (message);
-
-  /* FIXME: if sending broadcast presence, should we echo it to everyone we
-   * previously sent directed presence to? (Perhaps also GC them after a
-   * while?) */
-
-  if (to == NULL && !self->priv->closing)
-    gabble_muc_factory_broadcast_presence (self->muc_factory);
 
   return ret;
 }
@@ -2291,7 +2256,7 @@ gabble_connection_refresh_capabilities (GabbleConnection *self,
       return FALSE;
     }
 
-  if (!_gabble_connection_signal_own_presence (self, NULL, &error))
+  if (!conn_presence_signal_own_presence (self, NULL, &error))
     {
       gabble_capability_set_free (save_set);
       DEBUG ("error sending presence: %s", error->message);
@@ -2635,7 +2600,7 @@ connection_disco_cb (GabbleDisco *disco,
 
   /* send presence to the server to indicate availability */
   /* TODO: some way for the user to set this */
-  if (!_gabble_connection_signal_own_presence (conn, NULL, &error))
+  if (!conn_presence_signal_own_presence (conn, NULL, &error))
     {
       DEBUG ("sending initial presence failed: %s", error->message);
       goto ERROR;
@@ -3014,7 +2979,7 @@ gabble_connection_update_capabilities (
               cap_tokens, cap_set);
         }
 
-      if (gabble_capability_set_is_empty (cap_set))
+      if (gabble_capability_set_size (cap_set) == 0)
         {
           DEBUG ("client %s has no interesting capabilities", client_name);
           gabble_capability_set_free (cap_set);

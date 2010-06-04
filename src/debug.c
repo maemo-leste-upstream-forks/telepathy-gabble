@@ -19,33 +19,32 @@
 #include <telepathy-glib/debug.h>
 #include <telepathy-glib/debug-sender.h>
 
-#ifdef ENABLE_DEBUG
-
 static GabbleDebugFlags flags = 0;
 
 static GDebugKey keys[] = {
-  { "presence",      GABBLE_DEBUG_PRESENCE },
-  { "groups",        GABBLE_DEBUG_GROUPS },
-  { "roster",        GABBLE_DEBUG_ROSTER },
-  { "disco",         GABBLE_DEBUG_DISCO },
-  { "properties",    GABBLE_DEBUG_PROPERTIES },
-  { "roomlist",      GABBLE_DEBUG_ROOMLIST },
-  { "media-channel", GABBLE_DEBUG_MEDIA },
-  { "im",            GABBLE_DEBUG_IM },
-  { "muc",           GABBLE_DEBUG_MUC },
-  { "connection",    GABBLE_DEBUG_CONNECTION },
-  { "vcard",         GABBLE_DEBUG_VCARD },
-  { "pipeline",      GABBLE_DEBUG_PIPELINE },
-  { "jid",           GABBLE_DEBUG_JID },
-  { "olpc",          GABBLE_DEBUG_OLPC },
-  { "bytestream",    GABBLE_DEBUG_BYTESTREAM },
-  { "tubes",         GABBLE_DEBUG_TUBES },
-  { "location",      GABBLE_DEBUG_LOCATION },
-  { "file-transfer", GABBLE_DEBUG_FT },
-  { "search",        GABBLE_DEBUG_SEARCH },
-  { "base-channel",  GABBLE_DEBUG_BASE_CHANNEL },
-  { "plugins",       GABBLE_DEBUG_PLUGINS },
-  { "mail",          GABBLE_DEBUG_MAIL_NOTIF },
+  { "presence",       GABBLE_DEBUG_PRESENCE },
+  { "groups",         GABBLE_DEBUG_GROUPS },
+  { "roster",         GABBLE_DEBUG_ROSTER },
+  { "disco",          GABBLE_DEBUG_DISCO },
+  { "properties",     GABBLE_DEBUG_PROPERTIES },
+  { "roomlist",       GABBLE_DEBUG_ROOMLIST },
+  { "media-channel",  GABBLE_DEBUG_MEDIA },
+  { "im",             GABBLE_DEBUG_IM },
+  { "muc",            GABBLE_DEBUG_MUC },
+  { "connection",     GABBLE_DEBUG_CONNECTION },
+  { "vcard",          GABBLE_DEBUG_VCARD },
+  { "pipeline",       GABBLE_DEBUG_PIPELINE },
+  { "jid",            GABBLE_DEBUG_JID },
+  { "olpc",           GABBLE_DEBUG_OLPC },
+  { "bytestream",     GABBLE_DEBUG_BYTESTREAM },
+  { "tubes",          GABBLE_DEBUG_TUBES },
+  { "location",       GABBLE_DEBUG_LOCATION },
+  { "file-transfer",  GABBLE_DEBUG_FT },
+  { "search",         GABBLE_DEBUG_SEARCH },
+  { "base-channel",   GABBLE_DEBUG_BASE_CHANNEL },
+  { "plugins",        GABBLE_DEBUG_PLUGINS },
+  { "mail",           GABBLE_DEBUG_MAIL_NOTIF },
+  { "authentication", GABBLE_DEBUG_AUTH },
   { 0, },
 };
 
@@ -114,7 +113,8 @@ gabble_debug_free (void)
 }
 
 static void
-log_to_debug_sender (GabbleDebugFlags flag,
+log_to_debug_sender (GLogLevelFlags level,
+    GabbleDebugFlags flag,
     const gchar *message)
 {
   TpDebugSender *dbg;
@@ -125,12 +125,13 @@ log_to_debug_sender (GabbleDebugFlags flag,
   g_get_current_time (&now);
 
   tp_debug_sender_add_message (dbg, &now, debug_flag_to_domain (flag),
-      G_LOG_LEVEL_DEBUG, message);
+      level, message);
 
   g_object_unref (dbg);
 }
 
-void gabble_debug (GabbleDebugFlags flag,
+void gabble_log (GLogLevelFlags level,
+    GabbleDebugFlags flag,
     const gchar *format,
     ...)
 {
@@ -141,12 +142,10 @@ void gabble_debug (GabbleDebugFlags flag,
   message = g_strdup_vprintf (format, args);
   va_end (args);
 
-  log_to_debug_sender (flag, message);
+  log_to_debug_sender (level, flag, message);
 
-  if (flag & flags)
-    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "%s", message);
+  if (flag & flags || level > G_LOG_LEVEL_DEBUG)
+    g_log (G_LOG_DOMAIN, level, "%s", message);
 
   g_free (message);
 }
-
-#endif /* ENABLE_DEBUG */

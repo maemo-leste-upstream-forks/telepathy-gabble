@@ -15,7 +15,7 @@ test_timeout_cb (gpointer data)
 }
 
 test_data_t *
-setup_test (void)
+setup_test_with_timeout (guint timeout)
 {
   test_data_t *data;
 
@@ -35,10 +35,15 @@ setup_test (void)
   data->expected_stanzas = g_queue_new ();
 
   data->cancellable = g_cancellable_new ();
-
-  g_timeout_add_seconds (TIMEOUT, test_timeout_cb, NULL);
+  data->timeout_id = g_timeout_add_seconds (timeout, test_timeout_cb, NULL);
 
   return data;
+}
+
+test_data_t *
+setup_test (void)
+{
+  return setup_test_with_timeout (TIMEOUT);
 }
 
 void
@@ -53,6 +58,7 @@ teardown_test (test_data_t *data)
   if (data->session_out != NULL)
     g_object_unref (data->session_out);
   g_object_unref (data->cancellable);
+  g_source_remove (data->timeout_id);
 
   /* All the stanzas should have been received */
   g_assert (g_queue_get_length (data->expected_stanzas) == 0);

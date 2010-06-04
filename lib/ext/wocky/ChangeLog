@@ -1,3 +1,857 @@
+commit 642d874431617fffa170c48cfdb8cabe5510041f
+Merge: 8158b75 1c9443b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 3 19:33:02 2010 +0100
+
+    Merge remote branch 'maiku/install-headers'
+
+commit 8158b754bda64f123d804ba6700846b90f069ff3
+Merge: ff03a5e 221d287
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 3 19:00:48 2010 +0100
+
+    Merge branch 'muc'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit ff03a5e7254c8586cf72016634a6b3a6c47eb492
+Merge: 9cdcd09 1c16879
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 3 19:00:36 2010 +0100
+
+    Merge branch 'coverity'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 1c9443b6c8d78d800f2e470d1b0431519eb29951
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   Sun May 30 12:00:15 2010 -0500
+
+    Add wocky-tls.h to the list of handwritten headers.
+    
+    The wocky-tls.h file is used for both GnuTLS and OpenSSL options.
+    Therefore there's no need to keep it separate from the main list
+    of headers. Also, it wasn't being installed with the other headers.
+    This patch moves it into the list of handwritten headers.
+
+ wocky/Makefile.am |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit aad3e48e1333bfe8659b2eb70c89081233856428
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Mar 22 15:37:29 2010 +0000
+
+    Add a configure switch to install headers
+    
+    Previously, Gabble hard-coded a list of Wocky headers to install if it
+    was built with --enable-plugin-api. This is fragile in the face of the
+    list of headers changing. With this patch, passing
+    --with-installed-headers=/path/to/headers to Wocky's configure will
+    cause `make install` to put headers there.
+    
+    I had to split BUILT_SOURCES and HANDWRITTEN_SOURCES into sources and
+    headers, and lowercase them because FOO_HEADERS is magic in Automake. I
+    took the liberty of sorting the lists while I was at it.
+
+ configure.ac      |   10 +++
+ wocky/Makefile.am |  169 ++++++++++++++++++++++++++++------------------------
+ 2 files changed, 101 insertions(+), 78 deletions(-)
+
+commit 9cdcd094234ebfe40429d827c2ec2b6bb5d917a6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   Mon May 24 15:50:48 2010 +0200
+
+    pep-service: discard suspicious event messsages (fdo #28232)
+    
+    For some reason recent ejabberd are sending 'error' messages when we publish
+    to a PEP node. That's probably an ejabberd bug (EJAB-1239) but Wocky should
+    ignore those rather than parsing them as actual PEP updates.
+
+ wocky/wocky-pep-service.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+commit 51ee0b1e860c99ae8dbaa58909d247ab54d834c1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Wed May 26 17:17:47 2010 +0100
+
+    Remove certificate re-creation rules, they tend to break
+    
+    The Makefile had some voodoo to re-create the various certificates used for
+    testing if needed.. Unfortunately they tend to break. Also these rules will
+    only be needed in 2037. If we're still using SSL and Wocky at that point, then
+    figuring out how to update the certificates to be valid a little bit longer
+    shouldn't be that much work :)
+
+ tests/Makefile.am |  106 +----------------------------------------------------
+ 1 files changed, 1 insertions(+), 105 deletions(-)
+
+commit a9a52910d54c5d5f84bf9707eba7ab58192c2a07
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Fri May 21 15:10:10 2010 -0700
+
+    Unref reply stanza.
+
+ wocky/wocky-sasl-auth.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit bfa6ed32139edb1b783f180219fbe933f12db625
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Fri May 21 15:09:34 2010 -0700
+
+    Unref auth registry on dispose.
+
+ wocky/wocky-connector.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 64b4f204238fbaf6247e0094810d92a3417abc67
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Fri May 21 11:35:17 2010 -0700
+
+    Be more linient towards 0 length and NULL GStrings in base64 encode/decode.
+
+ wocky/wocky-sasl-auth.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit a217fd071742abf8ba3cd526e012dcd2bda6df4d
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   Mon May 24 05:16:47 2010 -0500
+
+    Make sure all sources are in tests/Makefile.am's check_c_sources.
+
+ tests/Makefile.am |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 8f1d78dea085447a237160c4a528a48cc699f31c
+Merge: 57e7d3a 89f115e
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Wed May 19 10:39:23 2010 -0700
+
+    Merge branch 'more-auth-work'
+
+commit 89f115e5cfa8a3423bd085af3f611ac476c6705f
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Wed May 19 10:33:24 2010 -0700
+
+    Changed wocky_implement_finish_void to work with g_simple_async_report_*.
+
+ wocky/wocky-utils.h |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+commit d4482bd89440022d7fc25b485e50f3b01fa61066
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Tue May 18 10:29:57 2010 -0700
+
+    Added new API to gtk-doc index.
+
+ docs/reference/wocky-docs.sgml |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 6481be551052eec6661a40ef89f2bd917e699a23
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Mon May 17 12:06:22 2010 -0700
+
+    Added documentation to virtual functions.
+
+ wocky/wocky-auth-registry.h |   52 +++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 52 insertions(+), 0 deletions(-)
+
+commit 29e43824ab7b104ab8ad30e1a78505c30e09b47e
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Mon May 17 11:47:10 2010 -0700
+
+    Use wocky_implement_finish_void macro in wocky_sasl_auth_authenticate_finish
+
+ wocky/wocky-sasl-auth.c |    9 +--------
+ 1 files changed, 1 insertions(+), 8 deletions(-)
+
+commit a5b28c34ab43fb8d56ef808a62874a73d1f01e04
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Mon May 17 11:45:17 2010 -0700
+
+    Call wocky_auth_registry_failure in auth_fail functions and not in _finish.
+
+ wocky/wocky-jabber-auth.c |   23 +++++++++--------------
+ wocky/wocky-sasl-auth.c   |   16 +++++++++-------
+ 2 files changed, 18 insertions(+), 21 deletions(-)
+
+commit d7134f06472b4db2b7857e4d5409866ef2615698
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Mon May 17 10:25:59 2010 -0700
+
+    made _finish functions virtual
+
+ wocky/wocky-auth-registry.c |   55 +++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-auth-registry.h |   23 ++++++++++++++++++
+ 2 files changed, 78 insertions(+), 0 deletions(-)
+
+commit 556fb4cce9618ae6ce21792ee01f73d267714099
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Mon May 17 10:07:06 2010 -0700
+
+    Allocate GAsyncResult in implementation. In essence, they are now public.
+
+ wocky/wocky-auth-registry.c |   69 ++++++++++++++++++++++--------------------
+ wocky/wocky-auth-registry.h |   21 +++++++-----
+ 2 files changed, 48 insertions(+), 42 deletions(-)
+
+commit fa0ab5344f5469c64ce498f2e79de6bedff45322
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Thu May 13 11:46:53 2010 -0700
+
+    Added virtual public method wocky_auth_registry_failure
+
+ wocky/wocky-auth-registry.c |   11 +++++++++++
+ wocky/wocky-auth-registry.h |    7 +++++++
+ wocky/wocky-jabber-auth.c   |   12 +++++++++++-
+ wocky/wocky-sasl-auth.c     |    5 ++++-
+ 4 files changed, 33 insertions(+), 2 deletions(-)
+
+commit 14bf70b7992cf868ce6a1a86f59ad84fb9b86ecd
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Thu May 13 11:26:47 2010 -0700
+
+    allow NULL passwords
+
+ wocky/wocky-connector.c |    9 +--------
+ 1 files changed, 1 insertions(+), 8 deletions(-)
+
+commit 0079e46ab973602c3030173327bb8f5c9d6e4977
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Thu May 13 10:17:37 2010 -0700
+
+    Moved g_string copy/free functions to wocky-utils
+
+ wocky/wocky-auth-registry.c |   25 ++++---------------------
+ wocky/wocky-utils.c         |   16 ++++++++++++++++
+ wocky/wocky-utils.h         |    4 ++++
+ 3 files changed, 24 insertions(+), 21 deletions(-)
+
+commit b73f84bda27bcf9aaf0a6db581ee52f82bacb39c
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Tue May 11 13:06:28 2010 -0700
+
+    Made new struct for holding initial auth data (mechanism and initial response).
+    
+    This further seals the base class and allows subclasses to override regardless of what obj->handler is pointing at.
+
+ wocky/wocky-auth-registry.c |   74 ++++++++++++++++++++++++++++--------------
+ wocky/wocky-auth-registry.h |   20 ++++++++++--
+ wocky/wocky-jabber-auth.c   |   16 ++++-----
+ wocky/wocky-sasl-auth.c     |   14 +++-----
+ 4 files changed, 79 insertions(+), 45 deletions(-)
+
+commit a581c940cef08fb121fa142f5a689a6264c3fdc4
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Fri May 7 13:23:08 2010 -0700
+
+    Added private virtual functions to WockyAuthRegistry.
+
+ wocky/wocky-auth-registry.c |  107 +++++++++++++++++++++++++++++++++---------
+ wocky/wocky-auth-registry.h |   21 ++++++++
+ 2 files changed, 105 insertions(+), 23 deletions(-)
+
+commit 57e7d3a7a58bad9d8b3d5edbb8c8506a32a6fddd
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu May 13 15:09:01 2010 +0200
+
+    adding wocky-ping-test
+
+ .gitignore              |    1 +
+ tests/Makefile.am       |    9 +++-
+ tests/wocky-ping-test.c |  127 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 136 insertions(+), 1 deletions(-)
+
+commit 208826117cc8cc6fdda7509bd71038983b939750
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu May 13 15:07:44 2010 +0200
+
+    wocky-test-helper: support custom timeouts
+
+ tests/wocky-test-helper.c |    8 +++++++-
+ tests/wocky-test-helper.h |    1 +
+ 2 files changed, 8 insertions(+), 1 deletions(-)
+
+commit 7cbd4644294b974750c85da06f2c9fe0633f5e2c
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu May 13 15:06:32 2010 +0200
+
+    wocky-test-helper: cancel timeouts after each test
+
+ tests/wocky-test-helper.c |    4 ++--
+ tests/wocky-test-helper.h |    1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 5aff834affadaa473b5c82082fa0ca8b44c83893
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu May 13 15:03:40 2010 +0200
+
+    wocky_test_input_stream_read: fixed 1-byte reads in COMBINE_SLICE mode
+
+ tests/wocky-test-stream.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 372cfeecafd26191021768003c8341dd38dbb44d
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu May 13 15:03:19 2010 +0200
+
+    adding WockyPing
+
+ wocky/Makefile.am  |    4 +-
+ wocky/wocky-ping.c |  282 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-ping.h |   69 +++++++++++++
+ 3 files changed, 354 insertions(+), 1 deletions(-)
+
+commit 0ee03b1e59ad2a1a2908409e94d692cafefc204c
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu May 13 14:54:02 2010 +0200
+
+    adding "ping" debug flag
+
+ wocky/wocky-debug.c |    3 ++-
+ wocky/wocky-debug.h |    3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 0e8c567439807f80cc90d376ceb5b8982163152a
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu May 13 14:53:29 2010 +0200
+
+    adding "urn:xmpp:ping" to namespaces
+
+ wocky/wocky-namespaces.h |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit e6bdcc7b9dc234bb64dffcd17641209831925116
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Thu May 13 14:52:30 2010 +0200
+
+    adding WockyPorter::sending signal
+
+ wocky/wocky-porter.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+
+commit dcefd5d4c8cf1948a602f83fe29176abce74801e
+Merge: 543bb86 3fb3b76
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Fri May 7 13:54:03 2010 -0700
+
+    Merge branch 'jabber-auth-refactor'
+
+commit 3fb3b7626930d5ca94a54bb8394ee6d2d819a761
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Fri May 7 10:39:34 2010 -0700
+
+    Use wocky_xmpp_stream_error_from_node for parsing stream errors.
+
+ wocky/wocky-jabber-auth.c |   27 ++++++++-------------------
+ wocky/wocky-sasl-auth.c   |   27 ++++++++-------------------
+ 2 files changed, 16 insertions(+), 38 deletions(-)
+
+commit e33a9720af53312836d3e1be403a6402d6b7d203
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Wed May 5 14:32:21 2010 -0700
+
+    Make mechanism names preprocessor macros.
+
+ wocky/wocky-auth-registry.c        |    8 ++++----
+ wocky/wocky-auth-registry.h        |    5 +++++
+ wocky/wocky-jabber-auth-digest.c   |    2 +-
+ wocky/wocky-jabber-auth-password.c |    2 +-
+ wocky/wocky-jabber-auth.c          |    6 ++----
+ wocky/wocky-sasl-digest-md5.c      |    2 +-
+ wocky/wocky-sasl-plain.c           |    2 +-
+ 7 files changed, 15 insertions(+), 12 deletions(-)
+
+commit e9cacbb7ce557fbcfc0d523eaaa50237ebfa3276
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Wed May 5 14:13:14 2010 -0700
+
+    Cleaned up stream_error in both wocky-sasl-auth.c wocky-jabber-auth.c.
+
+ wocky/wocky-jabber-auth.c |   36 ++++++++++++++----------------------
+ wocky/wocky-sasl-auth.c   |   36 ++++++++++++++----------------------
+ 2 files changed, 28 insertions(+), 44 deletions(-)
+
+commit 75d45bef817fc0236fb657604e526d6206473b54
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Wed May 5 13:36:07 2010 -0700
+
+    make WockyJabberAuthDigest a non-plain handler.
+
+ wocky/wocky-jabber-auth-digest.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5928970c86a282de5350010068459801e4a8f002
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Tue May 4 22:11:44 2010 -0700
+
+    rename sasl debug flag to auth
+
+ wocky/wocky-auth-registry.c        |    2 +-
+ wocky/wocky-debug.c                |    2 +-
+ wocky/wocky-debug.h                |    2 +-
+ wocky/wocky-jabber-auth-digest.c   |    2 +-
+ wocky/wocky-jabber-auth-password.c |    2 +-
+ wocky/wocky-jabber-auth.c          |    2 +-
+ wocky/wocky-sasl-auth.c            |    2 +-
+ wocky/wocky-sasl-digest-md5.c      |    2 +-
+ wocky/wocky-sasl-plain.c           |    2 +-
+ 9 files changed, 9 insertions(+), 9 deletions(-)
+
+commit 78057813fccdd70f0a626687a406ae8e9898675a
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Tue May 4 22:08:13 2010 -0700
+
+    rename DOMAIN_SASL to DOMAIN_AUTH
+
+ tests/wocky-connector-test.c |   76 +++++++++++++++++++++---------------------
+ 1 files changed, 38 insertions(+), 38 deletions(-)
+
+commit 7722fae294a23684c1e5559ce1d1cf038389d063
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Tue May 4 22:01:54 2010 -0700
+
+    Renamed WockySaslHandler to WockyAuthHandler
+
+ tests/wocky-test-sasl-auth.c       |    4 +-
+ tests/wocky-test-sasl-handler.c    |   14 ++--
+ wocky/Makefile.am                  |    4 +-
+ wocky/wocky-auth-handler.c         |  100 ++++++++++++++++++++++++++++++
+ wocky/wocky-auth-handler.h         |  120 ++++++++++++++++++++++++++++++++++++
+ wocky/wocky-auth-registry.c        |   30 +++++-----
+ wocky/wocky-auth-registry.h        |    6 +-
+ wocky/wocky-jabber-auth-digest.c   |   12 ++--
+ wocky/wocky-jabber-auth-digest.h   |    2 +-
+ wocky/wocky-jabber-auth-password.c |   12 ++--
+ wocky/wocky-jabber-auth-password.h |    2 +-
+ wocky/wocky-jabber-auth.h          |    4 +-
+ wocky/wocky-sasl-auth.h            |    4 +-
+ wocky/wocky-sasl-digest-md5.c      |   16 +++---
+ wocky/wocky-sasl-digest-md5.h      |    2 +-
+ wocky/wocky-sasl-handler.c         |  100 ------------------------------
+ wocky/wocky-sasl-handler.h         |  120 ------------------------------------
+ wocky/wocky-sasl-plain.c           |   12 ++--
+ wocky/wocky-sasl-plain.h           |    2 +-
+ 19 files changed, 283 insertions(+), 283 deletions(-)
+
+commit 2b0b9262008ffdb6b0b1db44441cd4a27c17aca6
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Fri Apr 30 15:37:43 2010 -0700
+
+    Added WockyJabberAuth, WockyJabberAuthPassword and WockyJabberAuthDigest.
+
+ tests/wocky-connector-test.c       |   48 ++--
+ tests/wocky-test-sasl-auth.c       |    2 +-
+ wocky/Makefile.am                  |    9 +-
+ wocky/wocky-auth-registry.c        |   22 +-
+ wocky/wocky-auth-registry.h        |    9 +-
+ wocky/wocky-connector.c            |  382 ++++-----------------
+ wocky/wocky-connector.h            |    5 -
+ wocky/wocky-jabber-auth-digest.c   |  171 +++++++++
+ wocky/wocky-jabber-auth-digest.h   |   51 +++
+ wocky/wocky-jabber-auth-password.c |  139 ++++++++
+ wocky/wocky-jabber-auth-password.h |   51 +++
+ wocky/wocky-jabber-auth.c          |  672 ++++++++++++++++++++++++++++++++++++
+ wocky/wocky-jabber-auth.h          |   88 +++++
+ wocky/wocky-sasl-auth.c            |    4 +-
+ 14 files changed, 1295 insertions(+), 358 deletions(-)
+
+commit 68af7efd6de961ab2512d4960c5c2a343ea12e8b
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Wed May 5 13:31:05 2010 -0700
+
+    Don't g_assert on text node contents not being NULL.
+
+ wocky/wocky-node.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit e66e40bdd6ee634b70d023af0575d493db46cf71
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Tue May 4 22:16:45 2010 -0700
+
+    unref auth_registry in WockySaslAuth dispose
+
+ wocky/wocky-sasl-auth.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit 543bb86b6b7b130a27ed6e4153e47137c6fc43e6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu May 6 18:54:39 2010 +0100
+
+    Remove misleading full stop from xml debug message
+
+ wocky/wocky-xmpp-writer.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 438f0f35b8703390701b263d5d8668cf4348aa23
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Tue May 4 13:22:56 2010 -0700
+
+    Moved g_assert so it does a real sanity check.
+
+ wocky/wocky-auth-registry.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 7d7bf0450c70c8d9d1fe78ee595bb2eab5e37d1d
+Merge: a844c4c 5450bf0
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Tue May 4 13:13:35 2010 -0700
+
+    Merge branch 'sasl-once-again'
+
+commit 5450bf0ac8524e95fadf62c998256f9303daa9eb
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Mon May 3 12:11:58 2010 -0700
+
+    Removed wocky_auth_registry_failure_notify, will add when we implement.
+
+ wocky/wocky-auth-registry.c |    5 -----
+ wocky/wocky-auth-registry.h |    3 ---
+ 2 files changed, 0 insertions(+), 8 deletions(-)
+
+commit cacf08c4de606512414550b32fa842bcc2c3604d
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Mon May 3 12:08:03 2010 -0700
+
+    Use wocky_implement_finish_* macros in WockyAuthRegistry.
+    Changed the flow of wocky_auth_registry_start_auth_finish to match the macros
+    even though we cannot use any of them because we use two out params.
+
+ wocky/wocky-auth-registry.c |   71 ++++++++++++++++---------------------------
+ 1 files changed, 26 insertions(+), 45 deletions(-)
+
+commit 27de8fd6dc7ea50919de1a71905cb2074a467e5d
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Mon May 3 11:34:33 2010 -0700
+
+    Default WockyAuthRegistry upon construction.
+    
+    New WockyAuthRegistry arg in both wocky_connector_new() and
+    wocky_sasl_auth_new(). If NULL is passed in either, the default WockyAuthRegisty
+    is used.
+
+ examples/connect.c           |    8 ++------
+ examples/register.c          |    2 +-
+ examples/unregister.c        |    2 +-
+ tests/wocky-connector-test.c |    2 +-
+ tests/wocky-test-sasl-auth.c |    6 +++---
+ wocky/wocky-connector.c      |   17 +++++------------
+ wocky/wocky-connector.h      |    3 ++-
+ wocky/wocky-sasl-auth.c      |    5 ++++-
+ 8 files changed, 19 insertions(+), 26 deletions(-)
+
+commit f11a7a3774b1ce8204c421703210706b65ba984f
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Mon May 3 10:56:42 2010 -0700
+
+    Initiaze GErrors to NULL.
+
+ wocky/wocky-auth-registry.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 64ace03b65515adb44117629ceffb4f1b123c712
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Thu Apr 29 16:27:06 2010 -0700
+
+    Added WockyAuthRegistry.
+    
+    WockyAuthRegistry selects the authentication mechanism based on
+    it's available handlers, and arbitrates challenge/responses between the handler
+    and the connector (via Wocky[Sasl|Jabber]Auth).
+    
+    Got rid of WOCKY_SASL_AUTH_ERROR* replaced with WOCKY_AUTH_ERROR
+
+ examples/connect.c              |    6 +-
+ tests/wocky-connector-test.c    |   36 ++--
+ tests/wocky-test-sasl-auth.c    |   32 ++-
+ tests/wocky-test-sasl-handler.c |    6 +-
+ wocky/Makefile.am               |    4 +-
+ wocky/wocky-auth-registry.c     |  374 ++++++++++++++++++++++++++++++++++
+ wocky/wocky-auth-registry.h     |  122 +++++++++++
+ wocky/wocky-connector.c         |   39 ++++-
+ wocky/wocky-connector.h         |    3 +
+ wocky/wocky-sasl-auth.c         |  427 +++++++++++++++++++--------------------
+ wocky/wocky-sasl-auth.h         |   31 +---
+ wocky/wocky-sasl-digest-md5.c   |   71 +++----
+ wocky/wocky-sasl-handler.c      |   12 +-
+ wocky/wocky-sasl-handler.h      |   12 +-
+ wocky/wocky-sasl-plain.c        |   17 +-
+ 15 files changed, 847 insertions(+), 345 deletions(-)
+
+commit 221d2879fea6439429bd7d7384934eee49c9ca1b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 13:11:35 2010 +0100
+
+    muc: rearrange handle_message
+    
+    I think this makes it easier to follow.
+
+ wocky/wocky-muc.c |   45 ++++++++++++++++++---------------------------
+ 1 files changed, 18 insertions(+), 27 deletions(-)
+
+commit 9be6e6952c635788ff0cf5ac3ec0da8da05195dc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 13:06:53 2010 +0100
+
+    muc: extract determining chat state
+
+ wocky/wocky-muc.c |   20 ++++++++++++++------
+ 1 files changed, 14 insertions(+), 6 deletions(-)
+
+commit bc27c8c96c92b736fe649490cc4894b9685d5c4d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 13:05:05 2010 +0100
+
+    muc: extract looking up message sender
+
+ wocky/wocky-muc.c |   90 ++++++++++++++++++++++++++++++++--------------------
+ 1 files changed, 55 insertions(+), 35 deletions(-)
+
+commit c4ff3d43f31db2328cb42f312e16192ed1e5e47a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 12:56:11 2010 +0100
+
+    muc: don't drop backlog messages from former members
+    
+    If the message is from a full MUC JID, then we certainly do care about
+    it, even if the sender isn't currently in the MUC, because it might be
+    scrollback from someone no longer in the room.
+    
+    Fixes https://bugs.freedesktop.org/show_bug.cgi?id=27913
+
+ wocky/wocky-muc.c |   52 ++++++++++++++++++++++++++++------------------------
+ 1 files changed, 28 insertions(+), 24 deletions(-)
+
+commit 47c13b5d97b470cb236c37e08641fcee94c22231
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 12:30:39 2010 +0100
+
+    muc: refactor determining message type
+
+ wocky/wocky-muc.c |   55 ++++++++++++++++++++++++++++++++--------------------
+ 1 files changed, 34 insertions(+), 21 deletions(-)
+
+commit 87daf7313d6da0d6c0f61ed87b1be7d00a0e0f2e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 12:24:40 2010 +0100
+
+    muc: refactor extracting timestamp from messages.
+
+ wocky/wocky-muc.c |   61 +++++++++++++++++++++++++++++++---------------------
+ 1 files changed, 36 insertions(+), 25 deletions(-)
+
+commit ac48945876299a55a41976c4321ab38be8e0b7ec
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 01:18:01 2010 +0100
+
+    muc: Remove Google message-without-type kludge.
+    
+    So, looking at gabble's gabble_message_util_parse_incoming_message(), we
+    see that offline messages from Google are assumed to have Telepathy type
+    Normal, which corresponds to XMPP's type='chat'. So this kludge is
+    wrong.
+    
+    In any case, Google's MUCs don't *have* scrollback!
+    
+    So let's just bin it.
+
+ wocky/wocky-muc.c |   10 ----------
+ 1 files changed, 0 insertions(+), 10 deletions(-)
+
+commit 6b6f09d97f91de66c11a4b6a7e28222e8dc911f6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 00:52:42 2010 +0100
+
+    muc: use GEnum to look up chat states
+
+ wocky/wocky-muc.c |   21 +++++----------------
+ 1 files changed, 5 insertions(+), 16 deletions(-)
+
+commit 2298c0b513a4a4f379ee42b65af16cb0bb275594
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 00:48:38 2010 +0100
+
+    node: add helper to get the first child for a ns
+
+ tests/wocky-xmpp-node-test.c |   35 +++++++++++++++++++++++++++++++++++
+ wocky/wocky-node.c           |   31 ++++++++++++++++++++++++++++---
+ wocky/wocky-node.h           |    2 ++
+ 3 files changed, 65 insertions(+), 3 deletions(-)
+
+commit 1c168790a9dbf9efcdb3272edcbaf0709af7dd2c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 13:18:22 2010 +0100
+
+    muc: don't leak new_jid when we change our nick
+    
+    REPLACE_STR() does not take ownership of its second argument.
+    
+    Also, I expanded another use of REPLACE_STR because it seems stupid to
+    diff the nicks twice in immediate succession.
+
+ wocky/wocky-muc.c |   13 ++++++++++---
+ 1 files changed, 10 insertions(+), 3 deletions(-)
+
+commit d7a27bd3da61dcd8b612359dbaf2636dc412a816
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 3 21:22:07 2010 +0100
+
+    muc: expunge 'gone' from the known chat states
+    
+        A client SHOULD ignore <gone/> notifications received from other
+        room occupants.
+    
+      — XEP-0045 §5.5 Use in Groupchat
+        <http://xmpp.org/extensions/xep-0085.html#bizrules-groupchat>
+    
+    As and when Wocky handles chat states for anything other than MUC we can
+    reinstate this and make MUC map Gone to None.
+
+ wocky/wocky-muc.c |    1 -
+ wocky/wocky-muc.h |    1 -
+ 2 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 3065a6329f44e078243e12f2718b7f8cc978bc7f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 3 20:59:50 2010 +0100
+
+    muc: don't fall through between properties in _set
+
+ wocky/wocky-muc.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 85a891fecb9cef18e1fd675543a9e9b5954772eb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 13:44:03 2010 +0100
+
+    Document deliberate fall-throughs.
+    
+    Coverity picked these up as possible errors; they're not, but they
+    should be marked as such.
+
+ wocky/wocky-connector.c |    4 ++++
+ wocky/wocky-openssl.c   |    6 ++++++
+ 2 files changed, 10 insertions(+), 0 deletions(-)
+
+commit d61e85d691a93d326d0fb1f17c1b558e87c7aa91
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 13:38:33 2010 +0100
+
+    openssl: die if we can't create BIOs
+    
+    As far as I can tell, failing to create these means OOM. So let's die
+    properly, rather than logging a debug message and then crashing later in
+    the function when we use them anyway.
+
+ wocky/wocky-openssl.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 8994f5092dd11aa12cfb9b1a536546219a8e94f6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 4 13:35:40 2010 +0100
+
+    connector: assert that connect_to_service_finish() isn't broken.
+    
+    Coverity was upset because we dereferenced 'error' just before checking
+    if it's NULL. I think it's right to be upset. But if
+    g_socket_client_connect_to_service_finish() returned NULL, either it set
+    'error', or it's buggy, or we're buggy and called it inappropriately. So
+    let's blow up if it's NULL in this case.
+
+ wocky/wocky-connector.c |   31 +++++++++++++++++--------------
+ 1 files changed, 17 insertions(+), 14 deletions(-)
+
+commit a9bc4ad499ae27ec354740f82a25386ec8614a01
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 3 18:23:05 2010 +0100
+
+    connector: Clean up GSimpleAsyncResult usage
+    
+    • Don't use the op_res at all. If the operation failed, we always set an
+      error.
+    • Use _async functions as source tags, not _finish.
+    • Remove weird spooky action at a distance to change the tag based on
+      priv->reg_op.
+    • Actually use a different source tag for _connect_async and
+      _register_async.
+
+ wocky/wocky-connector.c |  127 +++++++++++++++++++++++++----------------------
+ 1 files changed, 67 insertions(+), 60 deletions(-)
+
+commit 49eb9c93f363ab9a5f97445b977f7bdf758b48b3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 3 18:15:28 2010 +0100
+
+    Cry a little if CRYPTO_malloc_init() fails
+
+ wocky/wocky-openssl.c |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+commit ccbddb5deb7b2eccf04c690c9266b4c0e4970e84
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 3 18:10:42 2010 +0100
+
+    Check return value of SSL_CTX_set_default_verify_paths()
+
+ wocky/wocky-openssl.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 98635423ec684d981a39f3dd852db8949099841b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon May 3 18:01:45 2010 +0100
+
+    Sanity-check return of extract_stream_error
+
+ wocky/wocky-porter.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+commit a844c4c65ffdc2f860fbecf263caee3efd53b943
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 29 12:40:02 2010 +0100
+
+    Plug some memory and refcounting leaks
+
+ wocky/wocky-muc.c |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
+
+commit 202699fdeabe15bc230a75ce211eff0762baa603
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Apr 28 20:38:54 2010 +0100
+
+    Revert "Add a configure switch to install headers"
+    
+    This reverts commit 9148378692967fbcc8b75ce8822a2ab58b3dee66, which
+    didn't work because of broken Make dependencies that I can't figure out
+    right now.
+
+ configure.ac      |   10 ----
+ wocky/Makefile.am |  142 ++++++++++++++++++++++++----------------------------
+ 2 files changed, 66 insertions(+), 86 deletions(-)
+
+commit 9148378692967fbcc8b75ce8822a2ab58b3dee66
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Mar 22 15:37:29 2010 +0000
+
+    Add a configure switch to install headers
+    
+    Previously, Gabble hard-coded a list of Wocky headers to install if it
+    was built with --enable-plugin-api. This is fragile in the face of the
+    list of headers changing. With this patch, passing
+    --with-installed-headers=/path/to/headers to Wocky's configure will
+    cause `make install` to put headers there.
+    
+    I had to split BUILT_SOURCES and HANDWRITTEN_SOURCES into sources and
+    headers, and lowercase them because FOO_HEADERS is magic in Automake. I
+    took the liberty of sorting the lists while I was at it.
+    
+    This patch originally didn't work, and was made to work by Mike Ruprecht
+    <mike.ruprecht@collabora.co.uk>, but his fixes languished waiting for me
+    to review them for long enough that wocky/Makefile.am had changed so
+    much that the patch needed rewriting. Sorry. :(
+
+ configure.ac      |   10 ++++
+ wocky/Makefile.am |  142 ++++++++++++++++++++++++++++------------------------
+ 2 files changed, 86 insertions(+), 66 deletions(-)
+
 commit 6ecfe095bb7178adea752d8a30d3f4a125f8f10f
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Thu Apr 22 23:31:34 2010 +0100

@@ -35,9 +35,7 @@
 
 #include <extensions/extensions.h>
 
-#ifdef HAVE_UUID
-# include <uuid.h>
-#endif
+#include <uuid.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_JID
 
@@ -84,7 +82,6 @@ sha1_bin (const gchar *bytes,
 gchar *
 gabble_generate_id (void)
 {
-#ifdef HAVE_UUID
   /* generate random UUIDs */
   uuid_t uu;
   gchar *str;
@@ -93,15 +90,6 @@ gabble_generate_id (void)
   uuid_generate_random (uu);
   uuid_unparse_lower (uu, str);
   return str;
-#else
-  /* generate from the time, a counter, and a random integer */
-  static gulong last = 0;
-  GTimeVal tv;
-
-  g_get_current_time (&tv);
-  return g_strdup_printf ("%lx.%lx/%lx/%x", tv.tv_sec, tv.tv_usec,
-      last++, g_random_int ());
-#endif
 }
 
 static void
@@ -188,9 +176,6 @@ lm_message_node_get_child_with_namespace (LmMessageNode *node,
 {
   LmMessageNode *found;
   NodeIter i;
-
-  NODE_DEBUG (node, name);
-  NODE_DEBUG (node, ns);
 
   found = wocky_node_get_child_ns (node, name, ns);
   if (found != NULL)
@@ -1033,6 +1018,7 @@ jingle_pick_resource_or_bare_jid (GabblePresence *presence,
   if (gabble_presence_has_resources (presence))
     {
       ret = gabble_presence_pick_resource_by_caps (presence,
+          PREFER_PHONES,
           gabble_capability_set_predicate_at_least, caps);
 
       if (resource != NULL)
@@ -1304,4 +1290,19 @@ gabble_call_candidates_to_array (GList *candidates)
   }
 
   return arr;
+}
+
+gchar *
+gabble_peer_to_jid (GabbleConnection *conn,
+    TpHandle peer,
+    const gchar *resource)
+{
+  TpHandleRepoIface *repo = tp_base_connection_get_handles (
+    TP_BASE_CONNECTION (conn), TP_HANDLE_TYPE_CONTACT);
+  const gchar *target = tp_handle_inspect (repo, peer);
+
+  if (resource == NULL)
+    return g_strdup (target);
+
+  return g_strdup_printf ("%s/%s", target, resource);
 }

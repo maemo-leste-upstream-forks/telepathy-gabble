@@ -1,3 +1,1097 @@
+commit aa4cf58ceddc02ad54e74fe584756286725c1dac
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 19:31:19 +0100
+
+    Version 0.9.12
+    
+    Can I go home now?
+
+commit 1bf8e4d580fb64b7809160f4d48d9b74c3664c8d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 21:02:25 +0100
+
+    Run `make uninstall` and `make install` in wocky/wocky
+    
+    We shouldn't `make install` in Wocky as a whole, because that installs
+    API documentation for Wocky. (Actually we do probably want to do this,
+    but only if --enable-plugin-api, which I CBA to do right now.)
+    
+    But we should also `make uninstall` the headers we install.
+
+commit 2ef7ff9fc0368c23ff0177d88c46ec3da54bd113
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 20:45:53 +0100
+
+    Also add jingle/__init__.py to EXTRA_DIST
+    
+    Everyone to the pub.
+
+commit 71c67830b00690f7f116fcbaf6a142accf4c5f51
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 20:43:56 +0100
+
+    Squash a warning that occurs with --disable-debug.
+
+commit 74a597b1d83a01fb3c9daeb313d23482c4531180
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 20:38:19 +0100
+
+    Add callutils to EXTRA_DIST.
+
+commit 8ff4bfc157bcc3cf9f79a6f67cd8a91648317a32
+Merge: 5ad1526 86ae157
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 19:44:02 +0100
+
+    Merge branch 'update-wocky-headers-alternate'
+    
+    Conflicts:
+    	lib/ext/wocky
+
+commit 86ae15793b543ed7100253636cc9ff4580195729
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 19:39:40 +0100
+
+    Remove now-obsolete generate-wockyinclude_HEADERS script
+    
+    Much as I loved this script, the time has come for it to be laid to
+    rest.
+
+commit d93d01297372b14ad77f8f26042ecba458c8e382
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-22 16:53:10 +0000
+
+    Delegate installing headers to Wocky.
+
+commit 5ad1526aa8bf31276a7a043176d3e00da2551bc0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 19:06:47 +0100
+
+    Update Wocky snapshot to fix broken MUC scrollback
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=27913
+
+commit 9c63a1f0506dbe349892225c05ab828aa34ca71e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-30 16:11:38 +0100
+
+    Add a (failing) test case for fd.o#27913
+
+commit 3709b5f7ac954dac654093f55a4da8bf668cc25f
+Merge: 2025121 92abf7a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 18:18:55 +0100
+
+    Merge remote branch 'smcv/error-macros'
+    
+    Re-fixes: https://bugs.freedesktop.org/show_bug.cgi?id=27889
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 2025121b8946f3955f6e6f37fb60dedf84148a78
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 14:40:00 +0100
+
+    Fix coding style error in ServerSaslChannel
+    
+    There was no space between the (gchar *) cast and i->data.
+    
+    But the cast is unnecessary anyway, as is the cast away from const
+    GSList * to GSList * if we just change the type of 'i'.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 35e35a41083500cc507c7e483e8e762e14ccf0a4
+Merge: dc0775c 3a77352
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 14:31:33 +0100
+
+    Merge branch 'prefer-phones'
+    
+    Fixes https://bugs.freedesktop.org/show_bug.cgi?id=28265
+    
+    Reviewed-by: Danielle Madeley <danielle.madeley@collabora.co.uk>
+
+commit 3a7735269092c7cfec49ec04756dbe5fb58512a2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 13:21:08 +0100
+
+    Replace silly #defines with a DevicePreference enum
+
+commit 5eba542563718ce12338da9b272b2705f344419e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 13:10:58 +0100
+
+    Make is_a_phone() clearer.
+    
+    This fixes the indentation by destroying it. :)
+
+commit dc0775c2fca320e038231ed5f9573c892077b753
+Merge: 55a6aab 013a13e
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-06-02 22:49:25 -0700
+
+    Merge branch 'sasl-once-again'
+
+commit 013a13e94952656d7090eedbb02cfe0108ec7395
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-28 10:54:35 -0700
+
+    Add a NULL check for GAsyncResult in dbus methods, an additional sanity check.
+
+commit e6751d830101f44c68ca211e196aaa755315f6e7
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-25 12:27:15 -0700
+
+    Remove pointer address from sasl channel obj patch.
+
+commit 9f89024ffdd815d69e06f1abf7463ffb63f05e1d
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-25 12:21:22 -0700
+
+    Remove redundant NULL check. Update error message when JID is not extracted.
+
+commit 0cff08c31578812b93dd86660173ade1b7b2256f
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-25 12:21:05 -0700
+
+    Use Secure channel property.
+
+commit 89d712c9589b50f8b2925b0cdaa683b551823e53
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-25 11:44:59 -0700
+
+    Updated SASL spec.
+
+commit c8cab0f698b0754890e968bcfbd861ff0369a415
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-25 11:37:53 -0700
+
+    Robustified method calls in channel to gracefully fail when used incorrectly.
+
+commit 4a9fe7782ebc4a139f04f1931373ea82c19b11c7
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-25 11:08:20 -0700
+
+    Fixed missing space between arguments.
+
+commit c7308aee0bc29e74c2a37baa8aba6e31c8706268
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-25 11:07:21 -0700
+
+    Use constructed instead of constructor.
+
+commit cfcee3245dbbf61b64cf9a6b5cc812d4ae3f5ba7
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-25 11:02:03 -0700
+
+    Remove unused property arrays.
+
+commit 8cd70c1e9eb776851e9a7c867abe847fc73da26b
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-25 11:01:43 -0700
+
+    Remove irrelevant comment.
+
+commit b8d3fc8bb51a1993ff6500c5cd1f29b374db45d8
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-24 10:16:16 -0700
+
+    Start SASL channel if username or password are NULL.
+
+commit c5ed79967aeed34caf53c4aca966bf76c1689c6c
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-24 10:13:31 -0700
+
+    Assure Connection object paths are unique when no username is given upfront.
+
+commit 500dc817c296ed16f3d766e7dd7545c88635471d
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-24 07:45:07 -0700
+
+    Made 'account' param not require username.
+    Added no account test.
+
+commit 6a35bf8f268b1edbd8e87d9c97c8a029792afaa1
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2010-05-24 15:36:25 +1000
+
+    Implement GetInterfaces for SASL channels
+
+commit 31b3319f5789c0a2065ad73d467ab77c4e2db1e9
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-22 12:12:18 -0700
+
+    Added SASL channel for jabber auth test.
+
+commit d40b14e8af3bd308e1c5673cfc0698517488132d
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-22 10:52:25 -0700
+
+    Removed new dbus errors and made better use of existing ones.
+
+commit fbefcdfee837ac8f489fbacefb3da4033c38360f
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-22 09:53:43 -0700
+
+    Updated complex tests.
+
+commit ed9530f00a5b3f978163250f897f787235f8aebd
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-22 09:55:55 -0700
+
+    raise error when selecting unavailable mechanism.
+
+commit 60e3bf2ac7da068477feffaa47a54a97e481576c
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-22 09:53:10 -0700
+
+    Make available_mechanisms a gptrarray
+
+commit f91397b8f17c464f7bcca72ca8430e95ca34e99b
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-22 09:04:46 -0700
+
+    Added SASL tests.
+
+commit 689eea8705dc3050740b024403d383e02b347ac8
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-22 09:01:15 -0700
+
+    Added server SASL channel and auth manager.
+
+commit bb23e7068b2f60478f715b4b6b3b6d88c8054766
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-05-22 08:59:16 -0700
+
+    Added new SASL API to extensions.
+
+commit f50bd8b3c21e19229d6e970ecdb670149ffdc7cd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-26 15:53:20 +0100
+
+    Prefer phones when picking resource for Jingle calls
+
+commit 222cb6762675154128ac3bf94e8ff82cc501a16d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-26 15:51:38 +0100
+
+    Note which resources claim to be phones.
+    
+    This uses the existing quirk stuff rather than adding identity storage
+    because we don't need to know anything else about contacts' clients'
+    identities, and this is minimally invasive.
+
+commit efabe555d40878e6797dddcf489d4caaa5b741cc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-28 16:56:14 +0100
+
+    CapsCache: store entire disco reply in caps cache.
+    
+    Previously we only stored the list of feature URIs included in the
+    disco reply for a particular hash. This isn't enough: we also make
+    decisions based on the <identity/> elements in the reply. For instance,
+    if we try to start an ad-hoc MUC, if one or more contact is using the
+    GMail client we use Google's PMUC server rather than the user's default
+    conference server. This information wasn't stored in the caps cache, so
+    was lost between sessions.
+    
+    So, let's just store the entire <query/> node in the database.
+    
+    This entailed a database schema migration. It's not much of a migration,
+    as such: if the database uses the old schema, it's just deleted.
+    
+    In the process of arranging for obsolete databases to be deleted, I also
+    fixed a bunch of cases where broken databases wouldn't be removed. The
+    previous code tried to delete the database file and try again if
+    sqlite3_open() failed. This didn't catch:
+    
+     • corrupt databases, which only trigger failures when you run a query;
+     • read-only databases, which only trigger failures when you run a query
+       which modifies the database.
+    
+    So this patch rearranges matters to try writing to the database before
+    declaring it okay.
+
+commit 44c436d0650825aa445e8777c97b4cc71160d9da
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-02 20:02:09 +0100
+
+    CapsCache: warn on SQL programming errors
+    
+    prepare or bind_* failing indicate programming errors (unparseable SQL,
+    incorrect index, etc.), so I think we should warn rather than just
+    DEBUG()ing.
+    
+    (Mozilla's policy is to assert() when these fail, FWIW.)
+
+commit 3983fa96ee55ddfb8933f8b25771dcb040107208
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-28 16:57:59 +0100
+
+    CapsCache: be more verbose when _prepare() fails
+
+commit 987298e11183d6a330debe096a270c3b99a20828
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-28 16:55:55 +0100
+
+    CapsCache: generalize fetching one uint from DB
+
+commit f569d53be9a3d378e1916ae2f0b932b9d7880f32
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-28 15:58:18 +0100
+
+    CapsCache: Remove unused GET_PRIVATE() macro
+
+commit bdfcd0dbff34e46b96c3f8df84f1778d2a7a963a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-28 15:52:08 +0100
+
+    CapsCache: fix "couldn't open DB" path
+    
+    • unlink() returns 0 on success;
+    • ret ≠ errno;
+    • we shouldn't try to call methods on a NULL db.
+
+commit 6b0893fa6df8fb2e1a6e8f6c8dc5e6da586b82ab
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-28 15:50:55 +0100
+
+    CapsCache: use _constructed not _constructor()
+
+commit 55a6aab942714de24582fc5ec0dec90c8af931e4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-05-28 13:34:20 +0200
+
+    Update Wocky
+    
+    Contain a fix discaring invalid PEP notification messages.
+
+commit 3be0d95f2f9176b6dbdecc4bb1417e0a70a42fc1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-28 11:48:07 +0100
+
+    test leaving the muji call by closing the channel
+
+commit 45b5d650f86f570d32c3f24ffa4c1cab44dc9460
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-28 11:46:12 +0100
+
+    When closing make sure to send an updated muc presence
+
+commit 669ea97ce2bc3bfa31b04d65e7e283d352d1317e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-28 11:45:54 +0100
+
+    Add virtual function called on close of the CallChannel
+
+commit e5b4c03859208cdfe299ed4769720e5c9b9eb313
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-27 12:14:56 +0100
+
+    Test members leaving the room as opposed to leaving just the call
+
+commit a37f939adde8d4ce48b9df62237e9c3461dc675d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-27 12:14:32 +0100
+
+    CallMucChannel: Handle participants leaving the muc correctly
+    
+    When participants leave the MUC we need to nicely remove them from the
+    call. Not just when we get a presence without muji information.
+
+commit 6e45672dd259e30ef060502816a97c25080924c8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-26 17:09:47 +0100
+
+    Depend on tp-glib 0.11.3 for the ContactInfo interface
+
+commit b185c82b6987d9f769450f3a890a4a8e7b613bf4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-05-26 10:47:13 +0100
+
+    Update with-session-bus.sh from telepathy-glib, fixing a bashism
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=28258
+
+commit cb74ad40f047a12bee021701bf36db4ed8a5d2c9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-25 21:46:57 +0100
+
+    Fix up Wocky headers
+
+commit 1d212b6bb1b30d06139c9a11ad52e480638d5e26
+Merge: 4aeb048 bab4e77
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-25 16:47:11 +0100
+
+    Merge branch 'muc-calls-master'
+
+commit bab4e779f5fc9753915c060e9d7b983cd68694bc
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-25 16:42:45 +0100
+
+    Slightly better argument name
+
+commit 4aeb048a963a3f411fb041b4abbb016b72b6a536
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-05-17 16:12:24 +0200
+
+    GabbleConnection: use WockyPing for keepalives
+
+commit fb0a1979f496379c17ee6850ba48ae0796a733f6
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-05-18 10:11:19 +0200
+
+    upgrade to wocky commit 57e7d3a
+
+commit c89f607d070f22edcc52c1167f9ce0f8f0ddb1a0
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2010-05-24 12:23:29 +1000
+
+    Change link -> l so as not to shadow the global function link()
+
+commit d4d42c659e47f00a1955bf8b636abc8bb4dda040
+Merge: 5aa9775 0d87a27
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-21 19:46:31 +0100
+
+    Merge branch 'muc-calls'
+    
+    Conflicts:
+    	src/muc-channel.c
+    	tests/twisted/jingle/call-codecoffer.py
+
+commit 0d87a27aae1dcd11d21eb924988d6eed4c34e7c0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-21 18:51:47 +0100
+
+    Use the passed call variable everywhere
+
+commit 8a0d786635609b70754f8f77ee11be05e7388fd6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-21 18:33:57 +0100
+
+    Free object_path_prefix
+
+commit 9662da4b71e0d6b875ec38f64ce8a6948b9a959b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-21 18:25:36 +0100
+
+    Emit StreamRemoved when streams are remoed
+
+commit ada0731d2ba17cfd7f1e0f61ee3e235e37f1146b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-21 18:23:59 +0100
+
+    Remove all contents when shutting down a member
+
+commit 2c73308951662d9afbd2f46522161cc4b6bb7b53
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-21 18:23:28 +0100
+
+    Add API to remove a members content
+
+commit 98c25d90fdaacc1300c953a53960841901338bc8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-21 18:20:03 +0100
+
+    Break lines
+
+commit 5aa9775bda9dc55eaed0f97caffcbcdb8837fbd7
+Merge: b509ee9 9cc8f6f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-21 12:16:20 +0100
+
+    Merge branch 'presence-cache-unleak'
+
+commit b509ee916d847df6950f58aaf5a9da6ffc3f7ad3
+Merge: def6783 158cdab
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-05-18 11:36:45 -0300
+
+    Merge branch 'contact-info-attr'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 158cdaba0e8c25f1698e81054ad08dd84c031718
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-04-30 14:33:26 -0300
+
+    Added test to ContactInfo /info contact-attribute.
+
+commit 8d284e457d299eb27332661a27e0cb87ef916b9d
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-04-30 14:15:24 -0300
+
+    conn-contact-info: Added ContactInfo /info contact-attribute support.
+
+commit def67839e03f3ca66833dfff0c1519940c7e6dba
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-05-14 12:23:47 +0200
+
+    clarified gabble_vcard_manager_request assumptions about the vCard not being cached already
+
+commit 64d4c0a65272c8362b3dd6108f4bb620a87d8e68
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-05-14 12:17:32 +0200
+
+    improved vcard/refresh-contact-info twisted test to ensure re-requesting works
+
+commit 9a1a71433f757296ebe1cfa11f412c92d95e49ee
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-05-14 11:15:44 +0200
+
+    gabble_connection_refresh_contact_info: invalidate cache before requesting refresh
+
+commit 9cc8f6f2bf545773ffbfdf9f43db3c72b0b9802a
+Merge: c51b9ae b2bf6f2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-12 18:52:33 +0100
+
+    Merge branch 'caps-cache-0.9' into presence-cache-unleak
+
+commit c51b9aebf79b63b50f194bb024572b7d0d8c5729
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-12 18:52:24 +0100
+
+    presence-cache: don't leak disco waiter table keys
+
+commit 8c6d9cc04c4a36184b300728803711e1ed42236f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-12 15:15:03 +0100
+
+    Remove debug spam from _get_child_with_namespace
+    
+    Reviewed-by: Senko Rašić <senko.rasic@collabora.co.uk>
+
+commit 907ce2584a651d524b730ea05823d91f33e96d4c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-06 19:17:35 +0100
+
+    Also turn on debug-blocks when valgrinding
+
+commit ab0989e9bf2da328aeeb36e1a29ac78147e9d899
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-06 19:17:18 +0100
+
+    Add basic support for removing members
+
+commit d92e3c8c691ec7a5e4f4d57d69c5035df87fb442
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-06 19:15:40 +0100
+
+    Add a test repeatedly requesting Call channels
+
+commit b6afdc7eaae99b6fe2312ec96232b255cfef67f2
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-06 18:23:04 +0100
+
+    Always do a double disconnect to test the connection really exited
+
+commit 9dd25fd84034952eee14d16a2b9997ddec32e677
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-06 18:19:13 +0100
+
+    Support cancelling a muc call channel creation
+
+commit b61312fb4280d377408068bd1baf9bf67e16ca28
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-06 18:17:14 +0100
+
+    Pass a prefix instead of the full object path when creating a new channel
+
+commit dd99b3253dc9e849024a6ca3bcfa80d6dcdff472
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-06 18:12:12 +0100
+
+    Keep track of active vs. ended call channels
+
+commit 6a1acd2cd7066ca9006177c3558680b1a5faa8cf
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-06 18:09:47 +0100
+
+    Don't let the async operation try to remember the request token
+
+commit 6b06a01a8c9f49c25d872c0215ac1b75fe1528ed
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-06 18:08:19 +0100
+
+    Move utility functions into util files
+
+commit a0b50e8c5fc381d1543da8d21100733d2d25a81d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-06 12:54:58 +0100
+
+    No need to test for gabble crashes, that's automagically done on Disconnect
+
+commit c808c014834cf2d1a318e4bd6d92a68ebf1aa18a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-05 18:54:17 +0100
+
+    Don't use the user-data as a callback
+
+commit fc49f692338ae7577836cabb9b41c67c974fe53c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-04 18:25:27 +0100
+
+    Properly cleanup call requests when closing the underlying muc
+
+commit f2932c56ee4a74c22d163a573b4ad8d361b83e86
+Merge: 89f1540 d6c133b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-04 18:11:37 +0100
+
+    Merge branch 'coverity'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit ab3a2514c06c441f140eaf1f9605c4e8e2126dca
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-05-04 17:26:05 +0100
+
+    A muc channel made as part of a call isn't requested
+
+commit d6c133b641449f7dc8a980a3285d49dbd9163c20
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-04 15:58:25 +0100
+
+    Sanity-check conversion from gssize to socklen_t.
+    
+    Coverity got upset that we were passing a signed variable as the third
+    argument of connect(), which is socklen_t, which is unsigned.
+    
+    g_socket_address_get_native_size() only fails if gaddr is invalid, or if
+    the actual implementations (UnixSocketAddress/InetSocketAddress) are
+    internally inconsistent.
+    
+    And sockaddr_storage is defined to be big enough to hold every supported
+    protocol-specific address structure, so...
+
+commit b9cb2cb9bdf24955aa10dc31767e664b6b90aa95
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-03 21:18:36 +0100
+
+    muc: Expunge reference to incoming chat state 'gone'.
+    
+        A client SHOULD ignore <gone/> notifications received from other room
+        occupants.
+    
+      — XEP-0045 §5.5 Use in Groupchat
+        <http://xmpp.org/extensions/xep-0085.html#bizrules-groupchat>
+    
+    I intend to expunge this state from WockyMuc accordingly.
+
+commit be0add7cb9973a196ed0e2df41396058501cc1a9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-03 21:15:38 +0100
+
+    Don't leak sidecars' paths.
+
+commit 69f8569ab245db009c27be9e276e80d433e711a5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-03 21:05:34 +0100
+
+    mail-notif: handle iq errors when querying unread mails
+    
+    The previous code checked if sending the IQ failed, but didn't check if
+    the reply it got was actually a response rather than an error. This
+    fixes that.
+    
+    Also, checking error != NULL rather than reply == NULL tricked Coverity
+    into thinking reply might be NULL in the second block.
+
+commit c8f9908383f39ff868543830f026c326f741bfd2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-03 20:02:48 +0100
+
+    Don't crash on malformed SI file transfer offers.
+    
+    The previous code would log an error and close the bytestream... and
+    then carry on.
+    
+    Happy May Day! Forgive me my macros.
+
+commit 9ecb9d3cb06dab4607c7b3542cb0df218b1ab6ef
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-03 19:30:13 +0100
+
+    create_sidecar_cb: fix/clarify error paths
+    
+    • Coverity didn't realise that if
+      gabble_plugin_loader_create_sidecar_finish() returned NULL, 'error'
+      would be non-NULL. (Strictly speaking, it might not be, if the former
+      is buggy or we passed it an invalid result.) So make this assumption
+      explicit.
+    • If error == NULL, then calling g_clear_error (&error) will call
+      g_error_free (NULL) which criticals.
+
+commit 9b4c1b8828c0ff250d62f735de39b469ebcea89a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-03 19:24:08 +0100
+
+    Search: Correctly handle replies lacking <x/>
+
+commit 9cda4a945425dc799c433ea51a6c655287650f80
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-03 19:09:01 +0100
+
+    Tidy up search tests a bit
+
+commit 89f15409121bad8adfddde28ce40c7418f33a22c
+Merge: 84a6dbd 28a63ce
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-03 13:52:44 +0100
+
+    Merge branch 'basic'
+    
+    Closes https://bugs.freedesktop.org/show_bug.cgi?id=27865.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 28a63ce929a6da11e75c63bd2efb25b1b7c49556
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-30 21:04:34 +0100
+
+    im-channel: Consistently avoid using self->base
+
+commit 84a6dbd0b51d1ade3aee33e3c6f06ddff865f47c
+Merge: b615f51 6636d70
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-30 10:50:28 -0700
+
+    Merge branch 'presence-refactor' into newmaster. Fixes bfo#27779.
+
+commit 92abf7a0932ff0f2c153d59ed660eba8973acc0d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-04-30 16:38:56 +0100
+
+    Always build gabble_log etc., so --disable-debug won't disable ERROR()
+    
+    Also make it obvious to the compiler that ERROR() never returns.
+
+commit b615f514e6bba771a9b9ce166b410ef173d1ba6b
+Merge: feb19bf c0ae064
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-04-29 16:49:10 +0100
+
+    Merge branch 'more-log-levels'
+
+commit c0ae064ac4b5d93e44b24b60cbfb61ae136cfef9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-04-29 15:01:35 +0100
+
+    debug: make sure the other macros are defined when debug is disabled
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 2cfbc1bceb63f6352491126e969b7a6d88017470
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-04-29 14:59:27 +0100
+
+    debug: rename gabble_debug to gabble_log
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit a24beafb1bd7f7539296b7a109a355092a3729f2
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-04-29 13:44:31 +0100
+
+    debug: add more log levels
+    
+    Fixes fd.o#27889
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit feb19bff02e87a686d8e1658308fdab4026d06f4
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-04-01 15:02:46 -0400
+
+    Fix bug 27167 about RequestInboxURL empty string
+    
+    Delay RequestInboxURL() calls until the mail data has been received.
+
+commit 0753964f4e3170e92675014c08ac81b90d9e7e05
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-04-01 15:14:29 -0400
+
+    Removed broken dirty check before sending signal
+    
+    The dirty check was broken because the mails_removed array is NULL
+    terminated so it's size is always bigger then one. Fixing this bug would
+    bring another one since when 30 emails is reached the count may changed
+    while the list of e-mails stays the same. For sake of simplicity, we simply
+    remove the check.
+
+commit 9fa45411c2cd8d8c01ce34b2c52a8e6d14b80611
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-03-31 16:36:49 -0400
+
+    Merge MailNotification members into private structure
+    
+    This will allow changing conn-mail-notification.c without having to edit
+    connection.c all the time.
+
+commit a2b39855ada2350e67d08eb2fb1601d3f328b7f9
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-29 14:39:29 +0100
+
+    use NULL, not 0...
+
+commit 96d7512fb7870bb34adc837190d80e61b85c6c35
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-29 14:39:18 +0100
+
+    spellchecking
+
+commit 37c2441fd343ea56d6d2d15e86faaa47edb1898f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-29 14:30:14 +0100
+
+    Call channel is assume to keep a ref to the internal session
+
+commit bebc365282d1e8ca7a959631009bfd9ba55fc687
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-29 14:09:47 +0100
+
+    Use JINGLE_RTP as the namespace for the descriptions
+
+commit c4e9e53f2ec3707699e63053f2633886506d6105
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-29 14:06:39 +0100
+
+    Fix comments
+
+commit 50167b31e81a2927d02f6bbc051e872c476776e0
+Merge: d482f8b 540e83d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-29 12:39:20 +0100
+
+    Merge branch 'dont-unblock-on-remove-0.9'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 540e83d1d2bde7cbbbe4106faa86ae958209a50b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-29 12:31:25 +0100
+
+    Add a test for unblocking, then removing, a contact.
+    
+    Unblocking is actually not tested anywhere, so this serves as a simple
+    smoke-test for that, as well as testing that unblock followed by
+    remove-from-stored works when the latter is queued.
+
+commit c2719ed4c81fc2a80cdc105581cb478a91efb521
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-29 10:03:24 +0100
+
+    Update roster* copyright headers
+
+commit f334fd0e29b6ee59f4d6e60180da268d9836da6a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-28 19:28:22 +0100
+
+    Don't unblock contacts if they're removed from stored.
+    
+    We want to ensure that clients which don't understand the 'deny' list
+    can remove contacts from other lists without accidentally unblocking
+    them. The only problematic case is 'stored': currently, the XMPP-level
+    response to removing someone from 'stored' is sending a roster update
+    removing them from the roster entirely. Since their blocked-ness is
+    stored on the roster, ...
+    
+    So instead, when we would like to remove a blocked contact from the
+    roster, we instead cancel inbound and/or outbound subscriptions. This
+    has the effect of the server changing their subscription to 'none', at
+    which point they disappear from 'stored' (because on Google Talk we
+    hide subscription='none', ask≠'subscribe' contacts from stored).
+    
+    There are two code paths for editing the roster, depending on whether we
+    have an edit in flight or not. The latter case is reasonably
+    straightforward. For the former case, we can be applying multiple edits
+    at once, so this patch moves the modification of the Google Roster state
+    to before the modification of the subscription state, to ensure that
+    queued modifications to the contact's blocked-ness have been processed
+    before we consider whether to handle removal specially.
+    
+    Fixes fd.o#20597 (Blocked contacts get removed if they are removed from
+    stored)
+
+commit d33d9d9ee49ddbc19f4f09aae237588153d370b9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-28 18:51:56 +0100
+
+    Add a trivial smoke-test for 'deny'
+
+commit 6dfe889cb762646274c6467854d2ae1545504c92
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-28 18:42:58 +0100
+
+    Break up the Google roster test a bit.
+
+commit 30053c8ddfaeefa29c1f845a96f9ae2f6e1726ea
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-28 17:52:50 +0100
+
+    Move some [un]{subscribe,publish} logic to Roster
+    
+    This matches the functions to add and remove contacts from the roster
+    entirely, and will help avoid code duplication shortly...
+
+commit eebcbb66648e1ae6fc47289dabe0826ea33485c4
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-28 20:00:28 +0100
+
+    Fix various memory and ref leaks
+
+commit ad184fcb768a7b114b5dcc67272ca141dbf70fdc
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-28 18:00:44 +0100
+
+    Add the ability to accept the codec offer without waiting for CodecsChanges
+
+commit 5885fea4a596f5c44cd01309d44ab9b84a038cab
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-28 17:59:24 +0100
+
+    Log when codec offers are accepted and rejected
+
+commit 1d52a6af145f89e35459f88f30a1fd4548f67705
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-28 17:29:20 +0100
+
+    Properly setup a new content added by the user
+    
+    We should setup a new content that a user adds just like all other contents.
+    This ensures we don't trigger an update when adding a content, only when
+    the codecs are ready
+
+commit 42c4ca0e96684f5a19b30e3e673d0435644834c8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-28 17:28:44 +0100
+
+    Make it slightly clearer that the debug ismessage is after changing the state
+
+commit 783117ff4c3482017a43f2bfb5fe1cd0f864a70f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-28 17:18:58 +0100
+
+    Let the muc channel detect when its call is gone
+
+commit 8d37a132e89163e1cb3039707ebc8bdefa0a620d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-28 17:18:11 +0100
+
+    de-initialize the contents when closing the channel
+
+commit 8685e7f1577de05e5bbd4d15133af5c587d67782
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-28 17:14:17 +0100
+
+    Add API to shut down members
+
+commit 6f3deb0f891ad4dcdccc770b1f6e091c8a5f7cf8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-27 18:11:58 +0100
+
+    Use instance address to uniquify roomlist paths.
+    
+    This FIXME bothers me whenever I read FIXME.out. :)
+
+commit b577a3cfecac5ea527dedcad252a43ec4581d301
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-27 18:09:14 +0100
+
+    Port RoomlistChannel to BaseChannel
+
+commit 8f45b3017dfd86ebffbb8cc9ae584cfc91930b18
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-27 17:22:55 +0100
+
+    MucChannel: Use self->priv properly
+    
+    Simon had previously ensured that self->priv was at least initialized in
+    _init(), but that code was ... lost. And everything else repeatedly
+    called G_TYPE_INSTANCE_GET_PRIVATE() anyway.
+
+commit 851d6d648a65a3f2227b908420c29653837ae9e4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-27 13:56:45 +0100
+
+    Port MucChannel onto BaseChannel
+
+commit 7a510f2102764ad4be7825712fa3456c0c1d0b6c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-28 10:00:51 +0100
+
+    Make BaseChannel:requested writeable, in theory.
+    
+    Most channels implement Requested as (initiator == conn->self_handle),
+    so that's how BaseChannel implements it. But if someone wants to
+    override it, then it has to be writeable. So: we make it writeable on
+    the base class, and make the default set implementation do nothing
+    except raise a warning if it's set to TRUE. (We can't warn if it's ever
+    set, because CONSTRUCT_ONLY properties are helpfully set to their
+    default values by GObject.)
+
+commit a502fd04037f685f4459fa9a1554effe2044f265
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-27 18:38:25 +0100
+
+    Don't crash if there isn't actually a session
+
+commit 1415b81a5d093c8b7a3733bbb805181cf0681415
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-27 17:53:59 +0100
+
+    Implement hanging up properly
+
+commit 0477008786f63041d951ddb0571a6f5641aa80bc
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-27 17:23:22 +0100
+
+    Assert that the CallState changes once our muji state is stable
+
+commit 227af162a3e979b646668c91fbfad9fabdc619c6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-27 17:13:31 +0100
+
+    Test remote client adding an outgoing video call
+
+commit d50de4404c8a34b2599f9f911fde9a150597f285
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-27 00:18:23 +0100
+
+    Port GabbleIMChannel to GabbleBaseChannel
+    
+    I love patches that delete code.
+
+commit 46dc1255ff66a987d0f589487bf7a2e9058e03f2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-27 00:17:31 +0100
+
+    Turn some BaseChannel properties into class properties
+
+commit d482f8bd39d2643a5a20467a04404f049bf91060
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-27 12:09:15 +0100
+
+    Fix, and run, conference test
+
+commit 4d0619ec292413b7dda64610fdabcac893bd1124
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   2009-12-22 14:39:23 +1100
+
+    Make libuuid a required dependency
+    
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 3337df84fe251688c4baac06e313ae03234a2a05
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-26 23:28:58 +0100
+
+    Bump nano version to 0.9.11.1
+
 commit c2ac9a3ce6bfc03bf758adc4d77b50c351088fab
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-04-26 18:39:54 +0100
@@ -38,6 +1132,90 @@ Date:   2010-04-22 17:12:14 +0100
     Oh, and added a couple more macros for implementing _finish()
     functions, and updated the wocky headers to install.
 
+commit b1b6a2fdcb565e9e3b966cf3614f6efbb0bea3b1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 16:51:04 +0100
+
+    Be nice and echo presences like we were a real muc
+
+commit 6ccf5c4b976f906173918ba05c2de1dd04248bbf
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 16:25:04 +0100
+
+    Test that gabble accepts the incoming jingle session
+
+commit 073b059340b664c832209afec49853ad340e8e03
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 16:23:49 +0100
+
+    Actually have the test speak valid muji
+
+commit 96d94b1628425c01b157495b4aa06ed33dfd3f60
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 16:23:29 +0100
+
+    Check for spurious muc presence updates
+
+commit c69f304f5d05c6718599ac79753ca5be11c7841f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 16:16:59 +0100
+
+    Escape content names when putting them into bus names
+
+commit 06469baa87a229d0bfa40f9bf6d5ee4d2c6a5f51
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 16:16:31 +0100
+
+    Make the user adding content in a call a virtual function
+
+commit 2a8bfd3eb85990f6abdf74797b8c3fd52751c273
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 16:14:47 +0100
+
+    Remove some debugging spew
+
+commit 41a4b68911f196ec5b9e751151ba0f46a74857f3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 16:14:16 +0100
+
+    Fix coding style
+
+commit 38878afb1683c6a6091576a3bd76eadc5867de28
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 16:13:49 +0100
+
+    Have the incoming call helper specify the audio/video content names
+
+commit dc575e2aee5c4387c5c8fb9130542557c65b43c0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 11:08:24 +0100
+
+    Test a remote party adding a video stream
+
+commit efe05041dfcc06e8b3c4366f6042bcac2bb20974
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 11:07:20 +0100
+
+    Have the remote jingle session come from the right jid
+
+commit 30cd3be963cb11c327091d10da3b08b97419e9d0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 11:01:55 +0100
+
+    Support adding of new contents by a remote party
+
+commit 4519bd6e6cba5f020f45b27fb55dbdd27488f9d3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 10:59:01 +0100
+
+    Make api to add a MemberContent to a JingleSession public
+
+commit a2efc21d51884b55f1deae97d4f39ca6f12cf2b5
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-23 10:58:20 +0100
+
+    Always emit ContentAdded when a content is added
+
 commit 4929db20f95a0be610a90363e304a7defcee6137
 Merge: 78ab4a0 c4ad10c
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -69,6 +1247,47 @@ Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-04-22 14:19:14 +0100
 
     Sync constants.py back from Haze, which added "CM"
+
+commit 6636d70b5f35a79faac53456d6b14cd5955eac34
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-21 11:44:26 -0700
+
+    Refactor:
+     connection.c:_gabble_connection_signal_own_presence() ->
+      conn-presence.c:conn_presence_signal_own_presence()
+     connection.c:gabble_connection_visible_to() ->
+      conn-presence.c:conn_presence_visible_to()
+
+commit 316c8c44a8dd4b0e68636143f597fa6ff817091c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-21 15:27:41 +0100
+
+    Forbid presences with muji untill we call Accept
+
+commit f5001bc5f03b31f4f42d694d5fae6a97c0aadca1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-21 15:27:13 +0100
+
+    Echo the necessary presence events from the muc
+
+commit 09de6a32012d93bdb842d0e9c9df2efaaaaa7000
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-21 15:25:25 +0100
+
+    Implement the basic muji protocol logic
+
+commit fbdca5fa4532174ad9896ea426816fbe791dd44f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-16 16:08:15 +0100
+
+    Port to the updated wocky API
+
+commit 2764616e8260d47dc63f5182ef968c1235bc3c81
+Merge: 34030a6 78ab4a0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-20 17:22:20 +0100
+
+    Merge branch 'master' into muc-calls
 
 commit 78ab4a0feee01b68bf38977b23011614417d0b38
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
@@ -249,6 +1468,12 @@ Date:   2010-04-13 12:17:52 +0100
 
     Correct a mis-shaped call to wocky_xmpp_stanza_build()
 
+commit 34030a6540b9ffc12764c22619603b5d67cc05bc
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-12 14:25:10 +0200
+
+    Don't build a presence we don't actually send
+
 commit c68c4fc192ba8bb5770ba4500e1c33a6d25f5c99
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-04-08 16:20:13 +0100
@@ -278,6 +1503,18 @@ Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-04-08 14:05:51 +0100
 
     Update Wocky for even more pubsub code!
+
+commit 0aad264133f941ea15778f5f915cb649c1a0399a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-06 18:44:56 +0100
+
+    Don't leak a jid string
+
+commit ada215c55fd249681b7d0a898e274a5e3e56980d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-06 18:44:41 +0100
+
+    fixed some typos
 
 commit 46aa8f519b90c40f5a1db84125417292b1fd8c23
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
@@ -356,6 +1593,203 @@ Date:   2010-04-06 13:38:25 +0100
     void *, which is not portable (the effect of incrementing a void pointer
     is undefined). This would fail -Wpointer-arith.
 
+commit 87621cd9b59941478bdafb2e7ee7efc439bbd825
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 15:59:43 +0100
+
+    remove odd space
+
+commit f4df5b3022bea0230c1579713949ad8bd9ce8833
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 15:58:18 +0100
+
+    Add some debugging if we don't understand the media types
+
+commit 6acfdad99ed85699ce28066150158a27079e6ebb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 15:57:24 +0100
+
+    Don't define vestigial functions
+
+commit 386e2a3b25097cd50ff8e75eaf2566239acb013f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 13:43:40 +0100
+
+    Improved inclusion of headers
+
+commit 3402f6e91ac069c228e92cdf14bb259000270c4f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 13:26:32 +0100
+
+    Fix typo and strange newline
+
+commit 88e87a1fe6e8d9326c1a2c2b894a97cea465ab2e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 13:25:52 +0100
+
+    Do correct refcounting for creator and target handles
+
+commit 4609a8d6dce55a526aaab7716d6550c92d4092be
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 12:56:30 +0100
+
+    flesh out the muc testing a lot more
+
+commit 9153bb91cf71f75e9c7f9a6084d8e624218492b1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 12:53:58 +0100
+
+    remove spurious newline from debug messages
+
+commit 3a3e025e3c6a02016acdad095943163723e83987
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 12:53:06 +0100
+
+    Simplify determining our local sending state a lot
+
+commit 22a60c232c4f6fbe3546b529105484ab5227bbee
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-05 12:51:45 +0100
+
+    On an outgoing non-accepted call our side should be pending-send
+
+commit 15b17825e6c0ad41a512b18cd6d0bfec5ed9768d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-02 19:57:38 +0100
+
+    Parse presence from other members
+
+commit 63fbb45bc149638ce35e61b608df637ab8f2c5d9
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-02 19:39:34 +0100
+
+    Sent our own codecs in presence updates
+
+commit 7151e7da270ebb804b32077454b0b9844f3f4b67
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-02 19:22:13 +0100
+
+    Prepare the various contents properly and add stub cbs for muc presence changes
+
+commit 09c4ee6f9fb7f74ef0d61f08ce4150a4dac25553
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-02 17:59:32 +0100
+
+    chain up to the parents constructor
+
+commit 35e1a82e8ba5051be06a3f44e29962986d69a308
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-02 17:45:52 +0100
+
+    Open all sessions when the call channel is accepted
+
+commit ba98d7f0fb5796ba31b770ee214a14a6fd610957
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-02 17:36:38 +0100
+
+    On incoming jingle sessions check if they belong to a muc call
+
+commit 3308ebf689138a4a7fb0f8aeeacaa1af0747b4ce
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-02 17:22:10 +0100
+
+    Add API to open a session
+    
+    For Muji we'll build the bits of a the session first (Member and Contents) and
+    only then kick it of (if that's for our side to do) otherwise we'll wait till
+    the other side connects. This means that when a remote session comes in we
+    should automagically link it up to the contents we already have negotiated
+    through the muc with the remote party and also when we open a session we should
+    magically add contents we know need to be in it ;)
+
+commit 0c4a6d0b2410da1f60d75ff6256d6436937db6c4
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-02 17:20:48 +0100
+
+    Only update the local codecs when they change
+
+commit 7d43b172786db91af4b2836f0122e0e3456ef277
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-02 15:54:34 +0100
+
+    factor out setting the jingle session
+
+commit 47063e702f51db8b65a20efc38faf7e6f75b8e9d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-02 15:51:10 +0100
+
+    Add accessors to get the connection and the transport namespace from a member
+
+commit 2033e2e40ed71ec2f4300f428e5da260149aee4e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-02 15:49:29 +0100
+
+    Add method to accept sessions of members
+
+commit 5b8713e0670744bbe93d64dd06433952af0b4745
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-01 17:59:37 +0100
+
+    expose compare codecs
+
+commit 75425371e6fa09eb55acf770381cd91c5269e881
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-01 17:59:10 +0100
+
+    Signal new streams
+
+commit 30f0007e008de007a53f0ccfa0b7337cf1d8f42a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-01 17:50:30 +0100
+
+    Signal when the contents local codecs are updated and add api to get them
+
+commit 0aa3dee0f956cde8342252723efbfc358600f732
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-01 17:48:25 +0100
+
+    Add api to get the BaseCallChannels members
+
+commit b7186db69d59ac46e703310c71fbda2361040dae
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-01 17:48:02 +0100
+
+    Also signal CallMembers when new members are added
+
+commit 91b275f372a178da4aa2c22838be62f7389e83c1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-01 17:35:34 +0100
+
+    Wait until gabble joins the muc before sending the muc presence
+
+commit ae627355f02a9eeb6cf5f8cccc45781a25928ed7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-01 16:41:59 +0100
+
+    Only terminate the jingle session if we have one
+
+commit 9e93615e8671418212295e912171ed905e498779
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-01 16:29:39 +0100
+
+    Pass the jingle factory a full jid instead of the resource
+    
+    With Muji coming up and the ability to call bare jids on SIP gateways we can
+    call full jids from mucs, full jids for contacts and bare jids. This means that
+    juggling around the resource gets very error-prone. Luckily all the code that
+    wants to start a session already knows which jid it's for, so let them do the
+    hard work and have the API's just take jids directly
+
+commit be4799fcc4ec28eab0bfb5e6ee8ade82dd00f778
+Merge: 3e655ae 5b14fc1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-04-01 15:51:38 +0100
+
+    Merge remote branch 'upstream/master' into muc-calls
+    
+    Conflicts:
+    	src/call-channel.c
+
 commit 5b14fc14c6e2c7a3f54fc850c34254eb4bfd8ade
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   2010-03-31 17:11:00 +0100
@@ -389,6 +1823,28 @@ Date:   2010-03-26 18:47:49 +0000
     When asking the jingle factory to create a session it gives you back a object
     you don't have a ref to, so first of all make sure we have a ref. And second,
     do actually unref it when disposing the channel :)
+
+commit b2bf6f2941cb2bbd0438bdc68f135719b3accfb6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-26 18:07:57 +0000
+
+    Remove useless call to sqlite3_column_bytes()
+
+commit 0e53528643b31689ff88bc9aea10d55b24a83c60
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-26 18:04:59 +0000
+
+    Make persistent cache GC test more robust.
+    
+    This was failing if I ran caps tests in a particular order that meant
+    that GC was performed at the wrong time, making Macbeth stay in the
+    cache.
+
+commit 791588a1465255666ff4290cae24d39053cb6813
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-03-26 17:17:27 +0000
+
+    Disable on-disk journalling and syncing for caps cache
 
 commit 7ee058820670fc379c0ae89d97f7cb71e5e59407
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -1437,6 +2893,21 @@ Date:   2010-02-24 16:46:38 +0000
 
     When calling SetContactInfo, only allow FN once
 
+commit 1c2bde9230aed150f8215972feb8903e49deab90
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-02-24 16:04:47 +0000
+
+    Test that per-channel-manager caps are restored from the cache
+    
+    (cherry-picked from commit 2ce3ea29b, omitting the code changes)
+
+commit b29f3b4b7688a29c821d912b01098f114bc3a95e
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-20 18:22:32 -0500
+
+    caps cache: create correct directory when falling back to default path
+    (cherry picked from commit 099bb4534a52dc871be73a29eab60f2e7d334dda)
+
 commit 043fd44000518625f666d8542e34f95bd1a82f81
 Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
 Date:   2010-02-23 17:01:31 -0500
@@ -2298,6 +3769,330 @@ Date:   2009-12-04 16:36:50 -0500
     
     Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
 
+commit 3e655ae4cd12c41d253599222894defe8dbca990
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-18 18:39:58 +0000
+
+    More debug information
+
+commit 6e8d9d3042a9ab9b1898035c79820d46d2ae80b4
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-18 18:39:31 +0000
+
+    Add some extra debug and fix identation
+
+commit cb26c079c7272c85631109e668f401ace742d181
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-18 17:31:17 +0000
+
+    Factor out payload generations and always have parameters with codecs
+
+commit dbb87e52f6c8cd7e5fad5a88be5f9f99d96a18d8
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-05 19:22:04 -0600
+
+    Wait for capabilities before completely initializing a call.
+    
+    If Gabble doesn't have a contact's capabilities, it should wait
+    until they are retrieved before returning from the CreateChannel
+    or EnsureChannel call. The caps must be checked to ensure they
+    have the required capabilities before returning whether or not
+    the call was successful.
+    
+    Some of the capabilities checking code was copied from
+    media-channel.c.
+
+commit 8a14fae3d90f2480945f6f95b5944eda3159e787
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-08 20:18:15 -0600
+
+    Remove CallContent when CallMemberContent is removed.
+    
+    This is for CallChannels only. CallMucChannels shouldn't have their
+    CallContents removed when there are no members left. Someone might
+    join the conference.
+
+commit c262b915a2f5c19bc725937162491f74b13a95ba
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-08 20:15:57 -0600
+
+    Add base_call_channel_remove_content.
+
+commit 7c50ce067704b67244f12a679d7060d259efd037
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-08 20:13:21 -0600
+
+    Add gabble_call_content_get_member_contents.
+
+commit 53d9e325e1602b89764333dd345998aa176dd2b6
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-08 20:11:52 -0600
+
+    Add a content-removed signal to CallMember.
+
+commit 9647f804b9863c3cb3d8a5f7150dd308da5ca65e
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-08 19:26:22 -0600
+
+    Remove streams when its associated CallMemberContent is removed.
+
+commit 173686dc397772e08d395b5d51b14aa1bbe71ce5
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-08 19:21:21 -0600
+
+    Add gabble_call_stream_get_jingle_content.
+
+commit 76318a38b5ec2867a5f72e58486219ca4a1816cf
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-08 19:15:02 -0600
+
+    Remove CallMemberContent on its remove signal in call-member.c.
+
+commit 17a49d393a181020bd7dc22e6558c227ccb59540
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-08 19:12:29 -0600
+
+    Refactor adding a member content into its own function.
+
+commit 1029c8690bfb4e602d328d54a76685b1ee743e83
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-08 18:53:34 -0600
+
+    Add a removed signal to CallMemberContent.
+
+commit 5f8dac74349efbb818ca466a9d1ec67bb89d99a3
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-25 21:53:05 -0600
+
+    Update test-wait-for-caps-incomplete to handle Calls as well.
+
+commit 364363ac8b57393659f5e6aa22de7f53771746fa
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-25 21:50:36 -0600
+
+    Update test-wait-for-caps to check Calls as well.
+
+commit 4f916cdeaf2f8e75e06232f059ad34f0fd358dbe
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-01-19 20:20:21 -0600
+
+    If the content is being removed, its streams shouldn't be sending.
+
+commit cc00a6dff3f134dd7c40a8df6cd64500adc5bfca
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-05 17:15:13 -0600
+
+    CallChannel: Handle additional contents added by the remote side.
+
+commit 404edd0055f7fa98d9306cd423a2737d7d3c3240
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-05 17:13:48 -0600
+
+    CallMember: Handle additional contents added by the remote side.
+
+commit 9bd4f33a6f83d299b5b658cf341363aca6cbad1c
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-04 17:37:05 -0600
+
+    Fix memory error. Use set_string instead of take_string.
+
+commit 5cb78b6ef176eb88d42e0fb2777b0295a55cc02e
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-03 17:42:42 -0600
+
+    Ensure Accept isn't called in an invalid state.
+
+commit 73aa83bed364954023ed57b3fecbf5c95effde10
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-03 17:34:51 -0600
+
+    Return an error if AddContent is called on ended Call.
+
+commit 6e277feb4b03288b1f7c35a1110cc554a95fcd24
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-03 17:04:31 -0600
+
+    Restore the now fixed regression tests.
+
+commit f8ca760131a6b1cf93f6dc2292c973e45994eaa0
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-03 17:01:10 -0600
+
+    Fix sender state regression.
+
+commit 2713c00dd83a7bd267283bed41c9895d3ea83c8d
+Author: Mike Ruprecht <mike.ruprecht@collabora.co.uk>
+Date:   2010-02-03 16:53:43 -0600
+
+    Fix Ringing flag regression.
+
+commit b86c87818d8cf5328c3d23e32e5b02982dc93173
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-03 19:22:56 +0000
+
+    Allow InitialAudio and InitialVideo to be set after object creation
+
+commit fad7a2dfa59fa236cde85833145ce1dc31adf8cb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-03 19:22:29 +0000
+
+    Use a virtual function for the actual acceptance of calls
+
+commit 01d6edb98c49838467a2833358f77f4d438bd622
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-03 19:21:18 +0000
+
+    Some more utility api on GabbleBaseCallClass
+
+commit 31d093520cae783df662e996629e94e2e3f40424
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-03 19:20:40 +0000
+
+    Purely use CallMemberContents instead of JingleContents
+
+commit 653609aa565dc5f1e2eee0d3c4e7113037076b0b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-03 19:14:28 +0000
+
+    Add a lot more API to properly proxy Jingle bits
+
+commit 736b7dc83401647f899fd63a00e5d427f6152d4c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-03 19:15:39 +0000
+
+    Expose some function to handle codec lists
+
+commit 23c49bb9da4cb4570e812c02e23baf0a46275cf0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-03 19:09:29 +0000
+
+    Don't test for some known call regressions
+
+commit d82b2e2a6d6302516ea6d24d9958010cd25cfb35
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-02-03 19:04:38 +0000
+
+    Only pop up a muji call when contents are known
+
+commit d5948decfae657b4a6d23f8e0a9e1261e7a6379c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-29 19:27:28 +0000
+
+    Start using seperate CallMember objects
+
+commit 72abe0042bef4691eecbbc97fa383c3a4af06c47
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-29 19:18:49 +0000
+
+    Make requested a construct time property
+
+commit d08f33eba7e74e5fa2b295d639a4753bacd43a83
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-29 19:15:01 +0000
+
+    Add a better for the wocky-muc property
+
+commit 1bca8a2938e4acbf8c14a510ed7afa335a18d955
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-29 19:14:34 +0000
+
+    Test the channel is as we expected it to be
+
+commit def4963c7e50cb9c3e901222cbda3aa84f6ebd0b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-29 19:13:22 +0000
+
+    Actually use the iterator
+
+commit 57ad40e3827ea8d807bb35d1f4fda7d0a48f4a4c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-25 12:22:58 +0000
+
+    Make the handle type a class variable
+
+commit b0c3b24176fde279c039ad695df5d14f104ec5bb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-25 12:20:20 +0000
+
+    Wait till the muc is ready before finishing the call channel init
+
+commit 7d2357d5044fd3253810ad2aaafa1087ac1869a7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 17:17:16 +0000
+
+    Test that we now have call for both contacts and rooms
+
+commit 7d71433fd772ad3fbba8029b6e6fd79ea8af8093
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 17:16:31 +0000
+
+    Test that muc call channels pop up when required
+
+commit d5938fb67d53207aa08fd291ba5c934478b54cd6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 17:14:34 +0000
+
+    Fix identation (tabs vs. spaces)
+
+commit 5554675d36f745bb3fdf02ef3475e7ccca6b4613
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 17:10:54 +0000
+
+    Let booleans be booleans
+
+commit bfb7b091b677579a93861cdb3f7c6612feeff793
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 17:08:28 +0000
+
+    Make muji channels requestable and spawn at the right time
+
+commit f1607e6eab5cf8b89de4da4f895e60f9dc2d3ba4
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 17:03:57 +0000
+
+    Add dummy channel implementation for muc calls
+
+commit 093d869db38638abfcd87d811e93c264cf694feb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 16:40:59 +0000
+
+    Add api to get call channel allowed props from the media factory
+
+commit 77c9741a98a9a2ad926c98273b24d91bbaa2cbe2
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 16:40:22 +0000
+
+    properties mixin lives in the base class
+
+commit 43b928aa071ef8da964a75b7825b4082571a5b18
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 16:39:28 +0000
+
+    Cope with not having a session when getting properties
+
+commit 15eda36f8d95a60263e3efc3036713b669160a3f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 16:38:21 +0000
+
+    Assert construct properties being set to sane values
+
+commit cf776b393ea46ebeeb430b1be732eee201c169e1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-22 16:26:02 +0000
+
+    Add missing headers
+
+commit 916d3d729a5b71c36c7c0f831b846ef4fd249ddf
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-01-12 15:00:36 +0000
+
+    Split a BaseCallChannel out of CallChannel
+    
+    Both Muji related call channels and 1-to-1 call channel should be able to share
+    quite some code. The main difference is in setting up the call. This is a very
+    minimal split, more 1-to-1 call specific code will move out of the base class
+    into the call-channel
+
 commit e995c1cb20fac30aa378365394aa986498658abb
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   2010-02-18 18:15:36 +0000
@@ -2845,12 +4640,72 @@ Date:   2010-01-18 20:17:57 -0600
 
     Ensure that InitialAudio and/or InitialVideo is set.
 
+commit 114eeb3286995b610c54d7e89d3c30ffbfad9326
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-12 18:59:09 -0500
+
+    test-caps-file-transfer.py: use a unique client name
+    
+    This avoids problems with pre-existing cache entries.
+
+commit 11713f944914808ceb902a136f620921cad18395
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-07 21:14:23 -0500
+
+    make caps cache persist to disk using SQLite
+
+commit 7d8750f6c52424d7a51cf40b1d988fa8170c44c8
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-18 17:07:31 -0500
+
+    replace GabbleCapabilitySet's _is_empty with _size
+
+commit 1fb6ac671a8ce90e29af1587cbbf1533f6404230
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-12 15:15:33 -0500
+
+    free shared caps cache when CM exits
+
+commit fd22d663f4c3721683498c4aacebff7d4b512e9e
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-12-02 18:30:32 -0500
+
+    add initial implementation of CM-wide caps cache
+    
+    This is in memory only, for now.
+
 commit 07914e06755374064b50ec7f7d8e46c705301f7e
 Merge: 04c6381 0145f36
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   2010-01-15 16:24:19 +0000
 
     Merge remote branch 'danni/pmuc'
+
+commit 35f96fd80b46732d7e6d067054a57c73cec60592
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-06 15:41:34 -0500
+
+    make send_disco_reply() take a list of identities
+
+commit 5c05ac44c335842340ac884efc7dbfded6664bb0
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-12-18 17:54:30 -0500
+
+    make use of send_disco_reply in tests
+
+commit 43b2f5d9c969f5009434486f5cdf6fccbfe41e88
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2010-01-07 20:18:49 -0500
+
+    compute_caps_hash(): verify that identities are well-formed
+
+commit 7ba49817e9b4e12889d49c174493c9c649c91638
+Author: Dafydd Harries <dafydd.harries@collabora.co.uk>
+Date:   2009-12-01 17:53:40 -0500
+
+    add servicetest.py to the list of Twisted tests
+    
+    This is so that its self-tests get run, as with caps_helper.py.
 
 commit 04c638177e42671a64acc55b9f4141e27bdf4249
 Merge: a1f6b57 70b9262
