@@ -44,25 +44,25 @@
  *  <programlisting>
  * tcp_srv_connected
  * │
- * ├→ tcp_host_connected                       ①
- * │  ↓                                        ↑
- * └→ maybe_old_ssl                            jabber_auth_reply
- *    ↓                                        ↑
- *    xmpp_init ←─────────────┬──┐             jabber_auth_query
- *    ↓                       │  │             ↑
- *    xmpp_init_sent_cb       │  │             ├──────────────────────┐
- *    ↓                       │  │             │                      │
- *    xmpp_init_recv_cb       │  │             │ jabber_auth_try_passwd
- *    │ ↓                     │  │             │                      ↑
- *    │ xmpp_features_cb      │  │             jabber_auth_try_digest │
- *    │ │ │ ↓                 │  │             ↑                      │
- *    │ │ │ starttls_sent_cb  │  │             ├──────────────────────┘
- *    │ │ │ ↓                 │  │             │
- *    │ │ │ starttls_recv_cb ─┘  │             jabber_auth_fields
+ * ├→ tcp_host_connected
+ * │  ↓
+ * └→ maybe_old_ssl
+ *    ↓
+ *    xmpp_init ←─────────────┬──┐
+ *    ↓                       │  │
+ *    xmpp_init_sent_cb       │  │
+ *    ↓                       │  │
+ *    xmpp_init_recv_cb       │  │
+ *    │ ↓                     │  │
+ *    │ xmpp_features_cb      │  │
+ *    │ │ │ ↓                 │  │
+ *    │ │ │ starttls_sent_cb  │  │
+ *    │ │ │ ↓                 │  │
+ *    │ │ │ starttls_recv_cb ─┘  │             ①
  *    │ │ ↓                      │             ↑
- *    │ │ request-auth           │             jabber_auth_init_sent
+ *    │ │ sasl_request_auth      │             jabber_auth_done
  *    │ │ ↓                      │             ↑
- *    │ │ auth_done ─────────────┴─[no sasl]─→ jabber_auth_init
+ *    │ │ sasl_auth_done ────────┴─[no sasl]─→ jabber_request_auth
  *    │ ↓                                      ↑
  *    │ iq_bind_resource                       │
  *    │ ↓                                      │
@@ -104,6 +104,7 @@
 #include "wocky-debug.h"
 
 #include "wocky-sasl-auth.h"
+#include "wocky-jabber-auth.h"
 #include "wocky-namespaces.h"
 #include "wocky-xmpp-connection.h"
 #include "wocky-xmpp-error.h"
@@ -145,9 +146,9 @@ static void starttls_handshake_cb (GObject *source,
     GAsyncResult *res,
     gpointer data);
 
-static void request_auth (WockyConnector *object,
+static void sasl_request_auth (WockyConnector *object,
     WockyStanza *stanza);
-static void auth_done (GObject *source,
+static void sasl_auth_done (GObject *source,
     GAsyncResult *result,
     gpointer data);
 
@@ -194,31 +195,10 @@ static void establish_session_recv_cb (GObject *source,
 
 /* old-style jabber auth handlers */
 static void
-jabber_auth_init (WockyConnector *connector);
+jabber_request_auth (WockyConnector *self);
 
 static void
-jabber_auth_init_sent (GObject *source,
-    GAsyncResult *res,
-    gpointer data);
-
-static void
-jabber_auth_fields (GObject *source,
-    GAsyncResult *res,
-    gpointer data);
-
-static void
-jabber_auth_try_digest (WockyConnector *self);
-
-static void
-jabber_auth_try_passwd (WockyConnector *self);
-
-static void
-jabber_auth_query (GObject *source,
-    GAsyncResult *res,
-    gpointer data);
-
-static void
-jabber_auth_reply (GObject *source,
+jabber_auth_done (GObject *source,
     GAsyncResult *res,
     gpointer data);
 
@@ -243,6 +223,7 @@ enum
   PROP_LEGACY_SSL,
   PROP_SESSION_ID,
   PROP_EMAIL,
+  PROP_AUTH_REGISTRY,
 };
 
 /* this tracks which XEP 0077 operation (register account, cancel account)  *
@@ -314,6 +295,8 @@ struct _WockyConnectorPrivate
   WockyTLSSession *tls_sess;
   WockyTLSConnection *tls;
   WockyXmppConnection *conn;
+
+  WockyAuthRegistry *auth_registry;
 };
 
 /* choose an appropriate chunk of text describing our state for debug/error */
@@ -469,14 +452,7 @@ wocky_connector_set_property (GObject *object,
         break;
       case PROP_PASS:
         g_free (priv->pass);
-        if (g_value_get_string (value) != NULL)
-          priv->pass = g_value_dup_string (value);
-        else
-          {
-            g_warning ("%s property %s cannot be NULL",
-                G_OBJECT_TYPE_NAME (object), pspec->name);
-            priv->pass = g_strdup ("");
-          }
+        priv->pass = g_value_dup_string (value);
         break;
       case PROP_RESOURCE:
         g_free (priv->resource);
@@ -502,6 +478,9 @@ wocky_connector_set_property (GObject *object,
       case PROP_SESSION_ID:
         g_free (priv->session_id);
         priv->session_id = g_value_dup_string (value);
+        break;
+      case PROP_AUTH_REGISTRY:
+        priv->auth_registry = g_value_dup_object (value);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -564,6 +543,9 @@ wocky_connector_get_property (GObject *object,
         break;
       case PROP_SESSION_ID:
         g_value_set_string (value, priv->session_id);
+        break;
+      case PROP_AUTH_REGISTRY:
+        g_value_set_object (value, priv->auth_registry);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -751,6 +733,18 @@ wocky_connector_class_init (WockyConnectorClass *klass)
       "XMPP Session ID", NULL,
       (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (oclass, PROP_SESSION_ID, spec);
+
+  /**
+   * WockyConnector:auth-registry
+   *
+   * An authentication registry that holds handlers for different
+   * authentication mechanisms, arbitrates mechanism selection and relays
+   * challenges and responses between the handlers and the connection.
+   */
+  spec = g_param_spec_object ("auth-registry", "Authentication Registry",
+      "Authentication Registry", WOCKY_TYPE_AUTH_REGISTRY,
+      (G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (oclass, PROP_AUTH_REGISTRY, spec);
 }
 
 #define UNREF_AND_FORGET(x) if (x != NULL) { g_object_unref (x); x = NULL; }
@@ -790,6 +784,7 @@ wocky_connector_dispose (GObject *object)
   UNREF_AND_FORGET (priv->tls_sess);
   UNREF_AND_FORGET (priv->tls);
   UNREF_AND_FORGET (priv->features);
+  UNREF_AND_FORGET (priv->auth_registry);
 
   g_slist_foreach (priv->cas, free_ca_crl_path, NULL);
   g_slist_foreach (priv->crl, free_ca_crl_path, NULL);
@@ -844,24 +839,27 @@ tcp_srv_connected (GObject *source,
       gchar *host = NULL;      /* domain.tld */ /* / */
       guint port = (priv->xmpp_port == 0) ? 5222 : priv->xmpp_port;
 
+      /* g_socket_client_connect_to_service_finish() should have set error if
+       * it returned %NULL.
+       */
+      g_return_if_fail (error != NULL);
+
       DEBUG ("SRV connect failed: %s", error->message);
 
-      if (error != NULL)
+      /* An IO error implies there IS a SRV record but we could not
+       * connect: we do not fall through in this case: */
+      if (error->domain == G_IO_ERROR)
         {
-          /* io-error-quark => there IS a SRV record but we could not
-             connect: we do not fall through in this case: */
-          if (error->domain == g_io_error_quark ())
-            {
-              abort_connect_error (self, &error, "Bad SRV record");
-              g_error_free (error);
-              return;
-            }
-          else
-            {
-              DEBUG ("SRV error is: %s:%d", g_quark_to_string (error->domain),
-                error->code);
-            }
+          abort_connect_error (self, &error, "Bad SRV record");
+          g_error_free (error);
+          return;
         }
+      else
+        {
+          DEBUG ("SRV error is: %s:%d", g_quark_to_string (error->domain),
+              error->code);
+        }
+
       DEBUG ("Falling back to HOST connection");
 
       g_error_free (error);
@@ -921,294 +919,58 @@ tcp_host_connected (GObject *source,
 /* ************************************************************************* */
 /* legacy jabber support                                                     */
 static void
-jabber_auth_init (WockyConnector *connector)
+jabber_request_auth (WockyConnector *self)
 {
-  WockyConnectorPrivate *priv = connector->priv;
-  WockyXmppConnection *conn = priv->conn;
-  gchar *id = wocky_xmpp_connection_new_id (priv->conn);
-  WockyStanza *iq = NULL;
+  WockyConnectorPrivate *priv = self->priv;
+  WockyJabberAuth *jabber_auth;
+  gboolean clear = FALSE;
 
-  DEBUG ("");
-  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
-      NULL, priv->domain,
-      '@', "id", id,
-      '(', "query", ':', WOCKY_JABBER_NS_AUTH,
-      '(', "username",
-      '$', priv->user,
-      ')',
-      ')',
-      NULL);
+  jabber_auth = wocky_jabber_auth_new (priv->session_id, priv->user,
+      priv->resource, priv->pass, priv->conn, priv->auth_registry);
 
-  wocky_xmpp_connection_send_stanza_async (conn, iq, NULL,
-      jabber_auth_init_sent, connector);
+  if (priv->auth_insecure_ok ||
+      (priv->encrypted && priv->encrypted_plain_auth_ok))
+    clear = TRUE;
 
-  g_free (id);
-  g_object_unref (iq);
+  DEBUG ("handing over control to WockyJabberAuth");
+  wocky_jabber_auth_authenticate_async (jabber_auth, clear, NULL,
+      jabber_auth_done, self);
 }
 
 static void
-jabber_auth_init_sent (GObject *source,
-    GAsyncResult *res,
+jabber_auth_done (GObject *source,
+    GAsyncResult *result,
     gpointer data)
 {
+  GError *error = NULL;
   WockyConnector *self = WOCKY_CONNECTOR (data);
   WockyConnectorPrivate *priv = self->priv;
-  WockyXmppConnection *conn = priv->conn;
-  GError *error = NULL;
+  WockyJabberAuth *jabber_auth = WOCKY_JABBER_AUTH (source);
 
-  DEBUG ("");
-  if (!wocky_xmpp_connection_send_stanza_finish (conn, res, &error))
+  if (!wocky_jabber_auth_authenticate_finish (jabber_auth, result, &error))
     {
-      abort_connect_error (self, &error, "Jabber Auth Init");
+      /* nothing to add, the SASL error should be informative enough */
+      DEBUG ("Jabber auth complete (failure)");
+
+      abort_connect_error (self, &error, "");
+
       g_error_free (error);
-      return;
-    }
-
-  wocky_xmpp_connection_recv_stanza_async (conn, NULL,
-      jabber_auth_fields, data);
-}
-
-static void
-jabber_auth_fields (GObject *source,
-    GAsyncResult *res,
-    gpointer data)
-{
-  WockyConnector *self = WOCKY_CONNECTOR (data);
-  WockyConnectorPrivate *priv = self->priv;
-  WockyXmppConnection *conn = priv->conn;
-  GError *error = NULL;
-  WockyStanza *fields = NULL;
-  WockyStanzaType type = WOCKY_STANZA_TYPE_NONE;
-  WockyStanzaSubType sub = WOCKY_STANZA_SUB_TYPE_NONE;
-
-  DEBUG ("");
-  fields = wocky_xmpp_connection_recv_stanza_finish (conn, res, &error);
-
-  if (fields == NULL)
-    {
-      abort_connect_error (self, &error, "Jabber Auth Fields");
-      g_error_free (error);
-      return;
-    }
-
-  wocky_stanza_get_type_info (fields, &type, &sub);
-
-  if (type != WOCKY_STANZA_TYPE_IQ)
-    {
-      abort_connect_code (self, WOCKY_CONNECTOR_ERROR_JABBER_AUTH_FAILED,
-          "Jabber Auth Init: Response Invalid");
       goto out;
     }
 
-  switch (sub)
-    {
-      WockyNode *node = NULL;
-      WockyConnectorError code;
-      gboolean passwd;
-      gboolean digest;
-
-      case WOCKY_STANZA_SUB_TYPE_ERROR:
-        wocky_stanza_extract_errors (fields, NULL, &error, NULL, NULL);
-
-        if (error->code == WOCKY_XMPP_ERROR_SERVICE_UNAVAILABLE)
-          code = WOCKY_CONNECTOR_ERROR_JABBER_AUTH_UNAVAILABLE;
-        else
-          code = WOCKY_CONNECTOR_ERROR_JABBER_AUTH_FAILED;
-
-        abort_connect_code (self, code, "Jabber Auth: %s %s",
-            wocky_xmpp_error_string (error->code),
-            error->message);
-        g_clear_error (&error);
-        break;
-
-      case WOCKY_STANZA_SUB_TYPE_RESULT:
-        passwd = FALSE;
-        digest = FALSE;
-        node = wocky_stanza_get_top_node (fields);
-        node = wocky_node_get_child_ns (node, "query",
-            WOCKY_JABBER_NS_AUTH);
-        if ((node != NULL) &&
-            (wocky_node_get_child (node, "resource") != NULL) &&
-            (wocky_node_get_child (node, "username") != NULL))
-          {
-            passwd = wocky_node_get_child (node, "password") != NULL;
-            digest = wocky_node_get_child (node, "digest") != NULL;
-          }
-
-        if (digest)
-          jabber_auth_try_digest (self);
-        else if (passwd)
-          jabber_auth_try_passwd (self);
-        else
-          abort_connect_code (self, WOCKY_CONNECTOR_ERROR_JABBER_AUTH_NO_MECHS,
-              "Jabber Auth: No Known Mechanisms");
-        break;
-
-      default:
-        abort_connect_code (self, WOCKY_CONNECTOR_ERROR_JABBER_AUTH_FAILED,
-            "Bizarre response to Jabber Auth request");
-        break;
-    }
-
+  DEBUG ("Jabber auth complete (success)");
+  priv->state = WCON_XMPP_AUTHED;
+  priv->authed = TRUE;
+  priv->identity = g_strdup_printf ("%s@%s/%s",
+      priv->user, priv->domain, priv->resource);
+  /* if there has been no features stanza, this will just finish up *
+   * if there has been a feature stanza, we are in an XMPP 1.x      *
+   * server that _only_ supports old style auth (no SASL). In this  *
+   * bizarre situation, we would then proceed as if we were in a    *
+   * normal XMPP server after a successful bind.                    */
+  establish_session (self);
  out:
-  g_object_unref (fields);
-}
-
-static void
-jabber_auth_try_digest (WockyConnector *self)
-{
-  WockyConnectorPrivate *priv = self->priv;
-  WockyXmppConnection *conn = priv->conn;
-  gchar *hsrc = g_strconcat (priv->session_id, priv->pass, NULL);
-  gchar *sha1 = g_compute_checksum_for_string (G_CHECKSUM_SHA1, hsrc, -1);
-  gchar *iqid = wocky_xmpp_connection_new_id (priv->conn);
-  WockyStanza *iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
-      WOCKY_STANZA_SUB_TYPE_SET, NULL, NULL,
-      '@', "id", iqid,
-      '(', "query", ':', WOCKY_JABBER_NS_AUTH,
-      '(', "username", '$', priv->user, ')',
-      '(', "digest", '$', sha1, ')',
-      '(', "resource", '$', priv->resource, ')',
-      ')',
-      NULL);
-
-  DEBUG ("checksum: %s", sha1);
-  wocky_xmpp_connection_send_stanza_async (conn, iq, NULL,
-      jabber_auth_query, self);
-
-  g_object_unref (iq);
-  g_free (iqid);
-  g_free (hsrc);
-  g_free (sha1);
-}
-
-static void
-jabber_auth_try_passwd (WockyConnector *self)
-{
-  WockyConnectorPrivate *priv = self->priv;
-  WockyXmppConnection *conn = priv->conn;
-  gchar *iqid = wocky_xmpp_connection_new_id (priv->conn);
-  WockyStanza *iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
-      WOCKY_STANZA_SUB_TYPE_SET, NULL, NULL,
-      '@', "id", iqid,
-      '(', "query", ':', WOCKY_JABBER_NS_AUTH,
-      '(', "username", '$', priv->user, ')',
-      '(', "password", '$', priv->pass, ')',
-      '(', "resource", '$', priv->resource, ')',
-      ')',
-      NULL);
-
-  DEBUG ("");
-  wocky_xmpp_connection_send_stanza_async (conn, iq, NULL,
-      jabber_auth_query, self);
-
-  g_object_unref (iq);
-  g_free (iqid);
-}
-
-static void
-jabber_auth_query (GObject *source, GAsyncResult *res, gpointer data)
-{
-  WockyConnector *self = WOCKY_CONNECTOR (data);
-  WockyConnectorPrivate *priv = self->priv;
-  WockyXmppConnection *conn = priv->conn;
-  GError *error = NULL;
-
-  DEBUG ("");
-  if (!wocky_xmpp_connection_send_stanza_finish (conn, res, &error))
-    {
-      abort_connect_error (self, &error, "Jabber Auth IQ Set");
-      g_error_free (error);
-      return;
-    }
-
-  wocky_xmpp_connection_recv_stanza_async (conn, NULL,
-      jabber_auth_reply, data);
-}
-
-static void
-jabber_auth_reply (GObject *source,
-    GAsyncResult *res,
-    gpointer data)
-{
-  WockyConnector *self = WOCKY_CONNECTOR (data);
-  WockyConnectorPrivate *priv = self->priv;
-  WockyXmppConnection *conn = priv->conn;
-  GError *error = NULL;
-  WockyStanza *reply = NULL;
-  WockyStanzaType type = WOCKY_STANZA_TYPE_NONE;
-  WockyStanzaSubType sub = WOCKY_STANZA_SUB_TYPE_NONE;
-
-  DEBUG ("");
-  reply = wocky_xmpp_connection_recv_stanza_finish (conn, res, &error);
-
-  if (reply == NULL)
-    {
-      abort_connect_error (self, &error, "Jabber Auth Reply");
-      g_error_free (error);
-      return;
-    }
-
-  wocky_stanza_get_type_info (reply, &type, &sub);
-
-  if (type != WOCKY_STANZA_TYPE_IQ)
-    {
-      abort_connect_code (self, WOCKY_CONNECTOR_ERROR_JABBER_AUTH_FAILED,
-          "Jabber Auth Reply: Response Invalid");
-      goto out;
-    }
-
-  switch (sub)
-    {
-      WockyConnectorError code;
-
-      case WOCKY_STANZA_SUB_TYPE_ERROR:
-        wocky_stanza_extract_errors (reply, NULL, &error, NULL, NULL);
-
-        switch (error->code)
-          {
-            case WOCKY_XMPP_ERROR_NOT_AUTHORIZED:
-              code = WOCKY_CONNECTOR_ERROR_JABBER_AUTH_REJECTED;
-              break;
-            case WOCKY_XMPP_ERROR_CONFLICT:
-              code = WOCKY_CONNECTOR_ERROR_BIND_CONFLICT;
-              break;
-            case WOCKY_XMPP_ERROR_NOT_ACCEPTABLE:
-              code = WOCKY_CONNECTOR_ERROR_JABBER_AUTH_INCOMPLETE;
-              break;
-            default:
-              code = WOCKY_CONNECTOR_ERROR_JABBER_AUTH_FAILED;
-          }
-
-        abort_connect_code (self, code, "Jabber Auth: %s %s",
-            wocky_xmpp_error_string (error->code),
-            error->message);
-        g_clear_error (&error);
-        break;
-
-      case WOCKY_STANZA_SUB_TYPE_RESULT:
-        g_free (priv->identity);
-        priv->state = WCON_XMPP_BOUND;
-        priv->authed = TRUE;
-        priv->identity = g_strdup_printf ("%s@%s/%s",
-            priv->user, priv->domain, priv->resource);
-        /* if there has been no features stanza, this will just finish up *
-         * if there has been a feature stanza, we are in an XMPP 1.x      *
-         * server that _only_ supports old style auth (no SASL). In this  *
-         * bizarre situation, we would then proceed as if we were in a    *
-         * normal XMPP server after a successful bind.                    */
-        establish_session (self);
-        break;
-
-      default:
-        abort_connect_code (self, WOCKY_CONNECTOR_ERROR_JABBER_AUTH_FAILED,
-            "Bizarre response to Jabber Auth request");
-        break;
-    }
-
-  out:
-    g_object_unref (reply);
-
+  g_object_unref (jabber_auth);
 }
 
 /* ************************************************************************* */
@@ -1325,7 +1087,7 @@ xmpp_init_recv_cb (GObject *source,
         abort_connect_code (self, WOCKY_CONNECTOR_ERROR_NON_XMPP_V1_SERVER,
             "Server not XMPP 1.0 Compliant");
       else
-        jabber_auth_init (self);
+        jabber_request_auth (self);
       goto out;
     }
 
@@ -1444,7 +1206,7 @@ xmpp_features_cb (GObject *source,
 
   if (!priv->authed)
     {
-      request_auth (self, stanza);
+      sasl_request_auth (self, stanza);
       goto out;
     }
 
@@ -1613,7 +1375,11 @@ starttls_handshake_cb (GObject *source,
             msg = "SSL Certificate for %s expired";
             break;
           case WOCKY_TLS_CERT_INVALID:
+            msg = "SSL Certificate for %s invalid";
             ok_when_lenient = TRUE;
+            break;
+          /* Handle UNKNOWN_ERROR and any other unexpected values equivalently
+           */
           case WOCKY_TLS_CERT_UNKNOWN_ERROR:
           default:
             msg = "SSL Certificate Verification Error for %s";
@@ -1662,25 +1428,27 @@ starttls_handshake_cb (GObject *source,
 /* AUTH calls */
 
 static void
-request_auth (WockyConnector *object,
+sasl_request_auth (WockyConnector *object,
     WockyStanza *stanza)
 {
   WockyConnector *self = WOCKY_CONNECTOR (object);
   WockyConnectorPrivate *priv = self->priv;
-  WockySaslAuth *s =
-    wocky_sasl_auth_new (priv->domain, priv->user, priv->pass, priv->conn);
+  WockySaslAuth *s;
   gboolean clear = FALSE;
+
+  s = wocky_sasl_auth_new (priv->domain, priv->user, priv->pass, priv->conn,
+      priv->auth_registry);
 
   if (priv->auth_insecure_ok ||
       (priv->encrypted && priv->encrypted_plain_auth_ok))
     clear = TRUE;
 
   DEBUG ("handing over control to SASL module");
-  wocky_sasl_auth_authenticate_async (s, stanza, clear, NULL, auth_done, self);
+  wocky_sasl_auth_authenticate_async (s, stanza, clear, NULL, sasl_auth_done, self);
 }
 
 static void
-auth_done (GObject *source,
+sasl_auth_done (GObject *source,
     GAsyncResult *result,
     gpointer data)
 {
@@ -1696,12 +1464,12 @@ auth_done (GObject *source,
 
       /* except: if there's no SASL and Jabber auth is available, we *
        * are allowed to attempt that instead                         */
-      if ((error->domain == WOCKY_SASL_AUTH_ERROR) &&
-          (error->code == WOCKY_SASL_AUTH_ERROR_SASL_NOT_SUPPORTED) &&
+      if ((error->domain == WOCKY_AUTH_ERROR) &&
+          (error->code == WOCKY_AUTH_ERROR_NOT_SUPPORTED) &&
           (wocky_node_get_child_ns (
               wocky_stanza_get_top_node (priv->features), "auth",
               WOCKY_JABBER_NS_AUTH_FEATURE) != NULL))
-        jabber_auth_init (self);
+        jabber_request_auth (self);
       else
         abort_connect_error (self, &error, "");
 
@@ -1786,7 +1554,6 @@ xep77_cancel_recv (GObject *source,
 
   DEBUG ("");
   iq = wocky_xmpp_connection_recv_stanza_finish (priv->conn, res, &error);
-  g_simple_async_result_set_op_res_gboolean (priv->result, FALSE);
 
   if (iq == NULL)
     {
@@ -1801,9 +1568,7 @@ xep77_cancel_recv (GObject *source,
 
   if (wocky_stanza_extract_stream_error (iq, &error))
     {
-      if (error->code == WOCKY_XMPP_STREAM_ERROR_NOT_AUTHORIZED)
-        g_simple_async_result_set_op_res_gboolean (priv->result, TRUE);
-      else
+      if (error->code != WOCKY_XMPP_STREAM_ERROR_NOT_AUTHORIZED)
         g_simple_async_result_set_from_error (priv->result, error);
 
       g_error_free (error);
@@ -1842,7 +1607,7 @@ xep77_cancel_recv (GObject *source,
         break;
 
       case WOCKY_STANZA_SUB_TYPE_RESULT:
-        g_simple_async_result_set_op_res_gboolean (priv->result, TRUE);
+        /* Do nothing, we have already succeeded. */
         break;
 
       default:
@@ -1990,7 +1755,7 @@ xep77_begin_recv (GObject *source,
         if (wocky_node_get_child (query, "registered") != NULL)
           {
             priv->reg_op = XEP77_NONE;
-            request_auth (self, priv->features);
+            sasl_request_auth (self, priv->features);
             goto out;
           }
 
@@ -2171,7 +1936,7 @@ xep77_signup_recv (GObject *source,
         DEBUG ("WOCKY_STANZA_SUB_TYPE_RESULT");
         /* successfully registered. woo hoo. proceed to auth stage */
         priv->reg_op = XEP77_NONE;
-        request_auth (self, priv->features);
+        sasl_request_auth (self, priv->features);
         break;
 
       default:
@@ -2475,6 +2240,26 @@ establish_session_recv_cb (GObject *source,
   g_object_unref (reply);
 }
 
+static void
+connector_propagate_jid_and_sid (WockyConnector *self,
+    gchar **jid,
+    gchar **sid)
+{
+  if (jid != NULL)
+    {
+      if (*jid != NULL)
+        g_warning ("overwriting non-NULL gchar * pointer arg (JID)");
+      *jid = g_strdup (self->priv->identity);
+    }
+
+  if (sid != NULL)
+    {
+      if (*sid != NULL)
+        g_warning ("overwriting non-NULL gchar * pointer arg (Session ID)");
+      *sid = g_strdup (self->priv->session_id);
+    }
+}
+
 /* *************************************************************************
  * exposed methods
  * ************************************************************************* */
@@ -2498,33 +2283,16 @@ wocky_connector_connect_finish (WockyConnector *self,
     gchar **jid,
     gchar **sid)
 {
-  WockyConnectorPrivate *priv = self->priv;
   GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (res);
-  GObject *obj = G_OBJECT (self);
-  gboolean ok = FALSE;
 
   if (g_simple_async_result_propagate_error (result, error))
     return NULL;
 
-  ok =
-    g_simple_async_result_is_valid (res, obj, wocky_connector_connect_finish);
-  g_return_val_if_fail (ok, NULL);
+  g_return_val_if_fail (g_simple_async_result_is_valid (res, G_OBJECT (self),
+      wocky_connector_connect_async), NULL);
 
-  if (jid != NULL)
-    {
-      if (*jid != NULL)
-        g_warning ("overwriting non-NULL gchar * pointer arg (JID)");
-      *jid = g_strdup (priv->identity);
-    }
-
-  if (sid != NULL)
-    {
-      if (*sid != NULL)
-        g_warning ("overwriting non-NULL gchar * pointer arg (Session ID)");
-      *sid = g_strdup (priv->session_id);
-    }
-
-  return priv->conn;
+  connector_propagate_jid_and_sid (self, jid, sid);
+  return self->priv->conn;
 }
 
 /**
@@ -2546,7 +2314,16 @@ wocky_connector_register_finish (WockyConnector *self,
     gchar **jid,
     gchar **sid)
 {
-  return wocky_connector_connect_finish (self, res, error, jid, sid);
+  GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (res);
+
+  if (g_simple_async_result_propagate_error (result, error))
+    return NULL;
+
+  g_return_val_if_fail (g_simple_async_result_is_valid (res, G_OBJECT (self),
+      wocky_connector_register_async), NULL);
+
+  connector_propagate_jid_and_sid (self, jid, sid);
+  return self->priv->conn;
 }
 
 /**
@@ -2566,28 +2343,19 @@ wocky_connector_unregister_finish (WockyConnector *self,
 {
   GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (res);
   GObject *obj = G_OBJECT (self);
-  gboolean ok = FALSE;
-  gpointer tag = wocky_connector_unregister_finish;
 
-  g_simple_async_result_propagate_error (result, error);
+  if (g_simple_async_result_propagate_error (result, error))
+    return FALSE;
 
-  if (g_simple_async_result_is_valid (res, obj, tag))
-    ok = g_simple_async_result_get_op_res_gboolean (result);
+  g_return_val_if_fail (g_simple_async_result_is_valid (res, obj,
+      wocky_connector_unregister_async), FALSE);
 
-  return ok;
+  return TRUE;
 }
 
-/**
- * wocky_connector_connect_async:
- * @self: a #WockyConnector instance.
- * @cb: a #GAsyncReadyCallback to call when the operation completes.
- * @user_data: a #gpointer to pass to the callback.
- *
- * Connect to the account/server specified by the @self.
- * @cb should invoke wocky_connector_connect_finish().
- */
-void
-wocky_connector_connect_async (WockyConnector *self,
+static void
+connector_connect_async (WockyConnector *self,
+    gpointer source_tag,
     GAsyncReadyCallback cb,
     gpointer user_data)
 {
@@ -2603,7 +2371,6 @@ wocky_connector_connect_async (WockyConnector *self,
   gchar *node = NULL;  /* username   */ /* @ */
   gchar *host = NULL;  /* domain.tld */ /* / */
   gchar *uniq = NULL;  /* uniquifier */
-  gpointer rc = wocky_connector_connect_finish;
 
   if (priv->result != NULL)
     {
@@ -2613,19 +2380,8 @@ wocky_connector_connect_async (WockyConnector *self,
       return;
     }
 
-  /* *********************************************************************** *
-   * setting up the async result with callback held in rc:                   *
-   * wocky_connector_register_finish is a thin wrapper around                *
-   * wocky_connector_connect_finish, so we don't actually want               *
-   * to change rc for XEP77_SIGNUP, only for XEP77_CANCEL                    */
-  if (priv->reg_op == XEP77_CANCEL)
-    rc = wocky_connector_unregister_finish;
-
-  priv->result = g_simple_async_result_new (G_OBJECT (self), cb, user_data, rc);
-  /* *********************************************************************** */
-
-  if (priv->reg_op == XEP77_CANCEL)
-    g_simple_async_result_set_op_res_gboolean (priv->result, FALSE);
+  priv->result = g_simple_async_result_new (G_OBJECT (self), cb, user_data,
+      source_tag);
 
   wocky_decode_jid (priv->jid, &node, &host, &uniq);
 
@@ -2681,6 +2437,24 @@ wocky_connector_connect_async (WockyConnector *self,
 }
 
 /**
+ * wocky_connector_connect_async:
+ * @self: a #WockyConnector instance.
+ * @cb: a #GAsyncReadyCallback to call when the operation completes.
+ * @user_data: a #gpointer to pass to the callback.
+ *
+ * Connect to the account/server specified by the @self.
+ * @cb should invoke wocky_connector_connect_finish().
+ */
+void
+wocky_connector_connect_async (WockyConnector *self,
+    GAsyncReadyCallback cb,
+    gpointer user_data)
+{
+  connector_connect_async (self, wocky_connector_connect_async, cb, user_data);
+}
+
+
+/**
  * wocky_connector_unregister_async:
  * @self: a #WockyConnector instance.
  * @cb: a #GAsyncReadyCallback to call when the operation completes.
@@ -2698,7 +2472,8 @@ wocky_connector_unregister_async (WockyConnector *self,
   WockyConnectorPrivate *priv = self->priv;
 
   priv->reg_op = XEP77_CANCEL;
-  wocky_connector_connect_async (self, cb, user_data);
+  connector_connect_async (self, wocky_connector_unregister_async, cb,
+      user_data);
 }
 
 /**
@@ -2719,7 +2494,7 @@ wocky_connector_register_async (WockyConnector *self,
   WockyConnectorPrivate *priv = self->priv;
 
   priv->reg_op = XEP77_SIGNUP;
-  wocky_connector_connect_async (self, cb, user_data);
+  connector_connect_async (self, wocky_connector_register_async, cb, user_data);
 }
 
 /**
@@ -2793,12 +2568,13 @@ wocky_connector_add_crl (WockyConnector *self,
 WockyConnector *
 wocky_connector_new (const gchar *jid,
     const gchar *pass,
-    const gchar *resource)
+    const gchar *resource,
+    WockyAuthRegistry *auth_registry)
 {
   return g_object_new (WOCKY_TYPE_CONNECTOR,
       "jid", jid,
       "password", pass,
       "resource", resource,
+      "auth-registry", auth_registry,
       NULL);
 }
-

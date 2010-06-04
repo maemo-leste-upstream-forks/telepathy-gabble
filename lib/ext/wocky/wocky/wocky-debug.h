@@ -18,7 +18,7 @@ typedef enum
   DEBUG_NET               = 1 << 1,
   DEBUG_XMPP_READER       = 1 << 2,
   DEBUG_XMPP_WRITER       = 1 << 3,
-  DEBUG_SASL              = 1 << 4,
+  DEBUG_AUTH              = 1 << 4,
   DEBUG_SSL               = 1 << 5,
   DEBUG_RMULTICAST        = 1 << 6,
   DEBUG_RMULTICAST_SENDER = 1 << 7,
@@ -30,7 +30,8 @@ typedef enum
   DEBUG_ROSTER            = 1 << 13,
   DEBUG_TLS               = 1 << 14,
   DEBUG_PUBSUB            = 1 << 15,
-  DEBUG_DATA_FORM        = 1 << 16,
+  DEBUG_DATA_FORM         = 1 << 16,
+  DEBUG_PING              = 1 << 17,
 } DebugFlags;
 
 #define DEBUG_XMPP (DEBUG_XMPP_READER | DEBUG_XMPP_WRITER)

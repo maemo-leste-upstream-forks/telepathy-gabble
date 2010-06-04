@@ -91,11 +91,6 @@ typedef enum {
   WOCKY_CONNECTOR_ERROR_SESSION_DENIED,
   WOCKY_CONNECTOR_ERROR_SESSION_CONFLICT,
   WOCKY_CONNECTOR_ERROR_SESSION_REJECTED,
-  WOCKY_CONNECTOR_ERROR_JABBER_AUTH_UNAVAILABLE,
-  WOCKY_CONNECTOR_ERROR_JABBER_AUTH_FAILED,
-  WOCKY_CONNECTOR_ERROR_JABBER_AUTH_NO_MECHS,
-  WOCKY_CONNECTOR_ERROR_JABBER_AUTH_REJECTED,
-  WOCKY_CONNECTOR_ERROR_JABBER_AUTH_INCOMPLETE,
   WOCKY_CONNECTOR_ERROR_INSECURE,
   WOCKY_CONNECTOR_ERROR_REGISTRATION_FAILED,
   WOCKY_CONNECTOR_ERROR_REGISTRATION_UNAVAILABLE,
@@ -163,7 +158,8 @@ void wocky_connector_connect_async (WockyConnector *self,
 
 WockyConnector *wocky_connector_new (const gchar *jid,
     const gchar *pass,
-    const gchar *resource);
+    const gchar *resource,
+    WockyAuthRegistry *auth_registry);
 
 void wocky_connector_register_async (WockyConnector *self,
     GAsyncReadyCallback cb,
@@ -182,6 +178,9 @@ gboolean wocky_connector_add_crl (WockyConnector *self,
 
 gboolean wocky_connector_add_ca (WockyConnector *self,
     const gchar *path);
+
+void wocky_connector_set_auth_registry (WockyConnector *self,
+    WockyAuthRegistry *registry);
 
 G_END_DECLS
 

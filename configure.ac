@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [9])
-m4_define([gabble_micro_version], [11])
+m4_define([gabble_micro_version], [12])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -167,7 +167,10 @@ if test x$enable_plugins = xyes; then
   AC_ARG_ENABLE(plugin-api,
     AC_HELP_STRING([--enable-plugin-api],
                    [install headers for third-party plugins (experimental)]),
-    [enable_plugin_api=$enableval],
+    [
+      enable_plugin_api=$enableval
+      wocky_install_headers_dir="${includedir}/telepathy-gabble-0"
+    ],
     [enable_plugin_api=no])
 fi
 
@@ -196,10 +199,15 @@ PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.82])
 AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)
 
-PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.9.2])
+PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.11.3])
 
 AC_SUBST(TP_GLIB_CFLAGS)
 AC_SUBST(TP_GLIB_LIBS)
+
+PKG_CHECK_MODULES(SQLITE, [sqlite3])
+
+AC_SUBST(SQLITE_CFLAGS)
+AC_SUBST(SQLITE_LIBS)
 
 dnl Check for code generation tools
 XSLTPROC=
@@ -223,9 +231,18 @@ AM_CONDITIONAL([WANT_TWISTED_TESTS], test false != "$TEST_PYTHON")
 
 # We have to run Wocky's configure *before* looking for it with PKG_CHECK_MODULES so wocky-uninstalled.pc has been generated
 
+# We tell Wocky to install its headers alongside gabble's so that an actual
+# separate Wocky installation won't clash with them. This is a bit of a hack.
+# AX_CONFIG_DIR doesn't make it very easy to pass extra arguments to the
+# submodule's configure.
+prev_ac_configure_args=$ac_configure_args
+ac_configure_args="$ac_configure_args --with-installed-headers=${wocky_install_headers_dir}"
+
 prev_top_build_prefix=$ac_top_build_prefix
 AX_CONFIG_DIR([lib/ext/wocky])
 ac_top_build_prefix=$prev_top_build_prefix
+
+ac_configure_args=$prev_ac_configure_args
 
 dnl Check for Wocky
 # re-enable once Wocky has been released as a lib
@@ -239,14 +256,9 @@ PKG_CHECK_MODULES(SOUP, libsoup-2.4)
 AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(SOUP_LIBS)
 
-PKG_CHECK_MODULES([UUID], [uuid], [HAVE_UUID=yes], [HAVE_UUID=no])
+PKG_CHECK_MODULES([UUID], [uuid])
 AC_SUBST([UUID_CFLAGS])
 AC_SUBST([UUID_LIBS])
-if test x"$HAVE_UUID" = xyes; then
-  AC_DEFINE([HAVE_UUID], [1], [Define if libuuid is available])
-else
-  AC_MSG_WARN([libuuid not found, falling back to generating random IDs])
-fi
 
 AC_CHECK_FUNCS(getifaddrs memset select strndup setresuid setreuid strerror)
 

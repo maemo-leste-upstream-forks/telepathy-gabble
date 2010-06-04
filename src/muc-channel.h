@@ -23,6 +23,7 @@
 #define __GABBLE_MUC_CHANNEL_H__
 
 #include <glib-object.h>
+#include <gio/gio.h>
 
 #include <loudmouth/loudmouth.h>
 #include <telepathy-glib/dbus-properties-mixin.h>
@@ -30,8 +31,10 @@
 #include <telepathy-glib/message-mixin.h>
 #include <telepathy-glib/properties-mixin.h>
 
+#include "base-channel.h"
 #include "types.h"
 #include "tubes-channel.h"
+#include "call-muc-channel.h"
 
 G_BEGIN_DECLS
 
@@ -47,15 +50,14 @@ typedef struct _GabbleMucChannelClass GabbleMucChannelClass;
 typedef struct _GabbleMucChannelPrivate GabbleMucChannelPrivate;
 
 struct _GabbleMucChannelClass {
-    GObjectClass parent_class;
+    GabbleBaseChannelClass parent_class;
 
     TpGroupMixinClass group_class;
     TpPropertiesMixinClass properties_class;
-    TpDBusPropertiesMixinClass dbus_props_class;
 };
 
 struct _GabbleMucChannel {
-    GObject parent;
+    GabbleBaseChannel parent;
 
     TpGroupMixin group;
     TpPropertiesMixin properties;
@@ -111,6 +113,23 @@ GabbleTubesChannel *
 gabble_muc_channel_open_tube (GabbleMucChannel *gmuc,
     TpHandle initiator,
     gboolean requested);
+
+GabbleCallMucChannel * gabble_muc_channel_get_call (GabbleMucChannel *gmuc);
+GList * gabble_muc_channel_get_call_channels (GabbleMucChannel *self);
+
+void gabble_muc_channel_request_call (GabbleMucChannel *gmuc,
+    GHashTable *request,
+    gboolean require_new,
+    gpointer token,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+gboolean gabble_muc_channel_request_call_finish (GabbleMucChannel *gmuc,
+    GAsyncResult *result,
+    GError **error);
+
+gboolean gabble_muc_channel_handle_jingle_session (GabbleMucChannel *channel,
+    GabbleJingleSession *session);
 
 void gabble_muc_channel_teardown (GabbleMucChannel *gmuc);
 void gabble_muc_channel_close_tube (GabbleMucChannel *gmuc);

@@ -28,6 +28,7 @@
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/errors.h>
 
+#include "caps-cache.h"
 #include "connection.h"
 #include "debug.h"
 
@@ -51,6 +52,7 @@ static TpBaseConnection *_gabble_connection_manager_new_connection (
 static void
 gabble_connection_manager_finalize (GObject *object)
 {
+  gabble_caps_cache_free_shared ();
   gabble_debug_free ();
 
   G_OBJECT_CLASS (gabble_connection_manager_parent_class)->finalize (object);
@@ -132,8 +134,7 @@ static TpCMParamSpec jabber_params[] = {
     /* FIXME: validate the JID according to the RFC */
     tp_cm_param_filter_string_nonempty, NULL },
   { "password", DBUS_TYPE_STRING_AS_STRING, G_TYPE_STRING,
-    TP_CONN_MGR_PARAM_FLAG_REQUIRED | TP_CONN_MGR_PARAM_FLAG_REGISTER |
-      TP_CONN_MGR_PARAM_FLAG_SECRET,
+    TP_CONN_MGR_PARAM_FLAG_REGISTER | TP_CONN_MGR_PARAM_FLAG_SECRET,
     NULL,
     G_STRUCT_OFFSET(GabbleParams, password), NULL, NULL },
 

@@ -66,7 +66,7 @@ am__EXEEXT_2 = wocky-xmpp-reader-test$(EXEEXT) \
 	wocky-tls-test$(EXEEXT) wocky-data-form-test$(EXEEXT) \
 	wocky-pubsub-service-test$(EXEEXT) \
 	wocky-pubsub-node-test$(EXEEXT) wocky-connector-test$(EXEEXT) \
-	$(am__EXEEXT_1)
+	wocky-ping-test$(EXEEXT) $(am__EXEEXT_1)
 am_wocky_bare_contact_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-bare-contact-test.$(OBJEXT)
 wocky_bare_contact_test_OBJECTS =  \
@@ -105,6 +105,10 @@ am_wocky_pep_service_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-pep-service-test.$(OBJEXT)
 wocky_pep_service_test_OBJECTS = $(am_wocky_pep_service_test_OBJECTS)
 wocky_pep_service_test_LDADD = $(LDADD)
+am_wocky_ping_test_OBJECTS = wocky-ping-test.$(OBJEXT) \
+	wocky-test-helper.$(OBJEXT) wocky-test-stream.$(OBJEXT)
+wocky_ping_test_OBJECTS = $(am_wocky_ping_test_OBJECTS)
+wocky_ping_test_LDADD = $(LDADD)
 am_wocky_porter_test_OBJECTS = wocky-porter-test.$(OBJEXT) \
 	wocky-test-helper.$(OBJEXT) wocky-test-stream.$(OBJEXT)
 wocky_porter_test_OBJECTS = $(am_wocky_porter_test_OBJECTS)
@@ -212,8 +216,8 @@ SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
 	$(wocky_data_form_test_SOURCES) \
 	$(wocky_node_tree_test_SOURCES) \
-	$(wocky_pep_service_test_SOURCES) $(wocky_porter_test_SOURCES) \
-	$(wocky_pubsub_node_test_SOURCES) \
+	$(wocky_pep_service_test_SOURCES) $(wocky_ping_test_SOURCES) \
+	$(wocky_porter_test_SOURCES) $(wocky_pubsub_node_test_SOURCES) \
 	$(wocky_pubsub_service_test_SOURCES) \
 	$(wocky_resource_contact_test_SOURCES) \
 	$(wocky_roster_test_SOURCES) $(wocky_session_test_SOURCES) \
@@ -228,8 +232,8 @@ DIST_SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
 	$(wocky_data_form_test_SOURCES) \
 	$(wocky_node_tree_test_SOURCES) \
-	$(wocky_pep_service_test_SOURCES) $(wocky_porter_test_SOURCES) \
-	$(wocky_pubsub_node_test_SOURCES) \
+	$(wocky_pep_service_test_SOURCES) $(wocky_ping_test_SOURCES) \
+	$(wocky_porter_test_SOURCES) $(wocky_pubsub_node_test_SOURCES) \
 	$(wocky_pubsub_service_test_SOURCES) \
 	$(wocky_resource_contact_test_SOURCES) \
 	$(wocky_roster_test_SOURCES) $(wocky_session_test_SOURCES) \
@@ -283,6 +287,7 @@ GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
+HEADER_DIR = @HEADER_DIR@
 HTML_DIR = @HTML_DIR@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -320,6 +325,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -385,14 +392,9 @@ top_srcdir = @top_srcdir@
 
 ############################################################################
 # x509 certificates:
-CERTTOOL := $(shell which certtool)
-TARDIS := $(shell which datefudge)
-GENKEY := $(CERTTOOL) --generate-privkey --outfile
 TEST_DIR := @abs_top_srcdir@/tests
 SUMMARY := $(TEST_DIR)/summarise-tests.py
 CERT_DIR := $(TEST_DIR)/certs
-CA_CERT2 := $(CERT_DIR)/ca-1-cert.pem
-CA_CERT3 := $(CERT_DIR)/ca-2-cert.pem
 CA_KEY := $(CERT_DIR)/ca-0-key.pem
 CA_CERT := $(CERT_DIR)/ca-0-cert.pem
 SS_KEY := $(CERT_DIR)/ss-key.pem
@@ -407,14 +409,8 @@ TLS_KEY := $(CERT_DIR)/tls-key.pem
 TLS_CERT := $(CERT_DIR)/tls-cert.pem
 CA_DIR := $(CERT_DIR)/cas
 CRL_DIR := $(CERT_DIR)/crl
-CAS := $(CA_CERT) $(CA_CERT2) $(CA_CERT3)
-CRL := $(CERT_DIR)/ca-0-crl.pem
 UNKNOWN_KEY := $(CERT_DIR)/unknown-key.pem
 UNKNOWN_CERT := $(CERT_DIR)/unknown-cert.pem
-PRES := new exp ca-0 ca-1 ca-2 rev ss tls unknown
-CERTS := $(TLS_CERT) $(NEW_CERT) $(EXP_CERT) $(SS_CERT) $(REV_CERT) \
-            $(UNKNOWN_CERT)
-
 LIBWOCKY := $(top_builddir)/wocky/libwocky.la
 TLSDEFS := -DTLS_CA_KEY_FILE='"$(CA_KEY)"'      \
             -DTLS_CA_CRT_FILE='"$(CA_CERT)"'     \
@@ -433,13 +429,6 @@ TLSDEFS := -DTLS_CA_KEY_FILE='"$(CA_KEY)"'      \
             -DTLS_CRL_DIR='"$(CRL_DIR)"'         \
             -DTLS_CA_DIR='"$(CA_DIR)"'
 
-DAY := 86400
-YEAR := 365 * $(DAY)
-TIMEWARP := 28 * $(YEAR)
-FUTURE := $(shell date +'%Y-%m-%d %H:%M' -d @$$(($$(date +%s) + $(TIMEWARP))))
-PAST := $(shell date +'%Y-%m-%d %H:%M' -d @$$(($$(date +%s) - $(DAY) * 7)))
-FILTER_BITS := grep -v '^[	 ]\+\([a-f0-9]\{2\}:\)\+[a-f0-9]\{2\}$$'
-check_bin = $(or $(shell test -x "$(1)" && echo Y), $(error Need $(2) to $(3)))
 ############################################################################
 TEST_PROGS = wocky-xmpp-reader-test wocky-xmpp-readwrite-test \
 	wocky-xmpp-connection-test wocky-porter-test \
@@ -448,7 +437,8 @@ TEST_PROGS = wocky-xmpp-reader-test wocky-xmpp-readwrite-test \
 	wocky-resource-contact-test wocky-contact-factory-test \
 	wocky-session-test wocky-pep-service-test wocky-tls-test \
 	wocky-data-form-test wocky-pubsub-service-test \
-	wocky-pubsub-node-test wocky-connector-test $(am__append_1)
+	wocky-pubsub-node-test wocky-connector-test wocky-ping-test \
+	$(am__append_1)
 wocky_tls_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_tls_test_SOURCES = \
   wocky-tls-test.c        \
@@ -580,12 +570,17 @@ wocky_pubsub_node_test_SOURCES = \
   wocky-pubsub-test-helpers.c wocky-pubsub-test-helpers.h \
   wocky-pubsub-node-test.c
 
+wocky_ping_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_ping_test_SOURCES = \
+  wocky-ping-test.c \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h
+
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@
 AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
 LDADD = $(top_builddir)/wocky/libwocky.la
 check_c_sources = \
   $(wocky_tls_test_SOURCES) \
-  $(wocky_xmpp_reader_test_SOURCES) \
   $(wocky_xmpp_connection_test_SOURCES) \
   $(wocky_xmpp_readwrite_test_SOURCES) \
   $(wocky_xmpp_reader_test_SOURCES) \
@@ -602,7 +597,8 @@ check_c_sources = \
   $(wocky_pep_service_test_SOURCES) \
   $(wocky_data_form_test_SOURCES) \
   $(wocky_pubsub_service_test_SOURCES) \
-  $(wocky_pubsub_node_test_SOURCES)
+  $(wocky_pubsub_node_test_SOURCES) \
+  $(wocky_ping_test_SOURCES)
 
 
 ############################################################################
@@ -642,6 +638,7 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(top_srcdir)/tools/check-coding-s
 	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu tests/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
 	  $(AUTOMAKE) --gnu tests/Makefile
+.PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -686,6 +683,9 @@ wocky-node-tree-test$(EXEEXT): $(wocky_node_tree_test_OBJECTS) $(wocky_node_tree
 wocky-pep-service-test$(EXEEXT): $(wocky_pep_service_test_OBJECTS) $(wocky_pep_service_test_DEPENDENCIES) 
 	@rm -f wocky-pep-service-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_pep_service_test_OBJECTS) $(wocky_pep_service_test_LDADD) $(LIBS)
+wocky-ping-test$(EXEEXT): $(wocky_ping_test_OBJECTS) $(wocky_ping_test_DEPENDENCIES) 
+	@rm -f wocky-ping-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(wocky_ping_test_OBJECTS) $(wocky_ping_test_LDADD) $(LIBS)
 wocky-porter-test$(EXEEXT): $(wocky_porter_test_OBJECTS) $(wocky_porter_test_DEPENDENCIES) 
 	@rm -f wocky-porter-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_porter_test_OBJECTS) $(wocky_porter_test_LDADD) $(LIBS)
@@ -737,6 +737,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-node-tree-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-ping-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-porter-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-node-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-service-test.Po@am__quote@
@@ -1223,13 +1224,7 @@ uninstall-am:
 	tags uninstall uninstall-am
 
 
-.PRECIOUS: %.pem
-
 all: $(TEST_PROGS)
-
-certs: $(CERTS)
-certs: $(CRL_DIR)/ca-0-crl.pem 
-certs: $(foreach x,0 1 2,$(CA_DIR)/ca-$(x)-cert.pem)
 
 test-report: test-report.xml
 	gtester-report $(top_builddir)/tests/$@.xml > \
@@ -1253,7 +1248,7 @@ test-%: wocky-%-test
 		echo "No python available, not summarizing test results" ; \
 	fi
 
-.PHONY: test test-report certs
+.PHONY: test test-report
 check-coding-style:
 	@fail=0; \
 	if test -n "$(check_misc_sources)"; then \
@@ -1273,87 +1268,6 @@ check-coding-style:
 	fi
 
 check-local: test check-coding-style
-
-############################################################################
-# x509 certificates:
-certtool:
-	@echo $(or $(shell test -x "$(CERTTOOL)" && echo $@ OK), \
-	           $(warning Need $@ to rebuild test certs))
-	@touch $@
-
-tardis:
-	@echo $(or $(shell test -x "$(TARDIS)" && echo $@ OK),   \
-	           $(warning Need datefudge to rebuild expired/inactive test certs))
-	@touch $@
-
-%-key.pem:
-	@echo $(call check_bin,$(CERTTOOL),certtool,rebuild $@)
-	$(GENKEY) $@
-
-%/ss-cert.pem: %/ss-key.pem %/ss-cert.cfg
-	$(CERTTOOL) --generate-self-signed            \
-	            --load-privkey $<                 \
-	            --template     $(basename $@).cfg \
-	            --outfile      $@ 2>&1 | $(FILTER_BITS)
-
-%/unknown-ca-cert.pem: %/unknown-ca-key.pem %/unknown-ca-cert.cfg
-	$(CERTTOOL) --generate-self-signed            \
-	            --load-privkey $<                 \
-	            --template     $(basename $@).cfg \
-	            --outfile      $@ 2>&1 | $(FILTER_BITS)
-
-certs/ca-%-cert.pem $(CERT_DIR)/ca-%-cert.pem: $(CERT_DIR)/ca-%-key.pem $(CERT_DIR)/ca-%-cert.cfg
-	$(CERTTOOL) --generate-self-signed            \
-	            --load-privkey $<                 \
-	            --template     $(basename $@).cfg \
-	            --outfile      $@ 2>&1 | $(FILTER_BITS)
-
-%/rev-cert.pem: export CERTCMD = $(CERTTOOL)
-%/tls-cert.pem: export CERTCMD = $(CERTTOOL)
-%/new-cert.pem: export CERTCMD = $(TARDIS) "$(FUTURE)" $(CERTTOOL)
-%/exp-cert.pem: export CERTCMD = $(TARDIS) "$(PAST)"   $(CERTTOOL)
-
-$(NEW_CERT) $(EXP_CERT) certs/exp-cert.pem certs/new-cert.pem: NEED_TIME = 1
-
-%/unknown-cert.pem: export CERTCMD = $(CERTTOOL)
-%/unknown-cert.pem: export CA_CERT = $*/unknown-ca-cert.pem
-%/unknown-cert.pem: export CA_KEY  = $*/unknown-ca-key.pem
-
-%/unknown-cert.pem: %/unknown-key.pem %/unknown-cert.cfg %/unknown-ca-cert.pem
-	$(CERTTOOL) --generate-certificate                       \
-                --load-ca-certificate $*/unknown-ca-cert.pem \
-	            --load-ca-privkey     $*/unknown-ca-key.pem  \
-	            --load-privkey        $*/unknown-key.pem     \
-	            --template            $*/unknown-cert.cfg    \
-	            --outfile             $@ 2>&1 | $(FILTER_BITS)
-
-%-cert.pem: %-key.pem %-cert.cfg $(CA_CERT)
-	@echo "CERTIFICATE $@ ($(CERTCMD)): $^"
-	@echo $(call check_bin,$(CERTTOOL),certtool,rebuild $@)
-	@echo $(if $(NEED_TIME),$(call check_bin,$(TARDIS),datefudge,rebuild $@))
-	$(CERTCMD)  --generate-certificate                   \
-                --load-ca-certificate $(CA_CERT)         \
-	            --load-ca-privkey     $(CA_KEY)	         \
-	            --load-privkey        $<                 \
-	            --template            $*-cert.cfg        \
-	            --outfile             $@ 2>&1 | $(FILTER_BITS)
-
-$(CRL): $(REV_CERT) $(CA_CERT) $(CA_KEY)
-	$(CERTTOOL) --generate-crl        \
-	            --template $(basename $@).cfg     \
-	            --load-ca-privkey     $(CA_KEY)   \
-	            --load-ca-certificate $(CA_CERT)  \
-	            --load-certificate    $(REV_CERT) \
-                --outfile             $@ 2>&1 | $(FILTER_BITS)
-
-$(CA_DIR) $(CRL_DIR):
-	@mkdir -p $@
-
-$(CA_DIR)/%.pem: $(CERT_DIR)/%.pem
-	@cp -av $< $@
-
-$(CRL_DIR)/%.pem: $(CERT_DIR)/%.pem
-	@cp -av $< $@
 
 # valgrind any given test by running make test.valgrind
 %.valgrind: %

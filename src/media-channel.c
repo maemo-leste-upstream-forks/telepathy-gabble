@@ -269,7 +269,7 @@ _latch_to_session (GabbleMediaChannel *chan)
 static void
 create_session (GabbleMediaChannel *chan,
     TpHandle peer,
-    const gchar *resource)
+    const gchar *jid)
 {
   GabbleMediaChannelPrivate *priv = chan->priv;
   gboolean local_hold = (priv->hold_state != TP_LOCAL_HOLD_STATE_UNHELD);
@@ -280,7 +280,7 @@ create_session (GabbleMediaChannel *chan,
 
   priv->session = g_object_ref (
       gabble_jingle_factory_create_session (priv->conn->jingle_factory,
-          peer, resource, local_hold));
+          peer, jid, local_hold));
 
   _latch_to_session (chan);
 }
@@ -1576,6 +1576,8 @@ _gabble_media_channel_request_contents (GabbleMediaChannel *chan,
   /* no existing call; we should choose a recipient and a mode */
   else
     {
+      gchar *jid;
+
       DEBUG ("picking the best resource (want audio: %u, want video: %u",
             want_audio, want_video);
 
@@ -1593,7 +1595,9 @@ _gabble_media_channel_request_contents (GabbleMediaChannel *chan,
           peer_resource == NULL ? "(null)" : peer_resource,
           transport_ns, dialect);
 
-      create_session (chan, peer, peer_resource);
+      jid = gabble_peer_to_jid (priv->conn, peer, peer_resource);
+      create_session (chan, peer, jid);
+      g_free (jid);
 
       g_object_set (priv->session, "dialect", dialect, NULL);
 
@@ -2409,24 +2413,24 @@ construct_stream (GabbleMediaChannel *chan,
   /* if any RequestStreams call was waiting for a stream to be created for
    * that content, return from it successfully */
     {
-      GList *link = priv->pending_stream_requests;
+      GList *l = priv->pending_stream_requests;
 
-      while (link != NULL)
+      while (l != NULL)
         {
-          if (pending_stream_request_maybe_satisfy (link->data,
+          if (pending_stream_request_maybe_satisfy (l->data,
                 chan, c, stream))
             {
-              GList *dead = link;
+              GList *dead = l;
 
               pending_stream_request_free (dead->data);
 
-              link = dead->next;
+              l = dead->next;
               priv->pending_stream_requests = g_list_delete_link (
                   priv->pending_stream_requests, dead);
             }
           else
             {
-              link = link->next;
+              l = l->next;
             }
         }
     }
@@ -2554,26 +2558,26 @@ content_removed_cb (GabbleJingleContent *content,
 
   if (d->self != NULL)
     {
-      GList *link = d->self->priv->pending_stream_requests;
+      GList *l = d->self->priv->pending_stream_requests;
 
       /* if any RequestStreams call was waiting for a stream to be created for
        * that content, return from it unsuccessfully */
-      while (link != NULL)
+      while (l != NULL)
         {
-          if (pending_stream_request_maybe_fail (link->data,
+          if (pending_stream_request_maybe_fail (l->data,
                 d->self, d->content))
             {
-              GList *dead = link;
+              GList *dead = l;
 
               pending_stream_request_free (dead->data);
 
-              link = dead->next;
+              l = dead->next;
               d->self->priv->pending_stream_requests = g_list_delete_link (
                   d->self->priv->pending_stream_requests, dead);
             }
           else
             {
-              link = link->next;
+              l = l->next;
             }
         }
     }

@@ -774,7 +774,7 @@ parse_extended_result_item (GabbleSearchChannel *chan,
 static gboolean
 parse_unextended_search_results (GabbleSearchChannel *chan,
     LmMessageNode *query_node,
-    GError *error)
+    GError **error)
 {
   TpHandleRepoIface *handles = tp_base_connection_get_handles (
       (TpBaseConnection *) chan->base.conn, TP_HANDLE_TYPE_CONTACT);
@@ -797,7 +797,7 @@ parse_unextended_search_results (GabbleSearchChannel *chan,
 static gboolean
 parse_extended_search_results (GabbleSearchChannel *chan,
     LmMessageNode *query_node,
-    GError *error)
+    GError **error)
 {
   TpHandleRepoIface *handles = tp_base_connection_get_handles (
       (TpBaseConnection *) chan->base.conn, TP_HANDLE_TYPE_CONTACT);
@@ -807,7 +807,7 @@ parse_extended_search_results (GabbleSearchChannel *chan,
   x = lm_message_node_get_child_with_namespace (query_node, "x", NS_X_DATA);
   if (x == NULL)
     {
-      error = g_error_new (TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "reply doens't contain a <x> node");
       return FALSE;
     }
@@ -834,7 +834,7 @@ parse_extended_search_results (GabbleSearchChannel *chan,
 static gboolean
 parse_search_results (GabbleSearchChannel *chan,
     LmMessageNode *query_node,
-    GError *error)
+    GError **error)
 {
   if (chan->priv->xforms)
     return parse_extended_search_results (chan, query_node, error);
@@ -903,27 +903,28 @@ search_reply_cb (GabbleConnection *conn,
           "%s is broken: its iq reply didn't contain a <query/>",
           chan->priv->server);
     }
+  else
+    {
+      parse_search_results (chan, query_node, &err);
+    }
 
-  if (err != NULL)
-    goto fail;
+  if (err == NULL)
+    {
+      /* fire SearchStateChanged */
+      gabble_svc_channel_type_contact_search_emit_search_result_received (chan,
+          chan->priv->results);
 
-  if (!parse_search_results (chan, query_node, err))
-    goto fail;
+      change_search_state (chan, GABBLE_CHANNEL_CONTACT_SEARCH_STATE_COMPLETED,
+          NULL);
+    }
+  else
+    {
+      DEBUG ("Searching failed: %s", err->message);
+      change_search_state (chan, GABBLE_CHANNEL_CONTACT_SEARCH_STATE_FAILED,
+          err);
+      g_error_free (err);
+    }
 
-  /* fire SearchStateChanged */
-  gabble_svc_channel_type_contact_search_emit_search_result_received (chan,
-      chan->priv->results);
-
-  change_search_state (chan, GABBLE_CHANNEL_CONTACT_SEARCH_STATE_COMPLETED,
-      NULL);
-
-  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
-
-fail:
-  DEBUG ("Searching failed: %s", err->message);
-
-  change_search_state (chan, GABBLE_CHANNEL_CONTACT_SEARCH_STATE_FAILED, err);
-  g_error_free (err);
   return LM_HANDLER_RESULT_REMOVE_MESSAGE;
 }
 
@@ -1114,9 +1115,6 @@ gabble_search_channel_constructor (GType type,
   base = GABBLE_BASE_CHANNEL (obj);
   conn = (TpBaseConnection *) base->conn;
 
-  base->channel_type = GABBLE_IFACE_CHANNEL_TYPE_CONTACT_SEARCH;
-  base->interfaces = gabble_search_channel_interfaces;
-  base->target_type = TP_HANDLE_TYPE_NONE;
   base->target = 0;
   base->initiator = conn->self_handle;
 
@@ -1249,6 +1247,7 @@ gabble_search_channel_class_init (GabbleSearchChannelClass *klass)
       { NULL }
   };
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GabbleBaseChannelClass *base_class = GABBLE_BASE_CHANNEL_CLASS (klass);
   GParamSpec *param_spec;
 
   g_type_class_add_private (klass, sizeof (GabbleSearchChannelPrivate));
@@ -1261,6 +1260,10 @@ gabble_search_channel_class_init (GabbleSearchChannelClass *klass)
 
   g_object_class_override_property (object_class, PROP_CHANNEL_PROPERTIES,
       "channel-properties");
+
+  base_class->channel_type = GABBLE_IFACE_CHANNEL_TYPE_CONTACT_SEARCH;
+  base_class->interfaces = gabble_search_channel_interfaces;
+  base_class->target_type = TP_HANDLE_TYPE_NONE;
 
   param_spec = g_param_spec_uint ("search-state", "Search state",
       "The current state of the search represented by this channel",

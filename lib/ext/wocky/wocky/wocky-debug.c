@@ -16,7 +16,7 @@ static GDebugKey keys[] = {
   { "xmpp",              DEBUG_XMPP              },
   { "xmpp-reader",       DEBUG_XMPP_READER       },
   { "xmpp-writer",       DEBUG_XMPP_WRITER       },
-  { "sasl",              DEBUG_SASL              },
+  { "auth",              DEBUG_AUTH              },
   { "ssl",               DEBUG_SSL               },
   { "rmulticast",        DEBUG_RMULTICAST        },
   { "rmulticast-sender", DEBUG_RMULTICAST_SENDER },
@@ -28,7 +28,8 @@ static GDebugKey keys[] = {
   { "roster",            DEBUG_ROSTER            },
   { "tls",               DEBUG_TLS               },
   { "pubsub",            DEBUG_PUBSUB            },
-  { "dataform",          DEBUG_DATA_FORM        },
+  { "dataform",          DEBUG_DATA_FORM         },
+  { "ping",              DEBUG_PING              },
   { 0, },
 };
 

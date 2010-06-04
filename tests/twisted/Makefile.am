@@ -1,9 +1,11 @@
 TWISTED_TESTS = \
-	avatar-requirements.py \
 	caps_helper.py \
+	servicetest.py \
+	avatar-requirements.py \
 	caps/advertise-contact-caps.py \
 	caps/advertise-legacy.py \
 	caps/caps-cache.py \
+	caps/caps-persistent-cache.py \
 	caps/compat-bundles.py \
 	caps/double-disco.py \
 	caps/from-bare-jid.py \
@@ -14,9 +16,11 @@ TWISTED_TESTS = \
 	caps/trust-thyself.py \
 	caps/tube-caps.py \
 	gateways.py \
+	muc/conference.py \
 	muc/name-conflict.py \
 	muc/renamed.py \
 	muc/roomlist.py \
+	muc/scrollback.py \
 	muc/send-error.py \
 	muc/subject.py \
 	muc/test-ensure.py \
@@ -52,6 +56,10 @@ TWISTED_TESTS = \
 	roster/test-roster-item-deletion.py \
 	roster/test-roster-subscribe.py \
 	roster/test-save-alias-to-roster.py \
+	sasl/abort.py \
+	sasl/jabber_auth.py \
+	sasl/plain.py \
+	sasl/complex.py \
 	search/ceci-nest-pas-un-serveur.py \
 	search/extended.py \
 	search/no-server-property.py \
@@ -99,7 +107,7 @@ TWISTED_TESTS = \
 	vcard/test-avatar.py \
 	vcard/test-avatar-retrieved.py \
 	vcard/test-avatar-tokens.py \
-        vcard/test-avatar-multiple-resources.py \
+	vcard/test-avatar-multiple-resources.py \
 	vcard/test-save-alias-to-vcard.py \
 	vcard/test-set-alias.py \
 	vcard/test-vcard-cache.py \
@@ -107,9 +115,12 @@ TWISTED_TESTS = \
 	vcard/update-get-failed.py \
 	vcard/update-rejected.py \
 	jingle/accept-extra-stream.py \
-	jingle/call-state.py \
 	jingle/call-basics.py \
 	jingle/call-codecoffer.py \
+	jingle/call-muc.py \
+	jingle/call-muc-cancel.py \
+	jingle/call-muc-re-re-request.py
+	jingle/call-state.py \
 	jingle/decloak-peer.py \
 	jingle/google-relay.py \
 	jingle/hold-audio.py \
@@ -234,7 +245,8 @@ EXTRA_DIST = \
 	constants.py \
 	gabbletest.py \
 	httptest.py \
-	servicetest.py \
+	jingle/__init__.py \
+	jingle/callutils.py \
 	jingle/jingletest.py \
 	jingle/jingletest2.py \
 	mucutil.py \
@@ -242,6 +254,7 @@ EXTRA_DIST = \
 	olpc/util.py \
 	tubes/muctubeutil.py \
 	tubes/tubetestutil.py \
+	sasl/saslutil.py \
 	search/search_helper.py \
 	file-transfer/file_transfer_helper.py
 
