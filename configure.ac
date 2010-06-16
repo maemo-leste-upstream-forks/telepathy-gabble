@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [9])
-m4_define([gabble_micro_version], [12])
+m4_define([gabble_micro_version], [13])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -199,7 +199,7 @@ PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.82])
 AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)
 
-PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.11.3])
+PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.11.6])
 
 AC_SUBST(TP_GLIB_CFLAGS)
 AC_SUBST(TP_GLIB_LIBS)
@@ -238,6 +238,18 @@ AM_CONDITIONAL([WANT_TWISTED_TESTS], test false != "$TEST_PYTHON")
 prev_ac_configure_args=$ac_configure_args
 ac_configure_args="$ac_configure_args --with-installed-headers=${wocky_install_headers_dir}"
 
+if test "x$ENABLE_CODING_STYLE_CHECKS" = xyes ; then
+  ac_configure_args+=" --enable-coding-style-checks"
+else
+  ac_configure_args+=" --disable-coding-style-checks"
+fi
+
+if test "x$tp_werror" = xyes && test "x$official_release" = xno; then
+  ac_configure_args+=" --enable-Werror"
+else
+  ac_configure_args+=" --disable-Werror"
+fi
+
 prev_top_build_prefix=$ac_top_build_prefix
 AX_CONFIG_DIR([lib/ext/wocky])
 ac_top_build_prefix=$prev_top_build_prefix
@@ -256,9 +268,22 @@ PKG_CHECK_MODULES(SOUP, libsoup-2.4)
 AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(SOUP_LIBS)
 
+dnl Check for libnice
+PKG_CHECK_MODULES(NICE, nice >= 0.0.11)
+AC_SUBST(NICE_CFLAGS)
+AC_SUBST(NICE_LIBS)
+
 PKG_CHECK_MODULES([UUID], [uuid])
 AC_SUBST([UUID_CFLAGS])
 AC_SUBST([UUID_LIBS])
+
+dnl Check for MCE, a Maemo service used by Gabble to determine when the device
+dnl is idle.
+PKG_CHECK_MODULES([MCE], mce >= 1.5, [HAVE_MCE=yes], [HAVE_MCE=no])
+AM_CONDITIONAL([HAVE_MCE], [test x"$HAVE_MCE" = xyes])
+if test x"$HAVE_MCE" = xyes; then
+  AC_DEFINE([HAVE_MCE], [1], [Define if mce is available])
+fi
 
 AC_CHECK_FUNCS(getifaddrs memset select strndup setresuid setreuid strerror)
 

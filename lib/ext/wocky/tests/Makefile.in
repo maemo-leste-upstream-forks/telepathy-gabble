@@ -66,7 +66,8 @@ am__EXEEXT_2 = wocky-xmpp-reader-test$(EXEEXT) \
 	wocky-tls-test$(EXEEXT) wocky-data-form-test$(EXEEXT) \
 	wocky-pubsub-service-test$(EXEEXT) \
 	wocky-pubsub-node-test$(EXEEXT) wocky-connector-test$(EXEEXT) \
-	wocky-ping-test$(EXEEXT) $(am__EXEEXT_1)
+	wocky-ping-test$(EXEEXT) wocky-jid-validation-test$(EXEEXT) \
+	wocky-sasl-utils-test$(EXEEXT) $(am__EXEEXT_1)
 am_wocky_bare_contact_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-bare-contact-test.$(OBJEXT)
 wocky_bare_contact_test_OBJECTS =  \
@@ -97,6 +98,12 @@ am_wocky_data_form_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-data-form-test.$(OBJEXT)
 wocky_data_form_test_OBJECTS = $(am_wocky_data_form_test_OBJECTS)
 wocky_data_form_test_LDADD = $(LDADD)
+am_wocky_jid_validation_test_OBJECTS =  \
+	wocky-jid-validation-test.$(OBJEXT) \
+	wocky-test-helper.$(OBJEXT) wocky-test-stream.$(OBJEXT)
+wocky_jid_validation_test_OBJECTS =  \
+	$(am_wocky_jid_validation_test_OBJECTS)
+wocky_jid_validation_test_LDADD = $(LDADD)
 am_wocky_node_tree_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-node-tree-test.$(OBJEXT)
 wocky_node_tree_test_OBJECTS = $(am_wocky_node_tree_test_OBJECTS)
@@ -137,6 +144,9 @@ am_wocky_roster_test_OBJECTS = wocky-roster-test.$(OBJEXT) \
 wocky_roster_test_OBJECTS = $(am_wocky_roster_test_OBJECTS)
 wocky_roster_test_LDADD = $(LDADD)
 wocky_roster_test_DEPENDENCIES = $(top_builddir)/wocky/libwocky.la
+am_wocky_sasl_utils_test_OBJECTS = wocky-sasl-utils-test.$(OBJEXT)
+wocky_sasl_utils_test_OBJECTS = $(am_wocky_sasl_utils_test_OBJECTS)
+wocky_sasl_utils_test_LDADD = $(LDADD)
 am_wocky_session_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-session-test.$(OBJEXT)
 wocky_session_test_OBJECTS = $(am_wocky_session_test_OBJECTS)
@@ -215,14 +225,15 @@ SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_connector_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
 	$(wocky_data_form_test_SOURCES) \
+	$(wocky_jid_validation_test_SOURCES) \
 	$(wocky_node_tree_test_SOURCES) \
 	$(wocky_pep_service_test_SOURCES) $(wocky_ping_test_SOURCES) \
 	$(wocky_porter_test_SOURCES) $(wocky_pubsub_node_test_SOURCES) \
 	$(wocky_pubsub_service_test_SOURCES) \
 	$(wocky_resource_contact_test_SOURCES) \
-	$(wocky_roster_test_SOURCES) $(wocky_session_test_SOURCES) \
-	$(wocky_stanza_test_SOURCES) $(wocky_test_sasl_auth_SOURCES) \
-	$(wocky_tls_test_SOURCES) \
+	$(wocky_roster_test_SOURCES) $(wocky_sasl_utils_test_SOURCES) \
+	$(wocky_session_test_SOURCES) $(wocky_stanza_test_SOURCES) \
+	$(wocky_test_sasl_auth_SOURCES) $(wocky_tls_test_SOURCES) \
 	$(wocky_xmpp_connection_test_SOURCES) \
 	$(wocky_xmpp_node_test_SOURCES) \
 	$(wocky_xmpp_reader_test_SOURCES) \
@@ -231,14 +242,15 @@ DIST_SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_connector_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
 	$(wocky_data_form_test_SOURCES) \
+	$(wocky_jid_validation_test_SOURCES) \
 	$(wocky_node_tree_test_SOURCES) \
 	$(wocky_pep_service_test_SOURCES) $(wocky_ping_test_SOURCES) \
 	$(wocky_porter_test_SOURCES) $(wocky_pubsub_node_test_SOURCES) \
 	$(wocky_pubsub_service_test_SOURCES) \
 	$(wocky_resource_contact_test_SOURCES) \
-	$(wocky_roster_test_SOURCES) $(wocky_session_test_SOURCES) \
-	$(wocky_stanza_test_SOURCES) $(wocky_test_sasl_auth_SOURCES) \
-	$(wocky_tls_test_SOURCES) \
+	$(wocky_roster_test_SOURCES) $(wocky_sasl_utils_test_SOURCES) \
+	$(wocky_session_test_SOURCES) $(wocky_stanza_test_SOURCES) \
+	$(wocky_test_sasl_auth_SOURCES) $(wocky_tls_test_SOURCES) \
 	$(wocky_xmpp_connection_test_SOURCES) \
 	$(wocky_xmpp_node_test_SOURCES) \
 	$(wocky_xmpp_reader_test_SOURCES) \
@@ -438,6 +450,7 @@ TEST_PROGS = wocky-xmpp-reader-test wocky-xmpp-readwrite-test \
 	wocky-session-test wocky-pep-service-test wocky-tls-test \
 	wocky-data-form-test wocky-pubsub-service-test \
 	wocky-pubsub-node-test wocky-connector-test wocky-ping-test \
+	wocky-jid-validation-test wocky-sasl-utils-test \
 	$(am__append_1)
 wocky_tls_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_tls_test_SOURCES = \
@@ -478,6 +491,8 @@ wocky_connector_test_SOURCES = \
 
 wocky_connector_test_LDADD = $(LDADD) @LIBSASL2_LIBS@
 wocky_connector_test_CFLAGS = $(AM_CFLAGS) @LIBSASL2_CFLAGS@ $(TLSDEFS)
+wocky_sasl_utils_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_sasl_utils_test_SOURCES = wocky-sasl-utils-test.c
 wocky_test_sasl_auth_DEPENDENCIES = $(LIBWOCKY)
 wocky_test_sasl_auth_SOURCES = \
    wocky-test-helper.c wocky-test-helper.h \
@@ -576,30 +591,18 @@ wocky_ping_test_SOURCES = \
   wocky-test-helper.c wocky-test-helper.h \
   wocky-test-stream.c wocky-test-stream.h
 
-AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@
+wocky_jid_validation_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_jid_validation_test_SOURCES = \
+  wocky-jid-validation-test.c \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h
+
+AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ \
+  @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@
+
 AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
 LDADD = $(top_builddir)/wocky/libwocky.la
-check_c_sources = \
-  $(wocky_tls_test_SOURCES) \
-  $(wocky_xmpp_connection_test_SOURCES) \
-  $(wocky_xmpp_readwrite_test_SOURCES) \
-  $(wocky_xmpp_reader_test_SOURCES) \
-  $(wocky_connector_test_SOURCES) \
-  $(wocky_test_sasl_auth_SOURCES) \
-  $(wocky_porter_test_SOURCES) \
-  $(wocky_xmpp_node_test_SOURCES) \
-  $(wocky_stanza_test_SOURCES) \
-  $(wocky_roster_test_SOURCES) \
-  $(wocky_bare_contact_test_SOURCES) \
-  $(wocky_resource_contact_test_SOURCES) \
-  $(wocky_contact_factory_test_SOURCES) \
-  $(wocky_session_test_SOURCES) \
-  $(wocky_pep_service_test_SOURCES) \
-  $(wocky_data_form_test_SOURCES) \
-  $(wocky_pubsub_service_test_SOURCES) \
-  $(wocky_pubsub_node_test_SOURCES) \
-  $(wocky_ping_test_SOURCES)
-
+check_c_sources = $(wildcard $(srcdir)/*.c) $(wildcard $(srcdir)/*.h)
 
 ############################################################################
 SUPPRESSIONS = \
@@ -677,6 +680,9 @@ wocky-contact-factory-test$(EXEEXT): $(wocky_contact_factory_test_OBJECTS) $(woc
 wocky-data-form-test$(EXEEXT): $(wocky_data_form_test_OBJECTS) $(wocky_data_form_test_DEPENDENCIES) 
 	@rm -f wocky-data-form-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_data_form_test_OBJECTS) $(wocky_data_form_test_LDADD) $(LIBS)
+wocky-jid-validation-test$(EXEEXT): $(wocky_jid_validation_test_OBJECTS) $(wocky_jid_validation_test_DEPENDENCIES) 
+	@rm -f wocky-jid-validation-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(wocky_jid_validation_test_OBJECTS) $(wocky_jid_validation_test_LDADD) $(LIBS)
 wocky-node-tree-test$(EXEEXT): $(wocky_node_tree_test_OBJECTS) $(wocky_node_tree_test_DEPENDENCIES) 
 	@rm -f wocky-node-tree-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_node_tree_test_OBJECTS) $(wocky_node_tree_test_LDADD) $(LIBS)
@@ -701,6 +707,9 @@ wocky-resource-contact-test$(EXEEXT): $(wocky_resource_contact_test_OBJECTS) $(w
 wocky-roster-test$(EXEEXT): $(wocky_roster_test_OBJECTS) $(wocky_roster_test_DEPENDENCIES) 
 	@rm -f wocky-roster-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_roster_test_OBJECTS) $(wocky_roster_test_LDADD) $(LIBS)
+wocky-sasl-utils-test$(EXEEXT): $(wocky_sasl_utils_test_OBJECTS) $(wocky_sasl_utils_test_DEPENDENCIES) 
+	@rm -f wocky-sasl-utils-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(wocky_sasl_utils_test_OBJECTS) $(wocky_sasl_utils_test_LDADD) $(LIBS)
 wocky-session-test$(EXEEXT): $(wocky_session_test_OBJECTS) $(wocky_session_test_DEPENDENCIES) 
 	@rm -f wocky-session-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_session_test_OBJECTS) $(wocky_session_test_LDADD) $(LIBS)
@@ -735,6 +744,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-bare-contact-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact-factory-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jid-validation-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-node-tree-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-ping-test.Po@am__quote@
@@ -744,6 +754,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pubsub-test-helpers.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-resource-contact-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-roster-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-sasl-utils-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-session-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-stanza-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-test-helper.Po@am__quote@

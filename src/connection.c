@@ -60,6 +60,7 @@
 #include "conn-sidecars.h"
 #include "conn-mail-notif.h"
 #include "conn-olpc.h"
+#include "conn-slacker.h"
 #include "debug.h"
 #include "disco.h"
 #include "media-channel.h"
@@ -97,7 +98,7 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
       conn_aliasing_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_AVATARS,
       conn_avatars_iface_init);
-    G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_CONNECTION_INTERFACE_CONTACT_INFO,
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CONTACT_INFO,
       conn_contact_info_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CAPABILITIES,
       capabilities_service_iface_init);
@@ -225,6 +226,8 @@ struct _GabbleConnectionPrivate
    * AdvertiseCapabilities or UpdateCapabilities, for vague historical
    * reasons */
   GabbleCapabilitySet *bonus_caps;
+  /* sidecar caps set by gabble_connection_update_sidecar_capabilities */
+  GabbleCapabilitySet *sidecar_caps;
   /* caps provided via ContactCapabilities.UpdateCapabilities ()
    * gchar * (client name) => GabbleCapabilitySet * */
   GHashTable *client_caps;
@@ -239,6 +242,10 @@ struct _GabbleConnectionPrivate
 
   /* timer used when trying to properly disconnect */
   guint disconnect_timer;
+
+  /* Number of things we are waiting for before changing the connection status
+   * to connected */
+  guint waiting_connected;
 
   gboolean closing;
   /* gobject housekeeping */
@@ -377,6 +384,7 @@ gabble_connection_constructor (GType type,
   priv->all_caps = gabble_capability_set_new ();
   priv->notify_caps = gabble_capability_set_new ();
   priv->legacy_caps = gabble_capability_set_new ();
+  priv->sidecar_caps = gabble_capability_set_new ();
   priv->client_caps = g_hash_table_new_full (g_str_hash, g_str_equal,
       g_free, (GDestroyNotify) gabble_capability_set_free);
 
@@ -694,9 +702,9 @@ gabble_connection_get_unique_name (TpBaseConnection *self)
 /* must be in the same order as GabbleListHandle in connection.h */
 static const char *list_handle_strings[] =
 {
+    "stored",       /* GABBLE_LIST_HANDLE_STORED */
     "publish",      /* GABBLE_LIST_HANDLE_PUBLISH */
     "subscribe",    /* GABBLE_LIST_HANDLE_SUBSCRIBE */
-    "stored",       /* GABBLE_LIST_HANDLE_STORED */
     "deny",         /* GABBLE_LIST_HANDLE_DENY */
     NULL
 };
@@ -726,6 +734,7 @@ base_connected_cb (TpBaseConnection *base_conn)
   GabbleConnection *conn = GABBLE_CONNECTION (base_conn);
 
   gabble_connection_connected_olpc (conn);
+  gabble_connection_slacker_start (conn);
 }
 
 #define TWICE(x) (x), (x)
@@ -742,7 +751,7 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
       TP_IFACE_CONNECTION_INTERFACE_SIMPLE_PRESENCE,
       TP_IFACE_CONNECTION_INTERFACE_PRESENCE,
       TP_IFACE_CONNECTION_INTERFACE_AVATARS,
-      GABBLE_IFACE_CONNECTION_INTERFACE_CONTACT_INFO,
+      TP_IFACE_CONNECTION_INTERFACE_CONTACT_INFO,
       TP_IFACE_CONNECTION_INTERFACE_CONTACTS,
       TP_IFACE_CONNECTION_INTERFACE_REQUESTS,
       GABBLE_IFACE_OLPC_GADGET,
@@ -757,6 +766,7 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
   static TpDBusPropertiesMixinPropImpl location_props[] = {
         { "LocationAccessControlTypes", NULL, NULL },
         { "LocationAccessControl", NULL, NULL },
+        { "SupportedLocationFeatures", NULL, NULL },
         { NULL }
   };
   static TpDBusPropertiesMixinPropImpl decloak_props[] = {
@@ -786,7 +796,7 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
           NULL,
           NULL,
         },
-        /* 3 */ { GABBLE_IFACE_CONNECTION_INTERFACE_CONTACT_INFO,
+        /* 3 */ { TP_IFACE_CONNECTION_INTERFACE_CONTACT_INFO,
           conn_contact_info_properties_getter,
           NULL,
           NULL,
@@ -1095,6 +1105,7 @@ gabble_connection_dispose (GObject *object)
   gabble_capability_set_free (priv->all_caps);
   gabble_capability_set_free (priv->notify_caps);
   gabble_capability_set_free (priv->legacy_caps);
+  gabble_capability_set_free (priv->sidecar_caps);
   gabble_capability_set_free (priv->bonus_caps);
 
   if (priv->disconnect_timer != 0)
@@ -1236,6 +1247,17 @@ OUT:
   return result;
 }
 
+static const gchar *
+get_bare_jid (GabbleConnection *conn)
+{
+  TpBaseConnection *base = TP_BASE_CONNECTION (conn);
+  TpHandleRepoIface *contact_handles = tp_base_connection_get_handles (base,
+      TP_HANDLE_TYPE_CONTACT);
+  TpHandle self = tp_base_connection_get_self_handle (base);
+
+  return tp_handle_inspect (contact_handles, self);
+}
+
 /**
  * gabble_connection_get_full_jid:
  *
@@ -1245,11 +1267,7 @@ OUT:
 gchar *
 gabble_connection_get_full_jid (GabbleConnection *conn)
 {
-  TpBaseConnection *base = TP_BASE_CONNECTION (conn);
-  TpHandleRepoIface *contact_handles = tp_base_connection_get_handles (base,
-      TP_HANDLE_TYPE_CONTACT);
-  TpHandle self = tp_base_connection_get_self_handle (base);
-  const gchar *bare_jid = tp_handle_inspect (contact_handles, self);
+  const gchar *bare_jid = get_bare_jid (conn);
 
   return g_strconcat (bare_jid, "/", conn->priv->resource, NULL);
 }
@@ -1461,6 +1479,7 @@ static LmHandlerResult connection_iq_unknown_cb (LmMessageHandler *,
     LmConnection *, LmMessage *, gpointer);
 static void connection_disco_cb (GabbleDisco *, GabbleDiscoRequest *,
     const gchar *, const gchar *, LmMessageNode *, GError *, gpointer);
+static void decrement_waiting_connected (GabbleConnection *connection);
 
 static void
 remote_closed_cb (WockyPorter *porter,
@@ -1656,13 +1675,53 @@ connector_error_disconnect (GabbleConnection *self,
       TP_CONNECTION_STATUS_DISCONNECTED, reason);
 }
 
+static void
+bare_jid_disco_cb (GabbleDisco *disco,
+    GabbleDiscoRequest *request,
+    const gchar *jid,
+    const gchar *node,
+    LmMessageNode *result,
+    GError *disco_error,
+    gpointer user_data)
+{
+  GabbleConnection *conn = user_data;
+  NodeIter i;
+
+  if (disco_error != NULL)
+    {
+      DEBUG ("Got disco error on bare jid: %s", disco_error->message);
+      return;
+    }
+
+  for (i = node_iter (result); i; i = node_iter_next (i))
+    {
+      LmMessageNode *child = node_iter_data (i);
+
+      if (!tp_strdiff (child->name, "identity"))
+        {
+          const gchar *category = lm_message_node_get_attribute (child,
+              "category");
+          const gchar *type = lm_message_node_get_attribute (child, "type");
+
+          if (!tp_strdiff (category, "pubsub") &&
+              !tp_strdiff (type, "pep"))
+            {
+              DEBUG ("Server advertises PEP support in our jid features");
+              conn->features |= GABBLE_CONNECTION_FEATURES_PEP;
+            }
+        }
+    }
+
+  decrement_waiting_connected (conn);
+}
+
 /**
  * connector_connected
  *
  * Stage 2 of connecting, this function is called once the connect operation
  * has finished. It checks if the connection succeeded, creates and starts
- * the WockyPorter, then sends a discovery request to find the
- * server's features.
+ * the WockyPorter, then sends two discovery requests to find the
+ * server's features (one to the server and one to our bare jid).
  */
 static void
 connector_connected (GabbleConnection *self,
@@ -1757,6 +1816,7 @@ connector_connected (GabbleConnection *self,
   /* set initial capabilities */
   gabble_connection_refresh_capabilities (self, NULL);
 
+  /* Disco server features */
   if (!gabble_disco_request_with_timeout (self->disco, GABBLE_DISCO_TYPE_INFO,
                                           priv->stream_server, NULL,
                                           disco_reply_timeout,
@@ -1772,6 +1832,23 @@ connector_connected (GabbleConnection *self,
           TP_CONNECTION_STATUS_DISCONNECTED,
           TP_CONNECTION_STATUS_REASON_NETWORK_ERROR);
     }
+
+  /* Disco our own bare jid to check if PEP is supported */
+  if (!gabble_disco_request_with_timeout (self->disco, GABBLE_DISCO_TYPE_INFO,
+      get_bare_jid (self), NULL, disco_reply_timeout, bare_jid_disco_cb, self,
+      G_OBJECT (self), &error))
+    {
+      DEBUG ("Sending disco request to our own bare jid failed: %s",
+          error->message);
+
+      g_error_free (error);
+
+      tp_base_connection_change_status ((TpBaseConnection *) self,
+          TP_CONNECTION_STATUS_DISCONNECTED,
+          TP_CONNECTION_STATUS_REASON_NETWORK_ERROR);
+    }
+
+  self->priv->waiting_connected = 2;
 }
 
 static void
@@ -1852,8 +1929,6 @@ disconnect_callbacks (TpBaseConnection *base)
   GabbleConnection *conn = GABBLE_CONNECTION (base);
   GabbleConnectionPrivate *priv = conn->priv;
 
-  DEBUG ("");
-
   g_assert (priv->iq_disco_cb != NULL);
   g_assert (priv->iq_unknown_cb != NULL);
   g_assert (priv->olpc_msg_cb != NULL);
@@ -1889,7 +1964,7 @@ disconnect_callbacks (TpBaseConnection *base)
  *
  * Stage 1 is _gabble_connection_connect calling wocky_connector_connect_async
  * Stage 2 is connector_connected initiating service discovery
- * Stage 3 is connection_disco_cb advertising initial presence, requesting
+ * Stage 3 is set_status_to_connected advertising initial presence, requesting
  *   the roster and setting the CONNECTED state
  */
 static gboolean
@@ -2067,6 +2142,8 @@ connection_shut_down (TpBaseConnection *base)
 
   priv->closing = TRUE;
 
+  gabble_connection_slacker_stop (self);
+
   if (priv->pinger != NULL)
     {
       g_object_unref (priv->pinger);
@@ -2104,7 +2181,7 @@ gabble_connection_fill_in_caps (GabbleConnection *self,
   GabblePresence *presence = self->self_presence;
   LmMessageNode *node = lm_message_get_node (presence_message);
   gchar *caps_hash;
-  gboolean voice_v1, video_v1;
+  gboolean share_v1, voice_v1, video_v1;
   GString *ext = g_string_new ("");
 
   /* XEP-0115 version 1.5 uses a verification string in the 'ver' attribute */
@@ -2120,15 +2197,19 @@ gabble_connection_fill_in_caps (GabbleConnection *self,
 
   /* Ensure this set of capabilities is in the cache. */
   gabble_presence_cache_add_own_caps (self->presence_cache, caps_hash,
-      gabble_presence_peek_caps (presence));
+      gabble_presence_peek_caps (presence), NULL);
 
   /* XEP-0115 deprecates 'ext' feature bundles. But we still need
    * BUNDLE_VOICE_V1 it for backward-compatibility with Gabble 0.2 */
 
   g_string_append (ext, BUNDLE_PMUC_V1);
 
+  share_v1 = gabble_presence_has_cap (presence, NS_GOOGLE_FEAT_SHARE);
   voice_v1 = gabble_presence_has_cap (presence, NS_GOOGLE_FEAT_VOICE);
   video_v1 = gabble_presence_has_cap (presence, NS_GOOGLE_FEAT_VIDEO);
+
+  if (share_v1)
+    g_string_append (ext, " " BUNDLE_SHARE_V1);
 
   if (voice_v1)
     g_string_append (ext, " " BUNDLE_VOICE_V1);
@@ -2220,6 +2301,7 @@ gabble_connection_refresh_capabilities (GabbleConnection *self,
       gabble_capabilities_get_fixed_caps ());
   gabble_capability_set_update (self->priv->all_caps, self->priv->notify_caps);
   gabble_capability_set_update (self->priv->all_caps, self->priv->legacy_caps);
+  gabble_capability_set_update (self->priv->all_caps, self->priv->sidecar_caps);
   gabble_capability_set_update (self->priv->all_caps, self->priv->bonus_caps);
 
   g_hash_table_iter_init (&iter, self->priv->client_caps);
@@ -2346,6 +2428,22 @@ add_feature_node (gpointer namespace,
   lm_message_node_set_attribute (feature_node, "var", namespace);
 }
 
+static void
+add_identity_node (const GabbleDiscoIdentity *identity,
+    gpointer result_query)
+{
+  LmMessageNode *identity_node;
+
+  identity_node = lm_message_node_add_child
+      (result_query, "identity", NULL);
+  lm_message_node_set_attribute (identity_node, "category", identity->category);
+  lm_message_node_set_attribute (identity_node, "type", identity->type);
+  if (identity->lang)
+    lm_message_node_set_attribute (identity_node, "lang", identity->lang);
+  if (identity->name)
+    lm_message_node_set_attribute (identity_node, "name", identity->name);
+}
+
 /**
  * connection_iq_disco_cb
  *
@@ -2362,7 +2460,9 @@ connection_iq_disco_cb (LmMessageHandler *handler,
   LmMessage *result;
   LmMessageNode *iq, *result_iq, *query, *result_query, *identity;
   const gchar *node, *suffix;
-  const GabbleCapabilitySet *features;
+  const GabbleCapabilityInfo *info = NULL;
+  const GabbleCapabilitySet *features = NULL;
+  const GPtrArray *identities = NULL;
 
   if (lm_message_get_sub_type (message) != LM_MESSAGE_SUB_TYPE_GET)
     return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
@@ -2404,15 +2504,6 @@ connection_iq_disco_cb (LmMessageHandler *handler,
 
   DEBUG ("got disco request for node %s", node);
 
-  /* Every entity MUST have at least one identity (XEP-0030). Gabble publishs
-   * one identity. If you change the identity here, you also need to change
-   * caps_hash_compute_from_self_presence(). */
-  identity = lm_message_node_add_child
-      (result_query, "identity", NULL);
-  lm_message_node_set_attribute (identity, "category", "client");
-  lm_message_node_set_attribute (identity, "name", PACKAGE_STRING);
-  lm_message_node_set_attribute (identity, "type", CLIENT_TYPE);
-
   if (node == NULL)
     features = gabble_presence_peek_caps (self->self_presence);
   /* If node is not NULL, it can be either a caps bundle as defined in the
@@ -2420,8 +2511,31 @@ connection_iq_disco_cb (LmMessageHandler *handler,
    * 1.5. Let's see if it's a verification string we've told the cache about.
    */
   else
-    features = gabble_presence_cache_peek_own_caps (self->presence_cache,
+    info = gabble_presence_cache_peek_own_caps (self->presence_cache,
         suffix);
+
+  if (info)
+    {
+      features = info->cap_set;
+      identities = info->identities;
+    }
+
+  if (identities && identities->len != 0)
+    {
+      g_ptr_array_foreach ((GPtrArray *) identities,
+          (GFunc) add_identity_node, result_query);
+    }
+  else
+    {
+      /* Every entity MUST have at least one identity (XEP-0030). Gabble publishs
+       * one identity. If you change the identity here, you also need to change
+       * caps_hash_compute_from_self_presence(). */
+      identity = lm_message_node_add_child
+          (result_query, "identity", NULL);
+      lm_message_node_set_attribute (identity, "category", "client");
+      lm_message_node_set_attribute (identity, "name", PACKAGE_STRING);
+      lm_message_node_set_attribute (identity, "type", CLIENT_TYPE);
+    }
 
   if (features == NULL)
     {
@@ -2430,6 +2544,10 @@ connection_iq_disco_cb (LmMessageHandler *handler,
        * because capabilities_get_features() always includes a few bonus
        * features...
        */
+
+      if (!tp_strdiff (suffix, BUNDLE_SHARE_V1))
+        features = gabble_capabilities_get_bundle_share_v1 ();
+
       if (!tp_strdiff (suffix, BUNDLE_VOICE_V1))
         features = gabble_capabilities_get_bundle_voice_v1 ();
 
@@ -2498,13 +2616,68 @@ connection_iq_unknown_cb (LmMessageHandler *handler,
 }
 
 /**
- * connection_disco_cb
+ * set_status_to_connected
  *
- * Stage 3 of connecting, this function is called by GabbleDisco after the
- * result of the non-blocking server feature discovery call is known. It sends
- * the user's initial presence to the server, marking them as available,
- * and requests the roster.
+ * Stage 3 of connecting, this function is called once all the events we were
+ * waiting for happened.
+ * It sends the user's initial presence to the server, marking them as
+ * available, and requests the roster.
  */
+static void
+set_status_to_connected (GabbleConnection *conn)
+{
+  GError *error = NULL;
+  TpBaseConnection *base = (TpBaseConnection *) conn;
+
+  if (conn->features & GABBLE_CONNECTION_FEATURES_PEP)
+    {
+      const gchar *ifaces[] = { GABBLE_IFACE_OLPC_BUDDY_INFO,
+          GABBLE_IFACE_OLPC_ACTIVITY_PROPERTIES,
+          NULL };
+
+      tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
+    }
+
+  if (conn->features & GABBLE_CONNECTION_FEATURES_GOOGLE_MAIL_NOTIFY)
+    {
+       const gchar *ifaces[] =
+         { GABBLE_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION, NULL };
+
+      tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
+    }
+
+  /* send presence to the server to indicate availability */
+  /* TODO: some way for the user to set this */
+  if (!conn_presence_signal_own_presence (conn, NULL, &error))
+    {
+      DEBUG ("sending initial presence failed: %s", error->message);
+      goto ERROR;
+    }
+
+  /* go go gadget on-line */
+  tp_base_connection_change_status (base,
+      TP_CONNECTION_STATUS_CONNECTED, TP_CONNECTION_STATUS_REASON_REQUESTED);
+
+  return;
+
+ERROR:
+  if (error != NULL)
+    g_error_free (error);
+
+  tp_base_connection_change_status (base,
+      TP_CONNECTION_STATUS_DISCONNECTED,
+      TP_CONNECTION_STATUS_REASON_NETWORK_ERROR);
+}
+
+static void
+decrement_waiting_connected (GabbleConnection *conn)
+{
+  conn->priv->waiting_connected--;
+
+  if (conn->priv->waiting_connected == 0)
+    set_status_to_connected (conn);
+}
+
 static void
 connection_disco_cb (GabbleDisco *disco,
                      GabbleDiscoRequest *request,
@@ -2555,8 +2728,10 @@ connection_disco_cb (GabbleDisco *disco,
 
               if (!tp_strdiff (category, "pubsub") &&
                   !tp_strdiff (type, "pep"))
-                /* XXX: should we also check for specific PubSub <feature>s? */
-                conn->features |= GABBLE_CONNECTION_FEATURES_PEP;
+                {
+                  DEBUG ("Server advertises PEP support in its features");
+                  conn->features |= GABBLE_CONNECTION_FEATURES_PEP;
+                }
             }
           else if (0 == strcmp (child->name, "feature"))
             {
@@ -2581,35 +2756,7 @@ connection_disco_cb (GabbleDisco *disco,
       DEBUG ("set features flags to %d", conn->features);
     }
 
-  if (conn->features & GABBLE_CONNECTION_FEATURES_PEP)
-    {
-      const gchar *ifaces[] = { GABBLE_IFACE_OLPC_BUDDY_INFO,
-          GABBLE_IFACE_OLPC_ACTIVITY_PROPERTIES,
-          NULL };
-
-      tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
-    }
-
-  if (conn->features & GABBLE_CONNECTION_FEATURES_GOOGLE_MAIL_NOTIFY)
-    {
-       const gchar *ifaces[] =
-         { GABBLE_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION, NULL };
-
-      tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
-    }
-
-  /* send presence to the server to indicate availability */
-  /* TODO: some way for the user to set this */
-  if (!conn_presence_signal_own_presence (conn, NULL, &error))
-    {
-      DEBUG ("sending initial presence failed: %s", error->message);
-      goto ERROR;
-    }
-
-  /* go go gadget on-line */
-  tp_base_connection_change_status (base,
-      TP_CONNECTION_STATUS_CONNECTED, TP_CONNECTION_STATUS_REASON_REQUESTED);
-
+  decrement_waiting_connected (conn);
   return;
 
 ERROR:
@@ -3370,4 +3517,73 @@ void
 gabble_connection_set_disco_reply_timeout (guint timeout)
 {
   disco_reply_timeout = timeout;
+}
+
+void
+gabble_connection_update_sidecar_capabilities (GabbleConnection *self,
+                                               const GabbleCapabilitySet *add_set,
+                                               const GabbleCapabilitySet *remove_set)
+{
+  GabbleConnectionPrivate *priv = self->priv;
+  GabbleCapabilitySet *save_set;
+
+  if (add_set == NULL && remove_set == NULL)
+    return;
+
+  if (add_set != NULL)
+    gabble_capability_set_update (priv->sidecar_caps, add_set);
+  if (remove_set != NULL)
+    gabble_capability_set_exclude (priv->sidecar_caps, remove_set);
+
+  if (DEBUGGING)
+    {
+      if (add_set != NULL)
+        {
+          gchar *add_str = gabble_capability_set_dump (add_set, "  ");
+
+          DEBUG ("sidecar caps to add:\n%s", add_str);
+          g_free (add_str);
+        }
+
+      if (remove_set != NULL)
+        {
+          gchar *remove_str = gabble_capability_set_dump (remove_set, "  ");
+
+          DEBUG ("sidecar caps to remove:\n%s", remove_str);
+          g_free (remove_str);
+        }
+    }
+
+  if (gabble_connection_refresh_capabilities (self, &save_set))
+    {
+      _emit_capabilities_changed (self, TP_BASE_CONNECTION (self)->self_handle,
+          save_set, priv->all_caps);
+      gabble_capability_set_free (save_set);
+    }
+}
+
+gchar *
+gabble_connection_add_sidecar_own_caps (GabbleConnection *self,
+    const GabbleCapabilitySet *cap_set,
+    const GPtrArray *identities)
+{
+  GPtrArray *identities_copy = ((identities == NULL) ?
+      gabble_disco_identity_array_new () :
+      gabble_disco_identity_array_copy (identities));
+  gchar *ver;
+
+  /* XEP-0030 requires at least 1 identity. We don't need more. */
+  if (identities_copy->len == 0)
+    g_ptr_array_add (identities_copy,
+        gabble_disco_identity_new ("client", CLIENT_TYPE,
+            NULL, PACKAGE_STRING));
+
+  ver = gabble_caps_hash_compute (cap_set, identities_copy);
+
+  gabble_presence_cache_add_own_caps (self->presence_cache, ver,
+      cap_set, identities_copy);
+
+  gabble_disco_identity_array_free (identities_copy);
+
+  return ver;
 }

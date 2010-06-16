@@ -265,6 +265,35 @@ add_to_geoloc_node (const gchar *tp_name,
   return TRUE;
 }
 
+static LmHandlerResult
+set_location_sent_cb (GabbleConnection *conn,
+    LmMessage *sent_msg,
+    LmMessage *reply_msg,
+    GObject *object,
+    gpointer user_data)
+{
+  DBusGMethodInvocation *context = user_data;
+  GError *error = NULL;
+
+  error = gabble_message_get_xmpp_error (reply_msg);
+  if (error == NULL)
+    {
+      dbus_g_method_return (context);
+    }
+  else
+    {
+      GError tp_error = { TP_ERRORS, TP_ERROR_NETWORK_ERROR,
+          error->message };
+
+      DEBUG ("SetLocation failed: %s", error->message);
+
+      dbus_g_method_return_error (context, &tp_error);
+      g_error_free (error);
+    }
+
+  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+}
+
 static void
 location_set_location (TpSvcConnectionInterfaceLocation *iface,
                        GHashTable *location,
@@ -311,16 +340,14 @@ location_set_location (TpSvcConnectionInterfaceLocation *iface,
         }
     }
 
-  /* XXX: use _ignore_reply */
-  if (!_gabble_connection_send (conn, msg, NULL))
+  if (!_gabble_connection_send_with_reply (conn, msg, set_location_sent_cb,
+        G_OBJECT (conn), context, NULL))
     {
       GError error = { TP_ERRORS, TP_ERROR_NETWORK_ERROR,
           "Failed to send msg" };
 
       dbus_g_method_return_error (context, &error);
     }
-  else
-    dbus_g_method_return (context);
 
 out:
   lm_message_unref (msg);
@@ -345,6 +372,8 @@ conn_location_properties_getter (GObject *object,
                                  GValue *value,
                                  gpointer getter_data)
 {
+  GabbleConnection *conn = GABBLE_CONNECTION (object);
+
   if (!tp_strdiff (g_quark_to_string (name), "LocationAccessControlTypes"))
     {
       guint access_control_type =
@@ -380,6 +409,15 @@ conn_location_properties_getter (GObject *object,
       tp_g_value_slice_free (allocated_value);
 
       g_value_take_boxed (value, access_control);
+    }
+  else if (name == g_quark_from_static_string ("SupportedLocationFeatures"))
+    {
+      TpLocationFeatures flags = 0;
+
+      if (conn->features & GABBLE_CONNECTION_FEATURES_PEP)
+        flags |= TP_LOCATION_FEATURE_CAN_SET;
+
+      g_value_set_uint (value, flags);
     }
   else
     {

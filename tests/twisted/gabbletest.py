@@ -87,14 +87,17 @@ def sync_stream(q, stream):
         predicate=(lambda event:
             event.stanza['id'] == id and event.iq_type == 'result'))
 
-class JabberAuthenticator(xmlstream.Authenticator):
-    "Trivial XML stream authenticator that accepts one username/digest pair."
-
+class GabbleAuthenticator(xmlstream.Authenticator):
     def __init__(self, username, password, resource=None):
         self.username = username
         self.password = password
         self.resource = resource
+        self.bare_jid = None
+        self.full_jid = None
         xmlstream.Authenticator.__init__(self)
+
+class JabberAuthenticator(GabbleAuthenticator):
+    "Trivial XML stream authenticator that accepts one username/digest pair."
 
     # Patch in fix from http://twistedmatrix.com/trac/changeset/23418.
     # This monkeypatch taken from Gadget source code
@@ -145,18 +148,18 @@ class JabberAuthenticator(xmlstream.Authenticator):
         if self.resource is not None:
             assertEquals(self.resource, str(resource[0]))
 
+        self.bare_jid = '%s@localhost' % self.username
+        self.full_jid = '%s/%s' % (self.bare_jid, resource)
+
         result = IQ(self.xmlstream, "result")
         result["id"] = iq["id"]
         self.xmlstream.send(result)
         self.xmlstream.dispatch(self.xmlstream, xmlstream.STREAM_AUTHD_EVENT)
 
 
-class XmppAuthenticator(xmlstream.Authenticator):
+class XmppAuthenticator(GabbleAuthenticator):
     def __init__(self, username, password, resource=None):
-        xmlstream.Authenticator.__init__(self)
-        self.username = username
-        self.password = password
-        self.resource = resource
+        GabbleAuthenticator.__init__(self, username, password, resource)
         self.authenticated = False
 
     def streamStarted(self, root=None):
@@ -201,8 +204,9 @@ class XmppAuthenticator(xmlstream.Authenticator):
         result = IQ(self.xmlstream, "result")
         result["id"] = iq["id"]
         bind = result.addElement((NS_XMPP_BIND, 'bind'))
-        jid = bind.addElement('jid', content=('%s@localhost/%s' %
-                                              (self.username, resource)))
+        self.bare_jid = '%s@localhost' % self.username
+        self.full_jid = '%s/%s' % (self.bare_jid, resource)
+        jid = bind.addElement('jid', content=self.full_jid)
         self.xmlstream.send(result)
 
         self.xmlstream.dispatch(self.xmlstream, xmlstream.STREAM_AUTHD_EVENT)
@@ -340,25 +344,36 @@ class BaseXmlStream(xmlstream.XmlStream):
 
     def _cb_authd(self, _):
         # called when stream is authenticated
+        assert self.authenticator.full_jid is not None
+        assert self.authenticator.bare_jid is not None
+
         self.addObserver(
-            "/iq/query[@xmlns='http://jabber.org/protocol/disco#info']",
+            "/iq[@to='localhost']/query[@xmlns='http://jabber.org/protocol/disco#info']",
             self._cb_disco_iq)
+        self.addObserver(
+            "/iq[@to='%s']/query[@xmlns='http://jabber.org/protocol/disco#info']"
+                % self.authenticator.bare_jid,
+            self._cb_bare_jid_disco_iq)
         self.event_func(servicetest.Event('stream-authenticated'))
 
     def _cb_disco_iq(self, iq):
-        if iq.getAttribute('to') == 'localhost':
-            # add PEP support
-            nodes = xpath.queryForNodes(
-                "/iq/query[@xmlns='http://jabber.org/protocol/disco#info']",
-                iq)
-            query = nodes[0]
-            identity = query.addElement('identity')
-            identity['category'] = 'pubsub'
-            identity['type'] = 'pep'
+        iq['type'] = 'result'
+        iq['from'] = iq['to']
+        self.send(iq)
 
-            iq['type'] = 'result'
-            iq['from'] = iq['to']
-            self.send(iq)
+    def _cb_bare_jid_disco_iq(self, iq):
+        # advertise PEP support
+        nodes = xpath.queryForNodes(
+            "/iq/query[@xmlns='http://jabber.org/protocol/disco#info']",
+            iq)
+        query = nodes[0]
+        identity = query.addElement('identity')
+        identity['category'] = 'pubsub'
+        identity['type'] = 'pep'
+
+        iq['type'] = 'result'
+        iq['from'] = iq['to']
+        self.send(iq)
 
     def onDocumentEnd(self):
         self.event_func(servicetest.Event('stream-closed'))
@@ -391,6 +406,13 @@ class GoogleXmlStream(BaseXmlStream):
             iq['type'] = 'result'
             iq['from'] = 'localhost'
             self.send(iq)
+
+    def _cb_bare_jid_disco_iq(self, iq):
+        # Google talk doesn't support PEP :(
+        iq['type'] = 'result'
+        iq['from'] = iq['to']
+        self.send(iq)
+
 
 def make_connection(bus, event_func, params=None, suffix=''):
     # Gabble accepts a resource in 'account', but the value of 'resource'
@@ -607,7 +629,7 @@ def _elem_add(elem, *children):
             raise ValueError(
                 'invalid child object %r (must be element or unicode)', child)
 
-def elem(a, b=None, **kw):
+def elem(a, b=None, attrs={}, **kw):
     r"""
     >>> elem('foo')().toXml()
     u'<foo/>'
@@ -618,6 +640,10 @@ def elem(a, b=None, **kw):
     >>> elem('foo', x='1')(u'hello',
     ...         elem('http://foo.org', 'bar', y='2')(u'bye')).toXml()
     u"<foo x='1'>hello<bar xmlns='http://foo.org' y='2'>bye</bar></foo>"
+    >>> elem('foo', attrs={'xmlns:bar': 'urn:bar', 'bar:cake': 'yum'})(
+    ...   elem('bar:e')(u'i')
+    ... ).toXml()
+    u"<foo xmlns:bar='urn:bar' bar:cake='yum'><bar:e>i</bar:e></foo>"
     """
 
     class _elem(domish.Element):
@@ -630,7 +656,22 @@ def elem(a, b=None, **kw):
     else:
         elem = _elem((None, a))
 
-    for k, v in kw.iteritems():
+    # Can't just update kw into attrs, because that *modifies the parameter's
+    # default*. Thanks python.
+    allattrs = {}
+    allattrs.update(kw)
+    allattrs.update(attrs)
+
+    # First, let's pull namespaces out
+    realattrs = {}
+    for k, v in allattrs.iteritems():
+        if k.startswith('xmlns:'):
+            abbr = k[len('xmlns:'):]
+            elem.localPrefixes[abbr] = v
+        else:
+            realattrs[k] = v
+
+    for k, v in realattrs.iteritems():
         if k == 'from_':
             elem['from'] = v
         else:
@@ -680,77 +721,3 @@ def make_presence(_from, to='test@localhost', type=None, show=None,
         x.addElement('photo').addContent(photo)
 
     return presence
-
-def expect_list_channel(q, bus, conn, name, contacts, lp_contacts=[],
-                        rp_contacts=[]):
-    return expect_contact_list_channel(q, bus, conn, cs.HT_LIST, name,
-        contacts, lp_contacts=lp_contacts, rp_contacts=rp_contacts)
-
-def expect_group_channel(q, bus, conn, name, contacts, lp_contacts=[],
-                         rp_contacts=[]):
-    return expect_contact_list_channel(q, bus, conn, cs.HT_GROUP, name,
-        contacts, lp_contacts=lp_contacts, rp_contacts=rp_contacts)
-
-def expect_contact_list_channel(q, bus, conn, ht, name, contacts,
-                                lp_contacts=[], rp_contacts=[]):
-    """
-    Expects NewChannel and NewChannels signals for the
-    contact list with handle type 'ht' and ID 'name', and checks that its
-    members, lp members and rp members are exactly 'contacts', 'lp_contacts'
-    and 'rp_contacts'.
-    Returns a proxy for the channel.
-    """
-
-    old_signal, new_signal = q.expect_many(
-            EventPattern('dbus-signal', signal='NewChannel'),
-            EventPattern('dbus-signal', signal='NewChannels'),
-            )
-
-    path, type, handle_type, handle, suppress_handler = old_signal.args
-
-    assertEquals(cs.CHANNEL_TYPE_CONTACT_LIST, type)
-    assertEquals(name, conn.InspectHandles(handle_type, [handle])[0])
-
-    chan = wrap_channel(bus.get_object(conn.bus_name, path),
-        cs.CHANNEL_TYPE_CONTACT_LIST)
-    members = chan.Group.GetMembers()
-
-    assertEquals(sorted(contacts),
-        sorted(conn.InspectHandles(cs.HT_CONTACT, members)))
-
-    lp_handles = conn.RequestHandles(cs.HT_CONTACT, lp_contacts)
-    rp_handles = conn.RequestHandles(cs.HT_CONTACT, rp_contacts)
-
-    # NB. comma: we're unpacking args. Thython!
-    info, = new_signal.args
-    assertLength(1, info) # one channel
-    path_, emitted_props = info[0]
-
-    assertEquals(path_, path)
-
-    assertEquals(cs.CHANNEL_TYPE_CONTACT_LIST, emitted_props[cs.CHANNEL_TYPE])
-    assertEquals(ht, emitted_props[cs.TARGET_HANDLE_TYPE])
-    assertEquals(handle, emitted_props[cs.TARGET_HANDLE])
-
-    channel_props = chan.Properties.GetAll(cs.CHANNEL)
-    assertEquals(handle, channel_props.get('TargetHandle'))
-    assertEquals(ht, channel_props.get('TargetHandleType'))
-    assertEquals(cs.CHANNEL_TYPE_CONTACT_LIST, channel_props.get('ChannelType'))
-    assertContains(cs.CHANNEL_IFACE_GROUP, channel_props.get('Interfaces'))
-    assertEquals(name, channel_props['TargetID'])
-    assertEquals(False, channel_props['Requested'])
-    assertEquals('', channel_props['InitiatorID'])
-    assertEquals(0, channel_props['InitiatorHandle'])
-
-    group_props = chan.Properties.GetAll(cs.CHANNEL_IFACE_GROUP)
-    assertContains('HandleOwners', group_props)
-    assertContains('Members', group_props)
-    assertEquals(members, group_props['Members'])
-    assertContains('LocalPendingMembers', group_props)
-    actual_lp_handles = [x[0] for x in group_props['LocalPendingMembers']]
-    assertEquals(sorted(lp_handles), sorted(actual_lp_handles))
-    assertContains('RemotePendingMembers', group_props)
-    assertEquals(sorted(rp_handles), sorted(group_props['RemotePendingMembers']))
-    assertContains('GroupFlags', group_props)
-
-    return chan

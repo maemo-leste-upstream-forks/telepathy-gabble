@@ -57,6 +57,7 @@ struct _WockyJabberAuthPrivate
   GSimpleAsyncResult *result;
   WockyAuthRegistry *auth_registry;
   gboolean allow_plain;
+  gboolean is_secure;
 };
 
 static void
@@ -264,7 +265,7 @@ auth_failed (WockyJabberAuth *self, gint code, const gchar *format, ...)
   gchar *message;
   va_list args;
   GSimpleAsyncResult *r;
-  GError *error;
+  GError *error = NULL;
   WockyJabberAuthPrivate *priv = self->priv;
 
   auth_reset (self);
@@ -306,9 +307,7 @@ stream_error (WockyJabberAuth *self, WockyStanza *stanza)
 
   if (type == WOCKY_STANZA_TYPE_STREAM_ERROR)
     {
-      GError *error;
-
-      error = wocky_xmpp_stream_error_from_node (
+      GError *error = wocky_xmpp_stream_error_from_node (
           wocky_stanza_get_top_node (stanza));
 
       auth_failed (self, WOCKY_AUTH_ERROR_STREAM, "%s: %s",
@@ -576,7 +575,7 @@ jabber_auth_fields (GObject *source,
               mechanisms = g_slist_append (mechanisms, MECH_JABBER_DIGEST);
 
             wocky_auth_registry_start_auth_async (priv->auth_registry,
-                mechanisms, priv->allow_plain, FALSE,
+                mechanisms, priv->allow_plain, priv->is_secure,
                 priv->username, priv->password, NULL, priv->session_id,
                 wocky_jabber_auth_start_cb, self);
 
@@ -621,6 +620,7 @@ jabber_auth_init_sent (GObject *source,
 void
 wocky_jabber_auth_authenticate_async (WockyJabberAuth *self,
     gboolean allow_plain,
+    gboolean is_secure,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data)
@@ -633,6 +633,8 @@ wocky_jabber_auth_authenticate_async (WockyJabberAuth *self,
   DEBUG ("");
 
   priv->allow_plain = allow_plain;
+  priv->is_secure = is_secure;
+
   priv->result = g_simple_async_result_new (G_OBJECT (self),
       callback, user_data, wocky_jabber_auth_authenticate_finish);
 

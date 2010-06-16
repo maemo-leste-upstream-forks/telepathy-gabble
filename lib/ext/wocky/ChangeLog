@@ -1,3 +1,166 @@
+commit 51affd5099e4178cbd07dc379c3970a9986da74a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 14 15:03:35 2010 +0100
+
+    Check wocky_porter_send_iq_finish()'s return is used
+
+ wocky/wocky-porter.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 1394d8694c3c064587586aa84ce8631c3473d91a
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Sun Jun 13 13:48:39 2010 +0100
+
+    Add support for SCRAM-SHA1
+
+ wocky/Makefile.am           |    2 +
+ wocky/wocky-auth-registry.c |   12 +-
+ wocky/wocky-sasl-scram.c    |  590 +++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-sasl-scram.h    |   72 ++++++
+ 4 files changed, 675 insertions(+), 1 deletions(-)
+
+commit e1eec240c432419d8b3d39c904bfe6b1a93b7508
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Sun Jun 13 13:41:58 2010 +0100
+
+    Test our HMAC-SHA1 implementation
+
+ .gitignore                    |    1 +
+ tests/Makefile.am             |   10 ++-
+ tests/wocky-sasl-utils-test.c |  163 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 172 insertions(+), 2 deletions(-)
+
+commit 4fa923f35c99a3b5e404c22cab9ee36e1fbdd416
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Sun Jun 13 13:37:33 2010 +0100
+
+    Add utilities for nonce generation and HMAC-SHA1
+
+ wocky/Makefile.am             |    2 +
+ wocky/wocky-sasl-digest-md5.c |   19 +-------
+ wocky/wocky-sasl-utils.c      |  103 +++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-sasl-utils.h      |   36 ++++++++++++++
+ 4 files changed, 143 insertions(+), 17 deletions(-)
+
+commit 5a1976e7de0701f4fd71844833a45b7b01e57361
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Jun 14 12:22:27 2010 +0100
+
+    Use wildcard for coding style checks to catch everything
+
+ tests/Makefile.am               |   23 +----------------------
+ tests/wocky-dummy-xmpp-server.c |    6 +++---
+ 2 files changed, 4 insertions(+), 25 deletions(-)
+
+commit 32feaf82621dbfeeedf3e17b81b7140a3f02b8ae
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Sun Jun 13 12:50:23 2010 +0100
+
+    Turn on coding style checking
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 49a9539dc42da2ceb3266bee9e2a13bba51a6ae3
+Merge: a676233 60800a4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 14 12:22:55 2010 +0100
+
+    Merge branch 'domain-validation'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 60800a465f33693ed9aeb42630974d60e6465bf8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 11 16:49:08 2010 +0100
+
+    Squash warnings about uninitialized GError *s
+
+ wocky/wocky-jabber-auth.c |    6 ++----
+ wocky/wocky-sasl-auth.c   |    6 ++----
+ 2 files changed, 4 insertions(+), 8 deletions(-)
+
+commit cba01d1776b8e2193ddd5dc0d3f741807bda61d8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 11 16:39:00 2010 +0100
+
+    Accept valid Unicode domains
+    
+    Previously we did not accept any non-ASCII domains, which meant we
+    dropped perfectly valid messages from perfectly valid contacts. :o
+    
+    This patch accepts any non-ASCII characters in domains. This is still
+    not right — for instance, the freshly-added test case demonstrates that
+    spaces in domains are properly rejected, but non-breaking spaces are
+    improperly accepted — but it's better than no validation at all (which
+    was my previous attempt at fixing this) and avoids us dropping messages.
+
+ tests/Makefile.am                 |   12 ++++++-
+ tests/wocky-jid-validation-test.c |   56 +++++++++++++++++++++++++++++++++++++
+ wocky/wocky-utils.c               |   17 ++++++++---
+ 3 files changed, 78 insertions(+), 7 deletions(-)
+
+commit 4cce83a850b1f1f950de9c3d8aa00d11875aacab
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 11 16:38:44 2010 +0100
+
+    Add missing include to test helper code.
+
+ tests/wocky-test-helper.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit a676233d662dfd993cdb4f5183fd61cba990b9e3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 11 15:45:34 2010 +0100
+
+    Revert "Don't forbid valid non-ASCII domains."
+    
+    This reverts commit cc01b390f4c64c253d911da688e9c71cd7e026f1, which
+    broke tests that check that invalid domains are rejected. I'll add
+    slightly more than no validation.
+
+ wocky/wocky-utils.c |   14 ++++++++++----
+ 1 files changed, 10 insertions(+), 4 deletions(-)
+
+commit cc01b390f4c64c253d911da688e9c71cd7e026f1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jun 11 15:17:46 2010 +0100
+
+    Don't forbid valid non-ASCII domains.
+    
+    Previously perfectly valid IDNs in their Unicode form (rather than their
+    "xn--"-prefixed ASCII form) were rejected. Not only did this mean that
+    users could not sign in with JIDs on IDN domains, it also meant that we
+    rejected incoming messages from IDN-y JIDs.
+    
+    This patch corrects that, at the cost of performing no validation beyond
+    checking that the string is non-empty.
+
+ wocky/wocky-utils.c |   14 ++++----------
+ 1 files changed, 4 insertions(+), 10 deletions(-)
+
+commit 4c31c7003d554c18740e5a4c1aaf364c41b2f50b
+Merge: 642d874 d82d98f
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Tue Jun 8 08:18:22 2010 -0700
+
+    Merge branch 'auth-is-secure'
+
+commit d82d98f0234a753a226ec18b0c7b065a61f8d3e0
+Author: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+Date:   Tue May 25 12:11:12 2010 -0700
+
+    Properly use is_secure argument in wocky_auth_registry_start_auth_async.
+
+ examples/connect.c           |    4 ++--
+ tests/wocky-test-sasl-auth.c |    2 +-
+ wocky/wocky-connector.c      |    7 ++++---
+ wocky/wocky-jabber-auth.c    |    6 +++++-
+ wocky/wocky-jabber-auth.h    |    1 +
+ wocky/wocky-sasl-auth.c      |    8 +++++---
+ wocky/wocky-sasl-auth.h      |    1 +
+ 7 files changed, 19 insertions(+), 10 deletions(-)
+
 commit 642d874431617fffa170c48cfdb8cabe5510041f
 Merge: 8158b75 1c9443b
 Author: Will Thompson <will.thompson@collabora.co.uk>

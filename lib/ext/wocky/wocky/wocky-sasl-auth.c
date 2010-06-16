@@ -253,7 +253,7 @@ auth_failed (WockySaslAuth *sasl, gint code, const gchar *format, ...)
   gchar *message;
   va_list args;
   GSimpleAsyncResult *r;
-  GError *error;
+  GError *error = NULL;
   WockySaslAuthPrivate *priv = sasl->priv;
 
   auth_reset (sasl);
@@ -295,9 +295,7 @@ stream_error (WockySaslAuth *sasl, WockyStanza *stanza)
 
   if (type == WOCKY_STANZA_TYPE_STREAM_ERROR)
     {
-      GError *error;
-
-      error = wocky_xmpp_stream_error_from_node (
+      GError *error = wocky_xmpp_stream_error_from_node (
           wocky_stanza_get_top_node (stanza));
 
       auth_failed (sasl, WOCKY_AUTH_ERROR_STREAM, "%s: %s",
@@ -641,7 +639,9 @@ wocky_sasl_auth_start_cb (GObject *source_object,
  * receiver from the server */
 void
 wocky_sasl_auth_authenticate_async (WockySaslAuth *sasl,
-    WockyStanza *features, gboolean allow_plain,
+    WockyStanza *features,
+    gboolean allow_plain,
+    gboolean is_secure,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data)
@@ -672,8 +672,8 @@ wocky_sasl_auth_authenticate_async (WockySaslAuth *sasl,
     callback, user_data, wocky_sasl_auth_authenticate_finish);
 
   wocky_auth_registry_start_auth_async (priv->auth_registry, mechanisms,
-      allow_plain, TRUE, priv->username, priv->password, priv->server, NULL,
-      wocky_sasl_auth_start_cb, sasl);
+      allow_plain, is_secure, priv->username, priv->password, priv->server,
+      NULL, wocky_sasl_auth_start_cb, sasl);
 
 out:
   for (t = mechanisms ; t != NULL; t = g_slist_next (t))
