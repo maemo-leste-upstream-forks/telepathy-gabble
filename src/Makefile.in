@@ -70,11 +70,12 @@ am_libgabble_convenience_la_OBJECTS = auth-manager.lo base64.lo \
 	call-stream-endpoint.lo capabilities.lo caps-cache.lo \
 	caps-hash.lo caps-channel-manager.lo conn-aliasing.lo \
 	conn-avatars.lo conn-contact-info.lo conn-location.lo \
-	conn-olpc.lo conn-presence.lo conn-sidecars.lo \
+	conn-olpc.lo conn-presence.lo conn-sidecars.lo conn-slacker.lo \
 	conn-mail-notif.lo connection.lo connection-manager.lo \
 	debug.lo disco.lo error.lo ft-channel.lo ft-manager.lo \
-	gabble.lo im-channel.lo im-factory.lo jingle-content.lo \
-	jingle-factory.lo jingle-media-rtp.lo jingle-session.lo \
+	gabble.lo gtalk-file-collection.lo im-channel.lo im-factory.lo \
+	jingle-content.lo jingle-factory.lo jingle-share.lo \
+	jingle-media-rtp.lo jingle-session.lo \
 	jingle-transport-google.lo jingle-transport-rawudp.lo \
 	jingle-transport-iceudp.lo jingle-transport-iface.lo \
 	media-channel.lo media-channel-hold.lo media-stream.lo \
@@ -84,7 +85,7 @@ am_libgabble_convenience_la_OBJECTS = auth-manager.lo base64.lo \
 	presence.lo presence-cache.lo private-tubes-factory.lo \
 	request-pipeline.lo roster.lo roster-channel.lo \
 	roomlist-channel.lo roomlist-manager.lo search-channel.lo \
-	search-manager.lo server-sasl-channel.lo sidecar.lo \
+	search-manager.lo server-sasl-channel.lo sidecar.lo slacker.lo \
 	tube-iface.lo tubes-channel.lo tube-dbus.lo tube-stream.lo \
 	util.lo vcard-manager.lo
 am__objects_1 = gabble-signals-marshal.lo
@@ -192,7 +193,11 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+MCE_CFLAGS = @MCE_CFLAGS@
+MCE_LIBS = @MCE_LIBS@
 MKDIR_P = @MKDIR_P@
+NICE_CFLAGS = @NICE_CFLAGS@
+NICE_LIBS = @NICE_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
@@ -295,6 +300,7 @@ BUILT_SOURCES = \
     gabble-signals-marshal.list
 
 CLEANFILES = $(BUILT_SOURCES)
+EXTRA_DIST = 
 libgabble_convenience_la_SOURCES = \
     auth-manager.h \
     auth-manager.c \
@@ -332,10 +338,12 @@ libgabble_convenience_la_SOURCES = \
     call-stream.c \
     call-stream-endpoint.h \
     call-stream-endpoint.c \
+    $(top_srcdir)/gabble/capabilities-set.h \
     capabilities.h \
     capabilities.c \
     caps-cache.h \
     caps-cache.c \
+    $(top_srcdir)/gabble/caps-hash.h \
     caps-hash.h \
     caps-hash.c \
     caps-channel-manager.h \
@@ -354,8 +362,11 @@ libgabble_convenience_la_SOURCES = \
     conn-presence.c \
     conn-sidecars.h \
     conn-sidecars.c \
+    conn-slacker.h \
+    conn-slacker.c \
     conn-mail-notif.h \
     conn-mail-notif.c \
+    $(top_srcdir)/gabble/connection.h \
     connection.h \
     connection.c \
     connection-manager.h \
@@ -364,6 +375,7 @@ libgabble_convenience_la_SOURCES = \
     debug.c \
     disco.h \
     disco.c \
+    $(top_srcdir)/gabble/disco-identity.h \
     error.c \
     error.h \
     ft-channel.c \
@@ -372,6 +384,8 @@ libgabble_convenience_la_SOURCES = \
     ft-manager.h \
     gabble.c \
     gabble.h \
+    gtalk-file-collection.h \
+    gtalk-file-collection.c \
     im-channel.h \
     im-channel.c \
     im-factory.h \
@@ -380,6 +394,8 @@ libgabble_convenience_la_SOURCES = \
     jingle-content.c \
     jingle-factory.h \
     jingle-factory.c \
+    jingle-share.h \
+    jingle-share.c \
     jingle-media-rtp.h \
     jingle-media-rtp.c \
     jingle-session.h \
@@ -406,6 +422,7 @@ libgabble_convenience_la_SOURCES = \
     muc-channel.c \
     muc-factory.h \
     muc-factory.c \
+    $(top_srcdir)/gabble/namespaces.h \
     namespaces.h \
     olpc-activity.h \
     olpc-activity.c \
@@ -445,6 +462,8 @@ libgabble_convenience_la_SOURCES = \
     server-sasl-channel.c \
     $(top_srcdir)/gabble/sidecar.h \
     sidecar.c \
+    slacker.h \
+    slacker.c \
     tube-iface.h \
     tube-iface.c \
     tubes-channel.h \
@@ -453,6 +472,7 @@ libgabble_convenience_la_SOURCES = \
     tube-dbus.c \
     tube-stream.h \
     tube-stream.c \
+    $(top_srcdir)/gabble/types.h \
     types.h \
     util.h \
     util.c \
@@ -484,15 +504,14 @@ noinst_LTLIBRARIES = libgabble-convenience.la
 AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
-	    @SOUP_CFLAGS@ @UUID_CFLAGS@ @GMODULE_CFLAGS@ \
+	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @UUID_CFLAGS@ @GMODULE_CFLAGS@ \
 	    @SQLITE_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
-	    -I $(top_srcdir)/gabble \
 	    -DG_LOG_DOMAIN=\"gabble\" \
 	    -DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\"
 
 ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
-	    @SOUP_LIBS@ @UUID_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
+	    @SOUP_LIBS@ @NICE_LIBS@ @UUID_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -635,6 +654,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-olpc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-presence.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-sidecars.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-slacker.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connection-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug.Plo@am__quote@
@@ -644,12 +664,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ft-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gabble-signals-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gabble.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtalk-file-collection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/im-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/im-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-content.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-media-rtp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-session.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-share.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-google.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-iceudp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-iface.Plo@am__quote@
@@ -681,6 +703,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/search-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server-sasl-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sidecar.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/slacker.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-dbus.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-iface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-stream.Plo@am__quote@

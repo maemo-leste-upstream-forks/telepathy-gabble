@@ -63,7 +63,9 @@ handwritten_headers = \
   wocky-resource-contact.h \
   wocky-roster.h \
   wocky-sasl-auth.h \
+  wocky-sasl-utils.h \
   wocky-sasl-digest-md5.h \
+  wocky-sasl-scram.h \
   wocky-sasl-plain.h \
   wocky-session.h \
   wocky-stanza.h \
@@ -101,6 +103,8 @@ handwritten_sources = \
   wocky-roster.c \
   wocky-sasl-auth.c \
   wocky-sasl-digest-md5.c \
+  wocky-sasl-scram.c \
+  wocky-sasl-utils.c \
   wocky-sasl-plain.c \
   wocky-session.c \
   wocky-stanza.c \

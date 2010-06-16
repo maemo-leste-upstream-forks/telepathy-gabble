@@ -55,7 +55,9 @@ TEST_PROGS = wocky-xmpp-reader-test \
   wocky-pubsub-service-test \
   wocky-pubsub-node-test \
   wocky-connector-test \
-  wocky-ping-test
+  wocky-ping-test \
+  wocky-jid-validation-test \
+  wocky-sasl-utils-test
 
 wocky_tls_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_tls_test_SOURCES = \
@@ -100,6 +102,9 @@ wocky_connector_test_CFLAGS = $(AM_CFLAGS) @LIBSASL2_CFLAGS@ $(TLSDEFS)
 if HAVE_LIBSASL2
   TEST_PROGS += wocky-test-sasl-auth
 endif
+
+wocky_sasl_utils_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_sasl_utils_test_SOURCES = wocky-sasl-utils-test.c
 
 wocky_test_sasl_auth_DEPENDENCIES = $(LIBWOCKY)
 wocky_test_sasl_auth_SOURCES = \
@@ -200,33 +205,21 @@ wocky_ping_test_SOURCES = \
   wocky-test-helper.c wocky-test-helper.h \
   wocky-test-stream.c wocky-test-stream.h
 
-AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@
+wocky_jid_validation_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_jid_validation_test_SOURCES = \
+  wocky-jid-validation-test.c \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h
+
+AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ \
+  @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@
+
 AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
 LDADD = $(top_builddir)/wocky/libwocky.la
 
 check_PROGRAMS = $(TEST_PROGS)
 
-check_c_sources = \
-  $(wocky_tls_test_SOURCES) \
-  $(wocky_xmpp_connection_test_SOURCES) \
-  $(wocky_xmpp_readwrite_test_SOURCES) \
-  $(wocky_xmpp_reader_test_SOURCES) \
-  $(wocky_connector_test_SOURCES) \
-  $(wocky_test_sasl_auth_SOURCES) \
-  $(wocky_porter_test_SOURCES) \
-  $(wocky_xmpp_node_test_SOURCES) \
-  $(wocky_stanza_test_SOURCES) \
-  $(wocky_roster_test_SOURCES) \
-  $(wocky_bare_contact_test_SOURCES) \
-  $(wocky_resource_contact_test_SOURCES) \
-  $(wocky_contact_factory_test_SOURCES) \
-  $(wocky_session_test_SOURCES) \
-  $(wocky_pep_service_test_SOURCES) \
-  $(wocky_data_form_test_SOURCES) \
-  $(wocky_pubsub_service_test_SOURCES) \
-  $(wocky_pubsub_node_test_SOURCES) \
-  $(wocky_ping_test_SOURCES)
-
+check_c_sources = $(wildcard $(srcdir)/*.c) $(wildcard $(srcdir)/*.h)
 
 all: $(TEST_PROGS)
 

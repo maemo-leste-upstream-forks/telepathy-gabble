@@ -1,5 +1,5 @@
-/* gabble/gabble.h — API for telepathy-gabble plugins
- *
+/*
+ * gabble.h — API for telepathy-gabble plugins
  * Copyright © 2010 Collabora Ltd.
  *
  * This library is free software; you can redistribute it and/or
@@ -24,9 +24,15 @@
 
 #include <glib-object.h>
 
+#include <gabble/capabilities-set.h>
+#include <gabble/caps-hash.h>
+#include <gabble/connection.h>
+#include <gabble/disco-identity.h>
 #include <gabble/error.h>
+#include <gabble/namespaces.h>
 #include <gabble/plugin.h>
 #include <gabble/sidecar.h>
+#include <gabble/types.h>
 
 #undef IN_GABBLE_PLUGINS_GABBLE_H
 

@@ -1,12 +1,661 @@
-commit aa4cf58ceddc02ad54e74fe584756286725c1dac
+commit 1a8e0579fdb9a8ed8d7a1e6f5d1b7012a15807f8
 Author: Will Thompson <will.thompson@collabora.co.uk>
-Date:   2010-06-03 19:31:19 +0100
+Date:   2010-06-14 17:32:25 +0100
 
-    Version 0.9.12
+    Add jingle-share test helpers to EXTRA_DIST
+
+commit 29e6939239ea7f2c00ba04959b87b553fdf2b05f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-14 17:12:04 +0100
+
+    Version 0.9.13
+
+commit 2262c7873f851dcc2f50b4fd075e16b1975027a2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-14 17:09:10 +0100
+
+    NEWS for 0.9.13
+
+commit 653d6172632758ac2648cb6522f66079803fd5e3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-14 16:58:29 +0100
+
+    Update Wocky for domain-validation fixes
+
+commit cb7a20e11e60c48cdce78ed7e7c18bf728176806
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-14 16:57:14 +0100
+
+    Remove useless DEBUG("")
+
+commit 98be6decabde18758bc56ae41431a19964e637cc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-14 15:17:04 +0100
+
+    Unrace FT tests waiting for NewChannels
     
-    Can I go home now?
+    The buildbot hit this failure:
+    
+      File ".../jingle-share/file_transfer_helper.py", line 259, in check_new_channel
+        assert props[cs.CHANNEL_TYPE] == cs.CHANNEL_TYPE_FILE_TRANSFER, props
+    AssertionError: {...,
+      u'org.freedesktop.Telepathy.Channel.ChannelType':
+        u'org.freedesktop.Telepathy.Channel.Type.ContactList', ... }
+    FAIL: jingle-share/test-receive-file-and-sender-disconnect-while-transfering.py
+    
+    This is because the tests waited for any NewChannels signal, and then
+    asserted that it's the FT channel we're expecting. But in fact, it's a
+    roster channel. This patch fixes both copies of file_transfer_helper.py.
 
-commit 1bf8e4d580fb64b7809160f4d48d9b74c3664c8d
+commit a69216bb1030532e72a9d2a6b147890025125390
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-01-29 11:50:29 +0000
+
+    Support namespace prefixes in gabbletest's elem() DSL
+    
+    Reviewed-by: Senko Rašić <senko.rasic@collabora.co.uk>
+
+commit 6bee292088b18b92efa19a507025466ef027b0f8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-14 12:14:39 +0100
+
+    Be explicit to wocky's configure
+    
+    Explicitely pass flags to wocky's configure for coding style checks
+    and compiler warnings. This makes us independent of wocky's default
+    rules.
+
+commit 8c00dbceb8c3cbda5f3bd86968fb6c118c0e3b5f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-11 14:55:53 +0100
+
+    caps/receive-jingle.py: don't assume that an offline contact's handle becomes invalid
+    
+    This isn't guaranteed to happen immediately. In the current version of
+    Gabble, the previous test would pass when run with all the other tests,
+    but would fail when run individually.
+
+commit 32e5d04eb7d2dfcc883f28c741204c60c14f1117
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-11 14:35:24 +0100
+
+    caps/receive-jingle.py: produce better diagnostics on failure
+
+commit 449d115768fff1c3f6598224be6caf9342097648
+Merge: a362480 66fda08
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-11 13:09:59 +0100
+
+    Merge branch 'roster'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 66fda08eabc697bab8044d646799edb122c873cd
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-11 12:58:09 +0100
+
+    rostertest: remove the old, unsafe (order-dependent) channel expectations
+
+commit eb6dafa21117c2a0dde0c0846d29db3790bf7bf8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-10 12:56:46 +0100
+
+    gabble_roster_handle_get_subscription etc.: use _gabble_roster_item_lookup
+
+commit 12297e61d2cc728e7ca66ae9a5106419371148a9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-09 18:26:35 +0100
+
+    Split _gabble_roster_item_get into lookup and ensure versions
+    
+    Use the ensure version everywhere, except in roster_edited_cb where we
+    don't really need to create an item just to see whether there are
+    unsent edits.
+
+commit 8d82c11220891eeb4587876468a7b8c162b6d73e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-11 12:35:50 +0100
+
+    Re-order ContactList channel handles, to verify that the tests are order-independent
+
+commit 990307b3e923ce39fa188b4d2337fb7fc6d91ed4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-11 12:33:28 +0100
+
+    Make remaining roster tests independent of signal emission order
+
+commit d8ce800b433271171839a96c7235b408bf701a57
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-11 12:24:41 +0100
+
+    roster/group*.py: be independent of channels' ordering
+
+commit dfaa7c20fc5df89a095660d9c47ef50159f4a261
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-11 12:23:09 +0100
+
+    test-roster: use check_contact_list_signals
+
+commit a362480ed59a15ad4efbf3f6e9982ec719d9248a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-08 15:13:26 +0100
+
+    Test that we handle malformed <message type=''/> attrs
+
+commit f39fdbf16756a68485f29c4a3fdda63b384bc493
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-11 12:17:55 +0100
+
+    rostertest: add a more correct way to expect roster signals
+    
+    Many tests expect channels to appear in a particular order, which is a
+    problem while porting to TpBaseContactList.
+
+commit 3981b2792af1f1771ccc4170c287f3072f9794aa
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-11 12:10:39 +0100
+
+    Move roster test code from gabbletest to roster/rostertest.py
+
+commit b7dcafcaa3cf72b3cd6a6948a068970b36b552b5
+Merge: 8dbdeed 1513b23
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-10 14:28:48 +0100
+
+    Merge branch 'igoogle-merge-test'
+
+commit 1513b23d9fe474d25e113a9f051f6b8e0429db16
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-09 19:14:23 +0100
+
+    Ignore unknown component names, remove dead code
+
+commit d235320e90f44479c8bcc92471a8279448a0accc
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-09 17:55:42 +0100
+
+    Close as the very first thing in dispose
+
+commit 9ad5ececdaa1408c50ef7dc3aab8f3877a7d14f1
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-09 17:55:06 +0100
+
+    Set closed on ft-channel before emitting close as we might be freed afterwards
+
+commit 6dc97684a3ac0dbacbb04fe4fc1764b213bb68d7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-09 17:51:11 +0100
+
+    By the time the ft-manager is disposing all channels should have been closed
+
+commit 8dbdeedb09d5253dd3b8f558892b772dba8be0d5
+Merge: 3946f63 e99178c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-09 17:37:27 +0100
+
+    Merge branch 'roster'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit e99178c7c550020124a8d95b3200eb416bcc755e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-30 15:41:42 +0100
+
+    Refactor a little chunk out of process_roster()
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit e7ab0e5296899d54f6f48af483f89a43c017b0a9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-30 12:24:00 +0100
+
+    process_roster: clarify the scope of a handle variable
+    
+    It's silly to use the same variable both in the body of the loop for
+    contact handles, and for list channel handles...
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 04fdc34897f911fbc572073f01e0b0196b1822cc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-30 12:21:07 +0100
+
+    Don't delay removing items from the roster.
+    
+    I'm pretty sure the FIXME is correct: for each item, we hold a ref to
+    the handle in referenced_handles until the end of the function. So we
+    don't need to keep the items kicking around until the end of the
+    function just to keep the handles alive.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 1ab374724ea8c64e46dd0b0ef8811dbe6a38458d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-09 17:02:07 +0100
+
+    process_roster: fix coding style; got_roster_iq: fix typo in comment
+    
+    [Separated from a larger commit -smcv]
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit fcb7cee7ac033efa58eaa07abd1caa0855e1053b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-09 17:01:00 +0100
+
+    process_roster: adjust variable declarations, and pre-initialize them
+    
+    [Separated from a larger commit -smcv]
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 1a77c2543197212cffe1ee71c31ed8b9f757d8a3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-09 16:56:13 +0100
+
+    Re-indent process_roster()
+    
+    This is a whitespace-only change.
+
+commit 825120552d23f5dc37549312ccc1b6831fe6c95a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-09 16:55:07 +0100
+
+    Convert artificial block into a mis-indentation by moving local variables to function scope
+
+commit 5b9320678ea6d60a66b9c65bef21ef320df3bd1f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-09 16:53:05 +0100
+
+    Factor out processing a roster push from the monster roster-munching function
+    
+    [Separated from a larger commit -smcv]
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit ea58f49adc1b2d5d7f5b542bd76367fedb9e7230
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-09 16:41:35 +0100
+
+    Factor out validate_roster_item() from gabble_roster_iq_cb()
+    
+    [Separated from a larger commit -smcv]
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 3dcd693aaebd399b57340ce2ed75247fbbe96f30
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-09 16:17:22 +0100
+
+    Have a unique version hash on each call
+
+commit b536c75d6617fe44c465347b3abf613fdd01b877
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-30 11:01:50 +0100
+
+    Correctly default contacts on 'subscribe' to offline.
+    
+    If we haven't received presence for a contact, we determine whether to
+    report them as offline or unknown based on our roster. In theory:
+    
+    • If we've received the roster, and it shows that we should be receiving
+      their presence, then we assume they're offline.
+    • Otherwise, we show them as unknown.
+    
+    Unfortunately the existing logic is backwards: it shows contacts with
+    subscription='from' as offline, but should in fact be looking for
+    subscription='to'. This patch fixes this, and fixes the test.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit be3bd7b468077dc423893ec3d42fcddfb2642f0e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-09 16:16:25 +0100
+
+    Move common code to a utils file
+
+commit 3946f6385caa94f22da92711925a768482492f95
+Merge: 964639a 15a0e70
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-09 12:38:44 +0100
+
+    Merge branch 'location-flags'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 964639a9d12cd68d89f2041700795d002d1c9e1c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-09 12:24:51 +0100
+
+    Fix disco identity comparison function
+    
+    Callbacks for g_ptr_array_sort() take pointers to the elements, not the
+    elements themselves. This has tripped me up on several occasions.
+
+commit 3db6b29b52602aede881a97d8de962510806dbf3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-09 12:13:44 +0100
+
+    Improve assertion when check_hash fails.
+    
+    This might at least mean we can see which case is failing...
+
+commit c17a96dfddef7b03eb3a7d511d7840c0f530c00a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-09 11:46:09 +0100
+
+    BaseXmlStream: pick up the JID from the authenticator instead of assuming test@localhost
+    
+    This fixes tests like connect-twice, which use multiple JIDs.
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit f719f16d6cee43e37dbbafd81c2422e47a9cbe9c
+Merge: 93e7d22 742246d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-06-09 11:39:06 +0200
+
+    Merge branch 'location'
+
+commit 742246dc15b4145b03e2f1295d57fe136b80e836
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-06-09 11:33:59 +0200
+
+    BaseXmlStream: implement standard PEP disco
+    
+    BaseXmlStream should implement the standard protocol and pep-support.py test
+    the legacy one.
+
+commit f68a31f67b5e64a8cee28c09f6fd039b7496e2cf
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-06-09 11:20:54 +0200
+
+    fix typo
+
+commit 93e7d22042f75546e503188b01da4cee14fe25ea
+Merge: 9a1e2f0 37decc4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-08 19:06:38 +0100
+
+    Merge branch 'plugins'
+    
+    Reviewed-by: André Moreira Magalhães <andre.magalhaes@collabora.co.uk>
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 99d3ca3bd25c4b65eb27ee19e6d2d88c9b875911
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-08 19:02:33 +0100
+
+    Close all FT channels on disconnect
+
+commit 02911b81b28086c6854d3aa03d9f4ed1b6855633
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-08 19:01:26 +0100
+
+    expose API to close FT channels
+
+commit 37decc4a4c3b1956a6ddfa0e85bc0e1162a67935
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-08 18:46:32 +0100
+
+    Skip sidecar-own-caps entirely if not PLUGINS_ENABLED
+
+commit 82d775262bc20794288a38123e2b3d1c7206294c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-08 18:45:50 +0100
+
+    Fix indentation of GabbleDiscoIdentity functions.
+    
+    Also, use gtk-doc markup not doxygen markup. If these comments are ever
+    parsed, it'll be by gtk-doc in Wocky.
+
+commit 53841380ae02bb025d899d36623301c620f79158
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-08 18:40:29 +0100
+
+    Slice-allocate GabbleDiscoIdentity
+
+commit 8cfeee692566bfafce9572f3649dcd37a64827ce
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-08 18:40:02 +0100
+
+    Warn if returned caps hashes aren't used.
+
+commit 6a96b2fc4d97110412d1a18c6cc7da4560bf6b64
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-08 14:45:42 -0300
+
+    plugin API: Use const qualifier for read-only params in gabble_connection_update_sidecar_capabilities.
+
+commit 6662b92acbdf1daf7eaf5d6a49ac4d2a6f8b7cac
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-08 14:43:34 -0300
+
+    plugin API: gabble_connection_sidecar_add_own_caps now adds a default identity if none is passed.
+    
+    Moved the code to add a default identity in case none is provided from
+    gabble_caps_hash_compute to gabble_connection_sidecar_add_own_caps.
+
+commit f8a3be4f75a3bfac03342b22fc2295e2e173e404
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-08 18:11:35 +0100
+
+    Jingle sessions work in terms of full jids these days
+
+commit e183d9117548544f7b5c2ee2d74cc6d24c92238e
+Merge: 9a1e2f0 6de667f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-08 17:19:42 +0100
+
+    Merge branch 'iGoogled' into master
+    
+    Conflicts:
+    	extensions/all.xml
+    	src/Makefile.am
+    	src/debug.c
+    	src/debug.h
+    	src/ft-channel.c
+
+commit 6de667f09ceca056a47f4824cd29d4697fe2bd8f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-08 16:47:29 +0100
+
+    Don't exit the loop when finding the first known media type
+
+commit 9a1e2f0f68cc66d55a3f80f61d976c2c48342950
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-08 12:53:34 +0100
+
+    Use telepathy-glib's code for ContactInfo
+    
+    We already depend on the required version, 0.11.3.
+    Some types from ContactInfo are used in ContactSearch, and need to be
+    converted into <tp:external-type>.
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 15a0e70ba2ed65c2e274ff0adc6bf28bcfd0da9d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-08 12:41:13 +0100
+
+    Test SupportedLocationFeatures
+
+commit 42754299b3e61b474086ccaa0a6d72b9b90910c4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-08 12:41:01 +0100
+
+    Implement SupportedLocationFeatures
+
+commit 4f9625a62ffd1791ef24039dc5f74b915966cca7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-08 12:35:39 +0100
+
+    Require telepathy-glib 0.11.6, for spec 0.19.6
+
+commit 1437db49eaa480e94bb28db9a4032baff34cdaea
+Merge: 37fd503 dc25b88
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-07 16:10:29 +0100
+
+    Merge branch 'device-idle-0.9'
+    
+    Reviewed-by: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+
+commit 5a543162d4884a191c1884488c9f241144a21026
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-07 10:57:41 -0300
+
+    sidecar-own-caps test: Make sure the returned caps are correct by re-computing the hash and testing against original hash.
+
+commit 7b9622202e36cb917b41ef1b622205f93bac47c1
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-07 10:55:40 -0300
+
+    Renamed sidecar_own_caps to sidecar-own-caps as tests should use - instead of _.
+
+commit 06fcf4fdc02cbb953162463b0a84d22861706ac8
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-07 08:54:18 -0300
+
+    plugin API: gabble_connection_add_sidecar_own_caps now compute the hash and returns it.
+    
+    gabble_connection_add_sidecar_own_caps now computes the hash and returns it
+    instead of receiving the hash as a param, as all needed info used to compute the
+    hash is already received as params.
+
+commit dc25b88b2d0ae30fdbebce220cb9e95fdca0a5c7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-26 11:10:15 +0100
+
+    Slacker: chain up in dispose; remove finalize stub
+
+commit 839b22e6555db942ab7ab430b9587a4cb2999e5e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-22 11:30:19 +0100
+
+    Explicitly flush the queue after disabling it.
+    
+    It seems that the server doesn't send you the queue's contents when you
+    disable it, so we have to explicitly flush it.
+
+commit 03c31c6a4f7b67ab1045cd327af48442c4bbd0fe
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-21 19:51:07 +0100
+
+    Add a test for MCE device idleness support
+
+commit 8ce6fb60a4428f2906cf0ce2a24abfb21f8c6eec
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-21 14:48:28 +0100
+
+    Cork presence updates on Google Talk connections
+
+commit 043ee850c3e905957dc1047301f8350a5fea5946
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-04-21 13:20:18 +0100
+
+    Add a watcher for MCE device state
+
+commit 74d34028f2dcd6b9c6fc4c9689f86123fe7e85f1
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-04 15:38:43 -0300
+
+    Added code to test sidecar own caps functionality.
+
+commit 35a39b5140decdca22b3b8e513cb9e7fa73e94ea
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-04 15:38:10 -0300
+
+    plugins/test: Added code to export own caps, to be used by sidecar test cases.
+
+commit ab12e8ac1808276ea9b98889d6ae716b28ff2114
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-04 13:25:19 -0300
+
+    connection: Proper add identities to disco replies for all code paths.
+    
+    Proper add identities to disco replies for all code paths instead of only adding
+    them for queries for the "pmuc-v1".
+
+commit 3246058db3e13fb74fe277bdd7350469c5e5894d
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-04 14:42:20 -0300
+
+    plugin API: Added namespaces.h to repository.
+
+commit ed4b30c444f453e602091817b77089a568e0b3fc
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-04 14:44:39 -0300
+
+    caps-hash: Improved algorithm to order identities.
+
+commit eb851a727cb5b837cd18c36b9466e4540126087f
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-04 14:37:17 -0300
+
+    plugin API: Improved API for array of GabbleDiscoIdentity.
+    
+    Added gabble_disco_identity_array_new which creates a GPtrArray and set it's
+    free element func. Also set the free element func for arrays copied using
+    gabble_disco_identity_array_free.
+
+commit cdc39fb2af4c71a740a0b4b6b577c06ad2b9b352
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-04 13:36:07 -0300
+
+    plugin API: Fixed copyright to 2010 in disco-identity.h.
+
+commit bd6dc2c985f227ffd07519b8ee6dfdb6dce2b524
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-04 13:37:44 -0300
+
+    connection: Removed duplicated gabble_connection_get_type and related macros definitions.
+    
+    Removed duplicated gabble_connection_get_type and related macros definitions,
+    the definitions are already in gabble/connection.h
+
+commit 9aa38130b9be6f099b18263cdf8f95cf332f614c
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-04 13:29:15 -0300
+
+    plugin API: Removed the prefix/suffix __ from header guards.
+    
+    According to http://gcc.gnu.org/onlinedocs/gcc-2.95.3/cpp_1.html#SEC8
+    the header guards in non-system header files should be FOO_H not
+    __FOO_H__. The double-underscore is reserved for system headers.
+
+commit f4fac368b5e1284dd46dd5d16c956f02ee73be2f
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-04 13:27:03 -0300
+
+    plugin API: Fixed typo in sidecar.h header definition.
+
+commit 37fd503b5a583f06e247e22a3a4ea0b0c0046927
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-04 11:57:06 +0100
+
+    Insert missing \, woopsy
+
+commit 7e4f3b6f849125d33b53c986538c71b44ab6318b
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 18:08:42 -0300
+
+    caps-hash: Proper copy array of GabbleDiscoIdentity objects.
+
+commit 04b339521d279e5de640bf9747e28952636a7369
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 17:35:35 -0300
+
+    plugin API: Export some namespaces needed/useful by plugins.
+
+commit cdab792d76333a500ba8d6cf8edf8259e6846526
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 21:15:44 +0100
+
+    Sod this, I'm off to eat truffle pasta.
+
+commit fcaeaef41b142a32add6cdfce3b1cf484aef50f0
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-06-03 21:02:25 +0100
 
@@ -17,6 +666,12 @@ Date:   2010-06-03 21:02:25 +0100
     but only if --enable-plugin-api, which I CBA to do right now.)
     
     But we should also `make uninstall` the headers we install.
+
+commit 7a91e2f8595d897e55cca56223feb8d957821396
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-03 19:31:19 +0100
+
+    Version 0.9.12
 
 commit 2ef7ff9fc0368c23ff0177d88c46ec3da54bd113
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -37,6 +692,44 @@ Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-06-03 20:38:19 +0100
 
     Add callutils to EXTRA_DIST.
+
+commit 74601297eede0bbac5f776d66ab8b5919e3f0521
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 16:16:24 -0300
+
+    plugin API: Added method to allow sidecars to set their own specific capabilities.
+
+commit a21158acbbca5bf174c97c7d6b1fa1696d3bddfc
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 16:16:06 -0300
+
+    Proper add identities to disco#info reply.
+
+commit 3362e97fe4d31bc038fc71a2c90ef35cbd5d7fc1
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 16:14:05 -0300
+
+    Add identities field to GabbleCapabilityInfo so identities can be presented in disco#info.
+
+commit 7ad30a33fb27cb0ded980938ccdbbd04d261c816
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 16:10:43 -0300
+
+    Export CapabilityInfo as GabbleCapabilityInfo for connection.c usage.
+    
+    This is useful so connection can proper use identities in the caps.
+
+commit b18a24420c9950887cd56227eddc0e09bb2d7e2a
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 16:05:02 -0300
+
+    plugin API: Added method to compute caps hash.
+
+commit 8ce720c220a5ef8f4e187fd36294513684f45a2c
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 16:02:51 -0300
+
+    caps-hash: Use GabbleDiscoIdentity to represent identities.
 
 commit 8ff4bfc157bcc3cf9f79a6f67cd8a91648317a32
 Merge: 5ad1526 86ae157
@@ -62,6 +755,87 @@ Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-03-22 16:53:10 +0000
 
     Delegate installing headers to Wocky.
+
+commit 1f2d9e61aeac9f7944c644a03371bff76192ecd5
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 15:34:45 -0300
+
+    plugin API: Added GabbleDiscoIdentity type and helper methods.
+    
+    GabbleDiscoIdentity will be used by plugins that want to set their own caps
+    containing identities.
+
+commit b56083b4ae21d4a8f5b4a5b72a30f523949b02aa
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 06:25:26 -0300
+
+    plugin API: Export GabbleConnection so plugins can use it instead of using TpBaseConnection.
+
+commit b725c2a8a393aa62de1cbf630c1b7c70c3cbc979
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 06:22:33 -0300
+
+    plugin API: Added method to allow sidecars to set their own capabilities.
+
+commit f1e0b7fe0655339060e8fe10c819ef0d7459571e
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 06:12:40 -0300
+
+    plugin API: Added gabble/types.h that contains type definitions to be used by plugins.
+    
+    Added types.h and moved all exported type definitions to it.
+    Also changed include directives to use gabble/header instead of just header, to
+    avoid name collision.
+
+commit 70fe353b277568126cee1f65ad8b18bac3a30b1e
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 06:01:16 -0300
+
+    plugin API: Export GabbleCapabilitiesSet.
+    
+    Moved capabilities-set definitions from src/capabilities.h to
+    gabbe/capabilities-set.h so it can be used by plugins. Also replaced the usage
+    of LmMessageNode to WockyNode as lib/loudmouth is not installed.
+
+commit de11d04a0384481d5949b035ce64e519ea2e7483
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 06:27:09 -0300
+
+    plugin API: Let error.h be included directly if wanted.
+    
+    There is no point in now allowing error.h to be included directly.
+
+commit bfe56f166fee68b2dc1c48c9f226beeffc4f773a
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 05:54:36 -0300
+
+    plugin API: Add G_BEGIN/END_DECLS.
+
+commit 0ceb97b6b734599a8ed4f07c68eda33db3f26516
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 05:47:57 -0300
+
+    plugin API: Add missing and standardize header guards declaration.
+    
+    With this change name clashes are more difficult to happen as it's
+    not normal for other projects to use __GABBLE_PLUGINS_XXX__ for header guards
+    while __PLUGIN_H__ and __SIDECAR_H__ are more common.
+    
+    Also in a later patch new files with the same name as files found in src/ will
+    be added and appending GABBLE_PLUGINS to header guards avoid conflicts with the
+    header guards defined in the files in src/.
+
+commit 7236f8201cb70f48de414054ca81b50721bccaf9
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 05:43:26 -0300
+
+    plugin API: Standardize header definition.
+
+commit eb50614de711fdfc662e6342e73d771a06f01eff
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2010-06-03 06:24:14 -0300
+
+    gabble_capability_set_size: Fixed return value when received invalid param.
 
 commit 5ad1526aa8bf31276a7a043176d3e00da2551bc0
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -358,6 +1132,77 @@ Date:   2010-05-28 15:50:55 +0100
 
     CapsCache: use _constructed not _constructor()
 
+commit a36b22b51d05d232991376cc0711180541a7c167
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-05-28 14:19:33 +0200
+
+    Wait that we have received the disco reply on our bare jid
+    
+    We have to block the transition to the CONNECTED state until we received the
+    reply of the disco on our bare jid as this can change some immutable
+    properties or interfaces on the Connection object.
+
+commit c1cc8682c22bc56ec25183ffb047080679852c97
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-05-28 14:44:09 +0200
+
+    factor out: set_status_to_connected
+
+commit 91dc5be334bf579ddde4d2f3a8e634f85b8acf96
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-05-28 14:30:33 +0200
+
+    pep-support.py: only wait for what we actually need
+
+commit b34ec642a7bb8798121d9cdb43330d5f653ec49e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-05-28 14:21:32 +0200
+
+    use q.expect('dbus-error')
+
+commit 8d964da90fe4bf23a4f105b91191400b8759cb77
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-05-28 14:16:42 +0200
+
+    rename bare_jid__disco_cb to bare_jid_disco_cb
+
+commit a747c4fbdc1ee16ff1ff0a2f818694e9f7a18901
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-05-24 14:32:02 +0200
+
+    gabbletest.py: comment that the way we are advertissing PEP is wrong
+
+commit 97b463c915eb32853b9252a2056b01d8cf531ee7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-05-24 14:31:39 +0200
+
+    add pep-support.py
+    
+    Test if Gabble properly detect PEP support.
+
+commit 0d26f6878687d1225a3e842db34e710532a48e47
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-05-24 14:27:42 +0200
+
+    Properly check if PEP is supported (fdo #28230)
+    
+    According to XEP-0163 PEP support is supposed to be check by discoing our own
+    bare JID. We got this wrong as we used to check the server features instead.
+    Recent ejabberd seems to not advertise PEP support in the server features any
+    more so we need to check it properly.
+
+commit 04d387562473d192be12aa60fb5c6c5a6646f369
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-05-24 12:35:49 +0200
+
+    connection: factor out get_bare_jid()
+
+commit 7aaa6bad4ea05cdd88ff98251f3f135659ea3b1c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-05-24 11:38:54 +0200
+
+    return from SetLocation once we got the IQ reply
+
 commit 55a6aab942714de24582fc5ec0dec90c8af931e4
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   2010-05-28 13:34:20 +0200
@@ -504,6 +1349,67 @@ Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-05-21 12:16:20 +0100
 
     Merge branch 'presence-cache-unleak'
+
+commit 8055b944a32c635a54872eea1b65c2581df2e19d
+Merge: e52fd0b b509ee9
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-05-20 16:56:41 -0400
+
+    Merge remote branch 'origin/master' into igoogle
+
+commit e52fd0bfbe506371f0a3dab1b740aa067ba8239b
+Merge: 8ab742c 6612b0c
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-05-20 16:52:37 -0400
+
+    Merge remote branch 'smcv/ft-trial-merge' into merge
+
+commit 8ab742cd65bd4be10d0fd56b4451ae8908523fb5
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-05-20 16:51:18 -0400
+
+    Change the unit test system so it builds the caps hash automatically
+    Instead of keeping a list of known hashes, instead keep the caps of the
+    bare features, then add to it the google share caps after FT capabilities
+    are added to the connection.
+    This will avoid needing to change the unit test everytime something changes
+    in the code, which affects the caps (PACKAGE_STRING)...
+
+commit 68855adae439893d3353942b5d562ecebb2b5d1e
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-05-20 16:50:51 -0400
+
+    oups, fixing G_GSIZE_FORMAT format usage
+
+commit 046a0916ca485e8a9cfc14faaee3b09e5d0b44e2
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-05-20 16:48:32 -0400
+
+    oups, we should use g_ascii_strncasecmp instead of g_ascii_strcasecmp for incomplete lines
+    The Content-Length checks for the start of the line, not for the complete line
+    so we should only compare the first 16 bytes, not the whole line.
+
+commit 6612b0c4a06047eea858077158c533b2d97d6808
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-05-20 10:52:03 +0100
+
+    GTalkFileCollection: that's not how G_GSIZE_FORMAT works
+
+commit 585c519c0f763e6a6d8bc8749170949b222749b0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-05-20 10:49:02 +0100
+
+    GabbleJingleShare: produce_description: use right format string for guint64
+
+commit 23ab3a978547f013288131fa2ae9707ad3a6488c
+Merge: f2932c5 721dc15
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-05-20 10:43:31 +0100
+
+    Merge remote branch 'kakaroto/igoogle' into ft-trial-merge
+    
+    Conflicts:
+    	configure.ac
 
 commit b509ee916d847df6950f58aaf5a9da6ffc3f7ad3
 Merge: def6783 158cdab
@@ -1468,6 +2374,141 @@ Date:   2010-04-13 12:17:52 +0100
 
     Correct a mis-shaped call to wocky_xmpp_stanza_build()
 
+commit 721dc1571ceff758c9fb9c883fe7c8efcaea7f41
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-12 14:04:21 -0400
+
+    Cleaner code for ternary operator
+
+commit efd636f67475e3e8da7968b73bf59fa73f62fa9a
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 17:42:04 -0400
+
+    Fix the namespace for google share-v1 in the unit tests too
+
+commit 061209f94946a50a283a9df3a495132488bdc6be
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 14:48:37 -0400
+
+    typo, set current_channel to FALSE, not channel, which was NULL
+
+commit 144f226b154712f3d6a7d6bb1c43c9fb8d85947d
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 14:05:15 -0400
+
+    Add new VER hash for the unit test
+
+commit 516a567413b40c1fabefda23017002078539df42
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 14:04:53 -0400
+
+    the source_url can be NULL. iGoogle keeps it empty, so we should handle that correctly
+
+commit 0bb45f22bba1513466818f31c824074887593d5b
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 14:03:56 -0400
+
+    candidate priority should be cast into gfloat, otherwise it gets truncated to 0
+
+commit fd078f3797393061abce80995b5043654f24eaf5
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 13:29:22 -0400
+
+    iGoogle's share-v1 feature doesn't contain www.
+
+commit c7cd3a21572fefb384f3c16fbb7dcbb5877f4780
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 13:28:57 -0400
+
+    Do not add a SESSION_PHONE description if we're not doing audio, in gtalk3
+
+commit 42e7376b32c192a40a5ad8e186b37cb1e55aaa65
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 13:28:27 -0400
+
+    The info message isn't gtalk4 specific, we can receive it in gtalk3 dialect too
+
+commit 8adbf2001d82fefab356df5d8a8782b7ec46d1d7
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 13:27:56 -0400
+
+    Accept before creating a new share channel
+
+commit d8808048b4c78c9bf021b871a3b6f1e76febbbb2
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 13:27:38 -0400
+
+    Always make sure there's a valid foundation
+
+commit 3330526007c52e92205a8f55d44ba0fcadb8627a
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 13:27:13 -0400
+
+    ouch, big typo, check UDP protocol, not type
+
+commit 74efeca9990acca3d93a5b6185c37ba2a65f131b
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 13:26:44 -0400
+
+    Add some debug info on candidate parsing
+
+commit 711c7225f5c188f9734dfedc83530ae744e57597
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-02 13:25:02 -0400
+
+    Check for transport before dereferencing it.
+    iGoogle might send us a 'completed' info message even though the
+    channel was never open. This is used to indicate a failure.
+
+commit f4643fb235ab0930b2d1312e713828f93519703d
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-12 15:07:36 -0400
+
+    do not assert for non-200 body. error out all channels instead
+    This is to avoid having a remotely-triggered assert..
+
+commit 0cdbc3e8993862d15cf444983655aa449716467c
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-12 14:01:48 -0400
+
+    Add some assertions to handle cases that we expect to always be true
+
+commit c76451ae9c886b573ef3858ea47519a461101a69
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-12 14:00:55 -0400
+
+    use g_ascii_strcasecmp instead of the strncasecmp variant since strings are null terminated
+
+commit a276646dd9b5f1c26d6627abc3e641a8473f65f7
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-12 14:00:27 -0400
+
+    Add proper print format token for gsize/guint64 variables
+
+commit 9cfae99e29eb05bd4eecc0d2a63cfa7ace986724
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-12 13:57:52 -0400
+
+    use \0 instead of 0 for line termination character
+
+commit 9f04372a904b82ead535c36d68343275633545cd
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-12 13:57:02 -0400
+
+    cleaner code and better comments
+
+commit 689272886cd07b4fe6794d07130fa2e523b26653
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-12 13:56:31 -0400
+
+    telepathy standard. function declaration on separate line than return value
+
+commit b1233d063c74a00bfa01a3596be8b3eeae676d05
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-04-12 13:55:51 -0400
+
+    cleaner code
+
 commit 34030a6540b9ffc12764c22619603b5d67cc05bc
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   2010-04-12 14:25:10 +0200
@@ -1795,6 +2836,1190 @@ Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   2010-03-31 17:11:00 +0100
 
     Recognize sasl auth and other auth failure errors
+
+commit dd016c99180c9540476da7bc40999a81622f0331
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-30 19:59:53 -0400
+
+    Remove the last TODO. Check if current_channel != NULL.
+    These two cases should *never* happen, it's impossible.. but, just
+    to be on the safe side, it's better to check for the validity of the
+    pointer, and if it's not valid, then error out every channel which
+    should make us dispose also.
+
+commit b12b4a22e9a7163801dc1e71eda96431837234d0
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-30 17:52:49 -0400
+
+    set internal state to ACCEPTED when the remote accepts the transfer
+
+commit b1471136803be4bda693696665932c2130f09acc
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-30 17:52:12 -0400
+
+    check for usable channels in get_next_manifest and not in get_channel_by_filename
+
+commit b12f19f6d7c73adfa28a6a9534c882b74ddcb4a0
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-30 17:50:15 -0400
+
+    Handle when the transport disconnects during an incomming FT before it's completed
+
+commit 08027e2fd92aa93b2ace2a8438c97c0af3e09f80
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-30 17:46:57 -0400
+
+    Better decision making for SI vs. Jingle-share in outgoing FT.
+    We check for whether SI or Jingle-Share capabilities are available
+    for a contact and we choose accordingly, if both are available, we
+    will use jingle-share FTs only if we have a google relay token to make
+    sure that the connections will always succeed with TURN, otherwise we
+    use SI to make use of the socks5 proxies.
+
+commit ab628543b62a4e5b85dbe736667e6346effd5f90
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-30 17:46:38 -0400
+
+    Add support for 404 errors and add GTALK_FILE_COLLECTION_STATE_ERROR
+
+commit f9a86f1429669672b2c0ee9f9d606c0c2fd2f028
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-30 17:13:04 -0400
+
+    Add a variable to know whether or not the channel was opened or not.
+    There was a special use case where we could have a bug, if the remote
+    accepted our call and we didn't call ProvideFile, then the channel
+    goes into state ACCEPTED, then when we call ProvideFile (before the
+    actual GET for that file is received), the channel would then go into
+    state OPEN.
+    If it was an outgoing file transfer, the UI would start sending data,
+    and in our call to gtalk_file_collection_send_data, it would assert
+    because the channel is not (yet) the current_channel since it didn't
+    yet receive the GET for it.
+
+commit d5b171dd0a92c6e2d5f715cea9c35fcb44edcb23
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-30 15:31:08 -0400
+
+    Remove the requires_initiate_before_candidates and check for MEDIA_RTP instead
+    This is because this code where the candidates need to be known before
+    the initiate as well as the transport needs to be connected before the accept
+    is specific to MEDIA_RTP, so it's better to make it clear that it's
+    rtp specific.
+
+commit 9edfc3b29e871a6f9237e8751d458408a2d6cf96
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-29 18:08:31 -0400
+
+    Rename share_channels into component_names
+    The share channel in the google transport actually referred to the
+    named components since the RTP content also uses the same system for
+    component naming. Since we use the method *_set_component_name, it makes
+    more sense to call the variable component_names.
+
+commit f3d721df29e12b4f7937d4d952fbcf9010aa22c1
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-29 16:40:09 -0400
+
+    change a FIXME into a TODO
+
+commit 2e312a2a458554009bf544c84c72cde22cd6071d
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-29 14:46:42 -0400
+
+    Add the latest CAPS VER hashes for gtalk ft unit tests
+
+commit ee3f1c1d8625061bb0ac9374b5e0edd81452ab2b
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-29 14:46:20 -0400
+
+    Use gabble_generate_id to generate the manifest temp urls
+
+commit f549341c4d2b87a3eef98e72ee4a921df2b40a36
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-26 19:30:23 -0400
+
+    Remove JINGLE_MEDIA_TYPE_FILE and make jingle-share use a JINGLE_MEDIA_TYPE_NONE type
+    Use GABBLE_IS_JINGLE_MEDIA_RTP to check if we're an RTP content for the
+    special use case of RTP needing to switch to gtalk3 dialect if there is
+    no transport node in the accept
+
+commit 227b4566fda3fd97b32f23895047c61219723ef3
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-26 19:28:14 -0400
+
+    Add a 'requires_initiate_before_candidates' variable to the JinleContent class
+    This serves to specify whether the content needs to have local candidates
+    before it can be added (initiated) in the session.
+    It's set to FALSE by default but it's set to TRUE for jingle share because
+    we can't have local candidates without a Share channel and we can't have a channel
+    until the other side accepts.
+
+commit 19a2a7fda9b3198f7b6d03c7e889af1199cb515f
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-26 15:38:25 -0400
+
+    Add a get_default_senders virtual method to jingle-content and remove the special jingle-share use case
+
+commit 357a5be6da25ef9a16a453b16460f07dabed05ac
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-26 13:32:08 -0400
+
+    do not use an anonymous union as it's a gcc extension
+
+commit 33e6ce2313cbbe3ed54f2ab3e1286d3c82ab48f0
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-25 12:11:43 -0400
+
+    Rename 'gtalk_fc' into 'gtalk_file_collection' to make it cleaner
+
+commit c5726d40676600ee731ba95e4740844de0314714
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-24 21:04:53 -0400
+
+    Remove another potential breakage of strict-aliasing rules
+
+commit e0e772d7b48f70ebd3999acf5e58b3a076ca0d66
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-24 21:04:12 -0400
+
+    Remove a potential breakage of strict-aliasing rules
+
+commit a0033120cc48bf5f1181d48dc10b29438c0e071f
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-24 19:36:22 -0400
+
+    Revert patch 2de68bb15afc8d1 and check for the dialect before setting the component name
+    Simon's review of that patch had this explanation :
+    I'm glad I caught this, because it's (subtly!) wrong. GabbleJingleTransport is
+    the gtalk-p2p transport (used as an alternative to ICE-UDP or raw UDP), whereas
+    the dialect you removed a check for indicates which dialect of Jingle we're
+    using. (The choice is currently between XEP-0166 draft 0.32, XEP-0166 draft
+    0.15, the Jingle variant from libjingle 0.4, or the Jingle variant from
+    libjingle 0.3 - at some point we should add XEP-0166 v1.0, which is not 100%
+    compatible with 0.32, to that list.)
+    
+    The official Google Talk clients will only ever use gtalk-p2p combined with
+    some Google Jingle variant, but Gabble is quite capable of using standard
+    XEP-0166 for the Jingle session, but the non-standard gtalk-p2p transport.
+    Indeed, until version 0.7.something we didn't support either of the standard
+    transports, and we still prefer to use gtalk-p2p if the target supports both
+    gtalk-p2p and ICE-UDP (because that lets us use Google's relays, if we're
+    signed in with a GMail account).
+
+commit b80e4b67a2ed14fc3dd17c800c13d3ef145984da
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-24 19:27:14 -0400
+
+    Fix 80-char limit
+
+commit 71dd16d97aaec2f78fb57f403ea7426da790f1d5
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-24 19:25:24 -0400
+
+    Remove GabbleChannel structure and use GHashTable for the struct's fields
+    In order to make the code cleaner, I've removed the structure GabbleChannel
+    which was just confusing and I use directly the Channel for the operations
+    To keep track of which channels are usable (initiated/accepted) and which
+    ones are blocking the read operation, I added two GHashTable which map
+    the channel to the boolean for usable/reading.
+
+commit 29766adc77783d4437287e44504b692ca40a1ff8
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-24 18:21:51 -0400
+
+    do not reset state reason to NONE when accepting an incoming FT
+
+commit 95692a48284bbbc69641cd0ebf9938ae0aec1a75
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-24 16:35:01 -0400
+
+    Add comments to make the design more obvious and better documented.
+    Explain the layering violation.
+    Show an example XML of the share description/manifest
+    Explain the protocol with a schema to show the object interactions
+
+commit f8c652d9b9f1ea77318b1f55a16feaacd7bfabaa
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-23 22:28:50 -0400
+
+    Rename set_gtalk_ft_state into gtalk_ft_state_changed
+    In the ft-channel, use gabble_file_transfer_channel_gtalk_file_collection_state_changed
+    instead of the previous *_set_gtalk_*_state to make it clear that the method
+    is some sort of signal callback.
+
+commit bd82f3a0587d24afd89886809df815342626bcab
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-23 22:23:22 -0400
+
+    Remove the get_channels method from the file collection since it's now unused
+
+commit cfdde4a03adb0e6f790baca5cffae0971fc669ad
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-23 22:21:45 -0400
+
+    Move the channel creation process and manifest parsing from GTalkFileCollection to the ChannelManager
+    This is to make the code cleaner and avoid having the gtalk file collection
+    call the 'new' function from the ft channel.
+    Also add a new method add_channels to the file collection to allow the
+    ft channel manager to tell the file collection which channels are associated with it.
+
+commit 0aa19760c8d8b289c9a4ebd94e5aed799bb3ee0f
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-23 22:20:00 -0400
+
+    Add a property to expose the 'token' of the GTalkFileCollection
+
+commit 5c5f2a46d63b187fc2472b67c59a0e42259ab787
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-23 22:17:54 -0400
+
+    Do not do the g_return_if_fail when the bytestream/gtalk_fc being set is NULL
+    When we initially create the file transfer channel, a set_property is called
+    on both bytestream and gtalk-file-collection. If one is set to something then
+    the other one gets set to NULL, we'll have the g_return_if_fail triggered which
+    causes an assertion on unit tests.
+    Also divide the expression in two so we can see more clearly which one failed.
+
+commit 348f66f7006c7ea561a3a99748a1ea5dc4622244
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-23 14:50:01 -0400
+
+    Rename GtalkFtManager into a GTalkFileCollection to make its task more obvious and less confusing
+
+commit a38e8c4b2e7a74263e56f3b26f9328d7053a101c
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-22 16:56:57 -0400
+
+    Rename JingleChannel into ShareChannel and replace all channel variables that are jingle-share channels into share_channel
+
+commit ca1a0e6bfe91b14b71db696a8b2fffd25bbe9a9e
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-22 16:40:58 -0400
+
+    Rename 'channel' into 'share_channel' for the jingle content/google-transport
+
+commit df2506e389275adcd338a70eca79980c96461694
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 17:29:40 -0400
+
+    Depend on libnice 0.0.11 which has reliable transport support
+
+commit ca03ae0c7701e299a64a202bd798a7a7aaf99023
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 17:24:25 -0400
+
+    trivial fix, no need to count the length of the list if we are to compare it with 0. More efficient this way
+
+commit d04dd92a370bc5172842df63037fcddf18c2d18e
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 17:20:15 -0400
+
+    Add a comment to explain why all channels in the NewChannels signal don't have any request they satisfy
+
+commit 9a204586e55d5da2291c38c159140ee72bb68bb7
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 16:41:47 -0400
+
+    Stupidity fixed. either bytestream or gtalk_ft will always be !=NULL here.
+    Actually, it was if (transport), I changed it to if (transport && bytestream)
+    because the jingle case was handled already somewhere else, then I realized (after the refactor)
+    that it might still be needed so I had if (transport && bytestream)... if (transport && bytestream) ...
+    then I cleaned it up the way it was at the time of this commit.. then smcv noticed
+    it was just stupid.
+
+commit d52f93e33603b7cd054f693006fdc3368c508f37
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 15:57:54 -0400
+
+    No need to check for error != NULL when calling g_set_error
+
+commit c3dfa071021f1c51d1b47f360bcafb1b5f6f2518
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 15:43:19 -0400
+
+    component/channel id is a uint, so make it constant everywhere
+
+commit 9215c48bfe66598fc64a7d2412c17bdd846c4ce9
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 15:14:44 -0400
+
+    Add a blank line between declarations and statements
+
+commit 6098f6266c80951f63a617429d41f48330cb1cb4
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 15:08:23 -0400
+
+    Rename gen_manifest to ensure_manifest
+
+commit a25d9c5d5b7193ee167fff127d104232b192dd2a
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 15:04:51 -0400
+
+    Use g_ascii_stroull instead of atoi
+
+commit 72d066168085cb2843fd9500bd1f8cbe417d8fdb
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 14:41:07 -0400
+
+    document the content and ownership of elements in GList and GHashTable
+
+commit b9f995926f023e1bc92fc89134d9d7f602a0ede8
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 14:29:28 -0400
+
+    Use g_return_if_fail where deemed useful
+
+commit 7791b2111cf1ffc7c2a5df8517b38866e29d4187
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 14:29:06 -0400
+
+    Replace == FALSE/TRUE conditionals for booleans by if (b) or if (!b)
+
+commit 9fc3aa3d0bd787b9011db2244a970870842ed76e
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 14:02:57 -0400
+
+    do not use 'if (ptr)'. Replace with 'if (ptr != NULL)'
+
+commit c437a67d3f9872e166a5d1175b0453d40e3670c2
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 13:51:58 -0400
+
+    convention states one property per line in g_object_get/set
+
+commit a6a8d1bc254be90dcc250bf3c93caccf5f898945
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 13:50:51 -0400
+
+    Change bytestream/gtalk_ft to be properties at construct time rather than settable through a method
+
+commit 64e5dea5a82d2127694ab10af66e6ffd644ddba9
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-19 13:25:09 -0400
+
+    Remove unused/inexistant function declaration from jingle_share.h
+
+commit 8b46facb046525016fa4de60b9915eb470ae3c60
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-30 19:43:24 -0400
+
+    Test unicode filenames in test-send-file instead of all unit tests
+    This is because if we try to enable CHECK_TWISTED_VERBOSE=1, it will
+    fail because it won't be able to print the unicode chars correctly
+    since pprint doesn't handle it correctly. So we only enable unicode
+    in one test, so we can enable verbose on the other tests.
+
+commit 05cfb3a7b3354c03d18c93557fff29617b43c17b
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-25 12:10:37 -0400
+
+    Add a new CAPS ver hash needed after the merge
+
+commit 4a58a9033f0f0c5462dd9b92a5d0f4a868bdd0cd
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-23 22:14:51 -0400
+
+    Make sure that the FileCollection property is set (is not an empty string)
+
+commit ee3245469ac7c826f2dad7e849160211c8071cad
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-18 20:26:51 -0400
+
+    Add a unit test for multift
+    We first create a fake client and we make it look like it supports jingle-share FTs
+    Then we make sure that gabble recognizes it and gives it the right capabilities
+    Then we send a new multiFT request to gabble, and we check that we receive
+    the NewChannels signal with a new channel for every file in the multift and
+    we make sure every channel has the same FileCollection.
+    We then close every channel and we make sure the jingle session is still active until
+    the last channel gets closed, in which case the jingle session gets terminated
+
+commit 3668a4cb3ee7bb121e9b8127fa6aa274f26340c1
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 18:52:49 -0400
+
+    Change all uses of __dbus_object_path__ into object_path
+
+commit 805b159fc7e8fe8259a8111fb54dfcda22b1c936
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 18:50:15 -0400
+
+    Do not loop and do multiple tries, simply change the timeout for the event queue
+
+commit be1995a99eaed3c5a62c9b06cf39d226db76d409
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 18:49:41 -0400
+
+    The open reason does not depend on the status when we wait for the OPEN state of the FT, it depends on the status at the moment we call ProvideFile
+
+commit 2607b2ba31bf4e3f015f69dd6b683c09dcb3d4a1
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 18:47:07 -0400
+
+    Use expect_many for multiple events when the order of reception could vary
+
+commit b478487fa6aa51c8cf7dc64d75ed8b5ebd68f1a1
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 18:45:46 -0400
+
+    Add support for testing UTF-8 filenames
+
+commit 385d03680b1cc872f015afa2355515bfe2879916
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-09 18:16:33 -0500
+
+    support for multiple 'ver' hashes and make the code a bit cleaner
+
+commit 25346649ef430f8d6fccf4d628176cb1b3332566
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-24 19:09:20 -0500
+
+    the offset_defined is now added and asserted, so we need to fake it for the test-send-file-send-before-accept test too
+
+commit a50e99f1064a25299279ec1cc480533282d75f54
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-24 19:04:51 -0500
+
+    Make the create_ft_channel automatic instead of being an individual action, and connect to the signals (and expect the session iq) as soon as the channel is created, not when the ProvideFile is called. Also check for whether the channel was previously accepted in order to know whether the state change to OPEN after a ProvideFile should have the reason NONE or REQUESTED
+
+commit 1beb20fa8c25eec52634f1db7d48eb7054a83f2b
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-24 18:41:48 -0500
+
+    Add a test to check if the remote can accept before we call ProvideFile
+
+commit ae0ab92afc651db7fe2ce3a4160007c8b4ab08ea
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-24 18:40:55 -0500
+
+    Add a little check to make sure we can't accept our own outgoing transfer
+
+commit 75e2a6ae18bd4a425f2117b4e756e2f07d70872c
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-24 18:40:27 -0500
+
+    The jingle share initiate is sent after the channel is created, not after we provide the file
+
+commit 1f03351f43ff1e85d7e187f035fc65d8febdc376
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-24 18:40:01 -0500
+
+    Test the offset, since jingle-share doesn't support resume
+
+commit ee319f3791164f4aada2be7126cbef08f01c8d77
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-24 18:06:55 -0500
+
+    Add a test to cancel an FT invite right after the provide file
+
+commit b8731c379bb77e7fc0d00ae9b6f413bc3814197d
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-24 17:24:57 -0500
+
+    also test for the sending part, and make sure we can't provide the file anymore and no bytes got transferred
+
+commit 08835359b2428ef7fbaca310329a4bbc82a08791
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-24 17:24:33 -0500
+
+    make sure the first StateChanged signal getting fired is the canceled/local_stopped, not an intermediary state before the canceled/local_stopped
+
+commit 7759db81a6617725055bd268c264e3d1a820f1ad
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-24 15:15:59 -0500
+
+    Adding 4 new tests to the jingle share test suite. Allows testing of use cases from the receiver side
+
+commit 55def477ae353676ab30e2b767a2ccd9ef741598
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-23 17:13:34 -0500
+
+    remove debug output
+
+commit d3483a53be0934b8a37967365891fbd0358e8a42
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-23 17:00:50 -0500
+
+    if an action returns True, then we must stop the test
+
+commit bf126c78cc15676943047652665e0f57b47a3514
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-23 15:11:03 -0500
+
+    Add a test for closing the socket while receiving
+
+commit 1429b0c76a1f7bc2f0e63df80304e5a2d1aae5d0
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-23 15:10:17 -0500
+
+    do not run the tests 3 times, once per address socket type. Only try ipv4, the other socket types are already tested for in the file-transfer/ tests
+
+commit 4a31b786a7b44d231c39bcc602adea27af66545c
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-23 15:09:14 -0500
+
+    sometimes the channel gets closed, so we can't close it again, causing an error. Make sure to track channel closed signal
+
+commit d06edc7b3af04d60701e8ff53e92dfe2fa44865e
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-23 15:08:43 -0500
+
+    make sure that we do send a jingle-share session when providing the file
+
+commit 8120526b17aba93185c02c9a429d828ca849e04d
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-23 12:23:12 -0500
+
+    Add a test for sending the file before it's accepted on the other side
+
+commit 1a774a59fa406603ab6925db82e2c74d9dabb91a
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-23 12:22:36 -0500
+
+    increase the timeout when waiting for the connection because the test fakes the IP of the stun server which delays the libnice candidate gathering
+
+commit bafabe0b750e8496acf968ae2f3a6f01d5fd3357
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-23 12:21:58 -0500
+
+    Fix the capabilities to make sure the jingle-share FT is being used
+
+commit fdfc170ecafe2198d1445399bc62b5b9c616fd92
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-19 00:16:46 -0500
+
+    Add a test to send/receive an FT between two gabble instances
+
+commit 87be3d7fe949d90c2610b6772e815d7a8426696d
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-17 17:51:32 -0500
+
+    Make sure the capabilities of the file transfer are derived from the share-v1 caps
+
+commit 62e73f68bf09d197f76493c64e9cb1e29a265715
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-17 17:27:40 -0500
+
+    Add a test for jingle share capabilities
+
+commit 63f82a6f4b2454293779d4d5217ee9a984e0af8a
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-17 19:01:52 -0400
+
+    use an enum instead of a #define for the GtalkFtManagerState and remove related TODO
+
+commit aef0aa1d4e89437f96948d3b7f457203312c5d3c
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-17 18:48:02 -0400
+
+    Add a Channel.Type.FileTransfer.FUTURE custom interface in extensions and make the file-collection attribute dbus-able
+
+commit f7b726ccfa7de5a239920fc09aa28b9b089296eb
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-17 18:47:28 -0400
+
+    fix coding style convention
+
+commit f92a9a6707f97cf30b491c637b07f5e9d6024431
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 20:03:46 -0400
+
+    Add some TODO items and set status to TRANSFERRING for sending too
+
+commit c7340d4714e4f9955647ee74f8c52126d2305ba8
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 19:56:46 -0400
+
+    Do not hold a reference to the channel even with current_channel
+    The problem that might happen here is if the connection disconnects, so the
+    Connection object disposes and unrefs all channel managers which will unref
+    all their channels. If we hold a reference to a channel, that channel won't get
+    disposed.. and when we call something on it later, it might segfault because
+    it expects the Connection to still exist.
+    Let the channel weak ref take care of this for us.
+
+commit 7fa3e32e91d30b45e829baa3437b6dda0165a3b4
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 19:56:23 -0400
+
+    Fix a previous commit and add a TODO for doing a proper fix later
+
+commit 7d64cf20221422eaad3532707b3c92931bd61e5c
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 19:14:28 -0400
+
+    Add a debug message to track block/unblock changes when not transferring
+
+commit 2d5a3666d49611971a43cd1ce1f496ee3f2280a7
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 19:12:54 -0400
+
+    Try to fix a bug with reentrance and references and disposes of channels
+
+commit f05b89143cc933c3ffcc4d5a3fac0bfe0f37e766
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 19:11:05 -0400
+
+    Do not terminate the session in the terminate and use weak refs
+    When we get terminate called, we should just delete/unref the channel we have
+    and let the channel unref us, so we can terminate the session in our
+    dispose instead.
+    Also, use a weak ref instead of a ref because we can get into trouble with
+    re-entrance and refs make it complicated and unneeded (circular refs here!)
+
+commit 8268a655a0f7f13f59e83494140ebe3d2c73d6ba
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 19:09:28 -0400
+
+    Avoid accessing the list's ->next after we delete the object from the list...
+
+commit 387b85faafb50f3f5783a60010dc9e13777e7568
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 19:08:46 -0400
+
+    unset the current_channel to unref the channel when we dispose
+
+commit 06877a850dde8dd5fcaef5f7886336b0a8fbec05
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 19:06:58 -0400
+
+    ouch, report only the data we want to receive as being received
+
+commit 5feaa0ea8d6ff418fe3a539b7293d344e26c2893
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 19:05:32 -0400
+
+    Add support for files with spaces
+    Use g_uri_escape_string and g_uri_unescape_string to add proper support for files
+    that have a space or other space character in their filename during the
+    HTTP GET operation
+
+commit 1e16a6d0cd2a693fe83cd83ef55b4af9c91be19a
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 19:04:55 -0400
+
+    Make the filename of folders have the .tar extension
+
+commit 65a5206f2628a1618a2b6a72e8a8e8f1fb74bbbd
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 19:03:56 -0400
+
+    Add gtalk_ft_manager_completed and proper support of when an FT is completed
+
+commit 3855d9bad7dd7733566785743bf969b861f8b2d0
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 19:02:04 -0400
+
+    Do not set a channel state to ACCEPTED unless it was accepted by the user
+    This caused us to set all FT channels to ACCEPTED as long as one FT was
+    accepted. It caused the subsequent accepts to fail because you can only AcceptFile
+    on a channel with status PENDING. So those other channels couldn't be accepted
+    anymore.
+
+commit 886aa54c5930d1ccfbb595d111c7536688413ed4
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-16 18:58:37 -0400
+
+    Checking for file completion is different for gtalk_ft.
+    Only set ourself to COMPLETED for bytestream and let gtalk_ft tell us when
+    to go into COMPLETED and check for the state COMPLETED or CANCELED rather than
+    the transferred_bytes counter.
+    Also we do not need to set the size of the FT channel anymore to avoid the previous
+    problem
+
+commit 25e685e4152ce0d879daef8456171197ed61ffc1
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-09 16:17:59 -0500
+
+    Add comment on jingle-share vs. SI priority
+
+commit baac0d4115b53e05050105f35c88d23cbb26162f
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-09 16:17:41 -0500
+
+    Handle jingle ft termination properly
+
+commit 30ec49143197ab8be97dd066ed50aadc1412c82f
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-09 16:17:21 -0500
+
+    Oups, blocking and unblocking was inverted
+
+commit 0f11d7bf15528cfe733e9b0fb1c00837be1bd917
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-09 16:16:52 -0500
+
+    Create the gtalk ft manager from a session in ft-manager, also unref the gtalk-ft-manager when necessary
+
+commit 87d7ec7e2eac163f97d204353993fc89ab92ea35
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-09 16:16:15 -0500
+
+    Add a file_collection argument to gabble_file_transfer_channel_new
+
+commit 653a00b4723913a24e09c2aba9315ab9cf6f7b86
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-09 16:14:57 -0500
+
+    Add a way to send data to the ft-channel
+
+commit 6ba0f1bf868375c31bd06e715353654b5050bbee
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-09 16:13:59 -0500
+
+    Add partial support for reception of multifiles
+    We now have a status to know what we're doing and we can elect a channel
+    to be the currently activated channel. Only accept the jingle session once
+    and now the get_next_manifest_entry tries to find the next usable channel
+    or waits for an accept.
+
+commit 9d9ef012574ae574673bccc8f285aacad69ffd45
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-05 16:55:11 -0500
+
+    Add ways to search for the GabbleChannels and properly implement the HTTP server.
+    We can now fetch GabbleChannel by either filename or by the FT channel itself.
+    we also store the status line from the HTTP request/responses and use that to
+    determine which file is the peer requesting in order to fetch the right channel
+    and set it as the currently selected one.
+    We also now check for wrong filenames and return 404 error if it happens.
+
+commit 3df7efb0656d485775b83f0447af8ec00270c5ea
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-05 16:54:08 -0500
+
+    Fix gtalk_ft_manager_send_data to also take the channel that requires sending and make sure it's the current channel
+
+commit 9b82d800cf5805e604028178d4bd10871e78c0e4
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-05 16:51:04 -0500
+
+    Properly support the block/unblock of reading and the write_blocked signal
+    Now the gtalk_ft_manager_block_reading also takes the channel requesting
+    the read blocking and only affect the libnice agent if it's the currently
+    selected channel that calls the method and store for each channel whether
+    or not they want to block the read operation or not.
+    Also store the currently selected channel now, and block/unblock reading
+    depending on what that channel needs.
+    Also allow to tell the channels when the jingle session is writable or not
+    by calling gabble_file_tranfer_channel_gtalk_ft_write_blocked.
+
+commit 1f43e6f14f993493c6f7908346aaff82f11d7e13
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-05 16:38:20 -0500
+
+    Misc fixes.
+    Group an if (x) f(); if (y) f(); into if (x||y) f();
+    Add missing break in switch cases
+    Adding some comments and renameing some functions
+    Add a few debug messages
+
+commit d46b6eb1ad091d88a48e00847d9e087d6fcb6fc8
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-05 16:31:49 -0500
+
+    fix FileCollection... this wasn't the right way of doing it
+
+commit 34e4765170e562b9f5174bda2520df74f6a65ec1
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-05 12:41:41 -0500
+
+    Do not parse the description if we already have a manifest
+    When we receive the 'accept', parse_description is called, which causes
+    the manifest to become empty since the description in empty when gtalk
+    responds with the accept.
+
+commit 50a5ceae1da934f677290137f671bf1a9d14f9e6
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-03 21:10:29 -0500
+
+    Remove the remote_accepted variable since we can just check for the ft channel's state
+    
+    squashed:
+    oups, remote accepted if status is ACCEPTED not different from it
+
+commit f81f3725353fcb47d5c3bfa97786310720be2ecf
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-03 21:10:07 -0500
+
+    Add a file-collection property and FileCollection dbus property to allow multift
+
+commit da7db306af0f359312ecac427baf9f06bf5c0862
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-03 21:06:57 -0500
+
+    Add a gtalk-ft-manager class that will take care of everything gtalk-ft related
+    We will have one object per FT, and it will handle the multiple channels associated
+    with that one gtalk FT.
+    This is a copy of what existed previously in ft-channel.c with a few modifications
+    in order to remove the use of the priv variables of ft-channel. Also adds a small API
+    to allow communication between gtalk-ft-manager and the ft-channels.
+
+commit 94c0fb2a35d37392557b337f02cd5f2d41c8cc43
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-03-03 21:04:15 -0500
+
+    Remove all jingle related code for the file transfer
+    The jingle related code that does all the jingle-share handling, the
+    libnice integration and http server/client processing is now removed
+    from the ft-channel in order to add multift. We need to have that code
+    somewhere else since we need one libnice/http instance for multiple
+    ft channels.
+
+commit f97d8437128f4322d5168c1300e6cb43e388ae28
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-24 19:38:23 -0500
+
+    Set remote_accepted to TRUE when the jingle session becomes active because if it's active when the remote accepted it, then we'll never go to OPEN when we call ProvideFile
+
+commit 8a8df19de8a0b0c5cc0012cde4867d84bb844552
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-24 15:23:37 -0500
+
+    If the jingle session gets closed, we should set REMOTE_STOPPED not REMOTE_ERROR, so we need to ignore the JS_STATE_ENDED state notify and let the terminated signal take care of it instead. Also do not close the channel, let the user close it
+
+commit 00cbfcfe0e9b60c7aa91a2e640bcd05a89a6c28e
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-23 15:07:52 -0500
+
+    jingle mode takes care of blocking/unblocking the transport reception already, so only unblock when the there's a transport and we're in bytestream mode
+
+commit 02874842e5871d143d4a79a5b7a41346a97a5b6f
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-19 20:57:34 -0500
+
+    Adapt fix 26658 for gtalk-ft, always set the transport handler but block reception if the bytestream is not yet open
+
+commit 4ca98e2fc2f46e2585b923e313fd4b5d0e3cb147
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-18 23:59:22 -0500
+
+    Add robustness, do not try to fetch jingle channels if we're not in jingle mode.. we could get an assertion because someone could call ProvideFile (in bytestream mode) and connect to the local socket right away, when our channel's bytestream attribute isn't set yet
+
+commit 38de2f5aacd05b57eba1909e245177f6a08b74e7
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-10 19:19:59 -0500
+
+    FT manager needs to add the FT channel class to ContactCapabilities if a client only has the share-v1 in their caps
+
+commit cde5cad41b2ad9a8037b0d59415194759b82b62d
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-08 17:27:21 -0500
+
+    some more code cleaning
+
+commit d82eae624243f27cf4e8b7483c9b7673484ea495
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-08 17:27:09 -0500
+
+    use memchr to find \n in a the http code, should make it faster
+
+commit d73c10f88f3c02dca1b177a5c4d7eb5acf75e303
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-08 17:26:45 -0500
+
+    clean a bit that ternery operation
+
+commit de9f950f77d921ad66641fda3b8e7ad5c3e693c3
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 21:38:54 -0500
+
+    Correctly add support for receiving empty files
+
+commit 4df4da4c9d1f701e1557f3c7aa8bddeba93c9323
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 21:33:10 -0500
+
+    Add support for stun and relay candidates in the nice agent candidate discovery
+
+commit fba7d70e4c2d289721d19562d4d03ad2c16f96c9
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 21:32:38 -0500
+
+    Add support for receiving one file only.. transfer the first file in the manifest and ignore the rest, so we don't get bugs in a multifile FT
+
+commit d51974fbcfa73b4cb903987fb95370f0f91f438d
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 18:59:31 -0500
+
+    remove a possible memory leak in get_unique_sid_for
+
+commit 63f6c6d74c470d52767f05071dd93f9df0478f46
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 18:59:15 -0500
+
+    remove those too many debug messages...
+
+commit 1335b481bfbc32a8db57255f075942528336c04a
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 18:58:55 -0500
+
+    remove FIXME, as it turns out we do need to ref it...
+
+commit 0da0dd6d2c71d3b23722d3b1fff8e808d8d55b13
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 18:58:39 -0500
+
+    set ourselves as attached before actually attaching, in case the attach calls our callback which does a write which calls buffer_empty again
+
+commit 2d5d98c2103c4fa6dbfd058ba1eb9c734291ddcc
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 18:57:44 -0500
+
+    Fix the Host in the http GET to match the peer's JID, not our own
+
+commit 017ea0d749b06be305b5dfc4303858aea2ed495a
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 18:57:13 -0500
+
+    coding style fix
+
+commit cb1979f2c246791045a09d500acc213179f95642
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 14:15:02 -0500
+
+    Fix/remove/add debug messages to make it less verbose
+
+commit 6f319f3156061f992f836dc4ecaa66dbdcaae0ec
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 14:10:31 -0500
+
+    Use gabble_signal_connect_weak instead of g_signal_connect for waiting on a new connection on the gibber listener
+
+commit 7ae54cb90a5312c001375e81c36b11b140aed5d3
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 14:10:06 -0500
+
+    avoid a warning with jingle share since media-type is usually set to NONE initially
+
+commit 6035aabc59dee2c0f718e933c93f9fc04da32d75
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 14:09:37 -0500
+
+    Make sure the new channel that gets created is valid by checking the return value and try a different channel name in case of conflict
+
+commit e2150e886345b16a2466a56646f484a5a5698394
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 14:09:01 -0500
+
+    Reset the size of the file as we receive more data than expected to make sure the check for completion works correctly for receiving folders
+
+commit 5552869b60b4110b3fc3dd4e8ff85fbad91ec8a6
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 14:08:23 -0500
+
+    free the read buffer when done and keep the pointer to the locally allocated temp buffer, since the pointer of buffer can be changed during the call to received_http_data
+
+commit 219ceac750650bb3a937d40d354888d03f40687a
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 14:06:57 -0500
+
+    Change order of calls to make sure we don't crash.. if we call close_session_and_transport, we might get unreffed, so we shouldn't call anything after it...
+
+commit 80c05db7acd108a8ec73ac86ea0e0ad0169222c9
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-05 14:05:50 -0500
+
+    Only attach the recv callback on the nice agent when it wasn't already attached
+
+commit 99084792fa1a014253103c73caf6e04a3307d063
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-03 20:19:07 -0500
+
+    Add correct support for sending and receiving file transfers with a refactoring of the http state machine
+
+commit 529e2a7240409aee69f10770f461bb87cfc23ca8
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-03 20:14:22 -0500
+
+    Add a way to send a complete info action
+
+commit 9e30b799cd8fc75a3fadf249bb340a8a3d7000c6
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-01 19:16:38 -0500
+
+    only check on transfered bytes to know if we are completed or not because the completed state is only enabled when the other side sends us the complete info action for jingle
+
+commit 1c23818bed3035f3a5f01481195d81ee971b8e78
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-01 19:15:55 -0500
+
+    Implement sending of files with the pseudo HTTP implementation
+
+commit 48f061440295474d7e0681e1382e9ebafb65f53c
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-01 19:15:07 -0500
+
+    Add a JingleChannel struct and replace nice_agents by jingle_channels in order to have one http server/client implementation per NiceAgent
+
+commit 5a8ecfb05ae22c5c6e27c5777be6c6acb13dc1ee
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-01 16:11:46 -0500
+
+    Add a 'completed' signal to the content and handle the complete info action
+
+commit 99dbc7c51b0d2162ffb5aa43de3a46ef94d55591
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-01 16:11:04 -0500
+
+    do not duplicate code, use close_session_and_transport in the dispose and make sure we don't double unref
+
+commit 91c42ce77c3afd3854689fd219b258d293e6b859
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-02-01 16:03:36 -0500
+
+    check if the manifest is allocated before looping it when trying to free it
+
+commit cc0dcd8fde337903e1485797404445f84c43cb64
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-27 22:29:20 -0500
+
+    Make the preview and source urls part of the manifest from jingle-share
+
+commit 2714ec35ba4a84226d7296055e7a6d6b36fadd51
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-27 22:28:53 -0500
+
+    correctly set the transport state depending on the nice agent's state
+
+commit 8bd521bafcbde1269bcd323e5e1829e6e9b79be2
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-26 21:16:55 -0500
+
+    Correctly open/close the channel and free used memory
+
+commit a7465b9fc2058f876eec50feaeea165087948f50
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-26 21:16:26 -0500
+
+    Add libnice integration into ft-channel
+
+commit 6f017494d80818b0d6deeaf030285dc7d6585bf7
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-26 19:04:09 -0500
+
+    The content is ready without local candidates for file sharing because channels are not implicitly created in file transfers
+
+commit 5e4340c172cc19da6f431747a88685fd3b2d4aea
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-26 19:03:02 -0500
+
+    Make jingle content send a signal with the channel id as an int, and add a create_channel API
+
+commit 8e53d56bb1454a19c047d4679b5ae70f6de4a258
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-26 19:01:32 -0500
+
+    make jingle_transport_google_set_component_name return TRUE/FALSE depending on whether the set was successful or not (duplicate name)
+
+commit f39b7cdda9b435a157c75a196edeea0a87628860
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-25 18:56:31 -0500
+
+    add some debuging messages
+
+commit 76b6af24e2599185453aef541a6e44a150158589
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-22 17:00:21 -0500
+
+    do not create a new manifest if we have no filename
+
+commit 31382fb7b0f0d1dbd052374b1640a2c2e4de2ab0
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-22 16:59:25 -0500
+
+    Allow access to the manifest of the jingle-share content
+
+commit b494b919467038cb24e92f733edf4db69b7e5bd9
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-22 16:58:58 -0500
+
+    Fix coding style
+
+commit 19f82b0504ab0c002c753b265b0f3eb72ba24fdf
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-22 16:58:31 -0500
+
+    content now sets a unique component per channel, and sends a signal to notify of the new channels
+
+commit ddb67a39123e0e52c0804d5ab1865e611a5686a6
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-21 23:51:16 -0500
+
+    properly report the direction as 'initiator' for the file transfers
+
+commit 0b97a86fc1258449f479ebb1b64a7f46088a69cd
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-21 23:50:45 -0500
+
+    there is no transport in the accept, so we don't want it to go into gtalkv3 dialect
+
+commit 61c12fab043b22249876f8d92a7b7212d144852d
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-21 23:49:40 -0500
+
+    correctly report and send the filename and filesize in ft-channel
+
+commit 9aec33a77829a9463ebab9f797350ae965afdc44
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-21 23:48:13 -0500
+
+    Make the filename/filesize for jingle-share into properties and correctly implement both parse and produce description
+
+commit c7b433a28b2b856bb64d5d975adf2bc959a03978
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-21 23:46:30 -0500
+
+    Add support for the 'info' jingle action, and make it check for new jingle channels and the content notifies the transport so it can set a component for it (need to review this because the component is hardcoded to 1 for now)
+
+commit b9470d7e89d1aa08d83fde024ced9e2d83e96cca
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-21 19:44:42 -0500
+
+    Using a GList of GList instead of an array for holding the list of candidates per component
+
+commit 4fe9c50f74c712d2f4b6d868b024b0881314a9f8
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-21 19:27:20 -0500
+
+    Fix gnu style indentation
+
+commit 723797e88c3a136bcbea4b107ba450654d572de5
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-21 02:46:56 -0500
+
+    Add a way to notify the content that the transport has been created and use that to specify the name of the components by the media-rtp content
+
+commit 96aed91b325644318cd586ae3aa79079078f1f2e
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-21 02:45:53 -0500
+
+    Add a way to specify the name of the compoennt for the jingle candidates in the case of jingle google transport
+
+commit 9d065a30d7fb0a5af7638808219b5ee580972bde
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-21 01:35:27 -0500
+
+    Remove checking for dialect in google transport
+
+commit d418e89af77c7f0b527216cda2667dcaa1ed5575
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-21 00:55:20 -0500
+
+    Add jingle mode support to the FT channel and FT manager
+
+commit 9f7f9039ac52d2c72a722f6bc662dc11621be24f
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-05 22:22:10 -0500
+
+    Adding a test jingle-share content type
+
+commit e664dcd307344b11b0db527537800d1d977a018c
+Author: Youness Alaoui <youness.alaoui@collabora.co.uk>
+Date:   2010-01-04 16:23:56 -0500
+
+    Add share-v1 google bundle capability when the client supports file transfers
 
 commit 1be94c5db0631b8c52ea76fe56129f55e1d52465
 Author: Youness Alaoui <youness.alaoui@collabora.co.uk>

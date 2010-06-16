@@ -87,7 +87,9 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(pkgconfigdir)" \
 	"$(DESTDIR)$(gabbleincludedir)"
 DATA = $(pkgconfig_DATA)
-am__gabbleinclude_HEADERS_DIST = error.h gabble.h plugin.h sidecar.h
+am__gabbleinclude_HEADERS_DIST = capabilities-set.h caps-hash.h \
+	connection.h disco-identity.h error.h gabble.h namespaces.h \
+	plugin.h sidecar.h types.h
 HEADERS = $(gabbleinclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -143,7 +145,11 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+MCE_CFLAGS = @MCE_CFLAGS@
+MCE_LIBS = @MCE_LIBS@
 MKDIR_P = @MKDIR_P@
+NICE_CFLAGS = @NICE_CFLAGS@
+NICE_LIBS = @NICE_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
@@ -244,10 +250,16 @@ top_srcdir = @top_srcdir@
 @ENABLE_PLUGIN_API_TRUE@pkgconfig_DATA = telepathy-gabble.pc
 @ENABLE_PLUGIN_API_TRUE@gabbleincludedir = $(includedir)/telepathy-gabble-0/gabble
 @ENABLE_PLUGIN_API_TRUE@gabbleinclude_HEADERS = \
+@ENABLE_PLUGIN_API_TRUE@    capabilities-set.h \
+@ENABLE_PLUGIN_API_TRUE@    caps-hash.h \
+@ENABLE_PLUGIN_API_TRUE@    connection.h \
+@ENABLE_PLUGIN_API_TRUE@    disco-identity.h \
 @ENABLE_PLUGIN_API_TRUE@    error.h \
 @ENABLE_PLUGIN_API_TRUE@    gabble.h \
+@ENABLE_PLUGIN_API_TRUE@    namespaces.h \
 @ENABLE_PLUGIN_API_TRUE@    plugin.h \
-@ENABLE_PLUGIN_API_TRUE@    sidecar.h
+@ENABLE_PLUGIN_API_TRUE@    sidecar.h \
+@ENABLE_PLUGIN_API_TRUE@    types.h
 
 all: all-am
 

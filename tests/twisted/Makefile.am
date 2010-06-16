@@ -15,6 +15,7 @@ TWISTED_TESTS = \
 	caps/receive-jingle.py \
 	caps/trust-thyself.py \
 	caps/tube-caps.py \
+	device-idleness.py \
 	gateways.py \
 	muc/conference.py \
 	muc/name-conflict.py \
@@ -41,6 +42,7 @@ TWISTED_TESTS = \
 	olpc/gadget-publish.py \
 	olpc/gadget-restarted.py \
 	olpc/view-presence.py \
+	pep-support.py \
 	presence/decloak.py \
 	presence/initial-contact-presence.py \
 	presence/initial-presence.py \
@@ -119,7 +121,7 @@ TWISTED_TESTS = \
 	jingle/call-codecoffer.py \
 	jingle/call-muc.py \
 	jingle/call-muc-cancel.py \
-	jingle/call-muc-re-re-request.py
+	jingle/call-muc-re-re-request.py \
 	jingle/call-state.py \
 	jingle/decloak-peer.py \
 	jingle/google-relay.py \
@@ -146,6 +148,17 @@ TWISTED_TESTS = \
 	jingle/test-content-complex.py \
 	jingle/test-wait-for-caps.py \
 	jingle/test-wait-for-caps-incomplete.py \
+	jingle-share/test-caps-file-transfer.py \
+	jingle-share/test-send-file.py \
+	jingle-share/test-send-file-send-before-accept.py \
+	jingle-share/test-receive-file-and-close-socket-while-receiving.py \
+	jingle-share/test-receive-file-and-disconnect.py \
+	jingle-share/test-receive-file-and-sender-disconnect-while-pending.py \
+	jingle-share/test-receive-file-and-sender-disconnect-while-transfering.py \
+	jingle-share/test-receive-file-decline.py \
+	jingle-share/test-send-file-and-cancel-immediately.py \
+	jingle-share/test-send-file-wait-to-provide.py \
+	jingle-share/test-multift.py \
 	file-transfer/test-caps-file-transfer.py \
 	file-transfer/test-ibb-too-early.py \
 	file-transfer/test-receive-file-and-close-socket-while-receiving.py \
@@ -175,6 +188,7 @@ TWISTED_TESTS = \
 	test-set-status-idempotence.py \
 	test-location.py \
 	pubsub.py \
+	sidecar-own-caps.py \
 	sidecars.py \
 	mail-notification.py
 
@@ -228,6 +242,12 @@ else
 CHANNEL_TYPE_CALL_ENABLED_PYBOOL = False
 endif
 
+if HAVE_MCE
+HAVE_MCE_PYBOOL = True
+else
+HAVE_MCE_PYBOOL = False
+endif
+
 config.py: Makefile
 	$(AM_V_GEN) { \
 		echo "PACKAGE_STRING = \"$(PACKAGE_STRING)\""; \
@@ -235,6 +255,7 @@ config.py: Makefile
 		echo "DEBUGGING = $(DEBUGGING_PYBOOL)"; \
 		echo "PLUGINS_ENABLED = $(PLUGINS_ENABLED_PYBOOL)"; \
 		echo "CHANNEL_TYPE_CALL_ENABLED = $(CHANNEL_TYPE_CALL_ENABLED_PYBOOL)"; \
+		echo "HAVE_MCE = $(HAVE_MCE_PYBOOL)"; \
 	} > $@
 
 BUILT_SOURCES = config.py
@@ -245,6 +266,8 @@ EXTRA_DIST = \
 	constants.py \
 	gabbletest.py \
 	httptest.py \
+	jingle-share/file_transfer_helper.py \
+	jingle-share/jingleshareutils.py \
 	jingle/__init__.py \
 	jingle/callutils.py \
 	jingle/jingletest.py \
@@ -252,6 +275,7 @@ EXTRA_DIST = \
 	mucutil.py \
 	ns.py \
 	olpc/util.py \
+	roster/rostertest.py \
 	tubes/muctubeutil.py \
 	tubes/tubetestutil.py \
 	sasl/saslutil.py \

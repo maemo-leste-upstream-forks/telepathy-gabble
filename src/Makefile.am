@@ -5,6 +5,8 @@ BUILT_SOURCES = \
 
 CLEANFILES = $(BUILT_SOURCES)
 
+EXTRA_DIST =
+
 libexec_PROGRAMS=telepathy-gabble
 noinst_PROGRAMS = write-mgr-file
 
@@ -45,10 +47,12 @@ libgabble_convenience_la_SOURCES = \
     call-stream.c \
     call-stream-endpoint.h \
     call-stream-endpoint.c \
+    $(top_srcdir)/gabble/capabilities-set.h \
     capabilities.h \
     capabilities.c \
     caps-cache.h \
     caps-cache.c \
+    $(top_srcdir)/gabble/caps-hash.h \
     caps-hash.h \
     caps-hash.c \
     caps-channel-manager.h \
@@ -67,8 +71,11 @@ libgabble_convenience_la_SOURCES = \
     conn-presence.c \
     conn-sidecars.h \
     conn-sidecars.c \
+    conn-slacker.h \
+    conn-slacker.c \
     conn-mail-notif.h \
     conn-mail-notif.c \
+    $(top_srcdir)/gabble/connection.h \
     connection.h \
     connection.c \
     connection-manager.h \
@@ -77,6 +84,7 @@ libgabble_convenience_la_SOURCES = \
     debug.c \
     disco.h \
     disco.c \
+    $(top_srcdir)/gabble/disco-identity.h \
     error.c \
     error.h \
     ft-channel.c \
@@ -85,6 +93,8 @@ libgabble_convenience_la_SOURCES = \
     ft-manager.h \
     gabble.c \
     gabble.h \
+    gtalk-file-collection.h \
+    gtalk-file-collection.c \
     im-channel.h \
     im-channel.c \
     im-factory.h \
@@ -93,6 +103,8 @@ libgabble_convenience_la_SOURCES = \
     jingle-content.c \
     jingle-factory.h \
     jingle-factory.c \
+    jingle-share.h \
+    jingle-share.c \
     jingle-media-rtp.h \
     jingle-media-rtp.c \
     jingle-session.h \
@@ -119,6 +131,7 @@ libgabble_convenience_la_SOURCES = \
     muc-channel.c \
     muc-factory.h \
     muc-factory.c \
+    $(top_srcdir)/gabble/namespaces.h \
     namespaces.h \
     olpc-activity.h \
     olpc-activity.c \
@@ -158,6 +171,8 @@ libgabble_convenience_la_SOURCES = \
     server-sasl-channel.c \
     $(top_srcdir)/gabble/sidecar.h \
     sidecar.c \
+    slacker.h \
+    slacker.c \
     tube-iface.h \
     tube-iface.c \
     tubes-channel.h \
@@ -166,6 +181,7 @@ libgabble_convenience_la_SOURCES = \
     tube-dbus.c \
     tube-stream.h \
     tube-stream.c \
+    $(top_srcdir)/gabble/types.h \
     types.h \
     util.h \
     util.c \
@@ -204,15 +220,14 @@ noinst_LTLIBRARIES = libgabble-convenience.la
 AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
-	    @SOUP_CFLAGS@ @UUID_CFLAGS@ @GMODULE_CFLAGS@ \
+	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @UUID_CFLAGS@ @GMODULE_CFLAGS@ \
 	    @SQLITE_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
-	    -I $(top_srcdir)/gabble \
 	    -DG_LOG_DOMAIN=\"gabble\" \
 	    -DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\"
 
 ALL_LIBS =  @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
-	    @SOUP_LIBS@ @UUID_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
+	    @SOUP_LIBS@ @NICE_LIBS@ @UUID_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
 
 # build gibber first
 all: gibber
