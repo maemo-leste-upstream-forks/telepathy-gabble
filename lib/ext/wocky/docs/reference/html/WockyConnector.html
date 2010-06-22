@@ -52,14 +52,14 @@ enum                <a class="link" href="WockyConnector.html#WockyConnectorErro
 #define             <a class="link" href="WockyConnector.html#WOCKY-CONNECTOR-ERROR:CAPS" title="WOCKY_CONNECTOR_ERROR">WOCKY_CONNECTOR_ERROR</a>
 <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="returnvalue">WockyXmppConnection</span></a> * <a class="link" href="WockyConnector.html#wocky-connector-connect-finish" title="wocky_connector_connect_finish ()">wocky_connector_connect_finish</a>    (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **jid</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **sid</code></em>);
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **sid</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
 <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="returnvalue">WockyXmppConnection</span></a> * <a class="link" href="WockyConnector.html#wocky-connector-register-finish" title="wocky_connector_register_finish ()">wocky_connector_register_finish</a>   (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **jid</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **sid</code></em>);
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **sid</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyConnector.html#wocky-connector-connect-async" title="wocky_connector_connect_async ()">wocky_connector_connect_async</a>       (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> cb</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
@@ -456,9 +456,9 @@ Get access to the error quark of the connector.
 <a name="wocky-connector-connect-finish"></a><h3>wocky_connector_connect_finish ()</h3>
 <pre class="programlisting"><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="returnvalue">WockyXmppConnection</span></a> * wocky_connector_connect_finish    (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **jid</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **sid</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **sid</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 Called by the callback passed to <a class="link" href="WockyConnector.html#wocky-connector-connect-async" title="wocky_connector_connect_async ()"><code class="function">wocky_connector_connect_async()</code></a>.
 </p>
@@ -476,11 +476,6 @@ Called by the callback passed to <a class="link" href="WockyConnector.html#wocky
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>(<a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore) the <a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> (if any) is sored here.
-</td>
-</tr>
-<tr>
 <td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
 <td> the user JID from the server is stored here. <span class="annotation">[%NULL to ignore]</span>
 </td>
@@ -488,6 +483,11 @@ Called by the callback passed to <a class="link" href="WockyConnector.html#wocky
 <tr>
 <td><p><span class="term"><em class="parameter"><code>sid</code></em> :</span></p></td>
 <td> the Session ID is stored here. <span class="annotation">[%NULL to ignore]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>(<a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore) the <a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> (if any) is sored here.
 </td>
 </tr>
 <tr>
@@ -503,9 +503,9 @@ Called by the callback passed to <a class="link" href="WockyConnector.html#wocky
 <a name="wocky-connector-register-finish"></a><h3>wocky_connector_register_finish ()</h3>
 <pre class="programlisting"><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="returnvalue">WockyXmppConnection</span></a> * wocky_connector_register_finish   (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **jid</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **sid</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **sid</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 Called by the callback passed to <a class="link" href="WockyConnector.html#wocky-connector-register-async" title="wocky_connector_register_async ()"><code class="function">wocky_connector_register_async()</code></a>.
 </p>
@@ -523,11 +523,6 @@ Called by the callback passed to <a class="link" href="WockyConnector.html#wocky
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>(<a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore) the <a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> (if any) is stored here.
-</td>
-</tr>
-<tr>
 <td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
 <td>(<a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore) the JID in effect after connection is stored here.
 </td>
@@ -535,6 +530,11 @@ Called by the callback passed to <a class="link" href="WockyConnector.html#wocky
 <tr>
 <td><p><span class="term"><em class="parameter"><code>sid</code></em> :</span></p></td>
 <td>(<a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore) the Session ID after connection is stored here.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>(<a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore) the <a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> (if any) is stored here.
 </td>
 </tr>
 <tr>

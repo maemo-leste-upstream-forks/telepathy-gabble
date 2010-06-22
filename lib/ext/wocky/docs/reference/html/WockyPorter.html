@@ -53,7 +53,11 @@ enum                <a class="link" href="WockyPorter.html#WockyPorterError" tit
 #define             <a class="link" href="WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS" title="WOCKY_PORTER_HANDLER_PRIORITY_NORMAL">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</a>
 #define             <a class="link" href="WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MAX:CAPS" title="WOCKY_PORTER_HANDLER_PRIORITY_MAX">WOCKY_PORTER_HANDLER_PRIORITY_MAX</a>
 #define             <a class="link" href="WockyPorter.html#WOCKY-PORTER-ERROR:CAPS" title="WOCKY_PORTER_ERROR">WOCKY_PORTER_ERROR</a>
-<a class="link" href="WockyPorter.html" title="WockyPorter"><span class="returnvalue">WockyPorter</span></a> *       <a class="link" href="WockyPorter.html#wocky-porter-new" title="wocky_porter_new ()">wocky_porter_new</a>                    (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>);
+<a class="link" href="WockyPorter.html" title="WockyPorter"><span class="returnvalue">WockyPorter</span></a> *       <a class="link" href="WockyPorter.html#wocky-porter-new" title="wocky_porter_new ()">wocky_porter_new</a>                    (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *full_jid</code></em>);
+const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyPorter.html#wocky-porter-get-full-jid" title="wocky_porter_get_full_jid ()">wocky_porter_get_full_jid</a>           (<em class="parameter"><code><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a> *self</code></em>);
+const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyPorter.html#wocky-porter-get-bare-jid" title="wocky_porter_get_bare_jid ()">wocky_porter_get_bare_jid</a>           (<em class="parameter"><code><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a> *self</code></em>);
+const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyPorter.html#wocky-porter-get-resource" title="wocky_porter_get_resource ()">wocky_porter_get_resource</a>           (<em class="parameter"><code><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a> *self</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPorter.html#wocky-porter-send-async" title="wocky_porter_send_async ()">wocky_porter_send_async</a>             (<em class="parameter"><code><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a> *porter</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a> *stanza</code></em>,
                                                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
@@ -112,7 +116,10 @@ enum                <a class="link" href="WockyPorter.html#WockyPorterError" tit
 <div class="refsect1" title="Properties">
 <a name="WockyPorter.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
+  "<a class="link" href="WockyPorter.html#WockyPorter--bare-jid" title='The "bare-jid" property'>bare-jid</a>"                 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
   "<a class="link" href="WockyPorter.html#WockyPorter--connection" title='The "connection" property'>connection</a>"               <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>*  : Read / Write / Construct Only
+  "<a class="link" href="WockyPorter.html#WockyPorter--full-jid" title='The "full-jid" property'>full-jid</a>"                 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only
+  "<a class="link" href="WockyPorter.html#WockyPorter--resource" title='The "resource" property'>resource</a>"                 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
 </pre>
 </div>
 <div class="refsect1" title="Signals">
@@ -256,7 +263,8 @@ Get access to the error quark of the xmpp porter.
 <hr>
 <div class="refsect2" title="wocky_porter_new ()">
 <a name="wocky-porter-new"></a><h3>wocky_porter_new ()</h3>
-<pre class="programlisting"><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="returnvalue">WockyPorter</span></a> *       wocky_porter_new                    (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>);</pre>
+<pre class="programlisting"><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="returnvalue">WockyPorter</span></a> *       wocky_porter_new                    (<em class="parameter"><code><a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> *connection</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *full_jid</code></em>);</pre>
 <p>
 Convenience function to create a new <a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a>.
 </p>
@@ -271,8 +279,82 @@ Convenience function to create a new <a class="link" href="WockyPorter.html" tit
 </td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>full_jid</code></em> :</span></p></td>
+<td>the full JID of the user
+</td>
+</tr>
+<tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a new <a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_get_full_jid ()">
+<a name="wocky-porter-get-full-jid"></a><h3>wocky_porter_get_full_jid ()</h3>
+<pre class="programlisting">const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_porter_get_full_jid           (<em class="parameter"><code><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a> *self</code></em>);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a porter
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the value of <a class="link" href="WockyPorter.html#WockyPorter--full-jid" title='The "full-jid" property'><span class="type">"full-jid"</span></a>. <span class="annotation">[<a href="http://foldoc.org/transfer%20none"><span class="acronym">transfer none</span></a>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_get_bare_jid ()">
+<a name="wocky-porter-get-bare-jid"></a><h3>wocky_porter_get_bare_jid ()</h3>
+<pre class="programlisting">const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_porter_get_bare_jid           (<em class="parameter"><code><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a> *self</code></em>);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a porter
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the value of <a class="link" href="WockyPorter.html#WockyPorter--bare-jid" title='The "bare-jid" property'><span class="type">"bare-jid"</span></a>. <span class="annotation">[<a href="http://foldoc.org/transfer%20none"><span class="acronym">transfer none</span></a>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_porter_get_resource ()">
+<a name="wocky-porter-get-resource"></a><h3>wocky_porter_get_resource ()</h3>
+<pre class="programlisting">const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_porter_get_resource           (<em class="parameter"><code><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a> *self</code></em>);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a porter
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the value of <a class="link" href="WockyPorter.html#WockyPorter--resource" title='The "resource" property'><span class="type">"resource"</span></a>. <span class="annotation">[<a href="http://foldoc.org/transfer%20none"><span class="acronym">transfer none</span></a>]</span>
 </td>
 </tr>
 </tbody>
@@ -855,12 +937,40 @@ Finishes a force close operation.
 </div>
 <div class="refsect1" title="Property Details">
 <a name="WockyPorter.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "bare-jid" property'>
+<a name="WockyPorter--bare-jid"></a><h3>The <code class="literal">"bare-jid"</code> property</h3>
+<pre class="programlisting">  "bare-jid"                 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
+<p>
+The user's bare JID (node@domain).
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
 <div class="refsect2" title='The "connection" property'>
 <a name="WockyPorter--connection"></a><h3>The <code class="literal">"connection"</code> property</h3>
 <pre class="programlisting">  "connection"               <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a>*  : Read / Write / Construct Only</pre>
 <p>
 The underlying <a class="link" href="WockyXmppConnection.html" title="WockyXmppConnection"><span class="type">WockyXmppConnection</span></a> wrapped by the <a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a>
 </p>
+</div>
+<hr>
+<div class="refsect2" title='The "full-jid" property'>
+<a name="WockyPorter--full-jid"></a><h3>The <code class="literal">"full-jid"</code> property</h3>
+<pre class="programlisting">  "full-jid"                 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only</pre>
+<p>
+The user's full JID (node@domain/resource).
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "resource" property'>
+<a name="WockyPorter--resource"></a><h3>The <code class="literal">"resource"</code> property</h3>
+<pre class="programlisting">  "resource"                 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
+<p>
+The resource part of the user's full JID, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if their full JID does
+not contain a resource at all.
+</p>
+<p>Default value: NULL</p>
 </div>
 </div>
 <div class="refsect1" title="Signal Details">

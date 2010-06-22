@@ -57,7 +57,8 @@ TEST_PROGS = wocky-xmpp-reader-test \
   wocky-connector-test \
   wocky-ping-test \
   wocky-jid-validation-test \
-  wocky-sasl-utils-test
+  wocky-sasl-utils-test \
+  wocky-utils-test
 
 wocky_tls_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_tls_test_SOURCES = \
@@ -211,6 +212,9 @@ wocky_jid_validation_test_SOURCES = \
   wocky-test-helper.c wocky-test-helper.h \
   wocky-test-stream.c wocky-test-stream.h
 
+wocky_utils_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_utils_test_SOURCES = wocky-utils-test.c
+
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ \
   @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@
 
@@ -219,7 +223,7 @@ LDADD = $(top_builddir)/wocky/libwocky.la
 
 check_PROGRAMS = $(TEST_PROGS)
 
-check_c_sources = $(wildcard $(srcdir)/*.c) $(wildcard $(srcdir)/*.h)
+check_c_sources = $(notdir $(wildcard $(srcdir)/*.c) $(wildcard $(srcdir)/*.h))
 
 all: $(TEST_PROGS)
 
