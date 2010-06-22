@@ -8,6 +8,7 @@ TWISTED_TESTS = \
 	caps/caps-persistent-cache.py \
 	caps/compat-bundles.py \
 	caps/double-disco.py \
+	caps/disco-without-node.py \
 	caps/from-bare-jid.py \
 	caps/hashed-caps.py \
 	caps/initial-caps.py \
@@ -174,6 +175,8 @@ TWISTED_TESTS = \
 	file-transfer/test-send-file-wait-to-provide.py \
 	file-transfer/test-send-file-send-before-accept.py \
 	test-debug.py \
+	connect/disco-error-from-bare-jid.py \
+	connect/disco-no-reply.py \
 	connect/disconnect-timeout.py \
 	connect/test-fail.py \
 	connect/test-success.py \
@@ -181,8 +184,6 @@ TWISTED_TESTS = \
 	connect/test-nonblocking-tls.py \
 	connect/stream-closed.py \
 	connect/network-error.py \
-	test-disco.py \
-	test-disco-no-reply.py \
 	test-fallback-socks5-proxy.py \
 	test-register.py \
 	test-set-status-idempotence.py \
@@ -266,6 +267,7 @@ EXTRA_DIST = \
 	constants.py \
 	gabbletest.py \
 	httptest.py \
+	rostertest.py \
 	jingle-share/file_transfer_helper.py \
 	jingle-share/jingleshareutils.py \
 	jingle/__init__.py \
@@ -275,7 +277,6 @@ EXTRA_DIST = \
 	mucutil.py \
 	ns.py \
 	olpc/util.py \
-	roster/rostertest.py \
 	tubes/muctubeutil.py \
 	tubes/tubetestutil.py \
 	sasl/saslutil.py \

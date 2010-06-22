@@ -1,20 +1,151 @@
-commit 1a8e0579fdb9a8ed8d7a1e6f5d1b7012a15807f8
+commit 6b382cace1d5d345c2fe59308e3768fe5b0a5c03
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-22 19:22:17 +0100
+
+    Update Wocky and prepare version 0.9.14
+
+commit 0ab98103901f53c5623e056c8b894156bce241f8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-22 18:59:24 +0100
+
+    fd.o #27966: replace gabble_value_array_build with tp_value_array_build
+
+commit 52fae8c1420be62eee14bbfb1e92c1ea28fc013a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-22 18:56:36 +0100
+
+    Update NEWS
+
+commit 52855a27427db0c4c127258f379feab8383b5bf2
+Merge: 3435e4f 1ab797c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-22 18:29:37 +0100
+
+    Merge branch 'not-actually-spoofing'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 1ab797c7c7da2b3bead6fe743babb22b9249d30b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-22 17:02:19 +0100
+
+    Test interoperability with Prosody 0.6.1 returning error from disco#info on our bare JID
+
+commit dc621234a829da1cf4a9bd5c02ef280695f87383
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-22 18:29:18 +0100
+
+    fd.o #28647: update Wocky to master and compensate for its API change
+
+commit 3435e4f787e50de303dbfe5131685715eb9ad435
+Merge: 40fb64c fcb15bb
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-22 17:02:36 +0100
+
+    Merge branch 'roster-assumptions'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 40fb64ca5b247007472e7e485bb538ea36892a16
 Author: Will Thompson <will.thompson@collabora.co.uk>
-Date:   2010-06-14 17:32:25 +0100
+Date:   2010-06-18 15:04:42 +0100
 
-    Add jingle-share test helpers to EXTRA_DIST
+    Add {}s for clarity.
 
-commit 29e6939239ea7f2c00ba04959b87b553fdf2b05f
+commit de83fe2e597f1860984b91322e7f9d4d0077029a
+Merge: 20393e8 3dc6b89
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-18 14:37:01 +0100
+
+    Merge branch 'tired-jokes-about-discotheques'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 3dc6b89100ab2d2d446d739625bd2e777dd92045
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-18 13:56:49 +0100
+
+    Ignore errors from discoing our own bare JID.
+    
+    Fixes <https://bugs.freedesktop.org/show_bug.cgi?id=28599>.
+
+commit 856de6e83cf0cbdb03e3556103d9e8bbe44809a3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-18 13:43:26 +0100
+
+    Move test-disco-no-reply.py into connect/
+    
+    It tests stuff that happens during the connection process, so...
+
+commit f22cee75964a9ed3f76a386e2e645e2678f14b84
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-18 13:39:43 +0100
+
+    Move test-disco.py into caps/, and modernize
+
+commit 20393e8754676ec43bd998dbbfc6f9c1e0136c6d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-17 18:28:44 +0100
+
+    Say who calls Close() on calls
+    
+    A reasonably common answer to “why are my calls closing?” is “because
+    someone called Close() on them”.
+    
+    The follow-up is usually “who, and why?”. This patch helps with the
+    former; for the latter, you're on your own.
+
+commit fcb15bb37de702efdee0ee34a3fd2a6683fd8fe2
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-17 16:38:28 +0100
+
+    Use the self-handle as actor for changes to the 'deny' list
+    
+    This matches the behaviour of TpBaseContactList, and makes logical sense:
+    if the deny list changes, either we changed it locally, or one of our
+    other resources changed it.
+
+commit 936b4fab5b34719e038787907a762d5687b07578
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-15 14:59:24 +0100
+
+    test-twice: don't assume contact lists will turn up in a particular order
+
+commit 5bc1adf30d58d9c9a66a83b72effce4a2d868362
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-15 14:58:59 +0100
+
+    Move rostertest out of the roster directory: it's needed elsewhere too
+
+commit 38c96124b6f808f68c822c830663b46bd078136c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-15 15:07:07 +0100
+
+    Update Wocky to master, and adjust parameter order in connection.c to match
+
+commit 21738b95d73feedb605301f8b4b6fb9600ae71b1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-14 17:57:05 +0100
+
+    Bump nano-version to 0.9.13.1
+
+commit b15b7a4e1567757f51f82d48e696b8a2020dbf44
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-06-14 17:12:04 +0100
 
     Version 0.9.13
 
-commit 2262c7873f851dcc2f50b4fd075e16b1975027a2
+commit 7fc9345e62cf5a6ecc81f48a28ffa0f1cfe5276b
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-06-14 17:09:10 +0100
 
     NEWS for 0.9.13
+
+commit ff30a88be6c7b76d7f6e25e1bde0619a21b3f3d6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-06-14 17:32:25 +0100
+
+    Add jingle-share test helpers to EXTRA_DIST
 
 commit 653d6172632758ac2648cb6522f66079803fd5e3
 Author: Will Thompson <will.thompson@collabora.co.uk>

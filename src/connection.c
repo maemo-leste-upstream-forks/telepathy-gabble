@@ -1690,24 +1690,25 @@ bare_jid_disco_cb (GabbleDisco *disco,
   if (disco_error != NULL)
     {
       DEBUG ("Got disco error on bare jid: %s", disco_error->message);
-      return;
     }
-
-  for (i = node_iter (result); i; i = node_iter_next (i))
+  else
     {
-      LmMessageNode *child = node_iter_data (i);
-
-      if (!tp_strdiff (child->name, "identity"))
+      for (i = node_iter (result); i; i = node_iter_next (i))
         {
-          const gchar *category = lm_message_node_get_attribute (child,
-              "category");
-          const gchar *type = lm_message_node_get_attribute (child, "type");
+          LmMessageNode *child = node_iter_data (i);
 
-          if (!tp_strdiff (category, "pubsub") &&
-              !tp_strdiff (type, "pep"))
+          if (!tp_strdiff (child->name, "identity"))
             {
-              DEBUG ("Server advertises PEP support in our jid features");
-              conn->features |= GABBLE_CONNECTION_FEATURES_PEP;
+              const gchar *category = lm_message_node_get_attribute (child,
+                  "category");
+              const gchar *type = lm_message_node_get_attribute (child, "type");
+
+              if (!tp_strdiff (category, "pubsub") &&
+                  !tp_strdiff (type, "pep"))
+                {
+                  DEBUG ("Server advertises PEP support in our jid features");
+                  conn->features |= GABBLE_CONNECTION_FEATURES_PEP;
+                }
             }
         }
     }
@@ -1760,7 +1761,7 @@ connector_connected (GabbleConnection *self,
 
   DEBUG ("connected (jid: %s)", jid);
 
-  self->session = wocky_session_new (conn);
+  self->session = wocky_session_new (conn, jid);
   priv->porter = wocky_session_get_porter (self->session);
   priv->pinger = wocky_ping_new (priv->porter, priv->keepalive_interval);
 
@@ -1862,8 +1863,8 @@ connector_connect_cb (GObject *source,
   GError *error = NULL;
   gchar *jid = NULL;
 
-  conn = wocky_connector_connect_finish (WOCKY_CONNECTOR (source), res, &error,
-      &jid, &(priv->stream_id));
+  conn = wocky_connector_connect_finish (WOCKY_CONNECTOR (source), res, &jid,
+      &(priv->stream_id), &error);
 
   connector_connected (self, conn, jid, error);
   g_free (jid);
@@ -1880,8 +1881,8 @@ connector_register_cb (GObject *source,
   GError *error = NULL;
   gchar *jid = NULL;
 
-  conn = wocky_connector_register_finish (WOCKY_CONNECTOR (source), res, &error,
-      &jid, &(priv->stream_id));
+  conn = wocky_connector_register_finish (WOCKY_CONNECTOR (source), res,
+      &jid, &(priv->stream_id), &error);
 
   connector_connected (self, conn, jid, error);
   g_free (jid);
