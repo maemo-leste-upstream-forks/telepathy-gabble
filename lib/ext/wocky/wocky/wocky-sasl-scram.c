@@ -293,8 +293,8 @@ scram_calculate_salted_password (WockySaslScram *self)
   guint64 i = priv->iterations;
   GByteArray *result, *prev, *salt;
   guint8 one[] = {0,0,0,1};
-  gint state;
-  guint save;
+  gint state = 0;
+  guint save = 0;
   gsize len;
   gsize pass_len = strlen (priv->password);
 
@@ -495,6 +495,11 @@ scram_check_server_verification (WockySaslScram *self,
   v = g_base64_encode (server_signature->data, server_signature->len);
 
   ret = !wocky_strdiff (v, verification);
+
+  if (!ret)
+    DEBUG ("Unexpected verification: got %s, expected %s",
+      verification,  v);
+
 
   g_byte_array_free (server_key, TRUE);
   g_byte_array_free (server_signature, TRUE);

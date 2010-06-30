@@ -1,3 +1,69 @@
+commit 8a362a2b4406542b7f7ec2c68379fa8bc7f0c1a7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-25 17:19:22 +0100
+
+    Make the server salt a proper base64 string
+
+ tests/wocky-scram-sha1-test.c |   14 ++++++++------
+ 1 files changed, 8 insertions(+), 6 deletions(-)
+
+commit c4799c2ca67ba57229d61d426b99d3a611da44cd
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-25 17:19:06 +0100
+
+    Properly initialze base64 state and save
+
+ wocky/wocky-sasl-scram.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 8f74264e32fe3f0df01fbb9e34e47a4223e9d279
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-25 15:19:12 +0100
+
+    Add some static tests for scram-sha1
+
+ tests/Makefile.am             |    9 +++-
+ tests/wocky-scram-sha1-test.c |  131 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 139 insertions(+), 1 deletions(-)
+
+commit 34516056bc94690be77c5106af3b0c54d9dfcc52
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-25 15:15:24 +0100
+
+    Log the difference between actual and expected verification result
+
+ wocky/wocky-sasl-scram.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 67bf3f27316f53a1c4e28db563a3c7af0520a320
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-24 12:49:26 +0100
+
+    Test resetting the reader at odd times
+
+ tests/wocky-xmpp-reader-test.c |   44 ++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 40 insertions(+), 4 deletions(-)
+
+commit b85abc7144808a77f7d20015514e36ff7c1c1ab8
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-06-24 12:48:52 +0100
+
+    Completely clear the parser state when resetting
+
+ wocky/wocky-xmpp-reader.c |   85 +++++++++++++++++++++------------------------
+ 1 files changed, 40 insertions(+), 45 deletions(-)
+
+commit 8cda83781b95f7f63a8062e76f153ed012e95cb3
+Author: Simon McVittie <smcv@debian.org>
+Date:   2010-06-23 13:52:16 +0100
+
+    Build enum types for all error domains
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+ wocky/Makefile.am |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
 commit e41093fb12ccc84078507aaf84d215ddb2cb163f
 Author: Lars Noschinski <lars@publich.noschinski.de>
 Date:   2010-06-22 19:06:05 +0100
