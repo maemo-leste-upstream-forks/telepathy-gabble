@@ -16,6 +16,7 @@ TWISTED_TESTS = \
 	caps/receive-jingle.py \
 	caps/trust-thyself.py \
 	caps/tube-caps.py \
+	cm/protocol.py \
 	device-idleness.py \
 	gateways.py \
 	muc/conference.py \
@@ -47,6 +48,8 @@ TWISTED_TESTS = \
 	presence/decloak.py \
 	presence/initial-contact-presence.py \
 	presence/initial-presence.py \
+	presence/invisible_xep_0126.py \
+	presence/invisible_xep_0186.py \
 	presence/presence.py \
 	roster/ensure.py \
 	roster/groups.py \
@@ -82,6 +85,7 @@ TWISTED_TESTS = \
 	tubes/accept-muc-stream-tube.py \
 	tubes/accept-private-dbus-tube.py \
 	tubes/accept-private-stream-tube.py \
+	tubes/check-create-tube-return.py \
 	tubes/close-muc-with-closed-tube.py \
 	tubes/crash-on-list-channels.py \
 	tubes/create-invalid-tube-channels.py \
@@ -281,7 +285,8 @@ EXTRA_DIST = \
 	tubes/tubetestutil.py \
 	sasl/saslutil.py \
 	search/search_helper.py \
-	file-transfer/file_transfer_helper.py
+	file-transfer/file_transfer_helper.py \
+	presence/invisible_helper.py
 
 noinst_PROGRAMS = \
 	telepathy-gabble-debug

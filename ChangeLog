@@ -1,3 +1,997 @@
+commit a4d73e4a6e0192f3f729bf3ab315ed5151eb670b
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-08-19 16:48:20 +0200
+
+    Prepare version 0.9.16
+
+commit c145c532354dbaffec489bfe3efe3adc72b4e7f5
+Author: Adam Conrad <adconrad@collabora.co.uk>
+Date:   2010-08-19 18:58:58 +0100
+
+    Update wocky to fit out-of-tree builds
+
+commit 557b5ea02725ca97c68c57c8724ed70495c43ceb
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-08-18 19:04:54 +0200
+
+    SetActivities needs to merge new activities within the existing ones
+    instead of creating new ones because they may be already referenced by
+    muc channels.
+
+commit 78a857f6db363b3c23561623e46ddaf80ccb2ba3
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-08-18 10:16:38 +0200
+
+    Whitespace fix
+
+commit 4c62e811668b7f34a8d8d20053df9c353d181e11
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-08-16 12:14:53 +0200
+
+    Add rationales to AddActivity and GetActivity
+
+commit 7d45401fe9886840b848c8ccb90a011dbefffe63
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-08-11 15:37:10 +0200
+
+    Improvements to the docs for AddActivity and GetActivity
+
+commit f9112e4c7f5926ed41b690e2665c463d5ffc8253
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-08-11 14:53:02 +0200
+
+    Add a BuddyInfo.AddActivity method so activities can advertise
+    themselves without having to track all the other shared activities.
+    
+    Refactors into an add_activity function the logic shared with
+    SetActivities.
+
+commit 4239c68b03958dea18b5ea2414517c0756bdc840
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-08-11 14:52:35 +0200
+
+    Add a method for retrieving an activity's room handle from its id
+
+commit f7f3b2fc121764aa4460f68e51114b4383a228e3
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-08-11 14:49:44 +0200
+
+    Set the activity_id a bit earlier
+
+commit e16839691327a891db535c36085ca19075da25ab
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-08-11 14:47:39 +0200
+
+    Log error message when a query fails even if we have no dbus context
+
+commit 8f57172adfac6f61af536eadedc6a01b862407b2
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-08-17 18:53:23 +0100
+
+    Update wocky and adapt to the new TLS API
+
+commit f47e6a8a84ee41ec705e382a72fcbc28efc1f7fb
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-08-13 14:23:00 +0200
+
+    constants.py: add INVALID_HANDLE
+
+commit 3dec7eeca3318c35456e25b505de03b38fd84f59
+Merge: f8398be 18c80d8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-11 13:41:26 +0100
+
+    Merge branch 'enums'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 18c80d898a8d8f8913847dd9eebd29b760f50aa1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-11 13:39:46 +0100
+
+    gabble_media_factory_get_contact_caps: add a cast to shut gcc 4.5 up
+    
+    Also, explain what assumption we're making and why it's valid.
+
+commit 30a6f86a37befca3ee49647b11462922e5bf2546
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-11 12:40:19 +0100
+
+    Report temporary delivery failures correctly in MUCs
+    
+    This code previously had an implicit assumption that GabbleXmppErrorType
+    was numerically equal to WockyXmppErrorType, which is not actually true.
+    XMPP_ERROR_TYPE_WAIT = 5, and there is no WockyXmppErrorType equal to 5,
+    so this code would treat all errors as permanent.
+    
+    gcc-4.5 warns about this abuse of enums.
+
+commit 43f369462eadcdc694099e4e6fe511f11c88de80
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-11 12:37:45 +0100
+
+    Consistently use  to represent tube states
+    
+    TpTubeChannelState is numerically equal to TpTubeState up to OPEN, but
+    also has a NOT_OFFERED state. gcc-4.5 warns about this.
+
+commit 13ac553499e2db9904b5207c1dbff61c9e3a6c84
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-11 12:01:49 +0100
+
+    Replace all JingleSessionState with JingleState
+    
+    As a side benefit, this fixes some cases of comparing a JingleState to a
+    JingleSessionState (using the fact that they happen to be numerically
+    equal), which gcc 4.5 apparently warns about.
+
+commit 7661591595281786f36a1ce1190b3fb0994fa0e9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-11 11:57:26 +0100
+
+    Add JINGLE_STATE_INVALID, to mirror JS_STATE_INVALID
+    
+    This results in the enums JingleSessionState and JingleState being
+    numerically equivalent.
+
+commit 5dbb03e98b4b0bac394c3853f16b10cf5b65f8ae
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-11 11:56:26 +0100
+
+    Rename JINGLE_STATE_PENDING_ACTIVE to JINGLE_STATE_ACTIVE
+    
+    It turns out not to be used anywhere, and if you're ACTIVE, by definition
+    you're not PENDING :-)
+
+commit f8398be76fcda96d7f85d10e483d5cf6c30099fd
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-09 17:00:52 +0200
+
+    Don't include files from extensions/_gen
+
+commit 3c5e87c88dfec25a1907dc4abb8031a9f305e40d
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-08-09 14:29:13 +0200
+
+    Pass a guint instead of a guint16 to dbus_g_type_struct_get because it
+    expands to 32 internally.
+
+commit bfc3104cd490af18bbd0857289fc8e263e69bb94
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-08-08 12:17:42 +0200
+
+    Request activity properties using pep_olpc_act_props and not pep_olpc_buddy_props
+
+commit ad6f4a30af69ef7ebb08722a8937a2d3963c6aa3
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-05 12:13:28 +0200
+
+    depend on telepathy-glib 0.11.11 (for TpBaseProtocol)
+
+commit d5faa56fc9018fad06de1908fd767bf3d3ac2491
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-05 12:13:03 +0200
+
+    cm/protocol test: nicer way of testing that the dbus method returns an error
+
+commit b687aaf9459c4abe33a798b2dbc79fa8377dc476
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-05 12:11:30 +0200
+
+    assert that expected immutable properties really are there
+
+commit 17386d2c546302af359ebea58c44b6858f758fdb
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-05 12:11:01 +0200
+
+    write-mgr-file.c: use correct printf formats as provided by Glib
+
+commit 37f1d9b94d1ac2bb0fd81fd2cddf7f7886cb113b
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-05 12:10:21 +0200
+
+    write-mgr-file.c: iterate over hashtable instead of using foreach
+
+commit 5b05a339b06f49c0802a5d68bf4bfd6c7d65df6a
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-05 12:07:25 +0200
+
+    use g_once_init_{enter,leave} instead of g_once_init
+
+commit 96de25f9607b79514b58273085fd6a1ecbd4d869
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-05 12:06:03 +0200
+
+    gabble_jabber_protocol_new() now returns TpBaseProtocol* instead of GabbleJabberProtocol*
+
+commit 2b44ab9b168c06a6b620799a3e141ce2481ae90d
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 13:48:08 +0200
+
+    gabble_connection_manager_get_protocols() is no more, removed from header file
+
+commit a10e91c1092e3e962cd5393488f759ccbbe36eed
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 13:19:04 +0200
+
+    update copyright
+
+commit 1c593ebf011a68fea4117fce64ab5aee87399379
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 13:18:46 +0200
+
+    mgr_file_contents(): don't leak GKeyFile
+
+commit e6a666c2eae120b2fc23f0f4ee8084b32fad0c5f
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 13:18:02 +0200
+
+    write-mgr-file: output Protocol's immutable properties
+
+commit 59715783b4defdc724bfe680e1b7172505d41025
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 13:13:09 +0200
+
+    factor write_parameters() out of mgr_file_contents()
+
+commit 5e3a92a92d03f3876b375e99e305e2a0521bcd8c
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 13:12:09 +0200
+
+    write_mgr_file(): make use of GabbleJabberProtocol
+
+commit 812af5949c6ecf0f6c6b93135cd4014b2ef5382a
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 13:03:59 +0200
+
+    use hardcoded values for protocol name/icon/englishname/vcard field
+
+commit 21863853f75fd883c82b3a0ed141dd0ca8adaa33
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 13:03:10 +0200
+
+    move gabble parameters from ConnectionManager to JabberProtocol and clean up leftover cruft
+
+commit f76b18abc4819c8dfce3b59b4000f9b4dad45e57
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 13:01:47 +0200
+
+    add comments for gabble_normalize_contact()
+    
+    In particular, document that repo argument may be NULL
+
+commit 5ab5481e174399b79b2bee369105b8e92db5639b
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 13:01:07 +0200
+
+    identify_account: assume the mandatory parameter "account" is present
+
+commit 81eb7c63b5eb6059314fa520d855507cc683a352
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 13:00:07 +0200
+
+    protocol.c: trivia/whitespace fixes
+
+commit 89393c76aa60f19939845deb28255e1f2a7d4c37
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 12:59:03 +0200
+
+    add gabble_jabber_protocol_new()
+
+commit a4c99414eca52ac3c220d2f070b3df0016f44210
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 12:57:14 +0200
+
+    cm/protocol.py test: check that IdentifyAccount() really requires mandatory parameters
+
+commit 910525639e9f03e42c62b883908b8a04ef6876d3
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 12:56:52 +0200
+
+    cm/protocol.py test: use assertEquals
+
+commit 204066493531979b712489d9d691266bd5f77606
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-22 12:54:41 +0200
+
+    Protocol has been undrafted
+
+commit 2d7e798a76dd55ae68906eb41d921eb47fba5b0b
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-21 11:55:49 +0200
+
+    add test for o.f.T.Protocol
+
+commit 0d60a9e54a7def5cf56f40cbd297c5f2ae187393
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-21 11:54:38 +0200
+
+    GabbleConnectionManager: use GabbleJabberProtocol
+
+commit 18eae71a423cf7ca1f87395d8ff8ecc579d61b9c
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-21 11:52:48 +0200
+
+    add GabbleJabberProtocol
+
+commit 3d2a0f8f903d2a02de783b015d1a1cc0d0c1e2e4
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-21 11:45:37 +0200
+
+    managers: implement type_foreach_channel_class instead of foreach_channel_class
+    
+    The former will be used by Protocol objects without having an instance
+    of the managers in question; since we don't need to run any instance-specific
+    code, we're happily allowing tp-glib to implement foreach_channel_class in
+    terms of type_foreach_channel_class for us.
+
+commit 8ef0b2bc70ef880aab3108a90fb991e33bd6918e
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-07-21 11:43:48 +0200
+
+    Add gabble_connection_get{implemented,guaranteed}_interfaces() methods
+
+commit 7658c2df4f6687ebd86f98d308d5ffb19949f51a
+Merge: a538d52 1fa9568
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-03 16:01:01 +0100
+
+    Merge branch 'errata'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 1fa9568fb75b0c60894048db0fdba86e2ea51371
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-03 15:49:53 +0100
+
+    saslutil: expect ConnectionError whenever aborted
+
+commit 2698207d95d50ac92c2bdf834696ef4e1e3bd874
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-03 15:49:40 +0100
+
+    sasl/plain test: expect ConnectionError
+
+commit e1113c0caa4d693030666e688ddd87d9a6169b7c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-03 15:45:39 +0100
+
+    test-register: check ConnectionError for each failure case
+
+commit 03e286cfe2b54225f08bffe1acd2ad197ed14e0b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-03 15:43:33 +0100
+
+    Check that registering and getting a <conflict/> raises RegistrationExists
+
+commit b97e945ee48fc91cccf268eb71b63b3ae4b70a3f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-03 15:24:17 +0100
+
+    connect/test-fail.py: exercise the ConnectionError signal
+
+commit 43d4cc6ecefcff87388591ba8414e8f59b42160e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-03 15:23:52 +0100
+
+    gabble_set_tp_conn_error_from_wocky: be sensitive to previous status
+    
+    This moves the domain-specific special case from
+    connection.c:remote_error_cb to more generic error-handling code.
+    
+    I'd previously thought that a stream <conflict/> before connecting
+    successfully would be a WOCKY_CONNECTOR_ERROR, but that turns out
+    not to be true.
+
+commit 1df648789abc5a99e9df47a44657a739f6157964
+Merge: fdfbd53 a538d52
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-03 14:59:08 +0100
+
+    Merge branch 'master' into errata
+    
+    Conflicts:
+    	lib/ext/wocky (took newer version)
+
+commit a538d52087e4f0e8ea59aedbdf29834dd82d9543
+Merge: 6643130 4dfc2d8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-03 14:42:09 +0100
+
+    Merge branch 'trivia'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 4dfc2d8bcf5f6bf28cdc569f2b5e201accd3d4a9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-30 12:43:07 +0100
+
+    GabbleSearchChannel: change_search_state: use tp_error_get_dbus_name
+    
+    This has been available since telepathy-glib 0.7.31.
+
+commit c029ab07ae3d662225827dc3fe3c9500c17891d8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-30 12:09:54 +0100
+
+    gabble_connection_dispose: comment why we are not leaking the porter
+
+commit 12ec810b41ae5cb205398031a2efd929c910588c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-30 11:59:32 +0100
+
+    _gabble_connection_send: remove unused variable
+
+commit f42ce2a0ec0043f1ea75bad435094705d4c2153a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-07-22 13:03:05 +0100
+
+    plugins: put top_srcdir and top_builddir first in CFLAGS
+    
+    If we're compiling against an uninstalled telepathy-glib, we want
+    "extensions/extensions.h" to mean Gabble's, not telepathy-glib's!
+
+commit ce5ef9d9b569487b35f37bba5eec32e523757ba5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-07-28 16:14:06 +0100
+
+    test-receive-file-decline.py: fix race condition
+    
+    It's not safe to assume that Closed will not happen before the stream-iq;
+    it depends when we poll the two sockets.
+
+commit 49d038b1b8fda6e1d1849f30c9e5dafc9a3d3a00
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-07-28 16:11:54 +0100
+
+    test-location: don't assume that stream events happen before D-Bus events
+    
+    This fixes an occasional test failure.
+
+commit bf40c1c73c18f2376b107413589c07c9551f8929
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-07-28 15:55:54 +0100
+
+    jingle/decloak-peer test: assert that RequestStreams raises Offline when failing
+
+commit 9b7cbb5d841d25c84821f2df7e3e1b7c99c8f0d8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-07-28 15:55:25 +0100
+
+    jingle/decloak-peer.py: fix a race between the two sub-tests
+    
+    By matching the destination JID of the temppres presence stanza, we avoid
+    this situation:
+    
+    * sub-test 1 (successfully decloaking foo@bar.com) succeeds
+    * by the time sub-test 2 runs, the directed presence sent to peers
+      who aren't expected to see our presence (so we can call people while
+      invisible), from sub-test 1, has *not* been processed yet
+    * sub-test 2 expects a temppres stanza (sent to foo2@bar.com), but it
+      receives the directed presence from sub-test 1 instead
+    * assertion failure
+
+commit 1be135d64f85a0041e32f1ae14700ab5719b9f26
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-07-28 15:26:28 +0100
+
+    Fix spelling mistake detected by Lintian
+
+commit 66431301007f497357a2272dd2e0b9612f58eada
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-07-19 12:12:36 +0100
+
+    Remove a trailing space
+
+commit 4a8d668f2992da8093ab096ea5c76262f8a48681
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-07-19 11:02:55 +0100
+
+    Skip file collection candidates with invalid addresses
+    
+    Fixes: fd.o#29113
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit c730096a5a7a09cf5791446f2c9d02b2a2fb6612
+Merge: 7ee8e48 f4161a0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-07-16 16:32:27 +0100
+
+    Merge branch 'coverity'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit f4161a052e30b1e51c1f464ed494eb4c936c1d28
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-07-16 16:29:19 +0100
+
+    Update Wocky snapshot for Coverity fixes
+
+commit 7d5bbc91ba7c7aa97629de5e5392a91c157df38f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-07-16 14:50:39 +0100
+
+    DEBUG if MCE's InactivityChanged signal is malformed
+
+commit 5eedd53ad3476a0effe7f4678201514e6dc189b4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-07-16 14:46:09 +0100
+
+    Remove unused GError variable.
+
+commit 36480bb684ff95f1aef8e05a6fc6371e3d9dee71
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-07-16 14:40:17 +0100
+
+    Cope if Jingle sharing requests omit <manifest>
+
+commit 1011f4b117152ed515bf349c80437587278997e1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-07-16 14:04:11 +0100
+
+    Make "Session has at least one Content" assertion explicit
+    
+    This branch is only taken if the GabbleMediaChannel has a session.
+    Active JingleSessions have at least one content. priv->session is NULL
+    until the call starts, and is re-set back to NULL when the session
+    signals terminated. Thus, this assertion is safe. Let's make it
+    explicit.
+
+commit 7ee8e4839601683fcb315be04ba83f8e42aa0b2c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-07-16 16:22:44 +0100
+
+    Delete non-functional invisibility fallbacks test.
+    
+    This test tested that if a server advertises (say) XEP-0186 support, but
+    sending an <invisible/> command fails, Gabble would fall back to trying
+    invisibility lists.
+    
+    But, we removed that fallback, on the basis that if the server
+    advertises support for a feature, it should work. And
+    invisible_xep_0126.py should test any fallback from that to Þe Olde
+    <presence type='invisible'/>. Finally, this test didn't actually work
+    since InvisibleXmlStream was deleted. So, let's just bin it.
+
+commit d7e7b08793e3de2cc4393d1b5896e8c0a37967a6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-07-15 10:19:19 +0200
+
+    connection: add Connection.Future to interfaces_always_present
+
+commit 73fe3ecdf9c77e1f9b8d2c7ca4808f996494562b
+Merge: 4677625 c0562b9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-07-14 14:36:03 +0100
+
+    Merge branch 'toob'
+
+commit c0562b9a6f94c75ab5522d7c7f9ebc11a09e8551
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-07-14 14:35:11 +0100
+
+    NEWS: updated
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit d0e49bbb9f72841c42e13c7c833e31764a902544
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-07-09 15:07:16 +0100
+
+    muc-factory: rearrange which NewChannels signals come first
+    
+    If you request a Tube channel, it really doesn't matter which
+    NewChannels signal gets fired first -- either the one with the tubes
+    and text channels, or the one with the new tube channel.
+    
+    Also, change the offer-muc-{dbus,stream}-tube tests to not depend on
+    this said ordering.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 73e203c0d43d6d3371f42cc1332b4eb1da5bf191
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-07-09 13:52:29 +0100
+
+    tests: add check-create-tube-return
+    
+    Not the best name for a test in the world.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 44e7d9a7df34451dfe38ccf306c234c5e6eb84db
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-07-08 17:21:38 +0100
+
+    muc-factory: don't associate a request with tubes if a tube was requested
+    
+    Previously, the request token was associated with the tubes channel,
+    regardless of whether the request was for a tube or tubes
+    channel. This meant that if the MUC channel wasn't ready when a tube
+    channel was requested then the tubes channel will be given back to the
+    caller of CreateChannel. The MUC channel will be ready if a text MUC
+    has already been opened, where this bug does not appear.
+    
+    Fixes: fd.o#25533
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 4677625c03999460c6316f27cdc776d86ca993b2
+Merge: 531530d cf290a7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-07-14 14:11:46 +0100
+
+    Merge branch 'misc'
+
+commit cf290a7a9569e5f188ed1eca461c7916aa5ba4f7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-07-13 12:02:04 +0100
+
+    base-channel: fix a small typo
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 4b39a8562dcb0f5dcbeb364f613401693383c733
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-07-13 11:09:28 +0100
+
+    gitignore: updated to include more emacs stuff
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 7e349519f7dd16269adba0523518d69a247e2a1c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-07-09 16:45:22 +0100
+
+    muc-factory: fix indentation
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 531530dc5c90aa884fb3e8bdc69ebf09a4272e12
+Merge: 9f95160 2ca3337
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-08 11:53:30 -0700
+
+    Merge branch 'invisibility'
+
+commit 2ca33374859bb78b33b2dbcbc588b63d2756dfcb
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-08 11:44:31 -0700
+
+    Fixed 'dnd' fallback when requested status was not 'hidden'.
+
+commit efa747bf519c358b44601027f3bceec3065b776e
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-08 11:30:07 -0700
+
+    [tests/twisted] Return an error on privacy lists IQs by default.
+
+commit 1ac29792637ca204e9005aed116f66925f59984e
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-06 13:10:42 -0700
+
+    Changed DEBUG() in disable_privacy_lists to output fallback method.
+
+commit 962b49c8d7834433aac87d76c6745402b188be51
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-06 13:05:04 -0700
+
+    Remove null-checking GError after _gabble_connection_send_with_reply.
+    We need to assume the error is not NULL, other places in gabble do.
+
+commit ae53a3c5e45017eb5ccbf92220f31c0837176f82
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-06 11:38:49 -0700
+
+    Fix unfortunate unindenting.
+
+commit 6ff3b03fa6fc034f1c40444a233faac1dc77fba2
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-06 10:37:02 -0700
+
+    Don't use addRawXml.
+
+commit 0b735fd66914c3bc01ae16ab6056046da7f420c2
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-03 15:43:17 -0700
+
+    Gave create_list functions an internal AsyncResult.
+
+commit 619ea8312769e1d56bdaf1e4187f56d6052a956b
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-03 15:12:06 -0700
+
+    Replaced set_presence_after_invisible_privacy_list_setup_cb with more generic toggle_initial_presence_visibility_cb
+
+commit 86ed29b3058d55b9d47e3706c49229a8691eaf83
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-03 14:55:01 -0700
+
+    Renamed invisible_privacy_list private struct member to invisible_list_name
+
+commit ed958c40b35804647193b4462b08aef87d6da5c3
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-03 14:45:43 -0700
+
+    Removed get_list_name_from_message. It was only called once.
+
+commit a45de31d9297fcee815bc7323ab1c5a72b30ced6
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-03 14:37:13 -0700
+
+    Remove simulated disco privacy feature, we need to work without that.
+
+commit eba08fbf310643573e0cf1c304911fb5a130ee2e
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-07-02 17:56:44 -0700
+
+    Added whimsical diagram.
+
+commit 41b78cd319e105030d3cc002dd6987391e524fc9
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-06-30 12:05:13 -0700
+
+    A new world order! Restrung privacy list management.
+    
+    When signing on, first check if there is a valid invisible list
+    before clobbering, this saves from push notification to other connected
+    resources. If the current 'invisible' list is not satisfactory, create an
+    'invisible-gabble' list that hopefully we could use.
+    
+    This change also does not depend on privacy lists being a disco advertised
+    feature. All released versions of Prosody, and supposedly some version of
+    ejabberd, don't actually advertise their privacy list support. If we get an
+    error (presumably because of lack of support), the invisibility-via-xep-0126
+    is dropped in favor of xep-0018 or nothing.
+
+commit bc5d549256100c9ca3faa7495ba2028b423c29d2
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-06-30 11:43:59 -0700
+
+    Created tests for new push features.
+
+commit 13c57ee34426690ce4d93013a38a9c82795ae50d
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-06-29 22:12:19 -0700
+
+    WIP: Listen for privacy list pushes and move over to a new list if it conflicts.
+
+commit 9f442c267aaad206ce5055fa109a3b3ddf93665a
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-06-28 17:16:16 -0700
+
+    Add 'dnd' fallback when trying to connect when hidden.
+
+commit ef1d773cd51acb5b994fb376bf4f41a16fd94e9b
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-06-28 17:16:03 -0700
+
+    Added XEP-0126 invisibility fail tests (they don't pass yet).
+
+commit e8c9b6b197ebb20cf747b86c948fce914977cb96
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-06-28 16:08:20 -0700
+
+    Added XEP-0186 invisibility fail tests (they don't pass yet).
+
+commit 165bdf21284a1096c9e0273793be416b6d8ba5d6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-21 12:07:39 +0100
+
+    WIP
+
+commit ca6e478114e348eba78e4242e23e577a674b806d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-13 12:32:14 +0100
+
+    tests: refactor advertising server features
+
+commit b1c6d5bdd6dd1f964e9568516513f38c85d1bbd1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-09 14:08:03 +0100
+
+    WIP: refactor setting initial presence
+    
+    This patch adds a private structure for conn-presence, which currently
+    just holds the invisibility method in use. It then refactors
+    conn_presence_set_initial_presence_async() to be implemented in terms of
+    toggle_presence_visibility_async(). Finally, it removes the fallback
+    between mechanisms, because if a server claims to support (say) XEP-0186
+    invisibility, it can be reasonably expected to work. And, given that we
+    have to deal adequately with becoming invisible failing during a
+    connection, not just at login, we may as well deal in the same way in
+    both cases.
+    
+    This patch is WIP because it breaks invisible_fallbacks.py (given that
+    it deletes the fallbacks that patch checks), because we should also have
+    tests for setting ourselves to invisible failing once the connection is
+    up and running (checking that Gabble reverts you to either your previous
+    presence, or DND, as we wish), and because we need to look up existing
+    privacy lists to fix this case:
+    
+    • Gabble #1 signs in
+    • Gabble #1 creates a list called 'invisible', and activates it.
+    • Gabble #2 also signs in
+    • Gabble #2 tries to create a list called 'invisible', but it fails
+      because you can't replace privacy lists that are in use, so it gives
+      up on invisibility.
+
+commit f98dd8b37512fd2bb44299c433405137bbbc6c11
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-10 12:21:46 +0100
+
+    Correctly document connection stages.
+
+commit ba262e7f5800977a68301c96996519ff63544fc4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-09 12:57:31 +0100
+
+    Name conn_presence_set_initial_presence_finished conventionally
+    
+    Also, implement it using a handy macro
+
+commit e04b4e576bf3cfbcb50196f4ebfcac25cfd0669f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-09 12:56:42 +0100
+
+    Simplify handling server's reply to <invisible/>
+
+commit 5460639148168c4f74aa343e39a7f44a61a7d721
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-09 10:25:36 +0100
+
+    Make XEP-0126 test more pedantic.
+    
+    expect_many() doesn't enforce any ordering on the events, so the test
+    wasn't checking that commands were sent to the server in the right
+    order.
+    
+    Also, checking that we were sending undirected presences revealed that
+    we were actually sending <presence to=''/>, that is, to the empty JID.
+    It turned out that we could simplify the success path of becoming
+    (in)visible while fixing this bug.
+
+commit 454b43279c668001e4db560d2e765dcfea316528
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-09 10:03:29 +0100
+
+    xep-0186: test that we send presence after <visible/>
+
+commit 36c69e69d8ba73908ffb3b8dc8a8f5b3ed34ad9a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-07 18:47:17 +0100
+
+    Make toggle_presence_visibility_async() more conventional
+    
+    • Make sure it only ever returns asynchronously;
+    • Add a corresponding _finish() function.
+
+commit 005facf92966d9a7977674f455e960f2422f30bf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-07 15:18:18 +0100
+
+    Indent build specs more clearly
+
+commit 4f1a88d1b21eb350ef3185bbb9a552c0d7d5b219
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-07 15:07:38 +0100
+
+    Initialize a GError * to NULL.
+
+commit 42e2b3689208330d673fead8030c3e379975aafa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-07 14:51:19 +0100
+
+    Clarify a series of chained if {} blocks
+
+commit fb6a72b8ddcd41621aa6a54642bdc6b43b1a4c74
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-07 14:15:15 +0100
+
+    invisible_helper: use acknowledge_iq and send_error_reply
+
+commit dc948e39a3ecec13aa264049d3d5c10f0d73f176
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-06 22:35:20 +0100
+
+    Use assertContains and friends
+
+commit a25d3e72a617654d94b18781ac0b4f21cb840453
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-05-06 22:34:42 +0100
+
+    Update for the Glorious Wocky Renaming
+
+commit 258634f37d8bb506c564bad2aa2479bc3793bb90
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-26 16:42:36 -0700
+
+    Added a test for when no invisibility functions fall through.
+
+commit d50436a12ba4e0593078792db5833d12c755b060
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-26 16:22:36 -0700
+
+    Cleaned up invisibility tests
+
+commit 24bb0a331eca8e52184447abf9b56b0739ea10bb
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-26 15:44:53 -0700
+
+    Fall back to busy if we failed to become invisible.
+
+commit 1ed4f920e59a0c8ecc017d313b9adf645477717a
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-26 15:44:12 -0700
+
+    When invisible, set status in muc to busy.
+
+commit f2ece95d3315e013e9c799459a9417ebacaf5e3b
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-26 15:42:41 -0700
+
+    Remove invisibility features if status is preset to "hidden" and server refuses to play nicely. Ultimately set status to busy.
+
+commit 035f2f06bc176919c55d95bc708677377f132288
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-26 15:41:02 -0700
+
+    Clean up XEP-specific invisibility setting and make it asynchronous.
+
+commit 79a74333d6f0ed2b113eb771a74dba84575d4c72
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-23 14:14:10 -0700
+
+    Use wocky_xmpp_stanza_build instead of lm_message_new_*
+
+commit 425d9fcd20b632ef9ee65004609f77ff0b964820
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-22 15:21:46 -0700
+
+    Added invisibility tests.
+
+commit 3c0030f549c4ac7827b50f7ceb4ce2b76ff87abc
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-22 12:59:42 -0700
+
+    document code
+
+commit 1ed3c831eb2dd85863237ad3d33238ae53c2d69b
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-22 12:56:53 -0700
+
+    Added implicit XEP-0018 option.
+
+commit 322cd3b7870a7e133024da20d4e041f3c9e1f053
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-22 12:54:59 -0700
+
+    Make status_available_cb more readable and add all invisibility feature flags.
+
+commit 3a7142e5dffb6040fcb7d7704b193987ffd3f42f
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-22 12:53:11 -0700
+
+    Fix indentation. broadcast "invisible" presence to MUCs, didn't test this, but it may be necessary, couldn't hurt.
+
+commit bf3819a429e862c34826d83db9c5f2aed52137f5
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-21 17:22:58 -0700
+
+    Added untested support for XEP-0186
+
+commit 3fc22b4812e02a9d5d6868069fc63834745cd82e
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-04-20 11:39:46 -0700
+
+    Implemented XEP-0126.
+
+commit 9f95160195949c8d122427b4c21baa9ac59595f0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-30 18:52:06 +0100
+
+    Nano version
+
 commit f9d02abbaca43c0c46c485139d2f711bfeb4460a
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-06-30 18:22:54 +0100
@@ -23,6 +1017,81 @@ Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   2010-06-25 19:56:41 +0100
 
     Update wocky snapshot
+
+commit fdfbd534bb91db10c3542b080e6bd6b550025e28
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-23 14:42:59 +0100
+
+    connector_connected: use gabble_connection_disconnect_with_tp_error on error
+
+commit 3aa1190a4670a89622281fa20b6161f56a6034e5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-23 14:37:51 +0100
+
+    Factor out gabble_connection_disconnect_with_tp_error
+
+commit d89d121c3ed0d3cd0357ba661d3816489d5d6be9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-23 14:37:34 +0100
+
+    remote_error_cb: map the error through gabble_set_tp_conn_error_from_wocky
+
+commit 34cda73b35800c877f6fd5846b4fa0ab2d2b8f0b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-23 14:30:42 +0100
+
+    Handle WOCKY_CONNECTOR_ERROR_BIND_CONFLICT and WOCKY_XMPP_STREAM_ERROR_CONFLICT
+
+commit 682c0448e71166feec408a7d9d284713766afe80
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-23 14:22:22 +0100
+
+    remote_closed_cb: use tp_base_connection_disconnect_with_dbus_error to raise ConnectionLost
+
+commit e754e0be6fb6d0d8899baad35591da980401f572
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-23 14:18:22 +0100
+
+    connector_error_disconnect: call tp_base_connection_disconnect_with_dbus_error
+
+commit 7326ef07422c7e3f8547a71a0c33758e56baf6d4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-23 14:12:56 +0100
+
+    gabble_set_tp_conn_error_from_wocky: support WockyTLSCertError
+
+commit 24cd8e1b9af89aa6bde5094e96b5994af7d6bd1c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-23 13:43:18 +0100
+
+    gabble_set_tp_conn_error_from_wocky: support WockyXmppStreamError
+
+commit 7aae6984ef67fbf25430c7cc8dfe5e5c617e70a2
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-23 14:12:26 +0100
+
+    gabble_set_tp_conn_error_from_wocky: support WockyConnectorError
+
+commit eac053914b1f0c38e4e09392948a3f49b403705d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-23 14:12:02 +0100
+
+    gabble_set_tp_conn_error_from_wocky: map WockyAuthError values
+    
+    The mapping to TpConnectionStatusReason is the same as for
+    connector_error_disconnect, so use this utility function there.
+
+commit 4df8547ce0a0d2e31720ce57368d09a173813dac
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-23 14:08:45 +0100
+
+    Update Wocky, to build enum types for all error domains
+
+commit 98fbc6564606f9a5559cd3c9cc165c936e77b36c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-23 13:34:36 +0100
+
+    gabble_set_tp_conn_error_from_wocky: map Wocky errors to TpConnectionStatusReason + TpError
 
 commit cceca06c277c6ad2e8a0d7dc69a15c3afe3f1600
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>

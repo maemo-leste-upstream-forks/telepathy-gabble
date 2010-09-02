@@ -220,9 +220,6 @@ check_query_reply_msg (LmMessage *reply_msg,
           LmMessageNode *error_node;
           GError *error = NULL;
 
-          if (context == NULL)
-            return FALSE;
-
           error_node = lm_message_node_get_child (
               wocky_stanza_get_top_node (reply_msg), "error");
           if (error_node != NULL)
@@ -241,7 +238,10 @@ check_query_reply_msg (LmMessage *reply_msg,
             }
 
           DEBUG ("%s", error->message);
-          dbus_g_method_return_error (context, error);
+
+          if (context != NULL)
+              dbus_g_method_return_error (context, error);
+
           g_error_free (error);
         }
     }
@@ -934,7 +934,7 @@ check_activity_properties (GabbleConnection *conn,
     {
       WockyBareContact *contact = ensure_bare_contact_from_jid (conn, from);
 
-      wocky_pep_service_get_async (conn->pep_olpc_buddy_props, contact,
+      wocky_pep_service_get_async (conn->pep_olpc_act_props, contact,
           NULL, get_activity_properties_reply_cb, conn);
 
       g_object_unref (contact);
@@ -1135,6 +1135,47 @@ set_activities_reply_cb (GabbleConnection *conn,
 
   gabble_svc_olpc_buddy_info_return_from_set_activities (context);
   return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+}
+
+static gboolean
+add_activity (GabbleConnection *self,
+              const gchar *id,
+              guint channel,
+              GError **error)
+{
+  TpBaseConnection *base = (TpBaseConnection *) self;
+  TpHandleRepoIface *room_repo = tp_base_connection_get_handles (
+      base, TP_HANDLE_TYPE_ROOM);
+  TpHandleSet *old_activities = g_hash_table_lookup (self->olpc_pep_activities,
+      GUINT_TO_POINTER (base->self_handle));
+  GabbleOlpcActivity *activity;
+
+  if (!tp_handle_is_valid (room_repo, channel, error))
+    {
+      DEBUG ("Invalid room handle %d", channel);
+      return FALSE;
+    }
+
+  if (old_activities != NULL && tp_handle_set_is_member (old_activities, channel))
+    {
+      *error = g_error_new (TP_ERRORS,
+          TP_ERROR_INVALID_ARGUMENT,
+          "Can't set twice the same activity: %s", id);
+
+      DEBUG ("activity already added: %s", id);
+      return FALSE;
+    }
+
+  activity = add_activity_info (self, channel);
+  g_object_ref (activity);
+
+  DEBUG ("ref: %s (%d) refcount: %d\n",
+      gabble_olpc_activity_get_room (activity),
+      activity->room, G_OBJECT (activity)->ref_count);
+
+  g_object_set (activity, "id", id, NULL);
+
+  return TRUE;
 }
 
 static void
@@ -1402,7 +1443,6 @@ extract_current_activity (GabbleConnection *conn,
 
       activity = add_activity_info_in_set (conn, room_handle, contact,
           conn->olpc_pep_activities);
-      g_object_set (activity, "id", id, NULL);
     }
 
   tp_handle_unref (room_repo, room_handle);
@@ -1410,6 +1450,7 @@ extract_current_activity (GabbleConnection *conn,
   /* update current-activity cache */
   if (activity != NULL)
     {
+      g_object_set (activity, "id", id, NULL);
       g_hash_table_insert (conn->olpc_current_act,
           GUINT_TO_POINTER (contact_handle), g_object_ref (activity));
     }
@@ -1683,6 +1724,67 @@ out:
   tp_handle_unref (contact_repo, handle);
 }
 
+static LmHandlerResult
+add_activity_reply_cb (GabbleConnection *conn,
+                       LmMessage *sent_msg,
+                       LmMessage *reply_msg,
+                       GObject *object,
+                       gpointer user_data)
+{
+  DBusGMethodInvocation *context = user_data;
+
+  if (!check_publish_reply_msg (reply_msg, context))
+    return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+
+  /* FIXME: emit ActivitiesChanged? */
+
+  gabble_svc_olpc_buddy_info_return_from_add_activity (context);
+  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+}
+
+static void
+olpc_buddy_info_add_activity (GabbleSvcOLPCBuddyInfo *iface,
+                              const gchar *id,
+                              guint channel,
+                              DBusGMethodInvocation *context)
+{
+  GabbleConnection *self = GABBLE_CONNECTION (iface);
+  TpBaseConnection *base = (TpBaseConnection *) self;
+  TpHandleSet *activities_set = g_hash_table_lookup (self->olpc_pep_activities,
+      GUINT_TO_POINTER (base->self_handle));
+  TpHandleRepoIface *room_repo = tp_base_connection_get_handles (base,
+      TP_HANDLE_TYPE_ROOM);
+  GError *error = NULL;
+
+  gabble_connection_ensure_capabilities (self,
+      gabble_capabilities_get_olpc_notify ());
+
+  if (!check_pep (self, context))
+    return;
+
+  if (!add_activity (self, id, channel, &error))
+    {
+      dbus_g_method_return_error (context, error);
+      return;
+    }
+
+  if (activities_set == NULL) {
+    activities_set = tp_handle_set_new (room_repo);
+    g_hash_table_insert (self->olpc_pep_activities,
+        GUINT_TO_POINTER (base->self_handle), activities_set);
+  }
+
+  tp_handle_set_add (activities_set, channel);
+
+  if (!upload_activities_pep (self, add_activity_reply_cb, context, NULL))
+    {
+      error = g_error_new (TP_ERRORS, TP_ERROR_NETWORK_ERROR,
+        "Failed to send property request to server");
+
+      dbus_g_method_return_error (context, error);
+    }
+}
+
 void
 olpc_buddy_info_iface_init (gpointer g_iface,
                             gpointer iface_data)
@@ -1697,6 +1799,7 @@ olpc_buddy_info_iface_init (gpointer g_iface,
   IMPLEMENT(set_properties);
   IMPLEMENT(get_current_activity);
   IMPLEMENT(set_current_activity);
+  IMPLEMENT(add_activity);
 #undef IMPLEMENT
 }
 
@@ -3876,6 +3979,54 @@ conn_olpc_activity_properties_dispose (GabbleConnection *self)
   self->olpc_activities_info = NULL;
 }
 
+static GabbleOlpcActivity *
+find_activity_by_id (GabbleConnection *self,
+                     const gchar *activity_id)
+{
+  GHashTableIter iter;
+  gpointer key, value;
+
+  g_hash_table_iter_init (&iter, self->olpc_activities_info);
+  while (g_hash_table_iter_next (&iter, &key, &value))
+    {
+      GabbleOlpcActivity *activity = GABBLE_OLPC_ACTIVITY (value);
+      if (strcmp (activity->id, activity_id) == 0)
+        return activity;
+    }
+
+  return NULL;
+}
+
+static void
+olpc_activity_properties_get_activity (GabbleSvcOLPCActivityProperties *iface,
+                                       const gchar *activity_id,
+                                       DBusGMethodInvocation *context)
+{
+  GabbleConnection *self = GABBLE_CONNECTION (iface);
+  TpBaseConnection *base = (TpBaseConnection *) self;
+  GabbleOlpcActivity *activity;
+  GError *error = NULL;
+
+  TP_BASE_CONNECTION_ERROR_IF_NOT_CONNECTED (base, context);
+
+  activity = find_activity_by_id (self, activity_id);
+  if (activity == NULL)
+    {
+      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+          "Activity unknown: %s", activity_id);
+      goto error;
+    }
+
+  gabble_svc_olpc_activity_properties_return_from_get_activity (context,
+      activity->room);
+
+  return;
+
+error:
+  dbus_g_method_return_error (context, error);
+  g_error_free (error);
+}
+
 void
 olpc_activity_properties_iface_init (gpointer g_iface,
                                      gpointer iface_data)
@@ -3886,6 +4037,7 @@ olpc_activity_properties_iface_init (gpointer g_iface,
     klass, olpc_activity_properties_##x)
   IMPLEMENT(get_properties);
   IMPLEMENT(set_properties);
+  IMPLEMENT(get_activity);
 #undef IMPLEMENT
 }
 

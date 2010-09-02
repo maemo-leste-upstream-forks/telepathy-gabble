@@ -784,8 +784,6 @@ TLS_LIBS
 TLS_CFLAGS
 GLIB_LIBS
 GLIB_CFLAGS
-PKG_CONFIG_LIBDIR
-PKG_CONFIG_PATH
 PKG_CONFIG
 HEADER_DIR
 INSTALL_HEADERS_FALSE
@@ -938,8 +936,6 @@ CPP
 CCAS
 CCASFLAGS
 PKG_CONFIG
-PKG_CONFIG_PATH
-PKG_CONFIG_LIBDIR
 GLIB_CFLAGS
 GLIB_LIBS
 TLS_CFLAGS
@@ -1609,10 +1605,6 @@ Some influential environment variables:
   CCAS        assembler compiler command (defaults to CC)
   CCASFLAGS   assembler compiler flags (defaults to CFLAGS)
   PKG_CONFIG  path to pkg-config utility
-  PKG_CONFIG_PATH
-              directories to add to pkg-config's search path
-  PKG_CONFIG_LIBDIR
-              path overriding pkg-config's built-in search path
   GLIB_CFLAGS C compiler flags for GLIB, overriding pkg-config
   GLIB_LIBS   linker flags for GLIB, overriding pkg-config
   TLS_CFLAGS  C compiler flags for TLS, overriding pkg-config
@@ -4645,13 +4637,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:4648: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:4640: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:4651: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:4643: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:4654: output\"" >&5)
+  (eval echo "\"\$as_me:4646: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -5117,11 +5109,11 @@ irix5* | irix6* | nonstopux*)
   ;;
 
 # This must be Linux ELF.
-linux* | k*bsd*-gnu | kopensolaris*-gnu)
+linux* | k*bsd*-gnu)
   lt_cv_deplibs_check_method=pass_all
   ;;
 
-netbsd* | netbsdelf*-gnu)
+netbsd*)
   if echo __ELF__ | $CC -E - | $GREP __ELF__ > /dev/null; then
     lt_cv_deplibs_check_method='match_pattern /lib[^/]+(\.so\.[0-9]+\.[0-9]+|_pic\.a)$'
   else
@@ -5857,7 +5849,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 5860 "configure"' > conftest.$ac_ext
+  echo '#line 5852 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7387,11 +7379,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7390: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7382: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7394: \$? = $ac_status" >&5
+   echo "$as_me:7386: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -7556,7 +7548,7 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
       lt_prog_compiler_static='-non_shared'
       ;;
 
-    linux* | k*bsd*-gnu | kopensolaris*-gnu)
+    linux* | k*bsd*-gnu)
       case $cc_basename in
       # old Intel for x86_64 which still supported -KPIC.
       ecc*)
@@ -7726,11 +7718,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7729: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7721: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7733: \$? = $ac_status" >&5
+   echo "$as_me:7725: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -7831,11 +7823,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7834: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7826: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:7838: \$? = $ac_status" >&5
+   echo "$as_me:7830: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -7886,11 +7878,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7889: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7881: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:7893: \$? = $ac_status" >&5
+   echo "$as_me:7885: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8005,9 +7997,6 @@ $as_echo_n "checking whether the $compiler linker ($LD) supports shared librarie
   openbsd*)
     with_gnu_ld=no
     ;;
-  linux* | k*bsd*-gnu)
-    link_all_deplibs=no
-    ;;
   esac
 
   ld_shlibs=yes
@@ -8029,7 +8018,6 @@ $as_echo_n "checking whether the $compiler linker ($LD) supports shared librarie
     fi
     supports_anon_versioning=no
     case `$LD -v 2>&1` in
-      *GNU\ gold*) supports_anon_versioning=yes ;;
       *\ [01].* | *\ 2.[0-9].* | *\ 2.10.*) ;; # catch versions < 2.11
       *\ 2.11.93.0.2\ *) supports_anon_versioning=yes ;; # RH7.3 ...
       *\ 2.11.92.0.12\ *) supports_anon_versioning=yes ;; # Mandrake 8.2 ...
@@ -8121,7 +8109,7 @@ _LT_EOF
       archive_expsym_cmds='sed "s,^,_," $export_symbols >$output_objdir/$soname.expsym~$CC -shared $pic_flag $libobjs $deplibs $compiler_flags ${wl}-h,$soname ${wl}--retain-symbols-file,$output_objdir/$soname.expsym ${wl}--image-base,`expr ${RANDOM-$$} % 4096 / 2 \* 262144 + 1342177280` -o $lib'
       ;;
 
-    gnu* | linux* | tpf* | k*bsd*-gnu | kopensolaris*-gnu)
+    gnu* | linux* | tpf* | k*bsd*-gnu)
       tmp_diet=no
       if test "$host_os" = linux-dietlibc; then
 	case $cc_basename in
@@ -8191,7 +8179,7 @@ _LT_EOF
       fi
       ;;
 
-    netbsd* | netbsdelf*-gnu)
+    netbsd*)
       if echo __ELF__ | $CC -E - | $GREP __ELF__ >/dev/null; then
 	archive_cmds='$LD -Bshareable $libobjs $deplibs $linker_flags -o $lib'
 	wlarc=
@@ -8366,7 +8354,6 @@ _LT_EOF
 	if test "$aix_use_runtimelinking" = yes; then
 	  shared_flag="$shared_flag "'${wl}-G'
 	fi
-	link_all_deplibs=no
       else
 	# not using gcc
 	if test "$host_cpu" = ia64; then
@@ -8693,7 +8680,7 @@ rm -f core conftest.err conftest.$ac_objext \
       link_all_deplibs=yes
       ;;
 
-    netbsd* | netbsdelf*-gnu)
+    netbsd*)
       if echo __ELF__ | $CC -E - | $GREP __ELF__ >/dev/null; then
 	archive_cmds='$LD -Bshareable -o $lib $libobjs $deplibs $linker_flags'  # a.out
       else
@@ -9583,7 +9570,7 @@ linux*oldld* | linux*aout* | linux*coff*)
   ;;
 
 # This must be Linux ELF.
-linux* | k*bsd*-gnu | kopensolaris*-gnu)
+linux* | k*bsd*-gnu)
   version_type=linux
   need_lib_prefix=no
   need_version=no
@@ -9623,10 +9610,13 @@ rm -f core conftest.err conftest.$ac_objext \
   # before this can be enabled.
   hardcode_into_libs=yes
 
+  # Add ABI-specific directories to the system library path.
+  sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib"
+
   # Append ld.so.conf contents to the search path
   if test -f /etc/ld.so.conf; then
     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;/^[	 ]*hwcap[	 ]/d;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;/^$/d' | tr '\n' ' '`
-    sys_lib_dlsearch_path_spec="/lib /usr/lib $lt_ld_extra"
+    sys_lib_dlsearch_path_spec="$sys_lib_dlsearch_path_spec $lt_ld_extra"
   fi
 
   # We used to test for /lib/ld.so.1 and disable shared libraries on
@@ -9636,18 +9626,6 @@ rm -f core conftest.err conftest.$ac_objext \
   # people can always --disable-shared, the test was removed, and we
   # assume the GNU/Linux dynamic linker is in use.
   dynamic_linker='GNU/Linux ld.so'
-  ;;
-
-netbsdelf*-gnu)
-  version_type=linux
-  need_lib_prefix=no
-  need_version=no
-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${shared_ext}'
-  soname_spec='${libname}${release}${shared_ext}$major'
-  shlibpath_var=LD_LIBRARY_PATH
-  shlibpath_overrides_runpath=no
-  hardcode_into_libs=yes
-  dynamic_linker='NetBSD ld.elf_so'
   ;;
 
 netbsd*)
@@ -10270,7 +10248,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 10273 "configure"
+#line 10251 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10366,7 +10344,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 10369 "configure"
+#line 10347 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12406,10 +12384,6 @@ $as_echo "#define AC_APPLE_UNIVERSAL_BUILD 1" >>confdefs.h
 
 
 
-
-
-
-
 if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
 	if test -n "$ac_tool_prefix"; then
   # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
@@ -12522,6 +12496,7 @@ $as_echo "yes" >&6; }
 $as_echo "no" >&6; }
 		PKG_CONFIG=""
 	fi
+
 fi
 
 pkg_failed=no
@@ -12570,8 +12545,6 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
         _pkg_short_errors_supported=yes
@@ -12598,10 +12571,9 @@ installed software in a non-standard prefix.
 
 Alternatively, you may set the environment variables GLIB_CFLAGS
 and GLIB_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details." "$LINENO" 5
+See the pkg-config man page for more details.
+" "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error "The pkg-config script could not be found or is too old.  Make sure it
@@ -12619,7 +12591,7 @@ else
 	GLIB_LIBS=$pkg_cv_GLIB_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-
+	:
 fi
 
 
@@ -12678,8 +12650,6 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
         _pkg_short_errors_supported=yes
@@ -12703,10 +12673,9 @@ installed software in a non-standard prefix.
 
 Alternatively, you may set the environment variables TLS_CFLAGS
 and TLS_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details." "$LINENO" 5
+See the pkg-config man page for more details.
+" "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error "The pkg-config script could not be found or is too old.  Make sure it
@@ -12724,7 +12693,7 @@ else
 	TLS_LIBS=$pkg_cv_TLS_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-
+	:
 fi ;; #(
   openssl) :
     USING_OPENSSL=yes
@@ -12772,8 +12741,6 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
         _pkg_short_errors_supported=yes
@@ -12797,10 +12764,9 @@ installed software in a non-standard prefix.
 
 Alternatively, you may set the environment variables TLS_CFLAGS
 and TLS_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details." "$LINENO" 5
+See the pkg-config man page for more details.
+" "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error "The pkg-config script could not be found or is too old.  Make sure it
@@ -12818,7 +12784,7 @@ else
 	TLS_LIBS=$pkg_cv_TLS_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-
+	:
 fi ;; #(
   auto) :
 
@@ -12862,8 +12828,6 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
         _pkg_short_errors_supported=yes
@@ -12878,6 +12842,80 @@ fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$TLS_PKG_ERRORS" >&5
 
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                USING_OPENSSL=yes
+
+$as_echo "#define USING_OPENSSL 1" >>confdefs.h
+
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for TLS" >&5
+$as_echo_n "checking for TLS... " >&6; }
+
+if test -n "$TLS_CFLAGS"; then
+    pkg_cv_TLS_CFLAGS="$TLS_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"openssl >= 0.9.8g\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "openssl >= 0.9.8g") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_TLS_CFLAGS=`$PKG_CONFIG --cflags "openssl >= 0.9.8g" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$TLS_LIBS"; then
+    pkg_cv_TLS_LIBS="$TLS_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"openssl >= 0.9.8g\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "openssl >= 0.9.8g") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_TLS_LIBS=`$PKG_CONFIG --libs "openssl >= 0.9.8g" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        TLS_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "openssl >= 0.9.8g" 2>&1`
+        else
+	        TLS_PKG_ERRORS=`$PKG_CONFIG --print-errors "openssl >= 0.9.8g" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$TLS_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                as_fn_error "Neither gnutls nor openssl found" "$LINENO" 5
+elif test $pkg_failed = untried; then
+	as_fn_error "Neither gnutls nor openssl found" "$LINENO" 5
+else
+	TLS_CFLAGS=$pkg_cv_TLS_CFLAGS
+	TLS_LIBS=$pkg_cv_TLS_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	:
+fi
+elif test $pkg_failed = untried; then
 	USING_OPENSSL=yes
 
 $as_echo "#define USING_OPENSSL 1" >>confdefs.h
@@ -12923,8 +12961,6 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
         _pkg_short_errors_supported=yes
@@ -12939,100 +12975,24 @@ fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$TLS_PKG_ERRORS" >&5
 
-	as_fn_error "Neither gnutls nor openssl found" "$LINENO" 5
-elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
+                as_fn_error "Neither gnutls nor openssl found" "$LINENO" 5
+elif test $pkg_failed = untried; then
 	as_fn_error "Neither gnutls nor openssl found" "$LINENO" 5
 else
 	TLS_CFLAGS=$pkg_cv_TLS_CFLAGS
 	TLS_LIBS=$pkg_cv_TLS_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-
-fi
-elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-	USING_OPENSSL=yes
-
-$as_echo "#define USING_OPENSSL 1" >>confdefs.h
-
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for TLS" >&5
-$as_echo_n "checking for TLS... " >&6; }
-
-if test -n "$TLS_CFLAGS"; then
-    pkg_cv_TLS_CFLAGS="$TLS_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"openssl >= 0.9.8g\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "openssl >= 0.9.8g") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_TLS_CFLAGS=`$PKG_CONFIG --cflags "openssl >= 0.9.8g" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$TLS_LIBS"; then
-    pkg_cv_TLS_LIBS="$TLS_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"openssl >= 0.9.8g\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "openssl >= 0.9.8g") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_TLS_LIBS=`$PKG_CONFIG --libs "openssl >= 0.9.8g" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        TLS_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "openssl >= 0.9.8g" 2>&1`
-        else
-	        TLS_PKG_ERRORS=`$PKG_CONFIG --print-errors "openssl >= 0.9.8g" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$TLS_PKG_ERRORS" >&5
-
-	as_fn_error "Neither gnutls nor openssl found" "$LINENO" 5
-elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-	as_fn_error "Neither gnutls nor openssl found" "$LINENO" 5
-else
-	TLS_CFLAGS=$pkg_cv_TLS_CFLAGS
-	TLS_LIBS=$pkg_cv_TLS_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
+	:
 fi
 else
 	TLS_CFLAGS=$pkg_cv_TLS_CFLAGS
 	TLS_LIBS=$pkg_cv_TLS_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-
+	:
 fi ;; #(
   *) :
     as_fn_error "Must have a TLS backend (gnutls or openssl)" "$LINENO" 5 ;; #(
@@ -13095,8 +13055,6 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
         _pkg_short_errors_supported=yes
@@ -13120,10 +13078,9 @@ installed software in a non-standard prefix.
 
 Alternatively, you may set the environment variables LIBXML2_CFLAGS
 and LIBXML2_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details." "$LINENO" 5
+See the pkg-config man page for more details.
+" "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error "The pkg-config script could not be found or is too old.  Make sure it
@@ -13141,7 +13098,7 @@ else
 	LIBXML2_LIBS=$pkg_cv_LIBXML2_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-
+	:
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sasl_server_new in -lsasl2" >&5

@@ -127,6 +127,10 @@ CANCELLED = ERROR + '.Cancelled'
 DISCONNECTED = ERROR + '.Disconnected'
 REGISTRATION_EXISTS = ERROR + '.RegistrationExists'
 AUTHENTICATION_FAILED = ERROR + '.AuthenticationFailed'
+CONNECTION_REPLACED = ERROR + '.ConnectionReplaced'
+ALREADY_CONNECTED = ERROR + '.AlreadyConnected'
+NETWORK_ERROR = ERROR + '.NetworkError'
+INVALID_HANDLE = ERROR + '.InvalidHandle'
 
 UNKNOWN_METHOD = 'org.freedesktop.DBus.Error.UnknownMethod'
 
@@ -349,3 +353,10 @@ MT_ACTION = 1
 MT_NOTICE = 2
 MT_AUTO_REPLY = 3
 MT_DELIVERY_REPORT = 4
+
+PROTOCOL = 'org.freedesktop.Telepathy.Protocol'
+PARAM_REQUIRED = 1
+PARAM_REGISTER = 2
+PARAM_HAS_DEFAULT = 4
+PARAM_SECRET = 8
+PARAM_DBUS_PROPERTY = 16

@@ -71,7 +71,8 @@ am__libwocky_la_SOURCES_DIST = wocky.c wocky-auth-handler.c \
 	wocky-pubsub-service.c wocky-resource-contact.c wocky-roster.c \
 	wocky-sasl-auth.c wocky-sasl-digest-md5.c wocky-sasl-scram.c \
 	wocky-sasl-utils.c wocky-sasl-plain.c wocky-session.c \
-	wocky-stanza.c wocky-utils.c wocky-xmpp-connection.c \
+	wocky-stanza.c wocky-utils.c wocky-tls-handler.c \
+	wocky-tls-connector.c wocky-xmpp-connection.c \
 	wocky-xmpp-error.c wocky-xmpp-reader.c wocky-xmpp-writer.c \
 	wocky-openssl.c wocky-openssl-dh512.c wocky-openssl-dh1024.c \
 	wocky-openssl-dh2048.c wocky-openssl-dh4096.c wocky-tls.c \
@@ -92,14 +93,15 @@ am__libwocky_la_SOURCES_DIST = wocky.c wocky-auth-handler.c \
 	wocky-pubsub-service-protected.h wocky-resource-contact.h \
 	wocky-roster.h wocky-sasl-auth.h wocky-sasl-utils.h \
 	wocky-sasl-digest-md5.h wocky-sasl-scram.h wocky-sasl-plain.h \
-	wocky-session.h wocky-stanza.h wocky-tls.h wocky-types.h \
-	wocky-utils.h wocky-xmpp-connection.h wocky-xmpp-error.h \
-	wocky-xmpp-reader.h wocky-xmpp-writer.h \
-	wocky-auth-registry-enumtypes.h wocky-connector-enumtypes.h \
-	wocky-data-form-enumtypes.h wocky-muc-enumtypes.h \
-	wocky-pubsub-node-enumtypes.h wocky-pubsub-service-enumtypes.h \
-	wocky-signals-marshal.h wocky-tls-enumtypes.h \
-	wocky-xmpp-error-enumtypes.h wocky-xmpp-reader-enumtypes.h
+	wocky-session.h wocky-stanza.h wocky-tls.h wocky-tls-handler.h \
+	wocky-tls-connector.h wocky-types.h wocky-utils.h \
+	wocky-xmpp-connection.h wocky-xmpp-error.h wocky-xmpp-reader.h \
+	wocky-xmpp-writer.h wocky-auth-registry-enumtypes.h \
+	wocky-connector-enumtypes.h wocky-data-form-enumtypes.h \
+	wocky-muc-enumtypes.h wocky-pubsub-node-enumtypes.h \
+	wocky-pubsub-service-enumtypes.h wocky-signals-marshal.h \
+	wocky-tls-enumtypes.h wocky-xmpp-error-enumtypes.h \
+	wocky-xmpp-reader-enumtypes.h
 am__objects_1 = wocky-openssl.lo wocky-openssl-dh512.lo \
 	wocky-openssl-dh1024.lo wocky-openssl-dh2048.lo \
 	wocky-openssl-dh4096.lo
@@ -117,6 +119,7 @@ am__objects_5 = wocky.lo wocky-auth-handler.lo wocky-auth-registry.lo \
 	wocky-roster.lo wocky-sasl-auth.lo wocky-sasl-digest-md5.lo \
 	wocky-sasl-scram.lo wocky-sasl-utils.lo wocky-sasl-plain.lo \
 	wocky-session.lo wocky-stanza.lo wocky-utils.lo \
+	wocky-tls-handler.lo wocky-tls-connector.lo \
 	wocky-xmpp-connection.lo wocky-xmpp-error.lo \
 	wocky-xmpp-reader.lo wocky-xmpp-writer.lo $(am__objects_2) \
 	$(am__objects_4)
@@ -173,14 +176,15 @@ am__libwocky_la_HEADERS_DIST = wocky.h wocky-auth-handler.h \
 	wocky-pubsub-service-protected.h wocky-resource-contact.h \
 	wocky-roster.h wocky-sasl-auth.h wocky-sasl-utils.h \
 	wocky-sasl-digest-md5.h wocky-sasl-scram.h wocky-sasl-plain.h \
-	wocky-session.h wocky-stanza.h wocky-tls.h wocky-types.h \
-	wocky-utils.h wocky-xmpp-connection.h wocky-xmpp-error.h \
-	wocky-xmpp-reader.h wocky-xmpp-writer.h \
-	wocky-auth-registry-enumtypes.h wocky-connector-enumtypes.h \
-	wocky-data-form-enumtypes.h wocky-muc-enumtypes.h \
-	wocky-pubsub-node-enumtypes.h wocky-pubsub-service-enumtypes.h \
-	wocky-signals-marshal.h wocky-tls-enumtypes.h \
-	wocky-xmpp-error-enumtypes.h wocky-xmpp-reader-enumtypes.h
+	wocky-session.h wocky-stanza.h wocky-tls.h wocky-tls-handler.h \
+	wocky-tls-connector.h wocky-types.h wocky-utils.h \
+	wocky-xmpp-connection.h wocky-xmpp-error.h wocky-xmpp-reader.h \
+	wocky-xmpp-writer.h wocky-auth-registry-enumtypes.h \
+	wocky-connector-enumtypes.h wocky-data-form-enumtypes.h \
+	wocky-muc-enumtypes.h wocky-pubsub-node-enumtypes.h \
+	wocky-pubsub-service-enumtypes.h wocky-signals-marshal.h \
+	wocky-tls-enumtypes.h wocky-xmpp-error-enumtypes.h \
+	wocky-xmpp-reader-enumtypes.h
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -286,8 +290,6 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
-PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
-PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -422,6 +424,8 @@ handwritten_headers = \
   wocky-session.h \
   wocky-stanza.h \
   wocky-tls.h \
+  wocky-tls-handler.h \
+  wocky-tls-connector.h \
   wocky-types.h \
   wocky-utils.h \
   wocky-xmpp-connection.h \
@@ -439,7 +443,8 @@ handwritten_sources = wocky.c wocky-auth-handler.c \
 	wocky-pubsub-service.c wocky-resource-contact.c wocky-roster.c \
 	wocky-sasl-auth.c wocky-sasl-digest-md5.c wocky-sasl-scram.c \
 	wocky-sasl-utils.c wocky-sasl-plain.c wocky-session.c \
-	wocky-stanza.c wocky-utils.c wocky-xmpp-connection.c \
+	wocky-stanza.c wocky-utils.c wocky-tls-handler.c \
+	wocky-tls-connector.c wocky-xmpp-connection.c \
 	wocky-xmpp-error.c wocky-xmpp-reader.c wocky-xmpp-writer.c \
 	$(am__append_1) $(am__append_3)
 libwocky_la_SOURCES = $(handwritten_sources) $(built_sources) \
@@ -558,7 +563,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-session.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-signals-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-stanza.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-tls-connector.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-tls-enumtypes.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-tls-handler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-tls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xmpp-connection.Plo@am__quote@

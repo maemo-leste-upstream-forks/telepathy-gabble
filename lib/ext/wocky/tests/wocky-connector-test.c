@@ -3218,6 +3218,7 @@ static void
 run_test (gpointer data)
 {
   WockyConnector *wcon = NULL;
+  WockyTLSHandler *handler;
   test_t *test = data;
   struct stat dummy;
   gchar *base;
@@ -3238,6 +3239,9 @@ run_test (gpointer data)
 
   ca = test->client.options.ca ? test->client.options.ca : TLS_CA_CRT_FILE;
 
+  /* insecure tls cert/etc not yet implemented */
+  handler = wocky_tls_handler_new (test->client.options.lax_ssl);
+
   wcon = g_object_new ( WOCKY_TYPE_CONNECTOR,
       "jid"                     , test->client.auth.jid,
       "password"                , test->client.auth.pass,
@@ -3249,12 +3253,13 @@ run_test (gpointer data)
       "plaintext-auth-allowed"  , !test->client.auth.tls,
       "legacy"                  , test->client.options.jabber,
       "old-ssl"                 , test->client.options.ssl,
-      /* insecure tls cert/etc not yet implemented */
-      "ignore-ssl-errors"       , test->client.options.lax_ssl,
+      "tls-handler"             , handler,
       NULL);
 
-  wocky_connector_add_ca (wcon, ca);
-  wocky_connector_add_crl (wcon, TLS_CRL_DIR);
+  wocky_tls_handler_add_ca (handler, ca);
+  wocky_tls_handler_add_crl (handler, TLS_CRL_DIR);
+
+  g_object_unref (handler);
 
   test->connector = wcon;
   running_test = TRUE;
@@ -3304,7 +3309,7 @@ run_test (gpointer data)
           int i;
           gchar *identity = NULL;
           WockyConnector *tmp =
-            wocky_connector_new ("foo@bar.org", "abc", "xyz", NULL);
+            wocky_connector_new ("foo@bar.org", "abc", "xyz", NULL, NULL);
           WockyStanza *feat = NULL;
           gboolean jabber;
           gboolean oldssl;
@@ -3314,8 +3319,7 @@ run_test (gpointer data)
                                       "xmpp-server", "email", NULL };
           const gchar *str_vals[] = { "abc", "PASSWORD",
                                       "xmpp.server", "e@org", NULL };
-          const gchar *boolprop[] = { "ignore-ssl-errors",
-                                      "plaintext-auth-allowed",
+          const gchar *boolprop[] = { "plaintext-auth-allowed",
                                       "encrypted-plain-auth-ok",
                                       "tls-required",
                                       NULL };

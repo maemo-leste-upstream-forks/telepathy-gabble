@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="wocky Reference Manual">
 <link rel="up" href="index.html" title="wocky Reference Manual">
 <link rel="prev" href="object-tree.html" title="Object Hierarchy">
-<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.15.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -334,10 +334,6 @@ WockyBareContact:subscription, object property in wocky-types
 </dt>
 <dd></dd>
 <dt>
-<a class="link" href="WockyConnector.html#WockyConnector--ignore-ssl-errors" title='The "ignore-ssl-errors" property'>WockyConnector:ignore-ssl-errors</a>, object property in <a class="link" href="WockyConnector.html" title="WockyConnector">WockyConnector</a>
-</dt>
-<dd></dd>
-<dt>
 <a class="link" href="WockyConnector.html#WockyConnector--jid" title='The "jid" property'>WockyConnector:jid</a>, object property in <a class="link" href="WockyConnector.html" title="WockyConnector">WockyConnector</a>
 </dt>
 <dd></dd>
@@ -366,6 +362,10 @@ WockyBareContact:subscription, object property in wocky-types
 </dt>
 <dd></dd>
 <dt>
+<a class="link" href="WockyConnector.html#WockyConnector--tls-handler" title='The "tls-handler" property'>WockyConnector:tls-handler</a>, object property in <a class="link" href="WockyConnector.html" title="WockyConnector">WockyConnector</a>
+</dt>
+<dd></dd>
+<dt>
 <a class="link" href="WockyConnector.html#WockyConnector--tls-required" title='The "tls-required" property'>WockyConnector:tls-required</a>, object property in <a class="link" href="WockyConnector.html" title="WockyConnector">WockyConnector</a>
 </dt>
 <dd></dd>
@@ -387,14 +387,6 @@ WockyBareContact:subscription, object property in wocky-types
 <dd></dd>
 <dt>
 <a class="link" href="WockyConnector.html#WockyConnectorPrivate" title="WockyConnectorPrivate">WockyConnectorPrivate</a>, struct in <a class="link" href="WockyConnector.html" title="WockyConnector">WockyConnector</a>
-</dt>
-<dd></dd>
-<dt>
-<a class="link" href="WockyConnector.html#wocky-connector-add-ca" title="wocky_connector_add_ca ()">wocky_connector_add_ca</a>, function in <a class="link" href="WockyConnector.html" title="WockyConnector">WockyConnector</a>
-</dt>
-<dd></dd>
-<dt>
-<a class="link" href="WockyConnector.html#wocky-connector-add-crl" title="wocky_connector_add_crl ()">wocky_connector_add_crl</a>, function in <a class="link" href="WockyConnector.html" title="WockyConnector">WockyConnector</a>
 </dt>
 <dd></dd>
 <dt>
@@ -616,6 +608,10 @@ WockyContact, struct in wocky-types
 <dd></dd>
 <dt>
 <a class="link" href="wocky-wocky-debug.html#DEBUG-STANZA:CAPS" title="DEBUG_STANZA()">DEBUG_STANZA</a>, macro in <a class="link" href="wocky-wocky-debug.html" title="wocky-debug">wocky-debug</a>
+</dt>
+<dd></dd>
+<dt>
+<a class="link" href="wocky-wocky-debug.html#wocky-debug-valist" title="wocky_debug_valist ()">wocky_debug_valist</a>, function in <a class="link" href="wocky-wocky-debug.html" title="wocky-debug">wocky-debug</a>
 </dt>
 <dd></dd>
 <dt>
@@ -2278,11 +2274,55 @@ WOCKY_SHA1_DIGEST_SIZE, macro in wocky-sasl-utils
 </dt>
 <dd></dd>
 <dt>
+<a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WockyTLSCertType" title="enum WockyTLSCertType">WockyTLSCertType</a>, enum in <a class="link" href="wocky-Wocky-OpenSSL-TLS.html" title="Wocky OpenSSL TLS">Wocky OpenSSL TLS</a>
+</dt>
+<dd></dd>
+<dt>
 <a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WockyTLSConnection">WockyTLSConnection</a>, typedef in <a class="link" href="wocky-Wocky-OpenSSL-TLS.html" title="Wocky OpenSSL TLS">Wocky OpenSSL TLS</a>
 </dt>
 <dd></dd>
 <dt>
 <a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WockyTLSConnection--session" title='The "session" property'>WockyTLSConnection:session</a>, object property in <a class="link" href="wocky-Wocky-OpenSSL-TLS.html" title="Wocky OpenSSL TLS">Wocky OpenSSL TLS</a>
+</dt>
+<dd></dd>
+<dt>
+WockyTLSConnector, struct in WockyTLSConnector
+</dt>
+<dd></dd>
+<dt>
+WockyTLSConnector:tls-handler, object property in WockyTLSConnector
+</dt>
+<dd></dd>
+<dt>
+WockyTLSConnectorClass, struct in WockyTLSConnector
+</dt>
+<dd></dd>
+<dt>
+WockyTLSConnectorPrivate, struct in WockyTLSConnector
+</dt>
+<dd></dd>
+<dt>
+WockyTLSHandler, struct in WockyTLSHandler
+</dt>
+<dd></dd>
+<dt>
+WockyTLSHandler:ignore-ssl-errors, object property in WockyTLSHandler
+</dt>
+<dd></dd>
+<dt>
+WockyTLSHandlerClass, struct in WockyTLSHandler
+</dt>
+<dd></dd>
+<dt>
+WockyTLSHandlerPrivate, struct in WockyTLSHandler
+</dt>
+<dd></dd>
+<dt>
+WockyTLSHandlerVerifyAsyncFunc, user_function in WockyTLSHandler
+</dt>
+<dd></dd>
+<dt>
+WockyTLSHandlerVerifyFinishFunc, user_function in WockyTLSHandler
 </dt>
 <dd></dd>
 <dt>
@@ -2326,6 +2366,10 @@ wocky_tls_cert_status_get_type, function in wocky-tls-enumtypes
 </dt>
 <dd></dd>
 <dt>
+wocky_tls_cert_type_get_type, function in wocky-tls-enumtypes
+</dt>
+<dd></dd>
+<dt>
 <a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WOCKY-TLS-CONNECTION:CAPS" title="WOCKY_TLS_CONNECTION()">WOCKY_TLS_CONNECTION</a>, macro in <a class="link" href="wocky-Wocky-OpenSSL-TLS.html" title="Wocky OpenSSL TLS">Wocky OpenSSL TLS</a>
 </dt>
 <dd></dd>
@@ -2334,11 +2378,51 @@ wocky_tls_cert_status_get_type, function in wocky-tls-enumtypes
 </dt>
 <dd></dd>
 <dt>
+wocky_tls_connector_new, function in WockyTLSConnector
+</dt>
+<dd></dd>
+<dt>
+wocky_tls_connector_secure_async, function in WockyTLSConnector
+</dt>
+<dd></dd>
+<dt>
+wocky_tls_connector_secure_finish, function in WockyTLSConnector
+</dt>
+<dd></dd>
+<dt>
 <a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WOCKY-TLS-ERROR:CAPS" title="WOCKY_TLS_ERROR">WOCKY_TLS_ERROR</a>, macro in <a class="link" href="wocky-Wocky-OpenSSL-TLS.html" title="Wocky OpenSSL TLS">Wocky OpenSSL TLS</a>
 </dt>
 <dd></dd>
 <dt>
 <a class="link" href="wocky-Wocky-OpenSSL-TLS.html#wocky-tls-error-quark" title="wocky_tls_error_quark ()">wocky_tls_error_quark</a>, function in <a class="link" href="wocky-Wocky-OpenSSL-TLS.html" title="Wocky OpenSSL TLS">Wocky OpenSSL TLS</a>
+</dt>
+<dd></dd>
+<dt>
+wocky_tls_handler_add_ca, function in WockyTLSHandler
+</dt>
+<dd></dd>
+<dt>
+wocky_tls_handler_add_crl, function in WockyTLSHandler
+</dt>
+<dd></dd>
+<dt>
+wocky_tls_handler_get_cas, function in WockyTLSHandler
+</dt>
+<dd></dd>
+<dt>
+wocky_tls_handler_get_crls, function in WockyTLSHandler
+</dt>
+<dd></dd>
+<dt>
+wocky_tls_handler_new, function in WockyTLSHandler
+</dt>
+<dd></dd>
+<dt>
+wocky_tls_handler_verify_async, function in WockyTLSHandler
+</dt>
+<dd></dd>
+<dt>
+wocky_tls_handler_verify_finish, function in WockyTLSHandler
 </dt>
 <dd></dd>
 <dt>
@@ -2351,6 +2435,10 @@ wocky_tls_cert_status_get_type, function in wocky-tls-enumtypes
 <dd></dd>
 <dt>
 <a class="link" href="wocky-Wocky-OpenSSL-TLS.html#wocky-tls-session-add-crl" title="wocky_tls_session_add_crl ()">wocky_tls_session_add_crl</a>, function in <a class="link" href="wocky-Wocky-OpenSSL-TLS.html" title="Wocky OpenSSL TLS">Wocky OpenSSL TLS</a>
+</dt>
+<dd></dd>
+<dt>
+<a class="link" href="wocky-Wocky-OpenSSL-TLS.html#wocky-tls-session-get-peers-certificate" title="wocky_tls_session_get_peers_certificate ()">wocky_tls_session_get_peers_certificate</a>, function in <a class="link" href="wocky-Wocky-OpenSSL-TLS.html" title="Wocky OpenSSL TLS">Wocky OpenSSL TLS</a>
 </dt>
 <dd></dd>
 <dt>
@@ -2459,6 +2547,10 @@ WOCKY_TYPE_PUBSUB_SUBSCRIPTION_STATE, macro in wocky-pubsub-service-enumtypes
 <dd></dd>
 <dt>
 WOCKY_TYPE_TLS_CERT_STATUS, macro in wocky-tls-enumtypes
+</dt>
+<dd></dd>
+<dt>
+WOCKY_TYPE_TLS_CERT_TYPE, macro in wocky-tls-enumtypes
 </dt>
 <dd></dd>
 <dt>
@@ -2930,6 +3022,6 @@ WOCKY_TYPE_TLS_VERIFICATION_LEVEL, macro in wocky-tls-enumtypes
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15</div>
+          Generated by GTK-Doc V1.15.1</div>
 </body>
 </html>
