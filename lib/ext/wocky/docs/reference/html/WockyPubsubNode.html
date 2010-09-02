@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-pubsub-helpers.html" title="wocky-pubsub-helpers">
 <link rel="next" href="wocky-wocky-pubsub-node-protected.html" title="wocky-pubsub-node-protected">
-<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.15.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -39,88 +39,88 @@
 <a name="WockyPubsubNode.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">                    <a class="link" href="WockyPubsubNode.html#WockyPubsubNodeClass" title="WockyPubsubNodeClass">WockyPubsubNodeClass</a>;
                     <a class="link" href="WockyPubsubNode.html#WockyPubsubNodePrivate" title="WockyPubsubNodePrivate">WockyPubsubNodePrivate</a>;
-const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-get-name" title="wocky_pubsub_node_get_name ()">wocky_pubsub_node_get_name</a>          (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>);
+const <span class="returnvalue">gchar</span> *       <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-get-name" title="wocky_pubsub_node_get_name ()">wocky_pubsub_node_get_name</a>          (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>);
 <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *       <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-make-publish-stanza" title="wocky_pubsub_node_make_publish_stanza ()">wocky_pubsub_node_make_publish_stanza</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="WockyNode"><span class="type">WockyNode</span></a> **pubsub_out</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="WockyNode"><span class="type">WockyNode</span></a> **publish_out</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="WockyNode"><span class="type">WockyNode</span></a> **item_out</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-subscribe-async" title="wocky_pubsub_node_subscribe_async ()">wocky_pubsub_node_subscribe_async</a>   (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *jid</code></em>,
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);
 <a class="link" href="WockyPubsubService.html#WockyPubsubSubscription" title="WockyPubsubSubscription"><span class="returnvalue">WockyPubsubSubscription</span></a> * <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-subscribe-finish" title="wocky_pubsub_node_subscribe_finish ()">wocky_pubsub_node_subscribe_finish</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-unsubscribe-async" title="wocky_pubsub_node_unsubscribe_async ()">wocky_pubsub_node_unsubscribe_async</a> (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *subid</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
-<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-unsubscribe-finish" title="wocky_pubsub_node_unsubscribe_finish ()">wocky_pubsub_node_unsubscribe_finish</a>
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *jid</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *subid</code></em>,
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-unsubscribe-finish" title="wocky_pubsub_node_unsubscribe_finish ()">wocky_pubsub_node_unsubscribe_finish</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-delete-async" title="wocky_pubsub_node_delete_async ()">wocky_pubsub_node_delete_async</a>      (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
-<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-delete-finish" title="wocky_pubsub_node_delete_finish ()">wocky_pubsub_node_delete_finish</a>     (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-delete-finish" title="wocky_pubsub_node_delete_finish ()">wocky_pubsub_node_delete_finish</a>     (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-list-subscribers-async" title="wocky_pubsub_node_list_subscribers_async ()">wocky_pubsub_node_list_subscribers_async</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
-<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-list-subscribers-finish" title="wocky_pubsub_node_list_subscribers_finish ()">wocky_pubsub_node_list_subscribers_finish</a>
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-list-subscribers-finish" title="wocky_pubsub_node_list_subscribers_finish ()">wocky_pubsub_node_list_subscribers_finish</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **subscribers</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GList</span> **subscribers</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
 enum                <a class="link" href="WockyPubsubNode.html#WockyPubsubAffiliationState" title="enum WockyPubsubAffiliationState">WockyPubsubAffiliationState</a>;
                     <a class="link" href="WockyPubsubNode.html#WockyPubsubAffiliation" title="WockyPubsubAffiliation">WockyPubsubAffiliation</a>;
 #define             <a class="link" href="WockyPubsubNode.html#WOCKY-TYPE-PUBSUB-AFFILIATION:CAPS" title="WOCKY_TYPE_PUBSUB_AFFILIATION">WOCKY_TYPE_PUBSUB_AFFILIATION</a>
-<a href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               <a class="link" href="WockyPubsubNode.html#wocky-pubsub-affiliation-get-type" title="wocky_pubsub_affiliation_get_type ()">wocky_pubsub_affiliation_get_type</a>   (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">GType</span>               <a class="link" href="WockyPubsubNode.html#wocky-pubsub-affiliation-get-type" title="wocky_pubsub_affiliation_get_type ()">wocky_pubsub_affiliation_get_type</a>   (<em class="parameter"><code><span class="type">void</span></code></em>);
 <a class="link" href="WockyPubsubNode.html#WockyPubsubAffiliation" title="WockyPubsubAffiliation"><span class="returnvalue">WockyPubsubAffiliation</span></a> * <a class="link" href="WockyPubsubNode.html#wocky-pubsub-affiliation-new" title="wocky_pubsub_affiliation_new ()">wocky_pubsub_affiliation_new</a>   (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *jid</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyPubsubNode.html#WockyPubsubAffiliationState" title="enum WockyPubsubAffiliationState"><span class="type">WockyPubsubAffiliationState</span></a> state</code></em>);
 <a class="link" href="WockyPubsubNode.html#WockyPubsubAffiliation" title="WockyPubsubAffiliation"><span class="returnvalue">WockyPubsubAffiliation</span></a> * <a class="link" href="WockyPubsubNode.html#wocky-pubsub-affiliation-copy" title="wocky_pubsub_affiliation_copy ()">wocky_pubsub_affiliation_copy</a>  (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html#WockyPubsubAffiliation" title="WockyPubsubAffiliation"><span class="type">WockyPubsubAffiliation</span></a> *aff</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPubsubNode.html#wocky-pubsub-affiliation-free" title="wocky_pubsub_affiliation_free ()">wocky_pubsub_affiliation_free</a>       (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html#WockyPubsubAffiliation" title="WockyPubsubAffiliation"><span class="type">WockyPubsubAffiliation</span></a> *aff</code></em>);
-<a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="WockyPubsubNode.html#wocky-pubsub-affiliation-list-copy" title="wocky_pubsub_affiliation_list_copy ()">wocky_pubsub_affiliation_list_copy</a>  (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *affs</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyPubsubNode.html#wocky-pubsub-affiliation-list-free" title="wocky_pubsub_affiliation_list_free ()">wocky_pubsub_affiliation_list_free</a>  (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *affs</code></em>);
+<span class="returnvalue">GList</span> *             <a class="link" href="WockyPubsubNode.html#wocky-pubsub-affiliation-list-copy" title="wocky_pubsub_affiliation_list_copy ()">wocky_pubsub_affiliation_list_copy</a>  (<em class="parameter"><code><span class="type">GList</span> *affs</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyPubsubNode.html#wocky-pubsub-affiliation-list-free" title="wocky_pubsub_affiliation_list_free ()">wocky_pubsub_affiliation_list_free</a>  (<em class="parameter"><code><span class="type">GList</span> *affs</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-list-affiliates-async" title="wocky_pubsub_node_list_affiliates_async ()">wocky_pubsub_node_list_affiliates_async</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
-<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-list-affiliates-finish" title="wocky_pubsub_node_list_affiliates_finish ()">wocky_pubsub_node_list_affiliates_finish</a>
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-list-affiliates-finish" title="wocky_pubsub_node_list_affiliates_finish ()">wocky_pubsub_node_list_affiliates_finish</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **affiliates</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GList</span> **affiliates</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-modify-affiliates-async" title="wocky_pubsub_node_modify_affiliates_async ()">wocky_pubsub_node_modify_affiliates_async</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *affiliates</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
-<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-modify-affiliates-finish" title="wocky_pubsub_node_modify_affiliates_finish ()">wocky_pubsub_node_modify_affiliates_finish</a>
+                                                         <em class="parameter"><code>const <span class="type">GList</span> *affiliates</code></em>,
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-modify-affiliates-finish" title="wocky_pubsub_node_modify_affiliates_finish ()">wocky_pubsub_node_modify_affiliates_finish</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-get-configuration-async" title="wocky_pubsub_node_get_configuration_async ()">wocky_pubsub_node_get_configuration_async</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);
 <a class="link" href="WockyDataForm.html" title="WockyDataForm"><span class="returnvalue">WockyDataForm</span></a> *     <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-get-configuration-finish" title="wocky_pubsub_node_get_configuration_finish ()">wocky_pubsub_node_get_configuration_finish</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -149,7 +149,7 @@ enum                <a class="link" href="WockyPubsubNode.html#WockyPubsubAffili
 <hr>
 <div class="refsect2" title="wocky_pubsub_node_get_name ()">
 <a name="wocky-pubsub-node-get-name"></a><h3>wocky_pubsub_node_get_name ()</h3>
-<pre class="programlisting">const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_pubsub_node_get_name          (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>);</pre>
+<pre class="programlisting">const <span class="returnvalue">gchar</span> *       wocky_pubsub_node_get_name          (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -213,10 +213,10 @@ enum                <a class="link" href="WockyPubsubNode.html#WockyPubsubAffili
 <div class="refsect2" title="wocky_pubsub_node_subscribe_async ()">
 <a name="wocky-pubsub-node-subscribe-async"></a><h3>wocky_pubsub_node_subscribe_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_node_subscribe_async   (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *jid</code></em>,
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);</pre>
 <p>
 Attempts to subscribe to <em class="parameter"><code>self</code></em>.
 </p>
@@ -231,12 +231,12 @@ Attempts to subscribe to <em class="parameter"><code>self</code></em>.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
 <td>the JID to use as the subscribed JID (usually the connection's bare or
-      full JID); may not be <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+      full JID); may not be <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
-<td>optional GCancellable object, <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore
+<td>optional GCancellable object, <code class="literal">NULL</code> to ignore
 </td>
 </tr>
 <tr>
@@ -257,8 +257,8 @@ Attempts to subscribe to <em class="parameter"><code>self</code></em>.
 <a name="wocky-pubsub-node-subscribe-finish"></a><h3>wocky_pubsub_node_subscribe_finish ()</h3>
 <pre class="programlisting"><a class="link" href="WockyPubsubService.html#WockyPubsubSubscription" title="WockyPubsubSubscription"><span class="returnvalue">WockyPubsubSubscription</span></a> * wocky_pubsub_node_subscribe_finish
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -291,11 +291,11 @@ Attempts to subscribe to <em class="parameter"><code>self</code></em>.
 <div class="refsect2" title="wocky_pubsub_node_unsubscribe_async ()">
 <a name="wocky-pubsub-node-unsubscribe-async"></a><h3>wocky_pubsub_node_unsubscribe_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_node_unsubscribe_async (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *subid</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *jid</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *subid</code></em>,
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);</pre>
 <p>
 Attempts to unsubscribe from <em class="parameter"><code>self</code></em>.
 </p>
@@ -310,7 +310,7 @@ Attempts to unsubscribe from <em class="parameter"><code>self</code></em>.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
 <td>the JID subscribed to <em class="parameter"><code>self</code></em> (usually the connection's bare or
-      full JID); may not be <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+      full JID); may not be <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
@@ -320,7 +320,7 @@ Attempts to unsubscribe from <em class="parameter"><code>self</code></em>.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
-<td>optional GCancellable object, <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore
+<td>optional GCancellable object, <code class="literal">NULL</code> to ignore
 </td>
 </tr>
 <tr>
@@ -339,10 +339,10 @@ Attempts to unsubscribe from <em class="parameter"><code>self</code></em>.
 <hr>
 <div class="refsect2" title="wocky_pubsub_node_unsubscribe_finish ()">
 <a name="wocky-pubsub-node-unsubscribe-finish"></a><h3>wocky_pubsub_node_unsubscribe_finish ()</h3>
-<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_pubsub_node_unsubscribe_finish
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            wocky_pubsub_node_unsubscribe_finish
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -375,9 +375,9 @@ Attempts to unsubscribe from <em class="parameter"><code>self</code></em>.
 <div class="refsect2" title="wocky_pubsub_node_delete_async ()">
 <a name="wocky-pubsub-node-delete-async"></a><h3>wocky_pubsub_node_delete_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_node_delete_async      (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -409,9 +409,9 @@ Attempts to unsubscribe from <em class="parameter"><code>self</code></em>.
 <hr>
 <div class="refsect2" title="wocky_pubsub_node_delete_finish ()">
 <a name="wocky-pubsub-node-delete-finish"></a><h3>wocky_pubsub_node_delete_finish ()</h3>
-<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_pubsub_node_delete_finish     (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            wocky_pubsub_node_delete_finish     (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -445,9 +445,9 @@ Attempts to unsubscribe from <em class="parameter"><code>self</code></em>.
 <a name="wocky-pubsub-node-list-subscribers-async"></a><h3>wocky_pubsub_node_list_subscribers_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_node_list_subscribers_async
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);</pre>
 <p>
 Retrieves the list of subscriptions to a node you own. <em class="parameter"><code>callback</code></em> may
 complete the call using <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-list-subscribers-finish" title="wocky_pubsub_node_list_subscribers_finish ()"><code class="function">wocky_pubsub_node_list_subscribers_finish()</code></a>.
@@ -467,7 +467,7 @@ different terminology in Wocky is intended to help disambiguate!)
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
-<td>optional <a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> object
+<td>optional <span class="type">GCancellable</span> object
 </td>
 </tr>
 <tr>
@@ -487,11 +487,11 @@ different terminology in Wocky is intended to help disambiguate!)
 <hr>
 <div class="refsect2" title="wocky_pubsub_node_list_subscribers_finish ()">
 <a name="wocky-pubsub-node-list-subscribers-finish"></a><h3>wocky_pubsub_node_list_subscribers_finish ()</h3>
-<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_pubsub_node_list_subscribers_finish
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            wocky_pubsub_node_list_subscribers_finish
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **subscribers</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GList</span> **subscribers</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Completes a call to <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-list-subscribers-async" title="wocky_pubsub_node_list_subscribers_async ()"><code class="function">wocky_pubsub_node_list_subscribers_async()</code></a>. The list
 returned in <em class="parameter"><code>subscribers</code></em> should be freed with
@@ -513,17 +513,17 @@ returned in <em class="parameter"><code>subscribers</code></em> should be freed 
 <tr>
 <td><p><span class="term"><em class="parameter"><code>subscribers</code></em> :</span></p></td>
 <td>location at which to store a list of <a class="link" href="WockyPubsubService.html#WockyPubsubSubscription" title="WockyPubsubSubscription"><span class="type">WockyPubsubSubscription</span></a>
-              pointers, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+              pointers, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>location at which to store an error, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>location at which to store an error, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the list of subscribers was successfully retrieved; <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
+<td> <code class="literal">TRUE</code> if the list of subscribers was successfully retrieved; <code class="literal">FALSE</code>
          and sets <em class="parameter"><code>error</code></em> if an error occured.
 </td>
 </tr>
@@ -605,7 +605,7 @@ Represents an affiliation to a node, as returned by
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyPubsubAffiliation.jid"></a>jid</code></em>;</span></p></td>
+<td><p><span class="term"><span class="type">gchar</span> *<em class="structfield"><code><a name="WockyPubsubAffiliation.jid"></a>jid</code></em>;</span></p></td>
 <td>the bare JID affiliated to <em class="parameter"><code>node</code></em>
 </td>
 </tr>
@@ -627,7 +627,7 @@ Represents an affiliation to a node, as returned by
 <hr>
 <div class="refsect2" title="wocky_pubsub_affiliation_get_type ()">
 <a name="wocky-pubsub-affiliation-get-type"></a><h3>wocky_pubsub_affiliation_get_type ()</h3>
-<pre class="programlisting"><a href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               wocky_pubsub_affiliation_get_type   (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">GType</span>               wocky_pubsub_affiliation_get_type   (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -643,7 +643,7 @@ Represents an affiliation to a node, as returned by
 <div class="refsect2" title="wocky_pubsub_affiliation_new ()">
 <a name="wocky-pubsub-affiliation-new"></a><h3>wocky_pubsub_affiliation_new ()</h3>
 <pre class="programlisting"><a class="link" href="WockyPubsubNode.html#WockyPubsubAffiliation" title="WockyPubsubAffiliation"><span class="returnvalue">WockyPubsubAffiliation</span></a> * wocky_pubsub_affiliation_new   (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *jid</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyPubsubNode.html#WockyPubsubAffiliationState" title="enum WockyPubsubAffiliationState"><span class="type">WockyPubsubAffiliationState</span></a> state</code></em>);</pre>
 <p>
 
@@ -719,7 +719,7 @@ Frees an affiliation, previously allocated with
 <hr>
 <div class="refsect2" title="wocky_pubsub_affiliation_list_copy ()">
 <a name="wocky-pubsub-affiliation-list-copy"></a><h3>wocky_pubsub_affiliation_list_copy ()</h3>
-<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_pubsub_affiliation_list_copy  (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *affs</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">GList</span> *             wocky_pubsub_affiliation_list_copy  (<em class="parameter"><code><span class="type">GList</span> *affs</code></em>);</pre>
 <p>
 Shorthand for manually copying <em class="parameter"><code>affs</code></em>, duplicating each element with
 <a class="link" href="WockyPubsubNode.html#wocky-pubsub-affiliation-copy" title="wocky_pubsub_affiliation_copy ()"><code class="function">wocky_pubsub_affiliation_copy()</code></a>.
@@ -744,10 +744,10 @@ Shorthand for manually copying <em class="parameter"><code>affs</code></em>, dup
 <hr>
 <div class="refsect2" title="wocky_pubsub_affiliation_list_free ()">
 <a name="wocky-pubsub-affiliation-list-free"></a><h3>wocky_pubsub_affiliation_list_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_affiliation_list_free  (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *affs</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_affiliation_list_free  (<em class="parameter"><code><span class="type">GList</span> *affs</code></em>);</pre>
 <p>
 Frees a list of WockyPubsubAffiliation structures, as shorthand for calling
-<a class="link" href="WockyPubsubNode.html#wocky-pubsub-affiliation-free" title="wocky_pubsub_affiliation_free ()"><code class="function">wocky_pubsub_affiliation_free()</code></a> for each element, followed by <a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#g-list-free"><code class="function">g_list_free()</code></a>.
+<a class="link" href="WockyPubsubNode.html#wocky-pubsub-affiliation-free" title="wocky_pubsub_affiliation_free ()"><code class="function">wocky_pubsub_affiliation_free()</code></a> for each element, followed by <code class="function">g_list_free()</code>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -763,9 +763,9 @@ Frees a list of WockyPubsubAffiliation structures, as shorthand for calling
 <a name="wocky-pubsub-node-list-affiliates-async"></a><h3>wocky_pubsub_node_list_affiliates_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_node_list_affiliates_async
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);</pre>
 <p>
 Retrieves the list of entities affilied to a node you own. <em class="parameter"><code>callback</code></em> may
 complete the call using <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-list-affiliates-finish" title="wocky_pubsub_node_list_affiliates_finish ()"><code class="function">wocky_pubsub_node_list_affiliates_finish()</code></a>.
@@ -785,7 +785,7 @@ slightly different terminology in Wocky is intended to help disambiguate!)
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
-<td>optional <a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> object
+<td>optional <span class="type">GCancellable</span> object
 </td>
 </tr>
 <tr>
@@ -805,11 +805,11 @@ slightly different terminology in Wocky is intended to help disambiguate!)
 <hr>
 <div class="refsect2" title="wocky_pubsub_node_list_affiliates_finish ()">
 <a name="wocky-pubsub-node-list-affiliates-finish"></a><h3>wocky_pubsub_node_list_affiliates_finish ()</h3>
-<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_pubsub_node_list_affiliates_finish
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            wocky_pubsub_node_list_affiliates_finish
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **affiliates</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GList</span> **affiliates</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Completes a call to <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-list-affiliates-async" title="wocky_pubsub_node_list_affiliates_async ()"><code class="function">wocky_pubsub_node_list_affiliates_async()</code></a>. The list
 returned in <em class="parameter"><code>affiliates</code></em> should be freed with
@@ -831,17 +831,17 @@ returned in <em class="parameter"><code>affiliates</code></em> should be freed w
 <tr>
 <td><p><span class="term"><em class="parameter"><code>affiliates</code></em> :</span></p></td>
 <td>location at which to store a list of <a class="link" href="WockyPubsubNode.html#WockyPubsubAffiliation" title="WockyPubsubAffiliation"><span class="type">WockyPubsubAffiliation</span></a>
-             pointers, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+             pointers, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>location at which to store an error, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>location at which to store an error, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the list of subscribers was successfully retrieved; <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
+<td> <code class="literal">TRUE</code> if the list of subscribers was successfully retrieved; <code class="literal">FALSE</code>
          and sets <em class="parameter"><code>error</code></em> if an error occured.
 </td>
 </tr>
@@ -853,10 +853,10 @@ returned in <em class="parameter"><code>affiliates</code></em> should be freed w
 <a name="wocky-pubsub-node-modify-affiliates-async"></a><h3>wocky_pubsub_node_modify_affiliates_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_node_modify_affiliates_async
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *affiliates</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                                         <em class="parameter"><code>const <span class="type">GList</span> *affiliates</code></em>,
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);</pre>
 <p>
 Modifies the entities affiliated to a node that you own.
 </p>
@@ -876,7 +876,7 @@ Modifies the entities affiliated to a node that you own.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
-<td>optional GCancellable object, <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore
+<td>optional GCancellable object, <code class="literal">NULL</code> to ignore
 </td>
 </tr>
 <tr>
@@ -895,10 +895,10 @@ Modifies the entities affiliated to a node that you own.
 <hr>
 <div class="refsect2" title="wocky_pubsub_node_modify_affiliates_finish ()">
 <a name="wocky-pubsub-node-modify-affiliates-finish"></a><h3>wocky_pubsub_node_modify_affiliates_finish ()</h3>
-<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_pubsub_node_modify_affiliates_finish
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            wocky_pubsub_node_modify_affiliates_finish
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Complete a call to <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-modify-affiliates-async" title="wocky_pubsub_node_modify_affiliates_async ()"><code class="function">wocky_pubsub_node_modify_affiliates_async()</code></a>.
 </p>
@@ -922,7 +922,7 @@ Complete a call to <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the affiliates were successfully modified; <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> and sets
+<td> <code class="literal">TRUE</code> if the affiliates were successfully modified; <code class="literal">FALSE</code> and sets
          <em class="parameter"><code>error</code></em> otherwise.
 </td>
 </tr>
@@ -934,9 +934,9 @@ Complete a call to <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-
 <a name="wocky-pubsub-node-get-configuration-async"></a><h3>wocky_pubsub_node_get_configuration_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_node_get_configuration_async
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GCancellable</span> *cancellable</code></em>,
+                                                         <em class="parameter"><code><span class="type">GAsyncReadyCallback</span> callback</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);</pre>
 <p>
 Retrieves the current configuration for a node owned by the user.
 </p>
@@ -950,7 +950,7 @@ Retrieves the current configuration for a node owned by the user.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
-<td>optional GCancellable object, <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore
+<td>optional GCancellable object, <code class="literal">NULL</code> to ignore
 </td>
 </tr>
 <tr>
@@ -971,8 +971,8 @@ Retrieves the current configuration for a node owned by the user.
 <a name="wocky-pubsub-node-get-configuration-finish"></a><h3>wocky_pubsub_node_get_configuration_finish ()</h3>
 <pre class="programlisting"><a class="link" href="WockyDataForm.html" title="WockyDataForm"><span class="returnvalue">WockyDataForm</span></a> *     wocky_pubsub_node_get_configuration_finish
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GAsyncResult</span> *result</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Complete a call to <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-get-configuration-async" title="wocky_pubsub_node_get_configuration_async ()"><code class="function">wocky_pubsub_node_get_configuration_async()</code></a>.
 </p>
@@ -996,7 +996,7 @@ Complete a call to <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a form representing the node configuration on success; <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> and
+<td> a form representing the node configuration on success; <code class="literal">NULL</code> and
          sets <em class="parameter"><code>error</code></em> otherwise
 </td>
 </tr>
@@ -1007,6 +1007,6 @@ Complete a call to <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15</div>
+          Generated by GTK-Doc V1.15.1</div>
 </body>
 </html>

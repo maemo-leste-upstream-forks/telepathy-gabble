@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-xmpp-reader-enumtypes.html" title="wocky-xmpp-reader-enumtypes">
 <link rel="next" href="WockyStanza.html" title="WockyStanza">
-<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.15.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -39,10 +39,10 @@
 <a name="WockyNodeTree.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">                    <a class="link" href="WockyNodeTree.html#WockyNodeTreePrivate" title="WockyNodeTreePrivate">WockyNodeTreePrivate</a>;
                     <a class="link" href="WockyNodeTree.html#WockyNodeTreeClass" title="WockyNodeTreeClass">WockyNodeTreeClass</a>;
-<a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     <a class="link" href="WockyNodeTree.html#wocky-node-tree-new" title="wocky_node_tree_new ()">wocky_node_tree_new</a>                 (<em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>,
+<a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     <a class="link" href="WockyNodeTree.html#wocky-node-tree-new" title="wocky_node_tree_new ()">wocky_node_tree_new</a>                 (<em class="parameter"><code>const <span class="type">gchar</span> *name</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *ns</code></em>,
                                                          <em class="parameter"><code>...</code></em>);
-<a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     <a class="link" href="WockyNodeTree.html#wocky-node-tree-new-va" title="wocky_node_tree_new_va ()">wocky_node_tree_new_va</a>              (<em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+<a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     <a class="link" href="WockyNodeTree.html#wocky-node-tree-new-va" title="wocky_node_tree_new_va ()">wocky_node_tree_new_va</a>              (<em class="parameter"><code>const <span class="type">gchar</span> *name</code></em>,
                                                          <em class="parameter"><code>const <span class="type">char</span> *ns</code></em>,
                                                          <em class="parameter"><code><span class="type">va_list</span> va</code></em>);
 <a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     <a class="link" href="WockyNodeTree.html#wocky-node-tree-new-from-node" title="wocky_node_tree_new_from_node ()">wocky_node_tree_new_from_node</a>       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
@@ -75,8 +75,8 @@
 <hr>
 <div class="refsect2" title="wocky_node_tree_new ()">
 <a name="wocky-node-tree-new"></a><h3>wocky_node_tree_new ()</h3>
-<pre class="programlisting"><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     wocky_node_tree_new                 (<em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
-                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>,
+<pre class="programlisting"><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     wocky_node_tree_new                 (<em class="parameter"><code>const <span class="type">gchar</span> *name</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *ns</code></em>,
                                                          <em class="parameter"><code>...</code></em>);</pre>
 <p>
 Build a node-tree from a list of arguments.
@@ -85,7 +85,7 @@ Example:
 <p>
 </p>
 <div class="example">
-<a name="id493255"></a><p class="title"><b>Example 2. </b></p>
+<a name="id3080293"></a><p class="title"><b>Example 2. </b></p>
 <div class="example-contents">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -97,13 +97,13 @@ Example:
 5
 6
 7</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="WockyNodeTree.html#wocky-node-tree-new">wocky_node_tree_new</a></span> <span class="symbol">(</span><span class="string">&quot;html&quot;</span><span class="symbol">,</span> <span class="string">&quot;http://www.w3.org/1999/xhtml&quot;</span><span class="symbol">,</span>
-   <span class="string">'('</span><span class="symbol">,</span> <span class="string">&quot;html&quot;</span><span class="symbol">,</span> <span class="string">':'</span><span class="symbol">,</span> <span class="string">&quot;http://www.w3.org/1999/xhtml&quot;</span><span class="symbol">,</span>
-     <span class="string">'('</span><span class="symbol">,</span> <span class="string">&quot;body&quot;</span><span class="symbol">,</span> <span class="string">'&#64;'</span><span class="symbol">,</span> <span class="string">&quot;textcolor&quot;</span><span class="symbol">,</span> <span class="string">&quot;red&quot;</span><span class="symbol">,</span>
-        <span class="string">'$'</span><span class="symbol">,</span> <span class="string">&quot;Wocky wooo&quot;</span><span class="symbol">,</span>
-     <span class="string">')'</span><span class="symbol">,</span>
-   <span class="string">')'</span><span class="symbol">,</span>
-  NULL<span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="WockyNodeTree.html#wocky-node-tree-new">wocky_node_tree_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"html"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"http://www.w3.org/1999/xhtml"</span><span class="symbol">,</span>
+<span class="normal">   </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"html"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">':'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"http://www.w3.org/1999/xhtml"</span><span class="symbol">,</span>
+<span class="normal">     </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"body"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">'@'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"textcolor"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"red"</span><span class="symbol">,</span>
+<span class="normal">        </span><span class="string">'$'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"Wocky wooo"</span><span class="symbol">,</span>
+<span class="normal">     </span><span class="string">')'</span><span class="symbol">,</span>
+<span class="normal">   </span><span class="string">')'</span><span class="symbol">,</span>
+<span class="normal">  NULL</span><span class="symbol">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -128,7 +128,7 @@ Example:
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
 <td>the description of the node tree to build,
- terminated with <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+ terminated with <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
@@ -142,7 +142,7 @@ Example:
 <hr>
 <div class="refsect2" title="wocky_node_tree_new_va ()">
 <a name="wocky-node-tree-new-va"></a><h3>wocky_node_tree_new_va ()</h3>
-<pre class="programlisting"><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     wocky_node_tree_new_va              (<em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+<pre class="programlisting"><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     wocky_node_tree_new_va              (<em class="parameter"><code>const <span class="type">gchar</span> *name</code></em>,
                                                          <em class="parameter"><code>const <span class="type">char</span> *ns</code></em>,
                                                          <em class="parameter"><code><span class="type">va_list</span> va</code></em>);</pre>
 <p>
@@ -222,6 +222,6 @@ Build a new WockyNodeTree that contains a copy of the given node.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15</div>
+          Generated by GTK-Doc V1.15.1</div>
 </body>
 </html>

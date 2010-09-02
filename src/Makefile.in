@@ -82,12 +82,12 @@ am_libgabble_convenience_la_OBJECTS = auth-manager.lo base64.lo \
 	media-factory.lo message-util.lo muc-channel.lo muc-factory.lo \
 	olpc-activity.lo olpc-activity-view.lo olpc-buddy-view.lo \
 	olpc-gadget-manager.lo olpc-view.lo plugin-loader.lo plugin.lo \
-	presence.lo presence-cache.lo private-tubes-factory.lo \
-	request-pipeline.lo roster.lo roster-channel.lo \
-	roomlist-channel.lo roomlist-manager.lo search-channel.lo \
-	search-manager.lo server-sasl-channel.lo sidecar.lo slacker.lo \
-	tube-iface.lo tubes-channel.lo tube-dbus.lo tube-stream.lo \
-	util.lo vcard-manager.lo
+	presence.lo presence-cache.lo protocol.lo \
+	private-tubes-factory.lo request-pipeline.lo roster.lo \
+	roster-channel.lo roomlist-channel.lo roomlist-manager.lo \
+	search-channel.lo search-manager.lo server-sasl-channel.lo \
+	sidecar.lo slacker.lo tube-iface.lo tubes-channel.lo \
+	tube-dbus.lo tube-stream.lo util.lo vcard-manager.lo
 am__objects_1 = gabble-signals-marshal.lo
 nodist_libgabble_convenience_la_OBJECTS = $(am__objects_1)
 libgabble_convenience_la_OBJECTS =  \
@@ -213,8 +213,6 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
-PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
-PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 PYTHON = @PYTHON@
 PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
@@ -442,6 +440,8 @@ libgabble_convenience_la_SOURCES = \
     presence.c \
     presence-cache.h \
     presence-cache.c \
+    protocol.h \
+    protocol.c \
     private-tubes-factory.h \
     private-tubes-factory.c \
     request-pipeline.h \
@@ -694,6 +694,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/presence-cache.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/presence.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/private-tubes-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/protocol.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/request-pipeline.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roomlist-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roomlist-manager.Plo@am__quote@
