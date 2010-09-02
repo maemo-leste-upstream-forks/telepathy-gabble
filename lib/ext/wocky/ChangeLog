@@ -1,3 +1,22 @@
+commit d1445f724ddb0ce70ce3a73c9a7fe307f3cfc8e2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Aug 24 22:42:08 2010 +0100
+
+    Pubsub: unleak calls to g_simple_async_result_get_source_object()
+    
+    I tracked down a bug in Gabble to not unreffing the result of
+    g_simple_async_result_get_source_object() and thought I'd check Wocky.
+    I'm proud to report that I am responsible for all instances of this
+    error in Wocky. I'm even prouder to report that I found it once before,
+    added a comment explaining it, and then promptly forgot about it IN THE
+    SAME FILE. Dunce hat for me.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+ wocky/wocky-pubsub-node.c    |    3 +++
+ wocky/wocky-pubsub-service.c |    2 +-
+ 2 files changed, 4 insertions(+), 1 deletions(-)
+
 commit cfe1bd86d1143631218e97396122c7f4b4d8cf85
 Author: Adam Conrad <adconrad@collabora.co.uk>
 Date:   Thu Aug 19 18:52:25 2010 +0100

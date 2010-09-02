@@ -1,3 +1,325 @@
+commit adf6b343af21bdc59c2d48a6a730817b1f7d1079
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-26 20:57:01 +0200
+
+    Prepare version 0.9.17
+
+commit a1f16087b749855634457e3759d594db3b9238dc
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-08-26 10:16:00 -0400
+
+    Make CA certificates path configurable
+    
+    This patch allow configuring the CA certificates path. It creates a new
+    constant in config.h named CA_CERTIFICATES_PATH that can be configured by
+    passing --with-ca-certificates=PATH to configure script.
+    
+    Reviewed by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 6849dbbe73302c00b493752ddd9afb446964ea6f
+Merge: 4c7d9f2 53f1f00
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-26 11:46:53 +0200
+
+    Merge branch 'plugin+status'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=29751>
+
+commit 53f1f007cdf821c416d02875c752128f378a538d
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-25 13:10:18 +0200
+
+    conn-presence.c: consistently cast into GSimpleAsyncResult*
+
+commit 369845cdbf997dbf28a849ed901fe7ba3c711cbe
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-25 11:47:37 +0200
+
+    activate_current_privacy_list: don't leak GError
+
+commit f0547f0b3d07d78636d5c84ff5f24b0e5696f635
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-25 10:20:24 +0200
+
+    get_existing_privacy_lists_cb: use wocky node iterators instead of old macros
+
+commit f19759fd44e6415cde8beaa48e55e803a74a6669
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-25 10:10:35 +0200
+
+    conn-presence.c: documented privacy_presences lifetime a bit better
+
+commit daf688b0b62becba1ec3803971403994c757470b
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-25 10:00:32 +0200
+
+    activate_current_privacy_list(): simplified list activation xml generation
+
+commit 0be989cd7d70d73fb3d340e974e548e6a0c0591b
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-25 09:53:35 +0200
+
+    removed _ prefix from conn_presence_get_type()
+
+commit 912de91e25df6bc20f740cf2a8579f4ae142e31d
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-25 09:34:04 +0200
+
+    style fixes
+
+commit a8ea0e37dfd5a9e47bb0898c3e3f70aff211f38e
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-24 12:10:35 +0200
+
+    gabble_plugin_get_custom_presence_statuses: pass arrays directly instead of using GLists
+
+commit ba6488183edab8f7b14b1e4628bebbcb7a83117a
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-20 11:58:18 +0200
+
+    add presence/plugins.py twisted test
+
+commit b9c4abe6cbb65bbc430e7a48c7b64592a9516e32
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-20 11:49:43 +0200
+
+    presence/invisible_xep_0126.py test: handle Gabble asking for all privacy lists
+
+commit c42a20f1386443dd8f2b18006e4fe87248ba5392
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-20 11:48:28 +0200
+
+    test plugin: add custom presence statuses for testing
+
+commit 50a03d41c48baf0d2827269d85a85032c841800f
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-20 11:46:59 +0200
+
+    conn-presence.c: refactor the invisible privacy list code to support generic privacy lists
+
+commit fc4062958dda1eb8db580ee5aea0508eb2f05b01
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-20 11:40:05 +0200
+
+    add _conn_presence_get_type() to gracefully handle custom statuses
+
+commit 3e7226952acd64f8b8b3beaeecab7257701bb547
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-20 11:39:12 +0200
+
+    conn-presence.c: pass plugin-supplied statuses to the PresenceMixin class init
+
+commit fb5918c26e65d399b6cdc8458e46bbcaabc95e34
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-20 11:33:37 +0200
+
+    plugin(-loader).[ch]: support for adding custom statuses and linking them with privacy lists
+
+commit 4c7d9f2f611fa937e90c8c063ef649d9d44562d3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-08-25 17:40:08 +0100
+
+    Bump telepathy-glib dependency to 0.11.14 for TpBaseChannel
+    
+    The harmonious node pointer strikes again.
+
+commit b207801208f98c53e8e8a585fe19ffcbadc5f749
+Merge: 1a476db 2e1a638
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-25 14:38:04 +0100
+
+    Merge branch 'port-to-tp-base-channel'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=29778>
+
+commit 1a476dbd5d1ea177ff3f3a3a11ce9a82df70d400
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-05 13:27:08 +0100
+
+    Don't leak a hash table in Stream.SetSending
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 1d2264ed92d8665d7b253c46c0ae4b17ec647ff8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-25 14:28:11 +0100
+
+    Update Wocky for Pubsub leak fixes
+
+commit 6fa0beb5e75b384872a25add45bf8b0bf7591a88
+Merge: 7abb5c0 9071c1a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-25 14:21:39 +0100
+
+    Merge branch 'get_source_object-refleak'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 2e1a6387b7fd56f13771452e0d2dd7e928b99331
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-25 10:59:46 +0100
+
+    Use tp_base_channel_close() for search and tls channels
+    
+    These are the only two TpBaseChannel-based channel types which had their
+    own exported close function which behaves exactly as the vfunc does.
+
+commit 9071c1af431dd48820adf3d57edfaaff29dea01d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-24 22:37:27 +0100
+
+    Make tests fail more gracefully when connections leak
+    
+    Previously, if any test leaked its connection, it would fail (with a
+    reasonably helpful assertion). But the next test would try to re-make
+    the same connection, which would throw a DBusException (namely
+    NotAvailable). The exception wasn't handled, so it bubbled back up to
+    the mainloop, which would log it to stderr and then... do nothing. The
+    test would never finish, and it's a PITA to kill.
+    
+    With this patch, we print a shorter representation of the NotAvailable
+    error and then exit immediately. This allows the rest of the test run to
+    finish. Since all the tests after the leaky one will probably fail,
+    let's add a note to the aforementioned helpful assertion to that effect
+    so the developer isn't too startled.
+
+commit 985b48401080b84f3b3d880b054dd5c665f535ea
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-24 22:35:36 +0100
+
+    MediaFactory: Clarify references to GabbleCallChannel
+    
+    When I was debugging the leak fixed by the previous patch, I found it
+    hard to track the ref(s) owned by the media factory to the call channel.
+    This patch just makes the passing of references more explicit, rather
+    than passing a single reference around.
+
+commit f922ea06443abcd54307326f38f409fc21609551
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-24 22:31:54 +0100
+
+    Don't leak Call channels when waiting for caps.
+    
+    call_channel_capabilities_discovered_cb() gets the channel by calling
+    g_simple_async_result_get_source_object(), which returns a reference to
+    the source object. Previously, it then failed to release its reference.
+    This meant that if we have to wait for caps before completing a channel
+    request, we'd always leak the channel.
+    
+    There's no regression test here. I found it while porting
+    GabbleBaseCallChannel to use TpBaseChannel, because the latter holds a
+    ref to its connection, and so leaking the Call channel leaks the
+    connection which prevents it falling off the bus, which makes the
+    existing regression tests for waiting for caps both fail!
+    
+    I've also audited Wocky and fixed a few places that make this same
+    mistake there.
+
+commit adb56174e83f075790dbc3409eeb414cbff787aa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-24 15:12:42 +0100
+
+    Remove GabbleBaseChannel.
+    
+    \o/
+
+commit fd575cc923f1a482450f86be46b3988a0e633ef8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-24 15:12:04 +0100
+
+    Port ServerTLSChannel to TpBaseChannel.
+    
+    I have no idea if this works. There are no tests.
+
+commit f16c1043064757190b6d5f75724767eebf2ebc9e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-24 14:57:05 +0100
+
+    Port GabbleSearchChannel to TpBaseChannel
+
+commit 7fef314d035dfc8e8c63c3ace3e787ff8c4204a8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-24 11:15:23 +0100
+
+    RoomlistChannel: Remove incorrect, content-free docstrings
+
+commit 80cd5022ea1f7e62ff34bdeac392c20343e18437
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-23 17:22:18 +0100
+
+    Port RoomlistChannel to TpBaseChannel
+
+commit 20dd7a233cc6545a700459bf2ea2687f567ef1ef
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-20 16:51:20 +0100
+
+    Port GabbleMucChannel to TpBaseChannel.
+    
+    This place is a narrative mess.
+
+commit 16348133004485c6e7f0f18a52c61af0a00a089f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-20 16:05:54 +0100
+
+    Port GabbleIMChannel to TpBaseChannel.
+    
+    Pleasingly, this is a net reduction in code.
+    
+    The change to the test just makes it easier to debug why that assertion
+    would be failing; it doesn't change the meaning of the test.
+
+commit 7abb5c07036ac5af96c9456fa57e4ba302376348
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-24 12:37:04 +0100
+
+    Re-update Wocky snapshot to fix out of tree builds.
+    
+    Apparently this was lost in the TLS merge.
+
+commit 9a1b4f3df91b201cec25c293d9e095740068cb56
+Merge: c70da96 b6de9de
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-23 20:05:56 +0100
+
+    Merge branch 'fix-presence-unsure-period'
+
+commit c70da9661551a1ed7d819ac34806fb04169f86f2
+Merge: f0ecc6b 8d4a22a
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-23 18:47:46 +0200
+
+    Merge branch 'tls-connection2'
+    
+    Conflicts:
+    	lib/ext/wocky
+    	src/connection.c
+
+commit b6de9dea99e3a581ddc3d349bd00c1626d0e23ca
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-21 11:09:54 +0100
+
+    Start the presence unsure timeout once we connect.
+    
+    While investigating a completely separate issue on a slow connection, I
+    noticed gabble_presence_cache_end_unsure_period() firing before we'd
+    even resolved the server's domain!
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=29721
+
+commit f53f4dca0a46706216ec3fd8011c67b8c1c78088
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-21 10:53:26 +0100
+
+    Bin GABBLE_PRESENCE_CACHE_PRIV() silliness.
+
+commit f0ecc6bb95d579d97c8b08b2712012d2a3131d37
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-20 14:42:26 +0100
+
+    Bump nano-version to 0.9.16.1
+
 commit a4d73e4a6e0192f3f729bf3ab315ed5151eb670b
 Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
 Date:   2010-08-19 16:48:20 +0200
@@ -9,6 +331,104 @@ Author: Adam Conrad <adconrad@collabora.co.uk>
 Date:   2010-08-19 18:58:58 +0100
 
     Update wocky to fit out-of-tree builds
+
+commit 8d4a22a9e969974d53a79026319aff6c009fa122
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-19 11:13:50 +0200
+
+    Fix coding style
+
+commit ff67002a487ee585d8293e2609980cf08071faf3
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-19 11:11:56 +0200
+
+    Remove useless cast
+
+commit 6cae55d054075c41eab0514da4b2125cf004ceec
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-19 11:10:53 +0200
+
+    Use TP_HASH_TYPE_STRING_VARIANT_MAP as boxed type
+    
+    The property is exposed on the bus, so dbus-glib needs a parametrized
+    type to work properly.
+
+commit 1080b9a5fea51394f2c75d94c6c49cbf0987168d
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-19 11:08:03 +0200
+
+    Use tp_clear_pointer()
+
+commit d478168bb7224112281edf848b6ab234928866d4
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-19 11:06:55 +0200
+
+    Remove useless assertion
+
+commit c34638fbb2651dc054c9226dd32cc0b92611a6d0
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-19 11:06:21 +0200
+
+    Don't implement GetInterfaces()
+    
+    GabbleBaseChannel already does that for us.
+
+commit 570505b2cc5403e7331ff6a1e2d0225e36728b6b
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-19 11:02:34 +0200
+
+    Rename LAST_PROPERTY -> NUM_PROPERTIES
+
+commit d7182b2629d859d5d8d2573ff6617f6f1bf1dddd
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-19 11:00:01 +0200
+
+    Use a macro for the reason switch
+    
+    This also gets rid of the 'retval' variable.
+
+commit e29a48aab5138ae0a80f90b06b7598aec10da6a1
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-19 10:24:12 +0200
+
+    Remove useless check for !closed
+    
+    As when the channel is closed, the manager immediately clears the
+    reference it owns.
+
+commit 8fce08d237805e9543f0a82e4fadf224c00394fc
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-19 10:18:05 +0200
+
+    Chain up to parent's constructed() before running ours
+    
+    Also, use a temporary variable to save the function pointer, so that we
+    can avoid doing the G_OBJECT_CLASS type-check twice in a row.
+
+commit ed7c9ba0044484cc559ca3d55a9572f95e141d7a
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-19 10:12:12 +0200
+
+    Use g_return_if_fail() instead of a debug message
+    
+    In case verify_async() is called multiple times, which is wrong.
+
+commit 80c02d9a756773ffafbccd8b2577c5cfc218ac59
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-19 10:06:53 +0200
+
+    Own a rerefence to the GabbleConnection
+    
+    We will clear our reference either when the connection goes DISCONNECTED
+    or when the channel manager is disposed.
+    In both cases, tp_clear_object() will take care of doing it right for
+    us.
+
+commit d66c7bc68db56c5c7ddb45ae876773b2c60a71f1
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-11 12:12:26 +0200
+
+    Implement the 'Hostname' property
 
 commit 557b5ea02725ca97c68c57c8724ed70495c43ceb
 Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
@@ -142,6 +562,60 @@ Date:   2010-08-11 11:56:26 +0100
     
     It turns out not to be used anywhere, and if you're ACTIVE, by definition
     you're not PENDING :-)
+
+commit 77aa5b2711359994d35ae288596327588f53c64a
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-11 12:07:10 +0200
+
+    Update to new spec shapshot
+
+commit 43d6049c5a5acb8d3156b030dfc153566a6edeb8
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-08-10 19:49:48 +0200
+
+    Bump telepathy-glib required version to 0.11.12
+
+commit eccae856b7cd95510cb0f0ac624fe5be86306b9e
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-08-06 14:56:17 +0200
+
+    Update wocky snapshot.
+
+commit ce1e1179818c2abf98731421b4f6157d780c4c68
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-07-19 19:18:54 +0200
+
+    Integrate the handler in the connection.
+
+commit 02ece28e57be5292f277202257906f437695fc66
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-07-19 19:18:12 +0200
+
+    Add GabbleTLSCertificate.
+
+commit e44b7e52260e0eeadab09042e52176f59145d6c1
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-07-19 19:16:40 +0200
+
+    Add GabbleServerTLSChannel.
+
+commit 33e3c28133632dab36688facfe1a453a496bbc6f
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-07-19 19:17:07 +0200
+
+    Add GabbleServerTLSManager
+
+commit 423644cd5d4ba904344933d0e3ce9fa1b4441f82
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-07-19 19:18:33 +0200
+
+    Add debug flags for TLS.
+
+commit b0b468691053ad77210988dd015b7fff1fc8d64c
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-07-19 19:17:47 +0200
+
+    Add spec extensions.
 
 commit f8398be76fcda96d7f85d10e483d5cf6c30099fd
 Author: Cosimo Cecchi <cosimoc@gnome.org>
