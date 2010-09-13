@@ -49,10 +49,7 @@ struct _GabbleTLSCertificatePrivate {
   gchar *cert_type;
   GabbleTLSCertificateState cert_state;
 
-  gchar *reject_error;
-  GHashTable *reject_details;
-  GabbleTLSCertificateRejectReason reject_reason;
-
+  GPtrArray *rejections;
   GPtrArray *cert_data;
 
   TpDBusDaemon *daemon;
@@ -63,9 +60,7 @@ struct _GabbleTLSCertificatePrivate {
 enum {
   PROP_OBJECT_PATH = 1,
   PROP_STATE,
-  PROP_REJECT_ERROR,
-  PROP_REJECT_DETAILS,
-  PROP_REJECT_REASON,
+  PROP_REJECTIONS,
   PROP_CERTIFICATE_TYPE,
   PROP_CERTIFICATE_CHAIN_DATA,
 
@@ -91,14 +86,8 @@ gabble_tls_certificate_get_property (GObject *object,
     case PROP_STATE:
       g_value_set_uint (value, self->priv->cert_state);
       break;
-    case PROP_REJECT_ERROR:
-      g_value_set_string (value, self->priv->reject_error);
-      break;
-    case PROP_REJECT_DETAILS:
-      g_value_set_boxed (value, self->priv->reject_details);
-      break;
-    case PROP_REJECT_REASON:
-      g_value_set_uint (value, self->priv->reject_reason);
+    case PROP_REJECTIONS:
+      g_value_set_boxed (value, self->priv->rejections);
       break;
     case PROP_CERTIFICATE_TYPE:
       g_value_set_string (value, self->priv->cert_type);
@@ -145,8 +134,8 @@ gabble_tls_certificate_finalize (GObject *object)
 {
   GabbleTLSCertificate *self = GABBLE_TLS_CERTIFICATE (object);
 
-  g_free (self->priv->reject_error);
-  tp_clear_pointer (&self->priv->reject_details, g_hash_table_unref);
+  tp_clear_boxed (GABBLE_ARRAY_TYPE_TLS_CERTIFICATE_REJECTION_LIST,
+      &self->priv->rejections);
 
   g_free (self->priv->object_path);
   g_free (self->priv->cert_type);
@@ -190,21 +179,7 @@ gabble_tls_certificate_init (GabbleTLSCertificate *self)
 {
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       GABBLE_TYPE_TLS_CERTIFICATE, GabbleTLSCertificatePrivate);
-}
-
-static GType
-array_of_ay_get_type (void)
-{
-  static GType t = 0;
-
-  if (G_UNLIKELY (t == 0))
-    {
-      t = dbus_g_type_get_collection ("GPtrArray",
-          dbus_g_type_get_collection ("GArray",
-              G_TYPE_UCHAR));
-    }
-
-  return t;
+  self->priv->rejections = g_ptr_array_new ();
 }
 
 static void
@@ -212,7 +187,7 @@ gabble_tls_certificate_class_init (GabbleTLSCertificateClass *klass)
 {
   static TpDBusPropertiesMixinPropImpl object_props[] = {
     { "State", "state", NULL },
-    { "RejectReason", "reject-reason", NULL },
+    { "Rejections", "rejections", NULL },
     { "CertificateType", "certificate-type", NULL },
     { "CertificateChainData", "certificate-chain-data", NULL },
     { NULL }
@@ -251,27 +226,12 @@ gabble_tls_certificate_class_init (GabbleTLSCertificateClass *klass)
       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_STATE, pspec);
 
-  pspec = g_param_spec_string ("reject-error",
-      "The reject error",
-      "A DBus error name containing the reject error for this certificate",
-      NULL,
+  pspec = g_param_spec_boxed ("rejections",
+      "The reject reasons",
+      "The reasons why this TLS certificate has been rejected",
+      GABBLE_ARRAY_TYPE_TLS_CERTIFICATE_REJECTION_LIST,
       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-  g_object_class_install_property (oclass, PROP_REJECT_ERROR, pspec);
-
-  pspec = g_param_spec_boxed ("reject-details",
-      "The reject error details",
-      "Additional information about the rejection of the certificate",
-      TP_HASH_TYPE_STRING_VARIANT_MAP,
-      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-  g_object_class_install_property (oclass, PROP_REJECT_DETAILS, pspec);
-
-  pspec = g_param_spec_uint ("reject-reason",
-      "The reject reason",
-      "The reason why this certificate was rejected.",
-      0, NUM_GABBLE_TLS_CERTIFICATE_REJECT_REASONS - 1,
-      GABBLE_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN,
-      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-  g_object_class_install_property (oclass, PROP_REJECT_REASON, pspec);
+  g_object_class_install_property (oclass, PROP_REJECTIONS, pspec);
 
   pspec = g_param_spec_string ("certificate-type",
       "The certificate type",
@@ -283,8 +243,7 @@ gabble_tls_certificate_class_init (GabbleTLSCertificateClass *klass)
   pspec = g_param_spec_boxed ("certificate-chain-data",
       "The certificate chain data",
       "The raw PEM-encoded trust chain of this certificate.",
-      /* FIXME: this should be generated for us. */
-      array_of_ay_get_type (),
+      TP_ARRAY_TYPE_UCHAR_ARRAY_LIST,
       G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_CERTIFICATE_CHAIN_DATA, pspec);
 
@@ -330,16 +289,23 @@ gabble_tls_certificate_accept (GabbleSvcAuthenticationTLSCertificate *cert,
 
 static void
 gabble_tls_certificate_reject (GabbleSvcAuthenticationTLSCertificate *cert,
-    guint reason,
-    const gchar *dbus_error,
-    GHashTable *details,
+    const GPtrArray *rejections,
     DBusGMethodInvocation *context)
 {
   GabbleTLSCertificate *self = GABBLE_TLS_CERTIFICATE (cert);
 
-  DEBUG ("Reject() called on the TLS certificate with reason %u, error %s, "
-      "details %p; current state %u", reason, dbus_error, details,
+  DEBUG ("Reject() called on the TLS certificate with rejections %p, "
+      "length %u; current state %u", rejections, rejections->len,
       self->priv->cert_state);
+
+  if (rejections->len < 1)
+    {
+      GError error = { TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+          "Calling Reject() with a zero-length rejection list." };
+
+      dbus_g_method_return_error (context, &error);
+      return;
+    }
 
   if (self->priv->cert_state != GABBLE_TLS_CERTIFICATE_STATE_PENDING)
     {
@@ -354,17 +320,16 @@ gabble_tls_certificate_reject (GabbleSvcAuthenticationTLSCertificate *cert,
       return;
     }
 
-  self->priv->cert_state = GABBLE_TLS_CERTIFICATE_STATE_REJECTED;
-  self->priv->reject_reason = reason;
-  self->priv->reject_error = g_strdup (dbus_error);
-  self->priv->reject_details = g_hash_table_new_full (g_str_hash, g_str_equal,
-      g_free, (GDestroyNotify) tp_g_value_slice_free);
+  tp_clear_boxed (GABBLE_ARRAY_TYPE_TLS_CERTIFICATE_REJECTION_LIST,
+      &self->priv->rejections);
 
-  tp_g_hash_table_update (self->priv->reject_details, details,
-      (GBoxedCopyFunc) g_strdup, (GBoxedCopyFunc) tp_g_value_slice_dup);
+  self->priv->rejections =
+    g_boxed_copy (GABBLE_ARRAY_TYPE_TLS_CERTIFICATE_REJECTION_LIST,
+        rejections);
+  self->priv->cert_state = GABBLE_TLS_CERTIFICATE_STATE_REJECTED;
 
   gabble_svc_authentication_tls_certificate_emit_rejected (
-      self, reason, dbus_error, details);
+      self, self->priv->rejections);
 
   gabble_svc_authentication_tls_certificate_return_from_reject (context);
 }

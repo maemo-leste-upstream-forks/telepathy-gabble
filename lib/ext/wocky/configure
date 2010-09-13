@@ -11961,31 +11961,27 @@ fi
 
 
 
-if test x$enable_debug = xyes; then
-
-$as_echo "#define ENABLE_DEBUG /**/" >>confdefs.h
-
-fi
-
 
 
 # Check whether --enable-debug was given.
 if test "${enable_debug+set}" = set; then :
   enableval=$enable_debug;
     case "${enableval}" in
-      yes|no) enable="${enableval}" ;;
+      yes|no) enable_debug="${enableval}" ;;
       *)   as_fn_error $? "bad value ${enableval} for --enable-debug" "$LINENO" 5  ;;
     esac
 
 else
-  enable=yes
+  enable_debug=yes
 fi
 
 
-if test "$enable" = yes; then
+if test "$enable_debug" = yes; then
 
 $as_echo "#define ENABLE_DEBUG /**/" >>confdefs.h
 
+else
+  enable_debug=no
 fi
 
 
@@ -12954,7 +12950,7 @@ else
 	TLS_LIBS=$pkg_cv_TLS_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-
+	with_tls=openssl
 fi
 elif test $pkg_failed = untried; then
      	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -13030,14 +13026,14 @@ else
 	TLS_LIBS=$pkg_cv_TLS_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-
+	with_tls=openssl
 fi
 else
 	TLS_CFLAGS=$pkg_cv_TLS_CFLAGS
 	TLS_LIBS=$pkg_cv_TLS_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-
+	with_tls=gnutls
 fi ;; #(
   *) :
     as_fn_error $? "Must have a TLS backend (gnutls or openssl)" "$LINENO" 5  ;; #(
@@ -13224,7 +13220,7 @@ fi
 if test "${enable_coverage+set}" = set; then :
   enableval=$enable_coverage;
       case "${enableval}" in
-        "yes"|"no") coverage="${enableval}" ;;
+        "yes"|"no") enable_coverage="${enableval}" ;;
         *)   as_fn_error $? "bad value ${enableval} for --enable-coverage" "$LINENO" 5  ;;
       esac
 
@@ -13233,7 +13229,7 @@ fi
 
 
 
-  enable=${coverage}
+  enable=${enable_coverage}
 
   GCOV=`echo $CC | sed s/gcc/gcov/g`
   # Extract the first word of "$GCOV", so it can be a program name with args.
@@ -13395,7 +13391,7 @@ fi
 
 
 
-  enable=${coverage}
+  enable=${enable_coverage}
 
   for ac_prog in lcov
 do
@@ -13466,6 +13462,10 @@ else
 fi
 
 
+
+if test "x$enable_coverage" = "x"; then
+  enable_coverage=no
+fi
 
 
 
@@ -16095,3 +16095,18 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
 $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
 
+
+echo "
+Configure summary:
+
+        Compiler Flags.......: ${CFLAGS}
+        Prefix...............: ${prefix}
+        Coverage profiling...: ${enable_coverage}
+        Coding style checks..: ${ENABLE_CODING_STYLE_CHECKS}
+        Debug................: ${enable_debug}
+
+    Features:
+        TLS Backend..........: ${with_tls}
+        SASL2 Tests..........: ${HAVE_LIBSASL2}
+        gtk-doc documentation: ${enable_gtk_doc}
+"

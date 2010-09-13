@@ -41,6 +41,7 @@ G_DEFINE_TYPE_WITH_CODE (GabbleServerTLSManager, gabble_server_tls_manager,
 
 enum {
   PROP_CONNECTION = 1,
+  PROP_INTERACTIVE_TLS,
   NUM_PROPERTIES
 };
 
@@ -57,6 +58,7 @@ struct _GabbleServerTLSManagerPrivate {
 
   gboolean verify_async_called;
   gboolean tls_state_changed;
+  gboolean interactive_tls;
 
   gboolean dispose_has_run;
 };
@@ -73,6 +75,9 @@ gabble_server_tls_manager_get_property (GObject *object,
     {
     case PROP_CONNECTION:
       g_value_set_object (value, self->priv->connection);
+      break;
+    case PROP_INTERACTIVE_TLS:
+      g_value_set_boolean (value, self->priv->interactive_tls);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -92,6 +97,9 @@ gabble_server_tls_manager_set_property (GObject *object,
     {
     case PROP_CONNECTION:
       self->priv->connection = g_value_dup_object (value);
+      break;
+    case PROP_INTERACTIVE_TLS:
+      self->priv->interactive_tls = g_value_get_boolean (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -171,20 +179,18 @@ tls_certificate_accepted_cb (GabbleTLSCertificate *certificate,
 
 static void
 tls_certificate_rejected_cb (GabbleTLSCertificate *certificate,
-    GabbleTLSCertificateRejectReason reason,
-    const gchar *dbus_error,
-    GHashTable *details,
+    GPtrArray *rejections,
     gpointer user_data)
 {
   GError *error = NULL;
   GabbleServerTLSManager *self = user_data;
 
-  DEBUG ("TLS certificate rejected with reason %u, dbus error %s "
-      "and details map %p.", reason, dbus_error, details);
+  DEBUG ("TLS certificate rejected with rejections %p, length %u.",
+      rejections, rejections->len);
 
   self->priv->tls_state_changed = TRUE;
-  g_set_error (&error, GABBLE_SERVER_TLS_ERROR, reason,
-      "TLS certificate rejected with reason %u", reason);
+  g_set_error (&error, GABBLE_SERVER_TLS_ERROR, 0,
+      "TLS certificate rejected");
   g_simple_async_result_set_from_error (self->priv->async_result, error);
 
   g_simple_async_result_complete_in_idle (self->priv->async_result);
@@ -208,6 +214,20 @@ gabble_server_tls_manager_verify_async (WockyTLSHandler *handler,
   DEBUG ("verify_async() called on the GabbleServerTLSManager.");
 
   self->priv->verify_async_called = TRUE;
+
+  if (!self->priv->interactive_tls)
+    {
+      DEBUG ("ignore-ssl-errors is set, fallback to non-interactive "
+          "verification.");
+
+      WOCKY_TLS_HANDLER_CLASS
+        (gabble_server_tls_manager_parent_class)->verify_async_func (
+            WOCKY_TLS_HANDLER (self), tls_session, peername,
+            callback, user_data);
+
+      return;
+    }
+
   self->priv->async_result = g_simple_async_result_new (G_OBJECT (self),
       callback, user_data, wocky_tls_handler_verify_finish);
   self->priv->tls_session = g_object_ref (tls_session);
@@ -308,6 +328,12 @@ gabble_server_tls_manager_class_init (GabbleServerTLSManagerClass *klass)
       GABBLE_TYPE_CONNECTION,
       G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_CONNECTION, pspec);
+
+  pspec = g_param_spec_boolean ("interactive-tls", "Interactive TLS setting",
+      "Whether interactive TLS certificate verification is enabled.",
+      FALSE,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (oclass, PROP_INTERACTIVE_TLS, pspec);
 }
 
 static void
@@ -375,16 +401,30 @@ gabble_server_tls_manager_get_rejection_details (GabbleServerTLSManager *self,
     TpConnectionStatusReason *reason)
 {
   GabbleTLSCertificate *certificate;
+  GPtrArray *rejections;
+  GValueArray *rejection;
   GabbleTLSCertificateRejectReason tls_reason;
 
   certificate = gabble_server_tls_channel_get_certificate
     (self->priv->channel);
 
   g_object_get (certificate,
-      "reject-reason", &tls_reason,
-      "reject-error", dbus_error,
-      "reject-details", details,
+      "rejections", &rejections,
       NULL);
 
+  /* we return 'Invalid_Argument' if Reject() is called with zero
+   * reasons, so if this fails something bad happened.
+   */
+  g_assert (rejections->len >= 1);
+
+  rejection = g_ptr_array_index (rejections, 0);
+
+  tls_reason = g_value_get_uint (g_value_array_get_nth (rejection, 0));
+  *dbus_error = g_value_dup_string (g_value_array_get_nth (rejection, 1));
+  *details = g_value_dup_boxed (g_value_array_get_nth (rejection, 2));
+
   *reason = cert_reject_reason_to_conn_reason (tls_reason);
+
+  tp_clear_boxed (GABBLE_ARRAY_TYPE_TLS_CERTIFICATE_REJECTION_LIST,
+      &rejections);
 }
