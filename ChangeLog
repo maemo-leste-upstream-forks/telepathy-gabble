@@ -1,8 +1,326 @@
-commit adf6b343af21bdc59c2d48a6a730817b1f7d1079
+commit 58f9c1a0d0f1b483c6b4dcd309fa93684bf535ee
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-13 20:52:09 +0100
+
+    Update ServerTLSConnection to stable namespace too
+
+commit 1f1065aa42e452ae9a7d438f3e5f379de2868361
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-13 19:59:35 +0100
+
+    Prepare version 0.9.18
+
+commit edd41e44b35dad6be82d1074563f6f1d34a92a78
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-13 19:57:33 +0100
+
+    Update NEWS
+
+commit f4860810e9a437c06a959f58a84deb337f24a03d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-13 19:57:26 +0100
+
+    Update to stable spec versions from 0.19.13
+
+commit 3900761eb0af9660dd0c2fe9a035a562af438f84
+Merge: d4516e9 256b6fb
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-13 19:40:33 +0100
+
+    Merge remote branch 'wjt/fd.o-30117'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit d4516e9787cba46f95d15692ef5264f86ef9fcee
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-13 19:38:48 +0100
+
+    Re-indent a GError to fix check-coding-style
+
+commit ff66b2a772f8895ba52acc4b9283be2774c5a534
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-13 17:06:38 +0100
+
+    Import Conference.DRAFT2 from spec git master
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit bc0904bf7b0ab0d7c83e1dc4b5ad6f33cbe7330e
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-09-13 19:33:07 +0200
+
+    Split ignore-ssl-errors into interactive-ssl
+    
+    So that we can have interactive TLS verification also in the case
+    'Encryption Required' is False.
+
+commit e69c3d7ae705847d87c3fe3d1cfee10e3fca9b49
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-09-13 18:19:02 +0200
+
+    Assert that we have a rejection list with at least one element.
+
+commit f4591424a046ac02a444c995ced5d9490bb66ca3
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-09-13 18:11:14 +0200
+
+    Use right wording in DEBUG messages
+
+commit 1378a969cfa8240c45af37cb2937680dc187327d
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-09-13 18:10:54 +0200
+
+    Return 'Invalid_Argument' if Reject() is called with zero reasons
+
+commit d22c56b8caaca0d03d85306f566e9427a366dcb4
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-09-13 18:10:27 +0200
+
+    Use tp_clear_boxed to free the Rejection structs
+
+commit 2794983d6d831b9c709a47d87b19cf0c62166ec1
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-09-13 17:20:44 +0200
+
+    Update Gabble to the new draft API
+
+commit eaf799ae2817f69793d303c3d4f34a5299c0992f
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-09-13 16:20:26 +0200
+
+    Update to new tp-spec draft
+
+commit 256b6fb105873fb2e56ff195a41679523a9e28b8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-13 18:00:17 +0100
+
+    Tests: Remove a bit of privacy list duplication
+    
+    This test has a bunch of other code that's shared with the invisibility
+    test, but that involves more refactoring than I have time for right now.
+
+commit 06a971c5c115b34f1658582868c2dfec40e045aa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-13 17:53:31 +0100
+
+    tests: Give Xep0126XmlStream a more accurate name
+
+commit 9975a9bd8ab1cec30c5a47b2e48f725546d6bfb5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-13 17:45:15 +0100
+
+    Run another presence test with more stream types
+
+commit 854748c3b08c0531c4c1a4445f75eb40fe6c9842
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-13 16:39:55 +0100
+
+    Privacy lists: Don't a GSimpleAsyncResult.
+    
+    activate_current_privacy_list() doesn't steal its caller's
+    GSimpleAsyncResult, it takes its own reference. Thus,
+    activate_current_privacy_list_async() was leaking a reference.
+    
+    The symptom here was that running presence/set-idempotence.py with a
+    XEP-0126-capable stream would leak the GabbleConnection, and thus it
+    would never fall off the bus and the world would end.
+
+commit 056fc914b19cc71bea080a8f30e14c85a501b1e3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-13 12:12:38 +0100
+
+    Always emit PresencesChanged when we change our own presence
+    
+    For better or worse, if we're on a connection that supports privacy
+    lists, whenever we change our own status Gabble activates the
+    corresponding privacy list (which may be "no privacy list"), even if
+    this is the same one that's currently active.
+    
+    Unfortunately, this code path never emitted PresencesChanged, leading to
+    <https://bugs.freedesktop.org/show_bug.cgi?id=30117>. This commit should
+    fix that, though it's not enough to make the test pass: there's a
+    reference leak somewhere.
+
+commit 633301c85bbb25ab2ed065571b1c91e6a0f50c09
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-13 12:11:44 +0100
+
+    Run presence/set-idempotence.py with invisibility-capable stream
+    
+    This acts as a regression test for
+    <https://bugs.freedesktop.org/show_bug.cgi?id=30117>.
+
+commit 13d656cbc63711d78190e9e73dd44d8e8631d6d1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-10 17:40:25 +0100
+
+    Add a XmlStream with privacy list invisibility
+    
+    This class allows you to run a test against a server which Gabble
+    believes supports privacy list-based invisibilty without any further
+    modifications to the test. This will allow us to check that invisibility
+    support doesn't break other functionality.
+    
+    We already have a Xep0186Stream which claims to support another dialect
+    of invisibility that Gabble understands. It doesn't actually let you
+    become invisible, but this shouldn't matter for non-invisibility-related
+    tests.
+
+commit 7b55d3d3d3ddbdf48e6edb336246ee9f2e758aca
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-10 17:14:54 +0100
+
+    Simplify emitting PresencesChanged for SelfHandle
+    
+    emit_one_presence_update() was only ever used to emit an update for the
+    self handle, so let's change it just to do that.
+
+commit 49b006aa3614bc539f414ec5274604e8e0fdc793
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-10 16:29:51 +0100
+
+    Turn privacy list test pseudo-methods into methods.
+    
+    Since we have a specific subclass of XmppXmlStream for a server
+    supporting privacy lists, functions which take such a stream as the
+    first argument should really be methods of that subclass. :)
+
+commit dcd329393973ae33716f9cc288719921038bcfb5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-10 16:05:15 +0100
+
+    Move test-set-status-idempotence.py into presence/
+    
+    It's a presence test, so it should live with the others!
+
+commit 0c8891f7fa3cdc621d74e693e7d617ef0cbf073c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-10 13:44:16 +0100
+
+    muc/test-muc-properties.py: test some error cases from the mixin
+
+commit c4be7876f44d31341c4f533125fdc5c370dfe627
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-09 13:05:50 +0200
+
+    Don't start interactive verification if ignore-ssl-errors is set
+
+commit 7c6837e458373418e4014080852eda58f805d0e1
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-09 12:44:05 +0200
+
+    Use TP_ARRAY_TYPE_UCHAR_ARRAY_LIST
+
+commit eae24c305f2cd8d8aeee14ae034ce20cdebd5ed9
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-09-01 18:40:32 -0400
+
+    Implemnent fallback-servers support
+    
+    Implements support for the account parameter fallback-servers. This
+    parameter is an 'as' that contains a list of servers to try in the
+    form host[:port][,oldssl]. This is used for protocols such as Google
+    Talk where multiple ports and TLS authentications is being offered to
+    help firewall traversal. An example of fallback-servers array for
+    Google Talk would be:
+        ["talkx.l.google.com",
+         "talkx.l.google.com:443,oldssl",
+         "talkx.l.google.com:80"]
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit b9648eb95a8e60490684e6357dfc5a8385c5d2a3
+Merge: fa997c1 7255623
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-08 14:01:16 +0100
+
+    Merge branch 'search'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=30065>
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 7255623ac840e9d25422e003788001abf75ddcac
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-08 13:48:09 +0100
+
+    search tests: Don't depend on dict key orderings
+    
+    Review feedback from smcv at
+    <https://bugs.freedesktop.org/show_bug.cgi?id=30065#c1> pointed out that
+    this isn't reliable. So I thought I'd write a helper function for this
+    assertion.
+
+commit cb96c025c4597704a0c904c9bbbf85eff89ba0a0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-07 19:50:48 +0100
+
+    Move to undrafted ContactSearch interface
+
+commit fa997c1af5c975b2d4513c3a4d95bf27453e43fd
+Merge: fd15fc9 95e3e07
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-07 16:36:08 +0100
+
+    Merge branch 'caps-debug-spam'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=29869>
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit fd15fc9d1f4151d4d05028ed5d916fa0d1d53956
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-06 18:38:16 +0100
+
+    NEWS for chat.facebook.com workaround
+
+commit 9f22ba08a72bb39ed2a474790cc78aac8b8ec919
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-06 17:23:32 +0100
+
+    Update Wocky for broken SRV workaround and missing-CRL fixes
+
+commit b3a7fb3f8f04fc1aa89048241e0fb04c85949bb3
+Author: Vincent Untz <vuntz@gnome.org>
+Date:   2010-09-03 15:59:14 -0400
+
+    Fix --with-ca-certificates configure option
+
+commit 95e3e07efa3cae63d28137416b6fc2f36fbcd8ac
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-29 14:03:35 +0100
+
+    Dramatically reduce debug spam from capabilities
+    
+    With this patch, we only dump the full list of capabilities when we
+    decide to trust a caps uri; otherwise, we dump the diff being applied
+    to contacts. This still preserves all the information we used to show,
+    but means we don't dump the full set of caps 6 times whenever any
+    contact publishes a presence with a (possibly unchanged!) caps node.
+    
+    Also, we no longer emit capabilities updates when nothing has changed.
+
+commit d942387182671f79d9e3922764ee14809af700d4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-08-29 13:30:44 +0100
+
+    Add a function to dump a diff of two cap sets
+
+commit 20079b161b5ecd535cb6e9674dc2c6d81bdb5d16
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-26 22:17:09 +0200
+
+    version 0.9.17.1
+
+commit ef712f41cd140dbb88739f15dd68ca82a1dbddd1
 Author: Senko Rasic <senko.rasic@collabora.co.uk>
 Date:   2010-08-26 20:57:01 +0200
 
     Prepare version 0.9.17
+
+commit add1a5ebbac9ad4b3817c84b17fc24433f8ff5e0
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2010-08-26 21:59:27 +0200
+
+    add TLS extensions to EXTRA_DIST
 
 commit a1f16087b749855634457e3759d594db3b9238dc
 Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
@@ -497,7 +815,7 @@ Date:   2010-08-13 14:23:00 +0200
     constants.py: add INVALID_HANDLE
 
 commit 3dec7eeca3318c35456e25b505de03b38fd84f59
-Merge: f8398be 18c80d8
+Merge: f8398be76 18c80d8
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-08-11 13:41:26 +0100
 

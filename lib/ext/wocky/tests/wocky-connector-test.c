@@ -375,10 +375,19 @@ test_t tests[] =
         { "moose@weasel-juice.org", "something", PLAIN, NOTLS },
         { DUFF_H0ST, PORT_XMPP } } },
 
-    /* Bad SRV record: use it and FAIL */
-    { "/connector/basic/duffserv/nohost/noport",
+    /* Facebook Chat has a broken SRV record: you ask for
+     * _xmpp-client._tcp.chat.facebook.com, and it gives you back a CNAME! So
+     * g_socket_client_connect_to_service() fails. But as it happens the real
+     * result should have just been chat.facebook.com anyway, so Wocky tries to
+     * fall back to that.
+     *
+     * So this test has a fake SRV record for an unreachable server, but
+     * expects to succeed because it's listening on the default XMPP port on
+     * our hypothetical 'weasel-juice.org'.
+     */
+    { "/connector/basic/facebook-chat-srv-workaround",
       NOISY,
-      { DOMAIN_GIO, 0 },
+      { NULL, 0 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -386,6 +395,23 @@ test_t tests[] =
       { "weasel-juice.org", PORT_XMPP, "thud.org", UNREACHABLE, REACHABLE },
       { PLAINTEXT_OK,
         { "moose@weasel-juice.org", "something", PLAIN, NOTLS },
+        { NULL, 0 } } },
+
+    /* Further to the above test, this one tests the case where the fallback
+     * doesn't work either. The server isn't listening anywhere (that's the
+     * PORT_NONE in the server_parameters sub-struct), and thud.org (the result
+     * of the SRV lookup) is unreachable. So the connection should fail.
+     */
+    { "/connector/basic/duffserv/nohost/noport",
+      NOISY,
+      { DOMAIN_GIO, 0 },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
+        { "moose", "something" },
+        PORT_NONE },
+      { "not.an.xmpp.server", PORT_XMPP, "thud.org", UNREACHABLE, REACHABLE },
+      { PLAINTEXT_OK,
+        { "moose@not.an.xmpp.server", "something", PLAIN, NOTLS },
         { NULL, 0 } } },
 
     /* Bad SRV record, port specified, ignore SRV and connect to domain host */
@@ -3381,19 +3407,8 @@ run_test (gpointer data)
     }
   else
     {
-      GQuark domain = 0;
-      domain = g_quark_from_string (test->result.domain);
+      GQuark domain = g_quark_from_string (test->result.domain);
 
-      if (error == NULL)
-        fprintf (stderr, "Expected %s error, got NULL\n",
-            g_quark_to_string (domain));
-      else if (!g_error_matches (error, domain, test->result.code))
-        fprintf (stderr, "ERROR: %s.%d: %s\n",
-            g_quark_to_string (error->domain),
-            error->code,
-            error->message);
-
-      g_assert (error != NULL);
       g_assert_error (error, domain, test->result.code);
     }
 
