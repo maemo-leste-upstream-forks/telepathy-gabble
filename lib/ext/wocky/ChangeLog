@@ -1,3 +1,57 @@
+commit 87a64d465283ab01baceca9aefbb15a80b391b7f
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 19:27:57 +0200
+
+    Update examples and tests to new API
+
+ examples/connect.c           |    2 +-
+ examples/register.c          |    2 +-
+ examples/unregister.c        |    2 +-
+ tests/wocky-connector-test.c |    9 ++++++---
+ 4 files changed, 9 insertions(+), 6 deletions(-)
+
+commit 66689d2b261e442cdec52a42acd259beb2f0ed00
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 19:27:28 +0200
+
+    connector: use a GCancellable for async operations
+    
+    And pass it when we send/receive stanzas.
+
+ wocky/wocky-connector.c |  100 ++++++++++++++++++++++++++++++++++------------
+ wocky/wocky-connector.h |    3 +
+ 2 files changed, 77 insertions(+), 26 deletions(-)
+
+commit 4d228e61d6068291e8281440aab729d5e4a216ba
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 19:26:00 +0200
+
+    sasl-auth: use the GCancellable if available
+
+ wocky/wocky-sasl-auth.c |   35 +++++++++++++++++++++++++++++++----
+ 1 files changed, 31 insertions(+), 4 deletions(-)
+
+commit 286e88f6fb3f3ec451c71bfb361b993d7b37eb8f
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 19:25:34 +0200
+
+    jabber-auth: use the GCancellable if it's available
+
+ wocky/wocky-jabber-auth.c |   17 +++++++++++++----
+ 1 files changed, 13 insertions(+), 4 deletions(-)
+
+commit 0d4b3ff855fef2732cf024a7bdb6574d3b45ad7a
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 19:24:48 +0200
+
+    tls-connector: add a GCancellable argument
+    
+    And use it if available when sending/receiving stanzas.
+
+ wocky/wocky-tls-connector.c |   34 +++++++++++++++++++++++++++++-----
+ wocky/wocky-tls-connector.h |    1 +
+ 2 files changed, 30 insertions(+), 5 deletions(-)
+
 commit b2ad17044f1cadf61aa7d3df51660221ea775720
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-09-06 18:07:56 +0100
