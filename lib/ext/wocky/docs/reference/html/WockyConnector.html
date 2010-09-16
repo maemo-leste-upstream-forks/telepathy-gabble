@@ -61,6 +61,7 @@ enum                <a class="link" href="WockyConnector.html#WockyConnectorErro
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **sid</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyConnector.html#wocky-connector-connect-async" title="wocky_connector_connect_async ()">wocky_connector_connect_async</a>       (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> cb</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
 <a class="link" href="WockyConnector.html" title="WockyConnector"><span class="returnvalue">WockyConnector</span></a> *    <a class="link" href="WockyConnector.html#wocky-connector-new" title="wocky_connector_new ()">wocky_connector_new</a>                 (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
@@ -69,9 +70,11 @@ enum                <a class="link" href="WockyConnector.html#WockyConnectorErro
                                                          <em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *auth_registry</code></em>,
                                                          <em class="parameter"><code><span class="type">WockyTLSHandler</span> *tls_handler</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyConnector.html#wocky-connector-register-async" title="wocky_connector_register_async ()">wocky_connector_register_async</a>      (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> cb</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyConnector.html#wocky-connector-unregister-async" title="wocky_connector_unregister_async ()">wocky_connector_unregister_async</a>    (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> cb</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyConnector.html#wocky-connector-unregister-finish" title="wocky_connector_unregister_finish ()">wocky_connector_unregister_finish</a>   (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
@@ -542,6 +545,7 @@ Called by the callback passed to <a class="link" href="WockyConnector.html#wocky
 <div class="refsect2" title="wocky_connector_connect_async ()">
 <a name="wocky-connector-connect-async"></a><h3>wocky_connector_connect_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_connector_connect_async       (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> cb</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
@@ -554,6 +558,11 @@ Connect to the account/server specified by the <em class="parameter"><code>self<
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
 <td>a <a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> instance.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td>
 </td>
 </tr>
 <tr>
@@ -622,6 +631,7 @@ register or cancel an account
 <div class="refsect2" title="wocky_connector_register_async ()">
 <a name="wocky-connector-register-async"></a><h3>wocky_connector_register_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_connector_register_async      (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> cb</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
@@ -635,6 +645,11 @@ the account there and then log in to it.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
 <td>a <a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> instance.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td>
 </td>
 </tr>
 <tr>
@@ -654,6 +669,7 @@ the account there and then log in to it.
 <div class="refsect2" title="wocky_connector_unregister_async ()">
 <a name="wocky-connector-unregister-async"></a><h3>wocky_connector_unregister_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_connector_unregister_async    (<em class="parameter"><code><a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> cb</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
@@ -667,6 +683,11 @@ the account there.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
 <td>a <a class="link" href="WockyConnector.html" title="WockyConnector"><span class="type">WockyConnector</span></a> instance.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td>
 </td>
 </tr>
 <tr>

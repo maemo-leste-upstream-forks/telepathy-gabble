@@ -146,6 +146,8 @@ server_tls_channel_closed_cb (GabbleServerTLSChannel *channel,
             self->priv->async_data);
     }
 
+  tp_clear_object (&self->priv->async_result);
+
   tp_channel_manager_emit_channel_closed_for_object (self,
       TP_EXPORTABLE_CHANNEL (channel));
 
@@ -207,6 +209,7 @@ gabble_server_tls_manager_verify_async (WockyTLSHandler *handler,
 {
   GabbleServerTLSManager *self = GABBLE_SERVER_TLS_MANAGER (handler);
   GabbleTLSCertificate *certificate;
+  GSimpleAsyncResult *result;
 
   /* this should be called only once per-connection. */
   g_return_if_fail (!self->priv->verify_async_called);
@@ -228,8 +231,20 @@ gabble_server_tls_manager_verify_async (WockyTLSHandler *handler,
       return;
     }
 
-  self->priv->async_result = g_simple_async_result_new (G_OBJECT (self),
+  result = g_simple_async_result_new (G_OBJECT (self),
       callback, user_data, wocky_tls_handler_verify_finish);
+
+  if (self->priv->connection == NULL)
+    {
+      DEBUG ("connection already went away; failing immediately");
+      g_simple_async_result_set_error (result, TP_ERRORS, TP_ERROR_CANCELLED,
+          "The Telepathy connection has already been disconnected");
+      g_simple_async_result_complete_in_idle (result);
+      g_object_unref (result);
+      return;
+    }
+
+  self->priv->async_result = result;
   self->priv->tls_session = g_object_ref (tls_session);
   self->priv->peername = g_strdup (peername);
   self->priv->async_callback = callback;
@@ -269,6 +284,8 @@ gabble_server_tls_manager_dispose (GObject *object)
 {
   GabbleServerTLSManager *self = GABBLE_SERVER_TLS_MANAGER (object);
 
+  DEBUG ("%p", self);
+
   if (self->priv->dispose_has_run)
     return;
 
@@ -283,6 +300,8 @@ static void
 gabble_server_tls_manager_finalize (GObject *object)
 {
   GabbleServerTLSManager *self = GABBLE_SERVER_TLS_MANAGER (object);
+
+  DEBUG ("%p", self);
 
   if (self->priv->channel != NULL)
     tp_base_channel_close (TP_BASE_CHANNEL (self->priv->channel));
@@ -368,10 +387,10 @@ channel_manager_iface_init (gpointer g_iface,
 }
 
 static TpConnectionStatusReason
-cert_reject_reason_to_conn_reason (GabbleTLSCertificateRejectReason tls_reason)
+cert_reject_reason_to_conn_reason (TpTLSCertificateRejectReason tls_reason)
 {
   #define EASY_CASE(x) \
-    case GABBLE_TLS_CERTIFICATE_REJECT_REASON_ ## x: \
+    case TP_TLS_CERTIFICATE_REJECT_REASON_ ## x: \
       return TP_CONNECTION_STATUS_REASON_CERT_ ## x;
 
   switch (tls_reason)
@@ -386,7 +405,7 @@ cert_reject_reason_to_conn_reason (GabbleTLSCertificateRejectReason tls_reason)
       EASY_CASE (INSECURE);
       EASY_CASE (LIMIT_EXCEEDED);
 
-      case GABBLE_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN:
+      case TP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN:
       default:
         return TP_CONNECTION_STATUS_REASON_CERT_OTHER_ERROR;
     }
@@ -403,7 +422,7 @@ gabble_server_tls_manager_get_rejection_details (GabbleServerTLSManager *self,
   GabbleTLSCertificate *certificate;
   GPtrArray *rejections;
   GValueArray *rejection;
-  GabbleTLSCertificateRejectReason tls_reason;
+  TpTLSCertificateRejectReason tls_reason;
 
   certificate = gabble_server_tls_channel_get_certificate
     (self->priv->channel);
@@ -425,6 +444,6 @@ gabble_server_tls_manager_get_rejection_details (GabbleServerTLSManager *self,
 
   *reason = cert_reject_reason_to_conn_reason (tls_reason);
 
-  tp_clear_boxed (GABBLE_ARRAY_TYPE_TLS_CERTIFICATE_REJECTION_LIST,
+  tp_clear_boxed (TP_ARRAY_TYPE_TLS_CERTIFICATE_REJECTION_LIST,
       &rejections);
 }

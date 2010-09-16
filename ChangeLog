@@ -1,3 +1,293 @@
+commit a0cee81eb3784d54c4818be5c8317676074271aa
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-16 13:51:03 +0100
+
+    Gabble 0.10.0
+
+commit eb6047827413e19c0857af20da93fac3b9598fce
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-16 13:24:29 +0100
+
+    Include the various new dependencies in README, and fix a typo
+
+commit 4b144037c0c641d739d69475e7b33e6021d8860b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-16 13:23:33 +0100
+
+    Depend on GLib 2.24
+    
+    Gabble doesn't strictly require GLib 2.24 (as far as I'm aware), but the
+    required telepathy-glib does, so it seems simpler to make that version
+    a hard dependency; we're certainly not going to fix any incompatibilities
+    with older GLib in this branch.
+
+commit 03c3b73db0d1baae900b1991198fa058c2c5c688
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-16 12:57:59 +0100
+
+    Pass srcdir through to tests and use it to load the TLS keys
+    
+    This is necessary for out-of-tree builds.
+
+commit 8489e34ae5dda24e5766284986147d99e614211c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-16 12:57:12 +0100
+
+    Don't try to distribute deleted interfaces
+
+commit 841483b6c51dc44fbc793ff8289d9a599dee8835
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-15 15:57:53 +0100
+
+    Use telepathy-glib for Conference and ServerTLSConnection
+
+commit 5312f1f6e28db0bc1c5297b11831cc65c0b5ab89
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-15 15:39:45 +0100
+
+    Don't warn about deprecated declarations
+    
+    This is about to be a stable branch, so we're not going to fix any
+    uses of newly-deprecated functions in future.
+    
+    (To be reverted in master after branching for 0.10.)
+
+commit 4bc06e03c1b42a0c9db28ae324bfc493341b262e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-15 15:36:48 +0100
+
+    Prepare for stable branch: send bug reports to v0.10
+
+commit 28a6777b062654a0e6094a36ac0aebb8ebfb5969
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-15 13:02:03 +0200
+
+    Update Wocky snapshot
+
+commit fbdef54186b11361e3db7548a2cfa14f705769eb
+Merge: 8aac390 1cb4688
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-15 13:01:04 +0200
+
+    Merge branch 'cancel-connector'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 8aac39069ef43f26953eaa93d748597873883ea1
+Merge: 96a65bf f956ba4
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-15 12:59:29 +0200
+
+    Merge branch 'tls-tests-2'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 96a65bfd5d05591276d8c4f228fa7e26becd4496
+Merge: c32cc5e 27fe042
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-15 11:33:32 +0100
+
+    Merge branch 'slacker-crash'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 1cb4688cdc0c369204f92d8750fdcf5950bad418
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-15 11:43:23 +0200
+
+    Don't check for cancellable != NULL
+    
+    It just can't happen.
+
+commit 983819395a6fb07b8ea18ddaec07697b8a133b03
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-15 11:43:12 +0200
+
+    Remove an useless comment
+
+commit 27fe0429ed835ff73b3069d82fc7431fc35ae146
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-15 10:35:24 +0100
+
+    Stop listening to GabbleSlacker on stream error
+    
+    Previously, GabbleConnection stopped listening to signals from MCE if it
+    was instructed to disconnect cleanly by the user, but not if the stream
+    ended abnormally. This patch amends its shut_down implementation to
+    rectify this. I believe this also fixes a leak of the WockyPing object
+    in the same situation; this would not lead to any crashes, but would
+    mean the WockyPorter leaks too.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=30207>
+
+commit c7edf79d3088b67eb921b6a753319331ef0c3cb9
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 19:33:26 +0200
+
+    Add a test for disconnection before we get the channel
+
+commit 78fe5c1928d9d4022a2fa7592c24a7443c00b91f
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 19:31:31 +0200
+
+    Cancel the connector if the connection is shut down
+
+commit f956ba40fdc8a5832c3d99c76a3a49521bc37a6c
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-15 11:37:07 +0200
+
+    Don't call close() when using the with keyword
+
+commit 055e764881a7f3a1de83a5bde8e0e934cdc2663d
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-15 11:36:14 +0200
+
+    Use UTF-8 coding for the test file
+
+commit dadcf0e15048aba11fdd61cd1baa8bf6d791fb3a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-15 10:35:12 +0100
+
+    Tests: add stream method to send a stream error
+
+commit c7d75bed80e34bcbe65b18d6dd2ac90410a69477
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-15 11:31:44 +0200
+
+    Rename test-server-tls-channel.py -> server-tls-channel.py
+
+commit f1970e83de007df41a85dcc09b5f486fcdca8244
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 19:16:35 +0200
+
+    Document the use of TLS certificates in the test
+
+commit 7998de3bec6507836195bc93cd8ceb959a4974f4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-15 10:10:54 +0100
+
+    Use tp_clear_object() liberally in connection.c
+
+commit 2ed148c249dca5c15988a3f61431cdcac4afcf9f
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 19:05:02 +0200
+
+    Add tests for both success and failure of fallback verification
+
+commit 29375077654db43f875b4f90b09fc09ceb815a65
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 19:03:25 +0200
+
+    Use assertLength
+
+commit 67601b2446b182e28e341d952f9e83c40bd8a656
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 18:42:17 +0200
+
+    Don't use expect_many() if the order does matter
+
+commit 7a49d86ef75333c934a4358a413168ac7a4dcc06
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 18:20:24 +0200
+
+    Use 'with' for better code style
+
+commit 972e82688c5e4ebc2c622e87477017c83678f0a9
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 18:18:11 +0200
+
+    Make TlsAuthenticator a subclass of XmppAuthenticator
+
+commit f6630f75591327de315974bfb2ee7a56496c1ff8
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 18:16:48 +0200
+
+    Split streamInitialize() for easier subclassing
+
+commit c32cc5ee85c7ac9231034404a143c0d4b2fcc247
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-14 17:02:44 +0100
+
+    Tests: document expect() and expect_many()
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+
+commit 6fd1a372f1666280ed7035ea208fe22a08bcdc96
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 16:49:27 +0200
+
+    Add license header
+
+commit c811a14b61dfa9ae372ecdf076c907ad58c8a8b7
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 16:23:14 +0200
+
+    Update TLS tests to the undrafted API
+
+commit cdd9aae52b3b5db2106490c82464bff202b4505c
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 16:18:54 +0200
+
+    Undraft ServerTLSConnection and TLSCertificate interfaces in the tests
+
+commit e15044ce2f8ac1152c14a22dc35ee9b17fd18ec5
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 16:18:37 +0200
+
+    Add debug output for deconstruction
+
+commit 7e069943680526b93017dc7e6722a4539214e161
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 16:18:13 +0200
+
+    Clear the async result when the channel is unhandled
+
+commit c2c5ec243dfede922360f6da837aceeeb82d3fe9
+Author: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+Date:   2010-09-14 16:17:19 +0200
+
+    Plug a leak.
+
+commit 58e3d9b0e34f39b90477e0115f5a3d08866cefe2
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2010-08-25 13:22:15 +0200
+
+    Add tests for TLS channels
+
+commit a9aa2b90c582fd7c79305c8e890621f76d9f5ef0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-14 13:00:28 +0100
+
+    TLSManager: don't crash if connection dies before verification
+    
+    I received a report of a segfault with the following (trimmed) backtrace:
+    
+    0  tp_base_channel_constructed () at base-channel.c:604
+    1  gabble_server_tls_channel_constructed (object=0x1619f8) at server-tls-channel.c:181
+    [ g_object_new crap ]
+    5  gabble_server_tls_manager_verify_async ([...]) at server-tls-manager.c:218
+    6  wocky_tls_handler_verify_async ([...]) at wocky-tls-handler.c:261
+    7  session_handshake_cb () at wocky-tls-connector.c:302
+    
+    Line 604 of base-channel.c dereferences the channel's connection for the
+    first time. This is caused by the connection being NULL, which is
+    possible because ServerTLSManager's connection_status_changed_cb()
+    clears it when the connection moves to state DISCONNECTED (to break a
+    reference cycle). So, the crash occurs if you Disconnect() the
+    connection before Wocky gets as far as checking the certificate.
+    
+    So, here we just fail the _verify_async() method call immediately if the
+    priv->connection is NULL.
+    
+    Reviewed-by: Cosimo Cecchi <cosimo.cecchi@collabora.co.uk>
+
+commit 94f4589a393ae44a728b4381e19f559bed574d31
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-13 21:45:44 +0100
+
+    Nano version
+
 commit 58f9c1a0d0f1b483c6b4dcd309fa93684bf535ee
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-09-13 20:52:09 +0100
