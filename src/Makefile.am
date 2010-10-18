@@ -133,14 +133,6 @@ libgabble_convenience_la_SOURCES = \
     namespaces.h \
     olpc-activity.h \
     olpc-activity.c \
-    olpc-activity-view.h \
-    olpc-activity-view.c \
-    olpc-buddy-view.h \
-    olpc-buddy-view.c \
-    olpc-gadget-manager.h \
-    olpc-gadget-manager.c \
-    olpc-view.h \
-    olpc-view.c \
     plugin-loader.h \
     plugin-loader.c \
     $(top_srcdir)/gabble/plugin.h \
@@ -226,14 +218,14 @@ noinst_LTLIBRARIES = libgabble-convenience.la
 AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
-	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @UUID_CFLAGS@ @GMODULE_CFLAGS@ \
+	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @GMODULE_CFLAGS@ \
 	    @SQLITE_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
 	    -DG_LOG_DOMAIN=\"gabble\" \
 	    -DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\"
 
 ALL_LIBS =  @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
-	    @SOUP_LIBS@ @NICE_LIBS@ @UUID_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
+	    @SOUP_LIBS@ @NICE_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
 
 # build gibber first
 all: gibber

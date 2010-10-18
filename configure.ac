@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [10])
-m4_define([gabble_micro_version], [0])
+m4_define([gabble_micro_version], [3])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -75,6 +75,8 @@ COMPILER_COVERAGE
 ifelse(gabble_nano_version, 0,
     [ official_release=yes ],
     [ official_release=no ])
+
+AM_CONDITIONAL([OFFICIAL_RELEASE], [test "x$official_release" = xyes])
 
 TP_COMPILER_WARNINGS([ERROR_CFLAGS], [test "x$official_release" = xno],
   [all \
@@ -278,10 +280,6 @@ dnl Check for libnice
 PKG_CHECK_MODULES(NICE, nice >= 0.0.11)
 AC_SUBST(NICE_CFLAGS)
 AC_SUBST(NICE_LIBS)
-
-PKG_CHECK_MODULES([UUID], [uuid])
-AC_SUBST([UUID_CFLAGS])
-AC_SUBST([UUID_LIBS])
 
 dnl Check for MCE, a Maemo service used by Gabble to determine when the device
 dnl is idle.
