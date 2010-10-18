@@ -1,3 +1,309 @@
+commit bdcf7b410501a216db610562c34086f60b899201
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-10-06 16:34:39 +0200
+
+    Release 0.10.3
+
+commit ccdc3a6e9aae41f3a3fc23b4edaeecd27f1711c4
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-10-06 16:14:17 +0200
+
+    Set the version in which the Decloak API was added
+
+commit 3f5c396fd2fbedea6551bc9d7d3ebdca7ad1db27
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-10-04 20:14:19 +0200
+
+    Emit ActivitiesChanged when the server aknowledges our own update.
+    
+    And don't update the local activity cache because we may have there
+    private activities that the server doesn't know about.
+
+commit d2020b8ecfd0eeb59ccefc26a460a19c8bc79b60
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-10-04 13:53:24 -0400
+
+    Fixed merge error in NEWS file
+    
+    The comment about removal of libuuid was merge at random place in the
+    NEWS file. This patch fixed it to be in 0.10.3 (UNRELEASED) section.
+
+commit 595923caa8d994ec8fbba4b5c4e3506a29f1437a
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2010-10-01 16:28:38 -0400
+
+    Remove dependency to libuuid
+    
+    Remove dependency on external libuuid by implementing an RFC4122
+    compliant UUID generator. (bugs.fd.o #28990)
+
+commit 8d152596eeb21b885a17632dff2526ec5d1cdc38
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2010-10-04 17:32:41 +0100
+
+    slacker_message_filter can survive invalid/non-signal/unexpected messages
+    
+    We now no longer try to obtain the quark from the interface until
+    we are sure the message is a signal and actually has an interface.
+
+commit c4dfd539161e143f958e3ea9d58029fa57c4066b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-23 12:09:51 +0100
+
+    Comply with C90 in code from which Gadget support was removed
+
+commit 93ae59fb3a9c7abb684be15c1883989b03258482
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-23 12:06:39 +0100
+
+    Remove unused label left over when Gadget support was removed
+
+commit 13fccca78f2d02a20b13e690bb02a3705386ac4d
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-09-21 19:07:18 +0200
+
+    Remove support for gadget
+    
+    It has never been used in production and the tendency is to use
+    smaller shared rosters and standard XMPP search.
+
+commit d47c6d04c4e1b8cf1134593921fb4120433eac9e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-10-01 18:10:51 +0100
+
+    Bump nano version to 0.10.2.1
+
+commit ca92b4dac27b97d1f71e00a04a6fdeba65cdc2b3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-10-01 17:48:10 +0100
+
+    Mention tolerating recoverable XML errors
+
+commit 8422c2452c6c95c5f37280a23acb3d6a06bdffaa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-10-01 17:36:29 +0100
+
+    Fix a race in olpc-muc-prop-change.py
+    
+    AddMembers() returns right away, so if we're going to expect its return
+    we need to expect it at the same time as the other events that occur
+    immediately in response to our calling AddMembers().
+    
+    This same race was fixed in another OLPC test two years ago (commit
+    2938d8c). I've checked the rest of the OLPC tests.
+
+commit aa4925fed2a1b79c1ab7d8429761bd38988f0db6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-30 11:52:47 +0100
+
+    version 0.10.2
+
+commit d16fcf52e03fd31d82b6c5e88695e30452fc9e36
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-30 11:51:32 +0100
+
+    NEWS for 0.10.2
+
+commit 8bf825940c834b44e7c7ceb17b26b30e5ff96aba
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-29 15:10:18 +0100
+
+    Automate release process
+    
+    The idea is that you smoke-test the release, then just run
+    
+      % make maintainer-make-release
+    
+    which generates the tarball, the signature, the signed tag, and the
+    release mail, uploads the release to telepathy.freedesktop.org, and then
+    reminds you of the remaining steps (nano version bump, pushing to
+    upstream, and sending the mail).
+    
+    If you want to do all the local bits, but not send anything, just run:
+    
+      % make maintainer-prepare-release
+    
+    then do whatever you want to do with the tarball etc. If you think it's
+    ready, run:
+    
+      % make maintainer-upload-release
+
+commit e57ff90723280f82018fa649c5bc03a43d7d43bb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-10-01 16:49:10 +0100
+
+    Always slice-allocate GabbleDiscoIdentity
+    
+    gabble_disco_identity_new() returns slice-allocated GabbleDiscoIdentitys;
+    gabble_disco_identity_free() slice-frees its argument. So we need to
+    slice-allocate them when we copy them, too.
+
+commit 6f64e147313122a03c2f7a18e22218ae8e038490
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-10-01 16:06:38 +0100
+
+    Always run tests with G_SLICE=debug-blocks.
+
+commit 573e97d0e2381049c14828f134c12edbb443ed1c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-30 12:49:15 +0100
+
+    Don't run known-failing tests in releases.
+
+commit 807bf0a949db4987701d015566a4eedf30a69e45
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-07-28 17:42:18 +0100
+
+    Make it easy to skip unrelated batches of tests during development
+    
+    Use: make check ... TWISTED_TUBE_TESTS= TWISTED_FT_TESTS= ...
+    
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 50a69455f39fff28557d4e45a4e2f8ad3281bc05
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-10-01 15:27:58 +0100
+
+    Update wocky snapshot
+
+commit f6ece7536086f6e6f1d14b1ad5d9f2b4eb428007
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-09-30 16:03:59 +0200
+
+    Check if we have already an OlpcActivity for that channel
+    
+    Otherwise we were creating two activities for the same channel: one
+    when the channel is created and the other when Sugar calls AddActivity.
+
+commit b38747f1676b63e1cdfcc4d3856c3159b6a229fe
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-29 15:11:44 +0100
+
+    Bump nano version to 0.10.1.1
+
+commit 7aff698d14232681e748931bd1ebbca7d0ff123f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-29 11:01:31 +0100
+
+    Version 0.10.1
+
+commit f7c0dc621f6a87bced8efc9d16d67debfd6170c5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-29 11:01:18 +0100
+
+    News for 0.10.1
+
+commit 1d2ec1b723b77946515c52abbec48a526181cff8
+Merge: a870606 1d4fc1a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-29 11:29:18 +0100
+
+    Merge branch '010-roster' into telepathy-gabble-0.10
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 1d4fc1a374c72aa05898db3d69c47a8a0da86c00
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-28 13:05:15 +0100
+
+    gabble_presence_parse_presence_message: correctly check 'to', not 'from'
+    
+    The intention here seems to be that if the user is on our subscribe list
+    (sends their presence to us, subscription='to' or subscription='both'),
+    then we can be confident that unavailable means offline; however, the
+    wrong flag was checked. The new function naming makes this more obvious.
+
+commit 939631bc1d5b80f4d5ba21936f05c028ce2751ae
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-28 13:09:39 +0100
+
+    Use gabble_roster_handle_sends_us_presence, etc., outside roster.c
+
+commit 06289953fbef7f5d04184ead091c73a508d5bd54
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-28 13:00:03 +0100
+
+    Roster: add gabble_roster_handle_sends_presence_to_us, gabble_roster_handle_gets_presence_from_us
+    
+    This naming is a bit unwieldy, but it makes it clearer which way round
+    they are!
+
+commit a870606ea801ac895ff87e35175fd8dc62adb261
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-24 12:32:38 +0100
+
+    Update Wocky for another Coverity nit.
+    
+    Namely: ‘Check return of wocky_xmpp_connection_send_stanza_finish’
+
+commit fdc9043f480a214a6244969e78462219b85471fa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-09-24 10:49:20 +0100
+
+    Don't assume privacy list list is well-formed.
+    
+    Previously we assumed that a non-error reply contained a <query
+    xmlns=...privacy/> element, and would crash if it did not.
+
+commit 89eb57edb21d454ed4051dade13fa656ee7ea2bf
+Merge: 566cad9 7361292
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-23 11:28:24 +0100
+
+    Merge branch '010-leaks' into telepathy-gabble-0.10
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 736129227f8e16cfa6db1260f6276a3dd7f2ed2b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-21 15:21:46 +0100
+
+    call_stream_endpoint_new_candidates_cb: don't leak contents of array
+    
+    gabble_call_candidates_to_array returns a dbus-glib boxed type whose
+    contents need to be freed explicitly.
+
+commit d917e3cd439f8282c88804a85c2d3d238483308e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-21 15:20:52 +0100
+
+    gabble_call_stream_endpoint_get_property: don't leak contents of RemoteCandidates
+    
+    This had the same bug as the Call.Stream's LocalCandidates.
+
+commit e01a5b499ed457135c12e31e9acf85b41ac81e62
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-21 15:18:46 +0100
+
+    gabble_call_stream_get_property: don't leak contents of STUN_SERVERS
+    
+    This had the same bug as LOCAL_CANDIDATES.
+
+commit ee911fc4930c0466d4d8d75c83b179715a2c3ce5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-21 15:18:28 +0100
+
+    gabble_call_stream_get_property: don't leak LOCAL_CANDIDATES
+    
+    Also, omit a redundant deep-copy.
+    
+    Previously, the array was deep-copied and then unref'd. The copy and its
+    contents would be freed by the GValue, but the contents of the original
+    array were leaked. Now, we hand over the array to the GValue and everything
+    is freed.
+
+commit f4bf48bd8f6ccbe4a0bbbdd09d3849df69cd5336
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-21 15:15:59 +0100
+
+    gabble_call_candidates_to_array: document types and ownership
+
+commit 566cad99b7af2b023b4e412761a783fb83a26b3e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-09-16 15:05:17 +0100
+
+    Nano version for 0.10
+
 commit a0cee81eb3784d54c4818be5c8317676074271aa
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-09-16 13:51:03 +0100
@@ -1105,7 +1411,7 @@ Date:   2010-08-13 14:23:00 +0200
     constants.py: add INVALID_HANDLE
 
 commit 3dec7eeca3318c35456e25b505de03b38fd84f59
-Merge: f8398be76 18c80d8
+Merge: f8398be 18c80d8
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-08-11 13:41:26 +0100
 

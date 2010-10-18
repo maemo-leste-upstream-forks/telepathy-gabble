@@ -80,15 +80,14 @@ am_libgabble_convenience_la_OBJECTS = auth-manager.lo base64.lo \
 	jingle-transport-iceudp.lo jingle-transport-iface.lo \
 	media-channel.lo media-channel-hold.lo media-stream.lo \
 	media-factory.lo message-util.lo muc-channel.lo muc-factory.lo \
-	olpc-activity.lo olpc-activity-view.lo olpc-buddy-view.lo \
-	olpc-gadget-manager.lo olpc-view.lo plugin-loader.lo plugin.lo \
-	presence.lo presence-cache.lo protocol.lo \
-	private-tubes-factory.lo request-pipeline.lo roster.lo \
-	roster-channel.lo roomlist-channel.lo roomlist-manager.lo \
-	search-channel.lo search-manager.lo server-sasl-channel.lo \
-	server-tls-channel.lo server-tls-manager.lo sidecar.lo \
-	slacker.lo tls-certificate.lo tube-iface.lo tubes-channel.lo \
-	tube-dbus.lo tube-stream.lo util.lo vcard-manager.lo
+	olpc-activity.lo plugin-loader.lo plugin.lo presence.lo \
+	presence-cache.lo protocol.lo private-tubes-factory.lo \
+	request-pipeline.lo roster.lo roster-channel.lo \
+	roomlist-channel.lo roomlist-manager.lo search-channel.lo \
+	search-manager.lo server-sasl-channel.lo server-tls-channel.lo \
+	server-tls-manager.lo sidecar.lo slacker.lo tls-certificate.lo \
+	tube-iface.lo tubes-channel.lo tube-dbus.lo tube-stream.lo \
+	util.lo vcard-manager.lo
 am__objects_1 = gabble-signals-marshal.lo
 nodist_libgabble_convenience_la_OBJECTS = $(am__objects_1)
 libgabble_convenience_la_OBJECTS =  \
@@ -214,8 +213,6 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
-PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
-PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 PYTHON = @PYTHON@
 PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
@@ -233,8 +230,6 @@ STRIP = @STRIP@
 TEST_PYTHON = @TEST_PYTHON@
 TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
 TP_GLIB_LIBS = @TP_GLIB_LIBS@
-UUID_CFLAGS = @UUID_CFLAGS@
-UUID_LIBS = @UUID_LIBS@
 VERSION = @VERSION@
 WOCKY_CFLAGS = @WOCKY_CFLAGS@
 WOCKY_LIBS = @WOCKY_LIBS@
@@ -425,14 +420,6 @@ libgabble_convenience_la_SOURCES = \
     namespaces.h \
     olpc-activity.h \
     olpc-activity.c \
-    olpc-activity-view.h \
-    olpc-activity-view.c \
-    olpc-buddy-view.h \
-    olpc-buddy-view.c \
-    olpc-gadget-manager.h \
-    olpc-gadget-manager.c \
-    olpc-view.h \
-    olpc-view.c \
     plugin-loader.h \
     plugin-loader.c \
     $(top_srcdir)/gabble/plugin.h \
@@ -511,14 +498,14 @@ noinst_LTLIBRARIES = libgabble-convenience.la
 AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
-	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @UUID_CFLAGS@ @GMODULE_CFLAGS@ \
+	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @GMODULE_CFLAGS@ \
 	    @SQLITE_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
 	    -DG_LOG_DOMAIN=\"gabble\" \
 	    -DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\"
 
 ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
-	    @SOUP_LIBS@ @NICE_LIBS@ @UUID_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
+	    @SOUP_LIBS@ @NICE_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -690,11 +677,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/message-util.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muc-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muc-factory.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-activity-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-activity.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-buddy-view.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-gadget-manager.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugin-loader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/presence-cache.Plo@am__quote@
