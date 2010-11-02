@@ -150,7 +150,7 @@ sending_queue_elem_new (WockyPorter *self,
     elem->cancellable = g_object_ref (cancellable);
 
   elem->result = g_simple_async_result_new (G_OBJECT (self),
-    callback, user_data, wocky_porter_send_finish);
+    callback, user_data, wocky_porter_send_async);
 
   return elem;
 }
@@ -606,10 +606,22 @@ wocky_porter_dispose (GObject *object)
       priv->close_result = NULL;
     }
 
+  if (priv->close_cancellable != NULL)
+    {
+      g_object_unref (priv->close_cancellable);
+      priv->close_cancellable = NULL;
+    }
+
   if (priv->force_close_result != NULL)
     {
       g_object_unref (priv->force_close_result);
       priv->force_close_result = NULL;
+    }
+
+  if (priv->force_close_cancellable != NULL)
+    {
+      g_object_unref (priv->force_close_cancellable);
+      priv->force_close_cancellable = NULL;
     }
 
   if (G_OBJECT_CLASS (wocky_porter_parent_class)->dispose)
@@ -686,7 +698,7 @@ send_head_stanza (WockyPorter *self)
     }
 
   wocky_xmpp_connection_send_stanza_async (priv->connection,
-      elem->stanza, elem->cancellable, send_stanza_cb, self);
+      elem->stanza, elem->cancellable, send_stanza_cb, g_object_ref (self));
 
   g_signal_emit (self, signals[SENDING], 0);
 }
@@ -745,6 +757,8 @@ send_stanza_cb (GObject *source,
       DEBUG ("Queue has been flushed. Closing the connection.");
       send_close (self);
     }
+
+  g_object_unref (self);
 }
 
 static void
@@ -830,7 +844,7 @@ wocky_porter_send_finish (WockyPorter *self,
     return FALSE;
 
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-    G_OBJECT (self), wocky_porter_send_finish), FALSE);
+    G_OBJECT (self), wocky_porter_send_async), FALSE);
 
   return TRUE;
 }
@@ -866,12 +880,19 @@ complete_close (WockyPorter *self)
           G_IO_ERROR_CANCELLED, "closing operation was cancelled");
     }
 
-  g_simple_async_result_complete (priv->close_result);
+  if (priv->close_cancellable)
+    g_object_unref (priv->close_cancellable);
+
+  priv->close_cancellable = NULL;
+
+ if (priv->force_close_cancellable)
+    g_object_unref (priv->force_close_cancellable);
+
+  priv->force_close_cancellable = NULL;
 
   tmp = priv->close_result;
   priv->close_result = NULL;
-  priv->close_cancellable = NULL;
-
+  g_simple_async_result_complete (tmp);
   g_object_unref (tmp);
 }
 
@@ -885,8 +906,7 @@ check_spoofing (WockyPorter *self,
   gchar *nfrom;
   gboolean ret = TRUE;
 
-  from = wocky_node_get_attribute (wocky_stanza_get_top_node (reply),
-      "from");
+  from = wocky_stanza_get_from (reply);
 
   /* fast path for a byte-for-byte match */
   if (G_LIKELY (!wocky_strdiff (from, should_be_from)))
@@ -997,8 +1017,7 @@ handle_stanza (WockyPorter *self,
 
   /* The from attribute of the stanza need not always be present, for example
    * when receiving roster items, so don't enforce it. */
-  from = wocky_node_get_attribute (wocky_stanza_get_top_node (stanza),
-      "from");
+  from = wocky_stanza_get_from (stanza);
 
   if (from != NULL)
     wocky_decode_jid (from, &node, &domain, &resource);
@@ -1397,9 +1416,10 @@ wocky_porter_close_async (WockyPorter *self,
     }
 
   priv->close_result = g_simple_async_result_new (G_OBJECT (self),
-    callback, user_data, wocky_porter_close_finish);
+    callback, user_data, wocky_porter_close_async);
 
-  priv->close_cancellable = cancellable;
+  if (cancellable != NULL)
+    priv->close_cancellable = g_object_ref (cancellable);
 
   g_signal_emit (self, signals[CLOSING], 0);
 
@@ -1434,7 +1454,7 @@ wocky_porter_close_finish (
     return FALSE;
 
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-    G_OBJECT (self), wocky_porter_close_finish), FALSE);
+    G_OBJECT (self), wocky_porter_close_async), FALSE);
 
   return TRUE;
 }
@@ -1675,8 +1695,7 @@ wocky_porter_send_iq_async (WockyPorter *self,
       sub_type != WOCKY_STANZA_SUB_TYPE_SET)
     goto wrong_stanza;
 
-  recipient = wocky_node_get_attribute (
-      wocky_stanza_get_top_node (stanza), "to");
+  recipient = wocky_stanza_get_to (stanza);
 
   /* Set an unique ID */
   do
@@ -1689,7 +1708,7 @@ wocky_porter_send_iq_async (WockyPorter *self,
   wocky_node_set_attribute (wocky_stanza_get_top_node (stanza), "id", id);
 
   result = g_simple_async_result_new (G_OBJECT (self),
-    callback, user_data, wocky_porter_send_iq_finish);
+    callback, user_data, wocky_porter_send_iq_async);
 
   handler = stanza_iq_handler_new (self, id, result, cancellable,
       recipient);
@@ -1723,8 +1742,8 @@ wrong_stanza:
  *
  * Returns: a reffed #WockyStanza on success, %NULL on error
  */
-WockyStanza * wocky_porter_send_iq_finish (
-    WockyPorter *self,
+WockyStanza *
+wocky_porter_send_iq_finish (WockyPorter *self,
     GAsyncResult *result,
     GError **error)
 {
@@ -1735,7 +1754,7 @@ WockyStanza * wocky_porter_send_iq_finish (
     return NULL;
 
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-    G_OBJECT (self), wocky_porter_send_iq_finish), NULL);
+    G_OBJECT (self), wocky_porter_send_iq_async), NULL);
 
   reply = g_simple_async_result_get_op_res_gpointer (
       G_SIMPLE_ASYNC_RESULT (result));
@@ -1814,8 +1833,10 @@ wocky_porter_force_close_async (WockyPorter *self,
     }
 
   priv->force_close_result = g_simple_async_result_new (G_OBJECT (self),
-    callback, user_data, wocky_porter_force_close_finish);
-  priv->force_close_cancellable = cancellable;
+    callback, user_data, wocky_porter_force_close_async);
+
+  if (cancellable != NULL)
+    priv->force_close_cancellable = g_object_ref (cancellable);
 
   /* force_close_result now keeps a ref on ourself so we can release the ref
    * without risking to destroy the object */
@@ -1843,6 +1864,8 @@ wocky_porter_force_close_async (WockyPorter *self,
               user_data, WOCKY_PORTER_ERROR,
               WOCKY_PORTER_ERROR_FORCIBLY_CLOSED,
               "Porter is already executing a forced-shutdown");
+          g_object_unref (priv->force_close_result);
+          priv->force_close_result = NULL;
           return;
         }
       /* No need to wait, close connection right now */
@@ -1883,7 +1906,7 @@ wocky_porter_force_close_finish (
     return FALSE;
 
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-    G_OBJECT (self), wocky_porter_force_close_finish), FALSE);
+    G_OBJECT (self), wocky_porter_force_close_async), FALSE);
 
   return TRUE;
 }

@@ -280,8 +280,16 @@ wocky_tls_job_make_result (WockyTLSJob *job,
       job->error = NULL;
     }
 
-  if (job->source_object)
+  if (job->source_object != NULL)
     g_object_unref (job->source_object);
+
+  job->source_object = NULL;
+
+  if (job->cancellable != NULL)
+    g_object_unref (job->cancellable);
+
+  job->cancellable = NULL;
+
   job->active = FALSE;
 
   return simple;
@@ -457,7 +465,7 @@ ssl_handshake (WockyTLSSession *session)
   else
     {
       DEBUG ("Handshake failed: [%d:%ld] %s", result, errnum, errstr);
-      if (session->job.handshake.job.error)
+      if (session->job.handshake.job.error != NULL)
         {
           g_error_free (session->job.handshake.job.error);
           session->job.handshake.job.error = NULL;
@@ -625,9 +633,8 @@ wocky_tls_job_start (WockyTLSJob             *job,
   job->source_object = g_object_ref (source_object);
 
   job->io_priority = io_priority;
-  job->cancellable = cancellable;
-  if (cancellable)
-    g_object_ref (cancellable);
+  if (cancellable != NULL)
+    job->cancellable = g_object_ref (cancellable);
   job->callback = callback;
   job->user_data = user_data;
   job->source_tag = source_tag;
@@ -983,7 +990,6 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
                                WockyTLSCertStatus *status)
 {
   int rval = -1;
-  gboolean peer_name_ok = TRUE;
   const gchar *check_level;
   X509 *cert;
   gboolean lenient = (level == WOCKY_TLS_VERIFY_LENIENT);
@@ -1014,18 +1020,30 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
   rval = SSL_get_verify_result (session->ssl);
   DEBUG ("X509 cert: %p; verified: %d", cert, rval);
 
-  /* anonymous SSL: no cert to check - rval will be X509_V_OK (0) *
-   * in this case (see openssl documentation)                     */
-  if (lenient && cert == NULL)
+  /* If no certificate is presented, SSL_get_verify_result() always returns
+   * X509_V_OK. This is listed as a bug in `man 3 SSL_get_verify_result`. To
+   * future-proof against that bug being fixed, we don't assume that behaviour.
+   */
+  if (cert == NULL)
     {
-      *status = WOCKY_TLS_CERT_OK;
-      return X509_V_OK;
+      if (lenient)
+        {
+          *status = WOCKY_TLS_CERT_OK;
+          return X509_V_OK;
+        }
+      else if (rval == X509_V_OK)
+        {
+          DEBUG ("Anonymous SSL handshake");
+          rval = X509_V_ERR_CERT_UNTRUSTED;
+        }
     }
-
-  if (cert == NULL && rval == X509_V_OK)
+  else if (peername != NULL && !check_peer_name (peername, cert))
     {
-      DEBUG ("Anonymous SSL handshake");
-      rval = X509_V_ERR_CERT_UNTRUSTED;
+      /* Irrespective of whether the certificate is valid, if it's for the
+       * wrong host that's arguably a more useful error condition to report.
+       */
+      *status = WOCKY_TLS_CERT_NAME_MISMATCH;
+      return X509_V_ERR_APPLICATION_VERIFICATION;
     }
 
   if (rval != X509_V_OK)
@@ -1071,6 +1089,7 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
           break;
         case X509_V_ERR_PATH_LENGTH_EXCEEDED:
           *status = WOCKY_TLS_CERT_MAYBE_DOS;
+          break;
         case X509_V_ERR_UNABLE_TO_GET_CRL:
           /* if we are in STRICT mode, being unable to see the CRL is a   *
            * terminal condition: in NORMAL or LENIENT we can live with it */
@@ -1093,24 +1112,6 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
             rval = X509_V_OK;
             *status = WOCKY_TLS_CERT_OK;
           }
-
-      return rval;
-    }
-
-  /* if we get this far, we have a certificate which should be valid: *
-   * check the hostname matches the peername                          */
-  if (peername != NULL)
-    peer_name_ok = check_peer_name (peername, cert);
-
-  DEBUG ("peer_name_ok: %d", peer_name_ok );
-
-  /* if the hostname didn't match, we can just bail out with an error here *
-   * otherwise we need to figure out which error (if any) our verification *
-   * call failed with:                                                     */
-  if (!peer_name_ok)
-    {
-      *status = WOCKY_TLS_CERT_NAME_MISMATCH;
-      return X509_V_ERR_APPLICATION_VERIFICATION;
     }
 
   return rval;
@@ -1916,10 +1917,10 @@ wocky_tls_connection_finalize (GObject *object)
 
   g_object_unref (connection->session);
 
-  if (connection->input)
+  if (connection->input != NULL)
     g_object_unref (connection->input);
 
-  if (connection->output)
+  if (connection->output != NULL)
     g_object_unref (connection->output);
 
   G_OBJECT_CLASS (wocky_tls_connection_parent_class)

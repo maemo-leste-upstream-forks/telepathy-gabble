@@ -43,6 +43,8 @@ DIST_COMMON = $(am__libwocky_la_HEADERS_DIST) $(srcdir)/Makefile.am \
 @USING_OPENSSL_TRUE@am__append_2 = $(GNUTLS_SRC)
 @USING_OPENSSL_FALSE@am__append_3 = $(GNUTLS_SRC)
 @USING_OPENSSL_FALSE@am__append_4 = $(OPENSSL_SRC)
+@HAVE_GIO_PROXY_TRUE@am__append_5 = $(PROXY_SRC)
+@HAVE_GIO_PROXY_FALSE@am__append_6 = $(PROXY_SRC)
 subdir = wocky
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-compiler-flag.m4 \
@@ -76,6 +78,7 @@ am__libwocky_la_SOURCES_DIST = wocky.c wocky-auth-handler.c \
 	wocky-xmpp-error.c wocky-xmpp-reader.c wocky-xmpp-writer.c \
 	wocky-openssl.c wocky-openssl-dh512.c wocky-openssl-dh1024.c \
 	wocky-openssl-dh2048.c wocky-openssl-dh4096.c wocky-tls.c \
+	wocky-http-proxy.h wocky-http-proxy.c \
 	wocky-auth-registry-enumtypes.c wocky-connector-enumtypes.c \
 	wocky-data-form-enumtypes.c wocky-muc-enumtypes.c \
 	wocky-pubsub-node-enumtypes.c wocky-pubsub-service-enumtypes.c \
@@ -108,7 +111,9 @@ am__objects_1 = wocky-openssl.lo wocky-openssl-dh512.lo \
 @USING_OPENSSL_TRUE@am__objects_2 = $(am__objects_1)
 am__objects_3 = wocky-tls.lo
 @USING_OPENSSL_FALSE@am__objects_4 = $(am__objects_3)
-am__objects_5 = wocky.lo wocky-auth-handler.lo wocky-auth-registry.lo \
+am__objects_5 = wocky-http-proxy.lo
+@HAVE_GIO_PROXY_TRUE@am__objects_6 = $(am__objects_5)
+am__objects_7 = wocky.lo wocky-auth-handler.lo wocky-auth-registry.lo \
 	wocky-bare-contact.lo wocky-connector.lo wocky-contact.lo \
 	wocky-contact-factory.lo wocky-data-form.lo wocky-debug.lo \
 	wocky-jabber-auth.lo wocky-jabber-auth-digest.lo \
@@ -122,16 +127,16 @@ am__objects_5 = wocky.lo wocky-auth-handler.lo wocky-auth-registry.lo \
 	wocky-tls-handler.lo wocky-tls-connector.lo \
 	wocky-xmpp-connection.lo wocky-xmpp-error.lo \
 	wocky-xmpp-reader.lo wocky-xmpp-writer.lo $(am__objects_2) \
-	$(am__objects_4)
-am__objects_6 = wocky-auth-registry-enumtypes.lo \
+	$(am__objects_4) $(am__objects_6)
+am__objects_8 = wocky-auth-registry-enumtypes.lo \
 	wocky-connector-enumtypes.lo wocky-data-form-enumtypes.lo \
 	wocky-muc-enumtypes.lo wocky-pubsub-node-enumtypes.lo \
 	wocky-pubsub-service-enumtypes.lo wocky-signals-marshal.lo \
 	wocky-tls-enumtypes.lo wocky-xmpp-error-enumtypes.lo \
 	wocky-xmpp-reader-enumtypes.lo
-am__objects_7 =
-am_libwocky_la_OBJECTS = $(am__objects_5) $(am__objects_6) \
-	$(am__objects_7) $(am__objects_7)
+am__objects_9 =
+am_libwocky_la_OBJECTS = $(am__objects_7) $(am__objects_8) \
+	$(am__objects_9) $(am__objects_9)
 libwocky_la_OBJECTS = $(am_libwocky_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -290,6 +295,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -353,7 +360,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LTLIBRARIES = libwocky.la
-EXTRA_DIST = $(am__append_2) $(am__append_4)
+EXTRA_DIST = $(am__append_2) $(am__append_4) $(am__append_6)
 built_headers = \
   wocky-auth-registry-enumtypes.h \
   wocky-connector-enumtypes.h \
@@ -388,6 +395,10 @@ OPENSSL_SRC = \
   wocky-openssl-dh4096.c
 
 GNUTLS_SRC = wocky-tls.c
+PROXY_SRC = \
+  wocky-http-proxy.h \
+  wocky-http-proxy.c
+
 handwritten_headers = \
   wocky.h \
   wocky-auth-handler.h \
@@ -446,7 +457,7 @@ handwritten_sources = wocky.c wocky-auth-handler.c \
 	wocky-stanza.c wocky-utils.c wocky-tls-handler.c \
 	wocky-tls-connector.c wocky-xmpp-connection.c \
 	wocky-xmpp-error.c wocky-xmpp-reader.c wocky-xmpp-writer.c \
-	$(am__append_1) $(am__append_3)
+	$(am__append_1) $(am__append_3) $(am__append_5)
 libwocky_la_SOURCES = $(handwritten_sources) $(built_sources) \
                       $(handwritten_headers) $(built_headers)
 
@@ -533,6 +544,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-debug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-http-proxy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jabber-auth-digest.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jabber-auth-password.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jabber-auth.Plo@am__quote@

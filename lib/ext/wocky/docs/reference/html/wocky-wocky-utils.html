@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-Wocky-OpenSSL-TLS.html" title="Wocky OpenSSL TLS">
 <link rel="next" href="WockyXmppConnection.html" title="WockyXmppConnection">
-<meta name="generator" content="GTK-Doc V1.15.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -37,46 +37,46 @@
 </tr></table></div>
 <div class="refsynopsisdiv" title="Synopsis">
 <a name="wocky-wocky-utils.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis"><span class="returnvalue">gboolean</span>            <a class="link" href="wocky-wocky-utils.html#wocky-strdiff" title="wocky_strdiff ()">wocky_strdiff</a>                       (<em class="parameter"><code>const <span class="type">gchar</span> *left</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *right</code></em>);
-<span class="returnvalue">gchar</span> *             <a class="link" href="wocky-wocky-utils.html#wocky-normalise-jid" title="wocky_normalise_jid ()">wocky_normalise_jid</a>                 (<em class="parameter"><code>const <span class="type">gchar</span> *jid</code></em>);
-<span class="returnvalue">gboolean</span>            <a class="link" href="wocky-wocky-utils.html#wocky-decode-jid" title="wocky_decode_jid ()">wocky_decode_jid</a>                    (<em class="parameter"><code>const <span class="type">gchar</span> *jid</code></em>,
-                                                         <em class="parameter"><code><span class="type">gchar</span> **node</code></em>,
-                                                         <em class="parameter"><code><span class="type">gchar</span> **domain</code></em>,
-                                                         <em class="parameter"><code><span class="type">gchar</span> **resource</code></em>);
-<span class="returnvalue">gchar</span> *             <a class="link" href="wocky-wocky-utils.html#wocky-compose-jid" title="wocky_compose_jid ()">wocky_compose_jid</a>                   (<em class="parameter"><code>const <span class="type">gchar</span> *node</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *domain</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *resource</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new" title="wocky_g_value_slice_new ()">wocky_g_value_slice_new</a>             (<em class="parameter"><code><span class="type">GType</span> type</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-boolean" title="wocky_g_value_slice_new_boolean ()">wocky_g_value_slice_new_boolean</a>     (<em class="parameter"><code><span class="type">gboolean</span> b</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-int" title="wocky_g_value_slice_new_int ()">wocky_g_value_slice_new_int</a>         (<em class="parameter"><code><span class="type">gint</span> n</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-int64" title="wocky_g_value_slice_new_int64 ()">wocky_g_value_slice_new_int64</a>       (<em class="parameter"><code><span class="type">gint64</span> n</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-uint" title="wocky_g_value_slice_new_uint ()">wocky_g_value_slice_new_uint</a>        (<em class="parameter"><code><span class="type">guint</span> n</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-uint64" title="wocky_g_value_slice_new_uint64 ()">wocky_g_value_slice_new_uint64</a>      (<em class="parameter"><code><span class="type">guint64</span> n</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-double" title="wocky_g_value_slice_new_double ()">wocky_g_value_slice_new_double</a>      (<em class="parameter"><code><span class="type">double</span> d</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-string" title="wocky_g_value_slice_new_string ()">wocky_g_value_slice_new_string</a>      (<em class="parameter"><code>const <span class="type">gchar</span> *string</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-static-string" title="wocky_g_value_slice_new_static_string ()">wocky_g_value_slice_new_static_string</a>
-                                                        (<em class="parameter"><code>const <span class="type">gchar</span> *string</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-take-string" title="wocky_g_value_slice_new_take_string ()">wocky_g_value_slice_new_take_string</a> (<em class="parameter"><code><span class="type">gchar</span> *string</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-boxed" title="wocky_g_value_slice_new_boxed ()">wocky_g_value_slice_new_boxed</a>       (<em class="parameter"><code><span class="type">GType</span> type</code></em>,
-                                                         <em class="parameter"><code><span class="type">gconstpointer</span> p</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-static-boxed" title="wocky_g_value_slice_new_static_boxed ()">wocky_g_value_slice_new_static_boxed</a>
-                                                        (<em class="parameter"><code><span class="type">GType</span> type</code></em>,
-                                                         <em class="parameter"><code><span class="type">gconstpointer</span> p</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-take-boxed" title="wocky_g_value_slice_new_take_boxed ()">wocky_g_value_slice_new_take_boxed</a>  (<em class="parameter"><code><span class="type">GType</span> type</code></em>,
-                                                         <em class="parameter"><code><span class="type">gpointer</span> p</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()">wocky_g_value_slice_free</a>            (<em class="parameter"><code><span class="type">GValue</span> *value</code></em>);
-<span class="returnvalue">GValue</span> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-dup" title="wocky_g_value_slice_dup ()">wocky_g_value_slice_dup</a>             (<em class="parameter"><code>const <span class="type">GValue</span> *value</code></em>);
-<span class="returnvalue">gboolean</span>            <a class="link" href="wocky-wocky-utils.html#wocky-enum-from-nick" title="wocky_enum_from_nick ()">wocky_enum_from_nick</a>                (<em class="parameter"><code><span class="type">GType</span> enum_type</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *nick</code></em>,
-                                                         <em class="parameter"><code><span class="type">gint</span> *value</code></em>);
-const <span class="returnvalue">gchar</span> *       <a class="link" href="wocky-wocky-utils.html#wocky-enum-to-nick" title="wocky_enum_to_nick ()">wocky_enum_to_nick</a>                  (<em class="parameter"><code><span class="type">GType</span> enum_type</code></em>,
-                                                         <em class="parameter"><code><span class="type">gint</span> value</code></em>);
-<span class="returnvalue">gchar</span> *             <a class="link" href="wocky-wocky-utils.html#wocky-absolutize-path" title="wocky_absolutize_path ()">wocky_absolutize_path</a>               (<em class="parameter"><code>const <span class="type">gchar</span> *path</code></em>);
-<span class="returnvalue">GList</span> *             <a class="link" href="wocky-wocky-utils.html#wocky-list-deep-copy" title="wocky_list_deep_copy ()">wocky_list_deep_copy</a>                (<em class="parameter"><code><span class="type">GBoxedCopyFunc</span> copy</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">GList</span> *items</code></em>);
-<span class="returnvalue">GString</span> *           <a class="link" href="wocky-wocky-utils.html#wocky-g-string-dup" title="wocky_g_string_dup ()">wocky_g_string_dup</a>                  (<em class="parameter"><code>const <span class="type">GString</span> *str</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-utils.html#wocky-g-string-free" title="wocky_g_string_free ()">wocky_g_string_free</a>                 (<em class="parameter"><code><span class="type">GString</span> *str</code></em>);
+<pre class="synopsis"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-wocky-utils.html#wocky-strdiff" title="wocky_strdiff ()">wocky_strdiff</a>                       (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *left</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *right</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="wocky-wocky-utils.html#wocky-normalise-jid" title="wocky_normalise_jid ()">wocky_normalise_jid</a>                 (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-wocky-utils.html#wocky-decode-jid" title="wocky_decode_jid ()">wocky_decode_jid</a>                    (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **node</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **domain</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **resource</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="wocky-wocky-utils.html#wocky-compose-jid" title="wocky_compose_jid ()">wocky_compose_jid</a>                   (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *domain</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *resource</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new" title="wocky_g_value_slice_new ()">wocky_g_value_slice_new</a>             (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-boolean" title="wocky_g_value_slice_new_boolean ()">wocky_g_value_slice_new_boolean</a>     (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> b</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-int" title="wocky_g_value_slice_new_int ()">wocky_g_value_slice_new_int</a>         (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> n</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-int64" title="wocky_g_value_slice_new_int64 ()">wocky_g_value_slice_new_int64</a>       (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint64"><span class="type">gint64</span></a> n</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-uint" title="wocky_g_value_slice_new_uint ()">wocky_g_value_slice_new_uint</a>        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-uint64" title="wocky_g_value_slice_new_uint64 ()">wocky_g_value_slice_new_uint64</a>      (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> n</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-double" title="wocky_g_value_slice_new_double ()">wocky_g_value_slice_new_double</a>      (<em class="parameter"><code><span class="type">double</span> d</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-string" title="wocky_g_value_slice_new_string ()">wocky_g_value_slice_new_string</a>      (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *string</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-static-string" title="wocky_g_value_slice_new_static_string ()">wocky_g_value_slice_new_static_string</a>
+                                                        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *string</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-take-string" title="wocky_g_value_slice_new_take_string ()">wocky_g_value_slice_new_take_string</a> (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *string</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-boxed" title="wocky_g_value_slice_new_boxed ()">wocky_g_value_slice_new_boxed</a>       (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> p</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-static-boxed" title="wocky_g_value_slice_new_static_boxed ()">wocky_g_value_slice_new_static_boxed</a>
+                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> p</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-take-boxed" title="wocky_g_value_slice_new_take_boxed ()">wocky_g_value_slice_new_take_boxed</a>  (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> p</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()">wocky_g_value_slice_free</a>            (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *value</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-dup" title="wocky_g_value_slice_dup ()">wocky_g_value_slice_dup</a>             (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *value</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-wocky-utils.html#wocky-enum-from-nick" title="wocky_enum_from_nick ()">wocky_enum_from_nick</a>                (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> enum_type</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *nick</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *value</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-wocky-utils.html#wocky-enum-to-nick" title="wocky_enum_to_nick ()">wocky_enum_to_nick</a>                  (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> enum_type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> value</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="wocky-wocky-utils.html#wocky-absolutize-path" title="wocky_absolutize_path ()">wocky_absolutize_path</a>               (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="wocky-wocky-utils.html#wocky-list-deep-copy" title="wocky_list_deep_copy ()">wocky_list_deep_copy</a>                (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GBoxedCopyFunc"><span class="type">GBoxedCopyFunc</span></a> copy</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *items</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="returnvalue">GString</span></a> *           <a class="link" href="wocky-wocky-utils.html#wocky-g-string-dup" title="wocky_g_string_dup ()">wocky_g_string_dup</a>                  (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *str</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-utils.html#wocky-g-string-free" title="wocky_g_string_free ()">wocky_g_string_free</a>                 (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *str</code></em>);
 #define             <a class="link" href="wocky-wocky-utils.html#wocky-implement-finish-void" title="wocky_implement_finish_void()">wocky_implement_finish_void</a>         (source,
                                                          tag)
 #define             <a class="link" href="wocky-wocky-utils.html#wocky-implement-finish-copy-pointer" title="wocky_implement_finish_copy_pointer()">wocky_implement_finish_copy_pointer</a> (source,
@@ -97,10 +97,10 @@ const <span class="returnvalue">gchar</span> *       <a class="link" href="wocky
 <a name="wocky-wocky-utils.details"></a><h2>Details</h2>
 <div class="refsect2" title="wocky_strdiff ()">
 <a name="wocky-strdiff"></a><h3>wocky_strdiff ()</h3>
-<pre class="programlisting"><span class="returnvalue">gboolean</span>            wocky_strdiff                       (<em class="parameter"><code>const <span class="type">gchar</span> *left</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *right</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_strdiff                       (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *left</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *right</code></em>);</pre>
 <p>
-Return <code class="literal">TRUE</code> if the given strings are different. Unlike <span class="type">strcmp</span> this
+Return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the given strings are different. Unlike <span class="type">strcmp</span> this
 function will handle null pointers, treating them as distinct from any
 string.
 </p>
@@ -119,8 +119,8 @@ string.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">FALSE</code> if <em class="parameter"><code>left</code></em> and <em class="parameter"><code>right</code></em> are both <code class="literal">NULL</code>, or if
-         neither is <code class="literal">NULL</code> and both have the same contents; <code class="literal">TRUE</code> otherwise
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if <em class="parameter"><code>left</code></em> and <em class="parameter"><code>right</code></em> are both <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, or if
+         neither is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> and both have the same contents; <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> otherwise
 </td>
 </tr>
 </tbody>
@@ -129,7 +129,7 @@ string.
 <hr>
 <div class="refsect2" title="wocky_normalise_jid ()">
 <a name="wocky-normalise-jid"></a><h3>wocky_normalise_jid ()</h3>
-<pre class="programlisting"><span class="returnvalue">gchar</span> *             wocky_normalise_jid                 (<em class="parameter"><code>const <span class="type">gchar</span> *jid</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_normalise_jid                 (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);</pre>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -141,7 +141,7 @@ string.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a normalised JID, using the same rules as <a class="link" href="wocky-wocky-utils.html#wocky-decode-jid" title="wocky_decode_jid ()"><code class="function">wocky_decode_jid()</code></a>,
-or <code class="literal">NULL</code> if the JID could not be sensibly decoded.
+or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the JID could not be sensibly decoded.
 This value should be freed when you are done with it.
 </td>
 </tr>
@@ -151,10 +151,10 @@ This value should be freed when you are done with it.
 <hr>
 <div class="refsect2" title="wocky_decode_jid ()">
 <a name="wocky-decode-jid"></a><h3>wocky_decode_jid ()</h3>
-<pre class="programlisting"><span class="returnvalue">gboolean</span>            wocky_decode_jid                    (<em class="parameter"><code>const <span class="type">gchar</span> *jid</code></em>,
-                                                         <em class="parameter"><code><span class="type">gchar</span> **node</code></em>,
-                                                         <em class="parameter"><code><span class="type">gchar</span> **domain</code></em>,
-                                                         <em class="parameter"><code><span class="type">gchar</span> **resource</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_decode_jid                    (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **node</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **domain</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **resource</code></em>);</pre>
 <p>
 If the JID is valid, returns TRUE and sets the caller's
 node/domain/resource pointers if they are not NULL. The node and resource
@@ -193,7 +193,7 @@ See RFC 3920 §3.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the JID is valid
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the JID is valid
 </td>
 </tr>
 </tbody>
@@ -202,12 +202,12 @@ See RFC 3920 §3.
 <hr>
 <div class="refsect2" title="wocky_compose_jid ()">
 <a name="wocky-compose-jid"></a><h3>wocky_compose_jid ()</h3>
-<pre class="programlisting"><span class="returnvalue">gchar</span> *             wocky_compose_jid                   (<em class="parameter"><code>const <span class="type">gchar</span> *node</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *domain</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *resource</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_compose_jid                   (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *domain</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *resource</code></em>);</pre>
 <p>
-Composes a JID from its parts. If <em class="parameter"><code>node</code></em> is empty or <code class="literal">NULL</code>, the '@'
-separator is also omitted; if <em class="parameter"><code>resource</code></em> is empty or <code class="literal">NULL</code>, the '/' separator
+Composes a JID from its parts. If <em class="parameter"><code>node</code></em> is empty or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, the '@'
+separator is also omitted; if <em class="parameter"><code>resource</code></em> is empty or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, the '/' separator
 is also omitted.
 </p>
 <div class="variablelist"><table border="0">
@@ -215,17 +215,17 @@ is also omitted.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>the node part of a JID, possibly empty or <code class="literal">NULL</code>
+<td>the node part of a JID, possibly empty or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>domain</code></em> :</span></p></td>
-<td>the non-<code class="literal">NULL</code> domain part of a JID
+<td>the non-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> domain part of a JID
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>resource</code></em> :</span></p></td>
-<td>the resource part of a JID, possibly empty or <code class="literal">NULL</code>
+<td>the resource part of a JID, possibly empty or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
@@ -239,9 +239,9 @@ is also omitted.
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new ()">
 <a name="wocky-g-value-slice-new"></a><h3>wocky_g_value_slice_new ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new             (<em class="parameter"><code><span class="type">GType</span> type</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new             (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>);</pre>
 <p>
-Slice-allocate an empty <span class="type">GValue</span>. <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-boolean" title="wocky_g_value_slice_new_boolean ()"><code class="function">wocky_g_value_slice_new_boolean()</code></a> and similar
+Slice-allocate an empty <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-boolean" title="wocky_g_value_slice_new_boolean ()"><code class="function">wocky_g_value_slice_new_boolean()</code></a> and similar
 functions are likely to be more convenient to use for the types supported.
 </p>
 <div class="variablelist"><table border="0">
@@ -254,8 +254,8 @@ functions are likely to be more convenient to use for the types supported.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a newly allocated, newly initialized <span class="type">GValue</span>, to be freed with
-<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>.
+<td> a newly allocated, newly initialized <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, to be freed with
+<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>.
 </td>
 </tr>
 </tbody>
@@ -265,10 +265,10 @@ functions are likely to be more convenient to use for the types supported.
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new_boolean ()">
 <a name="wocky-g-value-slice-new-boolean"></a><h3>wocky_g_value_slice_new_boolean ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new_boolean     (<em class="parameter"><code><span class="type">gboolean</span> b</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new_boolean     (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> b</code></em>);</pre>
 <p>
-Slice-allocate and initialize a <span class="type">GValue</span>. This function is convenient to
-use when constructing hash tables from string to <span class="type">GValue</span>, for example.
+Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
+use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -280,8 +280,8 @@ use when constructing hash tables from string to <span class="type">GValue</span
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <code class="literal">G_TYPE_BOOLEAN</code> with value <em class="parameter"><code>b</code></em>, to be freed with
-<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>
+<td> a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> of type <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#G-TYPE-BOOLEAN:CAPS"><code class="literal">G_TYPE_BOOLEAN</code></a> with value <em class="parameter"><code>b</code></em>, to be freed with
+<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>
 
 </td>
 </tr>
@@ -292,10 +292,10 @@ use when constructing hash tables from string to <span class="type">GValue</span
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new_int ()">
 <a name="wocky-g-value-slice-new-int"></a><h3>wocky_g_value_slice_new_int ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new_int         (<em class="parameter"><code><span class="type">gint</span> n</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new_int         (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> n</code></em>);</pre>
 <p>
-Slice-allocate and initialize a <span class="type">GValue</span>. This function is convenient to
-use when constructing hash tables from string to <span class="type">GValue</span>, for example.
+Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
+use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -307,8 +307,8 @@ use when constructing hash tables from string to <span class="type">GValue</span
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <code class="literal">G_TYPE_INT</code> with value <em class="parameter"><code>n</code></em>, to be freed with
-<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>
+<td> a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> of type <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#G-TYPE-INT:CAPS"><code class="literal">G_TYPE_INT</code></a> with value <em class="parameter"><code>n</code></em>, to be freed with
+<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>
 
 </td>
 </tr>
@@ -319,10 +319,10 @@ use when constructing hash tables from string to <span class="type">GValue</span
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new_int64 ()">
 <a name="wocky-g-value-slice-new-int64"></a><h3>wocky_g_value_slice_new_int64 ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new_int64       (<em class="parameter"><code><span class="type">gint64</span> n</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new_int64       (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint64"><span class="type">gint64</span></a> n</code></em>);</pre>
 <p>
-Slice-allocate and initialize a <span class="type">GValue</span>. This function is convenient to
-use when constructing hash tables from string to <span class="type">GValue</span>, for example.
+Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
+use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -334,8 +334,8 @@ use when constructing hash tables from string to <span class="type">GValue</span
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <code class="literal">G_TYPE_INT64</code> with value <em class="parameter"><code>n</code></em>, to be freed with
-<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>
+<td> a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> of type <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#G-TYPE-INT64:CAPS"><code class="literal">G_TYPE_INT64</code></a> with value <em class="parameter"><code>n</code></em>, to be freed with
+<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>
 
 </td>
 </tr>
@@ -346,10 +346,10 @@ use when constructing hash tables from string to <span class="type">GValue</span
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new_uint ()">
 <a name="wocky-g-value-slice-new-uint"></a><h3>wocky_g_value_slice_new_uint ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new_uint        (<em class="parameter"><code><span class="type">guint</span> n</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new_uint        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n</code></em>);</pre>
 <p>
-Slice-allocate and initialize a <span class="type">GValue</span>. This function is convenient to
-use when constructing hash tables from string to <span class="type">GValue</span>, for example.
+Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
+use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -361,8 +361,8 @@ use when constructing hash tables from string to <span class="type">GValue</span
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <code class="literal">G_TYPE_UINT</code> with value <em class="parameter"><code>n</code></em>, to be freed with
-<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>
+<td> a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> of type <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#G-TYPE-UINT:CAPS"><code class="literal">G_TYPE_UINT</code></a> with value <em class="parameter"><code>n</code></em>, to be freed with
+<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>
 
 </td>
 </tr>
@@ -373,10 +373,10 @@ use when constructing hash tables from string to <span class="type">GValue</span
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new_uint64 ()">
 <a name="wocky-g-value-slice-new-uint64"></a><h3>wocky_g_value_slice_new_uint64 ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new_uint64      (<em class="parameter"><code><span class="type">guint64</span> n</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new_uint64      (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> n</code></em>);</pre>
 <p>
-Slice-allocate and initialize a <span class="type">GValue</span>. This function is convenient to
-use when constructing hash tables from string to <span class="type">GValue</span>, for example.
+Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
+use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -388,8 +388,8 @@ use when constructing hash tables from string to <span class="type">GValue</span
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <code class="literal">G_TYPE_UINT64</code> with value <em class="parameter"><code>n</code></em>, to be freed with
-<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>
+<td> a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> of type <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#G-TYPE-UINT64:CAPS"><code class="literal">G_TYPE_UINT64</code></a> with value <em class="parameter"><code>n</code></em>, to be freed with
+<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>
 
 </td>
 </tr>
@@ -400,10 +400,10 @@ use when constructing hash tables from string to <span class="type">GValue</span
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new_double ()">
 <a name="wocky-g-value-slice-new-double"></a><h3>wocky_g_value_slice_new_double ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new_double      (<em class="parameter"><code><span class="type">double</span> d</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new_double      (<em class="parameter"><code><span class="type">double</span> d</code></em>);</pre>
 <p>
-Slice-allocate and initialize a <span class="type">GValue</span>. This function is convenient to
-use when constructing hash tables from string to <span class="type">GValue</span>, for example.
+Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
+use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -415,8 +415,8 @@ use when constructing hash tables from string to <span class="type">GValue</span
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <code class="literal">G_TYPE_DOUBLE</code> with value <em class="parameter"><code>n</code></em>, to be freed with
-<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>
+<td> a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> of type <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#G-TYPE-DOUBLE:CAPS"><code class="literal">G_TYPE_DOUBLE</code></a> with value <em class="parameter"><code>n</code></em>, to be freed with
+<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>
 
 </td>
 </tr>
@@ -427,10 +427,10 @@ use when constructing hash tables from string to <span class="type">GValue</span
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new_string ()">
 <a name="wocky-g-value-slice-new-string"></a><h3>wocky_g_value_slice_new_string ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new_string      (<em class="parameter"><code>const <span class="type">gchar</span> *string</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new_string      (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *string</code></em>);</pre>
 <p>
-Slice-allocate and initialize a <span class="type">GValue</span>. This function is convenient to
-use when constructing hash tables from string to <span class="type">GValue</span>, for example.
+Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
+use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -442,8 +442,8 @@ use when constructing hash tables from string to <span class="type">GValue</span
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <code class="literal">G_TYPE_STRING</code> whose value is a copy of <em class="parameter"><code>string</code></em>,
-to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>
+<td> a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> of type <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#G-TYPE-STRING:CAPS"><code class="literal">G_TYPE_STRING</code></a> whose value is a copy of <em class="parameter"><code>string</code></em>,
+to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>
 
 </td>
 </tr>
@@ -454,11 +454,11 @@ to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slic
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new_static_string ()">
 <a name="wocky-g-value-slice-new-static-string"></a><h3>wocky_g_value_slice_new_static_string ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new_static_string
-                                                        (<em class="parameter"><code>const <span class="type">gchar</span> *string</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new_static_string
+                                                        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *string</code></em>);</pre>
 <p>
-Slice-allocate and initialize a <span class="type">GValue</span>. This function is convenient to
-use when constructing hash tables from string to <span class="type">GValue</span>, for example.
+Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
+use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -471,8 +471,8 @@ use when constructing hash tables from string to <span class="type">GValue</span
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <code class="literal">G_TYPE_STRING</code> whose value is <em class="parameter"><code>string</code></em>,
-to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>
+<td> a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> of type <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#G-TYPE-STRING:CAPS"><code class="literal">G_TYPE_STRING</code></a> whose value is <em class="parameter"><code>string</code></em>,
+to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>
 
 </td>
 </tr>
@@ -483,25 +483,25 @@ to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slic
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new_take_string ()">
 <a name="wocky-g-value-slice-new-take-string"></a><h3>wocky_g_value_slice_new_take_string ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new_take_string (<em class="parameter"><code><span class="type">gchar</span> *string</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new_take_string (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *string</code></em>);</pre>
 <p>
-Slice-allocate and initialize a <span class="type">GValue</span>. This function is convenient to
-use when constructing hash tables from string to <span class="type">GValue</span>, for example.
+Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
+use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>string</code></em> :</span></p></td>
-<td>a string which will be freed with <code class="function">g_free()</code> by the returned <span class="type">GValue</span>
+<td>a string which will be freed with <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a> by the returned <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>
  (the caller must own it before calling this function, but no longer owns
  it after this function returns)
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <code class="literal">G_TYPE_STRING</code> whose value is <em class="parameter"><code>string</code></em>,
-to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>
+<td> a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> of type <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#G-TYPE-STRING:CAPS"><code class="literal">G_TYPE_STRING</code></a> whose value is <em class="parameter"><code>string</code></em>,
+to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>
 
 </td>
 </tr>
@@ -512,11 +512,11 @@ to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slic
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new_boxed ()">
 <a name="wocky-g-value-slice-new-boxed"></a><h3>wocky_g_value_slice_new_boxed ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new_boxed       (<em class="parameter"><code><span class="type">GType</span> type</code></em>,
-                                                         <em class="parameter"><code><span class="type">gconstpointer</span> p</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new_boxed       (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> p</code></em>);</pre>
 <p>
-Slice-allocate and initialize a <span class="type">GValue</span>. This function is convenient to
-use when constructing hash tables from string to <span class="type">GValue</span>, for example.
+Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
+use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -533,8 +533,8 @@ use when constructing hash tables from string to <span class="type">GValue</span
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <em class="parameter"><code>type</code></em> whose value is a copy of <em class="parameter"><code>p</code></em>,
-to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>
+<td> a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> of type <em class="parameter"><code>type</code></em> whose value is a copy of <em class="parameter"><code>p</code></em>,
+to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>
 
 </td>
 </tr>
@@ -545,12 +545,12 @@ to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slic
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new_static_boxed ()">
 <a name="wocky-g-value-slice-new-static-boxed"></a><h3>wocky_g_value_slice_new_static_boxed ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new_static_boxed
-                                                        (<em class="parameter"><code><span class="type">GType</span> type</code></em>,
-                                                         <em class="parameter"><code><span class="type">gconstpointer</span> p</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new_static_boxed
+                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> p</code></em>);</pre>
 <p>
-Slice-allocate and initialize a <span class="type">GValue</span>. This function is convenient to
-use when constructing hash tables from string to <span class="type">GValue</span>, for example.
+Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
+use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -567,8 +567,8 @@ use when constructing hash tables from string to <span class="type">GValue</span
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <em class="parameter"><code>type</code></em> whose value is <em class="parameter"><code>p</code></em>,
-to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>
+<td> a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> of type <em class="parameter"><code>type</code></em> whose value is <em class="parameter"><code>p</code></em>,
+to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>
 
 </td>
 </tr>
@@ -579,11 +579,11 @@ to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slic
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_new_take_boxed ()">
 <a name="wocky-g-value-slice-new-take-boxed"></a><h3>wocky_g_value_slice_new_take_boxed ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_new_take_boxed  (<em class="parameter"><code><span class="type">GType</span> type</code></em>,
-                                                         <em class="parameter"><code><span class="type">gpointer</span> p</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_new_take_boxed  (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> p</code></em>);</pre>
 <p>
-Slice-allocate and initialize a <span class="type">GValue</span>. This function is convenient to
-use when constructing hash tables from string to <span class="type">GValue</span>, for example.
+Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
+use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -595,15 +595,15 @@ use when constructing hash tables from string to <span class="type">GValue</span
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>p</code></em> :</span></p></td>
-<td>a pointer of type <em class="parameter"><code>type</code></em> which will be freed with <code class="function">g_boxed_free()</code> by the
- returned <span class="type">GValue</span> (the caller must own it before calling this function, but
+<td>a pointer of type <em class="parameter"><code>type</code></em> which will be freed with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#g-boxed-free"><code class="function">g_boxed_free()</code></a> by the
+ returned <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> (the caller must own it before calling this function, but
  no longer owns it after this function returns)
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <em class="parameter"><code>type</code></em> whose value is <em class="parameter"><code>p</code></em>,
-to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>
+<td> a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> of type <em class="parameter"><code>type</code></em> whose value is <em class="parameter"><code>p</code></em>,
+to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>
 
 </td>
 </tr>
@@ -614,13 +614,13 @@ to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slic
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_free ()">
 <a name="wocky-g-value-slice-free"></a><h3>wocky_g_value_slice_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_g_value_slice_free            (<em class="parameter"><code><span class="type">GValue</span> *value</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_g_value_slice_free            (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *value</code></em>);</pre>
 <p>
 Unset and free a slice-allocated GValue.
 </p>
 <p>
 <code class="literal">(GDestroyNotify) wocky_g_value_slice_free</code> can be used
-as a destructor for values in a <span class="type">GHashTable</span>, for example.
+as a destructor for values in a <a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a>, for example.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -634,7 +634,7 @@ as a destructor for values in a <span class="type">GHashTable</span>, for exampl
 <hr>
 <div class="refsect2" title="wocky_g_value_slice_dup ()">
 <a name="wocky-g-value-slice-dup"></a><h3>wocky_g_value_slice_dup ()</h3>
-<pre class="programlisting"><span class="returnvalue">GValue</span> *            wocky_g_value_slice_dup             (<em class="parameter"><code>const <span class="type">GValue</span> *value</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            wocky_g_value_slice_dup             (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *value</code></em>);</pre>
 <p>
 
 </p>
@@ -649,7 +649,7 @@ as a destructor for values in a <span class="type">GHashTable</span>, for exampl
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly allocated copy of <em class="parameter"><code>value</code></em>, to be freed with
-<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <code class="function">g_slice_free()</code>.
+<a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-free" title="wocky_g_value_slice_free ()"><code class="function">wocky_g_value_slice_free()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Slices.html#g-slice-free"><code class="function">g_slice_free()</code></a>.
 </td>
 </tr>
 </tbody>
@@ -659,9 +659,9 @@ as a destructor for values in a <span class="type">GHashTable</span>, for exampl
 <hr>
 <div class="refsect2" title="wocky_enum_from_nick ()">
 <a name="wocky-enum-from-nick"></a><h3>wocky_enum_from_nick ()</h3>
-<pre class="programlisting"><span class="returnvalue">gboolean</span>            wocky_enum_from_nick                (<em class="parameter"><code><span class="type">GType</span> enum_type</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *nick</code></em>,
-                                                         <em class="parameter"><code><span class="type">gint</span> *value</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_enum_from_nick                (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> enum_type</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *nick</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *value</code></em>);</pre>
 <p>
 
 </p>
@@ -675,20 +675,20 @@ as a destructor for values in a <span class="type">GHashTable</span>, for exampl
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>nick</code></em> :</span></p></td>
-<td>a non-<code class="literal">NULL</code> string purporting to be the nickname of a value of
+<td>a non-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> string purporting to be the nickname of a value of
        <em class="parameter"><code>enum_type</code></em>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td>the address at which to store the value of <em class="parameter"><code>enum_type</code></em> corresponding
-        to <em class="parameter"><code>nick</code></em> if this functions returns <code class="literal">TRUE</code>; if this function returns
-        <code class="literal">FALSE</code>, this variable will be left untouched.
+        to <em class="parameter"><code>nick</code></em> if this functions returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>; if this function returns
+        <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>, this variable will be left untouched.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if <em class="parameter"><code>nick</code></em> is a member of <em class="parameter"><code>enum_type</code></em>, or <code class="literal">FALSE</code> otherwise
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>nick</code></em> is a member of <em class="parameter"><code>enum_type</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise
 </td>
 </tr>
 </tbody>
@@ -697,8 +697,8 @@ as a destructor for values in a <span class="type">GHashTable</span>, for exampl
 <hr>
 <div class="refsect2" title="wocky_enum_to_nick ()">
 <a name="wocky-enum-to-nick"></a><h3>wocky_enum_to_nick ()</h3>
-<pre class="programlisting">const <span class="returnvalue">gchar</span> *       wocky_enum_to_nick                  (<em class="parameter"><code><span class="type">GType</span> enum_type</code></em>,
-                                                         <em class="parameter"><code><span class="type">gint</span> value</code></em>);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_enum_to_nick                  (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> enum_type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> value</code></em>);</pre>
 <p>
 
 </p>
@@ -717,7 +717,7 @@ as a destructor for values in a <span class="type">GHashTable</span>, for exampl
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the nickname of <em class="parameter"><code>value</code></em>, or <code class="literal">NULL</code> if it is not, in fact, a value of
+<td> the nickname of <em class="parameter"><code>value</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if it is not, in fact, a value of
 <em class="parameter"><code>enum_type</code></em>
 </td>
 </tr>
@@ -727,10 +727,10 @@ as a destructor for values in a <span class="type">GHashTable</span>, for exampl
 <hr>
 <div class="refsect2" title="wocky_absolutize_path ()">
 <a name="wocky-absolutize-path"></a><h3>wocky_absolutize_path ()</h3>
-<pre class="programlisting"><span class="returnvalue">gchar</span> *             wocky_absolutize_path               (<em class="parameter"><code>const <span class="type">gchar</span> *path</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_absolutize_path               (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>);</pre>
 <p>
 Return an absolute form of <em class="parameter"><code>path</code></em>. This cleans up duplicate slashes, "." or
-".." path segments, etc., and prepends <code class="function">g_get_current_dir()</code> if necessary, but
+".." path segments, etc., and prepends <a href="http://library.gnome.org/devel/glib/unstable/glib-Miscellaneous-Utility-Functions.html#g-get-current-dir"><code class="function">g_get_current_dir()</code></a> if necessary, but
 does not necessarily resolve symlinks.
 </p>
 <div class="variablelist"><table border="0">
@@ -743,8 +743,8 @@ does not necessarily resolve symlinks.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> an absolute path which must be freed with <code class="function">g_free()</code>, or possibly
- <code class="literal">NULL</code> for invalid filenames
+<td> an absolute path which must be freed with <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>, or possibly
+ <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for invalid filenames
 </td>
 </tr>
 </tbody>
@@ -753,8 +753,8 @@ does not necessarily resolve symlinks.
 <hr>
 <div class="refsect2" title="wocky_list_deep_copy ()">
 <a name="wocky-list-deep-copy"></a><h3>wocky_list_deep_copy ()</h3>
-<pre class="programlisting"><span class="returnvalue">GList</span> *             wocky_list_deep_copy                (<em class="parameter"><code><span class="type">GBoxedCopyFunc</span> copy</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">GList</span> *items</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_list_deep_copy                (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GBoxedCopyFunc"><span class="type">GBoxedCopyFunc</span></a> copy</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *items</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -781,7 +781,7 @@ does not necessarily resolve symlinks.
 <hr>
 <div class="refsect2" title="wocky_g_string_dup ()">
 <a name="wocky-g-string-dup"></a><h3>wocky_g_string_dup ()</h3>
-<pre class="programlisting"><span class="returnvalue">GString</span> *           wocky_g_string_dup                  (<em class="parameter"><code>const <span class="type">GString</span> *str</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="returnvalue">GString</span></a> *           wocky_g_string_dup                  (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *str</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -803,7 +803,7 @@ does not necessarily resolve symlinks.
 <hr>
 <div class="refsect2" title="wocky_g_string_free ()">
 <a name="wocky-g-string-free"></a><h3>wocky_g_string_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_g_string_free                 (<em class="parameter"><code><span class="type">GString</span> *str</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_g_string_free                 (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *str</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -901,6 +901,6 @@ does not necessarily resolve symlinks.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15.1</div>
+          Generated by GTK-Doc V1.15</div>
 </body>
 </html>

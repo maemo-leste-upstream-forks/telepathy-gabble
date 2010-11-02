@@ -1039,7 +1039,7 @@ wocky_node_equal (WockyNode *node0,
 /**
  * wocky_node_is_superset:
  * @node: the #WockyNode to test
- * @pattern: the supposed subset
+ * @subset: the supposed subset
  *
  * Returns: %TRUE if @node is a superset of @subset.
  */
@@ -1272,6 +1272,7 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
           break;
 
         default:
+          g_critical ("unknown build tag %c", arg);
           g_assert_not_reached ();
         }
     }
