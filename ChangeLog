@@ -1,3 +1,159 @@
+commit 8bd96eead31245633754071a9aaf6161bab59d7d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-02 12:02:28 +0000
+
+    Prepare version 0.10.4
+
+commit fb68feadde32173b681c65c68773e81eef1921ae
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-01 11:45:09 +0000
+
+    Update NEWS
+
+commit 2fc98e09338937907e45350333723b6d99b4455e
+Author: Thomas Flueeli <tflueeli@gmail.com>
+Date:   2010-10-31 13:23:45 +0100
+
+    fd.o#24775: implement get_local_interfaces_ips() for Windows
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 4da81ef71eb1ba3ff3052daabb628ec13ce8d289
+Author: Thomas Flueeli <tflueeli@gmail.com>
+Date:   2010-10-28 12:32:11 +0200
+
+    replace strtoull with g_ascii_strtoull
+
+commit 5da106ed3b261b0dbf810d4b5f807d6d87a441f8
+Author: Thomas Flueeli <tflueeli@gmail.com>
+Date:   2010-10-28 12:26:15 +0200
+
+    replace localtime_r with g_time_val_to_iso8601
+
+commit ce60486a3088d6ab40d8343ae757e93662e3f6e0
+Author: Thomas Flueeli <tflueeli@gmail.com>
+Date:   2010-10-28 12:11:28 +0200
+
+    conditionally include unistd.h
+
+commit 0b8c4dfdf2b6100acbf7b524e8829c39e8978608
+Author: Thomas Flueeli <tflueeli@gmail.com>
+Date:   2010-10-28 12:07:01 +0200
+
+    remove unnecessary cast
+    
+    This fixes the following error on MSVC9:
+    
+    debug.c(95) : error C2440: 'type cast' : cannot convert from 'GDebugKey' to 'GDebugKey'
+
+commit 908f4474b65c636d53d69e1aea4225c0bd711cea
+Author: Thomas Flueeli <tflueeli@gmail.com>
+Date:   2010-10-28 11:56:57 +0200
+
+    replace C99 integers with GLib types
+
+commit 634fe8b0959578d9208d8baf70907aa9079b35c7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-10-22 12:37:27 +0100
+
+    NEWS for invisibility method preference fix.
+
+commit 29ed25e0fdec53c7d294e09a8024b37d64694963
+Merge: 54023e3 4f66208
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-10-22 12:09:10 +0100
+
+    Merge branch '0.10-xep0186-precedence' into telepathy-gabble-0.10
+    
+    This is backported from master, where it was merged as
+    3be1240c7917e90de9818236d02b289ee1166a9f.
+
+commit 4f66208343c29226bdb549c2b1d6d15cd2ab985e
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-10-14 11:15:20 -0700
+
+    Add hybrid (XEP-0126 & XEP-0186) service to initial presence test.
+
+commit 2a295d1d37ff7a092c185e07a338924977e2d565
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-10-13 10:49:15 -0700
+
+    Check for cases when server supports both XEP-0186 and privacy lists.
+    Assert that we choose XEP-0186 over privacy lists for simple visibility.
+
+commit afb86949106ae9f255955388b7c1bcd3f550e6f9
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-10-13 10:47:23 -0700
+
+    Use XEP-0186 for simple invisibility when it is available.
+
+commit 54023e383523e20246fa8015f5cfdcf6f333c461
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-10-20 16:43:53 +0100
+
+    Add some NEWS
+
+commit 0acc7bc7afe85b3e1d5e2d24045a90e1fb06dc72
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-10-13 18:59:19 +0100
+
+    GabbleServerSaslChannel: stop making assumptions about how Wocky implements its async callback
+    
+    In principle, we're not meant to assume anything about @result - even
+    that it's a GSimpleAsyncResult.
+    
+    (This broke when Wocky changed its source tags from _finish to the
+    more conventional _async.)
+
+commit f4fa57cc01fa75d20f5f95b4c67969ffc0f8f210
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-10-13 18:28:15 +0100
+
+    GabbleServerTLSManager: stop making assumptions about how Wocky implements its async callback
+    
+    In principle, we're not meant to assume anything about @result - even
+    that it's a GSimpleAsyncResult.
+    
+    (This broke when Wocky changed its source tags from _finish to the
+    more conventional _async.)
+
+commit a54ccdc42de68ce9e38c9f12f08fad8b39f1665c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-10-20 13:31:48 +0100
+
+    Update Wocky snapshot
+    
+    This adds HTTP proxy support, along with a bunch of leak fixes and a fix
+    for a crash that never happens in practice. The MUC namespace constants
+    were renamed slightly, hence the patch here to build again.
+    
+    The following two patches, cherry-picked from master, make it actually
+    work, too. :)
+
+commit f5f7f03dec5874f319c4ca55e8ba1e93bc1ac11f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-10-08 14:26:56 +0100
+
+    Update Wocky snapshot for Coverity fixes.
+
+commit b9fb773989b6a879a7f7381d7c8a55ae6efbe236
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-10-08 13:38:18 +0100
+
+    Search: clarify handling field request result
+    
+    Coverity got upset that we might be passing a NULL query_node to
+    parse_search_field_response(). Actually, we never do, but rearranging
+    the code a bit makes this more explicit.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 3b61e42569f55eb78380848c80647ac0fb8d8bf4
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   2010-10-06 17:03:46 +0200
+
+    Bump nano version to 0.10.3.1
+
 commit bdcf7b410501a216db610562c34086f60b899201
 Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
 Date:   2010-10-06 16:34:39 +0200
@@ -1411,7 +1567,7 @@ Date:   2010-08-13 14:23:00 +0200
     constants.py: add INVALID_HANDLE
 
 commit 3dec7eeca3318c35456e25b505de03b38fd84f59
-Merge: f8398be 18c80d8
+Merge: f8398be76 18c80d8
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-08-11 13:41:26 +0100
 

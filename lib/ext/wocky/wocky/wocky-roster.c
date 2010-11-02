@@ -524,8 +524,7 @@ roster_iq_handler_set_cb (WockyPorter *porter,
   GError *error = NULL;
   WockyStanza *reply;
 
-  from = wocky_node_get_attribute (wocky_stanza_get_top_node (stanza),
-    "from");
+  from = wocky_stanza_get_from (stanza);
 
   if (from != NULL)
     {
@@ -726,7 +725,7 @@ wocky_roster_fetch_roster_async (WockyRoster *self,
       NULL);
 
   priv->fetch_result = g_simple_async_result_new (G_OBJECT (self),
-      callback, user_data, wocky_roster_fetch_roster_finish);
+      callback, user_data, wocky_roster_fetch_roster_async);
 
   wocky_porter_send_iq_async (priv->porter,
       iq, cancellable, roster_fetch_roster_cb, self);
@@ -743,7 +742,7 @@ wocky_roster_fetch_roster_finish (WockyRoster *self,
     return FALSE;
 
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-          G_OBJECT (self), wocky_roster_fetch_roster_finish), FALSE);
+          G_OBJECT (self), wocky_roster_fetch_roster_async), FALSE);
 
   return TRUE;
 }
@@ -1075,7 +1074,7 @@ wocky_roster_add_contact_async (WockyRoster *self,
   g_return_if_fail (jid != NULL);
 
   result = g_simple_async_result_new (G_OBJECT (self),
-      callback, user_data, wocky_roster_add_contact_finish);
+      callback, user_data, wocky_roster_add_contact_async);
 
   pending = get_pending_operation (self, jid);
   if (pending != NULL)
@@ -1137,7 +1136,7 @@ wocky_roster_add_contact_finish (WockyRoster *self,
     return FALSE;
 
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-          G_OBJECT (self), wocky_roster_add_contact_finish), FALSE);
+          G_OBJECT (self), wocky_roster_add_contact_async), FALSE);
 
   return TRUE;
 }
@@ -1176,7 +1175,7 @@ wocky_roster_remove_contact_async (WockyRoster *self,
   jid = wocky_bare_contact_get_jid (contact);
 
   result = g_simple_async_result_new (G_OBJECT (self),
-      callback, user_data, wocky_roster_remove_contact_finish);
+      callback, user_data, wocky_roster_remove_contact_async);
 
   pending = get_pending_operation (self, jid);
   if (pending != NULL)
@@ -1217,7 +1216,7 @@ wocky_roster_remove_contact_finish (WockyRoster *self,
     return FALSE;
 
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-          G_OBJECT (self), wocky_roster_remove_contact_finish), FALSE);
+          G_OBJECT (self), wocky_roster_remove_contact_async), FALSE);
 
   return TRUE;
 }
@@ -1241,7 +1240,7 @@ wocky_roster_change_contact_name_async (WockyRoster *self,
   jid = wocky_bare_contact_get_jid (contact);
 
   result = g_simple_async_result_new (G_OBJECT (self),
-      callback, user_data, wocky_roster_change_contact_name_finish);
+      callback, user_data, wocky_roster_change_contact_name_async);
 
   pending = get_pending_operation (self, jid);
   if (pending != NULL)
@@ -1293,7 +1292,7 @@ wocky_roster_change_contact_name_finish (WockyRoster *self,
     return FALSE;
 
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-        G_OBJECT (self), wocky_roster_change_contact_name_finish),
+        G_OBJECT (self), wocky_roster_change_contact_name_async),
       FALSE);
 
   return TRUE;
@@ -1318,7 +1317,7 @@ wocky_roster_contact_add_group_async (WockyRoster *self,
   jid = wocky_bare_contact_get_jid (contact);
 
   result = g_simple_async_result_new (G_OBJECT (self),
-      callback, user_data, wocky_roster_contact_add_group_finish);
+      callback, user_data, wocky_roster_contact_add_group_async);
 
   pending = get_pending_operation (self, jid);
   if (pending != NULL)
@@ -1372,7 +1371,7 @@ wocky_roster_contact_add_group_finish (WockyRoster *self,
     return FALSE;
 
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-        G_OBJECT (self), wocky_roster_contact_add_group_finish),
+        G_OBJECT (self), wocky_roster_contact_add_group_async),
       FALSE);
 
   return TRUE;
@@ -1398,7 +1397,7 @@ wocky_roster_contact_remove_group_async (WockyRoster *self,
   jid = wocky_bare_contact_get_jid (contact);
 
   result = g_simple_async_result_new (G_OBJECT (self),
-      callback, user_data, wocky_roster_contact_remove_group_finish);
+      callback, user_data, wocky_roster_contact_remove_group_async);
 
   pending = get_pending_operation (self, jid);
   if (pending != NULL)
@@ -1464,7 +1463,7 @@ wocky_roster_contact_remove_group_finish (WockyRoster *self,
     return FALSE;
 
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
-        G_OBJECT (self), wocky_roster_contact_remove_group_finish),
+        G_OBJECT (self), wocky_roster_contact_remove_group_async),
       FALSE);
 
   return TRUE;

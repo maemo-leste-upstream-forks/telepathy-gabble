@@ -120,6 +120,12 @@ wocky_tls_connector_finalize (GObject *object)
       self->priv->handler = NULL;
     }
 
+  if (self->priv->tls_connection != NULL)
+    {
+      g_object_unref (self->priv->tls_connection);
+      self->priv->tls_connection = NULL;
+    }
+
   G_OBJECT_CLASS (wocky_tls_connector_parent_class)->finalize (object);
 }
 
@@ -201,6 +207,7 @@ report_error_in_idle (WockyTLSConnector *self,
 
   g_simple_async_result_set_from_error (self->priv->secure_result,
       error);
+  g_error_free (error);
   g_simple_async_result_complete_in_idle (self->priv->secure_result);
 
   g_object_unref (self->priv->secure_result);
@@ -277,7 +284,8 @@ tls_handler_verify_async_cb (GObject *source,
     }
 
   g_simple_async_result_set_op_res_gpointer (self->priv->secure_result,
-      self->priv->tls_connection, NULL);
+      self->priv->tls_connection, (GDestroyNotify) g_object_unref);
+  self->priv->tls_connection = NULL;
   g_simple_async_result_complete_in_idle (self->priv->secure_result);
 
   g_object_unref (self->priv->secure_result);
@@ -454,7 +462,7 @@ wocky_tls_connector_secure_async (WockyTLSConnector *self,
   g_assert (self->priv->secure_result == NULL);
 
   async_result = g_simple_async_result_new (G_OBJECT (self),
-      callback, user_data, wocky_tls_connector_secure_finish);
+      callback, user_data, wocky_tls_connector_secure_async);
 
   if (cancellable != NULL)
     self->priv->cancellable = g_object_ref (cancellable);
@@ -476,5 +484,5 @@ wocky_tls_connector_secure_finish (WockyTLSConnector *self,
     GError **error)
 {
   wocky_implement_finish_return_copy_pointer (self,
-      wocky_tls_connector_secure_finish, g_object_ref);
+      wocky_tls_connector_secure_async, g_object_ref);
 }
