@@ -1,7 +1,9 @@
 BUILT_SOURCES = \
     gabble-signals-marshal.h \
     gabble-signals-marshal.c \
-    gabble-signals-marshal.list
+    gabble-signals-marshal.list \
+    gabble-enumtypes.h \
+    gabble-enumtypes.c
 
 CLEANFILES = $(BUILT_SOURCES)
 
@@ -59,6 +61,8 @@ libgabble_convenience_la_SOURCES = \
     conn-aliasing.c \
     conn-avatars.h \
     conn-avatars.c \
+    conn-client-types.h \
+    conn-client-types.c \
     conn-contact-info.h \
     conn-contact-info.c \
     conn-location.h \
@@ -71,6 +75,8 @@ libgabble_convenience_la_SOURCES = \
     conn-sidecars.c \
     conn-slacker.h \
     conn-slacker.c \
+    conn-util.h \
+    conn-util.c \
     conn-mail-notif.h \
     conn-mail-notif.c \
     $(top_srcdir)/gabble/connection.h \
@@ -115,6 +121,8 @@ libgabble_convenience_la_SOURCES = \
     jingle-transport-iceudp.c \
     jingle-transport-iface.h \
     jingle-transport-iface.c \
+    legacy-caps.h \
+    legacy-caps.c \
     media-channel.h \
     media-channel-internal.h \
     media-channel.c \
@@ -149,8 +157,6 @@ libgabble_convenience_la_SOURCES = \
     request-pipeline.c \
     roster.h \
     roster.c \
-    roster-channel.h \
-    roster-channel.c \
     roomlist-channel.h \
     roomlist-channel.c \
     roomlist-manager.h \
@@ -251,3 +257,21 @@ gabble-signals-marshal.list: $(libgabble_convenience_la_SOURCES) Makefile.am
 	$(AM_V_GEN){ echo '#include "$*-signals-marshal.h"' && \
 	glib-genmarshal --body --prefix=$(subst -,_,$*)_marshal $< ; \
 	} > $@
+
+# rules for making the glib enum objects
+gabble-enumtypes.h: presence.h Makefile.in
+	$(AM_V_GEN)glib-mkenums \
+	--fhead "#ifndef __GABBLE_ENUM_TYPES_H__\n#define __GABBLE_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
+	--fprod "/* enumerations from \"@filename@\" */\n" \
+	--vhead "GType @enum_name@_get_type (void);\n#define GABBLE_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
+	--ftail "G_END_DECLS\n\n#endif /* __GABBLE_ENUM_TYPES_H__ */" \
+	$< > $@
+
+gabble-enumtypes.c: presence.h Makefile.in
+	$(AM_V_GEN)glib-mkenums \
+	--fhead "#include <$*.h>" \
+	--fprod "\n/* enumerations from \"@filename@\" */\n#include \"@filename@\"" \
+	--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {"     \
+	--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
+	--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
+	$< > $@

@@ -40,7 +40,6 @@
 #include <telepathy-glib/errors.h>
 #include <telepathy-glib/gtypes.h>
 #include <telepathy-glib/handle-repo-dynamic.h>
-#include <telepathy-glib/handle-repo-static.h>
 #include <telepathy-glib/interfaces.h>
 #include <telepathy-glib/svc-generic.h>
 
@@ -55,6 +54,7 @@
 #include "auth-manager.h"
 #include "conn-aliasing.h"
 #include "conn-avatars.h"
+#include "conn-client-types.h"
 #include "conn-contact-info.h"
 #include "conn-location.h"
 #include "conn-presence.h"
@@ -67,6 +67,7 @@
 #include "media-channel.h"
 #include "im-factory.h"
 #include "jingle-factory.h"
+#include "legacy-caps.h"
 #include "media-factory.h"
 #include "muc-factory.h"
 #include "namespaces.h"
@@ -81,6 +82,7 @@
 #include "private-tubes-factory.h"
 #include "util.h"
 #include "vcard-manager.h"
+#include "conn-util.h"
 
 static guint disco_reply_timeout = 5;
 
@@ -108,6 +110,10 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
        tp_dbus_properties_mixin_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CONTACTS,
       tp_contacts_mixin_iface_init);
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CONTACT_LIST,
+      tp_base_contact_list_mixin_list_iface_init);
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CONTACT_GROUPS,
+      tp_base_contact_list_mixin_groups_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_SIMPLE_PRESENCE,
       tp_presence_mixin_simple_presence_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_PRESENCE,
@@ -125,8 +131,10 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
       gabble_conn_contact_caps_iface_init);
     G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_CONNECTION_FUTURE,
       conn_future_iface_init);
-    G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
       conn_mail_notif_iface_init);
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CLIENT_TYPES,
+      conn_client_types_iface_init);
     )
 
 /* properties */
@@ -336,8 +344,12 @@ gabble_connection_constructor (GType type,
         type, n_construct_properties, construct_params));
   GabbleConnectionPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       GABBLE_TYPE_CONNECTION, GabbleConnectionPrivate);
+  TpBaseConnection *base = TP_BASE_CONNECTION (self);
 
   DEBUG("Post-construction: (GabbleConnection *)%p", self);
+
+  tp_base_connection_add_possible_client_interest (base,
+      TP_IFACE_QUARK_CONNECTION_INTERFACE_MAIL_NOTIFICATION);
 
   self->req_pipeline = gabble_request_pipeline_new (self);
   self->disco = gabble_disco_new (self);
@@ -351,12 +363,11 @@ gabble_connection_constructor (GType type,
   g_signal_connect (self->presence_cache, "capabilities-update", G_CALLBACK
       (connection_capabilities_update_cb), self);
 
-  capabilities_fill_cache (self->presence_cache);
-
   tp_contacts_mixin_init (G_OBJECT (self),
       G_STRUCT_OFFSET (GabbleConnection, contacts));
 
-  tp_base_connection_register_with_contacts_mixin (TP_BASE_CONNECTION (self));
+  tp_base_connection_register_with_contacts_mixin (base);
+  tp_base_contact_list_mixin_register_with_contacts_mixin (base);
 
   conn_aliasing_init (self);
   conn_avatars_init (self);
@@ -366,6 +377,7 @@ gabble_connection_constructor (GType type,
   conn_location_init (self);
   conn_sidecars_init (self);
   conn_mail_notif_init (self);
+  conn_client_types_init (self);
 
   tp_contacts_mixin_add_contact_attributes_iface (G_OBJECT (self),
       TP_IFACE_CONNECTION_INTERFACE_CAPABILITIES,
@@ -718,16 +730,6 @@ gabble_connection_get_unique_name (TpBaseConnection *self)
   return unique_name;
 }
 
-/* must be in the same order as GabbleListHandle in connection.h */
-static const char *list_handle_strings[] =
-{
-    "stored",       /* GABBLE_LIST_HANDLE_STORED */
-    "publish",      /* GABBLE_LIST_HANDLE_PUBLISH */
-    "subscribe",    /* GABBLE_LIST_HANDLE_SUBSCRIBE */
-    "deny",         /* GABBLE_LIST_HANDLE_DENY */
-    NULL
-};
-
 /* For the benefit of the unit tests, this will allow the connection to
  * be NULL
  */
@@ -741,10 +743,6 @@ _gabble_connection_create_handle_repos (TpBaseConnection *conn,
   repos[TP_HANDLE_TYPE_ROOM] =
       tp_dynamic_handle_repo_new (TP_HANDLE_TYPE_ROOM, gabble_normalize_room,
           conn);
-  repos[TP_HANDLE_TYPE_GROUP] =
-      tp_dynamic_handle_repo_new (TP_HANDLE_TYPE_GROUP, NULL, NULL);
-  repos[TP_HANDLE_TYPE_LIST] =
-      tp_static_handle_repo_new (TP_HANDLE_TYPE_LIST, list_handle_strings);
 }
 
 static void
@@ -760,7 +758,7 @@ base_connected_cb (TpBaseConnection *base_conn)
 
 static const gchar *implemented_interfaces[] = {
     /* conditionally present interfaces */
-    GABBLE_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
+    TP_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
     GABBLE_IFACE_OLPC_ACTIVITY_PROPERTIES,
     GABBLE_IFACE_OLPC_BUDDY_INFO,
 
@@ -772,11 +770,14 @@ static const gchar *implemented_interfaces[] = {
     TP_IFACE_CONNECTION_INTERFACE_AVATARS,
     TP_IFACE_CONNECTION_INTERFACE_CONTACT_INFO,
     TP_IFACE_CONNECTION_INTERFACE_CONTACTS,
+    TP_IFACE_CONNECTION_INTERFACE_CONTACT_LIST,
+    TP_IFACE_CONNECTION_INTERFACE_CONTACT_GROUPS,
     TP_IFACE_CONNECTION_INTERFACE_REQUESTS,
     TP_IFACE_CONNECTION_INTERFACE_CONTACT_CAPABILITIES,
     TP_IFACE_CONNECTION_INTERFACE_LOCATION,
     GABBLE_IFACE_CONNECTION_INTERFACE_GABBLE_DECLOAK,
     GABBLE_IFACE_CONNECTION_FUTURE,
+    TP_IFACE_CONNECTION_INTERFACE_CLIENT_TYPES,
     NULL
 };
 static const gchar **interfaces_always_present = implemented_interfaces + 3;
@@ -837,7 +838,7 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
           tp_dbus_properties_mixin_setter_gobject_properties,
           decloak_props,
         },
-        { GABBLE_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
+        { TP_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
           conn_mail_notif_properties_getter,
           NULL,
           mail_notif_props,
@@ -1061,6 +1062,8 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
   conn_presence_class_init (gabble_connection_class);
 
   conn_contact_info_class_init (gabble_connection_class);
+
+  tp_base_contact_list_mixin_class_init (parent_class);
 }
 
 static void
@@ -1101,6 +1104,8 @@ gabble_connection_dispose (GObject *object)
   g_hash_table_destroy (self->avatar_requests);
   g_hash_table_destroy (self->vcard_requests);
 
+  conn_presence_dispose (self);
+
   conn_mail_notif_dispose (self);
 
   g_assert (priv->iq_disco_cb == NULL);
@@ -1109,13 +1114,9 @@ gabble_connection_dispose (GObject *object)
   tp_clear_object (&priv->connector);
   tp_clear_object (&self->session);
 
-  if (self->lmconn != NULL)
-    {
-      /* ownership of our porter was transferred to the LmConnection */
-      priv->porter = NULL;
-      lm_connection_unref (self->lmconn);
-      self->lmconn = NULL;
-    }
+  /* ownership of our porter was transferred to the LmConnection */
+  priv->porter = NULL;
+  tp_clear_pointer (&self->lmconn, lm_connection_unref);
 
   g_hash_table_destroy (priv->client_caps);
   gabble_capability_set_free (priv->all_caps);
@@ -1231,17 +1232,6 @@ OUT:
   return result;
 }
 
-static const gchar *
-get_bare_jid (GabbleConnection *conn)
-{
-  TpBaseConnection *base = TP_BASE_CONNECTION (conn);
-  TpHandleRepoIface *contact_handles = tp_base_connection_get_handles (base,
-      TP_HANDLE_TYPE_CONTACT);
-  TpHandle self = tp_base_connection_get_self_handle (base);
-
-  return tp_handle_inspect (contact_handles, self);
-}
-
 /**
  * gabble_connection_get_full_jid:
  *
@@ -1251,7 +1241,7 @@ get_bare_jid (GabbleConnection *conn)
 gchar *
 gabble_connection_get_full_jid (GabbleConnection *conn)
 {
-  const gchar *bare_jid = get_bare_jid (conn);
+  const gchar *bare_jid = conn_util_get_bare_self_jid (conn);
 
   return g_strconcat (bare_jid, "/", conn->priv->resource, NULL);
 }
@@ -1830,8 +1820,8 @@ connector_connected (GabbleConnection *self,
 
   /* Disco our own bare jid to check if PEP is supported */
   if (!gabble_disco_request_with_timeout (self->disco, GABBLE_DISCO_TYPE_INFO,
-      get_bare_jid (self), NULL, disco_reply_timeout, bare_jid_disco_cb, self,
-      G_OBJECT (self), &error))
+          conn_util_get_bare_self_jid (self), NULL, disco_reply_timeout,
+          bare_jid_disco_cb, self, G_OBJECT (self), &error))
     {
       DEBUG ("Sending disco request to our own bare jid failed: %s",
           error->message);
@@ -1919,13 +1909,11 @@ disconnect_callbacks (TpBaseConnection *base)
 
   lm_connection_unregister_message_handler (conn->lmconn, priv->iq_disco_cb,
                                             LM_MESSAGE_TYPE_IQ);
-  lm_message_handler_unref (priv->iq_disco_cb);
-  priv->iq_disco_cb = NULL;
+  tp_clear_pointer (&priv->iq_disco_cb, lm_message_handler_unref);
 
   lm_connection_unregister_message_handler (conn->lmconn, priv->iq_unknown_cb,
                                             LM_MESSAGE_TYPE_IQ);
-  lm_message_handler_unref (priv->iq_unknown_cb);
-  priv->iq_unknown_cb = NULL;
+  tp_clear_pointer (&priv->iq_unknown_cb, lm_message_handler_unref);
 }
 
 /**
@@ -2621,7 +2609,7 @@ set_status_to_connected (GabbleConnection *conn)
   if (conn->features & GABBLE_CONNECTION_FEATURES_GOOGLE_MAIL_NOTIFY)
     {
        const gchar *ifaces[] =
-         { GABBLE_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION, NULL };
+         { TP_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION, NULL };
 
       tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
     }
@@ -2713,6 +2701,8 @@ connection_disco_cb (GabbleDisco *disco,
                 conn->features |= GABBLE_CONNECTION_FEATURES_INVISIBLE;
               else if (0 == strcmp (var, NS_GOOGLE_MAIL_NOTIFY))
                 conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_MAIL_NOTIFY;
+              else if (0 == strcmp (var, NS_GOOGLE_SHARED_STATUS))
+                conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_SHARED_STATUS;
             }
         }
 

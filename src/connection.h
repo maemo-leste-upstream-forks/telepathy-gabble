@@ -78,6 +78,7 @@ typedef enum
   GABBLE_CONNECTION_FEATURES_PEP = 1 << 4,
   GABBLE_CONNECTION_FEATURES_GOOGLE_MAIL_NOTIFY = 1 << 5,
   GABBLE_CONNECTION_FEATURES_INVISIBLE = 1 << 6,
+  GABBLE_CONNECTION_FEATURES_GOOGLE_SHARED_STATUS = 1 << 7,
 } GabbleConnectionFeatures;
 
 typedef struct _GabbleConnectionPrivate GabbleConnectionPrivate;
@@ -89,16 +90,6 @@ typedef LmHandlerResult (*GabbleConnectionMsgReplyFunc) (GabbleConnection *conn,
                                                          LmMessage *reply_msg,
                                                          GObject *object,
                                                          gpointer user_data);
-
-/* must be in the same order as the list_handle_strings in
- * connection.c */
-typedef enum
-{
-  GABBLE_LIST_HANDLE_STORED = 1,
-  GABBLE_LIST_HANDLE_PUBLISH,
-  GABBLE_LIST_HANDLE_SUBSCRIBE,
-  GABBLE_LIST_HANDLE_DENY
-} GabbleListHandle;
 
 typedef enum {
     /* The JID could be a "global" JID, or a MUC room member. We'll assume
