@@ -35,13 +35,6 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 TESTS =
-
-# FIXME: These tests are known to fail sporadically: see
-# <https://bugs.freedesktop.org/show_bug.cgi?id=20635> and
-# <https://bugs.freedesktop.org/show_bug.cgi?id=22022>. To avoid driving people
-# making releases crazy, let's not run them for official releases.
-@OFFICIAL_RELEASE_TRUE@am__append_1 = $(TWISTED_FT_TESTS) $(TWISTED_TUBE_TESTS)
-@OFFICIAL_RELEASE_FALSE@am__append_2 = $(TWISTED_FT_TESTS) $(TWISTED_TUBE_TESTS)
 noinst_PROGRAMS = telepathy-gabble-debug$(EXEEXT)
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/tools/check-coding-style.mk
@@ -303,7 +296,7 @@ TWISTED_TESTS = caps_helper.py servicetest.py avatar-requirements.py \
 	caps/disco-without-node.py caps/from-bare-jid.py \
 	caps/hashed-caps.py caps/initial-caps.py caps/jingle-caps.py \
 	caps/receive-jingle.py caps/trust-thyself.py caps/tube-caps.py \
-	cm/protocol.py device-idleness.py gateways.py \
+	client-types.py cm/protocol.py device-idleness.py gateways.py \
 	muc/conference.py muc/name-conflict.py muc/renamed.py \
 	muc/roomlist.py muc/scrollback.py muc/send-error.py \
 	muc/subject.py muc/test-ensure.py muc/test-muc-alias.py \
@@ -317,8 +310,9 @@ TWISTED_TESTS = caps_helper.py servicetest.py avatar-requirements.py \
 	presence/initial-presence.py presence/invisible_xep_0126.py \
 	presence/invisible_xep_0186.py presence/presence.py \
 	presence/plugins.py presence/set-idempotence.py \
-	roster/ensure.py roster/groups.py roster/groups-12791.py \
-	roster/removed-from-rp-subscribe.py \
+	presence/shared-status.py roster/authorize.py \
+	roster/edit-before-roster.py roster/ensure.py roster/groups.py \
+	roster/groups-12791.py roster/removed-from-rp-subscribe.py \
 	roster/request-group-before-roster.py \
 	roster/request-group-after-roster.py \
 	roster/test-google-roster.py roster/test-roster.py \
@@ -340,8 +334,9 @@ TWISTED_TESTS = caps_helper.py servicetest.py avatar-requirements.py \
 	connect/stream-closed.py connect/network-error.py \
 	test-fallback-socks5-proxy.py test-register.py \
 	test-location.py pubsub.py sidecar-own-caps.py sidecars.py \
-	mail-notification.py $(NULL) $(am__append_2) \
-	$(TWISTED_JINGLE_TESTS) $(TWISTED_VCARD_TESTS)
+	mail-notification.py $(NULL) $(TWISTED_FT_TESTS) \
+	$(TWISTED_TUBE_TESTS) $(TWISTED_JINGLE_TESTS) \
+	$(TWISTED_VCARD_TESTS)
 TWISTED_TUBE_TESTS = \
 	tubes/accept-muc-dbus-tube.py \
 	tubes/accept-muc-stream-tube.py \
@@ -392,11 +387,14 @@ TWISTED_JINGLE_TESTS = \
 	jingle/accept-extra-stream.py \
 	jingle/call-basics.py \
 	jingle/call-codecoffer.py \
+	jingle/call-dtmf.py \
 	jingle/call-muc.py \
 	jingle/call-muc-cancel.py \
 	jingle/call-muc-re-re-request.py \
 	jingle/call-state.py \
 	jingle/decloak-peer.py \
+	jingle/dtmf.py \
+	jingle/dtmf-no-audio.py \
 	jingle/google-relay.py \
 	jingle/hold-audio.py \
 	jingle/hold-av.py \
@@ -467,15 +465,31 @@ CHECK_TWISTED_SLEEP = 0
 @HAVE_MCE_FALSE@HAVE_MCE_PYBOOL = False
 @HAVE_MCE_TRUE@HAVE_MCE_PYBOOL = True
 BUILT_SOURCES = config.py
-EXTRA_DIST = $(TWISTED_TESTS) bytestream.py constants.py gabbletest.py \
-	httptest.py rostertest.py jingle-share/file_transfer_helper.py \
-	jingle-share/jingleshareutils.py jingle/__init__.py \
-	jingle/callutils.py jingle/jingletest.py jingle/jingletest2.py \
-	mucutil.py ns.py olpc/util.py tubes/muctubeutil.py \
-	tubes/tubetestutil.py sasl/saslutil.py search/search_helper.py \
+EXTRA_DIST = \
+	$(TWISTED_TESTS) \
+	bytestream.py \
+	constants.py \
+	gabbletest.py \
+	httptest.py \
+	rostertest.py \
+	jingle-share/file_transfer_helper.py \
+	jingle-share/jingleshareutils.py \
+	jingle/__init__.py \
+	jingle/callutils.py \
+	jingle/jingletest.py \
+	jingle/jingletest2.py \
+	mucutil.py \
+	ns.py \
+	olpc/util.py \
+	tubes/muctubeutil.py \
+	tubes/tubetestutil.py \
+	sasl/saslutil.py \
+	search/search_helper.py \
 	file-transfer/file_transfer_helper.py \
-	presence/invisible_helper.py tls-cert.pem tls-key.pem \
-	$(am__append_1)
+	presence/invisible_helper.py \
+	tls-cert.pem \
+	tls-key.pem
+
 telepathy_gabble_debug_SOURCES = \
     main-debug.c \
     test-resolver.c \
@@ -1007,16 +1021,21 @@ check-twisted:
         else \
 	  sleep=$(CHECK_TWISTED_SLEEP); \
 	fi; \
+	failed=0; \
 	sh $(srcdir)/tools/with-session-bus.sh \
 		--sleep=$$sleep \
 		--config-file=tools/tmp-session-bus.conf \
 		-- $(MAKE) check-TESTS \
 		TESTS="$(TWISTED_TESTS)" \
-		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON) -u"
-	@if test -e tools/core; then\
-		echo "Core dump exists: tools/core";\
+		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON) -u" || \
+		failed=1; \
+	if test -e tools/core; then\
+		echo -e "\033[0;31;1mCore dump exists: tools/core\033[0m";\
 		exit 1;\
-	fi
+	fi; \
+	if test $$failed = 1; then\
+		exit 1;\
+	fi;
 
 config.py: Makefile
 	$(AM_V_GEN) { \

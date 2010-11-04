@@ -101,8 +101,6 @@ void gabble_presence_cache_update_many (GabblePresenceCache *cache,
     GabblePresenceId presence_id, const gchar *status_message, gint8 priority);
 void gabble_presence_cache_maybe_remove (GabblePresenceCache *cache,
     TpHandle handle);
-void gabble_presence_cache_add_bundle_caps (GabblePresenceCache *cache,
-    const gchar *node, const gchar *ns);
 void gabble_presence_cache_add_own_caps (GabblePresenceCache *cache,
     const gchar *ver,
     const GabbleCapabilitySet *cap_set,
@@ -135,6 +133,9 @@ void gabble_presence_cache_update_location (GabblePresenceCache *cache,
     TpHandle handle, GHashTable *location);
 GHashTable* gabble_presence_cache_get_location (GabblePresenceCache *cache,
     TpHandle handle);
+
+gboolean gabble_presence_cache_disco_in_progress (GabblePresenceCache *cache,
+    TpHandle handle, const gchar *resource);
 
 G_END_DECLS
 

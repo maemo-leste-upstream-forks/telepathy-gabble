@@ -16,6 +16,7 @@ TWISTED_TESTS = \
 	caps/receive-jingle.py \
 	caps/trust-thyself.py \
 	caps/tube-caps.py \
+	client-types.py \
 	cm/protocol.py \
 	device-idleness.py \
 	gateways.py \
@@ -47,6 +48,9 @@ TWISTED_TESTS = \
 	presence/presence.py \
 	presence/plugins.py \
 	presence/set-idempotence.py \
+	presence/shared-status.py \
+	roster/authorize.py \
+	roster/edit-before-roster.py \
 	roster/ensure.py \
 	roster/groups.py \
 	roster/groups-12791.py \
@@ -130,11 +134,14 @@ TWISTED_JINGLE_TESTS = \
 	jingle/accept-extra-stream.py \
 	jingle/call-basics.py \
 	jingle/call-codecoffer.py \
+	jingle/call-dtmf.py \
 	jingle/call-muc.py \
 	jingle/call-muc-cancel.py \
 	jingle/call-muc-re-re-request.py \
 	jingle/call-state.py \
 	jingle/decloak-peer.py \
+	jingle/dtmf.py \
+	jingle/dtmf-no-audio.py \
 	jingle/google-relay.py \
 	jingle/hold-audio.py \
 	jingle/hold-av.py \
@@ -231,16 +238,21 @@ check-twisted:
         else \
 	  sleep=$(CHECK_TWISTED_SLEEP); \
 	fi; \
+	failed=0; \
 	sh $(srcdir)/tools/with-session-bus.sh \
 		--sleep=$$sleep \
 		--config-file=tools/tmp-session-bus.conf \
 		-- $(MAKE) check-TESTS \
 		TESTS="$(TWISTED_TESTS)" \
-		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON) -u"
-	@if test -e tools/core; then\
-		echo "Core dump exists: tools/core";\
+		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON) -u" || \
+		failed=1; \
+	if test -e tools/core; then\
+		echo -e "\033[0;31;1mCore dump exists: tools/core\033[0m";\
 		exit 1;\
-	fi
+	fi; \
+	if test $$failed = 1; then\
+		exit 1;\
+	fi;
 
 if ENABLE_DEBUG
 DEBUGGING_PYBOOL = True
@@ -303,16 +315,7 @@ EXTRA_DIST = \
 	tls-cert.pem \
 	tls-key.pem
 
-# FIXME: These tests are known to fail sporadically: see
-# <https://bugs.freedesktop.org/show_bug.cgi?id=20635> and
-# <https://bugs.freedesktop.org/show_bug.cgi?id=22022>. To avoid driving people
-# making releases crazy, let's not run them for official releases.
-if OFFICIAL_RELEASE
-EXTRA_DIST += $(TWISTED_FT_TESTS) $(TWISTED_TUBE_TESTS)
-else
 TWISTED_TESTS += $(TWISTED_FT_TESTS) $(TWISTED_TUBE_TESTS)
-endif
-
 TWISTED_TESTS += $(TWISTED_JINGLE_TESTS) $(TWISTED_VCARD_TESTS)
 
 noinst_PROGRAMS = \
