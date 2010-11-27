@@ -18,7 +18,6 @@ TWISTED_TESTS = \
 	caps/tube-caps.py \
 	client-types.py \
 	cm/protocol.py \
-	device-idleness.py \
 	gateways.py \
 	muc/conference.py \
 	muc/name-conflict.py \
@@ -40,6 +39,7 @@ TWISTED_TESTS = \
 	olpc/test-olpc-set-props-preload.py \
 	olpc/change-notifications.py \
 	pep-support.py \
+	power-save.py \
 	presence/decloak.py \
 	presence/initial-contact-presence.py \
 	presence/initial-presence.py \
@@ -106,6 +106,7 @@ TWISTED_TUBE_TESTS = \
 	$(NULL)
 
 TWISTED_VCARD_TESTS = \
+	vcard/disconnect-during-pep.py \
 	vcard/get-contact-info.py \
 	vcard/item-not-found.py \
 	vcard/overlapping-sets.py \
@@ -272,12 +273,6 @@ else
 CHANNEL_TYPE_CALL_ENABLED_PYBOOL = False
 endif
 
-if HAVE_MCE
-HAVE_MCE_PYBOOL = True
-else
-HAVE_MCE_PYBOOL = False
-endif
-
 config.py: Makefile
 	$(AM_V_GEN) { \
 		echo "PACKAGE_STRING = \"$(PACKAGE_STRING)\""; \
@@ -285,7 +280,6 @@ config.py: Makefile
 		echo "DEBUGGING = $(DEBUGGING_PYBOOL)"; \
 		echo "PLUGINS_ENABLED = $(PLUGINS_ENABLED_PYBOOL)"; \
 		echo "CHANNEL_TYPE_CALL_ENABLED = $(CHANNEL_TYPE_CALL_ENABLED_PYBOOL)"; \
-		echo "HAVE_MCE = $(HAVE_MCE_PYBOOL)"; \
 	} > $@
 
 BUILT_SOURCES = config.py

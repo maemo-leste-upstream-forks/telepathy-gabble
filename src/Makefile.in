@@ -70,8 +70,8 @@ am_libgabble_convenience_la_OBJECTS = auth-manager.lo base64.lo \
 	call-stream-endpoint.lo capabilities.lo caps-cache.lo \
 	caps-hash.lo caps-channel-manager.lo conn-aliasing.lo \
 	conn-avatars.lo conn-client-types.lo conn-contact-info.lo \
-	conn-location.lo conn-olpc.lo conn-presence.lo \
-	conn-sidecars.lo conn-slacker.lo conn-util.lo \
+	conn-location.lo conn-olpc.lo conn-power-saving.lo \
+	conn-presence.lo conn-sidecars.lo conn-util.lo \
 	conn-mail-notif.lo connection.lo connection-manager.lo \
 	debug.lo disco.lo error.lo ft-channel.lo ft-manager.lo \
 	gabble.lo gtalk-file-collection.lo im-channel.lo im-factory.lo \
@@ -87,8 +87,8 @@ am_libgabble_convenience_la_OBJECTS = auth-manager.lo base64.lo \
 	roster.lo roomlist-channel.lo roomlist-manager.lo \
 	search-channel.lo search-manager.lo server-sasl-channel.lo \
 	server-tls-channel.lo server-tls-manager.lo sidecar.lo \
-	slacker.lo tls-certificate.lo tube-iface.lo tubes-channel.lo \
-	tube-dbus.lo tube-stream.lo util.lo vcard-manager.lo
+	tls-certificate.lo tube-iface.lo tubes-channel.lo tube-dbus.lo \
+	tube-stream.lo util.lo vcard-manager.lo
 am__objects_1 = gabble-signals-marshal.lo gabble-enumtypes.lo
 nodist_libgabble_convenience_la_OBJECTS = $(am__objects_1)
 libgabble_convenience_la_OBJECTS =  \
@@ -194,8 +194,6 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MCE_CFLAGS = @MCE_CFLAGS@
-MCE_LIBS = @MCE_LIBS@
 MKDIR_P = @MKDIR_P@
 NICE_CFLAGS = @NICE_CFLAGS@
 NICE_LIBS = @NICE_LIBS@
@@ -359,12 +357,12 @@ libgabble_convenience_la_SOURCES = \
     conn-location.c \
     conn-olpc.h \
     conn-olpc.c \
+    conn-power-saving.h \
+    conn-power-saving.c \
     conn-presence.h \
     conn-presence.c \
     conn-sidecars.h \
     conn-sidecars.c \
-    conn-slacker.h \
-    conn-slacker.c \
     conn-util.h \
     conn-util.c \
     conn-mail-notif.h \
@@ -463,8 +461,6 @@ libgabble_convenience_la_SOURCES = \
     server-tls-manager.c \
     $(top_srcdir)/gabble/sidecar.h \
     sidecar.c \
-    slacker.h \
-    slacker.c \
     tls-certificate.h \
     tls-certificate.c \
     tube-iface.h \
@@ -655,9 +651,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-location.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-mail-notif.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-olpc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-power-saving.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-presence.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-sidecars.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-slacker.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-util.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connection-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connection.Plo@am__quote@
@@ -707,7 +703,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server-tls-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server-tls-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sidecar.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/slacker.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tls-certificate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-dbus.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-iface.Plo@am__quote@

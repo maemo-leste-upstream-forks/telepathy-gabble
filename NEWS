@@ -1,3 +1,48 @@
+telepathy-gabble 0.11.2 (2010-11-22)
+====================================
+
+The “Please enjoy this refreshing beverage” release.
+
+Fixes:
+
+• fd.o #31412: fix crashes during disconnection if a PEP alias request is
+  in-flight (smcv)
+
+• Loosen an assertion to fix test failure with telepathy-glib >= 0.13.5,
+  which releases connections' object paths sooner (smcv)
+
+• fd.o #31772: fix a crash if a contact goes invisible while we're discovering
+  their capabilities (wjt)
+
+• Remove accidentally re-added libuuid dependency (jonnylamb)
+
+• --with-ca-certificates, formerly known as --with-ca-file, now warns—rather
+  than making configure fail—if the specified path does not exist. This is
+  kinder to buildds which may not actually have the CAs installed.
+
+telepathy-gabble 0.11.1 (2010-11-16)
+====================================
+
+Enhancements:
+
+• Implement Conn.I.PowerSaving (eeejay)
+
+• fd.o #31474: replace --with-ca-certificates configure option with
+  --with-ca-file. The default is to use the normal location for either Red Hat
+  or Debian, or fail if neither exists. Use --with-ca-file to force a
+  particular location (e.g. if your build system doesn't guarantee to have
+  the CA certificate bundle installed), or use --without-ca-file if your system
+  doesn't have a standard CA certificate store. (Brian Pepple)
+
+Fixes:
+
+• Don't generate unused bindings for channel bundles (wjt)
+
+• Update wocky snapshot
+  · Add an optional dependency on libiphb and link it up to the main loop
+    to provide non-regular XMPP pings where appropriate. (wjt)
+  · Misc OpenSSL fixes. (wjt)
+
 telepathy-gabble 0.11.0 (2010-11-04)
 ====================================
 

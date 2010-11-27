@@ -61,7 +61,7 @@
 #include "conn-sidecars.h"
 #include "conn-mail-notif.h"
 #include "conn-olpc.h"
-#include "conn-slacker.h"
+#include "conn-power-saving.h"
 #include "debug.h"
 #include "disco.h"
 #include "media-channel.h"
@@ -135,6 +135,8 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
       conn_mail_notif_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CLIENT_TYPES,
       conn_client_types_iface_init);
+    G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_CONNECTION_INTERFACE_POWER_SAVING,
+      conn_power_saving_iface_init);
     )
 
 /* properties */
@@ -164,6 +166,7 @@ enum
     PROP_KEEPALIVE_INTERVAL,
     PROP_DECLOAK_AUTOMATICALLY,
     PROP_FALLBACK_SERVERS,
+    PROP_POWER_SAVING,
 
     LAST_PROPERTY
 };
@@ -213,6 +216,8 @@ struct _GabbleConnectionPrivate
 
   GStrv fallback_servers;
   guint fallback_server_index;
+
+  gboolean power_saving;
 
   /* authentication properties */
   gchar *stream_server;
@@ -266,6 +271,8 @@ struct _GabbleConnectionPrivate
   /* gobject housekeeping */
   gboolean dispose_has_run;
 };
+
+static guint sig_id_porter_available = 0;
 
 static void connection_capabilities_update_cb (GabblePresenceCache *cache,
     TpHandle handle,
@@ -575,6 +582,10 @@ gabble_connection_get_property (GObject    *object,
       g_value_set_boxed (value, priv->fallback_servers);
       break;
 
+    case PROP_POWER_SAVING:
+      g_value_set_boolean (value, priv->power_saving);
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -699,6 +710,10 @@ gabble_connection_set_property (GObject      *object,
       priv->fallback_server_index = 0;
       break;
 
+    case PROP_POWER_SAVING:
+      priv->power_saving = g_value_get_boolean (value);
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -751,7 +766,6 @@ base_connected_cb (TpBaseConnection *base_conn)
   GabbleConnection *conn = GABBLE_CONNECTION (base_conn);
 
   gabble_connection_connected_olpc (conn);
-  gabble_connection_slacker_start (conn);
 }
 
 #define TWICE(x) (x), (x)
@@ -761,6 +775,7 @@ static const gchar *implemented_interfaces[] = {
     TP_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
     GABBLE_IFACE_OLPC_ACTIVITY_PROPERTIES,
     GABBLE_IFACE_OLPC_BUDDY_INFO,
+    GABBLE_IFACE_CONNECTION_INTERFACE_POWER_SAVING,
 
     /* always present interfaces */
     TP_IFACE_CONNECTION_INTERFACE_ALIASING,
@@ -780,7 +795,7 @@ static const gchar *implemented_interfaces[] = {
     TP_IFACE_CONNECTION_INTERFACE_CLIENT_TYPES,
     NULL
 };
-static const gchar **interfaces_always_present = implemented_interfaces + 3;
+static const gchar **interfaces_always_present = implemented_interfaces + 4;
 
 const gchar **
 gabble_connection_get_implemented_interfaces (void)
@@ -817,6 +832,10 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
         { "MailAddress", NULL, NULL },
         { NULL }
   };
+  static TpDBusPropertiesMixinPropImpl power_saving_props[] = {
+        { "PowerSavingActive", "power-saving", NULL },
+        { NULL }
+  };
   static TpDBusPropertiesMixinIfaceImpl prop_interfaces[] = {
         /* 0 */ { TP_IFACE_CONNECTION_INTERFACE_LOCATION,
           conn_location_properties_getter,
@@ -842,6 +861,11 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
           conn_mail_notif_properties_getter,
           NULL,
           mail_notif_props,
+        },
+        { GABBLE_IFACE_CONNECTION_INTERFACE_POWER_SAVING,
+          tp_dbus_properties_mixin_getter_gobject_properties,
+          NULL,
+          power_saving_props,
         },
         { NULL }
   };
@@ -1052,6 +1076,25 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
         G_TYPE_STRV,
         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (
+      object_class, PROP_DECLOAK_AUTOMATICALLY,
+      g_param_spec_boolean (
+          "power-saving", "Power saving active?",
+          "Queue remote presence updates server-side for less network chatter",
+          FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  /**
+   * @self: a connection
+   * @porter: a porter
+   *
+   * Emitted when the WockyPorter becomes available.
+   */
+  sig_id_porter_available = g_signal_new ("porter-available",
+      G_OBJECT_CLASS_TYPE (gabble_connection_class),
+      G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED, 0, NULL, NULL,
+      g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, WOCKY_TYPE_PORTER);
+
   gabble_connection_class->properties_class.interfaces = prop_interfaces;
   tp_dbus_properties_mixin_class_init (object_class,
       G_STRUCT_OFFSET (GabbleConnectionClass, properties_class));
@@ -1247,12 +1290,12 @@ gabble_connection_get_full_jid (GabbleConnection *conn)
 }
 
 /**
- * gabble_connection_get_porter:
+ * gabble_connection_dup_porter:
  *
- * Returns: the #WockyPorter instance driving this connection.
+ * Returns: (transfer full): the #WockyPorter instance driving this connection.
  */
 
-WockyPorter *gabble_connection_get_porter (GabbleConnection *conn)
+WockyPorter *gabble_connection_dup_porter (GabbleConnection *conn)
 {
   GabbleConnectionPrivate *priv;
 
@@ -1274,29 +1317,16 @@ WockyPorter *gabble_connection_get_porter (GabbleConnection *conn)
 gboolean
 _gabble_connection_send (GabbleConnection *conn, LmMessage *msg, GError **error)
 {
-  GError *lmerror = NULL;
-
   g_assert (GABBLE_IS_CONNECTION (conn));
 
-  if (conn->lmconn == NULL)
+  if (conn->lmconn == NULL || conn->priv->porter == NULL)
     {
       g_set_error_literal (error, TP_ERRORS, TP_ERROR_NETWORK_ERROR,
               "connection is disconnected");
       return FALSE;
     }
 
-  if (!lm_connection_send (conn->lmconn, msg, &lmerror))
-    {
-      DEBUG ("failed: %s", lmerror->message);
-
-      g_set_error (error, TP_ERRORS, TP_ERROR_NETWORK_ERROR,
-          "message send failed: %s", lmerror->message);
-
-      g_error_free (lmerror);
-
-      return FALSE;
-    }
-
+  wocky_porter_send (conn->priv->porter, msg);
   return TRUE;
 }
 
@@ -1743,6 +1773,7 @@ connector_connected (GabbleConnection *self,
       G_CALLBACK (remote_error_cb), self);
 
   lm_connection_set_porter (self->lmconn, priv->porter);
+  g_signal_emit (self, sig_id_porter_available, 0, priv->porter);
 
   wocky_pep_service_start (self->pep_location, self->session);
   wocky_pep_service_start (self->pep_nick, self->session);
@@ -1953,7 +1984,7 @@ _gabble_connection_connect (TpBaseConnection *base,
   g_free (jid);
 
   /* system certs */
-  wocky_tls_handler_add_ca (tls_handler, CA_CERTIFICATES_PATH);
+  wocky_tls_handler_add_ca (tls_handler, GTLS_SYSTEM_CA_CERTIFICATES);
 
   /* user certs */
   user_certs_dir = g_build_filename (g_get_user_config_dir (),
@@ -2110,10 +2141,6 @@ connection_shut_down (TpBaseConnection *base)
   GabbleConnection *self = GABBLE_CONNECTION (base);
   GabbleConnectionPrivate *priv = self->priv;
 
-  /* Regardless of whether disconnection is already in progress, we still want
-   * to stop listening to the slacker and pinging the remote server.
-   */
-  gabble_connection_slacker_stop (self);
   tp_clear_object (&priv->pinger);
 
   if (priv->closing)
@@ -2541,10 +2568,7 @@ connection_iq_disco_cb (LmMessageHandler *handler,
 
       NODE_DEBUG (result_iq, "sending disco response");
 
-      if (!lm_connection_send (self->lmconn, result, NULL))
-        {
-          DEBUG ("sending disco response failed");
-        }
+      wocky_porter_send (self->priv->porter, result);
     }
 
   lm_message_unref (result);
@@ -2610,6 +2634,21 @@ set_status_to_connected (GabbleConnection *conn)
     {
        const gchar *ifaces[] =
          { TP_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION, NULL };
+
+      tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
+    }
+
+  /* We can only cork presence updates on Google Talk. Of course, the Google
+   * Talk server doesn't advertise support for google:queue. So we use
+   * google:roster. We still support the hypothetically advertised google:queue
+   * just in case google starts using it, or another server implementation
+   * adopts it. google:queue is described here:
+   * http://mail.jabber.org/pipermail/summit/2010-February/000528.html */
+  if (conn->features & (GABBLE_CONNECTION_FEATURES_GOOGLE_QUEUE |
+          GABBLE_CONNECTION_FEATURES_GOOGLE_ROSTER))
+    {
+       const gchar *ifaces[] =
+         { GABBLE_IFACE_CONNECTION_INTERFACE_POWER_SAVING, NULL };
 
       tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
     }
@@ -2703,6 +2742,8 @@ connection_disco_cb (GabbleDisco *disco,
                 conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_MAIL_NOTIFY;
               else if (0 == strcmp (var, NS_GOOGLE_SHARED_STATUS))
                 conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_SHARED_STATUS;
+              else if (0 == strcmp (var, NS_GOOGLE_QUEUE))
+                conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_QUEUE;
             }
         }
 
