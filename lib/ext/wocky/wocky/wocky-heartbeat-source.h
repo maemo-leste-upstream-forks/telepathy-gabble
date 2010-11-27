@@ -1,7 +1,8 @@
 /*
- * conn-slacker.h - Header for Gabble connection code handling device idleness
- * Copyright (C) 2010 Collabora Ltd.
- * Copyright (C) 2010 Nokia Corporation
+ * wocky-heartbeat-source.h: header for a GSource wrapping libiphb.
+ * Copyright © 2010 Collabora Ltd. <http://www.collabora.co.uk>
+ * Copyright © 2010 Nokia Corporation
+ * @author Will Thompson <will.thompson@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,20 +18,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
-#ifndef GABBLE_CONN_SLACKER_H
-#define GABBLE_CONN_SLACKER_H
+#ifndef WOCKY_HEARTBEAT_SOURCE_H
+#define WOCKY_HEARTBEAT_SOURCE_H
 
 #include <glib.h>
 
-#include "connection.h"
-
 G_BEGIN_DECLS
 
-void gabble_connection_slacker_start (GabbleConnection *conn);
-void gabble_connection_slacker_stop (GabbleConnection *conn);
+typedef void (*WockyHeartbeatCallback) (
+    gpointer user_data);
+
+GSource *wocky_heartbeat_source_new (
+    guint max_interval);
+
+void wocky_heartbeat_source_update_interval (
+    GSource *source,
+    guint max_interval);
 
 G_END_DECLS
 
-#endif /* GABBLE_CONN_SLACKER_H */
-
+#endif /* WOCKY_HEARTBEAT_SOURCE_H */

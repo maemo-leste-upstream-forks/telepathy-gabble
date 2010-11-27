@@ -873,7 +873,8 @@ check_peer_name (const char *target, X509 *cert)
       if (len > 0)
         {
           char *cname = g_new0 (gchar, len + 1);
-          X509_NAME_get_text_by_NID (subject, nid[i], cname, len);
+          X509_NAME_get_text_by_NID (subject, nid[i], cname, len + 1);
+          DEBUG ("got cname '%s' from x509 name, nid #%u", cname, i);
           rval = compare_wildcarded_hostname (target, cname);
           g_free (cname);
         }
@@ -912,6 +913,8 @@ check_peer_name (const char *target, X509 *cert)
         if (convert->i2s != NULL)
           {
             value = convert->i2s (convert, ext_str);
+            DEBUG ("got cname '%s' from subject_alt_name, which is a string",
+                value);
             rval = compare_wildcarded_hostname (target, value);
             OPENSSL_free (value);
           }
@@ -923,7 +926,11 @@ check_peer_name (const char *target, X509 *cert)
               {
                 CONF_VALUE *v = sk_CONF_VALUE_value(nval, j);
                 if (!wocky_strdiff (v->name, "DNS"))
-                  rval = compare_wildcarded_hostname (target, v->value);
+                  {
+                    DEBUG ("Got cname '%s' from subject_alt_name, which is a "
+                        "multi-value stack with a 'DNS' entry", v->value);
+                    rval = compare_wildcarded_hostname (target, v->value);
+                  }
               }
             sk_CONF_VALUE_pop_free(nval, X509V3_conf_free);
           }
@@ -1095,6 +1102,9 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
            * terminal condition: in NORMAL or LENIENT we can live with it */
           if (level == WOCKY_TLS_VERIFY_STRICT)
             *status = WOCKY_TLS_CERT_INSECURE;
+          else
+            DEBUG ("ignoring UNABLE_TO_GET_CRL: we're not in strict mode");
+
           break;
         default:
           *status = WOCKY_TLS_CERT_UNKNOWN_ERROR;
@@ -1107,8 +1117,10 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
           case WOCKY_TLS_CERT_INTERNAL_ERROR:
           case WOCKY_TLS_CERT_REVOKED:
           case WOCKY_TLS_CERT_MAYBE_DOS:
+            DEBUG ("this error matters, even though we're in lenient mode");
             break;
           default:
+            DEBUG ("ignoring errors: we're in lenient mode");
             rval = X509_V_OK;
             *status = WOCKY_TLS_CERT_OK;
           }

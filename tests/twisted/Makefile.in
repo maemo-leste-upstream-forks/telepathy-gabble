@@ -190,8 +190,6 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MCE_CFLAGS = @MCE_CFLAGS@
-MCE_LIBS = @MCE_LIBS@
 MKDIR_P = @MKDIR_P@
 NICE_CFLAGS = @NICE_CFLAGS@
 NICE_LIBS = @NICE_LIBS@
@@ -296,16 +294,16 @@ TWISTED_TESTS = caps_helper.py servicetest.py avatar-requirements.py \
 	caps/disco-without-node.py caps/from-bare-jid.py \
 	caps/hashed-caps.py caps/initial-caps.py caps/jingle-caps.py \
 	caps/receive-jingle.py caps/trust-thyself.py caps/tube-caps.py \
-	client-types.py cm/protocol.py device-idleness.py gateways.py \
-	muc/conference.py muc/name-conflict.py muc/renamed.py \
-	muc/roomlist.py muc/scrollback.py muc/send-error.py \
-	muc/subject.py muc/test-ensure.py muc/test-muc-alias.py \
+	client-types.py cm/protocol.py gateways.py muc/conference.py \
+	muc/name-conflict.py muc/renamed.py muc/roomlist.py \
+	muc/scrollback.py muc/send-error.py muc/subject.py \
+	muc/test-ensure.py muc/test-muc-alias.py \
 	muc/test-muc-invitation.py muc/test-muc-ownership.py \
 	muc/test-muc-properties.py muc/test-muc.py \
 	olpc/current-activity.py olpc/olpc-muc-invitation.py \
 	olpc/olpc-muc-prop-change.py olpc/test-olpc-bundle.py \
 	olpc/test-olpc-set-props-preload.py \
-	olpc/change-notifications.py pep-support.py \
+	olpc/change-notifications.py pep-support.py power-save.py \
 	presence/decloak.py presence/initial-contact-presence.py \
 	presence/initial-presence.py presence/invisible_xep_0126.py \
 	presence/invisible_xep_0186.py presence/presence.py \
@@ -359,6 +357,7 @@ TWISTED_TUBE_TESTS = \
 	$(NULL)
 
 TWISTED_VCARD_TESTS = \
+	vcard/disconnect-during-pep.py \
 	vcard/get-contact-info.py \
 	vcard/item-not-found.py \
 	vcard/overlapping-sets.py \
@@ -462,8 +461,6 @@ CHECK_TWISTED_SLEEP = 0
 @ENABLE_PLUGINS_TRUE@PLUGINS_ENABLED_PYBOOL = True
 @ENABLE_CHANNEL_TYPE_CALL_FALSE@CHANNEL_TYPE_CALL_ENABLED_PYBOOL = False
 @ENABLE_CHANNEL_TYPE_CALL_TRUE@CHANNEL_TYPE_CALL_ENABLED_PYBOOL = True
-@HAVE_MCE_FALSE@HAVE_MCE_PYBOOL = False
-@HAVE_MCE_TRUE@HAVE_MCE_PYBOOL = True
 BUILT_SOURCES = config.py
 EXTRA_DIST = \
 	$(TWISTED_TESTS) \
@@ -1044,7 +1041,6 @@ config.py: Makefile
 		echo "DEBUGGING = $(DEBUGGING_PYBOOL)"; \
 		echo "PLUGINS_ENABLED = $(PLUGINS_ENABLED_PYBOOL)"; \
 		echo "CHANNEL_TYPE_CALL_ENABLED = $(CHANNEL_TYPE_CALL_ENABLED_PYBOOL)"; \
-		echo "HAVE_MCE = $(HAVE_MCE_PYBOOL)"; \
 	} > $@
 check-coding-style:
 	@fail=0; \

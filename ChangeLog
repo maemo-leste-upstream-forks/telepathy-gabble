@@ -1,8 +1,550 @@
+commit 3c070dfe2e2fbef9408f713b2808be221b03cc93
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-22 13:05:30 +0000
+
+    Version 0.11.2
+
+commit 2d95bba55f1e94783efa67c9a365aabaa577d495
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-22 13:04:44 +0000
+
+    NEWS for 0.11.2
+
+commit 9ffe6cc4174d7f5112118f26d25aefabf42e83fc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-21 13:29:17 +0000
+
+    NEWS for fd.o #31772
+
+commit b0a393487bf0bbf9688db6683d0923141f15e40d
+Merge: 74d1602 14a22f8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-21 13:24:00 +0000
+
+    Merge branch 'client-types-crash'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=31772>
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 14a22f84b2a25a513542427d1bb5b3b042a55a2a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-19 19:55:15 +0000
+
+    Don't crash on disco replies from unavailable contacts.
+    
+    process_client_types() assumed that gabble_presence_cache_get() returned
+    non-NULL, which is untrue.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=31772>
+
+commit c8fef0c6ed5b52b876462b8986bfa76c29eb1db9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-19 19:49:43 +0000
+
+    Extract processing client types in disco replies to a function
+    
+    _caps_disco_cb() is ridiculously big. This is a small step towards
+    reducing that.
+
+commit 90233b584ced6258c3a2c89818bdccff314f62f6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-19 19:38:54 +0000
+
+    _find_resource: check if presence parameter is NULL
+    
+    (It's not in the case I'm fixing.)
+
+commit 1482da211c0aafce05a0ca70614409179ad763d7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-19 19:37:27 +0000
+
+    Remove silly GABBLE_PRESENCE_PRIV() macro
+
+commit 74d160243d6ba936fe7d3449e3e91a3abc5985ed
+Merge: 7a9348b 7dbd46e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 19:08:11 +0000
+
+    Merge branch 'wockify-roster'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=31385
+
+commit 7a9348bc389b7f19edb44e5bfa9dcc07f84138f7
+Merge: 6ffd322 d8e2f9d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 16:05:11 +0000
+
+    Merge branch 'gtls'
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=31474
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 6ffd3222445d44631c8dad62ec65bf65fe9162cd
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 15:57:29 +0000
+
+    saslutil: catch up with de-duplication of namespace constants
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 9cdd062ddd98725cd548206d0d11169577a7f53c
+Merge: 7195cd2 61d13e0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 15:44:39 +0000
+
+    Merge branch 'telepathy-gabble-0.10'
+    
+    Conflicts:
+    	NEWS
+
+commit 61d13e007c88d0af3e3dd230e1a0cdd7337558ab
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 15:31:10 +0000
+
+    NEWS
+
+commit 7195cd209d7f104610b6060d06ef937b1e8e88e3
+Merge: 8151384 dc9132c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-19 15:29:23 +0000
+
+    Merge branch 'test-trivia-from-haze'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit dc9132c4eb337e26fcae739e5e7481a81fde0b23
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-19 14:08:24 +0000
+
+    tests: Support session establishment.
+    
+    XMPP IM defines a "session establishment" stream feature:
+    <http://xmpp.org/rfcs/rfc3921.html#session>. This is optional, and Wocky
+    deals correctly with it being unsupported, but prpl-jabber assumes it's
+    supported and just blindly sends it. We should send *a* reply to the IQ,
+    whether success or an error, per XMPP Core; we may as well implement it
+    properly.
+    
+    (I'm filing a bug against prpl-jabber just as soon as I recover my
+    Pidgin Trac account, but still.)
+
+commit 1d1ae4468729653d6310987e6c5c16870cedaa05
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-19 14:07:17 +0000
+
+    tests: Always include id='' on server's <stream> header
+    
+    This is a SHOULD not a MUST, but it seems like a reasonable thing to do.
+    
+    Not including it broke Haze's test suite. libpurple's since been fixed
+    to deal with servers not including a stream identifier, but it seems
+    like a reasonable thing to include.
+
+commit fa6ec2a9a96714b9df28f6754652c1b0b049272d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-19 14:05:41 +0000
+
+    gabbletest: remove duplicated namespace definitions
+
+commit 2c8b15df2bae2fef15e266801a67d73bc8b0b026
+Merge: a8312e8 5666efa
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 15:28:29 +0000
+
+    Merge branch '010-pipelines' into telepathy-gabble-0.10
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=31412
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit d8e2f9de663b20ebc42f382d1df05f060cfa5d4b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 12:25:59 +0000
+
+    Rename --with-ca-file to --with-ca-certificates
+    
+    This is the option name that Gabble historically used, and is somewhat
+    more accurate. For GNUTLS the system CA store is a single concatenated
+    file ("CA bundle"). OpenSSL can use a CA bundle too, but it's more
+    conventional and efficient to use a directory of files/symlinks named
+    according to their fingerprints, which can be opened lazily; in this case
+    you'd use (for instance) --with-ca-certificates=/etc/ssl/certs on
+    Debian-derived systems.
+    
+    When auto-detecting, we still only look for files, since they work with
+    any backend, and the auto-detection doesn't know which backend is in use.
+    Packagers should probably always specify a path anyway.
+    
+    Conflicts:
+    
+    	configure.ac
+
+commit 0deec84b4ffc50bebad424fd79607330b5250d0b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 12:24:45 +0000
+
+    Add the warning from glib-networking if the CA file doesn't exist
+
+commit 85ceafd8ef2d31160dfeb48043a64a4bc4bbacc3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 12:21:50 +0000
+
+    Resync with glib-networking's configure.ac check for GTLS_SYSTEM_CA_FILE
+
+commit b0bbca5d0d16a17292edc10d71c82d3cf776e9cf
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-18 15:19:20 +0000
+
+    If the compiling user specifies a CA file, blindly assume they're right
+    
+    In minimal build environments (Debian buildds) or when cross-compiling
+    or otherwise compiling for an embedded device, we shouldn't insist on
+    having a file in the location where the target will have its CA
+    certificates.
+    
+    This is consistent with most other configure options, which don't
+    second-guess an explicit user request.
+    
+    Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+
+commit 8151384af24df734b3b6a8f29cb8eeb8dd07bca0
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-11-16 22:11:36 +0000
+
+    configure: remove uuid dependency
+    
+    It was re-added accidentally in 2ee4a40a974.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 8c30114df306160f069990d9186c123b2776bf1c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-11-16 18:37:21 +0000
+
+    Nano version.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit e63e79214b4b6ab7ca4b00ee9c37b59a3e50d906
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-11-16 18:10:00 +0000
+
+    Version 0.11.1.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 4463379719b0b407496213d36bbf45a2d110d364
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-11-16 18:10:59 +0000
+
+    Update wocky snapshot.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 93cbeb90143f2ece4562d9445a5bc1c66462573b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-16 12:11:26 +0000
+
+    NEWS so far, with release notes for --with-ca-file
+
+commit 514a89d1e641decbd7c6dba273908fc9dbc8f822
+Author: Brian Pepple <bpepple@fedoraproject.org>
+Date:   2010-11-08 12:06:18 -0500
+
+    Make ca-certs location configurable more friendly (#31474)
+
+commit 554353ad1c8482b834afa133d445cac4452be0ac
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-10 14:24:21 +0000
+
+    Update PowerSaving to the stable spec that will be in 0.21.5
+    
+    Reviewed-by: Eitan Isaacson <eitan.isaacson@collabora.co.uk>
+
+commit c9a534a90f2cc1146525d9e1a036b826aaad258f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-10 17:45:37 +0000
+
+    Don't generate unused code for Bundles.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 5666efa919d6b2547482a53fa51c466e35da4e38
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-08 13:40:01 +0000
+
+    vcard/disconnect-during-pep.py: use more helper functions
+
+commit 7dbd46e12ea5c4c3db6126766e894fd486d15701
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-08 11:52:32 +0000
+
+    roster_received_cb: don't leak a ref to the roster
+
+commit 862dcf15481981b703e24d80942aeb367ced8bb1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-05 17:21:33 +0000
+
+    Add a regression test for fd.o #31412
+
+commit fad63c4b062e7873e131b898eb6605c7c5d5c771
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-05 17:18:27 +0000
+
+    Check for connected connection or non-NULL vcard_manager before most uses
+    
+    One instance is still unchecked, in aliases_request_free.
+
+commit 59ed8b6e637780e0cc2e51ece03fc903aedf2d62
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-05 16:52:11 +0000
+
+    gabble_vcard_manager_request: disallow calling when unconnected
+    
+    All of its callers in Gabble 0.10 now check appropriately.
+
+commit 04e1995f37fbdc48cab3e46e5dc163c1e4dcc171
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-05 16:51:21 +0000
+
+    Don't attempt to avoid avatar conflicts if disconnecting
+    
+    We want to avoid calling into the vCard manager.
+
+commit 7df2fdc8fed2c155bb45488e2dc8a0d02c28618b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-05 16:50:54 +0000
+
+    RequestAvatars: raise error if not connected
+
+commit 82e3034c0f19771d64765df1ad895fabe507804c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-05 16:50:38 +0000
+
+    aliasing: don't call into vCard manager if unconnected
+
+commit e29b24766c84e0317db738097c532379a63d1ee1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-05 16:41:51 +0000
+
+    gabble_vcard_manager_edit: forbid calling if not connected
+    
+    I've checked its callers in Gabble 0.10, and they all fail earlier if
+    the connection is unconnected.
+
+commit 8f57dcee4a974466ad122dbd72d85389a20ccb09
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-05 16:39:53 +0000
+
+    gabble_vcard_manager_edit_one: remove, unused
+
+commit 2e17b389aa9911870754b64db88f64e5c96f732d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-05 16:35:39 +0000
+
+    gabble_vcard_manager_edit_alias: remove declaration (it's no longer defined)
+
+commit 102b124eae6fc5ef7c842a03acad81b4e9d729e0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-05 16:32:12 +0000
+
+    gabble_do_pep_request: assert that @self is connected and has a request pipeline
+
+commit 10ab45a389ca24bd986038a090d516981a5e90c9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-05 16:28:31 +0000
+
+    conn-aliasing: maybe_request_vcard: never initiate a request if disconnected
+
+commit cd4997fbef7c57b882bf915e46a268d7f18f7bc1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 16:18:02 +0000
+
+    remove inaccurate comment
+
+commit e5a001c6cfb729e4a8c95dda63b7d4c20648efae
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 15:56:24 +0000
+
+    GabbleRoster: use conn_util_send_iq_async to apply edits
+
+commit b699daeef2cd83342968356c3722e76f8bad5136
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 15:56:05 +0000
+
+    GabbleRoster: use conn_util_send_iq_async to get the roster
+
+commit 0b421ee960c68ce9b3d9a19bc1b95fbc31d9fbcd
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 14:53:13 +0000
+
+    Use the porter to dispatch roster messages
+
+commit c823bb36f212146d8735d6f98c75e81b52809854
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 14:24:52 +0000
+
+    add GabbleConnection::porter-available
+
+commit 7d61827494d50edc17110ed5cd8b77514638a0ac
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 13:34:34 +0000
+
+    got_roster_iq: return a boolean
+
+commit 595e104b3e710c94e0301bc2ef17dcd152b5b545
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 13:24:48 +0000
+
+    roster: use more WockyNode/WockyStanza functions
+
+commit 6d1875aa03053b754158f530921672043e83def3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 13:09:11 +0000
+
+    roster: use wocky_stanza_build instead of lm_message_new_with_sub_type
+
+commit 5c9efc3cba5c1bae57e79171f28e043c75cc5997
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 13:08:37 +0000
+
+    roster: use more Wocky type, constant names
+
+commit 652cc73974f608d12075280ca7b6167312701a35
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 13:27:06 +0000
+
+    Include some Wocky headers in the roster
+
+commit 492c2f712a459f9fb21cd76ce3bd94754f52fbe1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-06-30 12:05:59 +0100
+
+    lm_connection_send: remove, and replace all calls with wocky_porter_send
+
+commit 2ca5c80bb65da5efa196d187296fabdf7edf4d89
+Merge: 91767d6 c5506b3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 16:51:41 +0000
+
+    Merge branch 'trivia'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit c5506b369af2f2f067a21e7a917c1f768f2388e1
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 14:43:26 +0000
+
+    Rename gabble_connection_get_porter to gabble_connection_dup_porter
+    
+    It returns a new ref.
+
+commit ab58b4e2ff174aa9d7807ce0ec59b3ec1364ad9b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 14:39:15 +0000
+
+    Use GLib's simple (1-argument) signal marshallers
+
+commit c30af9df790380a8ff14b132d2befe8f6b62b0b6
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 13:30:05 +0000
+
+    connection.c: remove trailing spaces
+
+commit 91767d6ec6b6e54045413d88b98d64f6915323ce
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 12:37:45 +0000
+
+    Nano version
+
+commit fb98e0eb8f1ae071542736b394e35204124f7a58
+Merge: b51b4d5 460323b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-04 12:32:06 +0000
+
+    Merge remote branch 'upstream/master'
+
 commit b51b4d57fe5d02e529fbc6ee5e4d34280be828e4
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-11-04 11:07:24 +0000
 
     Prepare 0.11.0
+
+commit 460323be6fb051a46c65014c8d75167531cc5d4c
+Merge: b7e3d9c 0f0ac4f
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-11-03 20:35:22 -0700
+
+    Merge branch 'power-save'
+
+commit 0f0ac4f52c725f960c066fff8294bbe009d8228a
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-16 09:03:51 -0700
+
+    Update conn_power_saving_* to use new conn_util_send_iq_finish.
+
+commit 37d2b6034782fd137b3f9d977ddc5ecb144efb9a
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-16 08:54:47 -0700
+
+    Use macro for SetPowerSaving when disconnected.
+    Some cosmetic changes.
+
+commit 0e0f6dab933595e938893f5f41f795d55b50553a
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-15 11:43:33 -0700
+
+    Make PowerSaving iface conditional upon disco.
+    Fail on power saving mode enabling when disconnected.
+    Updated tests for new behavior.
+
+commit b371dc4d7b1176117852d579793c7b6df09a4dd1
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-15 10:53:06 -0700
+
+    Updated power-saving to use new conn_util_send_iq_finish.
+
+commit a86fdcaefcee4a82add12da4d92ecd9674a8092c
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-09 12:20:40 -0700
+
+    Added power save disconnect test.
+
+commit 439ca7c110cf3f19e8704479235f3daf2d52ad3f
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-09 12:11:11 -0700
+
+    Make power-saving a GabbleConnection property.
+
+commit f0cd52f1d5587e88112f85d8615b448ff3b524d9
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-09 10:57:41 -0700
+
+    Changed parameter to "enabled" instead of the misleading "in_Active".
+
+commit cb1d3c24e22115a40a08670e898f7928daf08a21
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-09 10:56:16 -0700
+
+    Cleaned callback funtions to NULL-check reply instead of an error.
+
+commit 2ee4a40a974c36e33c176e5724d56b9acd64ba5c
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-08 17:34:13 -0700
+
+    Removed GabbleSlacker and MCE mentions.
+
+commit 0de6ad173fdf3f7f271dc9128d760eb423eb6537
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-08 17:33:34 -0700
+
+    Implemented Conn.I.PowerSaving.
+
+commit 4d08157cac256457dd0333b85d78b68164222def
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-08 17:27:09 -0700
+
+    Added Conn.I.PowerSaving draft spec.
 
 commit b7e3d9c5637a503783a77ae5e891ede4e30cc655
 Merge: 6c0e6e0 a8312e8
