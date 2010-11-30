@@ -135,7 +135,7 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
       conn_mail_notif_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CLIENT_TYPES,
       conn_client_types_iface_init);
-    G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_CONNECTION_INTERFACE_POWER_SAVING,
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_POWER_SAVING,
       conn_power_saving_iface_init);
     )
 
@@ -775,7 +775,7 @@ static const gchar *implemented_interfaces[] = {
     TP_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
     GABBLE_IFACE_OLPC_ACTIVITY_PROPERTIES,
     GABBLE_IFACE_OLPC_BUDDY_INFO,
-    GABBLE_IFACE_CONNECTION_INTERFACE_POWER_SAVING,
+    TP_IFACE_CONNECTION_INTERFACE_POWER_SAVING,
 
     /* always present interfaces */
     TP_IFACE_CONNECTION_INTERFACE_ALIASING,
@@ -862,7 +862,7 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
           NULL,
           mail_notif_props,
         },
-        { GABBLE_IFACE_CONNECTION_INTERFACE_POWER_SAVING,
+        { TP_IFACE_CONNECTION_INTERFACE_POWER_SAVING,
           tp_dbus_properties_mixin_getter_gobject_properties,
           NULL,
           power_saving_props,
@@ -1578,12 +1578,11 @@ connector_error_disconnect (GabbleConnection *self,
   GError *tp_error = NULL;
   TpBaseConnection *base = (TpBaseConnection *) self;
   TpConnectionStatusReason reason = TP_CONNECTION_STATUS_REASON_NETWORK_ERROR;
+  gchar *dbus_error = NULL;
+  GHashTable *details = NULL;
 
   if (error->domain == GABBLE_SERVER_TLS_ERROR)
     {
-      gchar *dbus_error = NULL;
-      GHashTable *details = NULL;
-
       gabble_server_tls_manager_get_rejection_details (
           self->priv->server_tls_manager, &dbus_error, &details, &reason);
 
@@ -1597,6 +1596,21 @@ connector_error_disconnect (GabbleConnection *self,
       tp_clear_pointer (&details, g_hash_table_unref);
       g_free (dbus_error);
 
+      return;
+    }
+
+  if (error->domain == WOCKY_AUTH_ERROR &&
+      gabble_auth_manager_get_failure_details (self->priv->auth_manager,
+        &dbus_error, &details, &reason))
+    {
+      DEBUG ("Interactive authentication error, reason %u, dbus error %s",
+          reason, dbus_error);
+
+      tp_base_connection_disconnect_with_dbus_error (base, dbus_error,
+          details, reason);
+
+      tp_clear_pointer (&details, g_hash_table_unref);
+      g_free (dbus_error);
       return;
     }
 
@@ -1979,7 +1993,7 @@ _gabble_connection_connect (TpBaseConnection *base,
   jid = gabble_encode_jid (priv->username, priv->stream_server, NULL);
   tls_handler = WOCKY_TLS_HANDLER (priv->server_tls_manager);
   priv->connector = wocky_connector_new (jid, priv->password, priv->resource,
-      gabble_auth_manager_get_auth_registry (priv->auth_manager),
+      WOCKY_AUTH_REGISTRY (priv->auth_manager),
       tls_handler);
   g_free (jid);
 
@@ -2648,7 +2662,7 @@ set_status_to_connected (GabbleConnection *conn)
           GABBLE_CONNECTION_FEATURES_GOOGLE_ROSTER))
     {
        const gchar *ifaces[] =
-         { GABBLE_IFACE_CONNECTION_INTERFACE_POWER_SAVING, NULL };
+         { TP_IFACE_CONNECTION_INTERFACE_POWER_SAVING, NULL };
 
       tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
     }
