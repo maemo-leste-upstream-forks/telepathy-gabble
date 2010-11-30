@@ -1,3 +1,471 @@
+commit 0d53b885bef5e78d77c29c5c274d834f7d22f1dc
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-11-30 17:17:37 +0000
+
+    version 0.11.3
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 9e385c298cbd4bff755d78f48abf0b6382224c34
+Merge: e9c51fd 225f23d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-30 17:11:28 +0000
+
+    Merge branch 'async-contact-list'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=31998
+
+commit e9c51fd9a4e919cdcc5f3cad4fb10bffe4b4f7eb
+Merge: 5a7cadb 83f50ee
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-30 17:10:55 +0000
+
+    Merge branch 'undraft'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=31874
+
+commit 83f50eee9e7eedd034b7c20f2e8ae5b0a7127695
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-30 17:07:51 +0000
+
+    Map WOCKY_XMPP_ERROR_INTERNAL_SERVER_ERROR and WOCKY_AUTH_ERROR_INVALID_REPLY to ServiceConfused
+
+commit 7953a554c977224b3ee916ee4848730117b9983e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-30 17:07:23 +0000
+
+    map_wocky_xmpp_error: map <bad-request/> and <unexpected-request/> to Confused
+    
+    These are the server claiming that we're wrong.
+
+commit 225f23d55d570cb172e51d4181ca5d3b6a54c546
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-30 13:20:57 +0000
+
+    Don't assume that AddMembers/RemoveMembers on a ContactList channel returns immediately
+
+commit a03ddd824071a8cc40abdf8d14fb27937b24541c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-26 13:02:44 +0000
+
+    Map SASL_Abort_Reason_Invalid_Challenge to TP_ERROR_SERVICE_CONFUSED
+    
+    As per the spec.
+
+commit 302cd8e16f800242d5ac93d2e2df88431f70cf98
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-26 12:53:55 +0000
+
+    Depend on telepathy-glib 0.13.7 and use it for SASL
+
+commit 5a7cadb6e4e6e54322d67514cc4fe0e1450bbc4f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-25 16:43:43 +0000
+
+    Update to spec 0.21.5's stable version of ServerAuthentication etc.
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit aeff768719cf4e41aa9fe1fa8794804cfb3d53b4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-25 17:52:34 +0000
+
+    Remove accidental dependency on glib 2.27
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 6591dc41458e56fca5e1b2ead1b7d2cc2ec8beed
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-25 17:24:19 +0000
+
+    NEWS for fd.o #31106
+
+commit d041040a455647b21a2d7cfbf99f278ccb41caf1
+Merge: 4317170 8070696
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-25 17:15:18 +0000
+
+    Merge branch 'ofdt-protocol-interface-presences'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 4317170a46c2faeee163b2f6974aebfbf006867e
+Merge: 6142164 d6f2fd8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 18:30:13 +0000
+
+    Merge branch 'sasl'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit d6f2fd86ec9ce523d368d505412ca732a436b103
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 16:38:30 +0000
+
+    sasl/abort.py: test aborting early, and check that unknown codes don't crash
+
+commit 8f1c2663c7b582f45321d6148f64bd9c9b90d72a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 16:38:05 +0000
+
+    saslutil: assert that the right error is in ConnectionError too
+
+commit 2a47c1c4a4e59b1c412e95fab08785a938c7ccd7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 16:36:51 +0000
+
+    connector_error_disconnect: harvest a detailed error from the auth manager
+
+commit ddc477c570538c8285d6865d4e20cf30dad129aa
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 16:36:33 +0000
+
+    gabble_auth_manager_get_failure_details: add
+
+commit 229175e51588aca6dc8b30fb63511cdcb3490ae7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 16:36:12 +0000
+
+    gabble_server_sasl_channel_get_failure_details: add
+
+commit df5deac07ff5f55acb0208b724c0777f3aebda06
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 15:02:30 +0000
+
+    jabber_auth: exercise unsuccessful Jabber authentication
+
+commit 769d107867503ef24bf6882c1c65d80def3df8f6
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 13:53:32 +0000
+
+    jabber_auth test: drive the SASL authenticator interactively
+
+commit 272da64dc4fa7491e59e44a8e447a1d8507acc65
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 13:53:15 +0000
+
+    saslutil: split out expect_sasl_channel()
+
+commit 93aa8fb22d5dfbd1c615c75b78def2a92f9d0660
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 13:52:59 +0000
+
+    JabberAuthenticator: optionally emit events rather than being automatic
+
+commit e41a1f5d83b67e5cd301f767b9cc4dbd3a6aaf5a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 13:31:30 +0000
+
+    rename SaslComplexAuthenticator to SaslEventAuthenticator and delete SaslPlainAuthenticator
+    
+    The distinguishing feature of the SASL test authenticator is that it
+    produces events, not that it uses complex SASL mechanisms - it can work
+    with any mechanism now.
+
+commit 7b9ec2490b8086b5880c2d230f76322f97b5e045
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 13:30:31 +0000
+
+    remove unused imports of SaslPlainAuthenticator
+
+commit fb686d9fe9fa429c696e79095cda8ab7ee89694d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 13:28:16 +0000
+
+    sasl/abort test: use interactive authenticator
+
+commit 8715cb9353c0ed6850d7161bf23e00c6baa915ef
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 13:15:52 +0000
+
+    sasl/plain test: exercise all the defined error conditions from RFC 3920 §6.4
+
+commit 454ab32c41737990065a9cd2176fa43871a5dc49
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 13:09:31 +0000
+
+    sasl/plain test: convert to SaslComplexAuthenticator so we can test other reasons for failure
+
+commit 25443a1e45620ce968960ba5d2e2381aa7458f13
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 12:51:20 +0000
+
+    test_jabber_pass_success: remove dead code
+
+commit f6d4da7c368af7b913eb2d11b250ed6d94a9714a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 12:51:09 +0000
+
+    SASL tests: use more idiomatic error-checking
+
+commit 2d4d04d158726882cec27387bea22ab347857889
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-24 12:34:50 +0000
+
+    Raise NotImplemented if the user requests an unsupported mechanism
+
+commit e32ebab6c848e7985acbc410f97102b711e2e405
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 20:41:01 +0000
+
+    Assert that DefaultUsername is available over D-Bus and correct
+
+commit 9214b4f5006349a7d71907cb87ae40a6f959504f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 20:40:48 +0000
+
+    Update SASL to current spec master
+
+commit 477b7ab10d8a140f75ee8bfc0e99a71bc282f0af
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 20:29:51 +0000
+
+    Don't make X-WOCKY-JABBER pseudo-mechanisms available over D-Bus
+
+commit 0dac490b844327aa66d1d0adacba5d765da449fb
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 20:28:27 +0000
+
+    Implement and test X-TELEPATHY-PASSWORD
+
+commit 4a95a631ea3677c9660d98badc6cbe157055a9d3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 19:58:29 +0000
+
+    gabble_auth_manager_start_auth_async: wrap the channel's async method
+
+commit 0ea410723eff39dd79d51ade88e5c044c221d2f7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 16:31:23 +0000
+
+    gabble_server_sasl_channel_fail: use gabble_set_tp_conn_error_from_wocky
+
+commit 8339e8b7828b1f493b8dcbca7f56cbd18195a802
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 16:23:25 +0000
+
+    map_wocky_auth_error: support the complete set of auth error codes
+    
+    Part of fd.o #21735.
+
+commit 6619d36fb69fd338249a83476d329622d5560421
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 15:54:35 +0000
+
+    gabble_server_sasl_channel_fail: on repeated failure, don't overwrite error
+
+commit 16ea092629a590662551907067abbf5923071be8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 15:54:20 +0000
+
+    GabbleServerSaslChannel: check for expected state, and debug, in async methods
+
+commit 410d05b684e5555636c508a06c6c3d2fae51f209
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 15:51:21 +0000
+
+    AbortSASL: improve state tracking and debugging
+    
+    Also, don't abort on invalid D-Bus input: AbortSASL(666, "crash me")
+    shouldn't crash us.
+
+commit 6d9e310a2a5164cb73a8ba3cf1cda94cee8ff8d3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 15:47:23 +0000
+
+    AcceptSASL: improve state tracking and debug messages
+
+commit 777c70c698e68fc5de2b092bbeb5fd8b8fbc4ed2
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 15:44:49 +0000
+
+    StartMechanism[WithData]: improve debug
+
+commit 7eaca1d56e948634ed18cda6a5b8b44a0cb9f85a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 15:41:30 +0000
+
+    StartMechanism[WithData]: streamline search for mechanism
+
+commit 02607a48aaa28cc59658ba9958172a8f059a5296
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 15:16:58 +0000
+
+    Respond: check status more carefully and improve debug output
+
+commit ae5652a0192d3f2aece8d9ff595c618e71dfe4e9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 14:32:05 +0000
+
+    GabbleServerSaslChannel: move to In_Progress state when StartMechanism is called
+    
+    Also assert in the tests that this is done.
+
+commit 4e8ba15a2a88a626454be6f5d71675a9ef338a72
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 11:25:49 +0000
+
+    gabble_server_sasl_channel_raise_not_available: take varargs
+
+commit 8a5f04e25b29ebb9835ebc4c9a9603928086697d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 19:30:10 +0000
+
+    Change SaslComplexAuthenticator so it's driven by the test framework
+    
+    This will let us get better test coverage, by producing unexpected
+    responses from the server.
+
+commit 447bece9fe137c1e31b255e437ef1444acc5eb88
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 14:26:14 +0000
+
+    gabbletests: allow Authenticator to emit events too
+
+commit d7421d395a4d458872d3f953eb061fffe14955da
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 14:44:30 +0000
+
+    Make sure every Authenticator we use is a subclass of GabbleAuthenticator
+
+commit 785fcfddc679148a0928fd0fa718b827784b35a9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-23 12:40:20 +0000
+
+    StartMechanism[WithData]: don't crash if no initial data
+
+commit 26a76d9a664aacea1d97ada55129c266fd5d8a52
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-22 19:17:16 +0000
+
+    Turn GabbleServerSaslChannel's dispose into finalize
+    
+    There's actually nothing left there that releases refs.
+
+commit e1bdda1173a3b7f133fbe9ebcc7d5e29208e9447
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-22 18:56:24 +0000
+
+    Add a test for the SASL channel being closed as undispatchable
+
+commit fe2d1a8b42a3fcf1675981acf1832e1747d388f9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-22 18:34:50 +0000
+
+    GabbleServerSaslChannel: be a TpBaseChannel
+
+commit 3661f06cca6ae655db5a14fd1db684756ccdb228
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-22 18:14:20 +0000
+
+    GabbleServerSaslChannel: be a plain GObject
+
+commit 8335739a586e2582bc15650749d187f141f6961e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-22 18:12:48 +0000
+
+    gabble_server_sasl_channel_fail: be independent of WockyAuthRegistry
+
+commit 70def04725bbfd2ece0ed4f0e8c3077d3210ead8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-22 18:10:44 +0000
+
+    gabble_server_sasl_channel_success_async: be independent of WockyAuthRegistry
+
+commit 17bd68ebf88f4712e68bf2a30d7c8ed090819dda
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-22 18:05:38 +0000
+
+    gabble_server_sasl_channel_challenge_async: be independent of WockyAuthRegistry
+
+commit f618b262044aa55faa6f4a7283d666f685bf6615
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-22 17:56:34 +0000
+
+    GabbleSaslChannel: convert start_auth_async into an ordinary method
+
+commit cb2e7435ced22b27b006f48380259a97b85c48ae
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-22 16:27:33 +0000
+
+    Add a stub DefaultUsername property pending addition to the spec
+
+commit 05101334f072a08894042a89d241d5549f1a1f4c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-22 16:25:04 +0000
+
+    Derive the authz. identity and default realm from the GabbleConnection
+    
+    This includes a behaviour change: the authorization identity hint changes
+    from e.g. 'user' to 'user@example.com', as described in RFC 3920 §6.
+
+commit 8cce15a9bc40cad7dff544e5ade7c03049cdd3fe
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-22 13:57:28 +0000
+
+    Supply the SASL channel's immutable properties at construct-time
+
+commit 2d720ad878807df27bf001b461addf7c8216b9b9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 18:43:54 +0000
+
+    GabbleAuthManager: only have a channel while authentication takes place
+    
+    Much like the design of GabbleTLSManager, this makes the code "the right
+    shape".
+
+commit bfcd733eacdb5b21ccc32e769aebad98ab58e829
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 18:28:44 +0000
+
+    GabbleServerSaslChannel: don't handle the chain-up case
+    
+    The channel manager does that now.
+
+commit 0f68204176f2adc8476ce065e8be9cb3f916a849
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 18:27:26 +0000
+
+    GabbleAuthManager: don't call into the channel for non-interactive auth
+
+commit 7fd26d9e27bfd6ae0e8d1ecab70760079f6006bf
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 18:25:46 +0000
+
+    GabbleAuthManagerPrivate: remove unused @result
+
+commit 35ab4fcb2938c3517aed89a4b98fa885f9c56a57
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 17:59:13 +0000
+
+    GabbleAuthManager: inherit from WockyAuthRegistry rather than owning one
+    
+    For the moment, the SASL channel is *also* an auth registry, and the
+    auth manager just bounces all method calls to it.
+
+commit 24b8eba2452f2d881ab99dc366be0e7c1ba6b0d3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-11-19 17:34:28 +0000
+
+    Update SASL code to draft 2
+    
+    This isn't fully correct yet, but it compiles and passes the existing
+    tests (with suitable updates).
+
+commit 61421643fc1e7e4f44d04b9d8c50cf87570665c0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-22 15:06:28 +0000
+
+    This has to be a release name.
+
+commit be5dff6ad06994738a708aa69173a1bbd29590c3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-22 14:53:55 +0000
+
+    Start 0.11.3 development
+
 commit 3c070dfe2e2fbef9408f713b2808be221b03cc93
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2010-11-22 13:05:30 +0000
@@ -1338,6 +1806,24 @@ Date:   2010-10-05 19:04:17 +0100
 
     Move capabilities_fill_cache into presence-cache
 
+commit 80706968cebed2b9a58d8ddceb5784da49773700
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2010-10-05 18:11:28 +0100
+
+    Reprivatise base status list; expose base+plugins list via a function instead
+
+commit eed1d9a00f2baf626ad2733b2e5c6642d7637990
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2010-10-05 18:09:25 +0100
+
+    Update test to include statuses from plugins
+
+commit 1e4a78d0f42e6e08cd5edda9c92df6a24bd4e150
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2010-10-05 18:08:52 +0100
+
+    g_strdupv() a gchar ** instead of g_strsplit() a constant
+
 commit 031318c2df8e4dade35ccb3982d3657ff62292a8
 Merge: e8203a2 d2020b8
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
@@ -1359,6 +1845,24 @@ Date:   2010-10-05 16:49:47 +0100
     Reviewed-by: David Laban <david.laban@collabora.co.uk>
     Conflicts:
     	tests/twisted/Makefile.am
+
+commit 0535ef4152432a3740552e1c88cb823a2e36a7aa
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2010-10-05 14:53:21 +0100
+
+    Use status to implement base-protocol callback for Protocol.Interface.Presences
+
+commit 8d6171e48d08ac98425b2a319950e0968c59f88b
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2010-10-05 14:52:31 +0100
+
+    Expose the standard status list to other parts of gabble
+
+commit 28dcce1a4ebc587853cac54bdbe90c674eae2595
+Author: Vivek Dasmohapatra <vivek@collabora.co.uk>
+Date:   2010-10-05 14:51:48 +0100
+
+    Tests for Protocol.Interface.Presences
 
 commit 2644f51b86778c49df1a9bb3e90dd668a145fcdf
 Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
@@ -3742,7 +4246,7 @@ Date:   2010-08-13 14:23:00 +0200
     constants.py: add INVALID_HANDLE
 
 commit 3dec7eeca3318c35456e25b505de03b38fd84f59
-Merge: f8398be76 18c80d8
+Merge: f8398be 18c80d8
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-08-11 13:41:26 +0100
 

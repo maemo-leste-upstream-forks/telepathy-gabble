@@ -6,8 +6,8 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="wocky-wocky-pubsub-node-protected.html" title="WockyPubsubNode-protected">
-<link rel="next" href="wocky-wocky-pubsub-service-protected.html" title="WockyPubsubService-protected">
+<link rel="prev" href="wocky-wocky-pubsub-node-protected.html" title="wocky-pubsub-node-protected">
+<link rel="next" href="wocky-wocky-pubsub-service-protected.html" title="wocky-pubsub-service-protected">
 <meta name="generator" content="GTK-Doc V1.15 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
@@ -47,71 +47,71 @@
                     <a class="link" href="WockyPubsubService.html#WockyPubsubServiceClass" title="WockyPubsubServiceClass">WockyPubsubServiceClass</a>;
                     <a class="link" href="WockyPubsubService.html#WockyPubsubServicePrivate" title="WockyPubsubServicePrivate">WockyPubsubServicePrivate</a>;
 enum                <a class="link" href="WockyPubsubService.html#WockyPubsubServiceError" title="enum WockyPubsubServiceError">WockyPubsubServiceError</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-error-quark" title="wocky_pubsub_service_error_quark ()">wocky_pubsub_service_error_quark</a>    (<em class="parameter"><code><span class="type">void</span></code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-error-quark" title="wocky_pubsub_service_error_quark ()">wocky_pubsub_service_error_quark</a>    (<em class="parameter"><code><span class="type">void</span></code></em>);
 #define             <a class="link" href="WockyPubsubService.html#WOCKY-PUBSUB-SERVICE-ERROR:CAPS" title="WOCKY_PUBSUB_SERVICE_ERROR">WOCKY_PUBSUB_SERVICE_ERROR</a>
 <a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="returnvalue">WockyPubsubService</span></a> * <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-new" title="wocky_pubsub_service_new ()">wocky_pubsub_service_new</a>           (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);
 <a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="returnvalue">WockyPubsubNode</span></a> *   <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-ensure-node" title="wocky_pubsub_service_ensure_node ()">wocky_pubsub_service_ensure_node</a>    (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
 <a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="returnvalue">WockyPubsubNode</span></a> *   <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-lookup-node" title="wocky_pubsub_service_lookup_node ()">wocky_pubsub_service_lookup_node</a>    (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-get-default-node-configuration-async" title="wocky_pubsub_service_get_default_node_configuration_async ()">wocky_pubsub_service_get_default_node_configuration_async</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
 <a class="link" href="WockyDataForm.html" title="WockyDataForm"><span class="returnvalue">WockyDataForm</span></a> *     <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-get-default-node-configuration-finish" title="wocky_pubsub_service_get_default_node_configuration_finish ()">wocky_pubsub_service_get_default_node_configuration_finish</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-retrieve-subscriptions-async" title="wocky_pubsub_service_retrieve_subscriptions_async ()">wocky_pubsub_service_retrieve_subscriptions_async</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-retrieve-subscriptions-finish" title="wocky_pubsub_service_retrieve_subscriptions_finish ()">wocky_pubsub_service_retrieve_subscriptions_finish</a>
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-retrieve-subscriptions-finish" title="wocky_pubsub_service_retrieve_subscriptions_finish ()">wocky_pubsub_service_retrieve_subscriptions_finish</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **subscriptions</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **subscriptions</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-create-node-async" title="wocky_pubsub_service_create_node_async ()">wocky_pubsub_service_create_node_async</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyDataForm.html" title="WockyDataForm"><span class="type">WockyDataForm</span></a> *config</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
 <a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="returnvalue">WockyPubsubNode</span></a> *   <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-create-node-finish" title="wocky_pubsub_service_create_node_finish ()">wocky_pubsub_service_create_node_finish</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
 enum                <a class="link" href="WockyPubsubService.html#WockyPubsubSubscriptionState" title="enum WockyPubsubSubscriptionState">WockyPubsubSubscriptionState</a>;
                     <a class="link" href="WockyPubsubService.html#WockyPubsubSubscription" title="WockyPubsubSubscription">WockyPubsubSubscription</a>;
 #define             <a class="link" href="WockyPubsubService.html#WOCKY-TYPE-PUBSUB-SUBSCRIPTION:CAPS" title="WOCKY_TYPE_PUBSUB_SUBSCRIPTION">WOCKY_TYPE_PUBSUB_SUBSCRIPTION</a>
-<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               <a class="link" href="WockyPubsubService.html#wocky-pubsub-subscription-get-type" title="wocky_pubsub_subscription_get_type ()">wocky_pubsub_subscription_get_type</a>  (<em class="parameter"><code><span class="type">void</span></code></em>);
+<a href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               <a class="link" href="WockyPubsubService.html#wocky-pubsub-subscription-get-type" title="wocky_pubsub_subscription_get_type ()">wocky_pubsub_subscription_get_type</a>  (<em class="parameter"><code><span class="type">void</span></code></em>);
 <a class="link" href="WockyPubsubService.html#WockyPubsubSubscription" title="WockyPubsubSubscription"><span class="returnvalue">WockyPubsubSubscription</span></a> * <a class="link" href="WockyPubsubService.html#wocky-pubsub-subscription-new" title="wocky_pubsub_subscription_new ()">wocky_pubsub_subscription_new</a> (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyPubsubService.html#WockyPubsubSubscriptionState" title="enum WockyPubsubSubscriptionState"><span class="type">WockyPubsubSubscriptionState</span></a> state</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *subid</code></em>);
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *subid</code></em>);
 <a class="link" href="WockyPubsubService.html#WockyPubsubSubscription" title="WockyPubsubSubscription"><span class="returnvalue">WockyPubsubSubscription</span></a> * <a class="link" href="WockyPubsubService.html#wocky-pubsub-subscription-copy" title="wocky_pubsub_subscription_copy ()">wocky_pubsub_subscription_copy</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html#WockyPubsubSubscription" title="WockyPubsubSubscription"><span class="type">WockyPubsubSubscription</span></a> *sub</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyPubsubService.html#wocky-pubsub-subscription-free" title="wocky_pubsub_subscription_free ()">wocky_pubsub_subscription_free</a>      (<em class="parameter"><code><a class="link" href="WockyPubsubService.html#WockyPubsubSubscription" title="WockyPubsubSubscription"><span class="type">WockyPubsubSubscription</span></a> *sub</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="WockyPubsubService.html#wocky-pubsub-subscription-list-copy" title="wocky_pubsub_subscription_list_copy ()">wocky_pubsub_subscription_list_copy</a> (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *subs</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyPubsubService.html#wocky-pubsub-subscription-list-free" title="wocky_pubsub_subscription_list_free ()">wocky_pubsub_subscription_list_free</a> (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *subs</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="WockyPubsubService.html#wocky-pubsub-subscription-list-copy" title="wocky_pubsub_subscription_list_copy ()">wocky_pubsub_subscription_list_copy</a> (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *subs</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyPubsubService.html#wocky-pubsub-subscription-list-free" title="wocky_pubsub_subscription_list_free ()">wocky_pubsub_subscription_list_free</a> (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *subs</code></em>);
 </pre>
 </div>
 <div class="refsect1" title="Object Hierarchy">
 <a name="WockyPubsubService.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+  <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
    +----WockyPubsubService
 </pre>
 </div>
 <div class="refsect1" title="Properties">
 <a name="WockyPubsubService.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="WockyPubsubService.html#WockyPubsubService--jid" title='The "jid" property'>jid</a>"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only
+  "<a class="link" href="WockyPubsubService.html#WockyPubsubService--jid" title='The "jid" property'>jid</a>"                      <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only
   "<a class="link" href="WockyPubsubService.html#WockyPubsubService--session" title='The "session" property'>session</a>"                  <a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a>*         : Read / Write / Construct Only
 </pre>
 </div>
@@ -151,12 +151,12 @@ The class structure for the <a class="link" href="WockyPubsubService.html" title
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObjectClass"><span class="type">GObjectClass</span></a> <em class="structfield"><code><a name="WockyPubsubServiceClass.parent-class"></a>parent_class</code></em>;</span></p></td>
+<td><p><span class="term"><a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObjectClass"><span class="type">GObjectClass</span></a> <em class="structfield"><code><a name="WockyPubsubServiceClass.parent-class"></a>parent_class</code></em>;</span></p></td>
 <td>parent
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> <em class="structfield"><code><a name="WockyPubsubServiceClass.node-object-type"></a>node_object_type</code></em>;</span></p></td>
+<td><p><span class="term"><a href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"><span class="type">GType</span></a> <em class="structfield"><code><a name="WockyPubsubServiceClass.node-object-type"></a>node_object_type</code></em>;</span></p></td>
 <td>the subtype of <span class="type">WOCKY_TYPE_PUBSUB_NODE</span> to be created by
                    <a class="link" href="WockyPubsubService.html#wocky-pubsub-service-ensure-node" title="wocky_pubsub_service_ensure_node ()"><code class="function">wocky_pubsub_service_ensure_node()</code></a>
 </td>
@@ -184,7 +184,7 @@ The class structure for the <a class="link" href="WockyPubsubService.html" title
 <hr>
 <div class="refsect2" title="wocky_pubsub_service_error_quark ()">
 <a name="wocky-pubsub-service-error-quark"></a><h3>wocky_pubsub_service_error_quark ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_pubsub_service_error_quark    (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_pubsub_service_error_quark    (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -208,7 +208,7 @@ The class structure for the <a class="link" href="WockyPubsubService.html" title
 <div class="refsect2" title="wocky_pubsub_service_new ()">
 <a name="wocky-pubsub-service-new"></a><h3>wocky_pubsub_service_new ()</h3>
 <pre class="programlisting"><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="returnvalue">WockyPubsubService</span></a> * wocky_pubsub_service_new           (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);</pre>
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -236,7 +236,7 @@ The class structure for the <a class="link" href="WockyPubsubService.html" title
 <div class="refsect2" title="wocky_pubsub_service_ensure_node ()">
 <a name="wocky-pubsub-service-ensure-node"></a><h3>wocky_pubsub_service_ensure_node ()</h3>
 <pre class="programlisting"><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="returnvalue">WockyPubsubNode</span></a> *   wocky_pubsub_service_ensure_node    (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
 <p>
 Fetches or creates an object representing a node on the pubsub service. Note
 that this does not ensure that a node exists on the server; it merely
@@ -268,10 +268,10 @@ ensures a local representation.
 <div class="refsect2" title="wocky_pubsub_service_lookup_node ()">
 <a name="wocky-pubsub-service-lookup-node"></a><h3>wocky_pubsub_service_lookup_node ()</h3>
 <pre class="programlisting"><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="returnvalue">WockyPubsubNode</span></a> *   wocky_pubsub_service_lookup_node    (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
 <p>
 Fetches an object representing a node on a pubsub service, if the object
-already exists; if not, returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. Note that this does not check whether
+already exists; if not, returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. Note that this does not check whether
 a node exists on the server; it only checks for a local representation.
 </p>
 <div class="variablelist"><table border="0">
@@ -289,7 +289,7 @@ a node exists on the server; it only checks for a local representation.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a borrowed reference to a node, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td> a borrowed reference to a node, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 </tbody>
@@ -300,9 +300,9 @@ a node exists on the server; it only checks for a local representation.
 <a name="wocky-pubsub-service-get-default-node-configuration-async"></a><h3>wocky_pubsub_service_get_default_node_configuration_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_service_get_default_node_configuration_async
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -336,8 +336,8 @@ a node exists on the server; it only checks for a local representation.
 <a name="wocky-pubsub-service-get-default-node-configuration-finish"></a><h3>wocky_pubsub_service_get_default_node_configuration_finish ()</h3>
 <pre class="programlisting"><a class="link" href="WockyDataForm.html" title="WockyDataForm"><span class="returnvalue">WockyDataForm</span></a> *     wocky_pubsub_service_get_default_node_configuration_finish
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -372,9 +372,9 @@ a node exists on the server; it only checks for a local representation.
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_service_retrieve_subscriptions_async
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -411,11 +411,11 @@ a node exists on the server; it only checks for a local representation.
 <hr>
 <div class="refsect2" title="wocky_pubsub_service_retrieve_subscriptions_finish ()">
 <a name="wocky-pubsub-service-retrieve-subscriptions-finish"></a><h3>wocky_pubsub_service_retrieve_subscriptions_finish ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_pubsub_service_retrieve_subscriptions_finish
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_pubsub_service_retrieve_subscriptions_finish
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **subscriptions</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **subscriptions</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -454,11 +454,11 @@ a node exists on the server; it only checks for a local representation.
 <a name="wocky-pubsub-service-create-node-async"></a><h3>wocky_pubsub_service_create_node_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_service_create_node_async
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyDataForm.html" title="WockyDataForm"><span class="type">WockyDataForm</span></a> *config</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -502,8 +502,8 @@ a node exists on the server; it only checks for a local representation.
 <a name="wocky-pubsub-service-create-node-finish"></a><h3>wocky_pubsub_service_create_node_finish ()</h3>
 <pre class="programlisting"><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="returnvalue">WockyPubsubNode</span></a> *   wocky_pubsub_service_create_node_finish
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gio/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -608,7 +608,7 @@ with <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-subscribe-asyn
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyPubsubSubscription.jid"></a>jid</code></em>;</span></p></td>
+<td><p><span class="term"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyPubsubSubscription.jid"></a>jid</code></em>;</span></p></td>
 <td>the JID which is subscribed to <em class="parameter"><code>node</code></em>. This may be a bare JID, or a
       full JID with a resource, depending on which was specified when
       subscribing to <em class="parameter"><code>node</code></em>. See XEP-0060 §6.1 Subscribe to a Node
@@ -620,9 +620,9 @@ with <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-subscribe-asyn
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyPubsubSubscription.subid"></a>subid</code></em>;</span></p></td>
+<td><p><span class="term"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyPubsubSubscription.subid"></a>subid</code></em>;</span></p></td>
 <td>a unique identifier for this subscription, if a JID is subscribed to
-        a node multiple times, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if there is no such identifier. See
+        a node multiple times, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if there is no such identifier. See
         XEP-0060 §6.1.6 “Multiple Subscriptions”
 </td>
 </tr>
@@ -639,7 +639,7 @@ with <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-subscribe-asyn
 <hr>
 <div class="refsect2" title="wocky_pubsub_subscription_get_type ()">
 <a name="wocky-pubsub-subscription-get-type"></a><h3>wocky_pubsub_subscription_get_type ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               wocky_pubsub_subscription_get_type  (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               wocky_pubsub_subscription_get_type  (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -655,9 +655,9 @@ with <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-subscribe-asyn
 <div class="refsect2" title="wocky_pubsub_subscription_new ()">
 <a name="wocky-pubsub-subscription-new"></a><h3>wocky_pubsub_subscription_new ()</h3>
 <pre class="programlisting"><a class="link" href="WockyPubsubService.html#WockyPubsubSubscription" title="WockyPubsubSubscription"><span class="returnvalue">WockyPubsubSubscription</span></a> * wocky_pubsub_subscription_new (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyPubsubService.html#WockyPubsubSubscriptionState" title="enum WockyPubsubSubscriptionState"><span class="type">WockyPubsubSubscriptionState</span></a> state</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *subid</code></em>);</pre>
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *subid</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -732,7 +732,7 @@ with <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-subscribe-asyn
 <hr>
 <div class="refsect2" title="wocky_pubsub_subscription_list_copy ()">
 <a name="wocky-pubsub-subscription-list-copy"></a><h3>wocky_pubsub_subscription_list_copy ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_pubsub_subscription_list_copy (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *subs</code></em>);</pre>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_pubsub_subscription_list_copy (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *subs</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -754,7 +754,7 @@ with <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-subscribe-asyn
 <hr>
 <div class="refsect2" title="wocky_pubsub_subscription_list_free ()">
 <a name="wocky-pubsub-subscription-list-free"></a><h3>wocky_pubsub_subscription_list_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_subscription_list_free (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *subs</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_pubsub_subscription_list_free (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *subs</code></em>);</pre>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -771,7 +771,7 @@ with <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-subscribe-asyn
 <a name="WockyPubsubService.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" title='The "jid" property'>
 <a name="WockyPubsubService--jid"></a><h3>The <code class="literal">"jid"</code> property</h3>
-<pre class="programlisting">  "jid"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only</pre>
+<pre class="programlisting">  "jid"                      <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only</pre>
 <p>The jid of the pubsub service.</p>
 <p>Default value: NULL</p>
 </div>
@@ -789,10 +789,10 @@ with <a class="link" href="WockyPubsubNode.html#wocky-pubsub-node-subscribe-asyn
 <pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *service,
                                                         <a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a>    *node,
                                                         <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a>        *event_stanza,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            event_node,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            items_node,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            items,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            event_node,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            items_node,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            items,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
 <p>
 Emitted when an event is received for a node.
 </p>
@@ -843,9 +843,9 @@ Emitted when an event is received for a node.
 <pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *node,
                                                         <a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a>    *stanza,
                                                         <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a>        *event_node,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            delete_node,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            arg4,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)        : Run Last</pre>
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            delete_node,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            arg4,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)        : Run Last</pre>
 <p>
 Emitted when a notification of a node's deletion is received from the
 server.
@@ -886,10 +886,10 @@ server.
 <pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a>      *service,
                                                         <a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a>         *node,
                                                         <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a>             *stanza,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>                 event_node,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>                 subscription_node,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>                 event_node,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>                 subscription_node,
                                                         <a class="link" href="WockyPubsubService.html#WockyPubsubSubscription" title="WockyPubsubSubscription"><span class="type">WockyPubsubSubscription</span></a> *subscription,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>                 user_data)              : Run Last</pre>
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>                 user_data)              : Run Last</pre>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
