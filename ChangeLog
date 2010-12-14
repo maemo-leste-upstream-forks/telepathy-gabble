@@ -1,3 +1,343 @@
+commit 372692ef7e2d9d815ef529d380ed5c9802311364
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-14 17:47:16 +0000
+
+    version 0.11.4
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 542fc5f54bfd686d067fb1c60da0a9dccf0c3df8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-14 17:30:49 +0000
+
+    src: ensure out of tree builds can find headers for building gabble-enumtypes.{c,h}
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit de46cd7558792e154e360c720b6b15ed18cf5115
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-12-13 15:05:24 +0000
+
+    NEWS
+
+commit afef93b9cfed8878a96bb7150d60ceafd02d8ddf
+Merge: f1d5bc8 c639794
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-12-13 14:53:43 +0000
+
+    Merge branch 'messages'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f1d5bc82b1f779733b8ef49375869e36c2500474
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-13 14:27:08 +0000
+
+    configure: bump versioned-dep on tp-glib
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 22c161485383f1c9423c5dc04446010e4d9f029b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-07 16:29:18 +0000
+
+    protocol: implement TpBaseProtocolClass->dup_authentication_types
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 8e4558e9ba82cbd298eb87eff1174b05a6bdfc3b
+Merge: 19623aa 1274d46
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-10 13:33:40 -0800
+
+    Merge branch 'more-stream-errors'
+
+commit 1274d465b78a69de499719e3567a9754eb8532dc
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-08 11:31:38 -0800
+
+    Use GEnum fro jingle reasons.
+
+commit 3ef08d23bfe44bb9ace99729c5641102db2a8979
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-08 09:44:45 -0800
+
+    Style fixes.
+
+commit 90501f683387dade4a72f362359b70a1cea81175
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-06 16:31:01 -0800
+
+    Added StreamError and <reason/> assertions to existing tests.
+
+commit c8fddaa984a239484a20240da894ae3292ca0b91
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-06 16:30:02 -0800
+
+    Include message in StreamError.
+
+commit 121fe1b3940be03a087937106d5ff38af3fe8df6
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-06 15:08:16 -0800
+
+    Use constant instead of magic number.
+
+commit c4028fb899bd40d1676c0eb80ccde2adea3cb1ce
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-06 15:07:59 -0800
+
+    Added jingle/stream-errors-on-content-reject.py.
+
+commit 43fd9f5530a75c110bf1e7d36b5481599c6d4cb3
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-06 11:53:36 -0800
+
+    Added tests for supplying reasons with session terminate and proper StreamError.
+
+commit 99583904aacc27c98d566de8d4e62feea27a7bd4
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-04 22:46:20 -0800
+
+    Set a Telepathy DBus error when leaving group with invalid reason.
+
+commit c7d7f04169334a9e9873f48b25c1696ea9555957
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-04 22:45:07 -0800
+
+    Add JINGLE_REASON_UNKNOWN to gabble_jingle_session_get_reason_name.
+
+commit 864c3e1c4bf5ab1dc55cbcdaf3ada9d7e5066b7f
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-04 22:43:51 -0800
+
+    Fix relics of previous API change.
+    set_state used to take TpChannelGroupChangeReason and now takes JingleReason.
+
+commit 502aa3b39937314b3003135c47f768cebc08a0ea
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-04 22:43:13 -0800
+
+    Wockify (and fix) extract_reason.
+
+commit 6f2bf4815b31c5f5d1e8d1dc913bdcb61b9005eb
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-03 15:45:29 -0800
+
+    Map stream errors to jingle reasons and send them with session-terminate.
+
+commit 81536e0b51ce19b261bec78fe6bd35c055d9da3f
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-03 15:37:20 -0800
+
+    emit StreamError when session-terminate gives us a good reason.
+
+commit cbc8901b317f28eda75bd54194343370583060bf
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-03 14:10:38 -0800
+
+    TpChannelGroupChangeReason-sectomy in GabbleJingleSession.
+    It really should focus on XMPP and have a minimum of TP bits in it.
+
+commit af2a564d51ab652fa2ca67e06aa2cf1a541c0061
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-03 13:00:07 -0800
+
+    Added content-rejected callback in media channel.
+
+commit 0f626a551e31b50a513fe74ec8c01931e50328a7
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-03 12:59:15 -0800
+
+    Added content-rejected signal to session.
+
+commit 8401a43e1713c0089be7a6f15e47d6840ab213d6
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-03 11:56:21 -0800
+
+    Set reject reason when content was rejected.
+
+commit 898e609db56301b793f3a646b1913c28337d399e
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-03 11:55:26 -0800
+
+    Use new JingleReason enum instead of weird group channel reason mapping.
+
+commit ed180dd7af7fd390863933817425b20aca9d6b1f
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-03 11:53:40 -0800
+
+    Add user_data to foreach content function.
+
+commit a34613a1b4b7f6c0eb54b5be21a9a635ff8c9c07
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-02 23:04:15 -0800
+
+    Make jingle reasons a first-class enum
+
+commit a2da7950b55698ef7c86a61fd1a9dd0b7ecd3677
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-02 21:15:39 -0800
+
+    Send content-reject when codec negotiation fails.
+
+commit 19623aac9e2848aeb6c414e0ffea35878d018342
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-12-10 17:08:31 +0000
+
+    Update telepathy.am from telepathy-glib
+
+commit c639794d12ad21ff7d04c69e49f1a64b383df95f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-12-10 15:26:36 +0000
+
+    Check that sent messages have the sender and sender-id
+    
+    This is/will be new in telepathy-glib 0.13.9.
+
+commit e0d3380a6ea04e2b7ca9ab8720f982541ca31f3c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-12-10 15:26:13 +0000
+
+    Set message timestamps as int64, not uint64
+
+commit faa06bd2e13bce069ff87531d2f9ca4650d65f73
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-12-10 15:25:57 +0000
+
+    Depend on telepathy-glib 0.13.9 and avoid using deprecated functions
+
+commit d317b71c4174b965d2ee6421ff2d94b9e292c5d6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-07-14 21:20:40 +0100
+
+    Revert to using message id='' as message-token
+
+commit 2615e023cdba0234cf90c35af5754269892adb06
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-10 11:17:46 +0000
+
+    server-sasl-channel: add note about completing not in an idle
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 771ea19db551a887a60cd802bdcb8a4c242d83f6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-10 10:50:30 +0000
+
+    tests: add sasl/telepathy-password.py, a test for fd.o#32278
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 831823920b5e8167c4176704018d8c2413cf3ce8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-10 10:49:43 +0000
+
+    server-sasl-channel: finish a gabble success function not in an idle
+    
+    Fixes: fd.o#32278
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 52465001debd4c2763017f310bf8318a3caaefc5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-10 10:48:53 +0000
+
+    tests: add GABBLE_TEST_BUSTLE env option
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 72fb9963b5333f6405cc485fc22434d6f512b3fc
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2010-12-02 18:21:27 +0000
+
+    Don't assert that unreffing a handle really kills it
+    
+    Since telepathy-glib 0.13.8, handles are immortal.
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 569dfd5d7a4b2de6c297b8f392f456d8a1231054
+Author: Senko Rasic <senko.rasic@dobarkod.hr>
+Date:   2010-12-02 13:56:59 +0200
+
+    don't attempt to set system CA cert location if gabble is configured without it
+
+commit b9077fe2dade211bed1664f837c6f203fbb1b61f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-12-01 12:13:14 +0000
+
+    NEWS for 29147
+
+commit 5ea203c4ec317ae5432aff1574e8246763c78666
+Merge: 3cbc5da 1f0c020
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-12-01 12:11:22 +0000
+
+    Merge branch 'muc-presence'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 1f0c020c34e91b1adc2a08fbbc3bc5e15766d3c1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-12-01 00:53:16 +0000
+
+    Remove erroneous assertions from Tube tests.
+    
+    They thought that the <x ...muc/> node had to be in every presence. But
+    it does not!
+
+commit 58f227dcd4df38f34d15173981bc9c8b69162ca0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-30 23:12:12 +0000
+
+    TubesChannel: remove silly GET_PRIVATE macro.
+    
+    I happened to notice this, so sedded it out.
+
+commit 6e8f0a87485af6374905c23c19bbc76f31d58e13
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-30 23:09:23 +0000
+
+    MUC: Remove fake error checking from sending presence.
+    
+    gabble_muc_channel_send_presence() could only return FALSE if the
+    connection's not connected yet, and thus the porter hasn't been
+    constructed yet. This seems... unlikely. But furthermore, no caller of
+    gabble_muc_channel_send_presence() actually checked its return value! So
+    let's just bin all this fake error handling code.
+
+commit 597e11bcd05db93178667c7b864b2f8db0829258
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-30 22:59:48 +0000
+
+    MUC: test that we *do* include <x xmlns='.../muc'/> on join
+    
+    Astonishingly, this simple assertion was never made.
+
+commit a16bfc21c08f96136057ed618d960676cc07ebbc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-30 22:53:13 +0000
+
+    MUC: Add a regression test for fd.o#29147
+
+commit 724d245f76416fba3dc66fb91c7d92d1b90cb802
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-11-30 22:02:32 +0000
+
+    Update Wocky snapshot for MUC presence fix.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=29147>
+
+commit 3cbc5dab00f5f7cd8747a823ae71ee8dfb2d9149
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-11-30 17:41:35 +0000
+
+    start on 0.11.4
+    
+    Just like nothing happened...
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit 0d53b885bef5e78d77c29c5c274d834f7d22f1dc
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   2010-11-30 17:17:37 +0000

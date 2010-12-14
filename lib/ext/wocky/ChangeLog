@@ -1,3 +1,64 @@
+commit 5a119a61e8e19741bd5a26333f4f54c12296943e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Aug 17 16:38:29 2010 +0100
+
+    MUC: only include <x xmlns=...muc.../> when joining.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=29147>
+
+ wocky/wocky-muc.c |   15 +++++++--------
+ wocky/wocky-muc.h |    3 +--
+ 2 files changed, 8 insertions(+), 10 deletions(-)
+
+commit 51dd1729f561058153e1a98f03be24c0228e5747
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Aug 17 16:27:48 2010 +0100
+
+    Inline wocky_muc_send_presence()
+    
+    It's only used in one place for now, and that one place is going to have
+    to use wocky_muc_create_presence() directly anyway when the latter
+    doesn't add the <x/> node.
+
+ wocky/wocky-muc.c |   19 ++++---------------
+ 1 files changed, 4 insertions(+), 15 deletions(-)
+
+commit e8c68ba002bf94862a94e90e29fa223b05815a74
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Nov 20 11:38:48 2010 +0000
+
+    connector-test: fix a typo of 'sasl'
+    
+    /connector/problem/sas/no-mechanisms should read
+    /connector/problem/sasl/no-mechanisms.
+
+ tests/wocky-connector-test.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 877802c153392f272d9708a0f15c81b679c51042
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Nov 20 11:31:32 2010 +0000
+
+    examples/connect: always call wocky_init().
+    
+    The previous fix, in d0977e8, only called wocky_init() on one branch.
+    Thus, the example worked in 'connector' mode, but not in 'raw' mode (the
+    default)...
+    
+    We should just call it up-front alongside g_type_init().
+
+ examples/connect.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 94240be7cef4d878410cb0843063d4f75b270edb
+Author: Simon McVittie <smcv@debian.org>
+Date:   Tue Nov 23 16:00:59 2010 +0000
+
+    Add maintainer-upload-docs target to Makefile.am
+
+ Makefile.am |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
 commit 4ea0e486e9b40d64b16dc566714f613b6b430e77
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   Mon Nov 15 13:10:23 2010 +0000

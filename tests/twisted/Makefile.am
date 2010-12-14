@@ -67,6 +67,7 @@ TWISTED_TESTS = \
 	sasl/jabber_auth.py \
 	sasl/plain.py \
 	sasl/complex.py \
+	sasl/telepathy-password.py \
 	search/ceci-nest-pas-un-serveur.py \
 	search/extended.py \
 	search/no-server-property.py \
@@ -158,6 +159,8 @@ TWISTED_JINGLE_TESTS = \
 	jingle/payload-types.py \
 	jingle/preload-caps-crash.py \
 	jingle/session-id-collision.py \
+	jingle/stream-errors-on-terminate.py \
+	jingle/stream-errors-on-content-reject.py \
 	jingle/stream-handler-error.py \
 	jingle/test-content-adding-removal.py \
 	jingle/test-description-info.py \
