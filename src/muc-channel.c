@@ -816,39 +816,20 @@ send_join_request (GabbleMucChannel *gmuc,
   return TRUE;
 }
 
-static gboolean
+static void
 send_leave_message (GabbleMucChannel *gmuc,
                     const gchar *reason)
 {
   GabbleMucChannelPrivate *priv = gmuc->priv;
   TpBaseChannel *base = TP_BASE_CHANNEL (gmuc);
-  LmMessage *msg;
-  GError *error = NULL;
-  gboolean ret;
+  WockyStanza *stanza = wocky_muc_create_presence (priv->wmuc,
+      WOCKY_STANZA_SUB_TYPE_UNAVAILABLE, reason);
 
-  /* build the message */
-  msg = (LmMessage *) wocky_muc_create_presence (priv->wmuc,
-      WOCKY_STANZA_SUB_TYPE_UNAVAILABLE, reason, NULL);
+  g_signal_emit (gmuc, signals[PRE_PRESENCE], 0, stanza);
+  _gabble_connection_send (
+      GABBLE_CONNECTION (tp_base_channel_get_connection (base)), stanza, NULL);
 
-  g_signal_emit (gmuc, signals[PRE_PRESENCE], 0, msg);
-
-  /* send it */
-  ret = _gabble_connection_send (
-      GABBLE_CONNECTION (tp_base_channel_get_connection (base)), msg, &error);
-
-  if (!ret)
-    {
-      DEBUG ("_gabble_connection_send failed");
-      g_error_free (error);
-    }
-  else
-    {
-      DEBUG ("leave message sent");
-    }
-
-  lm_message_unref (msg);
-
-  return ret;
+  g_object_unref (stanza);
 }
 
 static void
@@ -2744,14 +2725,14 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
       return;
     }
 
-  message = tp_message_new (base_conn, 2, 2);
+  message = tp_cm_message_new (base_conn, 2);
 
   /* Header common to normal message and delivery-echo */
   if (msg_type != TP_CHANNEL_TEXT_MESSAGE_TYPE_NORMAL)
     tp_message_set_uint32 (message, 0, "message-type", msg_type);
 
   if (timestamp != 0)
-    tp_message_set_uint64 (message, 0, "message-sent", timestamp);
+    tp_message_set_int64 (message, 0, "message-sent", timestamp);
 
   /* Body */
   tp_message_set_string (message, 1, "content-type", "text/plain");
@@ -2763,7 +2744,7 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
        * delivery reports.
        */
 
-      TpMessage *delivery_report = tp_message_new (base_conn, 1, 1);
+      TpMessage *delivery_report = tp_cm_message_new (base_conn, 1);
       TpDeliveryStatus status =
           is_error ? error_status : TP_DELIVERY_STATUS_DELIVERED;
 
@@ -2789,15 +2770,14 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
        * The sender of the echo, however, is ourself.  (Unless we get errors
        * for messages that we didn't send, which would be odd.)
        */
-      tp_message_set_handle (message, 0, "message-sender",
-          TP_HANDLE_TYPE_CONTACT, muc_self_handle);
+      tp_cm_message_set_sender (message, muc_self_handle);
 
       /* If we sent the message whose delivery has succeeded or failed, we
        * trust the id='' attribute. */
       if (id != NULL)
         tp_message_set_string (message, 0, "message-token", id);
 
-      tp_message_take_message (delivery_report, 0, "delivery-echo",
+      tp_cm_message_take_message (delivery_report, 0, "delivery-echo",
           message);
 
       tp_message_mixin_take_received (G_OBJECT (chan), delivery_report);
@@ -2806,18 +2786,13 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
     {
       /* Messages from the MUC itself should have no sender. */
       if (sender_handle_type == TP_HANDLE_TYPE_CONTACT)
-        tp_message_set_handle (message, 0, "message-sender",
-            TP_HANDLE_TYPE_CONTACT, sender);
+        tp_cm_message_set_sender (message, sender);
 
       if (timestamp != 0)
         tp_message_set_boolean (message, 0, "scrollback", TRUE);
 
-      /* We can't trust the id='' attribute set by the contact to be unique
-       * enough to be a message-token, so let's generate one locally.
-       */
-      tmp = gabble_generate_id ();
-      tp_message_set_string (message, 0, "message-token", tmp);
-      g_free (tmp);
+      if (id != NULL)
+        tp_message_set_string (message, 0, "message-token", id);
 
       tp_message_mixin_take_received (G_OBJECT (chan), message);
     }
@@ -3596,27 +3571,23 @@ gabble_muc_channel_set_chat_state (TpSvcChannelInterfaceChatState *iface,
   tp_svc_channel_interface_chat_state_return_from_set_chat_state (context);
 }
 
-gboolean
-gabble_muc_channel_send_presence (GabbleMucChannel *self,
-                                  GError **error)
+void
+gabble_muc_channel_send_presence (GabbleMucChannel *self)
 {
   GabbleMucChannelPrivate *priv = self->priv;
   TpBaseChannel *base = TP_BASE_CHANNEL (self);
   WockyStanza *stanza;
-  gboolean result;
 
   /* do nothing if we havn't actually joined yet */
   if (priv->state < MUC_STATE_INITIATED)
-    return TRUE;
+    return;
 
   stanza = wocky_muc_create_presence (priv->wmuc,
-      WOCKY_STANZA_SUB_TYPE_NONE, NULL, NULL);
-  result = _gabble_connection_send (
+      WOCKY_STANZA_SUB_TYPE_NONE, NULL);
+  _gabble_connection_send (
       GABBLE_CONNECTION (tp_base_channel_get_connection (base)),
-      (LmMessage *) stanza, error);
-
+      stanza, NULL);
   g_object_unref (stanza);
-  return result;
 }
 
 GabbleTubesChannel *
