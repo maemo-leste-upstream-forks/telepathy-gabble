@@ -1,3 +1,78 @@
+commit 6e64eff081fa59ce533728b2b1838cf0c798d968
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jan 10 11:12:42 2011 +0000
+
+    Muc: correctly parse the 'composing' chat state.
+    
+    In 6b6f09d97f91de66c11a4b6a7e28222e8dc911f6 I replaced a lookup table
+    for parsing these with GEnum. What I (and the reviewer) didn't notice is
+    that the WockyMucMsgState enum doesn't actually correspond to the names
+    used in XEP-0085! Since 'typing' isn't a thing in XMPP, the 'composing'
+    state was misparsed.
+
+ wocky/wocky-muc.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 14bdb7c316028b9df67ebe6ad2e9f729d024ff74
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Fri Dec 24 20:54:53 2010 +0100
+
+    DEBUG once per mainloop iteration is bad, remove
+
+ wocky/wocky-heartbeat-source.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 8db5c13fe1895625a80d66ce2aef376cae6e9f8f
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   Tue Sep 28 18:41:58 2010 -0400
+
+    Add assertions to ensure async resources are freed
+    
+    Add assertions to make sure async resources GCancellable and
+    GSimpleAsyncResult are freed before a new async calls are attempted.
+
+ wocky/wocky-openssl.c       |    1 +
+ wocky/wocky-porter.c        |    4 ++++
+ wocky/wocky-tls-connector.c |    1 +
+ wocky/wocky-tls.c           |    1 +
+ 4 files changed, 7 insertions(+), 0 deletions(-)
+
+commit 6c92f00e745f65e05bc8379410ef096be2699b77
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   Mon Sep 27 18:28:40 2010 -0400
+
+    Fix wocky_implement_finish_*() macro
+    
+    * Fixed missing scope (G_STMT_START/G_STMT_END) and missing parenthesis
+    * Don't call copy_func if the result is NULL (enabling use of g_object_ref
+      as copy_func).
+    * Added missing ; now required when those macro are called.
+
+ wocky/wocky-pubsub-node.c    |   12 ++++----
+ wocky/wocky-pubsub-service.c |    2 +-
+ wocky/wocky-utils.h          |   68 ++++++++++++++++++++++++++---------------
+ 3 files changed, 50 insertions(+), 32 deletions(-)
+
+commit f38f22015aa144614c2d7295b59af3ae017bf313
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Dec 15 19:32:47 2010 +0000
+
+    Heartbeat: safely stop polling iphb FD.
+    
+    wocky_heartbeat_source_degrade() is also used to clean up in
+    wocky_heartbeat_source_finalize(). By the time the latter is called,
+    WockyHeartbeatSource (which is-a GSource) has been destroyed in the
+    GSource sense, which implicitly removes all poll FDs. So we need to
+    guard our call to g_source_remove_poll with a check for whether we've
+    been destroyed or not.
+    
+    We could alternatively have two different cleanup functions, one for
+    when we're degrading and one for when we're being destroyed, but I think
+    this is simpler.
+
+ wocky/wocky-heartbeat-source.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
 commit 5a119a61e8e19741bd5a26333f4f54c12296943e
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Tue Aug 17 16:38:29 2010 +0100
