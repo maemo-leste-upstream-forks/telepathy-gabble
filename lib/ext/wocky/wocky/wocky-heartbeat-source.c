@@ -50,9 +50,15 @@ wocky_heartbeat_source_degrade (WockyHeartbeatSource *self)
   /* If we were using the heartbeat before, stop using it. */
   if (self->heartbeat != NULL)
     {
-      DEBUG ("closing heartbeat connection");
-      g_source_remove_poll ((GSource *) self, &self->fd);
+      GSource *source = (GSource *) self;
 
+      /* If this is being called from wocky_heartbeat_source_finalize(), the
+       * source has been destroyed (which implicitly removes all polls.
+       */
+      if (!g_source_is_destroyed (source))
+        g_source_remove_poll (source, &self->fd);
+
+      DEBUG ("closing heartbeat connection");
       iphb_close (self->heartbeat);
       self->heartbeat = NULL;
     }
@@ -129,7 +135,6 @@ wocky_heartbeat_source_prepare (
   *msec_to_poll = (self->next_wakeup.tv_sec - now.tv_sec) * 1000
       + (self->next_wakeup.tv_usec - now.tv_usec) / 1000;
 
-  DEBUG ("want to wake up in %ums", *msec_to_poll);
   return FALSE;
 }
 

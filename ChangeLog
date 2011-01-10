@@ -1,3 +1,197 @@
+commit 386045947637875f4b4c4f4b954f32a8f214ad28
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2011-01-10 15:07:42 +0000
+
+    Prepare release
+
+commit 94423d0e189bef4b86c78182e1840614ae2a698e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2011-01-10 15:00:36 +0000
+
+    Update news
+
+commit e60d9cda68b22888f5724b72df920f767dd232f1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-01-10 11:17:08 +0000
+
+    MUC: correctly parse 'composing'
+    
+    Wocky misparsed the 'composing' chat state in MUCs. This commit updates
+    Gabble to a fixed version of Wocky, fixes it for the API change, and
+    adds a regression test.
+    
+    Reviewed-by: Danielle Madeley <danielle.madeley@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=32952>
+
+commit 8e14b00ffde498d6479598b7f98f62bc2e67e47e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2011-01-07 17:46:13 +0000
+
+    Add a test for parsing multiple contents in one transport-info
+
+commit cb390602e09038a528eb5ae4da32ecc2897581f7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2011-01-07 17:47:25 +0000
+
+    Parse all contents in one transport-info
+
+commit 4de0a8a8a1b8d3d8750e891241147e08154ba0f6
+Merge: f1bf1b2 e83cd6c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2011-01-07 15:36:17 +0000
+
+    Merge branch 'request-pipeline'
+
+commit e83cd6c8d068a933c7608760780301c57ecc5a3b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2011-01-07 15:35:47 +0000
+
+    Clarify what the crypt does
+
+commit 133051ddafdffe4c27c85edcfa39fe789bd8e10e
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-12-24 22:25:36 +0100
+
+    Update wocky snapshot
+
+commit 03dca11f1359c28e6b13c81f61901232ef2a0a6f
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-12-24 22:24:23 +0100
+
+    Add a test mode to gtalk-file-collection that turns of upnp support in Nice
+
+commit 506f25e62ed45a4e5df866f2c42f3c62e0f56083
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-12-24 21:09:01 +0100
+
+    Move zombie requests into the crypt
+    
+    If we keep our dear living dead in the active lists we tend to count them the
+    same as the living, which means the pipeline stalls even if requests time out.
+    
+    Also don't accidentally turn requests that are still pending into zombies,
+    directly delete them instead. Otherwise we accidentally send the zombies out
+    into the world and trigger the zombie apocolypse (Or, well, cause a gabble
+    crash when the zombie times out and the original callback gets called and
+    gnawed on)
+
+commit f1bf1b26a9c6ba7c40fb7cfcb5b6e15a95f13547
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-06 10:15:45 +0000
+
+    tests/README: refer to a test that exists
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 0d8bcee1786ce014915cb50db08ca445cc6c0a0d
+Author: JonKristensen <technology@jonkristensen.com>
+Date:   2011-01-05 21:45:13 +0100
+
+    some style changes
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 6a0a1f59df5e7a70fef85cfd4c8d1504d52dbda7
+Author: JonKristensen <technology@jonkristensen.com>
+Date:   2011-01-05 19:47:42 +0100
+
+    replaced the ...get_type function with a G_DEFINE_INTERFACE macro
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit ad01b35205c57a5f9d3ab2cd2894610a9e03aea3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-03 15:56:58 +0000
+
+    servicetest: improve sync_dbus implementation
+    
+    I was using sync_dbus in a mission-control test to make MC spin its
+    mainloop enough so I could assert one method was not being called
+    before I returned from a call that had previously been made. However,
+    sync_dbus alone was not enough as apparently libdbus returns from Ping
+    calls synchronously so it didn't turn the main loop enough. Calling
+    sync_dbus a few times made it work, but it showed the test was going
+    to be racy. This is what I did:
+    
+        # Waste a little time here and there.  We can't call sync_dbus
+        # here because it calls Ping and libdbus returns from Ping
+        # synchronously and doesn't turn the main loop handle enough.
+        call_async(q, cd_props, 'Get', cs.CD_IFACE_OP_LIST, 'DispatchOperations')
+        event = q.expect('dbus-return', method='Get')
+    
+    This works in my case because there was no other Get method call, but
+    it would be bad to replace sync_dbus with this as it could grab the
+    dbus method return from some other call, which is obviously bad.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 77a73c6f33c310dd744982f961e5feda5c3985bc
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-12-24 21:07:49 +0100
+
+    Use g_clear_error for some code deletion love
+
+commit a9397c66c05988ccb16ef476067275cfb1d95fb6
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-12-24 21:04:25 +0100
+
+    Forward-port to wocky, which needs ; after wocky_implement_finish_void
+
+commit 7bb22dccc13a0b3b6c6ae9d49662c3fab50a3628
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2010-12-24 19:38:02 +0100
+
+    Factor out flushing the items queues
+
+commit 44da351b55c563c7bf0aa974289bbc2be2934de8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-12-20 12:41:50 +0000
+
+    Add GABBLE_PERSIST to the manpage.
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 5f7bd3bb4be91bd5ffff293de1610f261c142b63
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-12-20 11:04:15 +0100
+
+    test that big messages are properly split in D-Bus muc tubes
+
+commit e6ee899b4fd64a5f1c162fe75268a41e1b8679e7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2010-12-20 11:02:14 +0100
+
+    bytestream-muc: stop recycling stanzas when splitting data
+    
+    When moving to Wocky, stanzas are now proper ref counted GObject. So they are
+    just reffed when being placed in the sending queue rather than being copied.
+    We can't recycle the same stanza anymore because we may end up modifying an
+    existing not yet sent stanza.
+
+commit 922b802ea75fcbf66232b1702a9e161020d09898
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-12-16 13:51:43 +0000
+
+    Update Wocky to fix WockyHeartbeatSource.
+
+commit dfd3e2fdf4c78e936d13f7f978935532263b01d8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-12-16 12:30:55 +0000
+
+    PowerSaving: Fix sending google:queue commands.
+    
+    We started sending iq gets rather than iq sets. The test didn't check
+    for this, but Google's server most certainly does. This was a regression
+    in 0.11.1.
+
+commit 419abc78e6d956b1fde4ea2d36b740e9f2332a00
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-14 17:49:04 +0000
+
+    start on 0.11.5
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit 372692ef7e2d9d815ef529d380ed5c9802311364
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   2010-12-14 17:47:16 +0000
@@ -4586,7 +4780,7 @@ Date:   2010-08-13 14:23:00 +0200
     constants.py: add INVALID_HANDLE
 
 commit 3dec7eeca3318c35456e25b505de03b38fd84f59
-Merge: f8398be 18c80d8
+Merge: f8398be76 18c80d8
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-08-11 13:41:26 +0100
 

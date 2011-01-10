@@ -20,6 +20,7 @@ TWISTED_TESTS = \
 	cm/protocol.py \
 	gateways.py \
 	muc/conference.py \
+	muc/chat-states.py \
 	muc/name-conflict.py \
 	muc/renamed.py \
 	muc/roomlist.py \
@@ -153,6 +154,7 @@ TWISTED_JINGLE_TESTS = \
 	jingle/initial-audio-video.py \
 	jingle/misuse.py \
 	jingle/stun-server.py \
+	jingle/transport-info-parsing.py \
 	jingle/outgoing-basics.py \
 	jingle/outgoing-ensure.py \
 	jingle/outgoing-many-streams.py \
