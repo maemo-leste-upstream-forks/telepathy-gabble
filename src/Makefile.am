@@ -33,8 +33,6 @@ libgabble_convenience_la_SOURCES = \
     bytestream-socks5.c \
     call-content.h \
     call-content.c \
-    call-content-codecoffer.h \
-    call-content-codecoffer.c \
     call-channel.h \
     call-channel.c \
     call-muc-channel.h \
@@ -45,13 +43,9 @@ libgabble_convenience_la_SOURCES = \
     call-member-content.c \
     call-stream.h \
     call-stream.c \
-    call-stream-endpoint.h \
-    call-stream-endpoint.c \
     $(top_srcdir)/gabble/capabilities-set.h \
     capabilities.h \
     capabilities.c \
-    caps-cache.h \
-    caps-cache.c \
     $(top_srcdir)/gabble/caps-hash.h \
     caps-hash.h \
     caps-hash.c \
@@ -198,6 +192,7 @@ libgabble_convenience_la_LIBADD = \
    $(top_builddir)/extensions/libgabble-extensions.la \
    $(top_builddir)/lib/gibber/libgibber.la \
    $(top_builddir)/lib/loudmouth/libloudmouth.la \
+   $(top_builddir)/lib/ext/telepathy-yell/telepathy-yell/libtelepathy-yell.la \
    $(ALL_LIBS)
 
 nodist_libgabble_convenience_la_SOURCES = \
@@ -227,13 +222,13 @@ AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
 	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @GMODULE_CFLAGS@ \
-	    @SQLITE_CFLAGS@ \
+	    @TP_YELL_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
 	    -DG_LOG_DOMAIN=\"gabble\" \
 	    -DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\"
 
 ALL_LIBS =  @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
-	    @SOUP_LIBS@ @NICE_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
+	    @SOUP_LIBS@ @NICE_LIBS@ @GMODULE_LIBS@
 
 # build gibber first
 all: gibber

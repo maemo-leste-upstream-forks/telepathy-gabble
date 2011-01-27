@@ -23,6 +23,7 @@
 
 #include <glib-object.h>
 
+#include <telepathy-yell/base-media-call-stream.h>
 #include "types.h"
 
 G_BEGIN_DECLS
@@ -32,12 +33,11 @@ typedef struct _GabbleCallStreamPrivate GabbleCallStreamPrivate;
 typedef struct _GabbleCallStreamClass GabbleCallStreamClass;
 
 struct _GabbleCallStreamClass {
-    GObjectClass parent_class;
-    TpDBusPropertiesMixinClass dbus_props_class;
+    TpyBaseMediaCallStreamClass parent_class;
 };
 
 struct _GabbleCallStream {
-    GObject parent;
+    TpyBaseMediaCallStream parent;
 
     GabbleCallStreamPrivate *priv;
 };
@@ -60,10 +60,6 @@ GType gabble_call_stream_get_type (void);
   (G_TYPE_INSTANCE_GET_CLASS ((obj), GABBLE_TYPE_CALL_STREAM, \
     GabbleCallStreamClass))
 
-
-const gchar *gabble_call_stream_get_object_path (GabbleCallStream *stream);
-void gabble_call_stream_set_sending (GabbleCallStream *self, gboolean sending);
-guint gabble_call_stream_get_local_sending_state (GabbleCallStream *self);
 GabbleJingleContent *gabble_call_stream_get_jingle_content (
     GabbleCallStream *stream);
 

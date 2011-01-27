@@ -71,10 +71,12 @@ def run_test(jp, q, bus, conn, stream):
 
     # Setup codecs
     codecs = jt2.get_call_audio_codecs_dbus()
-    # FIXME: update this when my new call branch is merged so that
-    # SetCodecs -> UpdateCodecs and a new codec offer appears instead
-    # of calling this method.
-    content.SetCodecs(codecs, dbus_interface=cs.CALL_CONTENT_IFACE_MEDIA)
+
+
+    [path, _, _] = content.Get(cs.CALL_CONTENT_IFACE_MEDIA,
+                "CodecOffer", dbus_interface=dbus.PROPERTIES_IFACE)
+    offer = bus.get_object (conn.bus_name, path)
+    offer.Accept (codecs, dbus_interface=cs.CALL_CONTENT_CODECOFFER)
 
     # Add candidates
     candidates = jt2.get_call_remote_transports_dbus ()
@@ -115,7 +117,7 @@ def run_test(jp, q, bus, conn, stream):
     # accept codec offer
     o = q.expect ('dbus-signal', signal='NewCodecOffer')
 
-    [path, _ ] = o.args
+    [_, path, _ ] = o.args
     codecs = jt2.get_call_audio_codecs_dbus()
     offer = bus.get_object (conn.bus_name, path)
     offer.Accept (codecs, dbus_interface=cs.CALL_CONTENT_CODECOFFER)

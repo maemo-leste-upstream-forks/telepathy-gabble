@@ -11,14 +11,11 @@ from servicetest import call_async, EventPattern
 import constants as cs
 import ns
 
-def test(q, bus, conn, stream):
-    conn.Connect()
+from mucutil import echo_muc_presence
 
-    _, iq_event = q.expect_many(
-        EventPattern('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED]),
-        EventPattern('stream-iq', to=None, query_ns='vcard-temp',
-            query_name='vCard'))
+def test(q, bus, conn, stream):
+    iq_event = q.expect('stream-iq', to=None, query_ns='vcard-temp',
+            query_name='vCard')
 
     acknowledge_iq(stream, iq_event.stanza)
 
@@ -363,6 +360,11 @@ def test(q, bus, conn, stream):
     q.expect('dbus-return', method='SetProperties')
 
     chan_iface.Close()
+
+    # we must echo the MUC presence so the room will actually close
+    event = q.expect('stream-presence', to='chat@conf.localhost/test',
+                     presence_type='unavailable')
+    echo_muc_presence(q, stream, event.stanza, 'none', 'participant')
 
     event = q.expect('stream-iq', iq_type='set')
     event.stanza['type'] = 'result'

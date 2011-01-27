@@ -49,6 +49,7 @@ handwritten_headers = \
   wocky-auth-handler.h \
   wocky-auth-registry.h \
   wocky-bare-contact.h \
+  wocky-caps-cache.h \
   wocky-connector.h \
   wocky-contact.h \
   wocky-contact-factory.h \
@@ -95,6 +96,7 @@ handwritten_sources = \
   wocky-auth-handler.c \
   wocky-auth-registry.c \
   wocky-bare-contact.c \
+  wocky-caps-cache.c \
   wocky-connector.c \
   wocky-contact.c \
   wocky-contact-factory.c \
@@ -188,11 +190,11 @@ wocky-signals-marshal.list: $(handwritten_sources) Makefile.am
 
 
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) \
-            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ \
+            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @SQLITE_CFLAGS@ @TLS_CFLAGS@ \
             @LIBIPHB_CFLAGS@ \
             -DG_LOG_DOMAIN=\"wocky\"
 
-AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@ @LIBIPHB_LIBS@
+AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @SQLITE_LIBS@ @TLS_LIBS@ @LIBIPHB_LIBS@
 
 # rules for making the glib enum objects
 # The shell variable $long is something like WOCKY_XMPP_ERROR for
