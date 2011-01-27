@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [11])
-m4_define([gabble_micro_version], [5])
+m4_define([gabble_micro_version], [6])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -239,11 +239,6 @@ PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.13.9])
 AC_SUBST(TP_GLIB_CFLAGS)
 AC_SUBST(TP_GLIB_LIBS)
 
-PKG_CHECK_MODULES(SQLITE, [sqlite3])
-
-AC_SUBST(SQLITE_CFLAGS)
-AC_SUBST(SQLITE_LIBS)
-
 dnl Check for code generation tools
 XSLTPROC=
 AC_CHECK_PROGS([XSLTPROC], [xsltproc])
@@ -270,6 +265,8 @@ AM_CONDITIONAL([WANT_TWISTED_TESTS], test false != "$TEST_PYTHON")
 # separate Wocky installation won't clash with them. This is a bit of a hack.
 # AX_CONFIG_DIR doesn't make it very easy to pass extra arguments to the
 # submodule's configure.
+#
+# Also do this for telepathy-yell.
 prev_ac_configure_args=$ac_configure_args
 ac_configure_args="$ac_configure_args --with-installed-headers=${wocky_install_headers_dir}"
 
@@ -285,8 +282,14 @@ else
   ac_configure_args+=" --disable-Werror"
 fi
 
+dnl wocky
 prev_top_build_prefix=$ac_top_build_prefix
 AX_CONFIG_DIR([lib/ext/wocky])
+ac_top_build_prefix=$prev_top_build_prefix
+
+dnl tp-yell
+prev_top_build_prefix=$ac_top_build_prefix
+AX_CONFIG_DIR([lib/ext/telepathy-yell])
 ac_top_build_prefix=$prev_top_build_prefix
 
 ac_configure_args=$prev_ac_configure_args
@@ -297,6 +300,12 @@ export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:"$ac_top_build_prefix"lib/ext/wocky/wock
 PKG_CHECK_MODULES(WOCKY, wocky >= 0.0.0)
 AC_SUBST(WOCKY_CFLAGS)
 AC_SUBST(WOCKY_LIBS)
+
+dnl Check for tp-yell
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:"$ac_top_build_prefix"lib/ext/telepathy-yell/telepathy-yell
+PKG_CHECK_MODULES(TP_YELL, telepathy-yell)
+AC_SUBST(TP_YELL_CFLAGS)
+AC_SUBST(TP_YELL_LIBS)
 
 dnl Check for libsoup
 PKG_CHECK_MODULES(SOUP, libsoup-2.4)
@@ -320,7 +329,6 @@ AC_OUTPUT( Makefile \
            tools/Makefile \
            tests/suppressions/Makefile \
            tests/twisted/Makefile \
-           tests/twisted/tools/Makefile \
            lib/Makefile \
            lib/ext/Makefile \
            lib/gibber/Makefile \

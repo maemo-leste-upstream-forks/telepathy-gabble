@@ -37,8 +37,6 @@
 #include <telepathy-glib/interfaces.h>
 #include <telepathy-glib/channel-iface.h>
 
-#include <extensions/extensions.h>
-
 #define DEBUG_FLAG GABBLE_DEBUG_MUC
 #include "connection.h"
 #include "conn-aliasing.h"
@@ -56,6 +54,7 @@
 #include "gabble-signals-marshal.h"
 
 #define DEFAULT_JOIN_TIMEOUT 180
+#define DEFAULT_LEAVE_TIMEOUT 180
 #define MAX_NICK_RETRIES 3
 
 #define PROPS_POLL_INTERVAL_LOW  60 * 5
@@ -223,9 +222,11 @@ const TpPropertySignature room_property_signatures[NUM_ROOM_PROPS] = {
 struct _GabbleMucChannelPrivate
 {
   GabbleMucState state;
+  gboolean closing;
 
   guint join_timer_id;
   guint poll_timer_id;
+  guint leave_timer_id;
 
   TpChannelPasswordFlags password_flags;
   DBusGMethodInvocation *password_ctx;
@@ -816,6 +817,19 @@ send_join_request (GabbleMucChannel *gmuc,
   return TRUE;
 }
 
+static gboolean
+timeout_leave (gpointer data)
+{
+  GabbleMucChannel *chan = data;
+
+  DEBUG ("leave timed out (we never got our unavailable presence echoed "
+      "back to us by the conf server), closing channel now");
+
+  tp_base_channel_destroyed (TP_BASE_CHANNEL (chan));
+
+  return FALSE;
+}
+
 static void
 send_leave_message (GabbleMucChannel *gmuc,
                     const gchar *reason)
@@ -830,6 +844,9 @@ send_leave_message (GabbleMucChannel *gmuc,
       GABBLE_CONNECTION (tp_base_channel_get_connection (base)), stanza, NULL);
 
   g_object_unref (stanza);
+
+  priv->leave_timer_id =
+    g_timeout_add_seconds (DEFAULT_LEAVE_TIMEOUT, timeout_leave, gmuc);
 }
 
 static void
@@ -1140,6 +1157,7 @@ gabble_muc_channel_class_init (GabbleMucChannelClass *gabble_muc_channel_class)
 
 static void clear_join_timer (GabbleMucChannel *chan);
 static void clear_poll_timer (GabbleMucChannel *chan);
+static void clear_leave_timer (GabbleMucChannel *chan);
 
 void
 gabble_muc_channel_dispose (GObject *object)
@@ -1156,6 +1174,7 @@ gabble_muc_channel_dispose (GObject *object)
 
   clear_join_timer (self);
   clear_poll_timer (self);
+  clear_leave_timer (self);
 
   tp_clear_object (&priv->wmuc);
   tp_clear_object (&priv->requests_cancellable);
@@ -1206,7 +1225,8 @@ gabble_muc_channel_finalize (GObject *object)
   G_OBJECT_CLASS (gabble_muc_channel_parent_class)->finalize (object);
 }
 
-static void clear_join_timer (GabbleMucChannel *chan)
+static void
+clear_join_timer (GabbleMucChannel *chan)
 {
   GabbleMucChannelPrivate *priv = chan->priv;
 
@@ -1217,7 +1237,8 @@ static void clear_join_timer (GabbleMucChannel *chan)
     }
 }
 
-static void clear_poll_timer (GabbleMucChannel *chan)
+static void
+clear_poll_timer (GabbleMucChannel *chan)
 {
   GabbleMucChannelPrivate *priv = chan->priv;
 
@@ -1225,6 +1246,18 @@ static void clear_poll_timer (GabbleMucChannel *chan)
     {
       g_source_remove (priv->poll_timer_id);
       priv->poll_timer_id = 0;
+    }
+}
+
+static void
+clear_leave_timer (GabbleMucChannel *chan)
+{
+  GabbleMucChannelPrivate *priv = chan->priv;
+
+  if (priv->leave_timer_id != 0)
+    {
+      g_source_remove (priv->leave_timer_id);
+      priv->leave_timer_id = 0;
     }
 }
 
@@ -1373,10 +1406,10 @@ close_channel (GabbleMucChannel *chan, const gchar *reason,
       "Muc channel closed below us"
   };
 
-  DEBUG ("Closing");
-
-  if (tp_base_channel_is_destroyed (base))
+  if (tp_base_channel_is_destroyed (base) || priv->closing)
     return;
+
+  DEBUG ("Closing");
 
   gabble_muc_channel_close_tube (chan);
 
@@ -1385,8 +1418,7 @@ close_channel (GabbleMucChannel *chan, const gchar *reason,
   g_cancellable_cancel (priv->requests_cancellable);
 
   while (priv->calls != NULL)
-    gabble_base_call_channel_close (
-        GABBLE_BASE_CALL_CHANNEL (priv->calls->data));
+    tp_base_channel_close (TP_BASE_CHANNEL (priv->calls->data));
 
   /* Remove us from member list */
   set = tp_intset_new ();
@@ -1402,7 +1434,22 @@ close_channel (GabbleMucChannel *chan, const gchar *reason,
   /* Inform the MUC if requested */
   if (inform_muc && priv->state >= MUC_STATE_INITIATED)
     {
+      /* If we want to inform the MUC of our leaving, and we have
+       * actually joined the MUC, then we should wait for our presence
+       * stanza to be given back to us by the conference server before
+       * calling tp_base_channel_destroyed. handle_parted will deal
+       * with calling _destroyed. This is fine because the channel
+       * isn't closed until Closed/ChannelClosed is emitted,
+       * regardless of when the CM returns from Close(). See
+       * fd.o#19930 for more details. */
       send_leave_message (chan, reason);
+      priv->closing = TRUE;
+    }
+  else
+    {
+      /* See the comment just above, except we're not sending the
+       * leave message, so let the channel destroy immediately. */
+      tp_base_channel_destroyed (base);
     }
 
   handles = tp_handle_set_to_array (chan->group.members);
@@ -1414,8 +1461,6 @@ close_channel (GabbleMucChannel *chan, const gchar *reason,
 
   /* Update state and emit Closed signal */
   g_object_set (chan, "state", MUC_STATE_ENDED, NULL);
-
-  tp_base_channel_destroyed (base);
 }
 
 gboolean
@@ -1977,7 +2022,25 @@ handle_parted (GObject *source,
       NULL };
   const char *jid = wocky_muc_jid (wmuc);
 
+  DEBUG ("called with jid='%s'", jid);
+
   member = tp_handle_ensure (contact_repo, jid, NULL, NULL);
+
+  if (priv->closing)
+    {
+      /* This was a timeout to ensure that leaving a room with a
+       * non-responsive conference server still meant the channel
+       * closed (eventually). */
+      clear_leave_timer (gmuc);
+
+      /* Close has been called, and we informed the MUC of our leaving
+       * by sending a presence stanza of type='unavailable'. Now this
+       * has been returned to us we know we've successfully left the
+       * MUC, so we can finally close the channel here. */
+      tp_base_channel_destroyed (TP_BASE_CHANNEL (gmuc));
+
+      return;
+    }
 
   if (member == 0)
     {
@@ -3748,18 +3811,32 @@ gabble_muc_channel_start_call_creation (GabbleMucChannel *gmuc,
 {
   GabbleMucChannelPrivate *priv = gmuc->priv;
   TpBaseChannel *base = TP_BASE_CHANNEL (gmuc);
+  TpBaseConnection *base_conn = tp_base_channel_get_connection (base);
+  const gchar *prefix;
 
   g_assert (!priv->call_initiating);
   g_assert (priv->call == NULL);
 
   priv->call_initiating = TRUE;
 
+  /* We want to put the call channel "under" ourself, but let it decide its
+   * exact path. TpBaseChannel makes this a little awkward — the vfunc for
+   * picking your own path is supposed to return the suffix, and the base class
+   * pastes on the connection's path before that.
+   *
+   * So... we pass the bit of our own path that's after the connection's path
+   * to the call channel; it builds its suffix based on that and its own
+   * address; and finally TpBaseChannel pastes the connection path back on. :)
+   */
+  prefix = tp_base_channel_get_object_path (base) +
+      strlen (base_conn->object_path) + 1 /* for the slash */;
+
   /* Keep ourselves reffed while call channels are created */
   g_object_ref (gmuc);
   gabble_call_muc_channel_new_async (
-      GABBLE_CONNECTION (tp_base_channel_get_connection (base)),
+      GABBLE_CONNECTION (base_conn),
       priv->requests_cancellable,
-      tp_base_channel_get_object_path (base),
+      prefix,
       gmuc,
       tp_base_channel_get_target_handle (base),
       request,
