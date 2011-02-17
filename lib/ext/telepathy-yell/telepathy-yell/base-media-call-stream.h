@@ -64,6 +64,11 @@ void tpy_base_media_call_stream_take_endpoint (
 void tpy_base_media_call_stream_set_transport (
     TpyBaseMediaCallStream *self,
     TpyStreamTransportType transport);
+const gchar *tpy_base_media_call_stream_get_username (
+    TpyBaseMediaCallStream *self);
+const gchar *tpy_base_media_call_stream_get_password (
+    TpyBaseMediaCallStream *self);
+
 
 /* TYPE MACROS */
 #define TPY_TYPE_BASE_MEDIA_CALL_STREAM \

@@ -13,6 +13,7 @@ TWISTED_TESTS = \
 	caps/hashed-caps.py \
 	caps/initial-caps.py \
 	caps/jingle-caps.py \
+	caps/offline.py \
 	caps/receive-jingle.py \
 	caps/trust-thyself.py \
 	caps/tube-caps.py \
@@ -86,6 +87,7 @@ TWISTED_TESTS = \
 	text/test-text-no-body.py \
 	text/test-text.py \
 	tls/server-tls-channel.py \
+	version.py \
 	$(NULL)
 
 TWISTED_TUBE_TESTS = \
@@ -202,6 +204,7 @@ TWISTED_FT_TESTS = \
 	file-transfer/test-send-file-to-unknown-contact.py \
 	file-transfer/test-send-file-wait-to-provide.py \
 	file-transfer/test-send-file-send-before-accept.py \
+	file-transfer/test-uri.py \
 	$(NULL)
 
 TWISTED_TESTS += \

@@ -225,6 +225,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -608,9 +609,11 @@ clean-local:
 	fi
 
 uninstall-local:
+	@cd wocky/wocky && $(MAKE) uninstall
 	@cd telepathy-yell/telepathy-yell && $(MAKE) uninstall
 
 install-data-local:
+	@cd wocky/wocky && $(MAKE) install
 	@cd telepathy-yell/telepathy-yell && $(MAKE) install
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
