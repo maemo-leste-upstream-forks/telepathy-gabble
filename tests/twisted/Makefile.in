@@ -229,6 +229,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -254,9 +255,9 @@ TWISTED_TESTS = caps_helper.py servicetest.py avatar-requirements.py \
 	caps/compat-bundles.py caps/double-disco.py \
 	caps/disco-without-node.py caps/from-bare-jid.py \
 	caps/hashed-caps.py caps/initial-caps.py caps/jingle-caps.py \
-	caps/receive-jingle.py caps/trust-thyself.py caps/tube-caps.py \
-	client-types.py cm/protocol.py gateways.py muc/conference.py \
-	muc/chat-states.py muc/name-conflict.py \
+	caps/offline.py caps/receive-jingle.py caps/trust-thyself.py \
+	caps/tube-caps.py client-types.py cm/protocol.py gateways.py \
+	muc/conference.py muc/chat-states.py muc/name-conflict.py \
 	muc/presence-before-closing.py muc/renamed.py muc/roomlist.py \
 	muc/scrollback.py muc/send-error.py muc/subject.py \
 	muc/test-ensure.py muc/test-muc-alias.py \
@@ -287,7 +288,7 @@ TWISTED_TESTS = caps_helper.py servicetest.py avatar-requirements.py \
 	text/ensure.py text/respawn.py text/send-error.py \
 	text/send-to-correct-resource.py text/test-chat-state.py \
 	text/test-text-delayed.py text/test-text-no-body.py \
-	text/test-text.py tls/server-tls-channel.py $(NULL) \
+	text/test-text.py tls/server-tls-channel.py version.py $(NULL) \
 	test-debug.py connect/disco-error-from-bare-jid.py \
 	connect/disco-no-reply.py connect/disconnect-timeout.py \
 	connect/test-fail.py connect/test-success.py \
@@ -412,6 +413,7 @@ TWISTED_FT_TESTS = \
 	file-transfer/test-send-file-to-unknown-contact.py \
 	file-transfer/test-send-file-wait-to-provide.py \
 	file-transfer/test-send-file-send-before-accept.py \
+	file-transfer/test-uri.py \
 	$(NULL)
 
 TESTS_ENVIRONMENT = \

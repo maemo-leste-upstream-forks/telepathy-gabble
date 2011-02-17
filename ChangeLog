@@ -1,3 +1,333 @@
+commit 18fa2ad44458e8b78dbc014b0832daa91f8508b1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-16 14:49:38 +0000
+
+    Version 0.11.7
+
+commit bf70531990be8583694348cfd0dd6cbf819220d8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-16 14:48:16 +0000
+
+    NEWS for 0.11.7
+
+commit bb4b30066346937f01b6f22c5a571000ee6905c2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-16 14:42:40 +0000
+
+    Add commentary for jingleinfo spoofing regression test
+
+commit 2d25940bbf275a2edfe62d814d52da80111306ff
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2011-02-07 16:06:24 +0100
+
+    Try spoofing a google:jingleinfo query
+    
+    This is a regression test for the bug fixed in the previous commit.
+
+commit 158c988af694ab537850724cdb744583861cd1d4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-08 18:43:21 +0000
+
+    Ignore google:jingleinfo pushes from contacts.
+    
+    Previously, Gabble would erroneously process google:jingleinfo updates
+    sent by anybody, rather than only paying attention to those sent by the
+    user's server. This may theoretically allow an attacker to trick Gabble
+    into relaying streamed media through a server of the attacker's
+    choosing, enabling them to intercept, obstruct or modify the user's
+    audio and video calls.
+    
+    This patch addresses this flaw, following the same pattern as the
+    corresponding check in the roster code.
+    
+    Note that even without this flaw, no security guarantees on media in
+    calls can be provided in the presence of malicious network admins or
+    insecure networks: an attacker who can eavesdrop the network traffic
+    still has the ability to intercept the content of the call, as the media
+    is transmitted unencrypted.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=34048>
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit e3038ac3e735238dc1e9e2b32bfdaa6a27f5e11d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-14 14:10:38 +0000
+
+    NEWS for jabber:iq:version
+
+commit 575009832ebbdad4ab2dbe156d2dea738cb13160
+Merge: fddf47f 6fc3944
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-14 14:06:24 +0000
+
+    Merge branch 'version'
+    
+    Fixes: <https://bugs.freedesktop.org//show_bug.cgi?id=11291>
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 6fc39446921e778c7cf2d1df68d42e3fe8d0234c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-14 14:00:18 +0000
+
+    Add a test for jabber:iq:version
+
+commit a97255f9c10dc882457288dab918db262e0a9ff0
+Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
+Date:   2011-02-14 11:34:20 +0100
+
+    connection: add support for jabber:iq:version (XEP-0092)
+    
+    Updates a patch from #11291, thanks to Michael Scherer <misc@mandriva.org> for
+    the original patch.
+
+commit 876c39b07f657c53fd9fb257b72782884441f2ae
+Author: Robert McQueen <robert.mcqueen@collabora.co.uk>
+Date:   2011-02-08 00:31:39 +0000
+
+    connection: port IQ callbacks to Wocky
+
+commit fddf47fc129b1f3134d185c76a582f5360226656
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-07 09:22:30 +0000
+
+    gabble: remove old caps caches now that they're in Wocky
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 4b9c51b7e0e112b090e8700c4847301b874e00bc
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-08 14:30:43 +0000
+
+    lib/ext/: install and uninstall both wocky *and* tp-yell where appropriate
+    
+    This was broken in 4d0d2af917188b.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 7dfb28dcecc91b80c75134adac61d8504a2dfaa2
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-07 11:47:10 +0000
+
+    plugins: stop talking about top_gabbledir, whatever that is
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 80f5dae72e432d01642296174a3867b768e2907f
+Merge: 52157c4 3386e96
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-06 13:01:40 +0000
+
+    Merge branch 'caps'
+
+commit 3386e969e4035b5a22535b44b90b7d004f9ef0ab
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-04 16:07:42 +0000
+
+    tube-caps.py: everyone has text caps
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 8502e26aea7317dc01e33d378f73444373962551
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-04 16:07:20 +0000
+
+    offline.py: don't let gabbletest connect for us
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 52157c4a2edc830ba2fc523c17cd0767980e93d1
+Merge: cc19d6c 828040c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-02-03 09:49:07 +0100
+
+    Merge branch 'file-uri-33471'
+
+commit cc19d6c25fbeaa29a71d61ce86cf25998dec2993
+Merge: d805ae7 b238996
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-03 08:46:00 +0000
+
+    Merge branch 'text-contact-caps'
+
+commit d805ae70b63211f3cf4199eba6ef21abd945178a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-17 14:25:54 +0000
+
+    contact-info: stop emitting ContactInfoChanged twice
+    
+    Fixes: fd.o#28287
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 7964c1dc8e29503f50583c60b7157137aaa6d8ae
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-17 14:37:13 +0000
+
+    gabble: make critical warnings fatal
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 75b1a2b4c1828eddd9a5a0c600c6f0bd8ba188c2
+Merge: 5f6823c b820d48
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2011-02-02 15:22:53 +0000
+
+    Merge branch 'SetCredentials'
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit b820d48994380c9b3793cbbaa8d940a3e41e9fe7
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2011-02-02 15:21:35 +0000
+
+    update yell to include media stream fixes
+
+commit f75c97681ba0485a90981948ba68dce600809bca
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2011-02-02 12:02:14 +0000
+
+    call-stream: Implement LocalCredentials property
+    
+    * Update Yell to provide the property.
+    * Stop overriding properties mixin and extra_interfaces etc.
+    * Add test. Note that I use GetAll so that all new properties will at
+      least be retrieved by the tests (so if someone accidentally misses a
+      break statement and causes a segfault (for example) it will be caught).
+
+commit 828040ce1b7471772a4a8e98fff625787f1050b6
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-31 12:39:51 +0100
+
+    file_transfer_channel_allowed_properties: use tp-glib properties
+
+commit 73f331d53da7ff19e791237d23854dfe382a8432
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-31 12:35:13 +0100
+
+    stop generating FileTransfer.URI API
+
+commit 1a529406dcf1e6ea7506a274ec5eff909125ad9e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-31 12:33:25 +0100
+
+    Implement the stable API for FileTransfer.URI
+
+commit dd6e63f659d4d61c1be37793dc6639ad48f1bed1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-31 12:41:08 +0100
+
+    Depends on tp-glib 0.13.12
+    
+    We need it for FileTransfer.URI API.
+
+commit fc933d970c005ab959ae857ce56e10e4d58095f8
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2011-02-01 15:44:04 +0000
+
+    Test SetCredentials and RemoteCandidatesAdded
+    
+    This adds a new set of Call candidates, some which have credentials and
+    some which don't. We also have a method for sending them over xmpp.
+    
+    We also use DictionarySupersetOf(dict) to make it easier to liberal
+    about what to expect.
+
+commit 5f6823c3961ff53a5d2b1bbd28805a9b430d1c4d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-01 13:44:28 +0000
+
+    muc-channel: trivia
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5c743ddbca8568d780fd1d6a61c9145e1d2b9bba
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-01 13:35:47 +0000
+
+    presence-before-closing.py: test not sending presence when leaving a passworded room
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 0f45be2a2a53cb6f59c68842989cc7d8232d61bb
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2011-02-01 13:24:36 +0000
+
+    JingleCandidate store int rather than double.
+    
+    Change internal representation to use ints rather than floats.
+
+commit b3ac49f497d0b3a0f230896e60b61ad29660c7c5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-01 13:22:51 +0000
+
+    muc-channel: don't expect muc presence to be echoed if in auth state
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c9816c9f3a80958b1dd42cb076945db213532718
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2011-02-01 13:06:29 +0000
+
+    Allow user to call SetCredentials with default ICE credentials.
+    
+    This currently sets the credentials in each candidate individually.
+    I will try to make it smarter when I have better test coverage.
+
+commit deb8396aca53305d68180ac91e4d10b8cfff3c9d
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2011-01-29 20:56:50 +0000
+
+    Prevent libproxy from hitting the network during tests
+
+commit 0841b15aaaef2295b6860206d2656cfd32a8a2fa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-01-28 16:55:11 +0000
+
+    Use conference.telepathy.im as the default MUC server
+    
+    Fixes: <https://bugs.freedesktop.org//show_bug.cgi?id=32815>
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 6b35b87a230908f094d70da7786608fe5fc3ec6f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-01-28 16:28:34 +0000
+
+    NEWS for fd.o#32390
+
+commit 64757902031def2aa3bea4cd3751bad7085a0e28
+Merge: f50e1f3 81c92b3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-01-28 16:18:50 +0000
+
+    Merge branch '32390-contact-search-server-property'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+    Reviewed-by: Emilio Pozuelo Monfort <pochu27@gmail.com>
+
+commit f50e1f30eeb87bc546ba49f88d536ebf165b3918
+Merge: 28bdef3 eff0750
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-28 15:07:46 +0100
+
+    Merge branch 'ft-uri-33471'
+
+commit 28bdef335e36e295852af318436cf49972f56892
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-27 16:39:39 +0000
+
+    NEWS: add new entry for 0.11.7
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 2ce783b98cbbc5c1c308812d8bf81bb0ab543fc6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-27 16:28:06 +0000
+
+    start working on 0.11.7
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit 8ba53dd8a71aaf7f5cd1d77f64ec7e6ca1af18c1
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   2011-01-27 14:22:14 +0000
@@ -28,11 +358,120 @@ Date:   2011-01-26 14:25:21 +0000
     
     Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
+commit eff07503669626901c67732eae00998af7abaef4
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-26 14:20:09 +0100
+
+    add file-transfer/test-uri.py
+
+commit e8643a2747efeea4936b0469bf22ad45bb6ca71d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-26 15:03:08 +0100
+
+    exec_file_transfer_test: allow to run the test just once
+    
+    Some tests don't need to be run a billion times.
+
+commit f9edd4e2acdd5a8f3a8017ce70f28ec41bebb29d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-26 13:56:17 +0100
+
+    try changing URI after it has been set
+
+commit 6492fc5ae519ba1eaad3f28e425db38836d58bb2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-26 13:49:51 +0100
+
+    raise InvalidArgument if we can't set URI
+
+commit 1f8cf4feb6e62282475defa192eb74754d846ddd
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-26 13:35:57 +0100
+
+    request_ft_channel: use assertEquals
+
+commit a026de98b1184cabc50d2881132d210f155294d1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-26 13:28:05 +0100
+
+    fix identation
+
+commit 2e81e67ff0275827a27b0f4273174b88194b015a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-26 13:21:02 +0100
+
+    FileURI has been renamed to URI
+
+commit f57a533dd60c0e6adb05400ec020e701ee43d5a2
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-26 10:54:33 +0100
+
+    test setting FileURI
+
+commit b3fa2449675c7a2981cc883e8c267d87a69504f1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-26 10:54:21 +0100
+
+    allow user to set FileURI for not yet accepted incoming FT
+
+commit b52ce25c184eed9b6e4af90a9494acf815b7d4ec
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-25 17:40:53 +0100
+
+    file-transfer: implement FileURI property for outgoing channels
+
+commit 98a405c5541e9234aedf24e69696577722990728
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-01-25 17:35:29 +0100
+
+    add FileURI + its signal as future API
+
 commit a2930de7b4b9efaa28a47bb841c1c8cd8932d191
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   2011-01-25 14:57:17 +0000
 
     Update yell snapshot
+
+commit 81c92b33e252b05a04ddf29afba4b6e3d84f637c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-01-24 10:55:30 +0000
+
+    Search: don't send searches to known-invalid JIDs.
+
+commit 8de73b98b852729ece57b5f1f4e419128ebf6924
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-01-24 10:54:53 +0000
+
+    tests: Add assertDBusError, and use it in a search test
+
+commit 938cbccd4bdd6e8b2ed46d3c56f97515943ce94c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-01-24 10:42:08 +0000
+
+    Search: handle Server='' as if it were omitted entirely
+    
+    Previously, if you included the Server property in a channel request,
+    but set it to the empty string, Gabble would try to send the search to
+    the empty JID.
+    
+    Instead, it ought to either reject the request outright, or pretend that
+    the property was omitted. I chose the latter: it's kinder to application
+    authors.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=32390>
+
+commit d8c637f34cd2fada64244ce8f498e40fc7c6737b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-01-24 10:29:10 +0000
+
+    Test Server property on search channels requested without one.
+    
+    If you request a ContactSearch channel without including a Server
+    property in the request, and Gabble has discovered a server it could
+    use, the resulting channel's Server property should be set to the server
+    in use.
+    
+    This already works, but previously wasn't tested.
 
 commit 76ba06a5def87adbd61040e890c7988851b57e41
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
@@ -351,6 +790,30 @@ Date:   2011-01-13 10:44:20 +0000
     
     Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
+commit b238996813ed19b5fba86a1a9fa236facc501471
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-13 10:16:44 +0000
+
+    offline.py: trivia fixes to the test
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit bddcdee50b38133adfcc05152bc3305d974be1fd
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-13 10:14:57 +0000
+
+    offline.py: added a note to say what but fd.o#32874 is
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit fdce43d84048359b95dff82dc4913397e1d70b41
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-13 10:13:33 +0000
+
+    connection: document more why we need the IM factory in the private struct
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit 2eff2f96e707a6adaa47cdadc2c93e880929b1ff
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   2011-01-11 16:35:35 +0000
@@ -585,6 +1048,35 @@ Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   2011-01-10 16:30:32 +0000
 
     Start new development
+
+commit 953131bc1733adca7d274119d3166d85597c7847
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-10 15:50:24 +0000
+
+    caps/offline.py: add test for fd.o#32874
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit bee21686b94947c1194c28a3d3875ffd6374aadc
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-10 15:45:18 +0000
+
+    connection: assume text caps for offline contacts
+    
+    Use the IM factory for this so we don't have to bother duplicating
+    code.
+    
+    Fixes: fd.o#32874
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b1c8025d1d5a2d8bb80f11f5b598dc51e69414b9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-10 15:45:00 +0000
+
+    connection: store the ImFactory object in the private struct
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
 commit 386045947637875f4b4c4f4b954f32a8f214ad28
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
@@ -5608,7 +6100,7 @@ Date:   2010-08-13 14:23:00 +0200
     constants.py: add INVALID_HANDLE
 
 commit 3dec7eeca3318c35456e25b505de03b38fd84f59
-Merge: f8398be 18c80d8
+Merge: f8398be76 18c80d8
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-08-11 13:41:26 +0100
 

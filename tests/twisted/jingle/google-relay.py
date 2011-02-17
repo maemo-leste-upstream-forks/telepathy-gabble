@@ -10,6 +10,8 @@ import jingletest
 import gabbletest
 import constants as cs
 import dbus
+import ns
+from twisted.words.protocols.jabber.client import IQ
 
 from twisted.web import http
 
@@ -116,6 +118,29 @@ def test(q, bus, conn, stream, incoming=True, too_slow=None):
     # because we can't listen on port 80
     server['gabble-test-http-port'] = str(listen_port.getHost().port)
     stream.send(jingleinfo)
+    jingleinfo = None
+
+    # Spoof some jingle info. This is a regression test for
+    # <https://bugs.freedesktop.org/show_bug.cgi?id=34048>. We assert that
+    # Gabble has ignored this stuff later.
+    iq = IQ(stream, 'set')
+    iq['from'] = "evil@evil.net"
+    query = iq.addElement((ns.GOOGLE_JINGLE_INFO, "query"))
+
+    stun = query.addElement('stun')
+    server = stun.addElement('server')
+    server['host'] = '6.6.6.6'
+    server['udp'] = '6666'
+
+    relay = query.addElement('relay')
+    relay.addElement('token', content='mwohahahahaha')
+    server = relay.addElement('server')
+    server['host'] = '127.0.0.1'
+    server['udp'] = '666'
+    server['tcp'] = '999'
+    server['tcpssl'] = '666'
+
+    stream.send(iq)
 
     # We need remote end's presence for capabilities
     jt.send_remote_presence()
@@ -231,9 +256,11 @@ def test(q, bus, conn, stream, incoming=True, too_slow=None):
 
     assert sh_props['NATTraversal'] == 'gtalk-p2p'
     assert sh_props['CreatedLocally'] == (not incoming)
-    assert sh_props['STUNServers'] == \
-        [(expected_stun_server, expected_stun_port)], \
-        sh_props['STUNServers']
+
+    # If Gabble has erroneously paid attention to the contact evil@evil.net who
+    # sent us a google:jingleinfo stanza, this assertion will fail.
+    assertEquals([(expected_stun_server, expected_stun_port)],
+        sh_props['STUNServers'])
 
     credentials_used = {}
     credentials = {}
