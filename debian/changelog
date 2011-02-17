@@ -1,3 +1,13 @@
+telepathy-gabble (0.9.15-2) UNRELEASED; urgency=high
+
+  * debian/patches/01-jingleinfo.diff: Added to ignore google:jingleinfo
+    pushes from contacts which may theoretically allow an attacker to
+    trick Gabble into relaying streamed media through a server of the
+    attacker's choosing, enabling them to intercept, obstruct or modify
+    the user's audio and video calls.
+
+ -- Jonny Lamb <jonny@debian.org>  Thu, 17 Feb 2011 09:18:08 +0000
+
 telepathy-gabble (0.9.15-1) unstable; urgency=low
 
   * New upstream release

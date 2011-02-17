@@ -1,0 +1,54 @@
+From 5ab349b6837389d21a2664a71db464d1b9c6644c Mon Sep 17 00:00:00 2001
+From: Will Thompson <will.thompson@collabora.co.uk>
+Date: Tue, 8 Feb 2011 18:43:21 +0000
+Subject: [PATCH] Ignore google:jingleinfo pushes from contacts.
+
+Previously, Gabble would erroneously process google:jingleinfo updates
+sent by anybody, rather than only paying attention to those sent by the
+user's server. This may theoretically allow an attacker to trick Gabble
+into relaying streamed media through a server of the attacker's
+choosing, enabling them to intercept, obstruct or modify the user's
+audio and video calls.
+
+This patch addresses this flaw, following the same pattern as the
+corresponding check in the roster code.
+
+Note that even without this flaw, no security guarantees on media in
+calls can be provided in the presence of malicious network admins or
+insecure networks: an attacker who can eavesdrop the network traffic
+still has the ability to intercept the content of the call, as the media
+is transmitted unencrypted.
+---
+ src/jingle-factory.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+
+diff --git a/src/jingle-factory.c b/src/jingle-factory.c
+index 0ad4d6b..02add56 100644
+--- a/src/jingle-factory.c
++++ b/src/jingle-factory.c
+@@ -254,6 +254,22 @@ got_jingle_info_stanza (GabbleJingleFactory *fac,
+   GabbleJingleFactoryPrivate *priv = fac->priv;
+   LmMessageSubType sub_type;
+   LmMessageNode *query_node, *node;
++  const gchar *from = wocky_node_get_attribute (wocky_stanza_get_top_node (message), "from");
++
++  if (from != NULL)
++    {
++      TpBaseConnection *base_conn = TP_BASE_CONNECTION (priv->conn);
++      TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
++          base_conn, TP_HANDLE_TYPE_CONTACT);
++      TpHandle sender = tp_handle_lookup (contact_repo, from, NULL, NULL);
++
++      if (sender != base_conn->self_handle)
++        {
++          DEBUG ("ignoring jingleinfo from '%s', not ourself nor the server",
++              from);
++          return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
++        }
++    }
+ 
+   query_node = lm_message_node_get_child_with_namespace (
+       wocky_stanza_get_top_node (message), "query", NS_GOOGLE_JINGLE_INFO);
+-- 
+1.7.2.3
+
