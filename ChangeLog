@@ -1,3 +1,217 @@
+commit 065d62377ca023761ff7c80a816353a6394df716
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-03-14 14:52:51 +0000
+
+    version 0.11.8
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit fa0e19a144ac4690a890c4558adf96cb4496d333
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-03-14 14:50:56 +0000
+
+    NEWS: update
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5c3db07b5a177dc01b0b4b8827bcb0cbfe5aeab7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-03-14 15:37:08 +0000
+
+    configure.ac: add a dummy --enable-gtk-doc flag
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b14a8d89a8bad23070bf3851f242cf9a08f7d086
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-03-14 14:47:19 +0000
+
+    telepathy.am: update to latest version from tp-glib
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b2f292263f188d88b83c610d8a7f560bddf85e38
+Merge: 2b71946 6e9da33
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-10 10:23:36 +0000
+
+    Merge branch 'register-handler-from'
+
+commit 6e9da33717a3ae45309d2a6c7a03c951cf05ab61
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-25 16:04:25 +0000
+
+    NEWS for Wocky update
+
+commit 0ca8f572ebd4679e16d5dcab0cadd61a671e861a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-25 15:46:53 +0000
+
+    Update Wocky snapshot for wocky_porter_register_handler changes
+
+commit f6c5cbce2c68c3ea3ab61e18a9d11bef2635e7e0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-25 16:32:10 +0000
+
+    mail-notification test: fix sender in new-mail push
+    
+    Previously, this test sent new mail notification stanzas from some
+    random JID.
+    <http://code.google.com/apis/talk/jep_extensions/gmail.html#notifications>
+    clearly shows that the notifications come from the user's own JID.
+    Gabble previously ignored the sender of these notifications, but will
+    begin respecting them when we update our Wocky snapshot to make it
+    straightforward to do so.
+
+commit 8d3c029ed42975778bdcf49b3dffb56d6cefdfe0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-08 16:39:42 +0000
+
+    Roster: respond to malicious pushes we drop.
+    
+    Gabble correctly does not process roster pushes from contacts other than
+    our server. However, it does not send a reply back to the IQ, which is
+    in violation of XMPP Core.
+    
+    This patch allows the IQ to fall through to the “no handler” code, which
+    just sends back a generic IQ error. While we could craft a specific
+    <forbidden/> error, I don't think it's necessary.
+
+commit 99b609ad16d0345394661cc10a3e4202c79b7e42
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-07 22:45:33 +0000
+
+    roster: test handling pushes without id='' attribute.
+    
+    I previously believed that I had added code to WockyPorter such that, if
+    someone sent us an IQ with no id='' attribute, it would be silently
+    dropped rather than being handed up to the application. (This would
+    technically be valid behaviour; RFC3920 §9.2.3 “IQ Semantics” says that
+    “The 'id' attribute is REQUIRED for IQ stanzas.”
+    <http://xmpp.org/rfcs/rfc3920.html#stanzas-semantics-iq>)
+    
+    I mentioned this to Rob, who was horrified, because Gabble's roster code
+    specifically handles roster pushes lacking an id='' attribute because
+    this happens in the wild. I checked, and I had apparently imagined that
+    I had made the above change to WockyPorter.
+    
+    This patch adds a regression test to check that Gabble correctly
+    processes roster pushes without an id='' attribute, and doesn't crash
+    in the process.
+
+commit 2b719468f4ca9d11261390848cb669978e57fd06
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-03-10 08:26:48 +0000
+
+    contact-info: don't clobber the per-process array of vcard fields depending on server type
+    
+    Previously, when setting the Overwritten_By_Nickname flag on the
+    FN/NICKNAME VCard field it was done in the per-process array.
+    
+    As a result, if you signed on with a Gtalk account, FN will be fiven
+    said flag. If you then sign on with a non-Google account, the FN field
+    will already have this flag set so both FN and NICKNAME will have it
+    set, which is wrong.
+    
+    This is never a problem the other way round because Gtalk doesn't
+    support the NICKNAME VCard field.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 32dd5c5e65328fa14df6ed19750f55683e35e98b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-03-10 08:26:31 +0000
+
+    contact-info: use g_boxed_free instead of g_ptr_array_free
+    
+    For consistency.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 3968462da687029e83f5e3e18b50c81c0232d2bf
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-03-09 16:51:55 +0000
+
+    vcard/supported-fields.py: test for Overwritten_By_Nickname flag
+    
+    Also, fix the name of the other contact info field flag which was
+    clearly changed at some point before it became undrafted.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c7e0dfd8ce1d9b81bd26d604f434effea6d94b62
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-03-09 16:50:58 +0000
+
+    contact-info: set Overwritten_By_Nickname for FN/NICKNAME as appropriate
+    
+    The supported_fields pointer array is now no longer one per process
+    because it depends on what kind of connection you're on, but it means
+    we now always free the pointer array!
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 4e5d61fbef64305a40a43cff69cf5ef4c6e5ca40
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-03-02 14:09:37 +0100
+
+    add Message.MessageTypes as a immutable property
+
+commit 8c19325f1afe2d8e98bf134e237e68a92294b75a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-28 16:22:37 +0000
+
+    gitmodules: update submodule URLs
+    
+    They've moved to fdo now.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 03fa989be37256a5218ae1f4605ac1f54113a6a5
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-02-22 10:25:02 +0000
+
+    GabbleRoster: verify that the item is not NULL in _maybe_remove
+
+commit 62ae41d06f62d67c43289e075eabb564dbd6bbe7
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-02-22 10:17:24 +0000
+
+    GabbleRosterItem: fix the use of an uninitialised variable
+
+commit 35ad15366b3310264464075fcea3b58674a47754
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-02-22 10:12:56 +0000
+
+    GabbleRoster: fix a leak of a GPtrArray when getting a contact's groups
+
+commit a831eaa9a8c6bf654a2edacfa72b94c962ba9c0d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-18 14:21:17 +0000
+
+    Start NEWS for 0.11.8
+
+commit d9399e26b923658a267e88deed6f353713a47a7b
+Merge: a5c53f4 8cd091c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-18 14:16:37 +0000
+
+    Merge branch 'go-forth-and-spam-no-more'
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit a5c53f46274ca8af98bd44ff0c84a6a3e8c98a26
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-02-17 14:33:16 +0100
+
+    server-tls-channel.py: don't use "with" as we depend only on Python 2.5
+
+commit 56ff90cc08c1948a277fa79a6347a5e206e34a55
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-16 16:53:54 +0000
+
+    Bump nano-version to 0.11.7.1
+
 commit 18fa2ad44458e8b78dbc014b0832daa91f8508b1
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2011-02-16 14:49:38 +0000
@@ -112,6 +326,83 @@ Date:   2011-02-07 11:47:10 +0000
     plugins: stop talking about top_gabbledir, whatever that is
     
     Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 8cd091c49b735bf226e3bbab83d1505ffa2e62a8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-07 12:00:08 +0100
+
+    test-location: add fixmes for cache invalidation.
+    
+    These have occurred to me … I don't think they're that important, but I
+    thought it worth writing them down.
+
+commit 822ad12df7cc1a8acb1a630da242a43dcf479ccc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-06 16:51:57 +0100
+
+    Location: implement RequestLocation.
+
+commit e114a0a935c1e2d5e64121857046171eb2a95ed6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-06 16:51:22 +0100
+
+    Map WockyXmppConnectionError to TpError.
+    
+    WockyPepService throws this back at me when I get disconnected while
+    requesting the items for a node.
+
+commit 0a9b34d5f05666079547f71a042866ccc1727907
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-06 16:04:32 +0100
+
+    Location: make update_location_from_msg take a handle
+    
+    This is basically symmetrical, but will make handling explicit PEP
+    queries to our own JID work more reliably when that's readded next.
+
+commit 325e961c40819be5a9b9e98b138629370b671ac3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-06 16:53:43 +0100
+
+    Location: better document location dictionary refcounting
+
+commit e979d5f0cafe75f6a7f164b01779c398d8c1e80d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-06 15:26:09 +0100
+
+    Location: don't poll for people's locations.
+    
+    As discussed on <https://bugs.freedesktop.org/show_bug.cgi?id=27693>,
+    the point of PEP is that you never have to poll for people's latest
+    location if you advertise the relevant +notify capability. So we
+    shouldn't do this in response to calls to GetLocations() or
+    GetContactAttributes().
+    
+    Fixing <https://bugs.freedesktop.org/show_bug.cgi?id=31218> will
+    essentially re-add this code...
+
+commit c7a002831787d24a93e76b4b53be4ebfe878f5dc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-06 15:03:03 +0100
+
+    Location: simplify contact attribute implementation.
+    
+    The specification says that the attribute should be “omitted from the
+    result if the contact's location is not known.” But previously Gabble
+    would fill in an empty dictionary in this case.
+    
+    Correcting this simplifies the refcounting on the hash table, which
+    wasn't obviously right before.
+
+commit dbd921a4046da6f375be375832a4f871adc1bbda
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-06 15:10:44 +0100
+
+    Location: simplify contact attribute test case
+    
+    A blanket assertion on the entire dictionary of dictionaries is much
+    less useful than a succession of increasingly-specific assertions using
+    our wrappers which print the arguments on failure.
 
 commit 80f5dae72e432d01642296174a3867b768e2907f
 Merge: 52157c4 3386e96
@@ -6100,7 +6391,7 @@ Date:   2010-08-13 14:23:00 +0200
     constants.py: add INVALID_HANDLE
 
 commit 3dec7eeca3318c35456e25b505de03b38fd84f59
-Merge: f8398be76 18c80d8
+Merge: f8398be 18c80d8
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-08-11 13:41:26 +0100
 
