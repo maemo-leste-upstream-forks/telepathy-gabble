@@ -484,6 +484,7 @@ _gabble_roster_item_maybe_remove (GabbleRoster *roster,
   g_assert (tp_handle_is_valid (contact_repo, handle, NULL));
 
   item = _gabble_roster_item_lookup (roster, handle);
+  g_return_val_if_fail (item != NULL, FALSE);
 
   /* don't remove items that are really on our server-side roster */
   if (item->subscription != GABBLE_ROSTER_SUBSCRIPTION_REMOVE)
@@ -966,7 +967,7 @@ roster_item_set_publish (GabbleRosterItem *item,
     TpSubscriptionState publish,
     const gchar *request)
 {
-  gboolean changed;
+  gboolean changed = FALSE;
 
   g_assert (publish == TP_SUBSCRIPTION_STATE_ASK || request == NULL);
 
@@ -1333,12 +1334,8 @@ got_roster_iq (GabbleRoster *roster,
     WockyStanza *message)
 {
   GabbleRosterPrivate *priv = roster->priv;
-  TpBaseConnection *conn = (TpBaseConnection *) priv->conn;
-  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (conn,
-      TP_HANDLE_TYPE_CONTACT);
   WockyNode *iq_node, *query_node;
   WockyStanzaSubType sub_type;
-  const gchar *from;
 
   if (priv->conn == NULL)
     return FALSE;
@@ -1349,22 +1346,6 @@ got_roster_iq (GabbleRoster *roster,
 
   if (query_node == NULL)
     return FALSE;
-
-  from = wocky_stanza_get_from (message);
-
-  if (from != NULL)
-    {
-      TpHandle sender;
-
-      sender = tp_handle_lookup (contact_repo, from, NULL, NULL);
-
-      if (sender != conn->self_handle)
-        {
-           NODE_DEBUG (iq_node, "discarding roster IQ which is not from "
-              "ourselves or the server");
-          return TRUE;
-        }
-    }
 
   wocky_stanza_get_type_info (message, NULL, &sub_type);
 
@@ -1747,16 +1728,16 @@ gabble_roster_porter_available_cb (GabbleConnection *conn,
   g_assert (self->priv->iq_cb == 0);
   g_assert (self->priv->presence_cb == 0);
 
-  self->priv->iq_cb = wocky_porter_register_handler (porter,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL,
+  self->priv->iq_cb = wocky_porter_register_handler_from_server (porter,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE,
       WOCKY_PORTER_HANDLER_PRIORITY_NORMAL, gabble_roster_iq_cb, self,
       '(', "query",
         ':', WOCKY_XMPP_NS_ROSTER,
       ')',
       NULL);
 
-  self->priv->presence_cb = wocky_porter_register_handler (porter,
-      WOCKY_STANZA_TYPE_PRESENCE, WOCKY_STANZA_SUB_TYPE_NONE, NULL,
+  self->priv->presence_cb = wocky_porter_register_handler_from_anyone (porter,
+      WOCKY_STANZA_TYPE_PRESENCE, WOCKY_STANZA_SUB_TYPE_NONE,
       WOCKY_PORTER_HANDLER_PRIORITY_MIN, gabble_roster_presence_cb, self,
       NULL);
 }
@@ -3041,7 +3022,7 @@ gabble_roster_dup_contact_groups (TpBaseContactList *base,
     TpHandle contact)
 {
   GabbleRoster *self = GABBLE_ROSTER (base);
-  GPtrArray *ret = g_ptr_array_new ();
+  GPtrArray *ret;
   GabbleRosterItem *item = _gabble_roster_item_lookup (self, contact);
 
   if (item != NULL && item->groups != NULL)
