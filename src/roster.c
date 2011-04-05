@@ -30,6 +30,7 @@
 #include <telepathy-glib/channel-manager.h>
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/interfaces.h>
+#include <wocky/wocky-c2s-porter.h>
 #include <wocky/wocky-namespaces.h>
 #include <wocky/wocky-node.h>
 #include <wocky/wocky-stanza.h>
@@ -1728,7 +1729,8 @@ gabble_roster_porter_available_cb (GabbleConnection *conn,
   g_assert (self->priv->iq_cb == 0);
   g_assert (self->priv->presence_cb == 0);
 
-  self->priv->iq_cb = wocky_porter_register_handler_from_server (porter,
+  self->priv->iq_cb = wocky_c2s_porter_register_handler_from_server (
+      WOCKY_C2S_PORTER (porter),
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE,
       WOCKY_PORTER_HANDLER_PRIORITY_NORMAL, gabble_roster_iq_cb, self,
       '(', "query",
@@ -2198,7 +2200,6 @@ gabble_roster_handle_set_blocked (GabbleRoster *roster,
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
       (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_CONTACT);
   GabbleRosterItem *item;
-  GoogleItemType orig_type;
 
   g_return_if_fail (roster != NULL);
   g_return_if_fail (GABBLE_IS_ROSTER (roster));
@@ -2207,7 +2208,6 @@ gabble_roster_handle_set_blocked (GabbleRoster *roster,
       GABBLE_CONNECTION_FEATURES_GOOGLE_ROSTER);
 
   item = _gabble_roster_item_ensure (roster, handle);
-  orig_type = item->google_type;
 
   if (item->unsent_edits == NULL)
     item->unsent_edits = item_edit_new (contact_repo, handle);

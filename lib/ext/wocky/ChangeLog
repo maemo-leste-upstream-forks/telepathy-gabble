@@ -1,3 +1,1193 @@
+commit d3354fd9c095a2c7c1f381e62a4d7b8481fd9edc
+Merge: cf9bb4a 45bb1dc
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 17 09:09:57 2011 +0000
+
+    Merge remote branch 'ptlo/stanza-queueing-c2s'
+
+commit 45bb1dc9fcd3171983e785b238a0e35c3e72a294
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   Tue Mar 15 13:20:15 2011 +0100
+
+    WockyC2SPorter: queue unimportant stanza in power saving mode
+
+ wocky/wocky-c2s-porter.c |  148 +++++++++++++++++++++++++++++++++++++++++++++-
+ wocky/wocky-c2s-porter.h |    3 +
+ 2 files changed, 150 insertions(+), 1 deletions(-)
+
+commit cf9bb4a08d6ba577937603b2c899d5e00408115a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 15 18:22:35 2011 +0000
+
+    Roster: remove dead google_roster code.
+    
+    We don't use this class at all. I'm tempted to remove it entirely. But
+    this was triggering unused variable warnings.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+ wocky/wocky-roster.c |   15 ---------------
+ 1 files changed, 0 insertions(+), 15 deletions(-)
+
+commit e763571868f715378a51acee823ebde65891998b
+Merge: 5cd5394 a17332c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 10 15:33:16 2011 +0000
+
+    Merge remote-tracking branch 'stefw/error-always-specialized-node'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=35175>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=35086>
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit a17332c8441b3e5dddb46ff50987bb1f38def647
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   Thu Mar 10 15:55:29 2011 +0100
+
+    Refine behavior of wocky_xmpp_error_extract() for specialized errors.
+    
+    We return the first specialized error. There should only be one
+    according to the XMPP specs. @specialized and @specialized_node always
+    match.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=35086
+
+ tests/wocky-stanza-test.c |   68 +++++++++++++++++++++++++++++++++++++++++----
+ wocky/wocky-xmpp-error.c  |   11 ++++---
+ 2 files changed, 68 insertions(+), 11 deletions(-)
+
+commit 71303eba13770a8628b8af62c3b08e9c6fb79954
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   Mon Mar 7 16:55:20 2011 +0100
+
+    wocky_xmpp_error_extract() fills in @specialized_node for any app error.
+    
+    Don't just limit parsing/setting of @specialized_node to error codes
+    which have been specifically registered with a WockyXmppErrorSpecialization.
+    
+    Fill in @specialized when the error code has been specifically
+    registered. Fill in @specialized_node when a registered error domain
+    matches, whether or not the specific code has been registered.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=35086
+
+ wocky/wocky-xmpp-error.c |   15 ++++++++++-----
+ 1 files changed, 10 insertions(+), 5 deletions(-)
+
+commit 441f5c02e8a930d07ed81d93ff2f04eb95ab51f7
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   Thu Mar 10 15:28:43 2011 +0100
+
+    Fix memory leak in tests.
+
+ tests/wocky-stanza-test.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 5cd5394a90ebefb95171aff007c073b2fd2fece6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 10 13:38:21 2011 +0000
+
+    Make PubsubAffiliation and PubsubSubscription docs appear
+    
+    Wtf!
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-pubsub-node.h    |    1 +
+ wocky/wocky-pubsub-service.h |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 02f235609a9cfc4df076c3d4fc1d01e39c91b9e5
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   Thu Mar 10 14:20:20 2011 +0100
+
+    Split up the XMPP stanza tests, so each test tests one thing.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=35175
+
+ tests/wocky-stanza-test.c |  155 +++++++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 144 insertions(+), 11 deletions(-)
+
+commit 4c557f412d52ed121d04eec4a3e10b2511cf11a8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 10 11:58:48 2011 +0000
+
+    openssl: stop using OPAQUE_TYPE_ prefixes here too
+    
+    Like in 9984d84ea288b4c but I forgot about to build the openssl
+    backend so only just noticed it had broken.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-openssl.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 1eec342d97afb81c77c0377d6ba964b41101d804
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 10 11:54:38 2011 +0000
+
+    porter: initialize GError* to NULL to fix coding style checks
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-porter.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 20a857391a832077ebfd48fe3503ef737bde8c49
+Merge: dbf5020 3961b80
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 10 11:42:21 2011 +0000
+
+    Merge branch 'gee-tee-kay-doc'
+
+commit dbf50208beffa638fb814bdb1b42aac919eadbea
+Merge: 99018a2 84edb4f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 10 10:51:36 2011 +0000
+
+    Merge branch 'ack-and-nak'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=26272>
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 3961b809f22f532541b73fe332d9465fb1032c3e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 9 16:21:38 2011 +0000
+
+    pep-service: document everything
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-pep-service.c |   82 ++++++++++++++++++++++++++++++++++++++++++++-
+ wocky/wocky-pep-service.h |   13 +++++--
+ 2 files changed, 90 insertions(+), 5 deletions(-)
+
+commit cd6ceec9b550ceb30782954244ad3c3a7869e83d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 9 09:58:03 2011 +0000
+
+    xmpp-error: fix WockyXmppErrorSpecialization docs
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-xmpp-error.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit ab85e5a992c59b8a42d163a4a0d645a7e5b8bb25
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 9 09:52:24 2011 +0000
+
+    node: add note about the gtk-doc bug we're hitting
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-node.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 60ee6333a7a7637eb482b04f2fe581dc1c4f9694
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 9 09:43:01 2011 +0000
+
+    node: document NodeIter's members as private
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-node.h |    8 +++-----
+ 1 files changed, 3 insertions(+), 5 deletions(-)
+
+commit c2772ff7d0a832dc34ebaa0585f66e7be7de190d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 9 09:42:05 2011 +0000
+
+    node: remove confusing comment describing nodes
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-node.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit e1530e0b18976468920a40d8cc3436e896f1485c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:43:13 2011 +0000
+
+    contact: no need to forward-define WockyContact
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-contact.h |    4 ++--
+ wocky/wocky-types.h   |    1 -
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+commit d11a8114a1cb547eaf4ca12b3df59d81724a1ae7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:38:55 2011 +0000
+
+    jabber-auth-digest: make class and object struct members private
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-jabber-auth-digest.h |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 97fffc5f6ee3638352f10eca71a9507484822279
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:38:37 2011 +0000
+
+    wocky-docs.sgml: add some other missing files
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ docs/reference/wocky-docs.sgml |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit da3e300a56c1decd2e1a599b1cfb0dbfd6d2da9a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:22:46 2011 +0000
+
+    wocky-docs.sgml: use Wocky, not wocky
+    
+    Happy, not sad. :-)
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ docs/reference/wocky-docs.sgml |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 3909ea620aaf579ee6a0e35ee9850d8553a40a4b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:22:02 2011 +0000
+
+    wocky-docs.sgml: re-add the enumtypes files
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ docs/reference/wocky-docs.sgml |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit 60e3415f308f568089ca49791d657ace6500e811
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:18:45 2011 +0000
+
+    xmpp-error: don't typedef the structs directly
+    
+    Like a few commits ago.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-xmpp-error.h |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+commit 363c5a62159eed5e48c096b34f5b9e15cfd978e4
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:18:35 2011 +0000
+
+    porter: fix reference to porter error
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-porter.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit dadc629fc9e262ed448fa0ed886e23ea16447d4d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:18:17 2011 +0000
+
+    c2s-porter: fix link to register_handler_from_server
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-c2s-porter.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit ba23c83032462081fee5414bf5d1f77d13b4cab2
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:13:21 2011 +0000
+
+    data-form: add a section header
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-data-form.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit eb3a37018975eae1905ac7069e0899f44fbaae4c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:12:26 2011 +0000
+
+    data-form: don't typedef the struct directly
+    
+    This way gtk-doc picks up the struct. Not sure why.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-data-form.h |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+commit d4055e010d0a8e6b033362590cc36f0d0991b7cb
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:11:53 2011 +0000
+
+    tls-connector: document :tls-handler
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-tls-connector.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit f239831aa994934d93a41fc06b4feb9110049c32
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:11:22 2011 +0000
+
+    auth-registry: fix typos when referencing other functions
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-auth-registry.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit e95a93d98030f8b5dfe5f680ade44b94133142c5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 15:11:02 2011 +0000
+
+    wocky-docs.sgml: add missing include of wocky-tls-handler.xml
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ docs/reference/wocky-docs.sgml |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit da25e325df1b2973e0f2ec1f2258f7796388fd73
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 14:56:24 2011 +0000
+
+    all: document Class structs
+    
+    Mostly with dummy text.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-auth-registry.h    |   29 +++++++++++++++++++++++++++++
+ wocky/wocky-bare-contact.h     |    7 +++++++
+ wocky/wocky-c2s-porter.h       |    8 ++++++++
+ wocky/wocky-caps-cache.h       |    8 ++++++++
+ wocky/wocky-connector.h        |    8 ++++++++
+ wocky/wocky-contact-factory.h  |    8 ++++++++
+ wocky/wocky-contact.h          |    7 +++++++
+ wocky/wocky-data-form.h        |   22 ++++++++++++++++++++++
+ wocky/wocky-jabber-auth.h      |    8 ++++++++
+ wocky/wocky-muc.h              |    8 ++++++++
+ wocky/wocky-node-tree.h        |    9 ++++++++-
+ wocky/wocky-pep-service.h      |    8 ++++++++
+ wocky/wocky-ping.h             |    8 ++++++++
+ wocky/wocky-pubsub-node.h      |    7 +++++++
+ wocky/wocky-resource-contact.h |    7 +++++++
+ wocky/wocky-roster.h           |    8 ++++++++
+ wocky/wocky-sasl-auth.h        |    8 ++++++++
+ wocky/wocky-session.h          |    7 +++++++
+ wocky/wocky-stanza.h           |   10 +++++++++-
+ wocky/wocky-tls-connector.h    |    8 ++++++++
+ wocky/wocky-tls-handler.h      |   15 +++++++++++++++
+ wocky/wocky-xmpp-connection.h  |    8 ++++++++
+ wocky/wocky-xmpp-reader.h      |    8 ++++++++
+ wocky/wocky-xmpp-writer.h      |    8 ++++++++
+ 24 files changed, 230 insertions(+), 2 deletions(-)
+
+commit a2780e30ba820c926098a2459f9dda06b86ee90a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 14:16:31 2011 +0000
+
+    xmpp-error: document more enums and structs
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-xmpp-error.h |   63 +++++++++++++++++++++++++++++++++++++++------
+ 1 files changed, 54 insertions(+), 9 deletions(-)
+
+commit 1b8831d4485c0000282aa67aa5e3fbb31f0da7d3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 13:58:56 2011 +0000
+
+    node: add a workaround for gtk-doc's parser being broken
+    
+    I'll file a bug, like, way soon.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-node.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit db7308a6632c01ba654f1fba03e54c0824544ce5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 13:42:36 2011 +0000
+
+    pubsub-service: fix typo in argument docs
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-pubsub-service.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit bcd82c253ca516132cbaeeb93868f5aeb1026fe3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 13:40:10 2011 +0000
+
+    debug: make flag enum values private
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-debug.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 1ef35279fade3b1f29ca9677b22146a89aa893ec
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 13:38:46 2011 +0000
+
+    porter: document the interface struct
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-porter.h |   39 +++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 39 insertions(+), 0 deletions(-)
+
+commit 2ae30124e5e87ab8d8b81b216ae4100831b0f350
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 13:09:48 2011 +0000
+
+    docs: escape XML tags in gtk-doc properly
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-auth-handler.h |   40 +++++++++++++++++++++-------------------
+ wocky/wocky-stanza.h       |   22 +++++++++++-----------
+ wocky/wocky-xmpp-error.c   |    9 +++++----
+ 3 files changed, 37 insertions(+), 34 deletions(-)
+
+commit c6b93921eb831840e913837f6939f688eace639b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 12:03:05 2011 +0000
+
+    wocky-docs.sgml: include annotation-glossary.xml to silence more warnings
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ docs/reference/wocky-docs.sgml |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 9984d84ea288b4c5b0a2bac24c608745ee890c9e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 11:52:01 2011 +0000
+
+    tls: stop using OPAQUE_TYPE_ prefixes; it confuses gtk-doc
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-tls.c |    4 ++--
+ wocky/wocky-tls.h |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit b0ae9960ef300f141ec317e1c2524fc3dcc7dad2
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 11:49:15 2011 +0000
+
+    wocky-docs.sgml: remove unnessary includes
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ docs/reference/wocky-docs.sgml |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit ddd7608a27a56c966640a06cead18a6fb9f16617
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 11:40:47 2011 +0000
+
+    data-form: don't use gtk-doc style comments for static functions
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-data-form.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit b2efe47fb0707c860e25f406ca024cfeb771c0a8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 11:35:19 2011 +0000
+
+    namespaces: ensure all have wocky prefix
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-muc.c        |    4 ++--
+ wocky/wocky-namespaces.h |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 6843d76c8849a7bfdede53bb2b6f328356faf2a7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 11:32:39 2011 +0000
+
+    wocky-docs.sgml: re-arrange docs and include missing files
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ docs/reference/wocky-docs.sgml |   23 ++++++++++++++---------
+ 1 files changed, 14 insertions(+), 9 deletions(-)
+
+commit 8b55bc0137bfdaaf9039d75e16393a4cdda0d524
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 11:32:21 2011 +0000
+
+    xmpp-error: document error type and stream error type enums
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-xmpp-error.c |    6 --
+ wocky/wocky-xmpp-error.h |  161 ++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 155 insertions(+), 12 deletions(-)
+
+commit 78122f3a67d29792a5879628e67f210788d20cc9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 10:53:39 2011 +0000
+
+    xmpp-error: make function argument name consistent between definition and declaration
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-xmpp-error.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit e26c1bdf34b61c7af9f62a658aa166a5adbadf46
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 10:52:26 2011 +0000
+
+    debug: rename DebugFlags enum to WockyDebugFlags
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-debug.c |   16 ++++++++--------
+ wocky/wocky-debug.h |   14 +++++++-------
+ 2 files changed, 15 insertions(+), 15 deletions(-)
+
+commit cf0dd58b0d1cc19d619244819dae6964288eb3df
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 10:50:25 2011 +0000
+
+    data-form: document more enums and structs
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-data-form.h |   48 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 48 insertions(+), 0 deletions(-)
+
+commit f9f1b00b5991ebca4edb80991207aed8b3413438
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 10:50:11 2011 +0000
+
+    node: document more enums and structs
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-node.h |   32 ++++++++++++++++++++++++++++++--
+ 1 files changed, 30 insertions(+), 2 deletions(-)
+
+commit 9e423113aad41b86a63d3cce1291f9ffbe8e118a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 10:18:15 2011 +0000
+
+    xmpp-connection: fix name of argument in gtk-doc
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-xmpp-connection.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 4c6680f5ecb11d1cc6632c12b9c7d97fa3b638cd
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 10:17:25 2011 +0000
+
+    pubsub-service: document PubsubServiceError
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-pubsub-service.h |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit ab5503eff37f086809f01ba08a7424e0b193d1cd
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 10:15:56 2011 +0000
+
+    muc: fix up documentation of enums
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-muc.h |  163 +++++++++++++++++++++++++++++++++++++++++------------
+ 1 files changed, 127 insertions(+), 36 deletions(-)
+
+commit 01669f3bbd4bf9466b4c05bf75235a85e436ed28
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 09:13:00 2011 +0000
+
+    stanza: document StanzaType and StanzaSubType enums
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-stanza.h |   42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 42 insertions(+), 0 deletions(-)
+
+commit dbd2c93d0d777091df23d16239d51032b90f20a7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 09:08:16 2011 +0000
+
+    connector: make WockyConnectorError conform a little more
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-connector.h |   66 +++++++++++++++++++++++++++--------------------
+ 1 files changed, 38 insertions(+), 28 deletions(-)
+
+commit ccc668e882edb10c635c6e3282e4af0d63853ef8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 09:07:45 2011 +0000
+
+    auth-handler: re-add < and > characters to show tags
+    
+    gtk-doc apparently deals with them.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-auth-handler.h |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 133a2c5f0e0a71dccfa8c18a209632ac072e4642
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 08:42:55 2011 +0000
+
+    roster: document WockyRosterSubscriptionFlags
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-roster.h |   19 +++++++++++++++++++
+ 1 files changed, 19 insertions(+), 0 deletions(-)
+
+commit 3e49397df467c25830e1c4b36f732743b588a841
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 8 08:36:20 2011 +0000
+
+    auth-registry: fix up all gtk-doc docs
+    
+    What a generic commit message.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-auth-registry.h |  114 +++++++++++++++++++++++++++++++------------
+ 1 files changed, 83 insertions(+), 31 deletions(-)
+
+commit da5d9fada6922b43a0ac1a58385c82613ad5bb02
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 7 15:33:59 2011 +0000
+
+    auth-handler: fix up documentation of class functions
+    
+    ...in most ways possible.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-auth-handler.h |   52 ++++++++++++++++++++++++++++++-------------
+ 1 files changed, 36 insertions(+), 16 deletions(-)
+
+commit 5172562d92d85e65204dfa447acb190dfd0f7dc3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 7 15:33:13 2011 +0000
+
+    connector: add missing argument docs
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-connector.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 3af290067b782c53d6b1a4e55e10cbe75c5405e3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 7 15:32:57 2011 +0000
+
+    connector: don't put comments where annotations are meant to go
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-connector.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 2ef37a93ca0e845824c6b681a4e49d7ac1761439
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 7 15:22:40 2011 +0000
+
+    connector: remove enum member docs as they've been removed
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-connector.h |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+commit d8d98b898148076d4b346c1d0a3b61999a4e3faa
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 2 16:25:05 2011 +0000
+
+    porter: G_GNUC_WARN_UNUSED_RESULT need not be in the interface vfunc
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-porter.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 84edb4f0db762517eaec1790a2e6b7821f9ba332
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Mar 7 14:12:30 2011 +0000
+
+    Add wocky_xmpp_stanza_error_to_string()
+
+ wocky/wocky-xmpp-error.c |   33 +++++++++++++++++++++++++++++++++
+ wocky/wocky-xmpp-error.h |    1 +
+ 2 files changed, 34 insertions(+), 0 deletions(-)
+
+commit 3edc55b42a4fdc2a5829bad5e4f137118a84ba36
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Mar 7 12:05:20 2011 +0000
+
+    Add wocky_porter_send_iq_gerror()
+
+ tests/wocky-porter-test.c |   95 +++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-porter.c      |   57 +++++++++++++++++++++++----
+ wocky/wocky-porter.h      |    5 ++
+ 3 files changed, 148 insertions(+), 9 deletions(-)
+
+commit 7d10fad8b09220baaa8a83a7897f28d1342bd68c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 3 17:12:50 2011 +0000
+
+    build_iq_error(): clarify RFC3920 reference
+
+ wocky/wocky-stanza.c |   21 ++++++++++++---------
+ 1 files changed, 12 insertions(+), 9 deletions(-)
+
+commit a398a8bb8b5604b563089b459f6ffade96f66eda
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 2 15:03:14 2011 +0000
+
+    Add wocky_porter_send_iq_error()
+    
+    This new helper function makes it easier to nak an IQ.
+
+ tests/wocky-porter-test.c |  134 +++++++++++++++++++++++++++++++++++++++++++-
+ wocky/wocky-porter.c      |   54 ++++++++++++++++++
+ wocky/wocky-porter.h      |    6 ++
+ 3 files changed, 190 insertions(+), 4 deletions(-)
+
+commit 21003231466b39ba3acb30f827f5ac5c70304f0c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 2 15:01:20 2011 +0000
+
+    wocky_stanza_build_iq_error(): include query.
+    
+    XMPP Core says that IQ errors SHOULD include the query from the original
+    request. wocky_stanza_build_iq_error() should do this for us.
+
+ tests/wocky-pubsub-service-test.c |   13 ---------
+ tests/wocky-stanza-test.c         |    6 ++--
+ wocky/wocky-stanza.c              |   54 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 57 insertions(+), 16 deletions(-)
+
+commit 98111e64216f98434dd09e7b9e1c4ed8e0ab8520
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 2 15:00:30 2011 +0000
+
+    Rename send-iq-error test to error-while-sending-iq
+    
+    This is a clearer name for this test case, and also doesn't clash with a
+    test I'm adding.
+
+ tests/wocky-porter-test.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 0a7538e718f2eb88a55374c6bb84082475ea1ddb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 2 14:57:39 2011 +0000
+
+    wocky_node_get_first_child(): allow childless nodes.
+    
+    Previously, this function criticalled if the node passed to it had no
+    children. This seems unnecessary: there's a perfectly good value we can
+    return in this situation, namely NULL.
+
+ wocky/wocky-node.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit a6a2caf114f9db9e9b4c2b0ce81a65e83da0080a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 2 14:32:56 2011 +0000
+
+    stanza-test: fix error structure.
+    
+    The "more complex reply" test_build_iq_error had a broken structure: it
+    put the <error/> inside the query element, rather than alongside it.
+
+ tests/wocky-stanza-test.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+commit 6b1229d4579cba10d51485d4d8d5ce6c8e4bb529
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 2 13:32:09 2011 +0000
+
+    Add wocky_stanza_build_iq_error_va
+    
+    This is just for symmetry with wocky_stanza_build_iq_result_va(); we
+    don't actually need it yet.
+
+ wocky/wocky-stanza.c |    8 ++++++++
+ wocky/wocky-stanza.h |    3 +++
+ 2 files changed, 11 insertions(+), 0 deletions(-)
+
+commit 19e6e1278c4787cca1adc72943868dcfd6165b6a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 2 13:22:45 2011 +0000
+
+    Add wocky_node_prepend_node_tree()
+    
+    This is akin to wocky_node_add_node_tree()
+
+ wocky/wocky-node.c |   22 ++++++++++++++++++++++
+ wocky/wocky-node.h |    3 +++
+ 2 files changed, 25 insertions(+), 0 deletions(-)
+
+commit a80461b731ef946f96102fc88cc7badd77aeca3e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 2 13:22:26 2011 +0000
+
+    Tweak wocky_node_add_node_tree()'s docstring
+
+ wocky/wocky-node.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 64969415af3b45ef61a75040201b42a23433e377
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 1 16:26:22 2011 +0000
+
+    Add wocky_porter_acknowledge_iq()
+
+ tests/wocky-porter-test.c |  149 +++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-ping.c        |   11 +---
+ wocky/wocky-porter.c      |   41 ++++++++++++
+ wocky/wocky-porter.h      |    5 ++
+ wocky/wocky-stanza.c      |    8 +++
+ wocky/wocky-stanza.h      |    3 +
+ 6 files changed, 207 insertions(+), 10 deletions(-)
+
+commit 4926bcc6e2bd5845025da138925427eb69f2d7cd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Feb 28 21:52:32 2011 +0000
+
+    Make build_iq_{reply,error} cope with NULL ids.
+    
+    Although it violates XMPP Core, some servers send IQs without an id=''
+    attribute. Rather than requiring the handlers to check for the id=''
+    attribute, this patch makes wocky_stanza_build_iq_{reply,error} return
+    NULL—rather than criticalling and returning NULL—if the stanza being
+    replied to has no id=''.
+
+ wocky/wocky-ping.c   |    8 ++++++--
+ wocky/wocky-roster.c |    7 +++++--
+ wocky/wocky-stanza.c |    4 +++-
+ 3 files changed, 14 insertions(+), 5 deletions(-)
+
+commit 99018a2410a6fe72fa881f9fd8bd54dcc02c41fb
+Merge: 5e748b2 87f2783
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 3 17:21:25 2011 +0000
+
+    Merge branch 'misc'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 87f278396aa690142ad57e3c8ccfdc8cc7abeb55
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 3 16:03:30 2011 +0000
+
+    XmppReader: clarify handling regular nodes' attributes
+    
+    This brings this loop in line with the corresponding loop for attributes
+    in the stream opening.
+
+ wocky/wocky-xmpp-reader.c |   34 ++++++++++++++++++----------------
+ 1 files changed, 18 insertions(+), 16 deletions(-)
+
+commit b997e46000b70f2e05368eec3f52e0e183df98c5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 3 15:38:03 2011 +0000
+
+    XmppReader: Split _start_element_ns in half.
+    
+    This function had two entirely distinct sections: handling the stream
+    open, and handling the start of a normal, mid-stream element. This
+    suggests that they should be two functions!
+
+ wocky/wocky-xmpp-reader.c |  181 +++++++++++++++++++++++++-------------------
+ 1 files changed, 103 insertions(+), 78 deletions(-)
+
+commit 55b4db92591ecc72bd5393d2ae66d84fbc8e9063
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Feb 7 14:21:13 2011 +0100
+
+    XmppReader: don't crash on <stream:stream lang='foo'...>
+    
+    Previously, if the stream header contained a 'lang' attribute with no
+    namespace prefix, we'd pass NULL to strcmp, and crash.
+
+ tests/wocky-xmpp-reader-test.c |   26 ++++++++++++++++++++++++++
+ wocky/wocky-xmpp-reader.c      |    5 ++++-
+ 2 files changed, 30 insertions(+), 1 deletions(-)
+
+commit 33195c80d34dce29a466dabfa3bb494f7b3554ae
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Feb 5 13:33:25 2011 +0100
+
+    Fix hypothetical NULL dereference on stream open.
+    
+    clang --analyze pointed out that, technically, 'uri' can be NULL here.
+    This would mean that the server sending us a stream open without a
+    namespace would crash us!
+    
+    So, we use wocky_strdiff rather than strcmp.
+
+ wocky/wocky-xmpp-reader.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit f2456f33b940e5526746eff86cec41e3e967b3ef
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Feb 7 14:03:14 2011 +0100
+
+    Clarify parsing stream opening
+
+ wocky/wocky-xmpp-reader.c |   52 +++++++++++++++++++++++---------------------
+ 1 files changed, 27 insertions(+), 25 deletions(-)
+
+commit 8136e1381e660088800d0fd8538c518c84f77618
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Feb 7 13:51:58 2011 +0100
+
+    Add more assertions to stanza build interpreter
+    
+    clang complained that we were dereferencing 'stack', which may be NULL.
+    It was right: previously we could get into this situation with only a
+    warning before a NULL pointer dereference. This patch adds assertions at
+    the points where we would crash anyway.
+
+ wocky/wocky-node.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 09eb96d7a0f8ab60ec08c293f3d3bdca10355833
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Feb 7 13:35:12 2011 +0100
+
+    auth: Remove unneeded assignments and variables.
+    
+    These were found by the excellent clang --analyze.
+
+ wocky/wocky-jabber-auth.c |    4 ----
+ wocky/wocky-sasl-scram.c  |    2 +-
+ 2 files changed, 1 insertions(+), 5 deletions(-)
+
+commit d855ca88c2bde3c0bf0c01d11117475f46d41de9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Sat Feb 5 15:18:02 2011 +0100
+
+    Fix overriding type='' when creating error nodes.
+    
+    Wocky has support for turning GErrors into <error/> nodes; using
+    wocky_xmpp_error_register_domain() you can define your own specializations
+    of standard stanza errors. By default the standard type='' for the
+    ‘parent’ stanza error is used, but you can override this when
+    registering a mapping.
+    
+    However, the code to generate error nodes didn't actually use the
+    overridden type. (clang --analyze noticed this).
+    
+    (We don't actually use this code, but …)
+
+ wocky/wocky-xmpp-error.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 70496f785fefe6e5593c51f8c1b3d2ab79fa0c73
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Feb 4 13:27:02 2011 +0100
+
+    wocky_caps_cache_dup_shared(): correct docs
+    
+    The docstring refers to an argument that doesn't exist on this function.
+
+ wocky/wocky-caps-cache.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 5e748b2edcba058a40e547656cd898f56ae48784
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 1 13:45:58 2011 +0000
+
+    porter: add reference to from_server register variant
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-porter.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 71c7aa98ef45f8dcf97492dedc8886a4384837a7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 1 13:24:16 2011 +0000
+
+    porter: fix gtk-doc of @from in all from register variants
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-porter.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 294396b441b0c6c628a8d3f421c118ba732eb692
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 1 13:24:03 2011 +0000
+
+    porter: move from_server register variant to c2s porter
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-porter-test.c |    3 +-
+ wocky/wocky-c2s-porter.c  |  145 ++++++++++++++++++++++++++++++++++++++--
+ wocky/wocky-c2s-porter.h  |   27 ++++++++
+ wocky/wocky-porter.c      |  162 +--------------------------------------------
+ wocky/wocky-porter.h      |   36 ----------
+ wocky/wocky-roster.c      |    4 +-
+ 6 files changed, 173 insertions(+), 204 deletions(-)
+
+commit dd4e2a24438739475537bff267a66175ca2e8227
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 1 08:25:21 2011 +0000
+
+    porter: use g_once_init_enter instead of a initialized gboolean
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-porter.c |  182 +++++++++++++++++++++++++-------------------------
+ 1 files changed, 91 insertions(+), 91 deletions(-)
+
+commit 39b1a9431f4d96f8b8daa836ac6fbf848005b787
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 1 08:25:12 2011 +0000
+
+    porter: rename _stanza variants to _by_stanza
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-c2s-porter.c |   18 +++++++++---------
+ wocky/wocky-porter.c     |   30 +++++++++++++++---------------
+ wocky/wocky-porter.h     |   12 ++++++------
+ 3 files changed, 30 insertions(+), 30 deletions(-)
+
+commit aed067fca404d2a70b871dab90201cf5540388da
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 1 08:14:02 2011 +0000
+
+    {,c2s-}porter: fix copyright years
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-c2s-porter.c |    2 +-
+ wocky/wocky-c2s-porter.h |    4 ++--
+ wocky/wocky-porter.c     |    2 +-
+ wocky/wocky-porter.h     |    2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 4577a263f7c8548913691a6fc7b014255051e209
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Feb 28 14:34:42 2011 +0000
+
+    porter: fix typo in ::sending gtk-doc
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-porter.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 0474633d7a79d33235388962bf76cf3845f2d27b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Feb 28 14:28:51 2011 +0000
+
+    porter: make sure register_handler_*_stanza functions take good stanzas
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-porter.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit 668c72d36b8698283d3be5ef2e7f9f8e81609457
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Feb 28 14:27:33 2011 +0000
+
+    porter: move c2s properties and signals to the interface
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-c2s-porter.c |  129 +++++-----------------------------------------
+ wocky/wocky-porter.c     |  105 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 118 insertions(+), 116 deletions(-)
+
+commit 2f308d251ee95504e05b17c98799a3ac131c24bc
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Feb 28 08:58:06 2011 +0000
+
+    wocky: fix header guard comment
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 0e5371a5abae18f737b18670fcd89d61a59e29f1
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Feb 28 08:55:51 2011 +0000
+
+    porter: turn the porter into an interface and implement it in a C2S porter
+    
+    This will be a pretty horrible patch, soz.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-porter-test.c |    4 +-
+ wocky/Makefile.am         |    2 +
+ wocky/wocky-c2s-porter.c  | 1896 ++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-c2s-porter.h  |   75 ++
+ wocky/wocky-porter.c      | 1900 +++++----------------------------------------
+ wocky/wocky-porter.h      |  178 +++--
+ wocky/wocky-session.c     |    3 +-
+ 7 files changed, 2276 insertions(+), 1782 deletions(-)
+
+commit 95dab3a1aa7a0e0823ca7bf175d1a84440031450
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 16:00:25 2011 +0000
+
+    porter: add register_handler_from{,_anyone,_server}_stanza functions
+    
+    Also small documentation fixes in the _va functions.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-porter.c |  177 ++++++++++++++++++++++++++++++++++++++++++++++----
+ wocky/wocky-porter.h |   27 ++++++++
+ 2 files changed, 192 insertions(+), 12 deletions(-)
+
+commit 035cf150fdf4558930ce88ca393f6a5d360c1b66
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Feb 14 13:15:16 2011 +0000
+
+    wocky: don't use absolute paths in enumtypes headers
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit bed7014377bb94e9933063c346c86c2989df5e3c
 Merge: 7adf35f 3aab9dd
 Author: Will Thompson <will.thompson@collabora.co.uk>

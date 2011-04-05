@@ -615,13 +615,16 @@ wocky_node_get_child (WockyNode *node, const gchar *name)
  *
  * Convenience function to return the first child of a #WockyNode.
  *
- * Returns: a #WockyNode.
+ * Returns: a #WockyNode, or %NULL if @node has no children.
  */
 WockyNode *
 wocky_node_get_first_child (WockyNode *node)
 {
   g_return_val_if_fail (node != NULL, NULL);
-  g_return_val_if_fail (node->children != NULL, NULL);
+
+  if (node->children == NULL)
+    return NULL;
+
   return (WockyNode *) node->children->data;
 }
 
@@ -1252,6 +1255,7 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
 
             g_assert (key != NULL);
             g_assert (value != NULL);
+            g_assert (stack != NULL);
             wocky_node_set_attribute (stack->data, key, value);
           }
           break;
@@ -1262,6 +1266,7 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
             WockyNode *child;
 
             g_assert (name != NULL);
+            g_assert (stack != NULL);
             child = wocky_node_add_child (stack->data, name);
             stack = g_slist_prepend (stack, child);
           }
@@ -1271,6 +1276,7 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
           {
             gchar *txt = va_arg (ap, gchar *);
 
+            g_assert (stack != NULL);
             wocky_node_set_content (stack->data, txt);
           }
           break;
@@ -1280,6 +1286,7 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
             gchar *ns = va_arg (ap, gchar *);
 
             g_assert (ns != NULL);
+            g_assert (stack != NULL);
             ((WockyNode *) stack->data)->ns = g_quark_from_string (ns);
           }
           break;
@@ -1288,6 +1295,9 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
           {
             /* delete the top of the stack */
             stack = g_slist_delete_link (stack, stack);
+            /* If you put too many ')'s at the end of your build spec, we just
+             * warn; if you actually try to do anything else having fallen off
+             * the end, we'll assert in the relevant branch. */
             g_warn_if_fail (stack != NULL);
           }
           break;
@@ -1297,6 +1307,7 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
             WockyNode **dest = va_arg (ap, WockyNode **);
 
             g_assert (dest != NULL);
+            g_assert (stack != NULL);
             *dest = stack->data;
           }
           break;
@@ -1360,8 +1371,7 @@ _wocky_node_copy (WockyNode *node)
  * @node: A node
  * @tree: The node tree to add
  *
- * Copies the nodes from @tree adds them as a child of @node.
- *
+ * Copies the nodes from @tree, and appends them to @node's children.
  */
 void
 wocky_node_add_node_tree (WockyNode *node, WockyNodeTree *tree)
@@ -1373,6 +1383,28 @@ wocky_node_add_node_tree (WockyNode *node, WockyNodeTree *tree)
 
   copy = _wocky_node_copy (wocky_node_tree_get_top_node (tree));
   node->children = g_slist_append (node->children, copy);
+}
+
+/**
+ * wocky_node_prepend_node_tree:
+ * @node: a node
+ * @tree: the node tree to prepend to @node's children
+ *
+ * Copies the nodes from @tree, and inserts them as the first child of @node,
+ * before any existing children.
+ */
+void
+wocky_node_prepend_node_tree (
+    WockyNode *node,
+    WockyNodeTree *tree)
+{
+  WockyNode *copy;
+
+  g_return_if_fail (node != NULL);
+  g_return_if_fail (tree != NULL);
+
+  copy = _wocky_node_copy (wocky_node_tree_get_top_node (tree));
+  node->children = g_slist_prepend (node->children, copy);
 }
 
 /**

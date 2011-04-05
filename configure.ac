@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [11])
-m4_define([gabble_micro_version], [8])
+m4_define([gabble_micro_version], [10])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -181,6 +181,18 @@ fi
 
 AC_SUBST(CLIENT_TYPE)
 
+# whether to assert when g_critical() is used
+AC_ARG_ENABLE([fatal-criticals],
+  AC_HELP_STRING([--disable-fatal-criticals],
+    [do not assert because of critical warnings]),
+    [fatal_criticals=$enableval], [fatal_criticals=yes])
+
+if test x$fatal_criticals = xyes; then
+  AC_DEFINE(ENABLE_FATAL_CRITICALS, [],
+      [Critical warnings will result in an assertion])
+fi
+AM_CONDITIONAL([ENABLE_FATAL_CRITICALS], [test "x$fatal_criticals" = xyes])
+
 dnl dummy check for gtk-doc
 AC_ARG_ENABLE(gtk-doc,
   AC_HELP_STRING([--enable-gtk-doc],[doesn't actually do anything]),
@@ -240,7 +252,7 @@ PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.82])
 AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)
 
-PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.13.12])
+PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.14.3])
 
 AC_SUBST(TP_GLIB_CFLAGS)
 AC_SUBST(TP_GLIB_LIBS)
