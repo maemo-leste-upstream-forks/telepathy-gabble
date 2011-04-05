@@ -1,3 +1,495 @@
+commit 96054cec689d89c0fcb7900ed3498f117b4e0add
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-31 19:55:04 +0100
+
+    Version 0.11.10.
+    
+    (The version number in configure.ac was wrongly bumped to 0.11.9.1
+    rather than 0.11.8.1; so let's leave a gap.)
+
+commit 36ae26c8da2e14eb417a700a4a13bf581cb47b49
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-31 19:53:11 +0100
+
+    NEWS for 0.11.9
+
+commit 17388b432e1ee3a84be777c6a123ab9d98cc41c1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-31 19:50:54 +0100
+
+    Bump telepathy-glib dependency for StreamHandler stuff
+
+commit 388fe147f487e2417148da251a1278faef9acd48
+Merge: 2717cc1 29b2365
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-31 19:18:57 +0100
+
+    Merge remote-tracking branch 'ocrete/rtcpfb-rtphdrext'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=34985>
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 2717cc16c17624746fd1369562f65845e9297cc5
+Merge: 7b9c78e 9fb2c07
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-31 19:09:42 +0100
+
+    Merge remote-tracking branch 'stefw/extra-identities'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=35415>
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 7b9c78e8af71875fd2890097ef1be6635900028c
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-03-31 16:41:21 +0100
+
+    Make g_critical() fatals only if ENABLE_FATAL_CRITICALS is set
+    
+    Fatal criticals help us getting reports on things that would get
+    unnoticed otherwise, but there is little point in them in case the user
+    has no way to debug or report them and will just see a crash.
+
+commit 9fb2c07c09ccd4c6c705885ab7af279fd294eacf
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   2011-03-21 12:15:19 +0100
+
+    Change param 'extra-identities' to 'extra-certificate-identities'
+
+commit daff04b17b6b58ab053074c859e416dcc872eb41
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   2011-03-18 18:09:09 +0100
+
+    Add tests that 'extra-identities' parameter shows up in ReferenceIdentities
+
+commit 033c2bda0ad96d53ded17900fcd931597b5dea18
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   2011-03-18 15:29:18 +0100
+
+    Some style changes and extra checks for extra-identities support.
+    
+     * Check for NULL
+     * Check for empty strings.
+
+commit 7d0c4a0a952b5d6829367fa073b374109cf631bf
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   2011-03-18 13:15:31 +0100
+
+    Allow the UI to specify extra-identities account paramaters.
+    
+    These are used as reference identities when checking the server
+    certificate. These extra identities must result from user choices
+    such as a selection of account type.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=35415
+
+commit 144440f6bf99022bcab71829fd3d105ee35c4f46
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-03-31 18:31:57 +0100
+
+    Add --disable-fatal-criticals to the configure script
+
+commit 37cfceaeb41b511c3e87124913eccaf0ca5a034a
+Merge: f345228 50e2995
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-31 18:12:53 +0100
+
+    Merge remote-tracking branch 'stefw/reference-identities'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=35410>
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f3452284e8b2c07eb9621091e96a49064f4c25ed
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-18 16:01:25 +0000
+
+    Give more helpful output when Twisted tests are disabled.
+    
+    Previously, if Twisted tests were disabled at configure time due to the
+    necessary modules not being installed, `make check` might fail, because
+    the tests in tests/ use some of the scripts from tests/twisted/tools,
+    which were not generated if Twisted tests weren't available, and running
+    `make check-twisted -C tests/twisted` as endorsed by tests/README would
+    just show all the tests failing for no good reason.
+    
+    This patch fixes that.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=35426>
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 50e2995cfb21d61c2c7d570ef14c60cf1baf4b96
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   2011-03-28 18:32:53 +0200
+
+    Initialize variable properly when building ReferenceIdentities
+    
+    And fix style issues.
+
+commit 29b2365cc23cf539a30d1a38f2f619ffe3d03572
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-23 21:17:52 -0400
+
+    De-optimise the direction=both case to make direction=sendonly/recvonly cases more simple
+
+commit 114b8768f5a2acf922658099a8500fdf6b857df2
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-16 12:49:48 -0400
+
+    media-stream: Simplify multi-case if/elseif/else with switch/case
+
+commit f997d1bc2e72d0425e83fda2245d7bf0f00d1589
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-16 12:37:20 -0400
+
+    Fix small stylistic nits
+
+commit 1da6606aa55bebe56aef1f5fe9aac7b4a3c56a15
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-16 12:32:29 -0400
+
+    jingle-media-rtp: GCompareFunc returns gint
+
+commit ceb01d3bc934283022e7c11259718a2e3357b8e1
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-11 18:34:34 -0500
+
+    media-jingle-rtp: Use priv-> not self->priv to match coding style
+
+commit 55cc51b5d4ea29c3fd4b57deba19fe8c7db315f6
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-11 16:52:01 -0500
+
+    jingle-media-rtp: Use guint to make compiler happier with GUINT_TO_POINTER
+
+commit b4bee7b631faef493609b58a38a35cfca606b4d8
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-11 16:26:32 -0500
+
+    media-jingle-rtp: Cache caps at the beginning of the call or guess them
+    
+    We're not sure we will have caps, so cache them when we produce a description
+    or guess them from receiving blurbs with their namespace from the other side.
+
+commit bdf0bfd15db834c21b50257a47dcee0b06e5a06e
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-11 15:21:32 -0500
+
+    jingle-media-rtp: Explain who description_simplify is supposed to work
+
+commit 5bc50d37c90f5115d477d3306f7cce3eee7af4aa
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-11 15:08:46 -0500
+
+    media-jignle-rtp: _ vs - typo
+
+commit e7a68d85caf99b6b1e654369c90fbf082553f92b
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-11 15:06:17 -0500
+
+    media-jingle-rtp: Fix indentation
+
+commit dcebdf8d39a0f86869a40b3197d787173068d841
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-11 15:05:40 -0500
+
+    jingle-media-rtp: Correctly free list
+
+commit fc52920486a51ec60d29c9cb4b61d6c3d2cbfedc
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-11 15:03:34 -0500
+
+    media-stream: Fix typo
+
+commit c80c9fd835a35c6133b806418d604013991836e0
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-11 15:02:52 -0500
+
+    media-stream: Simplify if/elseif/elseif/else using switch/case
+
+commit ff3c5f8325680cc7ada302f7a5f2aebce70b6821
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-11 14:59:18 -0500
+
+    jingle-media-rtp: Unmangle comment
+
+commit 1251af530d7be3e694f583a80126effab7e99024
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-01 17:54:08 -0500
+
+    jingle-media-rtp: Default trr-int to 0 if <rtcp-fb*> tags are present
+
+commit 7fd1c9ab33c58a2dd266aa36a8f1d287f39ab9ad
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-24 19:32:03 -0500
+
+    media-factory: Add rtp-hdrext and rtcp-fb caps to basic av caps
+
+commit 1ffc7d16fb457cb426e157635c9fc55f2432699a
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-25 18:20:07 -0500
+
+    jingle-media-rtp: Produce rtcp-fb nodes
+
+commit 32bf95bcd3f81bb27ed1249807d9fa2f9655662b
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-25 18:14:28 -0500
+
+    jingle-media-rtp: Produce rtcp-fb-trr-int nodes
+
+commit 492eab2f869d1f54c59d7e58f03aed94870f70e7
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-25 17:31:26 -0500
+
+    media-stream: Pass remote feedback messages to the handler
+
+commit 253c07f2f7b9490463b7aaa33410dafb46b51418
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-25 16:57:07 -0500
+
+    jingle-media-rtp: Remove duplicated feedback messages between codecs
+
+commit 8d3e0e59b1cc2e4d8f19baefb88f4cdfdc7870ed
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-25 16:34:07 -0500
+
+    media-stream: Pass local feedback messages
+
+commit 749eacecc083cd5a28c733fbbf3fb1125fd7c03c
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-25 15:48:44 -0500
+
+    media-stream: Store local feedback messages
+
+commit 7413dc1bc2a662bd923f624106ec20fe981f38fa
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-25 14:54:32 -0500
+
+    jingle-media-rtp: Parse rtcp-fb* elements
+
+commit 074ce0d79d095a091e70db23be4e87c2587b8212
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-25 13:03:50 -0500
+
+    jingle-media-rtp: Add JingleFeedbackMessage type
+
+commit 079942cb0c7b8cb9dd4bc8b3a8b0afab776934f7
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-24 19:17:26 -0500
+
+    jindle-media-rtp: Only use rtp-hdrext if the caps is set
+
+commit 45f8b8a410f456cb9fd7a8b9e662283868588648
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-24 18:42:46 -0500
+
+    jingle-media-rtp: Remove definitions of non-existing functions
+
+commit b721ccde23b5de65e05d1078bfa8dce9d98b568c
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-24 18:30:12 -0500
+
+    media-stream: Require a non-empty list of codecs for SupportedCodecs
+
+commit cd3ffc1ecd6fc948d4a9fd0b0831a40c82b29a36
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-24 17:08:28 -0500
+
+    media-stream: Pass local rtp header extensions to jingle stack
+
+commit 2085b8add8f3cc188401e5c7a46a866948634b40
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-24 16:54:55 -0500
+
+    Use media description when passing around local codecs
+
+commit fe26ce95a8358225657ddac35e1772ea4b4192aa
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-24 16:31:59 -0500
+
+    media-stream: Actually check if the local codecs have been set on CodecsUpdated
+    
+    The existing check always accepted the CodecsUpdated because the boxed
+    struct was initialised in the init() method
+    
+    Also remove a useless copy
+
+commit d416e8f61d908771a24626eb8945b9b13a53451a
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-24 14:41:22 -0500
+
+    media-stream: Push remote RTP header extensions to the client
+
+commit 721abac0c531055c804ad2243223ef7e30d2bfd1
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-24 14:16:31 -0500
+
+    Replace JingleMediaRtp:remote-codecs with remote-media-description
+
+commit b47817d90b6701d92f03bda5636d520bc872d075
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-24 13:46:16 -0500
+
+    jingle-media-rtp: Create rtp-hdrext nodes if there are any
+
+commit 7f843b82f5118435f95305597833c4fc004bfddb
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-23 19:17:56 -0500
+
+    jingle-media-rtp: Parse RTP header extensions
+
+commit 020fc4bb390b01746066fd41ddf9a8ffe6a07f06
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-22 19:41:28 -0500
+
+    Add namespaces for rtcp-fb and rtp-hdrext
+
+commit ac2bd545c04daccf10ad611ace40bf17c71ec101
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-23 19:03:02 -0500
+
+    jingle-media-rtp: Add rtp-hdrext to the JingleMediaDescription
+
+commit 9f92eafe0579ed4409a71cf63d78f1e243cd03f9
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-23 18:57:18 -0500
+
+    jingle-media-rtp: Add JingleRtpHeaderExtension type
+
+commit afff9dde00ac29d7bb0c0f96941bf658b2c8ebfa
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-23 18:22:05 -0500
+
+    jingle-media-rtp: use JingleMediaDescription for local codecs
+
+commit 25ea50cbe147e5efc02593253d18938fa0b86ac6
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-23 18:12:26 -0500
+
+    jingle-rtp-media: Use media description for remote codecs
+
+commit 63ce5cfad90b8ad77cc068f806c3a393b30696c4
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-23 17:42:19 -0500
+
+    jingle-media-rtp: Add JingleMediaDescription type
+
+commit 8774f6dbc4e733add681abf4f8960a3d9fb20472
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-02-23 17:25:15 -0500
+
+    jingle-media-rtp: Remove unused function
+
+commit a2590e91efa0a99bd44452036291c9ab4841f079
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   2011-03-22 10:50:56 +0100
+
+    ReferenceIdentities shows up in telepathy-glib 0.14.1
+
+commit 71dd9d958ae9eb7c474086b7fb038c1736b8c25a
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   2011-03-18 18:27:02 +0100
+
+    Use assertEquals and assertSameSets in ReferenceIdentities tests
+
+commit 8f666d43277b36ea2a820828b5e083abd535453f
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   2011-03-18 17:55:03 +0100
+
+    Test for ServerTLSConnection.ReferenceIdentities
+
+commit 9e5e192e7f42d39de45830a077eb6231be96e80a
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   2011-03-18 15:30:43 +0100
+
+    Style changes to ReferenceIdentities support.
+
+commit 0d9a322c4a3ec6e015a686d16c2195be865c923d
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   2011-03-18 14:33:50 +0100
+
+    Make GabbleConnection::connect-server read-only
+    
+    Read the user's account parameters into GabbleConnection::explicit-server
+    and have connect-server be set automatically. When changing connect-server
+    for fallback servers, do so internally.
+    
+    This way we don't load the user's 'server' parameter from the account
+    more than once.
+
+commit 2632754200f40246bc2b85ece760de294e0b1fe9
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   2011-03-18 09:48:22 +0100
+
+    Add support for ServerTLSConnection.ReferenceIdentities property.
+    
+    The certificate identity can be checked against more than just
+    one piece of information. In gabble we have two such possible
+    identities. The JID domainpart, and (if specified) the XMPP server
+    overridden in configuration. Both of these are explicitly configured
+    by a user and therefore can be used in certificate identity checks.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=35410
+
+commit 61d6591a487e634cf158eae1692dab5284c10a7f
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   2011-03-17 21:10:15 +0100
+
+    Fix memory Leaks in GabbleServerTLSManager
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=35395
+
+commit 9e235b89219be97b33bf2308f6dced7a58cbe5e1
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2011-03-17 10:17:16 +0100
+
+    update to wocky d3354fd9c095a2c7c1f381e62a4d7b8481fd9edc
+    
+    This gives us WockyC2SPorter with support for power saving
+    through local stanza queueing.
+
+commit 2cbe1bc53a8914898b2113fd2763a55f9aee1fa2
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2011-02-22 15:53:43 +0100
+
+    tests/twisted/power-save.py: test local stanza queueing support
+
+commit 14bef6effe317bea227ff4e153ca12da48d0b890
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2011-02-22 15:52:03 +0100
+
+    GabbleConnection: power-saving interface is always present
+
+commit 9f56cc85446c5a3df8cdd45ffc531d62c9c59d7f
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2011-02-22 11:12:21 +0100
+
+    conn-power-saving: use local queueing if google queueing is not supported
+
+commit 35f1f714796dd1ba53bfcc35a8c7c71ea80f70b1
+Author: Senko Rasic <senko.rasic@collabora.co.uk>
+Date:   2011-03-14 18:02:10 +0100
+
+    use wocky_c2s_porter_register_handler_from_server() where applicable
+
+commit 3517a863f4c2e87775a996b3445df4426174862d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-15 18:49:02 +0000
+
+    Remove never-read variables.
+    
+    GCC 4.6 has a warning for variables which are assigned to but never
+    read. I've verified that none of these variables—most of which are
+    'priv' pointers—are intended to be used but in practice are not.
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit e093db2728f7b9bcea85b7b3d1ec1af9cb3601f5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-03-14 15:51:15 +0000
+
+    start on 0.11.9
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit 065d62377ca023761ff7c80a816353a6394df716
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   2011-03-14 14:52:51 +0000
@@ -6391,7 +6883,7 @@ Date:   2010-08-13 14:23:00 +0200
     constants.py: add INVALID_HANDLE
 
 commit 3dec7eeca3318c35456e25b505de03b38fd84f59
-Merge: f8398be 18c80d8
+Merge: f8398be76 18c80d8
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2010-08-11 13:41:26 +0100
 

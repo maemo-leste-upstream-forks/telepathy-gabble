@@ -49,6 +49,7 @@ handwritten_headers = \
   wocky-auth-handler.h \
   wocky-auth-registry.h \
   wocky-bare-contact.h \
+  wocky-c2s-porter.h \
   wocky-caps-cache.h \
   wocky-connector.h \
   wocky-contact.h \
@@ -96,6 +97,7 @@ handwritten_sources = \
   wocky-auth-handler.c \
   wocky-auth-registry.c \
   wocky-bare-contact.c \
+  wocky-c2s-porter.c \
   wocky-caps-cache.c \
   wocky-connector.c \
   wocky-contact.c \
@@ -201,7 +203,7 @@ AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @SQLITE_LIBS@ @TLS_LIBS@ @L
 # wocky-xmpp-error-enumtypes.h, and $short is WOCKY.
 $(filter %-enumtypes.h,$(built_headers)): %-enumtypes.h: %.h Makefile.in
 	$(AM_V_GEN)set -e; \
-	long=`echo $* | tr [:lower:]- [:upper:]_`; \
+	long=`echo $(notdir $*) | tr [:lower:]- [:upper:]_`; \
 	short=$${long%%_*}; \
 	guard="__$${long}_ENUM_TYPES_H__"; \
 	glib-mkenums \

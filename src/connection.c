@@ -143,6 +143,7 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
 enum
 {
     PROP_CONNECT_SERVER = 1,
+    PROP_EXPLICIT_SERVER,
     PROP_PORT,
     PROP_OLD_SSL,
     PROP_REQUIRE_ENCRYPTION,
@@ -166,6 +167,7 @@ enum
     PROP_KEEPALIVE_INTERVAL,
     PROP_DECLOAK_AUTOMATICALLY,
     PROP_FALLBACK_SERVERS,
+    PROP_EXTRA_CERTIFICATE_IDENTITIES,
     PROP_POWER_SAVING,
 
     LAST_PROPERTY
@@ -183,6 +185,7 @@ struct _GabbleConnectionPrivate
 
   /* connection properties */
   gchar *connect_server;
+  gchar *explicit_server;
   guint port;
   gboolean old_ssl;
   gboolean require_encryption;
@@ -213,6 +216,8 @@ struct _GabbleConnectionPrivate
 
   GStrv fallback_servers;
   guint fallback_server_index;
+
+  GStrv extra_certificate_identities;
 
   gboolean power_saving;
 
@@ -512,6 +517,9 @@ gabble_connection_get_property (GObject    *object,
     case PROP_CONNECT_SERVER:
       g_value_set_string (value, priv->connect_server);
       break;
+    case PROP_EXPLICIT_SERVER:
+      g_value_set_string (value, priv->explicit_server);
+      break;
     case PROP_STREAM_SERVER:
       g_value_set_string (value, priv->stream_server);
       break;
@@ -584,6 +592,10 @@ gabble_connection_get_property (GObject    *object,
       g_value_set_boxed (value, priv->fallback_servers);
       break;
 
+    case PROP_EXTRA_CERTIFICATE_IDENTITIES:
+      g_value_set_boxed (value, priv->extra_certificate_identities);
+      break;
+
     case PROP_POWER_SAVING:
       g_value_set_boolean (value, priv->power_saving);
       break;
@@ -604,9 +616,11 @@ gabble_connection_set_property (GObject      *object,
   GabbleConnectionPrivate *priv = self->priv;
 
   switch (property_id) {
-    case PROP_CONNECT_SERVER:
-      g_free (priv->connect_server);
-      priv->connect_server = g_value_dup_string (value);
+    case PROP_EXPLICIT_SERVER:
+      g_free (priv->explicit_server);
+      priv->explicit_server = g_value_dup_string (value);
+      if (priv->connect_server == NULL)
+        priv->connect_server = g_value_dup_string (value);
       break;
     case PROP_PORT:
       priv->port = g_value_get_uint (value);
@@ -712,6 +726,12 @@ gabble_connection_set_property (GObject      *object,
       priv->fallback_server_index = 0;
       break;
 
+    case PROP_EXTRA_CERTIFICATE_IDENTITIES:
+      if (priv->extra_certificate_identities != NULL)
+        g_strfreev (priv->extra_certificate_identities);
+      priv->extra_certificate_identities = g_value_dup_boxed (value);
+      break;
+
     case PROP_POWER_SAVING:
       priv->power_saving = g_value_get_boolean (value);
       break;
@@ -775,9 +795,9 @@ static const gchar *implemented_interfaces[] = {
     TP_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
     GABBLE_IFACE_OLPC_ACTIVITY_PROPERTIES,
     GABBLE_IFACE_OLPC_BUDDY_INFO,
-    TP_IFACE_CONNECTION_INTERFACE_POWER_SAVING,
 
     /* always present interfaces */
+    TP_IFACE_CONNECTION_INTERFACE_POWER_SAVING,
     TP_IFACE_CONNECTION_INTERFACE_ALIASING,
     TP_IFACE_CONNECTION_INTERFACE_CAPABILITIES,
     TP_IFACE_CONNECTION_INTERFACE_SIMPLE_PRESENCE,
@@ -795,7 +815,7 @@ static const gchar *implemented_interfaces[] = {
     TP_IFACE_CONNECTION_INTERFACE_CLIENT_TYPES,
     NULL
 };
-static const gchar **interfaces_always_present = implemented_interfaces + 4;
+static const gchar **interfaces_always_present = implemented_interfaces + 3;
 
 const gchar **
 gabble_connection_get_implemented_interfaces (void)
@@ -900,6 +920,20 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
       g_param_spec_string (
           "connect-server", "Hostname or IP of Jabber server",
           "The server used when establishing a connection.",
+          NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+  /*
+   * The explicit-server property can be used for verification of a
+   * server certificate. It's important that it comes from the user
+   * and is not the result of any other outside lookup, unlike the
+   * connect-server property.
+   */
+
+  g_object_class_install_property (object_class, PROP_EXPLICIT_SERVER,
+      g_param_spec_string (
+          "explicit-server", "Explicit Hostname or IP of Jabber server",
+          "Server explicitly specified by the user to connect to.",
           NULL,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -1074,6 +1108,16 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
         G_TYPE_STRV,
         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (object_class,
+      PROP_EXTRA_CERTIFICATE_IDENTITIES,
+      g_param_spec_boxed (
+        "extra-certificate-identities",
+        "Extra Certificate Reference Identities",
+        "Extra identities to check certificate against. These are present as a "
+        "result of a user choice or configuration.",
+        G_TYPE_STRV,
+        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
   g_object_class_install_property (
       object_class, PROP_DECLOAK_AUTOMATICALLY,
       g_param_spec_boolean (
@@ -1193,6 +1237,7 @@ gabble_connection_finalize (GObject *object)
   DEBUG ("called with %p", object);
 
   g_free (priv->connect_server);
+  g_free (priv->explicit_server);
   g_free (priv->stream_server);
   g_free (priv->username);
   g_free (priv->password);
@@ -1204,6 +1249,7 @@ gabble_connection_finalize (GObject *object)
   g_free (priv->fallback_conference_server);
   g_strfreev (priv->fallback_socks5_proxies);
   g_strfreev (priv->fallback_servers);
+  g_strfreev (priv->extra_certificate_identities);
 
   g_free (priv->alias);
   g_free (priv->stream_id);
@@ -1233,14 +1279,11 @@ _gabble_connection_set_properties_from_account (GabbleConnection *conn,
                                                 const gchar      *account,
                                                 GError          **error)
 {
-  GabbleConnectionPrivate *priv;
   char *username, *server, *resource;
   gboolean result;
 
   g_assert (GABBLE_IS_CONNECTION (conn));
   g_assert (account != NULL);
-
-  priv = conn->priv;
 
   username = server = resource = NULL;
   result = TRUE;
@@ -1413,7 +1456,6 @@ _gabble_connection_send_with_reply (GabbleConnection *conn,
                                     gpointer user_data,
                                     GError **error)
 {
-  GabbleConnectionPrivate *priv;
   LmMessageHandler *handler;
   GabbleMsgHandlerData *handler_data;
   gboolean ret;
@@ -1427,8 +1469,6 @@ _gabble_connection_send_with_reply (GabbleConnection *conn,
               "connection is disconnected");
       return FALSE;
     }
-
-  priv = conn->priv;
 
   lm_message_ref (msg);
 
@@ -1710,11 +1750,13 @@ next_fallback_server (GabbleConnection *self,
       return FALSE;
     }
 
-  g_object_set (self,
-      "connect-server", g_network_address_get_hostname (addr),
-      "port", g_network_address_get_port (addr),
-      "old-ssl", old_ssl,
-      NULL);
+  g_free (priv->connect_server);
+  priv->connect_server = g_strdup (g_network_address_get_hostname (addr));
+  priv->port = g_network_address_get_port (addr);
+  priv->old_ssl = old_ssl;
+  g_object_notify (G_OBJECT (self), "connect-server");
+  g_object_notify (G_OBJECT (self), "port");
+  g_object_notify (G_OBJECT (self), "old-ssl");
 
   g_object_unref (addr);
 
@@ -2638,21 +2680,6 @@ set_status_to_connected (GabbleConnection *conn)
       tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
     }
 
-  /* We can only cork presence updates on Google Talk. Of course, the Google
-   * Talk server doesn't advertise support for google:queue. So we use
-   * google:roster. We still support the hypothetically advertised google:queue
-   * just in case google starts using it, or another server implementation
-   * adopts it. google:queue is described here:
-   * http://mail.jabber.org/pipermail/summit/2010-February/000528.html */
-  if (conn->features & (GABBLE_CONNECTION_FEATURES_GOOGLE_QUEUE |
-          GABBLE_CONNECTION_FEATURES_GOOGLE_ROSTER))
-    {
-       const gchar *ifaces[] =
-         { TP_IFACE_CONNECTION_INTERFACE_POWER_SAVING, NULL };
-
-      tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
-    }
-
   /* go go gadget on-line */
   tp_base_connection_change_status (base,
       TP_CONNECTION_STATUS_CONNECTED, TP_CONNECTION_STATUS_REASON_REQUESTED);
@@ -2676,18 +2703,14 @@ connection_disco_cb (GabbleDisco *disco,
                      GError *disco_error,
                      gpointer user_data)
 {
-  GabbleConnection *conn = user_data;
+  GabbleConnection *conn = GABBLE_CONNECTION (user_data);
   TpBaseConnection *base = (TpBaseConnection *) conn;
-  GabbleConnectionPrivate *priv;
 
   if (base->status != TP_CONNECTION_STATUS_CONNECTING)
     {
       g_assert (base->status == TP_CONNECTION_STATUS_DISCONNECTED);
       return;
     }
-
-  g_assert (GABBLE_IS_CONNECTION (conn));
-  priv = conn->priv;
 
   if (disco_error)
     {

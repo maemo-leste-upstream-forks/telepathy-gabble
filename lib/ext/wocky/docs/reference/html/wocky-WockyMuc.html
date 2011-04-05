@@ -1,0 +1,761 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyMuc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="wocky-wocky-muc-enumtypes.html" title="wocky-muc-enumtypes">
+<link rel="next" href="wocky-wocky-namespaces.html" title="wocky-namespaces">
+<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="wocky-wocky-muc-enumtypes.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="wocky-wocky-namespaces.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockyMuc.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockyMuc.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#wocky-WockyMuc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="wocky-WockyMuc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockyMuc.top_of_page"></a>WockyMuc</span></h2>
+<p>WockyMuc</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="wocky-WockyMuc.synopsis"></a><h2>Synopsis</h2>
+<a name="WockyMucStatusCode"></a><a name="WockyMucRole"></a><a name="WockyMucAffiliation"></a><a name="WockyMucFeature"></a><a name="WockyMucMsgType"></a><a name="WockyMucMsgState"></a><a name="WockyMucState"></a><pre class="synopsis">enum                <a class="link" href="wocky-WockyMuc.html#WockyMucStatusCode">WockyMucStatusCode</a>;
+enum                <a class="link" href="wocky-WockyMuc.html#WockyMucRole">WockyMucRole</a>;
+enum                <a class="link" href="wocky-WockyMuc.html#WockyMucAffiliation">WockyMucAffiliation</a>;
+enum                <a class="link" href="wocky-WockyMuc.html#WockyMucFeature">WockyMucFeature</a>;
+enum                <a class="link" href="wocky-WockyMuc.html#WockyMucMsgType">WockyMucMsgType</a>;
+enum                <a class="link" href="wocky-WockyMuc.html#WockyMucMsgState">WockyMucMsgState</a>;
+enum                <a class="link" href="wocky-WockyMuc.html#WockyMucState">WockyMucState</a>;
+                    <a class="link" href="wocky-WockyMuc.html#WockyMucMember" title="WockyMucMember">WockyMucMember</a>;
+struct              <a class="link" href="wocky-WockyMuc.html#WockyMucClass" title="struct WockyMucClass">WockyMucClass</a>;
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyMuc.html#wocky-muc-disco-info-async" title="wocky_muc_disco_info_async ()">wocky_muc_disco_info_async</a>          (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancel</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyMuc.html#wocky-muc-disco-info-finish" title="wocky_muc_disco_info_finish ()">wocky_muc_disco_info_finish</a>         (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyMuc.html#wocky-muc-create-presence" title="wocky_muc_create_presence ()">wocky_muc_create_presence</a>           (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> type</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *status</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyMuc.html#wocky-muc-initiate-async" title="wocky_muc_initiate_async ()">wocky_muc_initiate_async</a>            (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancel</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyMuc.html#wocky-muc-initiate-finish" title="wocky_muc_initiate_finish ()">wocky_muc_initiate_finish</a>           (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *source</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyMuc.html#wocky-muc-join" title="wocky_muc_join ()">wocky_muc_join</a>                      (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancel</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyMuc.html#wocky-muc-jid" title="wocky_muc_jid ()">wocky_muc_jid</a>                       (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyMuc.html#wocky-muc-user" title="wocky_muc_user ()">wocky_muc_user</a>                      (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>);
+<a class="link" href="wocky-WockyMuc.html#WockyMucRole"><span class="returnvalue">WockyMucRole</span></a>        <a class="link" href="wocky-WockyMuc.html#wocky-muc-role" title="wocky_muc_role ()">wocky_muc_role</a>                      (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>);
+<a class="link" href="wocky-WockyMuc.html#WockyMucAffiliation"><span class="returnvalue">WockyMucAffiliation</span></a>  <a class="link" href="wocky-WockyMuc.html#wocky-muc-affiliation" title="wocky_muc_affiliation ()">wocky_muc_affiliation</a>              (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="returnvalue">GHashTable</span></a> *        <a class="link" href="wocky-WockyMuc.html#wocky-muc-members" title="wocky_muc_members ()">wocky_muc_members</a>                   (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>);
+<a class="link" href="wocky-WockyMuc.html#WockyMucState"><span class="returnvalue">WockyMucState</span></a>       <a class="link" href="wocky-WockyMuc.html#wocky-muc-get-state" title="wocky_muc_get_state ()">wocky_muc_get_state</a>                 (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>);
+                    <a class="link" href="wocky-WockyMuc.html#WockyMucPrivate" title="WockyMucPrivate">WockyMucPrivate</a>;
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyMuc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GEnum
+   +----WockyMucStatusCode
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----WockyMucRole
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----WockyMucAffiliation
+</pre>
+<pre class="synopsis">
+  GFlags
+   +----WockyMucFeature
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----WockyMucMsgType
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----WockyMucMsgState
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----WockyMucState
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyMuc.description"></a><h2>Description</h2>
+<p>
+</p>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyMuc.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyMucStatusCode"></a><h3>enum WockyMucStatusCode</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_MUC_CODE_UNKNOWN = 0,
+  WOCKY_MUC_CODE_ONYMOUS,
+  WOCKY_MUC_CODE_AF_CHANGE_OOB,
+  WOCKY_MUC_CODE_CFG_SHOW_UNAVAILABLE,
+  WOCKY_MUC_CODE_CFG_HIDE_UNAVAILABLE,
+  WOCKY_MUC_CODE_CFG_NONPRIVACY,
+  WOCKY_MUC_CODE_OWN_PRESENCE,
+  WOCKY_MUC_CODE_CFG_LOGGING_ENABLED,
+  WOCKY_MUC_CODE_CFG_LOGGING_DISABLED,
+  WOCKY_MUC_CODE_CFG_ONYMOUS,
+  WOCKY_MUC_CODE_CFG_SEMIONYMOUS,
+  WOCKY_MUC_CODE_CFG_ANONYMOUS,
+  WOCKY_MUC_CODE_NEW_ROOM,
+  WOCKY_MUC_CODE_NICK_CHANGE_FORCED,
+  WOCKY_MUC_CODE_BANNED,
+  WOCKY_MUC_CODE_NICK_CHANGE_USER,
+  WOCKY_MUC_CODE_KICKED,
+  WOCKY_MUC_CODE_KICKED_AFFILIATION,
+  WOCKY_MUC_CODE_KICKED_ROOM_PRIVATISED,
+  WOCKY_MUC_CODE_KICKED_SHUTDOWN,
+} WockyMucStatusCode;
+</pre>
+<p>
+<span class="type">WockyMuc</span> specific codes
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-UNKNOWN:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_UNKNOWN</code></span></p></td>
+<td>Unknown code
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-ONYMOUS:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_ONYMOUS</code></span></p></td>
+<td>Room entered is not anonymous
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-AF-CHANGE-OOB:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_AF_CHANGE_OOB</code></span></p></td>
+<td>Affiliation changed when not present
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-CFG-SHOW-UNAVAILABLE:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_CFG_SHOW_UNAVAILABLE</code></span></p></td>
+<td>Unavailable members visible
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-CFG-HIDE-UNAVAILABLE:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_CFG_HIDE_UNAVAILABLE</code></span></p></td>
+<td>Unavailable members invisible
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-CFG-NONPRIVACY:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_CFG_NONPRIVACY</code></span></p></td>
+<td>Non-privacy config change
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-OWN-PRESENCE:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_OWN_PRESENCE</code></span></p></td>
+<td>User's own presence
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-CFG-LOGGING-ENABLED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_CFG_LOGGING_ENABLED</code></span></p></td>
+<td>Logging enabled
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-CFG-LOGGING-DISABLED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_CFG_LOGGING_DISABLED</code></span></p></td>
+<td>Logging disabled
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-CFG-ONYMOUS:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_CFG_ONYMOUS</code></span></p></td>
+<td>Room is now non-anonymous
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-CFG-SEMIONYMOUS:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_CFG_SEMIONYMOUS</code></span></p></td>
+<td>Room is now semi-anonymous
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-CFG-ANONYMOUS:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_CFG_ANONYMOUS</code></span></p></td>
+<td>Room is now fully-anonymous
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-NEW-ROOM:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_NEW_ROOM</code></span></p></td>
+<td>Room created (eg by joining)
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-NICK-CHANGE-FORCED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_NICK_CHANGE_FORCED</code></span></p></td>
+<td>Service enforced nick change
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-BANNED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_BANNED</code></span></p></td>
+<td>User has been banned
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-NICK-CHANGE-USER:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_NICK_CHANGE_USER</code></span></p></td>
+<td>User's nick changed
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-KICKED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_KICKED</code></span></p></td>
+<td>Kicked from the room
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-KICKED-AFFILIATION:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_KICKED_AFFILIATION</code></span></p></td>
+<td>Kicked (affiliation change)
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-KICKED-ROOM-PRIVATISED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_KICKED_ROOM_PRIVATISED</code></span></p></td>
+<td>Kicked (room is now
+  members-only)
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-CODE-KICKED-SHUTDOWN:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CODE_KICKED_SHUTDOWN</code></span></p></td>
+<td>Kicked (shutdown)
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyMucRole"></a><h3>enum WockyMucRole</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_MUC_ROLE_NONE = 0,
+  WOCKY_MUC_ROLE_VISITOR,
+  WOCKY_MUC_ROLE_PARTICIPANT,
+  WOCKY_MUC_ROLE_MODERATOR
+} WockyMucRole;
+</pre>
+<p>
+<span class="type">WockyMuc</span> roles as described in XEP-0045 §5.1.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="WOCKY-MUC-ROLE-NONE:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_ROLE_NONE</code></span></p></td>
+<td>no role
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-ROLE-VISITOR:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_ROLE_VISITOR</code></span></p></td>
+<td>visitor role
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-ROLE-PARTICIPANT:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_ROLE_PARTICIPANT</code></span></p></td>
+<td>participant role
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-ROLE-MODERATOR:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_ROLE_MODERATOR</code></span></p></td>
+<td>moderator role
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyMucAffiliation"></a><h3>enum WockyMucAffiliation</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_MUC_AFFILIATION_OUTCAST = -1,
+  WOCKY_MUC_AFFILIATION_NONE = 0,
+  WOCKY_MUC_AFFILIATION_MEMBER,
+  WOCKY_MUC_AFFILIATION_ADMIN,
+  WOCKY_MUC_AFFILIATION_OWNER,
+} WockyMucAffiliation;
+</pre>
+<p>
+<span class="type">WockyMuc</span> affiliations as described in XEP-0045 §5.2.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="WOCKY-MUC-AFFILIATION-OUTCAST:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_AFFILIATION_OUTCAST</code></span></p></td>
+<td>outcast affiliation
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-AFFILIATION-NONE:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_AFFILIATION_NONE</code></span></p></td>
+<td>no affiliation
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-AFFILIATION-MEMBER:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_AFFILIATION_MEMBER</code></span></p></td>
+<td>member affiliation
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-AFFILIATION-ADMIN:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_AFFILIATION_ADMIN</code></span></p></td>
+<td>admin affiliation
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-AFFILIATION-OWNER:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_AFFILIATION_OWNER</code></span></p></td>
+<td>owner affiliation
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyMucFeature"></a><h3>enum WockyMucFeature</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_MUC_MODERN = 1,
+  WOCKY_MUC_FORM_REGISTER = (1 &lt;&lt; 1),
+  WOCKY_MUC_FORM_ROOMCONFIG = (1 &lt;&lt; 2),
+  WOCKY_MUC_FORM_ROOMINFO = (1 &lt;&lt; 3),
+  WOCKY_MUC_HIDDEN = (1 &lt;&lt; 4),
+  WOCKY_MUC_MEMBERSONLY = (1 &lt;&lt; 5),
+  WOCKY_MUC_MODERATED = (1 &lt;&lt; 6),
+  WOCKY_MUC_NONANONYMOUS = (1 &lt;&lt; 7),
+  WOCKY_MUC_OPEN = (1 &lt;&lt; 8),
+  WOCKY_MUC_PASSWORDPROTECTED = (1 &lt;&lt; 9),
+  WOCKY_MUC_PERSISTENT = (1 &lt;&lt; 10),
+  WOCKY_MUC_PUBLIC = (1 &lt;&lt; 11),
+  WOCKY_MUC_ROOMS = (1 &lt;&lt; 12),
+  WOCKY_MUC_SEMIANONYMOUS = (1 &lt;&lt; 13),
+  WOCKY_MUC_TEMPORARY = (1 &lt;&lt; 14),
+  WOCKY_MUC_UNMODERATED = (1 &lt;&lt; 15),
+  WOCKY_MUC_UNSECURED = (1 &lt;&lt; 16),
+  WOCKY_MUC_OBSOLETE = (1 &lt;&lt; 17),
+} WockyMucFeature;
+</pre>
+<p>
+<span class="type">WockyMuc</span> feature flags.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="WOCKY-MUC-MODERN:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_MODERN</code></span></p></td>
+<td>the MUC is modern, as documented in XEP-0045
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-FORM-REGISTER:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_FORM_REGISTER</code></span></p></td>
+<td>the MUC has support for the muc<span class="type">register</span>
+     FORM_TYPE
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-FORM-ROOMCONFIG:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_FORM_ROOMCONFIG</code></span></p></td>
+<td>the MUC has support for the
+     muc<span class="type">register</span> FORM_TYPE
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-FORM-ROOMINFO:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_FORM_ROOMINFO</code></span></p></td>
+<td>the MUC has support for the muc<span class="type">register</span>
+     FORM_TYPE
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-HIDDEN:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_HIDDEN</code></span></p></td>
+<td>the MUC is hidden
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-MEMBERSONLY:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_MEMBERSONLY</code></span></p></td>
+<td>only members can join this MUC
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-MODERATED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_MODERATED</code></span></p></td>
+<td>the MUC is moderated
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-NONANONYMOUS:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_NONANONYMOUS</code></span></p></td>
+<td>the MUC is non-anonymous
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-OPEN:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_OPEN</code></span></p></td>
+<td>the MUC is open
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-PASSWORDPROTECTED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_PASSWORDPROTECTED</code></span></p></td>
+<td>the MUC is password protected
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-PERSISTENT:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_PERSISTENT</code></span></p></td>
+<td>the MUC is persistent
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-PUBLIC:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_PUBLIC</code></span></p></td>
+<td>the MUC is public
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-ROOMS:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_ROOMS</code></span></p></td>
+<td>the MUC has a list of MUC rooms
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-SEMIANONYMOUS:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_SEMIANONYMOUS</code></span></p></td>
+<td>the MUC is semi-anonymous
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-TEMPORARY:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_TEMPORARY</code></span></p></td>
+<td>the MUC is temporary
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-UNMODERATED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_UNMODERATED</code></span></p></td>
+<td>the MUC is unmoderated
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-UNSECURED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_UNSECURED</code></span></p></td>
+<td>the MUC is unsecured
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-OBSOLETE:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_OBSOLETE</code></span></p></td>
+<td>the MUC has obsolete groupchat 1.0 features
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyMucMsgType"></a><h3>enum WockyMucMsgType</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_MUC_MSG_NONE,
+  WOCKY_MUC_MSG_NORMAL,
+  WOCKY_MUC_MSG_ACTION,
+  WOCKY_MUC_MSG_NOTICE,
+} WockyMucMsgType;
+</pre>
+<p>
+XMPP MUC message types.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="WOCKY-MUC-MSG-NONE:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_MSG_NONE</code></span></p></td>
+<td>no message type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-MSG-NORMAL:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_MSG_NORMAL</code></span></p></td>
+<td>a normal message
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-MSG-ACTION:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_MSG_ACTION</code></span></p></td>
+<td>an action message
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-MSG-NOTICE:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_MSG_NOTICE</code></span></p></td>
+<td>a notice message
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyMucMsgState"></a><h3>enum WockyMucMsgState</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_MUC_MSG_STATE_NONE = -1,
+  WOCKY_MUC_MSG_STATE_ACTIVE,
+  WOCKY_MUC_MSG_STATE_COMPOSING,
+  WOCKY_MUC_MSG_STATE_INACTIVE,
+  WOCKY_MUC_MSG_STATE_PAUSED,
+} WockyMucMsgState;
+</pre>
+<p>
+XMPP MUC message states as documeted in XEP-0085.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="WOCKY-MUC-MSG-STATE-NONE:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_MSG_STATE_NONE</code></span></p></td>
+<td>no message state applies
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-MSG-STATE-ACTIVE:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_MSG_STATE_ACTIVE</code></span></p></td>
+<td>the contact in the MUC is active
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-MSG-STATE-COMPOSING:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_MSG_STATE_COMPOSING</code></span></p></td>
+<td>the contact in the MUC is composing
+  a message
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-MSG-STATE-INACTIVE:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_MSG_STATE_INACTIVE</code></span></p></td>
+<td>the contact in the MUC is inactive
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-MSG-STATE-PAUSED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_MSG_STATE_PAUSED</code></span></p></td>
+<td>the contact in the MUC has paused
+  composing a message
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyMucState"></a><h3>enum WockyMucState</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_MUC_CREATED = 0,
+  WOCKY_MUC_INITIATED,
+  WOCKY_MUC_AUTH,
+  WOCKY_MUC_JOINED,
+  WOCKY_MUC_ENDED,
+} WockyMucState;
+</pre>
+<p>
+<span class="type">WockyMuc</span> states.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="WOCKY-MUC-CREATED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_CREATED</code></span></p></td>
+<td>the <span class="type">WockyMuc</span> has been created
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-INITIATED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_INITIATED</code></span></p></td>
+<td>the MUC has been initiated on the server
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-AUTH:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_AUTH</code></span></p></td>
+<td>the user is authenticating with the MUC
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-JOINED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_JOINED</code></span></p></td>
+<td>the user has joined the MUC and can chat
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-MUC-ENDED:CAPS"></a><span class="term"><code class="literal">WOCKY_MUC_ENDED</code></span></p></td>
+<td>the MUC has ended
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyMucMember"></a><h3>WockyMucMember</h3>
+<pre class="programlisting">typedef struct {
+  gchar *from;   /* room@service/nick     */
+  gchar *jid;    /* owner@domain/resource */
+  gchar *nick;   /* nick */
+  WockyMucRole role;
+  WockyMucAffiliation affiliation;
+  gchar *status; /* user set status string */
+  WockyStanza *presence_stanza;
+} WockyMucMember;
+</pre>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyMucMember.from"></a>from</code></em>;</span></p></td>
+<td>the JID of the member (room<em class="parameter"><code>server</code></em>/nick)</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyMucMember.jid"></a>jid</code></em>;</span></p></td>
+<td>the JID of the owner (owner<em class="parameter"><code>domain</code></em>/resource)</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyMucMember.nick"></a>nick</code></em>;</span></p></td>
+<td>the nickname of the member</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="wocky-WockyMuc.html#WockyMucRole"><span class="type">WockyMucRole</span></a> <em class="structfield"><code><a name="WockyMucMember.role"></a>role</code></em>;</span></p></td>
+<td>the <a class="link" href="wocky-WockyMuc.html#WockyMucRole"><span class="type">WockyMucRole</span></a> of the member</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="wocky-WockyMuc.html#WockyMucAffiliation"><span class="type">WockyMucAffiliation</span></a> <em class="structfield"><code><a name="WockyMucMember.affiliation"></a>affiliation</code></em>;</span></p></td>
+<td>the <a class="link" href="wocky-WockyMuc.html#WockyMucAffiliation"><span class="type">WockyMucAffiliation</span></a> of the member</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyMucMember.status"></a>status</code></em>;</span></p></td>
+<td>the user set status string</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="type">WockyStanza</span> *<em class="structfield"><code><a name="WockyMucMember.presence-stanza"></a>presence_stanza</code></em>;</span></p></td>
+<td>the <span class="type">WockyStanza</span> that was received regarding the
+member's presence</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyMucClass"></a><h3>struct WockyMucClass</h3>
+<pre class="programlisting">struct WockyMucClass {
+};
+</pre>
+<p>
+The class of a <span class="type">WockyMuc</span>.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-muc-disco-info-async"></a><h3>wocky_muc_disco_info_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_muc_disco_info_async          (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancel</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-muc-disco-info-finish"></a><h3>wocky_muc_disco_info_finish ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_muc_disco_info_finish         (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-muc-create-presence"></a><h3>wocky_muc_create_presence ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_muc_create_presence           (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> type</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *status</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-muc-initiate-async"></a><h3>wocky_muc_initiate_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_muc_initiate_async            (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancel</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-muc-initiate-finish"></a><h3>wocky_muc_initiate_finish ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_muc_initiate_finish           (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *source</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-muc-join"></a><h3>wocky_muc_join ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_muc_join                      (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancel</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-muc-jid"></a><h3>wocky_muc_jid ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_muc_jid                       (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-muc-user"></a><h3>wocky_muc_user ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_muc_user                      (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-muc-role"></a><h3>wocky_muc_role ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-WockyMuc.html#WockyMucRole"><span class="returnvalue">WockyMucRole</span></a>        wocky_muc_role                      (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-muc-affiliation"></a><h3>wocky_muc_affiliation ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-WockyMuc.html#WockyMucAffiliation"><span class="returnvalue">WockyMucAffiliation</span></a>  wocky_muc_affiliation              (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-muc-members"></a><h3>wocky_muc_members ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="returnvalue">GHashTable</span></a> *        wocky_muc_members                   (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-muc-get-state"></a><h3>wocky_muc_get_state ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-WockyMuc.html#WockyMucState"><span class="returnvalue">WockyMucState</span></a>       wocky_muc_get_state                 (<em class="parameter"><code><span class="type">WockyMuc</span> *muc</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyMucPrivate"></a><h3>WockyMucPrivate</h3>
+<pre class="programlisting">typedef struct _WockyMucPrivate WockyMucPrivate;</pre>
+<p>
+</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.17</div>
+</body>
+</html>

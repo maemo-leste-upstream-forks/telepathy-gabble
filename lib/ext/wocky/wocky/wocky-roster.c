@@ -33,6 +33,7 @@
 #include "wocky-roster.h"
 
 #include "wocky-bare-contact.h"
+#include "wocky-c2s-porter.h"
 #include "wocky-namespaces.h"
 #include "wocky-stanza.h"
 #include "wocky-utils.h"
@@ -374,23 +375,8 @@ roster_update (WockyRoster *self,
     GError **error)
 {
   WockyRosterPrivate *priv = self->priv;
-  gboolean google_roster = FALSE;
   WockyNode *query_node;
   GSList *j;
-
-  /* Check for google roster support */
-  if (FALSE /* FIXME: can support google */)
-    {
-      const gchar *gr_ext;
-
-      /* FIXME: this is wrong, we should use _get_attribute_ns instead of
-       * assuming the prefix */
-      gr_ext = wocky_node_get_attribute (
-          wocky_stanza_get_top_node (stanza), "gr:ext");
-
-      if (!wocky_strdiff (gr_ext, GOOGLE_ROSTER_VERSION))
-        google_roster = TRUE;
-    }
 
   /* Check stanza contains query node. */
   query_node = wocky_node_get_child_ns (
@@ -536,8 +522,11 @@ roster_iq_handler_set_cb (WockyPorter *porter,
       reply = wocky_stanza_build_iq_result (stanza, NULL);
     }
 
-  wocky_porter_send (porter, reply);
-  g_object_unref (reply);
+  if (reply != NULL)
+    {
+      wocky_porter_send (porter, reply);
+      g_object_unref (reply);
+    }
 
   return TRUE;
 }
@@ -560,7 +549,8 @@ wocky_roster_constructed (GObject *object)
   g_assert (priv->porter != NULL);
   g_object_ref (priv->porter);
 
-  priv->iq_cb = wocky_porter_register_handler_from_server (priv->porter,
+  priv->iq_cb = wocky_c2s_porter_register_handler_from_server (
+      WOCKY_C2S_PORTER (priv->porter),
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_NORMAL, roster_iq_handler_set_cb, self,
       '(', "query",

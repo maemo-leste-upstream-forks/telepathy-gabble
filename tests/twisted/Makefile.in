@@ -229,6 +229,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -855,30 +856,36 @@ uninstall-am:
 check-local: check-coding-style check-twisted
 
 check-twisted:
-	rm -f tools/core
-	rm -f tools/vgcore.*
-	rm -f tools/gabble-testing.log
-	rm -f tools/strace.log
-	if test -n "$$GABBLE_TEST_REFDBG"; then \
-	  sleep=6; \
-        else \
-	  sleep=$(CHECK_TWISTED_SLEEP); \
-	fi; \
-	failed=0; \
-	sh $(srcdir)/tools/with-session-bus.sh \
-		--sleep=$$sleep \
-		--config-file=tools/tmp-session-bus.conf \
-		-- $(MAKE) check-TESTS \
-		TESTS="$(TWISTED_TESTS)" \
-		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON) -u" || \
-		failed=1; \
-	if test -e tools/core; then\
-		echo -e "\033[0;31;1mCore dump exists: tools/core\033[0m";\
-		exit 1;\
-	fi; \
-	if test $$failed = 1; then\
-		exit 1;\
-	fi;
+@WANT_TWISTED_TESTS_TRUE@	rm -f tools/core
+@WANT_TWISTED_TESTS_TRUE@	rm -f tools/vgcore.*
+@WANT_TWISTED_TESTS_TRUE@	rm -f tools/gabble-testing.log
+@WANT_TWISTED_TESTS_TRUE@	rm -f tools/strace.log
+@WANT_TWISTED_TESTS_TRUE@	if test -n "$$GABBLE_TEST_REFDBG"; then \
+@WANT_TWISTED_TESTS_TRUE@	  sleep=6; \
+@WANT_TWISTED_TESTS_TRUE@        else \
+@WANT_TWISTED_TESTS_TRUE@	  sleep=$(CHECK_TWISTED_SLEEP); \
+@WANT_TWISTED_TESTS_TRUE@	fi; \
+@WANT_TWISTED_TESTS_TRUE@	failed=0; \
+@WANT_TWISTED_TESTS_TRUE@	sh $(srcdir)/tools/with-session-bus.sh \
+@WANT_TWISTED_TESTS_TRUE@		--sleep=$$sleep \
+@WANT_TWISTED_TESTS_TRUE@		--config-file=tools/tmp-session-bus.conf \
+@WANT_TWISTED_TESTS_TRUE@		-- $(MAKE) check-TESTS \
+@WANT_TWISTED_TESTS_TRUE@		TESTS="$(TWISTED_TESTS)" \
+@WANT_TWISTED_TESTS_TRUE@		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON) -u" || \
+@WANT_TWISTED_TESTS_TRUE@		failed=1; \
+@WANT_TWISTED_TESTS_TRUE@	if test -e tools/core; then\
+@WANT_TWISTED_TESTS_TRUE@		echo -e "\033[0;31;1mCore dump exists: tools/core\033[0m";\
+@WANT_TWISTED_TESTS_TRUE@		exit 1;\
+@WANT_TWISTED_TESTS_TRUE@	fi; \
+@WANT_TWISTED_TESTS_TRUE@	if test $$failed = 1; then\
+@WANT_TWISTED_TESTS_TRUE@		exit 1;\
+@WANT_TWISTED_TESTS_TRUE@	fi;
+@WANT_TWISTED_TESTS_FALSE@	@echo "Configured without Twisted test support. To enable them,"
+@WANT_TWISTED_TESTS_FALSE@	@echo "ensure that these Python modules are available:"
+@WANT_TWISTED_TESTS_FALSE@	@echo " • twisted.words.xish.domish"
+@WANT_TWISTED_TESTS_FALSE@	@echo " • twisted.words.protocols.jabber"
+@WANT_TWISTED_TESTS_FALSE@	@echo " • twisted.internet.reactor"
+@WANT_TWISTED_TESTS_FALSE@	@echo "and then re-run configure."
 
 config.py: Makefile
 	$(AM_V_GEN) { \
