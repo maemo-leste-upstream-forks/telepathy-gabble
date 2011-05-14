@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky.html" title="wocky">
 <link rel="next" href="wocky-wocky-http-proxy.html" title="wocky-http-proxy">
-<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -26,7 +26,7 @@
                   <a href="#wocky-wocky-heartbeat-source.description" class="shortcut">Description</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" title="wocky-heartbeat-source">
 <a name="wocky-wocky-heartbeat-source"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -35,7 +35,7 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
+<div class="refsynopsisdiv" title="Synopsis">
 <a name="wocky-wocky-heartbeat-source.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis"><span class="returnvalue">void</span>                (<a class="link" href="wocky-wocky-heartbeat-source.html#WockyHeartbeatCallback" title="WockyHeartbeatCallback ()">*WockyHeartbeatCallback</a>)           (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#GSource"><span class="returnvalue">GSource</span></a> *           <a class="link" href="wocky-wocky-heartbeat-source.html#wocky-heartbeat-source-new" title="wocky_heartbeat_source_new ()">wocky_heartbeat_source_new</a>          (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> max_interval</code></em>);
@@ -44,21 +44,29 @@
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> max_interval</code></em>);
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Description">
 <a name="wocky-wocky-heartbeat-source.description"></a><h2>Description</h2>
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" title="Details">
 <a name="wocky-wocky-heartbeat-source.details"></a><h2>Details</h2>
-<div class="refsect2">
+<div class="refsect2" title="WockyHeartbeatCallback ()">
 <a name="WockyHeartbeatCallback"></a><h3>WockyHeartbeatCallback ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                (*WockyHeartbeatCallback)           (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title="wocky_heartbeat_source_new ()">
 <a name="wocky-heartbeat-source-new"></a><h3>wocky_heartbeat_source_new ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#GSource"><span class="returnvalue">GSource</span></a> *           wocky_heartbeat_source_new          (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> max_interval</code></em>);</pre>
 <p>
@@ -78,17 +86,19 @@ signature should match <a class="link" href="wocky-wocky-heartbeat-source.html#W
 <tr>
 <td><p><span class="term"><em class="parameter"><code>max_interval</code></em> :</span></p></td>
 <td>the maximum interval between calls to the source's callback,
-in seconds. Pass 0 to prevent the callback being called.</td>
+               in seconds. Pass 0 to prevent the callback being called.
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the newly-created source.</td>
+<td> the newly-created source.
+</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
+<div class="refsect2" title="wocky_heartbeat_source_update_interval ()">
 <a name="wocky-heartbeat-source-update-interval"></a><h3>wocky_heartbeat_source_update_interval ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_heartbeat_source_update_interval
                                                         (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#GSource"><span class="type">GSource</span></a> *source</code></em>,
@@ -108,8 +118,9 @@ may not take effect until after the next call to the callback.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>max_interval</code></em> :</span></p></td>
 <td>the new maximum interval between calls to the source's
-callback, in seconds. Pass 0 to stop the callback being
-called.</td>
+               callback, in seconds. Pass 0 to stop the callback being
+               called.
+</td>
 </tr>
 </tbody>
 </table></div>
@@ -118,6 +129,6 @@ called.</td>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17</div>
+          Generated by GTK-Doc V1.15</div>
 </body>
 </html>

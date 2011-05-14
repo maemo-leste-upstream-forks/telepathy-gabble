@@ -98,6 +98,14 @@ class EventPattern:
 class TimeoutError(Exception):
     pass
 
+class ForbiddenEventOccurred(Exception):
+    def __init__(self, event):
+        Exception.__init__(self)
+        self.event = event
+
+    def __str__(self):
+        return '\n' + '\n'.join(format_event(self.event))
+
 class BaseEventQueue:
     """Abstract event queue base class.
 
@@ -146,10 +154,7 @@ class BaseEventQueue:
     def _check_forbidden(self, event):
         for e in self.forbidden_events:
             if e.match(event):
-                print "forbidden event occurred:"
-                for x in format_event(event):
-                    print x
-                assert False
+                raise ForbiddenEventOccurred(event)
 
     def expect(self, type, **kw):
         """
@@ -409,12 +414,17 @@ def call_async(test, proxy, method, *args, **kw):
     method_proxy(*args, **kw)
 
 def sync_dbus(bus, q, conn):
-    # Dummy D-Bus method call
+    # Dummy D-Bus method call. We can't use DBus.Peer.Ping() because libdbus
+    # replies to that message immediately, rather than handing it up to
+    # dbus-glib and thence Gabble, which means that Ping()ing Gabble doesn't
+    # ensure that it's processed all D-Bus messages prior to our ping.
+    #
     # This won't do the right thing unless the proxy has a unique name.
     assert conn.object.bus_name.startswith(':')
-    root_object = bus.get_object(conn.object.bus_name, '/')
-    call_async(
-        q, dbus.Interface(root_object, 'org.freedesktop.Telepathy.Tests'), 'DummySyncDBus')
+    root_object = bus.get_object(conn.object.bus_name, '/', introspect=False)
+    call_async(q,
+        dbus.Interface(root_object, 'org.freedesktop.Telepathy.Tests'),
+        'DummySyncDBus')
     q.expect('dbus-error', method='DummySyncDBus')
 
 class ProxyWrapper:
@@ -470,11 +480,12 @@ def wrap_channel(chan, type_, extra=None):
 def make_connection(bus, event_func, name, proto, params):
     cm = bus.get_object(
         tp_name_prefix + '.ConnectionManager.%s' % name,
-        tp_path_prefix + '/ConnectionManager/%s' % name)
+        tp_path_prefix + '/ConnectionManager/%s' % name,
+        introspect=False)
     cm_iface = dbus.Interface(cm, tp_name_prefix + '.ConnectionManager')
 
     connection_name, connection_path = cm_iface.RequestConnection(
-        proto, params)
+        proto, dbus.Dictionary(params, signature='sv'))
     conn = wrap_connection(bus.get_object(connection_name, connection_path))
 
     return conn

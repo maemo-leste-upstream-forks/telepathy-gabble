@@ -474,8 +474,8 @@ class GoogleXmlStream(BaseXmlStream):
 def make_connection(bus, event_func, params=None, suffix=''):
     # Gabble accepts a resource in 'account', but the value of 'resource'
     # overrides it if there is one.
-
-    account = 'test%s@localhost/%s' % (suffix, re.sub(r'.*/', '', sys.argv[0]))
+    test_name = re.sub('(.*tests/twisted/|\./)', '',  sys.argv[0])
+    account = 'test%s@localhost/%s' % (suffix, test_name)
 
     default_params = {
         'account': account,
@@ -597,7 +597,7 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
                            signal=kw['member'], args=map(unwrap, args),
                            interface=kw['interface']))
 
-    bus.add_signal_receiver(
+    match_all_signals = bus.add_signal_receiver(
         signal_receiver,
         None,       # signal name
         None,       # interface
@@ -610,18 +610,18 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
 
     error = None
 
-    if do_connect:
-        for conn in conns:
-            conn.Connect()
-            queue.expect('dbus-signal', signal='StatusChanged',
-                args=[cs.CONN_STATUS_CONNECTING, cs.CSR_REQUESTED])
-            queue.expect('stream-authenticated')
-            queue.expect('dbus-signal', signal='PresenceUpdate',
-                args=[{1L: (0L, {u'available': {}})}])
-            queue.expect('dbus-signal', signal='StatusChanged',
-                args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     try:
+        if do_connect:
+            for conn in conns:
+                conn.Connect()
+                queue.expect('dbus-signal', signal='StatusChanged',
+                    args=[cs.CONN_STATUS_CONNECTING, cs.CSR_REQUESTED])
+                queue.expect('stream-authenticated')
+                queue.expect('dbus-signal', signal='PresenceUpdate',
+                    args=[{1L: (0L, {u'available': {}})}])
+                queue.expect('dbus-signal', signal='StatusChanged',
+                    args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
+
         if len(conns) == 1:
             fun(queue, bus, conns[0], streams[0])
         else:
@@ -650,6 +650,9 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
                 conn.Disconnect()
         except dbus.DBusException, e:
             pass
+        except Exception, e:
+            traceback.print_exc()
+            error = e
 
         try:
             conn.Disconnect()
@@ -660,6 +663,8 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
         except Exception, e:
             traceback.print_exc()
             error = e
+
+    match_all_signals.remove()
 
     if error is None:
         d.addBoth((lambda *args: reactor.crash()))

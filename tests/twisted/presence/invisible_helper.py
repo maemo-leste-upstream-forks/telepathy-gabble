@@ -46,8 +46,9 @@ class ManualPrivacyListStream(XmppXmlStream):
 class ValidInvisibleListStream(ManualPrivacyListStream):
     """This stream class pretends to be a server which supports privacy lists.
     It has exactly one stored list, named 'invisible', which satisfies Gabble's
-    idea of what an invisible list should look like. Activating that list, or the  Any attempts to modify the
-    stored lists, or activate one, will fail.
+    idea of what an invisible list should look like. Activating that list, or
+    disabling the active list, will succeed; any attempts to activate or modify
+    other lists will fail.
 
     The intention is that this class could be used to run presence tests
     unrelated to invisibility against a server which supports invisibility."""
@@ -109,6 +110,7 @@ class SharedStatusStream(XmppXmlStream):
 
         self.min_version = '2'
 
+        self.max_status_message_length = '512'
         self.max_statuses = '5'
 
     def set_shared_status_lists(self, shared_status_lists=None, status=None,
@@ -141,7 +143,7 @@ class SharedStatusStream(XmppXmlStream):
             elems.append(elem('status-list', show=show)(*lst))
         elems.append(elem('invisible', value=invisible)())
 
-        attribs = {'status-max' : '512',
+        attribs = {'status-max' : self.max_status_message_length,
                    'status-list-max' : '3',
                    'status-list-contents-max' : self.max_statuses,
                    'status-min-ver' : self.min_version}

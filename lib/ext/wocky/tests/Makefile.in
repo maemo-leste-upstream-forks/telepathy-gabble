@@ -59,9 +59,9 @@ CONFIG_CLEAN_VPATH_FILES =
 am__EXEEXT_3 = wocky-xmpp-reader-test$(EXEEXT) \
 	wocky-xmpp-readwrite-test$(EXEEXT) \
 	wocky-xmpp-connection-test$(EXEEXT) wocky-porter-test$(EXEEXT) \
-	wocky-xmpp-node-test$(EXEEXT) wocky-node-tree-test$(EXEEXT) \
-	wocky-stanza-test$(EXEEXT) wocky-roster-test$(EXEEXT) \
-	wocky-bare-contact-test$(EXEEXT) \
+	wocky-loopback-test$(EXEEXT) wocky-xmpp-node-test$(EXEEXT) \
+	wocky-node-tree-test$(EXEEXT) wocky-stanza-test$(EXEEXT) \
+	wocky-roster-test$(EXEEXT) wocky-bare-contact-test$(EXEEXT) \
 	wocky-resource-contact-test$(EXEEXT) \
 	wocky-contact-factory-test$(EXEEXT) \
 	wocky-session-test$(EXEEXT) wocky-pep-service-test$(EXEEXT) \
@@ -111,6 +111,10 @@ am_wocky_jid_validation_test_OBJECTS =  \
 wocky_jid_validation_test_OBJECTS =  \
 	$(am_wocky_jid_validation_test_OBJECTS)
 wocky_jid_validation_test_LDADD = $(LDADD)
+am_wocky_loopback_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
+	wocky-test-stream.$(OBJEXT) wocky-loopback-test.$(OBJEXT)
+wocky_loopback_test_OBJECTS = $(am_wocky_loopback_test_OBJECTS)
+wocky_loopback_test_LDADD = $(LDADD)
 am_wocky_node_tree_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-node-tree-test.$(OBJEXT)
 wocky_node_tree_test_OBJECTS = $(am_wocky_node_tree_test_OBJECTS)
@@ -241,7 +245,7 @@ SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_data_form_test_SOURCES) \
 	$(wocky_http_proxy_test_SOURCES) \
 	$(wocky_jid_validation_test_SOURCES) \
-	$(wocky_node_tree_test_SOURCES) \
+	$(wocky_loopback_test_SOURCES) $(wocky_node_tree_test_SOURCES) \
 	$(wocky_pep_service_test_SOURCES) $(wocky_ping_test_SOURCES) \
 	$(wocky_porter_test_SOURCES) $(wocky_pubsub_node_test_SOURCES) \
 	$(wocky_pubsub_service_test_SOURCES) \
@@ -260,7 +264,7 @@ DIST_SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_data_form_test_SOURCES) \
 	$(wocky_http_proxy_test_SOURCES) \
 	$(wocky_jid_validation_test_SOURCES) \
-	$(wocky_node_tree_test_SOURCES) \
+	$(wocky_loopback_test_SOURCES) $(wocky_node_tree_test_SOURCES) \
 	$(wocky_pep_service_test_SOURCES) $(wocky_ping_test_SOURCES) \
 	$(wocky_porter_test_SOURCES) $(wocky_pubsub_node_test_SOURCES) \
 	$(wocky_pubsub_service_test_SOURCES) \
@@ -467,8 +471,8 @@ TLSDEFS := -DTLS_CA_KEY_FILE='"$(CA_KEY)"'      \
 ############################################################################
 TEST_PROGS = wocky-xmpp-reader-test wocky-xmpp-readwrite-test \
 	wocky-xmpp-connection-test wocky-porter-test \
-	wocky-xmpp-node-test wocky-node-tree-test wocky-stanza-test \
-	wocky-roster-test wocky-bare-contact-test \
+	wocky-loopback-test wocky-xmpp-node-test wocky-node-tree-test \
+	wocky-stanza-test wocky-roster-test wocky-bare-contact-test \
 	wocky-resource-contact-test wocky-contact-factory-test \
 	wocky-session-test wocky-pep-service-test wocky-tls-test \
 	wocky-data-form-test wocky-pubsub-service-test \
@@ -535,6 +539,12 @@ wocky_porter_test_SOURCES = \
   wocky-porter-test.c \
   wocky-test-helper.c wocky-test-helper.h \
   wocky-test-stream.c wocky-test-stream.h
+
+wocky_loopback_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_loopback_test_SOURCES = \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h \
+  wocky-loopback-test.c
 
 wocky_xmpp_node_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_xmpp_node_test_SOURCES = \
@@ -722,6 +732,9 @@ wocky-http-proxy-test$(EXEEXT): $(wocky_http_proxy_test_OBJECTS) $(wocky_http_pr
 wocky-jid-validation-test$(EXEEXT): $(wocky_jid_validation_test_OBJECTS) $(wocky_jid_validation_test_DEPENDENCIES) 
 	@rm -f wocky-jid-validation-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_jid_validation_test_OBJECTS) $(wocky_jid_validation_test_LDADD) $(LIBS)
+wocky-loopback-test$(EXEEXT): $(wocky_loopback_test_OBJECTS) $(wocky_loopback_test_DEPENDENCIES) 
+	@rm -f wocky-loopback-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(wocky_loopback_test_OBJECTS) $(wocky_loopback_test_LDADD) $(LIBS)
 wocky-node-tree-test$(EXEEXT): $(wocky_node_tree_test_OBJECTS) $(wocky_node_tree_test_DEPENDENCIES) 
 	@rm -f wocky-node-tree-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_node_tree_test_OBJECTS) $(wocky_node_tree_test_LDADD) $(LIBS)
@@ -791,6 +804,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-http-proxy-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jid-validation-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-loopback-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-node-tree-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-ping-test.Po@am__quote@

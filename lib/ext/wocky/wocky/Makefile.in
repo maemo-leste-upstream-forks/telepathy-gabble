@@ -65,10 +65,12 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 libwocky_la_LIBADD =
 am__libwocky_la_SOURCES_DIST = wocky.c wocky-auth-handler.c \
 	wocky-auth-registry.c wocky-bare-contact.c wocky-c2s-porter.c \
-	wocky-caps-cache.c wocky-connector.c wocky-contact.c \
-	wocky-contact-factory.c wocky-data-form.c wocky-debug.c \
-	wocky-heartbeat-source.c wocky-jabber-auth.c \
-	wocky-jabber-auth-digest.c wocky-jabber-auth-password.c \
+	wocky-caps-cache.c wocky-ll-connection-factory.c \
+	wocky-connector.c wocky-contact.c wocky-contact-factory.c \
+	wocky-data-form.c wocky-debug.c wocky-heartbeat-source.c \
+	wocky-jabber-auth.c wocky-jabber-auth-digest.c \
+	wocky-jabber-auth-password.c wocky-ll-connector.c \
+	wocky-ll-contact.c wocky-loopback-stream.c wocky-meta-porter.c \
 	wocky-muc.c wocky-node.c wocky-node-tree.c wocky-pep-service.c \
 	wocky-ping.c wocky-porter.c wocky-pubsub-helpers.c \
 	wocky-pubsub-node.c wocky-pubsub-service.c \
@@ -88,13 +90,15 @@ am__libwocky_la_SOURCES_DIST = wocky.c wocky-auth-handler.c \
 	wocky-xmpp-error-enumtypes.c wocky-xmpp-reader-enumtypes.c \
 	wocky.h wocky-auth-handler.h wocky-auth-registry.h \
 	wocky-bare-contact.h wocky-c2s-porter.h wocky-caps-cache.h \
-	wocky-connector.h wocky-contact.h wocky-contact-factory.h \
-	wocky-data-form.h wocky-debug.h wocky-heartbeat-source.h \
-	wocky-jabber-auth.h wocky-jabber-auth-digest.h \
-	wocky-jabber-auth-password.h wocky-muc.h wocky-namespaces.h \
-	wocky-node.h wocky-node-private.h wocky-node-tree.h \
-	wocky-pep-service.h wocky-ping.h wocky-porter.h \
-	wocky-pubsub-helpers.h wocky-pubsub-node.h \
+	wocky-ll-connection-factory.h wocky-connector.h \
+	wocky-contact.h wocky-contact-factory.h wocky-data-form.h \
+	wocky-debug.h wocky-heartbeat-source.h wocky-jabber-auth.h \
+	wocky-jabber-auth-digest.h wocky-jabber-auth-password.h \
+	wocky-ll-connector.h wocky-ll-contact.h \
+	wocky-loopback-stream.h wocky-meta-porter.h wocky-muc.h \
+	wocky-namespaces.h wocky-node.h wocky-node-private.h \
+	wocky-node-tree.h wocky-pep-service.h wocky-ping.h \
+	wocky-porter.h wocky-pubsub-helpers.h wocky-pubsub-node.h \
 	wocky-pubsub-node-protected.h wocky-pubsub-service.h \
 	wocky-pubsub-service-protected.h wocky-resource-contact.h \
 	wocky-roster.h wocky-sasl-auth.h wocky-sasl-utils.h \
@@ -118,20 +122,22 @@ am__objects_5 = wocky-http-proxy.lo
 @HAVE_GIO_PROXY_TRUE@am__objects_6 = $(am__objects_5)
 am__objects_7 = wocky.lo wocky-auth-handler.lo wocky-auth-registry.lo \
 	wocky-bare-contact.lo wocky-c2s-porter.lo wocky-caps-cache.lo \
-	wocky-connector.lo wocky-contact.lo wocky-contact-factory.lo \
-	wocky-data-form.lo wocky-debug.lo wocky-heartbeat-source.lo \
-	wocky-jabber-auth.lo wocky-jabber-auth-digest.lo \
-	wocky-jabber-auth-password.lo wocky-muc.lo wocky-node.lo \
-	wocky-node-tree.lo wocky-pep-service.lo wocky-ping.lo \
-	wocky-porter.lo wocky-pubsub-helpers.lo wocky-pubsub-node.lo \
-	wocky-pubsub-service.lo wocky-resource-contact.lo \
-	wocky-roster.lo wocky-sasl-auth.lo wocky-sasl-digest-md5.lo \
-	wocky-sasl-scram.lo wocky-sasl-utils.lo wocky-sasl-plain.lo \
-	wocky-session.lo wocky-stanza.lo wocky-utils.lo \
-	wocky-tls-handler.lo wocky-tls-connector.lo \
-	wocky-xmpp-connection.lo wocky-xmpp-error.lo \
-	wocky-xmpp-reader.lo wocky-xmpp-writer.lo $(am__objects_2) \
-	$(am__objects_4) $(am__objects_6)
+	wocky-ll-connection-factory.lo wocky-connector.lo \
+	wocky-contact.lo wocky-contact-factory.lo wocky-data-form.lo \
+	wocky-debug.lo wocky-heartbeat-source.lo wocky-jabber-auth.lo \
+	wocky-jabber-auth-digest.lo wocky-jabber-auth-password.lo \
+	wocky-ll-connector.lo wocky-ll-contact.lo \
+	wocky-loopback-stream.lo wocky-meta-porter.lo wocky-muc.lo \
+	wocky-node.lo wocky-node-tree.lo wocky-pep-service.lo \
+	wocky-ping.lo wocky-porter.lo wocky-pubsub-helpers.lo \
+	wocky-pubsub-node.lo wocky-pubsub-service.lo \
+	wocky-resource-contact.lo wocky-roster.lo wocky-sasl-auth.lo \
+	wocky-sasl-digest-md5.lo wocky-sasl-scram.lo \
+	wocky-sasl-utils.lo wocky-sasl-plain.lo wocky-session.lo \
+	wocky-stanza.lo wocky-utils.lo wocky-tls-handler.lo \
+	wocky-tls-connector.lo wocky-xmpp-connection.lo \
+	wocky-xmpp-error.lo wocky-xmpp-reader.lo wocky-xmpp-writer.lo \
+	$(am__objects_2) $(am__objects_4) $(am__objects_6)
 am__objects_8 = wocky-auth-registry-enumtypes.lo \
 	wocky-connector-enumtypes.lo wocky-data-form-enumtypes.lo \
 	wocky-muc-enumtypes.lo wocky-pubsub-node-enumtypes.lo \
@@ -175,10 +181,12 @@ SOURCES = $(libwocky_la_SOURCES)
 DIST_SOURCES = $(am__libwocky_la_SOURCES_DIST)
 am__libwocky_la_HEADERS_DIST = wocky.h wocky-auth-handler.h \
 	wocky-auth-registry.h wocky-bare-contact.h wocky-c2s-porter.h \
-	wocky-caps-cache.h wocky-connector.h wocky-contact.h \
-	wocky-contact-factory.h wocky-data-form.h wocky-debug.h \
-	wocky-heartbeat-source.h wocky-jabber-auth.h \
-	wocky-jabber-auth-digest.h wocky-jabber-auth-password.h \
+	wocky-caps-cache.h wocky-ll-connection-factory.h \
+	wocky-connector.h wocky-contact.h wocky-contact-factory.h \
+	wocky-data-form.h wocky-debug.h wocky-heartbeat-source.h \
+	wocky-jabber-auth.h wocky-jabber-auth-digest.h \
+	wocky-jabber-auth-password.h wocky-ll-connector.h \
+	wocky-ll-contact.h wocky-loopback-stream.h wocky-meta-porter.h \
 	wocky-muc.h wocky-namespaces.h wocky-node.h \
 	wocky-node-private.h wocky-node-tree.h wocky-pep-service.h \
 	wocky-ping.h wocky-porter.h wocky-pubsub-helpers.h \
@@ -415,6 +423,7 @@ handwritten_headers = \
   wocky-bare-contact.h \
   wocky-c2s-porter.h \
   wocky-caps-cache.h \
+  wocky-ll-connection-factory.h \
   wocky-connector.h \
   wocky-contact.h \
   wocky-contact-factory.h \
@@ -424,6 +433,10 @@ handwritten_headers = \
   wocky-jabber-auth.h \
   wocky-jabber-auth-digest.h \
   wocky-jabber-auth-password.h \
+  wocky-ll-connector.h \
+  wocky-ll-contact.h \
+  wocky-loopback-stream.h \
+  wocky-meta-porter.h \
   wocky-muc.h \
   wocky-namespaces.h \
   wocky-node.h \
@@ -458,10 +471,12 @@ handwritten_headers = \
 
 handwritten_sources = wocky.c wocky-auth-handler.c \
 	wocky-auth-registry.c wocky-bare-contact.c wocky-c2s-porter.c \
-	wocky-caps-cache.c wocky-connector.c wocky-contact.c \
-	wocky-contact-factory.c wocky-data-form.c wocky-debug.c \
-	wocky-heartbeat-source.c wocky-jabber-auth.c \
-	wocky-jabber-auth-digest.c wocky-jabber-auth-password.c \
+	wocky-caps-cache.c wocky-ll-connection-factory.c \
+	wocky-connector.c wocky-contact.c wocky-contact-factory.c \
+	wocky-data-form.c wocky-debug.c wocky-heartbeat-source.c \
+	wocky-jabber-auth.c wocky-jabber-auth-digest.c \
+	wocky-jabber-auth-password.c wocky-ll-connector.c \
+	wocky-ll-contact.c wocky-loopback-stream.c wocky-meta-porter.c \
 	wocky-muc.c wocky-node.c wocky-node-tree.c wocky-pep-service.c \
 	wocky-ping.c wocky-porter.c wocky-pubsub-helpers.c \
 	wocky-pubsub-node.c wocky-pubsub-service.c \
@@ -566,6 +581,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jabber-auth-digest.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jabber-auth-password.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jabber-auth.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-ll-connection-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-ll-connector.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-ll-contact.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-loopback-stream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-meta-porter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-muc-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-muc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-node-tree.Plo@am__quote@
