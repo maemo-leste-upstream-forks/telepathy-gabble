@@ -82,6 +82,7 @@ struct _WockyC2SPorterPrivate
   GCancellable *receive_cancellable;
 
   GSimpleAsyncResult *close_result;
+  gboolean waiting_to_close;
   gboolean remote_closed;
   gboolean local_closed;
   GCancellable *close_cancellable;
@@ -273,7 +274,10 @@ stanza_iq_handler_remove_cancellable (StanzaIqHandler *handler)
     {
       /* FIXME: we should use g_cancellable_disconnect but it raises a dead
        * lock (#587300) */
-      g_signal_handler_disconnect (handler->cancellable, handler->cancelled_sig_id);
+      /* We might have already have disconnected the signal handler
+       * from send_head_stanza(), so check whether it's still connected. */
+      if (handler->cancelled_sig_id > 0)
+        g_signal_handler_disconnect (handler->cancellable, handler->cancelled_sig_id);
       g_object_unref (handler->cancellable);
       handler->cancelled_sig_id = 0;
       handler->cancellable = NULL;
@@ -669,7 +673,7 @@ send_stanza_cb (GObject *source,
         }
     }
 
-  if (priv->close_result != NULL &&
+  if (priv->waiting_to_close &&
       g_queue_get_length (priv->sending_queue) == 0)
     {
       /* Queue is empty and we are waiting to close the connection. */
@@ -1362,6 +1366,7 @@ send_close (WockyC2SPorter *self)
 
   wocky_xmpp_connection_send_close_async (priv->connection,
       NULL, close_sent_cb, self);
+  priv->waiting_to_close = FALSE;
 }
 
 static void
@@ -1422,6 +1427,7 @@ wocky_c2s_porter_close_async (WockyPorter *porter,
     {
       DEBUG ("Sending queue is not empty. Flushing it before "
           "closing the connection.");
+      priv->waiting_to_close = TRUE;
       return;
     }
 

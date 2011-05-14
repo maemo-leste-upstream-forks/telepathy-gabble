@@ -1,0 +1,442 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyTLSHandler</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="wocky-Wocky-OpenSSL-TLS.html" title="Wocky OpenSSL TLS">
+<link rel="next" href="wocky-wocky-utils.html" title="wocky-utils">
+<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="wocky-Wocky-OpenSSL-TLS.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="wocky-wocky-utils.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#WockyTLSHandler.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#WockyTLSHandler.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#WockyTLSHandler.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#WockyTLSHandler.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" title="WockyTLSHandler">
+<a name="WockyTLSHandler"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="WockyTLSHandler.top_of_page"></a>WockyTLSHandler</span></h2>
+<p>WockyTLSHandler</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="WockyTLSHandler.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">                    <a class="link" href="WockyTLSHandler.html#WockyTLSHandler-struct" title="WockyTLSHandler">WockyTLSHandler</a>;
+                    <a class="link" href="WockyTLSHandler.html#WockyTLSHandlerClass" title="WockyTLSHandlerClass">WockyTLSHandlerClass</a>;
+                    <a class="link" href="WockyTLSHandler.html#WockyTLSHandlerPrivate" title="WockyTLSHandlerPrivate">WockyTLSHandlerPrivate</a>;
+<span class="returnvalue">void</span>                (<a class="link" href="WockyTLSHandler.html#WockyTLSHandlerVerifyAsyncFunc" title="WockyTLSHandlerVerifyAsyncFunc ()">*WockyTLSHandlerVerifyAsyncFunc</a>)   (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> *tls_session</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *peername</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a class="link" href="WockyTLSHandler.html#WockyTLSHandlerVerifyFinishFunc" title="WockyTLSHandlerVerifyFinishFunc ()">*WockyTLSHandlerVerifyFinishFunc</a>)  (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="returnvalue">WockyTLSHandler</span></a> *   <a class="link" href="WockyTLSHandler.html#wocky-tls-handler-new" title="wocky_tls_handler_new ()">wocky_tls_handler_new</a>               (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> ignore_ssl_errors</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyTLSHandler.html#wocky-tls-handler-verify-async" title="wocky_tls_handler_verify_async ()">wocky_tls_handler_verify_async</a>      (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> *tls_session</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *peername</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyTLSHandler.html#wocky-tls-handler-verify-finish" title="wocky_tls_handler_verify_finish ()">wocky_tls_handler_verify_finish</a>     (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyTLSHandler.html#wocky-tls-handler-add-ca" title="wocky_tls_handler_add_ca ()">wocky_tls_handler_add_ca</a>            (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyTLSHandler.html#wocky-tls-handler-add-crl" title="wocky_tls_handler_add_crl ()">wocky_tls_handler_add_crl</a>           (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            <a class="link" href="WockyTLSHandler.html#wocky-tls-handler-get-cas" title="wocky_tls_handler_get_cas ()">wocky_tls_handler_get_cas</a>           (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            <a class="link" href="WockyTLSHandler.html#wocky-tls-handler-get-crls" title="wocky_tls_handler_get_crls ()">wocky_tls_handler_get_crls</a>          (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>);
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="WockyTLSHandler.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----WockyTLSHandler
+</pre>
+</div>
+<div class="refsect1" title="Properties">
+<a name="WockyTLSHandler.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="WockyTLSHandler.html#WockyTLSHandler--ignore-ssl-errors" title='The "ignore-ssl-errors" property'>ignore-ssl-errors</a>"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write / Construct
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="WockyTLSHandler.description"></a><h2>Description</h2>
+<p>
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="WockyTLSHandler.details"></a><h2>Details</h2>
+<div class="refsect2" title="WockyTLSHandler">
+<a name="WockyTLSHandler-struct"></a><h3>WockyTLSHandler</h3>
+<pre class="programlisting">typedef struct _WockyTLSHandler WockyTLSHandler;</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WockyTLSHandlerClass">
+<a name="WockyTLSHandlerClass"></a><h3>WockyTLSHandlerClass</h3>
+<pre class="programlisting">typedef struct {
+  WockyTLSHandlerVerifyAsyncFunc verify_async_func;
+  WockyTLSHandlerVerifyFinishFunc verify_finish_func;
+} WockyTLSHandlerClass;
+</pre>
+<p>
+The class of a <a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><a class="link" href="WockyTLSHandler.html#WockyTLSHandlerVerifyAsyncFunc" title="WockyTLSHandlerVerifyAsyncFunc ()"><span class="type">WockyTLSHandlerVerifyAsyncFunc</span></a> <em class="structfield"><code><a name="WockyTLSHandlerClass.verify-async-func"></a>verify_async_func</code></em>;</span></p></td>
+<td>a function to call to start an asychronous
+  verify operation; see <a class="link" href="WockyTLSHandler.html#wocky-tls-handler-verify-async" title="wocky_tls_handler_verify_async ()"><code class="function">wocky_tls_handler_verify_async()</code></a> for more
+  details
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="WockyTLSHandler.html#WockyTLSHandlerVerifyFinishFunc" title="WockyTLSHandlerVerifyFinishFunc ()"><span class="type">WockyTLSHandlerVerifyFinishFunc</span></a> <em class="structfield"><code><a name="WockyTLSHandlerClass.verify-finish-func"></a>verify_finish_func</code></em>;</span></p></td>
+<td>a function to call to finish an asychronous
+  verify operation; see <a class="link" href="WockyTLSHandler.html#wocky-tls-handler-verify-finish" title="wocky_tls_handler_verify_finish ()"><code class="function">wocky_tls_handler_verify_finish()</code></a> for more
+  details
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="WockyTLSHandlerPrivate">
+<a name="WockyTLSHandlerPrivate"></a><h3>WockyTLSHandlerPrivate</h3>
+<pre class="programlisting">typedef struct _WockyTLSHandlerPrivate WockyTLSHandlerPrivate;</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WockyTLSHandlerVerifyAsyncFunc ()">
+<a name="WockyTLSHandlerVerifyAsyncFunc"></a><h3>WockyTLSHandlerVerifyAsyncFunc ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                (*WockyTLSHandlerVerifyAsyncFunc)   (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> *tls_session</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *peername</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>tls_session</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>peername</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="WockyTLSHandlerVerifyFinishFunc ()">
+<a name="WockyTLSHandlerVerifyFinishFunc"></a><h3>WockyTLSHandlerVerifyFinishFunc ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*WockyTLSHandlerVerifyFinishFunc)  (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_tls_handler_new ()">
+<a name="wocky-tls-handler-new"></a><h3>wocky_tls_handler_new ()</h3>
+<pre class="programlisting"><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="returnvalue">WockyTLSHandler</span></a> *   wocky_tls_handler_new               (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> ignore_ssl_errors</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ignore_ssl_errors</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_tls_handler_verify_async ()">
+<a name="wocky-tls-handler-verify-async"></a><h3>wocky_tls_handler_verify_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_tls_handler_verify_async      (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> *tls_session</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *peername</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>tls_session</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>peername</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_tls_handler_verify_finish ()">
+<a name="wocky-tls-handler-verify-finish"></a><h3>wocky_tls_handler_verify_finish ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_tls_handler_verify_finish     (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_tls_handler_add_ca ()">
+<a name="wocky-tls-handler-add-ca"></a><h3>wocky_tls_handler_add_ca ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_tls_handler_add_ca            (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>);</pre>
+<p>
+Sensible default paths (under Debian derived distributions) are:
+</p>
+<p>
+* for gnutls:  /etc/ssl/certs/ca-certificates.crt
+* for openssl: /etc/ssl/certs
+</p>
+<p>
+Certificates my also be found under /usr/share/ca-certificates/...
+if the user wishes to pick and choose which CAs to use.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>path</code></em> :</span></p></td>
+<td>a path to a directory or file containing PEM encoded CA certificates
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> indicating whether the path was resolved.
+Does not indicate that there was actually a file or directory there
+or that any CAs were actually found. The CAs won't actually be loaded
+until just before the TLS session setup is attempted.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_tls_handler_add_crl ()">
+<a name="wocky-tls-handler-add-crl"></a><h3>wocky_tls_handler_add_crl ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_tls_handler_add_crl           (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>);</pre>
+<p>
+This function does not descend subdirectories automatically.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>path</code></em> :</span></p></td>
+<td>a path to a directory or file containing PEM encoded CRLs
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> indicating whether the path was resolved.
+Does not indicate that there was actually a file or directory there
+or that any CRLs were actually found. The CRLs won't actually be loaded
+until just before the TLS session setup is attempted.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_tls_handler_get_cas ()">
+<a name="wocky-tls-handler-get-cas"></a><h3>wocky_tls_handler_get_cas ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            wocky_tls_handler_get_cas           (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_tls_handler_get_crls ()">
+<a name="wocky-tls-handler-get-crls"></a><h3>wocky_tls_handler_get_crls ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            wocky_tls_handler_get_crls          (<em class="parameter"><code><a class="link" href="WockyTLSHandler.html" title="WockyTLSHandler"><span class="type">WockyTLSHandler</span></a> *self</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="WockyTLSHandler.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "ignore-ssl-errors" property'>
+<a name="WockyTLSHandler--ignore-ssl-errors"></a><h3>The <code class="literal">"ignore-ssl-errors"</code> property</h3>
+<pre class="programlisting">  "ignore-ssl-errors"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write / Construct</pre>
+<p>
+Whether to ignore recoverable SSL errors (certificate
+insecurity/expiry etc).
+</p>
+<p>Default value: TRUE</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.15</div>
+</body>
+</html>

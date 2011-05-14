@@ -120,6 +120,7 @@ DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -152,6 +153,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 NICE_CFLAGS = @NICE_CFLAGS@
 NICE_LIBS = @NICE_LIBS@
@@ -197,6 +199,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -229,7 +232,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -257,7 +259,8 @@ TWISTED_TESTS = caps_helper.py servicetest.py avatar-requirements.py \
 	caps/hashed-caps.py caps/initial-caps.py caps/jingle-caps.py \
 	caps/offline.py caps/receive-jingle.py caps/trust-thyself.py \
 	caps/tube-caps.py client-types.py cm/protocol.py gateways.py \
-	muc/conference.py muc/chat-states.py muc/name-conflict.py \
+	muc/banned.py muc/conference.py muc/chat-states.py \
+	muc/kicked.py muc/name-conflict.py \
 	muc/presence-before-closing.py muc/renamed.py muc/roomlist.py \
 	muc/scrollback.py muc/send-error.py muc/subject.py \
 	muc/test-ensure.py muc/test-muc-alias.py \
@@ -266,8 +269,9 @@ TWISTED_TESTS = caps_helper.py servicetest.py avatar-requirements.py \
 	olpc/current-activity.py olpc/olpc-muc-invitation.py \
 	olpc/olpc-muc-prop-change.py olpc/test-olpc-bundle.py \
 	olpc/test-olpc-set-props-preload.py \
-	olpc/change-notifications.py pep-support.py power-save.py \
-	presence/decloak.py presence/initial-contact-presence.py \
+	olpc/change-notifications.py pep-support.py \
+	plugin-channel-managers.py power-save.py presence/decloak.py \
+	presence/initial-contact-presence.py \
 	presence/initial-presence.py presence/invisible_xep_0126.py \
 	presence/invisible_xep_0186.py presence/presence.py \
 	presence/plugins.py presence/set-idempotence.py \
@@ -432,8 +436,9 @@ CHECK_TWISTED_SLEEP = 0
 @ENABLE_CHANNEL_TYPE_CALL_TRUE@CHANNEL_TYPE_CALL_ENABLED_PYBOOL = True
 BUILT_SOURCES = config.py $(service_files) $(conf_files) \
 	tools/exec-with-log.sh
-EXTRA_DIST = $(TWISTED_TESTS) bytestream.py constants.py gabbletest.py \
-	httptest.py rostertest.py jingle-share/file_transfer_helper.py \
+EXTRA_DIST = $(TWISTED_TESTS) bytestream.py connect/torture.py \
+	constants.py gabbletest.py httptest.py rostertest.py \
+	jingle-share/file_transfer_helper.py \
 	jingle-share/jingleshareutils.py jingle/__init__.py \
 	jingle/callutils.py jingle/jingletest.py jingle/jingletest2.py \
 	mucutil.py ns.py olpc/util.py tubes/muctubeutil.py \

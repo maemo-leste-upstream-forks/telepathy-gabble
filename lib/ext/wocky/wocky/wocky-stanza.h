@@ -26,6 +26,7 @@
 #include <glib-object.h>
 #include "wocky-node-tree.h"
 #include "wocky-xmpp-error.h"
+#include "wocky-contact.h"
 
 G_BEGIN_DECLS
 
@@ -152,11 +153,17 @@ typedef enum
 
 WockyStanza * wocky_stanza_new (const gchar *name, const gchar *ns);
 
+WockyStanza * wocky_stanza_copy (WockyStanza *old);
+
 WockyNode *wocky_stanza_get_top_node (WockyStanza *self);
 
 WockyStanza * wocky_stanza_build (WockyStanzaType type,
     WockyStanzaSubType sub_type, const gchar *from, const gchar *to,
     ...) G_GNUC_NULL_TERMINATED;
+
+WockyStanza * wocky_stanza_build_to_contact (WockyStanzaType type,
+    WockyStanzaSubType sub_type, const gchar *from,
+    WockyContact *to, ...) G_GNUC_NULL_TERMINATED;
 
 void wocky_stanza_get_type_info (WockyStanza *stanza,
     WockyStanzaType *type, WockyStanzaSubType *sub_type);
@@ -190,6 +197,14 @@ gboolean wocky_stanza_extract_errors (WockyStanza *stanza,
 
 gboolean wocky_stanza_extract_stream_error (WockyStanza *stanza,
     GError **stream_error);
+
+WockyContact * wocky_stanza_get_to_contact (WockyStanza *self);
+WockyContact * wocky_stanza_get_from_contact (WockyStanza *self);
+
+void wocky_stanza_set_to_contact (WockyStanza *self,
+    WockyContact *contact);
+void wocky_stanza_set_from_contact (WockyStanza *self,
+    WockyContact *contact);
 
 G_END_DECLS
 

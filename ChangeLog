@@ -1,3 +1,604 @@
+commit 0622a8b21a3a0d8a52f12719b1d809d775ec6bb3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-21 18:30:11 +0100
+
+    Version 0.12.0 O M G
+
+commit 5e79c392470ba1f76e337138f24792ac79c48e0e
+Merge: 7a24b3c 04bd5e6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-21 18:12:02 +0100
+
+    Merge branch 'presence-status-max'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=33054>
+
+commit 04bd5e6264384dc7c00c7e08af5acc1eeb15de11
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-21 18:11:26 +0100
+
+    Depend on tp-glib 0.14.5 for MaximumStatusMessageLength
+
+commit 7a24b3c72f3fb84b96d0184eff4704c96eaa0405
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-21 16:50:38 +0100
+
+    test-presence: add an omitted case of moving 'now' forward
+    
+    Whoops. This is why code review is good.
+
+commit 099ba4ae4d92c2a78c4bae1c504f68735450ff4e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-21 10:43:11 +0100
+
+    gabble_presence_update(): take 'now' as a parameter
+    
+    This allows the test case to just use 'now++' rather than having to
+    sleep(1) repeatedly.
+
+commit 593685489bd1b34660fe687b7eafc6025898b3be
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-21 10:42:25 +0100
+
+    Update Wocky snapshot!
+
+commit 6dab845b855a2572b0882f8915bef52005728f53
+Merge: dd20af3 bfb8f9f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-18 19:16:09 +0100
+
+    Merge branch 'client-types'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=32139>
+
+commit dd20af3cbd95eb062394c0fd530f16f06d490fe8
+Merge: 30a4c00 427e6d6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-14 11:55:42 +0100
+
+    Merge branch 'test-failures-due-to-fd-limit'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 012182a1845bab80dcda4876d32f83dd66868ba0
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-04-14 01:36:47 -0300
+
+    Test setting a status message bigger than max status message length.
+
+commit 94320fdce455387b195c3312c0fce2890e83d530
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-04-14 01:35:56 -0300
+
+    Add support for Conn.SimplePresence.MaximumStatusMessageLength.
+
+commit 67c47c811b1e6770830357a4ed65ef047d1822ef
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-04-14 00:44:10 -0300
+
+    Add support for google shared-status 'status-max'.
+    
+    With this presence status messages will be truncated if they are bigger than
+    what is reported by shared-status 'status-max'.
+
+commit 427e6d6a221b0f7f383a96faae8c6e185eb2af83
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-13 15:22:22 +0100
+
+    servicetest: disable unnecessary introspection
+    
+    dbus-python's automatic introspection is actually pretty costly.
+    Profiling connect/torture.py shows that it's responsible for about 10%
+    of the runtime of that test.
+    
+    The majority of that is introspecting the connection, and sadly many,
+    many tests depend on that working. But we can at least turn it off on
+    the dummy object used for sync_dbus, and for the CM object used to
+    request the connection. This shaves a few seconds off the test suite.
+    Not zero, but makes no real impact on the six minutes the test suite
+    takes. :(
+
+commit 285465c615b705f055e484236308f9b16d294eaf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-13 15:14:37 +0100
+
+    servicetest: document why sync_dbus doesn't use Ping
+
+commit dc6a74fee04e3fad668b23e84c62b394cb27adc8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-13 13:57:10 +0100
+
+    test plugin: don't ref connection from channel manager
+    
+    If the test plugin's channel manager holds a reference to the
+    connection, we have a cycle: the connection owns a reference to each
+    channel manager. TpBaseConnection only releases its channel managers
+    when it's disposed, which in this case is never.
+    
+    (All the other channel managers do the right thing.)
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=36179>
+
+commit d6f73b4b2db4b4751a41d85a69442438c4dbb67c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-12 20:03:14 +0100
+
+    Add a torture test to connect+disconnect two thousand times
+    
+    This exposes an apparent FD leak in Gabble. For obvious reasons it will
+    not be run as part of the normal `make check` procedure. ;-)
+
+commit 67b27beb5d3f7f7b839744265f1a0fa209235841
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-12 19:57:12 +0100
+
+    gabbletest: disconnect catch-all-signals match rule
+    
+    Previously, the catch-all-signals match rule (and callback) was never
+    disconnected. This doesn't matter for tests in separate processes, but
+    if you have n tests in sequence in one file, you'd end up with n²/2
+    copies of the callback. This slows down the test, and (more importantly)
+    prevents most of the test harness from being freed: events get added to
+    the queues for previous tests.
+    
+    I only noticed this because I wrote a test case that runs in a loop in a
+    single process. The python process ballooned to over 2 gigabytes, and
+    then died with ‘dbus.exceptions.DBusException:
+    org.freedesktop.DBus.Error.LimitsExceeded: Connection ":1.0" is not allowed to
+    add more match rules (increase limits in configuration file if
+    required)’ when trying to add just one more wafer-thin match rule.
+
+commit fbeb52fa8f179da3684304a3183a60200d7ef326
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-12 19:56:47 +0100
+
+    Jingle tests: make judicious use of functools.partial
+    
+    These are just a few places I thought could benefit.
+
+commit 5358f6ca0a734f6cfc52bb83b7cf106fdf5d5423
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-12 19:52:13 +0100
+
+    invisible_helper: clean up a comment
+
+commit b130b500b6207c70689a7b3b17432f27017e9c7e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-12 19:51:09 +0100
+
+    conn-util: call send_iq callback immediately
+    
+    The idle here is unnecessary: wocky_porter_send_iq_async() never calls
+    its callback synchronously, so we can just complete our
+    GSimpleAsyncResult synchronously and get nicer backtraces.
+
+commit 58a021832a230e5626b8c5b20b9fac8b015f897f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-12 17:56:32 +0100
+
+    conn_util_send_iq_cb: unleak GError.
+    
+    Previously, the error returned by wocky_porter_send_iq_finish() was
+    leaked.
+
+commit 30a4c00c471a8e2592e9f3e86e73c43b79b7c648
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-04 16:16:03 +0100
+
+    tests: include test directory in resource
+    
+    gabbletest.py sets the resource in the 'account' parameter to the name
+    of the current test case; it's overridden by the explicit 'resource'
+    parameter, so has no effect, but shows up in gabble-testing.log, making
+    it easier to find the section of the log pertaining to the failing test
+    case.
+    
+    Commit 903ed6c made the resource 'nicer' by removing everything except
+    the last component of the test name, so rather than using (for instance)
+    'text/send-error.py' as the resource, 'send-error.py' was used. This
+    doesn't seem 'nicer' to me: there are two tests called 'send-error.py',
+    one in 'text/' and one in 'muc/'.
+    
+    This commit also strips leading './', if present: my `tt` test runner
+    ends up putting these in (as part of its handling for out-of-tree
+    builds).
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit bfb8f9f0c8deb43d8360f90441c33083a14cb260
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-11 16:07:23 +0100
+
+    ClientTypes: ensure an out parameter is non-NULL.
+
+commit 751dbfa2355754adf5f6bb3c08d0d6c184837755
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-09 12:54:25 +0100
+
+    gabble_presence_get_client_types_array(): tidy
+    
+    There's no need to set a free function, since we steal the GPtrArray's
+    data anyway. Plus, some locals were too widely scoped.
+
+commit 5505bda608301f44623da1c51f09e8319a3fb04b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-08 17:55:35 +0100
+
+    ClientTypesUpdated: use get_client_types_from_handle()
+    
+    There's no reason to implement this logic twice.
+
+commit 4bda8d9f3fe223380d2a6dae29283e44a7ce3142
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-08 17:50:57 +0100
+
+    Clarify get_client_types_from_handle()
+    
+    I actually broke the code path that tries to avoid signalling the empty
+    list when a disco request is in progress:
+    gabble_presence_get_client_types_array() always returns non-NULL these
+    days. This path wasn't exercised, but it's about to be… It took me quite
+    a few readings to figure out exactly what the function was trying to do,
+    so this patch clarifies it.
+
+commit 309cc1ba72ec4d045c8d8f0b34fd34a0dc052a59
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-08 17:07:44 +0100
+
+    ClientTypes: make idle hack safer
+    
+    I really don't like this hack, but I tried for hours to get rid of it
+    and it seems really hard to do without pretty invasive changes to the
+    presence cache, so I gave up. Instead, let's at least make it safe
+    against the connection going away …
+
+commit f9ccdf2f152fd64823766d1dd31c64058f165bdd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-08 14:31:21 +0100
+
+    ClientTypes: clarify weird idle callback
+
+commit 8aff107471330edd011314c05976f37ce07baab5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-08 14:17:42 +0100
+
+    ClientTypes: pass around gchar**, not GPtrArray
+    
+    This simplifies the code substantially.
+
+commit 436fe82540d4be276e6f959ba4bc0c669e77c22a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-08 12:39:48 +0100
+
+    ClientTypes: simplify (and test) contact attr implementation
+
+commit 65c3c056f0b477b682c5a36578aeb6fab4fa8685
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-08 12:28:01 +0100
+
+    Support client types for bare JIDs.
+
+commit e6888df3c9d5f89a27beee293a1e2cc21e5432e1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-08 11:19:41 +0100
+
+    ClientTypes: fix satisfying two waiters with one reply
+    
+    Previously, if two contacts had the same previously-unknown hash, we'd
+    only disco one of them (correctly), but when the result came back we
+    would only update the client types for the contact who replied, not the
+    second.
+    
+    This patch adds a regression test, and fixes this issue by rolling the
+    client type propagation into some of the existing code to update caps.
+    I think it should really go further—the serial stuff applies equally to
+    identities as to features—but life is too short, and clients should
+    (presumably) return the same identities from all disco queries.
+
+commit c9225bbab2a6067340df67281b43e76235f81de3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-08 11:08:18 +0100
+
+    hashed caps tests: correctly handle identity languages
+    
+    The helper function to build disco replies ignored the language field of
+    the identity strings passed to it. This meant that any tests which
+    happened to use identities with non-empty languages should fail, because
+    Gabble would (correctly) think that the hash doesn't match the reply.
+    
+    The test that actually sends hashed caps to/from Gabble didn't use any
+    identities at all (in violation of the MUST in XEP-0030), so this wasn't
+    noticed.
+
+commit 8e728972a2442a06303f69186a14913c31e2d631
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-08 10:18:51 +0100
+
+    presence-cache: return normally from process_client_types
+    
+    I don't see why this was an out parameter.
+
+commit 51f9ad102078d6394ffb88c00c70d6632047c40b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-07 16:32:14 +0100
+
+    Presence: turn client types into a bitfield sooner.
+    
+    There's no point in turning these into a GPtrArray of dup'd strings if
+    the only thing we do with that array is to turn it into a bitfield.
+    Turning them straight into the bitfield makes the memory management
+    simpler (i.e. there is none).
+    
+    (Later, it gets turned back into a GPtrArray! Astonishing.)
+
+commit 5ec56eddad8b5727a49dfbb6196b0efacd64a508
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-06 17:27:36 +0100
+
+    Presence: rename Resource.last_activity to last_available
+    
+    This field is not actually the time of the last activity of any kind by
+    that resource; it's not even the time of the last presence received for
+    that resource. It's the time of the last *available* presence received
+    for that resource! It's been this way since the dark days of darcs
+    (417c27a) and no-one's complained, so I assume that it's intentional;
+    but it seems like we should rename the field.
+
+commit 54bd6beac2d7f288c69862f9cee974ccc6fb9469
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-05 19:51:43 +0100
+
+    Presence: add some notes about what not to refactor
+    
+    I keep looking at this code and thinking it should be shared with other
+    code in this file and then re-discovering why not…
+
+commit b496532ed35ad2738a200d889e3ac2fc97f62834
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-05 18:45:05 +0100
+
+    test-presence: remove unnecessary 'const TRUE' predicate
+    
+    This has been unnecessary since 97690023
+
+commit 424b8ba30bbeea477725c3be199e5a3656ba604f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-05 18:43:03 +0100
+
+    Presence: genericise specifying a client type preference
+
+commit 9fb6027cc5efd6b560083a9ff6b81c80a43f43d1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-05 18:29:37 +0100
+
+    Clarify resource aggregration's preferences
+    
+    When I looked at the changes to aggregate_resources() introduced by
+    8945d56, I thought that a regression (for which I've added a test) might
+    have occurred because the 'prio' and 'activity' variables would not be
+    updated for the first resource in the list. As it happens, they are, but
+    only because the second 'if' was not an 'else if'.
+    
+    So I've condensed them into one, and removed the extraneous variables.
+
+commit 77975b6f29c97b69a6c6d07bd0949597a873af88
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-05 17:56:10 +0100
+
+    test-presence: GTest-ify
+    
+    I would like to add a new test case, but I don't want to touch the
+    massive existing test case; so I'll just wrap it up in a function all of
+    its own!
+
+commit d3ab36e6b98cbc26e10c535acd18067a32d16e42
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-05 15:48:08 +0100
+
+    disco_in_progress(): break out of loops harder
+    
+    Previously, the 'break' only jumped out of the inner loop, not out of
+    the outer one. This code was still functionally correct, but wasteful.
+    I renamed the 'out' variable, and included it in both loops' conditions.
+
+commit 51091d290b3bc619842ff70d4cf0f9c4f7f93f95
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-08 09:47:57 +0100
+
+    presence: don't drop caps when re-aggregating resources.
+    
+    460d536 (“presence: save handle client types and current active
+    resource”) erroneously removed the call to
+    gabble_capability_set_update(), which means that whenever a contact's
+    resources are re-aggregated, they lose all their capabilities.
+    
+    (This is caught by several of the caps/ regression tests.)
+
+commit e2d4ea48d68fce2daa101744ccdec1cc6bbc266b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-20 10:32:23 +0000
+
+    client-types.py: add another test for fd.o#32139
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 53fcaf53e79f239f70590fdb021d3c170021b35b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-20 10:32:08 +0000
+
+    client-types: update to presence{,-cache} changes
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit a613289b7b57cc0d22957b75a59393917031a48e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-20 10:19:29 +0000
+
+    presence: change working of get_client_types_array
+    
+    Instead of giving the resource name, the resource name is now given
+    back.
+    
+    This breaks the build because conn-client-types has not been updated
+    in this commit.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 64f47f9b478c68475f3eb12b198e2e4c96eba2e4
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-20 10:18:39 +0000
+
+    presence-cache: emit ::client-types-updated when it happens
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 564faa5d5a67e95a1db80a552e9bdec3f93d909d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-20 10:13:31 +0000
+
+    presence: also return whether to signal client types updated in _update
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 460d53609275d04e8e12fc7620a5a836f73c91d1
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-20 10:09:51 +0000
+
+    presence: save handle client types and current active resource
+    
+    Also make aggregate_resources return whether the client types have
+    changed and so whether the ClientTypesUpdated signal should be fired.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit fc53410f542d87ca4aef3c94a83def5688f22fa4
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-20 10:06:53 +0000
+
+    presence-cache: add ::client-types-updated
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 2c4778ec8798b568b693748411e24f10cd0d05e4
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-20 10:05:08 +0000
+
+    presence-cache: add a client types array to GabbleCapabilityInfo
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b34fcabbe264d7bf8161c758b8d76921974b6c26
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-20 10:02:43 +0000
+
+    presence-cache: fix disco_in_progress
+    
+    Embarrassingly this has never worked and I've surprised it didn't
+    crash. The priv->disco_pending hash table is in fact:
+    
+      GHashTable<gchar*,GList<DiscoWaiter*>> disco_pending;
+    
+    but the previous disco_is_pending assumed it was:
+    
+      GHashTable<gchar*,DiscoWaiter*> disco_pending;
+    
+    Oops!
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 265605d606dff2a962c8f8619658613fd9fa17f4
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-20 09:59:50 +0000
+
+    client-types.py: document the exact state at each step
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 89d0e3910bb1cf77c222f01a20ff40388b8561ca
+Author: Marc Plano-Lesay <marc.planolesay@gmail.com>
+Date:   2011-04-07 16:42:24 +0200
+
+    fix unused-but-set-variable warnings
+
+commit d07296e6ab4c529a7d1bc0857297d3809e4d4aad
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-06 17:22:49 +0100
+
+    gabbletest: catch more exceptions during test setup
+
+commit b0b978437839c1f3aa69344d92d9025c7b5b71e3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-06 17:20:14 +0100
+
+    test plugin: make RCC conform to the spec.
+    
+    The spec requires that the fixed properties of any requestable channel
+    class include ChannelType and TargetHandleType. (Actually, we violate
+    the latter for ContactSearch, but the former seems like a pretty
+    reasonable thing to conform to.) The test plugin did not respect this:
+    in fact, none of the fixed or allowed properties were valid D-Bus
+    property names.
+    
+    Anyway, some of the Jingle tests rely on ChannelType being present in
+    every channel class. This seems basically reasonable to me.
+    
+    I did not catch this in my review.
+
+commit 18fb2c20f26b9ee8d4fbb67f47cf374752b866bc
+Merge: d94c6ad c7f9f35
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-06 12:19:23 +0100
+
+    Merge branch 'fd.o-35619-gtalk-muc-conflicts'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=35619>
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c7f9f355a3aeb0b349002a4491dcc498ebc7b710
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-06 11:50:18 +0100
+
+    muc/name-conflict.py: clarify RequestHandles call
+    
+    On fd.o#35619, Jonny sez:
+    
+    > This looks as if it could be racy. What if the MCD signals apear
+    > before RequestHandles returns?
+    
+    It's not racy; this comment explains why.
+
+commit d94c6adb8ff05313714b4e3945ef609b75b6d853
+Merge: 28dd033 809c131
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-04 17:41:40 +0100
+
+    Merge branch 'fd.o-35120-crash-when-banned-from-muc'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=35120>
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 28dd033e3f7f26e75822cc7150694b573a481c36
+Merge: d59e616 c224b46
+Author: Jonny Lamb <jonny@debian.org>
+Date:   2011-04-04 16:06:47 +0100
+
+    Merge branch 'plugin-channel-managers'
+
+commit c224b4695d0ab6d182295a173be6a9c0532ecb50
+Author: Jonny Lamb <jonny@debian.org>
+Date:   2011-04-04 16:04:53 +0100
+
+    test plugin: add an example of dealing with ::porter-available from the channel manager
+    
+    Signed-off-by: Jonny Lamb <jonny@debian.org>
+
+commit d59e6168556b8e302a70656e5585234e58759877
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-31 20:09:48 +0100
+
+    Bump nano-version to 0.11.10.1
+
 commit 96054cec689d89c0fcb7900ed3498f117b4e0add
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2011-03-31 19:55:04 +0100
@@ -123,6 +724,39 @@ Date:   2011-03-28 18:32:53 +0200
     Initialize variable properly when building ReferenceIdentities
     
     And fix style issues.
+
+commit 5bbafbfc922c9f8ab8e0c4690d5afc0ae4f5c073
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-25 14:55:44 +0000
+
+    MUC: work around GTalk sending conflict errors twice.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=35619>
+
+commit 932df66d4f410d40cc47b2f5a7657088eb9036bb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-25 14:09:29 +0000
+
+    Initialized GError *s to NULL, even when unnecessary.
+    
+    The instance in muc-channel.c actually *does* need initializing. And,
+    it's shorter to set these to NULL than to add comments claiming we don't
+    need to...
+
+commit b7fd47e37ce3bd83455a8c3422c55a710539b6d9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-25 14:08:10 +0000
+
+    MUC: remove send_join_request()'s return value
+    
+    If we have to have a comment to explain why it always returns TRUE and
+    doesn't have an error, it simply shouldn't return anything.
+
+commit 3e1ed2caebc55c4755dc8564be4cfaa4798ff9cd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-25 10:43:03 +0000
+
+    muc/name-conflict: modernize a bit
 
 commit 29b2365cc23cf539a30d1a38f2f619ffe3d03572
 Author: Olivier Crête <olivier.crete@collabora.co.uk>
@@ -384,6 +1018,59 @@ Date:   2011-03-22 10:50:56 +0100
 
     ReferenceIdentities shows up in telepathy-glib 0.14.1
 
+commit 809c1315ff4188587640be86ea89b758aa471781
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-19 00:09:14 +0000
+
+    MUC: cosmetic clean-up on close_channel()
+    
+    I think I asked for these massive comments when reviewing Jonny's
+    branch, but in retrospect I think they make the function scarier!
+    
+    Plus, this function is chock full o' unnecessary whitespace and
+    unhelpful one-line comments. It almost fits on one page now …
+
+commit 2bbb038a286c739adec087a97a712ab6b646ff47
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-18 23:46:34 +0000
+
+    MUC: deal with failing to join, or being kicked.
+    
+    ffc594c, which made leaving rooms based on user request asynchronous,
+    unfortunately meant that the case where the server refuses our entry to
+    the room in the first place, or unilaterally removes us from a room
+    we're in, crashed Gabble.
+    
+    This was because the call to tp_base_channel_destroyed() calls out to
+    various bits of code which ultimately leaves the MucChannel with no
+    references, so it gets disposed … right before we start calling methods
+    on it. This wasn't a problem previosuly because
+    tp_base_channel_destroyed() was the last function called in this
+    function.
+    
+    This patch is a bit of a band-aid: it just refs the channel across the
+    duration of this function. It's the least invasive solution that works.
+    I've added a couple of tests: one for failing to join a room (which was
+    filed as fd.o#35120), and another for being kicked from a room (which
+    was previously untested, and triggered this same bug).
+
+commit a37b232df9d9d6e052be7a851e6976f8c5b1c357
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-18 23:53:29 +0000
+
+    gabbletest: handle more exceptions during teardown.
+    
+    Previously, if an exception occurred while we were disconnecting an open
+    connection—specifically, a forbidden event—the exception wasn't handled
+    and bubbled back up to the Twisted mainloop, which just swallowed it.
+    So, the test would never end.
+
+commit a51fd9014bc4e9b5e519acbf1bdb672e7d4a2d3c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-18 23:51:21 +0000
+
+    servicetest: make a real ForbiddenEventOccurred exception
+
 commit 71dd9d958ae9eb7c474086b7fb038c1736b8c25a
 Author: Stef Walter <stefw@collabora.co.uk>
 Date:   2011-03-18 18:27:02 +0100
@@ -643,6 +1330,30 @@ Date:   2011-03-09 16:50:58 +0000
     
     Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
+commit 0f6aa16dfa43d09cc56dd5dc63d1f9661aa07d99
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-03-02 17:05:33 +0000
+
+    tests: ensure the RCCs from the test plugin appear
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 20ea524785c3d68eeedf8c19d32203a35514af62
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-03-02 16:57:39 +0000
+
+    test plugin: stop calling a non-empty strv "empty"
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 461f158be756b85020b7f16649aac76863dcf17d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-03-02 16:54:40 +0000
+
+    connection: remember to free the actual pointer array with plugin channel managers
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit 4e5d61fbef64305a40a43cff69cf5ef4c6e5ca40
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   2011-03-02 14:09:37 +0100
@@ -798,6 +1509,38 @@ Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   2011-02-07 09:22:30 +0000
 
     gabble: remove old caps caches now that they're in Wocky
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit ccb32c9fe13bae60d2bc9ab11ee2be19fa374284
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-14 08:50:19 +0000
+
+    test plugin: implement create_channel_managers
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 6ea7194c5e06f32665e95f5d5d0d12f45fb97743
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-14 08:47:09 +0000
+
+    connection: load channel managers from plugins
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 2e95525443a4b9f590c52aefdf563f1dfd34bfe1
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-14 08:46:57 +0000
+
+    plugin-loader: add create_channel_managers function
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f741f748faf61342327a4814d63a376408542909
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-14 08:46:38 +0000
+
+    plugin: add create_channel_managers function
     
     Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 

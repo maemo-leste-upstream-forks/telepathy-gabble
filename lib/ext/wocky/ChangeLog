@@ -1,3 +1,744 @@
+commit a36dd1fec168abf1924757aeba7124172b9a79f5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Apr 7 10:47:31 2011 +0100
+
+    meta-porter: use a union to avoid strict aliasing problems
+    
+    This solution was taken from my solution to the same thing in
+    https://bugzilla.gnome.org/show_bug.cgi?id=646082.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   31 ++++++++++++++++++-------------
+ 1 files changed, 18 insertions(+), 13 deletions(-)
+
+commit 697698e42a67057d176dd45d6b5f6cb98bb7b9ee
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Thu Apr 7 11:01:27 2011 +0200
+
+    Save const returns in const variables
+
+ wocky/wocky-openssl.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit b032eb73fe610b0e90e1f7bcd3a361607b607aa9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Apr 7 10:10:43 2011 +0100
+
+    meta-porter: add a FIXME for the v6-in-v4 functions
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit a4db103910f0e9768945c8ae222778bdda59ca7b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Apr 7 09:34:03 2011 +0100
+
+    c2s-porter: don't blindly disconnect the IQ handler cancellable
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-c2s-porter.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 7c920ba2ac8cf5c9757c2c39a4fc0b2e61f707eb
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Apr 6 14:39:16 2011 +0100
+
+    meta-porter: hack around v6-in-v4 addresses being exposed
+    
+    This commit should be reverted when we depend on a GLib new enough to
+    fix bgo#646082.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   54 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 52 insertions(+), 2 deletions(-)
+
+commit 3b75abc45c51f18be79ac15685efc28ecc822851
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Apr 6 10:34:02 2011 +0100
+
+    meta-porter: disconnect porter signal handlers before trying to close it
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit d208ffca52be5d0a0e585db8ea6d592ce84edfaa
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Apr 6 10:32:58 2011 +0100
+
+    meta-porter: clean up porter closing callbacks
+    
+    They all share more code now, the signal handler disconnection is in
+    its own function and the porter timeouts are no longer removed.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   45 ++++++++++++++++++++++-----------------------
+ 1 files changed, 22 insertions(+), 23 deletions(-)
+
+commit b2304457ef55403509d7c4df85d968dc12410be1
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Apr 6 10:22:20 2011 +0100
+
+    contact-factory: weak unref an existing LL contact if we're replacing it
+    
+    Also, stop making more dups of JIDs than necessary, again.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-contact-factory.c |   21 ++++++++++++++-------
+ 1 files changed, 14 insertions(+), 7 deletions(-)
+
+commit 9d4802deb229e4a104c5dabea9fb1575c4cdd106
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Apr 5 16:57:11 2011 +0100
+
+    meta-porter: don't start multiple timeouts for freeing the PorterData
+    
+     1. open a connection to a contact
+     2. create a PorterData struct, the timeout starts
+     3. call hold, the timeout stops
+     4. remote contact closes connection, the porter disappears and the
+        timeout stops
+     5. call unhold, the refcount is now 0 so the timeout starts
+     6. a new connection appears for the contact so it's referenced by the
+        PorterData struct and a timeout is started
+    
+        BINGO! THAT'S TWO TIMEOUTS STARTED!
+    
+     7. the first timeout is called, the porter is closed and struct
+        freed
+     8. the second timeout is called, the struct is already freed so we
+        crash here
+    
+    I think this is the right fix, because this means that if you hold()
+    the PorterData struct will stay around, but if you unhold() it will
+    disappear.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 63b8269d73a285dd35873a843d52674869c6ddf3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Apr 5 13:36:43 2011 +0100
+
+    contact-factory: don't dup a string twice when once will do
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-contact-factory.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b93eb03e0ba117392ecdc40b23ad9a54af1ce3a7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Apr 5 11:51:41 2011 +0100
+
+    gitignore: ignore more emacs rubbish
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ .gitignore |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 35dd2dc08c83bd24af209b952dff8f6f9c075161
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Apr 1 14:48:10 2011 +0100
+
+    meta-porter: don't assert if we have another connection
+    
+    It turns out this assertion was being hit a little too often and it
+    was actually somewhat feasible. Let's clear up new connections when
+    they're not needed. I thought about adding some kind of support for
+    multiple porters for this case but it got a bit hairy and I feel that
+    if you already have an open connection to a contact and another
+    appears, this is possibly a bug elsewhere.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   17 ++++++++++++++---
+ 1 files changed, 14 insertions(+), 3 deletions(-)
+
+commit 1769216bed3a8633cebd1e15bc79d0cb72bb3088
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Apr 1 14:48:00 2011 +0100
+
+    meta-porter: stamp on a from contact for IQ replies too
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit c74ca7ea411cca7ee49b77532a5aa2611e8f9faa
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Apr 1 09:54:43 2011 +0100
+
+    meta-porter: also connect to WockyC2SPorter::remote-error
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+commit c7db5937c099717d508c488c724531131293f4c7
+Merge: 637c8b2 3507a19
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 31 13:14:02 2011 +0100
+
+    Merge branch 'meta-fixes'
+
+commit 637c8b2ebe4df64bf2733efb3ca15a2033254f69
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 23 16:44:28 2011 +0000
+
+    stanza: add wocky_stanza_copy
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-stanza-test.c |   34 ++++++++++++++++++++++++++++++++++
+ wocky/wocky-stanza.c      |   14 ++++++++++++++
+ wocky/wocky-stanza.h      |    2 ++
+ 3 files changed, 50 insertions(+), 0 deletions(-)
+
+commit 3507a196e2f72a1693c24f03339260ba52d0e195
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 31 11:05:50 2011 +0100
+
+    meta-porter: unref async result after calling a method on the source object
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 3db9f852cb1cef9fea984cc52bbe8b24a9903237
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 31 09:32:42 2011 +0100
+
+    meta-porter: store the contact JID on the actual C2S porter object
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
+
+commit afcf1727d6fe7a5a0123c47034165bd87e7679ca
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 31 09:32:09 2011 +0100
+
+    meta-porter: use g_clear_error
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 49a90d75db307249e41311b796092d91f9f2f90c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 31 09:30:59 2011 +0100
+
+    meta-porter: close a porter properly before disposing it
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 01548dd48a90b8f56a6a0d8763a26b1a71b0f9d2
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 31 09:30:13 2011 +0100
+
+    meta-porter: keep a ref on self during connecting a connection
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 37da8370cac07133af6d36a3b8403b70405ef220
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 31 09:29:30 2011 +0100
+
+    meta-porter: also debug what IP a new connection is from
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   14 +++++++++++---
+ 1 files changed, 11 insertions(+), 3 deletions(-)
+
+commit 9c4b6aaabcd57a48c8ae7c2e734e419336347c61
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 31 09:27:38 2011 +0100
+
+    meta-porter: unref async result after calling a method on the source object
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit dcfc45feb4373968989fd3e1cd9ffe3d0d5786da
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 31 09:26:57 2011 +0100
+
+    meta-porter: get the property name for the socket connection right
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b796e6c3a625a86c71c3928426f79b07a91d2b7a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 31 09:23:56 2011 +0100
+
+    ll-connector: remove unnecessary unrefs of self
+    
+    Whoops, added by mistake.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-connector.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+commit 8b2fcd085171fe72c368595ed4aa8808c52af047
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 31 09:23:03 2011 +0100
+
+    contact-factory: ensure we don't get a NULL when ensuring a LL contact
+    
+    This crashes inside GHashTable as it's looking for a NULL key.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-contact-factory.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit c75d42181919d270da1c2ef2b9139781dbed1517
+Merge: f13a64a 8e47aa9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 29 14:28:54 2011 +0100
+
+    Merge branch 'whitespace-only-bodies'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=30042>
+
+commit 8e47aa9b34b7fb8957e3b7be74d7c8dc7f49f39e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Mar 29 13:43:33 2011 +0100
+
+    Morse and Lewis were Oxfordshire police.
+    
+    I'm truly ashamed that I got this wrong.
+
+ tests/wocky-xmpp-reader-test.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit f13a64ac9a75a44b0542df3b8a9ce49a0ebc1f9f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Mar 25 12:01:03 2011 +0000
+
+    MUC: remove content-free headers and unused returns
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-muc.c |   25 ++-----------------------
+ 1 files changed, 2 insertions(+), 23 deletions(-)
+
+commit c4cd1516b38df51d50f8be9f207fc0933e805584
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 25 15:23:16 2011 +0000
+
+    ll-connector: check the cancellable for !NULL before unreffing it
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-connector.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit f06ca27d72c18f2c77b010a4c1083e56b372f51f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 25 15:13:43 2011 +0000
+
+    ll-connector: free the async result before the connector itself
+    
+    We need to allow the LL connector to dispose properly by dropping its
+    last ref held by the GSimpleAsyncResult before actually unreffing
+    itself.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-connector.c |   18 +++++++++++++-----
+ 1 files changed, 13 insertions(+), 5 deletions(-)
+
+commit 7be06a577234e467a82f259b4db81b14c7a801fd
+Author: Stef Walter <stefw@collabora.co.uk>
+Date:   Wed Mar 23 10:58:43 2011 +0100
+
+    Hold off on depending on gio 2.28 just for one function.
+    
+    Replace g_simple_async_result_take_error() with
+    g_simple_async_result_set_error() and g_simple_async_result_set_from_error()
+
+ configure.ac                        |    2 +-
+ wocky/wocky-ll-connection-factory.c |   11 +++++------
+ wocky/wocky-ll-connector.c          |   27 +++++++++++----------------
+ wocky/wocky-meta-porter.c           |   14 +++++++++-----
+ wocky/wocky-uninstalled.pc.in       |    2 +-
+ 5 files changed, 27 insertions(+), 29 deletions(-)
+
+commit 59ac2219bd44399949c6732dafa402786b317404
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 10:38:33 2011 +0000
+
+    pubsub-helpers: add make_event_stanza helper function
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-pubsub-helpers.c |   50 ++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-pubsub-helpers.h |    5 ++++
+ 2 files changed, 55 insertions(+), 0 deletions(-)
+
+commit 506ffdf83b335175e037385b6cf323c6c94f0728
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 22 15:40:22 2011 +0000
+
+    examples: use wocky_session_new_with_connection
+    
+    wocky_session_new() was renamed to this in my meta-porter branch.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ examples/receive-messages.c |    2 +-
+ examples/send-message.c     |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 1343f70de56c6917a224b3c2618eaf654a9fc958
+Merge: 9165184 901aca4
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 22 15:31:20 2011 +0000
+
+    Merge branch 'meta-porter'
+    
+    Conflicts:
+    	docs/reference/wocky-docs.sgml
+    	wocky/wocky-debug.h
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 901aca41915146f450842d7ab41071d5dd0e4f46
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 22 15:08:41 2011 +0000
+
+    meta-porter: ensure the ClosePorter closure if freed even if there are none to close
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
+
+commit 018286b9c3f881fe35f2facfb5f52264dd99e231
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 22 15:02:32 2011 +0000
+
+    meta-porter: fix tallying up calls to the close_async function
+    
+    PorterData* can have a NULL porter, which means the meta-porter
+    doesn't need to close it. However, previously, the close_all_porters
+    function didn't care about that and treated as that a remaining
+    porter anyway.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   17 ++++++++---------
+ 1 files changed, 8 insertions(+), 9 deletions(-)
+
+commit 5dd3fcd91d00332f126d447bdc76cecfd0b355ce
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Mar 22 10:04:57 2011 +0000
+
+    configure: depend on gio >= 2.28
+    
+    At least g_simple_async_result_take_error needs this.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ configure.ac                  |    2 +-
+ wocky/wocky-uninstalled.pc.in |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 807c680b413dbef620a9ee560493f56cfc945184
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 21 09:27:15 2011 +0000
+
+    meta-porter: don't leak the stanza if send_iq_finish wasn't called
+    
+    We get a new ref to the new stanza from the c2s porter's
+    send_iq_finish. We now set that as the simple async result's gpointer
+    with free func of g_object_unref. The finish func returns a new ref to
+    the stanza so that when the simple async result is completed it unrefs
+    the stanza leaving the only ref in the callback (unless it has already
+    been unreffed there).
+    
+    Bingo.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit ff6037a2a24288d80fa201bd00b0dc9b5d668971
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 21 09:23:12 2011 +0000
+
+    meta-porter: clarify closing all porters code
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   32 +++++++++++++++-----------------
+ 1 files changed, 15 insertions(+), 17 deletions(-)
+
+commit 5a13d595205c0a5dacff0eb8a29063e8dd4c0554
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 21 09:20:17 2011 +0000
+
+    meta-porter: don't create a new GList twice needlessly
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 4d31698c7664b828ce19d559ec782df6a5df5b20
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 21 09:18:26 2011 +0000
+
+    meta-porter: bail out of start if the socket listener fails to listen
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 00dd8fc007dec252f6255bdcc0e31821d94aedcd
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 21 09:16:49 2011 +0000
+
+    meta-porter: add the other arguments to stanza_handler_new
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   35 ++++++++++++++++++-----------------
+ 1 files changed, 18 insertions(+), 17 deletions(-)
+
+commit bf09868c378b95bd0f2eb48c534d72a1352b9d42
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 21 09:13:36 2011 +0000
+
+    meta-porter: critical on setting the JID twice
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
+
+commit 916518447065436474ddd0d86462dafa3e28815e
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Mar 18 18:26:49 2011 +0000
+
+    SaslAuth: fix a wrong variable name (it's "sasl", not "self")
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+ wocky/wocky-sasl-auth.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 683d2cf1c5d4095b9413442d4cafb4e850c47952
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Mar 18 17:35:09 2011 +0000
+
+    SaslAuth: Don't process stanzas received after disconnection
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=35430>
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+ wocky/wocky-sasl-auth.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit 27252c32885bcc057654dcbc3191812b745238a2
+Merge: d3354fd c0638dd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 17 16:29:27 2011 +0000
+
+    Merge branch 'examples'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=34308>
+
+commit c0638dd2dfc88c5d8404618fe359f5a1185d13d0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 17 15:33:40 2011 +0000
+
+    examples: correctly publish 'chat' presence
+
+ examples/receive-messages.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 43cd47e8868587e6304dbf305135424443f11cc1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 17 15:27:47 2011 +0000
+
+    porter-test: remove stray g_print (G_STRFUNC)s
+
+ tests/wocky-porter-test.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+commit 4766171bc6a764c5cb49a341595fff96fd66fec6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 16 18:57:04 2011 +0000
+
+    Connector: simplify building a debug string
+
+ wocky/wocky-connector.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
+
+commit 1d3db8d669e73f6d18f3130891e53d19913ad0f2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 16 18:25:44 2011 +0000
+
+    SaslAuth: use WockyNodeIter to iterate mechanisms
+
+ wocky/wocky-sasl-auth.c |   19 ++++++-------------
+ 1 files changed, 6 insertions(+), 13 deletions(-)
+
+commit 08d26f1f52da184266301a76030e75b94cdd953f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Feb 16 16:37:23 2011 +0000
+
+    Stanza: Improve error message on type/subtype mismatch
+    
+    Previously, if you tried to build a stanza of TYPE_MESSAGE with
+    SUB_TYPE_GET (say), you got this super-clear critical:
+    
+        wocky-CRITICAL **: check_sub_type: assertion
+        `sub_type_names[sub_type].type == WOCKY_STANZA_TYPE_NONE ||
+        sub_type_names[sub_type].type == type' failed
+    
+    Luddite quotes and all. It's much clearer if we include the
+    human-readable names.
+
+ wocky/wocky-stanza.c |   15 ++++++++++++---
+ 1 files changed, 12 insertions(+), 3 deletions(-)
+
+commit c3b05e3331b883eb192ebca87be393be047944fd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 16 18:52:48 2011 +0000
+
+    Add a simple example of receiving incoming messages.
+
+ .gitignore                  |    1 +
+ examples/Makefile.am        |    5 +
+ examples/receive-messages.c |  195 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 201 insertions(+), 0 deletions(-)
+
+commit 7920415a3f3434c755a120d3e5c050ef8762b506
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Mar 16 18:31:54 2011 +0000
+
+    Remove connect example.
+    
+    The vast, vast majority of this example dealt with connecting before the
+    connector existed. Now it does, that part's unnecessary—it's just a poor
+    clone of the connector—and the remainder is subsumed by send-message.
+
+ .gitignore           |    1 -
+ examples/Makefile.am |    7 +-
+ examples/connect.c   |  432 --------------------------------------------------
+ 3 files changed, 1 insertions(+), 439 deletions(-)
+
+commit 5f37fa362ee2dcf3995f8a9a7ba8506b2c9777a6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue Feb 15 15:51:46 2011 +0000
+
+    Add a simple example of sending a message.
+
+ .gitignore              |    1 +
+ examples/Makefile.am    |    5 ++
+ examples/send-message.c |  138 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 144 insertions(+), 0 deletions(-)
+
+commit de8d20d065f554f6ae7fd1945649dbf0322b2971
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 17 14:04:01 2011 +0000
+
+    Porter: test sending from send_async() callback.
+    
+    When I was briefly hunting the bug Jonny fixed, I though that the
+    following (untested) scenario might not work:
+    
+    • Tell the porter to send two messages;
+    • In the callback for the first one having been sent, tell the porter to
+      send a third.
+    
+    So I wrote the test, and it does work. Hooray.
+
+ tests/wocky-porter-test.c |  103 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 103 insertions(+), 0 deletions(-)
+
+commit 902aa24b5d9519fbc6ec3fcbd7c353cbbc42930d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Feb 16 17:56:59 2011 +0000
+
+    Add a test case for closing a porter from a send_async callback
+    
+    This is a regression test for the bug fixed in the previous commit.
+
+ tests/wocky-porter-test.c |   68 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 68 insertions(+), 0 deletions(-)
+
+commit cf8b0dbabe4b153f0e62c5483507cef89a30177f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 09:54:19 2011 +0000
+
+    porter: don't close twice if we close in a send callback
+    
+    We need to decide before we complete the "send stanza" asynchronous
+    operation whether we have a close result pending. If we don't, we can
+    get into a pickle if the callback to send_async calls close_async. The
+    problem is that close_async doesn't use the same stanza queue as
+    send_async so needs special-casing.
+    
+    For example: Previously, we send a stanza using send_async. The simple
+    async result would be completed with g_simple_async_result_complete()
+    and the callback to send_async would be called. However, if in the
+    callback close_async is called, the stream close is sent directly with
+    wocky_xmpp_connection_send_close_async and priv->close_result is
+    assigned. Once the callback returns, send_stanza_cb continues BUT at
+    the end there is a test for whether there is a close result
+    pending. This is for when you send a whole bunch of stanzas followed
+    by a close request, so the porter waits until all the stanzas are sent
+    before sending the stream close, which is cool. However,
+    priv->close_result is now != NULL so the porter thinks we're in
+    exactly that case -- that we're waiting until all the stanzas are sent
+    and will try and send a stream close afterwards. As we've already done
+    that the xmpp connection will say "hey another send operation pending"
+    and everything will fall apart.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-c2s-porter.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
 commit d3354fd9c095a2c7c1f381e62a4d7b8481fd9edc
 Merge: cf9bb4a 45bb1dc
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
@@ -15,6 +756,198 @@ Date:   Tue Mar 15 13:20:15 2011 +0100
  wocky/wocky-c2s-porter.h |    3 +
  2 files changed, 150 insertions(+), 1 deletions(-)
 
+commit 4bb6e6fc14c8014e653a4cb812a220fdc5f14147
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 10:46:21 2011 +0000
+
+    meta-porter: clarify borrow_connection docstring
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
+
+commit e46d8083b9a7401b9080c37e4c06b48c9f511b62
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 10:29:31 2011 +0000
+
+    meta-porter: don't refer to missing arguments in documentation
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 544956df89dbad2d0712a4d736a08eff0becfa19
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 10:27:36 2011 +0000
+
+    meta-porter: give functions who require ll contacts that signature
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    8 ++++----
+ wocky/wocky-meta-porter.h |    4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 7cb02519648fea65317a51f5e3ebe85f79b668b8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 10:20:48 2011 +0000
+
+    meta-porter: add a stanza_handler_new to stop duplicating code
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   24 +++++++++++++++++-------
+ 1 files changed, 17 insertions(+), 7 deletions(-)
+
+commit 3d616a5da98686ff68c7ec73f78169e5ec2f3597
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 10:15:13 2011 +0000
+
+    meta-porter: continue using wocky_stanza_get_ functions
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit c357d3309905b4b35e9541c9899dd49ace00e2bd
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 10:11:34 2011 +0000
+
+    meta-porter: use better callback names when using open_porter_if_necessary
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   25 +++++++++++++------------
+ 1 files changed, 13 insertions(+), 12 deletions(-)
+
+commit 20c50ed7dea3b03bcfb17b917b0f73527ebc51e8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 10:03:23 2011 +0000
+
+    meta-porter: use wocky_stanza_get_from
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit c0c789bc14dd1a4c3220f4bb6a53eaeb803433a4
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 10:00:15 2011 +0000
+
+    meta-porter: change variable name to be a little less confusing
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 27260ccf388c1f9a6b498561658d8aa2971fa004
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 09:58:00 2011 +0000
+
+    meta-porter: make open_porter_if_necessary take a async result and user data
+    
+    Turns out two user datas wasn't necessary!
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   51 +++++++++++++++++++++++----------------------
+ 1 files changed, 26 insertions(+), 25 deletions(-)
+
+commit 4cbc9642b23585d8aa85abfae578c80af004c4f6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 09:51:32 2011 +0000
+
+    meta-porter: don't leak and report more errors when setting up the loopback porter
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   20 ++++++++++++++++----
+ 1 files changed, 16 insertions(+), 4 deletions(-)
+
+commit 25ef4db47a538827397c6bc5fe0feeca16a25b8b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 09:44:01 2011 +0000
+
+    meta-porter: remove NewConnectionData
+    
+    We can get the socket address later.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   47 +++++++++++++++++++-------------------------
+ 1 files changed, 20 insertions(+), 27 deletions(-)
+
+commit daf1a426a6e2dd7079ee7b5e99934fbe55bcd896
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 09:37:48 2011 +0000
+
+    meta-porter: refactor duplicated code into another function
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   22 ++++++++++++----------
+ 1 files changed, 12 insertions(+), 10 deletions(-)
+
+commit 55acacdf14ece714bfeb74b5554303ddc1687264
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 09:30:34 2011 +0000
+
+    meta-porter: clarify porter disposed weak ref callback name
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+commit e1ab0e953cfe66aa4d20c318c47b985d2802703a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 09:24:35 2011 +0000
+
+    meta-porter: remove unnecessary weak reffing of the c2s porter
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   18 +-----------------
+ 1 files changed, 1 insertions(+), 17 deletions(-)
+
+commit ec72ecf69ad36a96ebbb028af1a7d83a2f36b7f7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 09:16:56 2011 +0000
+
+    meta-porter: include missing porter recipient in debug message
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 0537e42cb88fa664178bed703cb66ee3304cd4dd
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 09:07:43 2011 +0000
+
+    meta-porter: only allow set_jid to be called once
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   16 ++++++++++++----
+ 1 files changed, 12 insertions(+), 4 deletions(-)
+
+commit 6e484c8d874a36c95f07b31a114f879c453ae072
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 16 08:58:25 2011 +0000
+
+    meta-porter: stop talking about references in docstrings
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
+
 commit cf9bb4a08d6ba577937603b2c899d5e00408115a
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Tue Mar 15 18:22:35 2011 +0000
@@ -28,6 +961,189 @@ Date:   Tue Mar 15 18:22:35 2011 +0000
 
  wocky/wocky-roster.c |   15 ---------------
  1 files changed, 0 insertions(+), 15 deletions(-)
+
+commit 37fe2e992fa482c36abae85ed07df49a3a307937
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 14:40:15 2011 +0000
+
+    ll-connector: use GAsyncInitable and make API easier to understand.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-connector.c |  225 +++++++++++++++++++++++++------------------
+ wocky/wocky-ll-connector.h |   16 ++--
+ wocky/wocky-meta-porter.c  |   26 ++---
+ 3 files changed, 150 insertions(+), 117 deletions(-)
+
+commit bbaeb4a4ce8e02c364c93949a041be369bd0466c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 12:06:59 2011 +0000
+
+    loopback-connection: rename to loopback-stream
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-loopback-test.c       |    4 +-
+ wocky/Makefile.am                 |    4 +-
+ wocky/wocky-loopback-connection.c |  544 -------------------------------------
+ wocky/wocky-loopback-connection.h |   67 -----
+ wocky/wocky-loopback-stream.c     |  544 +++++++++++++++++++++++++++++++++++++
+ wocky/wocky-loopback-stream.h     |   67 +++++
+ wocky/wocky-meta-porter.c         |    4 +-
+ 7 files changed, 617 insertions(+), 617 deletions(-)
+
+commit 5cc57e7166807b911a5ea1cbcfa0b4cb28688fc5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 12:02:48 2011 +0000
+
+    meta-porter: rename ref/unref to hold/unhold
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   24 ++++++++++++------------
+ wocky/wocky-meta-porter.h |    4 ++--
+ 2 files changed, 14 insertions(+), 14 deletions(-)
+
+commit b230d9aa66b6835cc5688b8bf9dc2dec233e5657
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 11:51:39 2011 +0000
+
+    ll-connector: send stream features in incoming connections too
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-connector.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+commit 05caefc9bac290525b8be7d5c75034fb27fe7cca
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 11:49:33 2011 +0000
+
+    ll-connector: chain up to constructed first
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-connector.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 9cb140595d2d163810d72768075f2a9178b1413c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 10:56:24 2011 +0000
+
+    ll-connector: reference _new functions in connect_async docstring
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-connector.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 83fceb9a01975163bb65c4c081ad182051ba1a97
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 10:40:24 2011 +0000
+
+    ll-connection-factory: use a GQueue
+    
+    It's more clear than a couple of GList pointers.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-connection-factory.c |   34 +++++++++++++++++++++++-----------
+ 1 files changed, 23 insertions(+), 11 deletions(-)
+
+commit 92bda0a09cf5b9fd282b6a63171d01fd0f6c7351
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 10:17:35 2011 +0000
+
+    ll-connection-factory: check whether the cancellable has been cancelled
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-connection-factory.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit d87861c3af468b1a66b862c69b8f09ab677169c8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 10:12:35 2011 +0000
+
+    connection-factory: rename to ll-connection-factory
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/Makefile.am                   |    4 +-
+ wocky/wocky-connection-factory.c    |  266 -----------------------------------
+ wocky/wocky-connection-factory.h    |   89 ------------
+ wocky/wocky-ll-connection-factory.c |  266 +++++++++++++++++++++++++++++++++++
+ wocky/wocky-ll-connection-factory.h |   89 ++++++++++++
+ wocky/wocky-meta-porter.c           |   12 +-
+ 6 files changed, 363 insertions(+), 363 deletions(-)
+
+commit e3f1e091e087942944b38a66554716ba316e30d9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 10:00:39 2011 +0000
+
+    ll-contact: re-word get_addresses docstring
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-contact.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+commit 37b5701f9c7d99c077e3286881992af11a883f7e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 09:59:32 2011 +0000
+
+    ll-contact: annotate return type of get_addresses
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-contact.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 3280a8dde69ddfe5e3853b2cbf8068232fa1652b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 09:57:34 2011 +0000
+
+    ll-contact: spell out ll acronym in docstring
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-contact.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit e9f5d05edddcf678d2fb143c5332705e6b406719
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 09:42:07 2011 +0000
+
+    stanza: separate contact object into to and from objects
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |    8 +++---
+ wocky/wocky-stanza.c      |   59 ++++++++++++++++++++++++++++++++++----------
+ wocky/wocky-stanza.h      |    7 ++++-
+ 3 files changed, 54 insertions(+), 20 deletions(-)
+
+commit 2a4c323c0d490f863728c48c79333edc0a99ed82
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 14 09:22:58 2011 +0000
+
+    utils: use G_STMT_{START,END} in new implement macro
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-utils.h |   18 ++++++++++--------
+ 1 files changed, 10 insertions(+), 8 deletions(-)
+
+commit 3f0a9c6a3d03e6dd92874fb328e637aecce782e4
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 10:28:18 2011 +0000
+
+    meta-porter: add more interesting debug messages
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   14 ++++++++++----
+ 1 files changed, 10 insertions(+), 4 deletions(-)
 
 commit e763571868f715378a51acee823ebde65891998b
 Merge: 5cd5394 a17332c
@@ -736,6 +1852,121 @@ Date:   Wed Mar 2 16:25:05 2011 +0000
  wocky/wocky-porter.h |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
+commit 4f91ede6ddd14ee67b818726e32b561bcd4a50fa
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 7 14:41:39 2011 +0000
+
+    meta-porter: create a loopback porter for stanzas for yourself
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   69 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 69 insertions(+), 0 deletions(-)
+
+commit b1168ad194943eadd8bb1381ef9392b80492e7ba
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 7 14:41:17 2011 +0000
+
+    loopback-connection: dispose the in/out streams only after they've been closed
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-loopback-connection.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 68243ab51601302d79c17e1cfba53fc45340f86c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 7 11:57:23 2011 +0000
+
+    tests: add a simple test for the loopback connection
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/Makefile.am           |    7 ++
+ tests/wocky-loopback-test.c |  191 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 198 insertions(+), 0 deletions(-)
+
+commit 91cdffaaa241f8595d65111edb75dde440b5fc95
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Mar 7 11:56:55 2011 +0000
+
+    loopback-connection: added files
+    
+    Perhaps this should be called WockyLoopbackStream?
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/Makefile.am                 |    2 +
+ wocky/wocky-loopback-connection.c |  544 +++++++++++++++++++++++++++++++++++++
+ wocky/wocky-loopback-connection.h |   67 +++++
+ 3 files changed, 613 insertions(+), 0 deletions(-)
+
+commit 5e62f6126ec0101c30c9b154d57bcd9a134ec055
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 2 16:27:45 2011 +0000
+
+    session: add set_jid function
+    
+    This is useful for being able to create a link-local session (and
+    therefore the meta porter) and start listening on a port without
+    knowing your JID properly yet. E.g.
+    
+        session = wocky_session_new_ll (NULL);
+        wocky_session_start (session);
+    
+        porter = wocky_session_get_porter (session);
+        port = wocky_meta_porter_get_port (WOCKY_META_PORTER (porter));
+    
+        /* announce through mdns that we're listening on this port */
+    
+        /* avahi tells us our fqdn */
+        jid = avahi_now_that_we_are_connected_tell_me_my_jid ();
+    
+        wocky_session_set_jid (jid);
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-session.c |   16 ++++++++++++++++
+ wocky/wocky-session.h |    2 ++
+ 2 files changed, 18 insertions(+), 0 deletions(-)
+
+commit de95c177539fddc613efa0fdede675e6b9b376ce
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 2 16:27:22 2011 +0000
+
+    session: add new_ll function for link-local sessions
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-session.c |   26 ++++++++++++++++++++++----
+ wocky/wocky-session.h |    2 ++
+ 2 files changed, 24 insertions(+), 4 deletions(-)
+
+commit dba6805a40435d690061d24ad5c6936b32eb71ea
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 2 16:27:01 2011 +0000
+
+    docs: added c2s-porter to docs
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ docs/reference/wocky-docs.sgml |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit ad2d79eb7a11acc68f0e741e3b2722339b9ca489
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Mar 2 16:26:50 2011 +0000
+
+    meta-porter: added files
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ docs/reference/wocky-docs.sgml |    1 +
+ wocky/Makefile.am              |    2 +
+ wocky/wocky-meta-porter.c      | 1611 ++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-meta-porter.h      |   97 +++
+ 4 files changed, 1711 insertions(+), 0 deletions(-)
+
 commit 84edb4f0db762517eaec1790a2e6b7821f9ba332
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Mon Mar 7 14:12:30 2011 +0000
@@ -778,6 +2009,42 @@ Date:   Wed Mar 2 15:03:14 2011 +0000
  wocky/wocky-porter.c      |   54 ++++++++++++++++++
  wocky/wocky-porter.h      |    6 ++
  3 files changed, 190 insertions(+), 4 deletions(-)
+
+commit 1b5139b290641a23d0a413f352343615a7810bcc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Sep 6 13:45:26 2010 +0100
+
+    Add a regression test for whitespace-only bodies.
+    
+    This tests for the bug fixed in the previous commit, namely
+    <https://bugs.freedesktop.org/show_bug.cgi?id=30042>. The first part of
+    the test—checking that whitespace surrounding non-whitespace isn't
+    stripped—already worked, but was untested. The second part was the bug
+    in question.
+
+ tests/wocky-xmpp-reader-test.c |   54 ++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 54 insertions(+), 0 deletions(-)
+
+commit a9e55164d226568a9a2a85d8974e84e0783af01b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Mar 3 16:12:04 2011 +0000
+
+    WockyXmppReader: Don't drop whitespace-only contents
+    
+    For some reason, Wocky went out of its way to drop the contents of nodes
+    if they were purely whitespace. I don't see the point of this, and it
+    causes user-visible changes. If I send a contact a message containing
+    only spaces, I'd expect them to receive my message; but because the
+    <body/> as passed up to Gabble has no contents, Gabble doesn't show it
+    to the user. Arguably Gabble should show an empty message even if the
+    body is empty, but if we're doing that we shouldn't mangle
+    whitespace-only bodies. (Besides, how else am I going to do the
+    whitespace-only OTR handshake?)
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=30042>
+
+ wocky/wocky-xmpp-reader.c |   10 ----------
+ 1 files changed, 0 insertions(+), 10 deletions(-)
 
 commit 21003231466b39ba3acb30f827f5ac5c70304f0c
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -1022,6 +2289,184 @@ Date:   Fri Feb 4 13:27:02 2011 +0100
 
  wocky/wocky-caps-cache.c |    1 -
  1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 860185ca57e338aa1954ecb723925b84ed7b191a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Feb 28 13:58:55 2011 +0000
+
+    ll-connector: wait for features to be sent before continuing
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-connector.c |   29 +++++++++++++++++++++++++----
+ 1 files changed, 25 insertions(+), 4 deletions(-)
+
+commit 5bafc9b5c4a762c3835a83d5eeae8dd44ef779a9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 14:55:11 2011 +0000
+
+    ll-connector: added new files
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/Makefile.am          |    2 +
+ wocky/wocky-ll-connector.c |  453 ++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-ll-connector.h |   92 +++++++++
+ 3 files changed, 547 insertions(+), 0 deletions(-)
+
+commit d9e5561e60485ff61c10715cb662998326fbc79c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 14:34:41 2011 +0000
+
+    connection-factory: add files
+    
+    Perhaps this should be called ll-connection-factory, to emphasize the
+    link-local emphasis?
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/Makefile.am                |    2 +
+ wocky/wocky-connection-factory.c |  266 ++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-connection-factory.h |   89 +++++++++++++
+ wocky/wocky-debug.c              |    1 +
+ wocky/wocky-debug.h              |    1 +
+ 5 files changed, 359 insertions(+), 0 deletions(-)
+
+commit 27808b494f65ae5fdc8b97e05b58032dd27068b4
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 14:19:52 2011 +0000
+
+    session: rename new to new_with_connection
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-pubsub-node-test.c    |    4 ++--
+ tests/wocky-pubsub-service-test.c |    2 +-
+ tests/wocky-roster-test.c         |    2 +-
+ tests/wocky-session-test.c        |    6 +++---
+ tests/wocky-test-helper.c         |    4 ++--
+ wocky/wocky-session.c             |    2 +-
+ wocky/wocky-session.h             |    2 +-
+ 7 files changed, 11 insertions(+), 11 deletions(-)
+
+commit 90e9a9e664d7878fa7a169d85ee9b58eac325c62
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 14:18:23 2011 +0000
+
+    contact-factory: add support for LL contacts
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-contact-factory.c |  121 ++++++++++++++++++++++++++++++++++++++++-
+ wocky/wocky-contact-factory.h |   14 +++++
+ 2 files changed, 133 insertions(+), 2 deletions(-)
+
+commit c2fada22e35de44101faa8e7eaf0b31b2a46b6d0
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 14:14:35 2011 +0000
+
+    ll-contact: added new files
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/Makefile.am        |    2 +
+ wocky/wocky-ll-contact.c |  288 ++++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-ll-contact.h |   81 +++++++++++++
+ wocky/wocky-types.h      |    1 +
+ 4 files changed, 372 insertions(+), 0 deletions(-)
+
+commit 93ef951516b1339a6417014f1d4b87f25aed9bea
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 14:06:51 2011 +0000
+
+    stanza: fix argument indentation
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-stanza.c |   19 ++++++++++---------
+ 1 files changed, 10 insertions(+), 9 deletions(-)
+
+commit 1f9ab7cd3614534cbc1bcbd53e4f025f58ee5f5e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 14:05:51 2011 +0000
+
+    stanza: add build_to_contact function
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-stanza.c |   26 ++++++++++++++++++++++++++
+ wocky/wocky-stanza.h |    4 ++++
+ 2 files changed, 30 insertions(+), 0 deletions(-)
+
+commit 342fee05e569ddc80b0a5de51f0d537aa4c0acb5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 14:04:59 2011 +0000
+
+    stanza: associate a WockyContact with each stanza
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-stanza.c |   41 +++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-stanza.h |    6 ++++++
+ 2 files changed, 47 insertions(+), 0 deletions(-)
+
+commit b459853883dd1d4c3c47c42647aebe305200fce5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 14:03:45 2011 +0000
+
+    stanza: make dispose and finalize static
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-stanza.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 13191d4866acea9607c3c29093a40c774878d79f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 13:58:42 2011 +0000
+
+    resource-contact: implement dup_jid
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-resource-contact.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+commit 68d21d640869d57a9720eec76fe02c08f13da880
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 13:58:29 2011 +0000
+
+    bare-contact: implement dup_jid
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-bare-contact.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit f48ced6ecdb775763fbf8adcd59130540071a756
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 13:58:13 2011 +0000
+
+    contact: add dup_jid function
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-contact.c |   11 +++++++++++
+ wocky/wocky-contact.h |    6 ++++++
+ 2 files changed, 17 insertions(+), 0 deletions(-)
+
+commit c71df0e0b513dab7f291d6152a9f7f6bd0eca456
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 25 13:51:08 2011 +0000
+
+    utils: add implement_finish_return_pointer macro
+    
+    No copy function.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-utils.h |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
 
 commit 5e748b2edcba058a40e547656cd898f56ae48784
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>

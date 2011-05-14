@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyPing</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="WockyPepService.html" title="WockyPepService">
+<link rel="next" href="WockyPorter.html" title="WockyPorter">
+<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="WockyPepService.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="WockyPorter.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#WockyPing.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#WockyPing.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#WockyPing.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#WockyPing.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" title="WockyPing">
+<a name="WockyPing"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="WockyPing.top_of_page"></a>WockyPing</span></h2>
+<p>WockyPing — support for pings/keepalives</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="WockyPing.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">                    <a class="link" href="WockyPing.html#WockyPing-struct" title="WockyPing">WockyPing</a>;
+                    <a class="link" href="WockyPing.html#WockyPingClass" title="WockyPingClass">WockyPingClass</a>;
+                    <a class="link" href="WockyPing.html#WockyPingPrivate" title="WockyPingPrivate">WockyPingPrivate</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="WockyPing.html#wocky-ping-error-quark" title="wocky_ping_error_quark ()">wocky_ping_error_quark</a>              (<em class="parameter"><code><span class="type">void</span></code></em>);
+<a class="link" href="WockyPing.html" title="WockyPing"><span class="returnvalue">WockyPing</span></a> *         <a class="link" href="WockyPing.html#wocky-ping-new" title="wocky_ping_new ()">wocky_ping_new</a>                      (<em class="parameter"><code><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a> *porter</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> interval</code></em>);
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="WockyPing.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----WockyPing
+</pre>
+</div>
+<div class="refsect1" title="Properties">
+<a name="WockyPing.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="WockyPing.html#WockyPing--ping-interval" title='The "ping-interval" property'>ping-interval</a>"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write / Construct
+  "<a class="link" href="WockyPing.html#WockyPing--porter" title='The "porter" property'>porter</a>"                   <a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a>*          : Read / Write / Construct Only
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="WockyPing.description"></a><h2>Description</h2>
+<p>
+Support for XEP-0199 pings.
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="WockyPing.details"></a><h2>Details</h2>
+<div class="refsect2" title="WockyPing">
+<a name="WockyPing-struct"></a><h3>WockyPing</h3>
+<pre class="programlisting">typedef struct _WockyPing WockyPing;</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WockyPingClass">
+<a name="WockyPingClass"></a><h3>WockyPingClass</h3>
+<pre class="programlisting">typedef struct {
+} WockyPingClass;
+</pre>
+<p>
+The class of a <a class="link" href="WockyPing.html" title="WockyPing"><span class="type">WockyPing</span></a>.
+</p>
+</div>
+<hr>
+<div class="refsect2" title="WockyPingPrivate">
+<a name="WockyPingPrivate"></a><h3>WockyPingPrivate</h3>
+<pre class="programlisting">typedef struct _WockyPingPrivate WockyPingPrivate;</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2" title="wocky_ping_error_quark ()">
+<a name="wocky-ping-error-quark"></a><h3>wocky_ping_error_quark ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_ping_error_quark              (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="wocky_ping_new ()">
+<a name="wocky-ping-new"></a><h3>wocky_ping_new ()</h3>
+<pre class="programlisting"><a class="link" href="WockyPing.html" title="WockyPing"><span class="returnvalue">WockyPing</span></a> *         wocky_ping_new                      (<em class="parameter"><code><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a> *porter</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> interval</code></em>);</pre>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>interval</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="WockyPing.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "ping-interval" property'>
+<a name="WockyPing--ping-interval"></a><h3>The <code class="literal">"ping-interval"</code> property</h3>
+<pre class="programlisting">  "ping-interval"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write / Construct</pre>
+<p>keepalive ping interval in seconds, or 0 to disable.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" title='The "porter" property'>
+<a name="WockyPing--porter"></a><h3>The <code class="literal">"porter"</code> property</h3>
+<pre class="programlisting">  "porter"                   <a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a>*          : Read / Write / Construct Only</pre>
+<p>the wocky porter to set up keepalive pings on.</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.15</div>
+</body>
+</html>

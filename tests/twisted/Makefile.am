@@ -20,8 +20,10 @@ TWISTED_TESTS = \
 	client-types.py \
 	cm/protocol.py \
 	gateways.py \
+	muc/banned.py \
 	muc/conference.py \
 	muc/chat-states.py \
+	muc/kicked.py \
 	muc/name-conflict.py \
 	muc/presence-before-closing.py \
 	muc/renamed.py \
@@ -42,6 +44,7 @@ TWISTED_TESTS = \
 	olpc/test-olpc-set-props-preload.py \
 	olpc/change-notifications.py \
 	pep-support.py \
+	plugin-channel-managers.py \
 	power-save.py \
 	presence/decloak.py \
 	presence/initial-contact-presence.py \
@@ -307,6 +310,7 @@ BUILT_SOURCES = config.py
 EXTRA_DIST = \
 	$(TWISTED_TESTS) \
 	bytestream.py \
+	connect/torture.py \
 	constants.py \
 	gabbletest.py \
 	httptest.py \
