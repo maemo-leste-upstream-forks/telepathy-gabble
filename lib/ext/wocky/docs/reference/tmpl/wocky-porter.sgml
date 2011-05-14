@@ -20,76 +20,6 @@ WockyPorter
 <!-- ##### SECTION Image ##### -->
 
 
-<!-- ##### STRUCT WockyPorter ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### SIGNAL WockyPorter::closing ##### -->
-<para>
-
-</para>
-
-@wockyporter: the object which received the signal.
-
-<!-- ##### SIGNAL WockyPorter::remote-closed ##### -->
-<para>
-
-</para>
-
-@wockyporter: the object which received the signal.
-
-<!-- ##### SIGNAL WockyPorter::remote-error ##### -->
-<para>
-
-</para>
-
-@wockyporter: the object which received the signal.
-@arg1: 
-@arg2: 
-@arg3: 
-
-<!-- ##### SIGNAL WockyPorter::sending ##### -->
-<para>
-
-</para>
-
-@wockyporter: the object which received the signal.
-
-<!-- ##### ARG WockyPorter:bare-jid ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG WockyPorter:connection ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG WockyPorter:full-jid ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG WockyPorter:resource ##### -->
-<para>
-
-</para>
-
-<!-- ##### STRUCT WockyPorterClass ##### -->
-<para>
-
-</para>
-
-@parent_class: 
-
-<!-- ##### STRUCT WockyPorterPrivate ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### ENUM WockyPorterError ##### -->
 <para>
 
@@ -108,6 +38,13 @@ WockyPorter
 
 @void: 
 @Returns: 
+
+
+<!-- ##### MACRO WOCKY_PORTER_ERROR ##### -->
+<para>
+
+</para>
+
 
 
 <!-- ##### MACRO WOCKY_PORTER_HANDLER_PRIORITY_MIN ##### -->
@@ -131,21 +68,45 @@ WockyPorter
 
 
 
-<!-- ##### MACRO WOCKY_PORTER_ERROR ##### -->
+<!-- ##### USER_FUNCTION WockyPorterHandlerFunc ##### -->
 <para>
 
 </para>
 
-
-
-<!-- ##### FUNCTION wocky_porter_new ##### -->
-<para>
-
-</para>
-
-@connection: 
-@full_jid: 
+@porter: 
+@stanza: 
+@user_data: 
 @Returns: 
+
+
+<!-- ##### STRUCT WockyPorterInterface ##### -->
+<para>
+
+</para>
+
+@parent_iface: 
+@get_full_jid: 
+@get_bare_jid: 
+@get_resource: 
+@start: 
+@send_async: 
+@send_finish: 
+@register_handler_from_by_stanza: 
+@register_handler_from_anyone_by_stanza: 
+@unregister_handler: 
+@close_async: 
+@close_finish: 
+@send_iq_async: 
+@send_iq_finish: 
+@force_close_async: 
+@force_close_finish: 
+
+<!-- ##### FUNCTION wocky_porter_start ##### -->
+<para>
+
+</para>
+
+@porter: 
 
 
 <!-- ##### FUNCTION wocky_porter_get_full_jid ##### -->
@@ -207,26 +168,7 @@ WockyPorter
 @stanza: 
 
 
-<!-- ##### FUNCTION wocky_porter_start ##### -->
-<para>
-
-</para>
-
-@porter: 
-
-
-<!-- ##### USER_FUNCTION WockyPorterHandlerFunc ##### -->
-<para>
-
-</para>
-
-@porter: 
-@stanza: 
-@user_data: 
-@Returns: 
-
-
-<!-- ##### FUNCTION wocky_porter_register_handler ##### -->
+<!-- ##### FUNCTION wocky_porter_register_handler_from_va ##### -->
 <para>
 
 </para>
@@ -235,6 +177,83 @@ WockyPorter
 @type: 
 @sub_type: 
 @from: 
+@priority: 
+@callback: 
+@user_data: 
+@ap: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_porter_register_handler_from_by_stanza ##### -->
+<para>
+
+</para>
+
+@self: 
+@type: 
+@sub_type: 
+@from: 
+@priority: 
+@callback: 
+@user_data: 
+@stanza: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_porter_register_handler_from ##### -->
+<para>
+
+</para>
+
+@self: 
+@type: 
+@sub_type: 
+@from: 
+@priority: 
+@callback: 
+@user_data: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_porter_register_handler_from_anyone_va ##### -->
+<para>
+
+</para>
+
+@self: 
+@type: 
+@sub_type: 
+@priority: 
+@callback: 
+@user_data: 
+@ap: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_porter_register_handler_from_anyone_by_stanza ##### -->
+<para>
+
+</para>
+
+@self: 
+@type: 
+@sub_type: 
+@priority: 
+@callback: 
+@user_data: 
+@stanza: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_porter_register_handler_from_anyone ##### -->
+<para>
+
+</para>
+
+@self: 
+@type: 
+@sub_type: 
 @priority: 
 @callback: 
 @user_data: 
@@ -294,6 +313,37 @@ WockyPorter
 @result: 
 @error: 
 @Returns: 
+
+
+<!-- ##### FUNCTION wocky_porter_acknowledge_iq ##### -->
+<para>
+
+</para>
+
+@porter: 
+@stanza: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION wocky_porter_send_iq_error ##### -->
+<para>
+
+</para>
+
+@porter: 
+@stanza: 
+@error_code: 
+@message: 
+
+
+<!-- ##### FUNCTION wocky_porter_send_iq_gerror ##### -->
+<para>
+
+</para>
+
+@porter: 
+@stanza: 
+@error: 
 
 
 <!-- ##### FUNCTION wocky_porter_force_close_async ##### -->

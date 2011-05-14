@@ -134,13 +134,14 @@ def test_tube_caps_from_contact(q, bus, conn, stream, contact):
     # contact yet.
     caps = conn.ContactCapabilities.GetContactCapabilities([contact_handle])
 
-    # Since we don't know their caps, they should be omitted from the dict,
-    # rather than present with no caps.
-    assertEquals({}, caps)
-
-    # send presence with no tube cap
     basic_caps = dbus.Dictionary({contact_handle:
             [(text_fixed_properties, text_allowed_properties)]})
+
+    # Since we don't know their caps, they should be omitted from the dict,
+    # rather than present with no caps, but all contacts have text chat caps.
+    assertEquals(basic_caps, caps)
+
+    # send presence with no tube cap
     # We don't expect ContactCapabilitiesChanged to be emitted here: we always
     # assume people can do text channels.
     receive_caps(q, conn, stream, contact, contact_handle, [], basic_caps,
@@ -352,10 +353,6 @@ def test_tube_caps_to_contact(q, bus, conn, stream):
         daap_xiangqi_caps)
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     test_tube_caps_from_contact(q, bus, conn, stream, 'bilbo1@foo.com/Foo')
 
     test_tube_caps_to_contact(q, bus, conn, stream)

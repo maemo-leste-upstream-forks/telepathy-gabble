@@ -1,7 +1,7 @@
 /*
  * Copyright © 2008 Christian Kellner, Samuel Cormier-Iijima
  * Copyright © 2008-2009 Codethink Limited
- * Copyright © 2009 Collabora Limited
+ * Copyright © 2009-2010 Collabora Limited
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -139,7 +139,7 @@ typedef GObjectClass WockyTLSSessionClass;
 typedef GInputStreamClass WockyTLSInputStreamClass;
 typedef GOutputStreamClass WockyTLSOutputStreamClass;
 
-struct OPAQUE_TYPE__WockyTLSSession
+struct _WockyTLSSession
 {
   GObject parent;
 
@@ -182,7 +182,7 @@ typedef struct
   WockyTLSSession *session;
 } WockyTLSOutputStream;
 
-struct OPAQUE_TYPE__WockyTLSConnection
+struct _WockyTLSConnection
 {
   GIOStream parent;
 
@@ -280,8 +280,16 @@ wocky_tls_job_make_result (WockyTLSJob *job,
       job->error = NULL;
     }
 
-  if (job->source_object)
+  if (job->source_object != NULL)
     g_object_unref (job->source_object);
+
+  job->source_object = NULL;
+
+  if (job->cancellable != NULL)
+    g_object_unref (job->cancellable);
+
+  job->cancellable = NULL;
+
   job->active = FALSE;
 
   return simple;
@@ -457,7 +465,7 @@ ssl_handshake (WockyTLSSession *session)
   else
     {
       DEBUG ("Handshake failed: [%d:%ld] %s", result, errnum, errstr);
-      if (session->job.handshake.job.error)
+      if (session->job.handshake.job.error != NULL)
         {
           g_error_free (session->job.handshake.job.error);
           session->job.handshake.job.error = NULL;
@@ -618,6 +626,7 @@ wocky_tls_job_start (WockyTLSJob             *job,
                      gpointer             source_tag)
 {
   g_assert (job->active == FALSE);
+  g_assert (job->cancellable == NULL);
 
   /* this is always a circular reference, so it will keep the
    * session alive for as long as the job is running.
@@ -625,9 +634,8 @@ wocky_tls_job_start (WockyTLSJob             *job,
   job->source_object = g_object_ref (source_object);
 
   job->io_priority = io_priority;
-  job->cancellable = cancellable;
-  if (cancellable)
-    g_object_ref (cancellable);
+  if (cancellable != NULL)
+    job->cancellable = g_object_ref (cancellable);
   job->callback = callback;
   job->user_data = user_data;
   job->source_tag = source_tag;
@@ -866,7 +874,8 @@ check_peer_name (const char *target, X509 *cert)
       if (len > 0)
         {
           char *cname = g_new0 (gchar, len + 1);
-          X509_NAME_get_text_by_NID (subject, nid[i], cname, len);
+          X509_NAME_get_text_by_NID (subject, nid[i], cname, len + 1);
+          DEBUG ("got cname '%s' from x509 name, nid #%u", cname, i);
           rval = compare_wildcarded_hostname (target, cname);
           g_free (cname);
         }
@@ -905,6 +914,8 @@ check_peer_name (const char *target, X509 *cert)
         if (convert->i2s != NULL)
           {
             value = convert->i2s (convert, ext_str);
+            DEBUG ("got cname '%s' from subject_alt_name, which is a string",
+                value);
             rval = compare_wildcarded_hostname (target, value);
             OPENSSL_free (value);
           }
@@ -916,7 +927,11 @@ check_peer_name (const char *target, X509 *cert)
               {
                 CONF_VALUE *v = sk_CONF_VALUE_value(nval, j);
                 if (!wocky_strdiff (v->name, "DNS"))
-                  rval = compare_wildcarded_hostname (target, v->value);
+                  {
+                    DEBUG ("Got cname '%s' from subject_alt_name, which is a "
+                        "multi-value stack with a 'DNS' entry", v->value);
+                    rval = compare_wildcarded_hostname (target, v->value);
+                  }
               }
             sk_CONF_VALUE_pop_free(nval, X509V3_conf_free);
           }
@@ -930,6 +945,52 @@ check_peer_name (const char *target, X509 *cert)
   return rval;
 }
 
+GPtrArray *
+wocky_tls_session_get_peers_certificate (WockyTLSSession *session,
+    WockyTLSCertType *type)
+{
+  STACK_OF(X509) *cert_chain = NULL;
+  guint cls = 0;
+  GPtrArray *certificates;
+
+  certificates =
+    g_ptr_array_new_with_free_func ((GDestroyNotify) g_array_unref);
+
+  cert_chain = SSL_get_peer_cert_chain (session->ssl);
+
+  if (cert_chain == NULL)
+    return NULL;
+
+  if (type != NULL)
+    *type = WOCKY_TLS_CERT_TYPE_X509;
+
+  cls = sk_X509_num (cert_chain);
+
+  for (guint i = 0; i < cls; i++)
+    {
+      GArray *certificate;
+      X509 *peer;
+      gint peer_len;
+      guchar *peer_buffer;
+
+      peer = sk_X509_value (cert_chain, i);
+      peer_len = i2d_X509 (peer, NULL);
+
+      certificate = g_array_sized_new (TRUE, TRUE, sizeof (guchar), peer_len);
+
+      peer_buffer = g_malloc (peer_len);
+      i2d_X509 (peer, &peer_buffer);
+      peer_buffer -= peer_len;
+
+      g_array_append_vals (certificate, peer_buffer, peer_len);
+      g_ptr_array_add (certificates, certificate);
+
+      g_free (peer_buffer);
+    }
+
+  return certificates;
+}
+
 int
 wocky_tls_session_verify_peer (WockyTLSSession    *session,
                                const gchar        *peername,
@@ -937,7 +998,6 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
                                WockyTLSCertStatus *status)
 {
   int rval = -1;
-  gboolean peer_name_ok = TRUE;
   const gchar *check_level;
   X509 *cert;
   gboolean lenient = (level == WOCKY_TLS_VERIFY_LENIENT);
@@ -968,18 +1028,30 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
   rval = SSL_get_verify_result (session->ssl);
   DEBUG ("X509 cert: %p; verified: %d", cert, rval);
 
-  /* anonymous SSL: no cert to check - rval will be X509_V_OK (0) *
-   * in this case (see openssl documentation)                     */
-  if (lenient && cert == NULL)
+  /* If no certificate is presented, SSL_get_verify_result() always returns
+   * X509_V_OK. This is listed as a bug in `man 3 SSL_get_verify_result`. To
+   * future-proof against that bug being fixed, we don't assume that behaviour.
+   */
+  if (cert == NULL)
     {
-      *status = WOCKY_TLS_CERT_OK;
-      return X509_V_OK;
+      if (lenient)
+        {
+          *status = WOCKY_TLS_CERT_OK;
+          return X509_V_OK;
+        }
+      else if (rval == X509_V_OK)
+        {
+          DEBUG ("Anonymous SSL handshake");
+          rval = X509_V_ERR_CERT_UNTRUSTED;
+        }
     }
-
-  if (cert == NULL && rval == X509_V_OK)
+  else if (peername != NULL && !check_peer_name (peername, cert))
     {
-      DEBUG ("Anonymous SSL handshake");
-      rval = X509_V_ERR_CERT_UNTRUSTED;
+      /* Irrespective of whether the certificate is valid, if it's for the
+       * wrong host that's arguably a more useful error condition to report.
+       */
+      *status = WOCKY_TLS_CERT_NAME_MISMATCH;
+      return X509_V_ERR_APPLICATION_VERIFICATION;
     }
 
   if (rval != X509_V_OK)
@@ -1026,6 +1098,15 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
         case X509_V_ERR_PATH_LENGTH_EXCEEDED:
           *status = WOCKY_TLS_CERT_MAYBE_DOS;
           break;
+        case X509_V_ERR_UNABLE_TO_GET_CRL:
+          /* if we are in STRICT mode, being unable to see the CRL is a   *
+           * terminal condition: in NORMAL or LENIENT we can live with it */
+          if (level == WOCKY_TLS_VERIFY_STRICT)
+            *status = WOCKY_TLS_CERT_INSECURE;
+          else
+            DEBUG ("ignoring UNABLE_TO_GET_CRL: we're not in strict mode");
+
+          break;
         default:
           *status = WOCKY_TLS_CERT_UNKNOWN_ERROR;
         }
@@ -1037,29 +1118,13 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
           case WOCKY_TLS_CERT_INTERNAL_ERROR:
           case WOCKY_TLS_CERT_REVOKED:
           case WOCKY_TLS_CERT_MAYBE_DOS:
+            DEBUG ("this error matters, even though we're in lenient mode");
             break;
           default:
+            DEBUG ("ignoring errors: we're in lenient mode");
             rval = X509_V_OK;
             *status = WOCKY_TLS_CERT_OK;
           }
-
-      return rval;
-    }
-
-  /* if we get this far, we have a certificate which should be valid: *
-   * check the hostname matches the peername                          */
-  if (peername != NULL)
-    peer_name_ok = check_peer_name (peername, cert);
-
-  DEBUG ("peer_name_ok: %d", peer_name_ok );
-
-  /* if the hostname didn't match, we can just bail out with an error here *
-   * otherwise we need to figure out which error (if any) our verification *
-   * call failed with:                                                     */
-  if (!peer_name_ok)
-    {
-      *status = WOCKY_TLS_CERT_NAME_MISMATCH;
-      return X509_V_ERR_APPLICATION_VERIFICATION;
     }
 
   return rval;
@@ -1448,6 +1513,8 @@ wocky_tls_session_write_ready (GObject      *object,
   WockyTLSSession *session = WOCKY_TLS_SESSION (user_data);
   gint buffered = BIO_pending (session->wbio);
   gssize written;
+  /* memory BIO ops generally can't fail: suppress compiler/coverity warnings */
+  gint ignore_warning;
 
   if (tls_debug_level >= DEBUG_ASYNC_DETAIL_LEVEL)
     DEBUG ("");
@@ -1457,25 +1524,47 @@ wocky_tls_session_write_ready (GObject      *object,
 
   if (written == buffered)
     {
-      gint ignore_warning;
       DEBUG ("%d bytes written, clearing write BIO", buffered);
       ignore_warning = BIO_reset (session->wbio);
       wocky_tls_session_try_operation (session, WOCKY_TLS_OP_WRITE);
     }
   else
     {
-      gchar *pending;
       gchar *buffer;
       long bsize = BIO_get_mem_data (session->wbio, &buffer);
       long psize = bsize - written;
-      gint ignore_warning;
-      DEBUG ("Incomplete async write: attempting to recover.");
-      pending = g_memdup (buffer + written, psize);
-      ignore_warning = BIO_reset (session->wbio);
-      ignore_warning = BIO_write (session->wbio, pending, psize);
-      g_free (pending);
-      /* kick the whle thing off again with what's left: */
-      ssl_flush (session);
+
+      /* scrub the data we did manage to write from our buffer */
+      if (written > 0)
+        {
+          gchar *pending = g_memdup (buffer + written, psize);
+
+          ignore_warning = BIO_reset (session->wbio);
+          ignore_warning = BIO_write (session->wbio, pending, psize);
+          g_free (pending);
+        }
+
+      if (session->job.write.error != NULL)
+        {
+          if (tls_debug_level >= DEBUG_ASYNC_DETAIL_LEVEL)
+            DEBUG ("Incomplete async write [%" G_GSSIZE_FORMAT "/%d bytes]: "
+                "%s:%u %s",
+                written, buffered,
+                g_quark_to_string (session->job.write.error->domain),
+                session->job.write.error->code,
+                session->job.write.error->message);
+
+          /* if we have a  non-fatal error, erase it try again */
+          if (g_error_matches (session->job.write.error,
+                               G_IO_ERROR, G_IO_ERROR_WOULD_BLOCK))
+            g_clear_error (&(session->job.write.error));
+        }
+
+      /* no error here means retry the operation; otherwise bail out */
+      if (session->job.write.error == NULL)
+        ssl_flush (session);
+      else
+        wocky_tls_session_try_operation (session, WOCKY_TLS_OP_WRITE);
     }
 }
 
@@ -1841,10 +1930,10 @@ wocky_tls_connection_finalize (GObject *object)
 
   g_object_unref (connection->session);
 
-  if (connection->input)
+  if (connection->input != NULL)
     g_object_unref (connection->input);
 
-  if (connection->output)
+  if (connection->output != NULL)
     g_object_unref (connection->output);
 
   G_OBJECT_CLASS (wocky_tls_connection_parent_class)

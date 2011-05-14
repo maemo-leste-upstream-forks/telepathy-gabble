@@ -108,6 +108,14 @@
  *
  */
 
+static gboolean test_mode = FALSE;
+
+void
+gtalk_file_collection_set_test_mode (void)
+{
+  test_mode = TRUE;
+}
+
 G_DEFINE_TYPE (GTalkFileCollection, gtalk_file_collection, G_TYPE_OBJECT);
 
 /* properties */
@@ -241,43 +249,23 @@ gtalk_file_collection_dispose (GObject *object)
   self->priv->dispose_has_run = TRUE;
 
   if (self->priv->jingle != NULL)
-    {
-      gabble_jingle_session_terminate (self->priv->jingle,
-          TP_CHANNEL_GROUP_CHANGE_REASON_NONE, NULL, NULL);
+    gabble_jingle_session_terminate (self->priv->jingle,
+        JINGLE_REASON_UNKNOWN, NULL, NULL);
 
-      /* the terminate could synchronously unref it and set it to NULL */
-      if (self->priv->jingle != NULL)
-        {
-          g_object_unref (self->priv->jingle);
-          self->priv->jingle = NULL;
-        }
-    }
+  tp_clear_object (&self->priv->jingle);
 
   set_current_channel (self, NULL);
 
-  if (self->priv->channels_reading != NULL)
-    {
-      g_hash_table_destroy (self->priv->channels_reading);
-      self->priv->channels_reading = NULL;
-    }
-
-  if (self->priv->channels_usable != NULL)
-    {
-      g_hash_table_destroy (self->priv->channels_usable);
-      self->priv->channels_usable = NULL;
-    }
-
-  if (self->priv->share_channels != NULL)
-    {
-      g_hash_table_destroy (self->priv->share_channels);
-      self->priv->share_channels = NULL;
-    }
+  tp_clear_pointer (&self->priv->channels_reading, g_hash_table_destroy);
+  tp_clear_pointer (&self->priv->channels_usable, g_hash_table_destroy);
+  tp_clear_pointer (&self->priv->share_channels, g_hash_table_destroy);
 
   for (i = self->priv->channels; i; i = i->next)
     {
       GabbleFileTransferChannel *channel = i->data;
       g_object_weak_unref (G_OBJECT (channel), channel_disposed, self);
     }
+
   g_list_free (self->priv->channels);
 
   g_free (self->priv->token);
@@ -428,7 +416,7 @@ jingle_session_state_changed_cb (GabbleJingleSession *session,
                                  GParamSpec *arg1,
                                  GTalkFileCollection *self)
 {
-  JingleSessionState state;
+  JingleState state;
   GList *i;
 
   DEBUG ("called");
@@ -439,11 +427,11 @@ jingle_session_state_changed_cb (GabbleJingleSession *session,
 
   switch (state)
     {
-      case JS_STATE_INVALID:
-      case JS_STATE_PENDING_CREATED:
+      case JINGLE_STATE_INVALID:
+      case JINGLE_STATE_PENDING_CREATED:
         break;
-      case JS_STATE_PENDING_INITIATE_SENT:
-      case JS_STATE_PENDING_INITIATED:
+      case JINGLE_STATE_PENDING_INITIATE_SENT:
+      case JINGLE_STATE_PENDING_INITIATED:
         for (i = self->priv->channels; i;)
           {
             GabbleFileTransferChannel *channel = i->data;
@@ -453,8 +441,8 @@ jingle_session_state_changed_cb (GabbleJingleSession *session,
                 channel, GTALK_FILE_COLLECTION_STATE_PENDING, FALSE);
           }
         break;
-      case JS_STATE_PENDING_ACCEPT_SENT:
-      case JS_STATE_ACTIVE:
+      case JINGLE_STATE_PENDING_ACCEPT_SENT:
+      case JINGLE_STATE_ACTIVE:
         /* Do not set the channels to OPEN unless we're ready to send/receive
            data from them */
         if (self->priv->status == GTALK_FT_STATUS_INITIATED)
@@ -473,7 +461,7 @@ jingle_session_state_changed_cb (GabbleJingleSession *session,
                   channel, GTALK_FILE_COLLECTION_STATE_ACCEPTED, FALSE);
           }
         break;
-      case JS_STATE_ENDED:
+      case JINGLE_STATE_ENDED:
         /* Do nothing, let the terminated signal set the correct state
            depending on the termination reason */
       default:
@@ -484,7 +472,7 @@ jingle_session_state_changed_cb (GabbleJingleSession *session,
 static void
 jingle_session_terminated_cb (GabbleJingleSession *session,
                        gboolean local_terminator,
-                       TpChannelGroupChangeReason reason,
+                       JingleReason reason,
                        const gchar *text,
                        gpointer user_data)
 {
@@ -547,7 +535,15 @@ content_new_remote_candidates_cb (GabbleJingleContent *content,
 
       cand->transport = JINGLE_TRANSPORT_PROTOCOL_UDP;
       nice_address_init (&cand->addr);
-      nice_address_set_from_string (&cand->addr, candidate->address);
+
+      if (!nice_address_set_from_string (&cand->addr, candidate->address))
+        {
+          DEBUG ("invalid address '%s' in candidate, skipping",
+              candidate->address ? candidate->address : "<null>");
+          nice_candidate_free (cand);
+          continue;
+        }
+
       nice_address_set_port (&cand->addr, candidate->port);
       cand->priority = candidate->preference * 1000;
       cand->stream_id = share_channel->stream_id;
@@ -953,6 +949,9 @@ content_new_share_channel_cb (GabbleJingleContent *content, const gchar *name,
   DEBUG ("New Share channel %s was created and linked to id %d", name,
       share_channel_id);
 
+  if (test_mode)
+    g_object_set (agent, "upnp", FALSE, NULL);
+
   share_channel->agent = agent;
   share_channel->stream_id = stream_id;
   share_channel->component_id = NICE_COMPONENT_TYPE_RTP;
@@ -1029,16 +1028,8 @@ free_share_channel (gpointer data)
 
   DEBUG ("Freeing jingle Share channel");
 
-  if (share_channel->write_buffer != NULL)
-    {
-      g_free (share_channel->write_buffer);
-      share_channel->write_buffer = NULL;
-    }
-  if (share_channel->read_buffer != NULL)
-    {
-      g_free (share_channel->read_buffer);
-      share_channel->read_buffer = NULL;
-    }
+  tp_clear_pointer (&share_channel->write_buffer, g_free);
+  tp_clear_pointer (&share_channel->read_buffer, g_free);
   g_object_unref (share_channel->agent);
   g_slice_free (ShareChannel, share_channel);
 }
@@ -1734,7 +1725,7 @@ gtalk_file_collection_terminate (GTalkFileCollection *self,
              jingle session */
           self->priv->status = GTALK_FT_STATUS_TERMINATED;
           gabble_jingle_session_terminate (self->priv->jingle,
-              TP_CHANNEL_GROUP_CHANGE_REASON_NONE, NULL, NULL);
+              JINGLE_REASON_UNKNOWN, NULL, NULL);
           return;
         }
       return;
@@ -1775,7 +1766,7 @@ channel_disposed (gpointer data, GObject *object)
              jingle session */
           self->priv->status = GTALK_FT_STATUS_TERMINATED;
           gabble_jingle_session_terminate (self->priv->jingle,
-              TP_CHANNEL_GROUP_CHANGE_REASON_NONE, NULL, NULL);
+              JINGLE_REASON_UNKNOWN, NULL, NULL);
           return;
         }
     }

@@ -20,17 +20,6 @@ def test(q, bus, conn, stream):
     # Make gabble think this is a different client
     jt2.remote_caps['node'] = 'http://example.com/fake-client1'
 
-    conn.Connect()
-
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTING, cs.CSR_REQUESTED])
-
-    q.expect('stream-authenticated')
-    q.expect('dbus-signal', signal='PresenceUpdate',
-        args=[{1L: (0L, {u'available': {}})}])
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     run_test(q, bus, conn, stream, jt, True)
     run_test(q, bus, conn, stream, jt2, False)
 
@@ -51,7 +40,8 @@ def run_test(q, bus, conn, stream, jt, decloak_allowed):
     call_async(q, media_iface, 'RequestStreams', handle,
         [cs.MEDIA_STREAM_TYPE_AUDIO])
 
-    e = q.expect('stream-presence', presence_type=None)
+    e = q.expect('stream-presence',
+            to=jt.remote_bare_jid, presence_type=None)
     nodes = xpath.queryForNodes('/presence/temppres[@xmlns="%s"]'
             % ns.TEMPPRES, e.stanza)
     assertLength(1, nodes)
@@ -67,7 +57,8 @@ def run_test(q, bus, conn, stream, jt, decloak_allowed):
         # RequestStreams should now happily complete
         q.expect('dbus-return', method='RequestStreams')
     else:
-        q.expect('dbus-error', method='RequestStreams')
+        q.expect('dbus-error', method='RequestStreams',
+                name=cs.OFFLINE)
 
 if __name__ == '__main__':
     exec_test(test, timeout=10)

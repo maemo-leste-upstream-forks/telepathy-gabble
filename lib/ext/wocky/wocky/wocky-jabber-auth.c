@@ -241,6 +241,12 @@ auth_reset (WockyJabberAuth *self)
       g_object_unref (priv->connection);
       priv->connection = NULL;
     }
+
+  if (priv->cancel != NULL)
+    {
+      g_object_unref (priv->cancel);
+      priv->cancel = NULL;
+    }
 }
 
 static void
@@ -345,7 +351,7 @@ wocky_jabber_auth_authenticate_finish (WockyJabberAuth *self,
   GAsyncResult *result,
   GError **error)
 {
-  wocky_implement_finish_void (self, wocky_jabber_auth_authenticate_finish);
+  wocky_implement_finish_void (self, wocky_jabber_auth_authenticate_async);
 }
 
 static void
@@ -455,7 +461,7 @@ jabber_auth_query (GObject *source, GAsyncResult *res, gpointer user_data)
       return;
     }
 
-  wocky_xmpp_connection_recv_stanza_async (conn, NULL,
+  wocky_xmpp_connection_recv_stanza_async (conn, priv->cancel,
       jabber_auth_reply, user_data);
 }
 
@@ -473,7 +479,6 @@ wocky_jabber_auth_start_cb (GObject *source,
   GError *error = NULL;
   WockyAuthRegistryStartData *start_data = NULL;
 
-  iqid = wocky_xmpp_connection_new_id (conn);
   if (!wocky_auth_registry_start_auth_finish (priv->auth_registry, res,
           &start_data, &error))
     {
@@ -490,6 +495,7 @@ wocky_jabber_auth_start_cb (GObject *source,
   else
       auth_field = "digest";
 
+  iqid = wocky_xmpp_connection_new_id (conn);
   iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
       WOCKY_STANZA_SUB_TYPE_SET, NULL, NULL,
       '@', "id", iqid,
@@ -500,7 +506,7 @@ wocky_jabber_auth_start_cb (GObject *source,
       ')',
       NULL);
 
-  wocky_xmpp_connection_send_stanza_async (conn, iq, NULL,
+  wocky_xmpp_connection_send_stanza_async (conn, iq, priv->cancel,
       jabber_auth_query, self);
 
   g_free (iqid);
@@ -539,8 +545,6 @@ jabber_auth_fields (GObject *source,
     {
       WockyNode *node = NULL;
       WockyAuthError code;
-      gboolean passwd;
-      gboolean digest;
 
       case WOCKY_STANZA_SUB_TYPE_ERROR:
         wocky_stanza_extract_errors (fields, NULL, &error, NULL, NULL);
@@ -557,8 +561,6 @@ jabber_auth_fields (GObject *source,
         break;
 
       case WOCKY_STANZA_SUB_TYPE_RESULT:
-        passwd = FALSE;
-        digest = FALSE;
         node = wocky_stanza_get_top_node (fields);
         node = wocky_node_get_child_ns (node, "query",
             WOCKY_JABBER_NS_AUTH);
@@ -569,10 +571,10 @@ jabber_auth_fields (GObject *source,
             GSList *mechanisms = NULL;
 
             if (wocky_node_get_child (node, "password") != NULL)
-              mechanisms = g_slist_append (mechanisms, MECH_JABBER_PASSWORD);
+              mechanisms = g_slist_append (mechanisms, WOCKY_AUTH_MECH_JABBER_PASSWORD);
 
             if (wocky_node_get_child (node, "digest") != NULL)
-              mechanisms = g_slist_append (mechanisms, MECH_JABBER_DIGEST);
+              mechanisms = g_slist_append (mechanisms, WOCKY_AUTH_MECH_JABBER_DIGEST);
 
             wocky_auth_registry_start_auth_async (priv->auth_registry,
                 mechanisms, priv->allow_plain, priv->is_secure,
@@ -611,7 +613,7 @@ jabber_auth_init_sent (GObject *source,
       return;
     }
 
-  wocky_xmpp_connection_recv_stanza_async (conn, NULL,
+  wocky_xmpp_connection_recv_stanza_async (conn, priv->cancel,
       jabber_auth_fields, user_data);
 }
 
@@ -636,7 +638,10 @@ wocky_jabber_auth_authenticate_async (WockyJabberAuth *self,
   priv->is_secure = is_secure;
 
   priv->result = g_simple_async_result_new (G_OBJECT (self),
-      callback, user_data, wocky_jabber_auth_authenticate_finish);
+      callback, user_data, wocky_jabber_auth_authenticate_async);
+
+  if (cancellable != NULL)
+    priv->cancel = g_object_ref (cancellable);
 
   iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
       NULL, NULL,
@@ -648,7 +653,7 @@ wocky_jabber_auth_authenticate_async (WockyJabberAuth *self,
       ')',
       NULL);
 
-  wocky_xmpp_connection_send_stanza_async (conn, iq, NULL,
+  wocky_xmpp_connection_send_stanza_async (conn, iq, priv->cancel,
       jabber_auth_init_sent, self);
 
   g_free (id);

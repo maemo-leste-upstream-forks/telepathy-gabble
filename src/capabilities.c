@@ -28,15 +28,11 @@
 #include <telepathy-glib/channel-manager.h>
 #include <telepathy-glib/handle-repo.h>
 #include <telepathy-glib/handle-repo-dynamic.h>
+#include <telepathy-glib/util.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_PRESENCE
-
-#include "caps-channel-manager.h"
 #include "debug.h"
 #include "namespaces.h"
-#include "presence-cache.h"
-#include "media-factory.h"
-#include "util.h"
 
 typedef struct _Feature Feature;
 
@@ -63,6 +59,8 @@ static const Feature self_advertised_features[] =
   { FEATURE_FIXED, NS_IBB },
   { FEATURE_FIXED, NS_TUBES },
   { FEATURE_FIXED, NS_BYTESTREAMS },
+  { FEATURE_FIXED, NS_VERSION },
+
   { FEATURE_OPTIONAL, NS_FILE_TRANSFER },
 
   { FEATURE_OPTIONAL, NS_GOOGLE_TRANSPORT_P2P },
@@ -185,13 +183,13 @@ gabble_capabilities_get_olpc_notify (void)
 }
 
 static gboolean
-omits_content_creators (LmMessageNode *identity)
+omits_content_creators (WockyNode *identity)
 {
   const gchar *name, *suffix;
   gchar *end;
   int ver;
 
-  name = lm_message_node_get_attribute (identity, "name");
+  name = wocky_node_get_attribute (identity, "name");
 
   if (name == NULL)
     return FALSE;
@@ -221,15 +219,6 @@ omits_content_creators (LmMessageNode *identity)
     }
 }
 
-static gboolean
-is_a_phone (LmMessageNode *identity)
-{
-  const gchar *category = lm_message_node_get_attribute (identity, "category");
-  const gchar *type = lm_message_node_get_attribute (identity, "type");
-
-  return !tp_strdiff (category, "client") && !tp_strdiff (type, "phone");
-}
-
 static gsize feature_handles_refcount = 0;
 /* The handles in this repository are not really handles in the tp-spec sense
  * of the word; we're just using it as a convenient implementation of a
@@ -239,7 +228,7 @@ static gsize feature_handles_refcount = 0;
 static TpHandleRepoIface *feature_handles = NULL;
 
 void
-gabble_capabilities_init (GabbleConnection *conn)
+gabble_capabilities_init (gpointer conn)
 {
   DEBUG ("%p", conn);
 
@@ -322,7 +311,7 @@ gabble_capabilities_init (GabbleConnection *conn)
 }
 
 void
-gabble_capabilities_finalize (GabbleConnection *conn)
+gabble_capabilities_finalize (gpointer conn)
 {
   DEBUG ("%p", conn);
 
@@ -358,69 +347,12 @@ gabble_capabilities_finalize (GabbleConnection *conn)
       geoloc_caps = NULL;
       olpc_caps = NULL;
 
-      g_object_unref (feature_handles);
-      feature_handles = NULL;
+      tp_clear_object (&feature_handles);
     }
 }
 
 struct _GabbleCapabilitySet {
     TpHandleSet *handles;
-};
-
-void
-capabilities_fill_cache (GabblePresenceCache *cache)
-{
-#define GOOGLE_BUNDLE(cap, features) \
-  gabble_presence_cache_add_bundle_caps (cache, \
-      "http://www.google.com/xmpp/client/caps#" cap, features); \
-  gabble_presence_cache_add_bundle_caps (cache, \
-      "http://talk.google.com/xmpp/client/caps#" cap, features);
-
-  /* Cache various bundle from the Google Talk clients as trusted.  Some old
-   * versions of Google Talk do not reply correctly to discovery requests.
-   * Plus, we know what Google's bundles mean, so it's a waste of time to disco
-   * them, particularly the ones for features we don't support. The desktop
-   * client doesn't currently have all of these, but it doesn't hurt to cache
-   * them anyway.
-   */
-  GOOGLE_BUNDLE ("voice-v1", NS_GOOGLE_FEAT_VOICE);
-  GOOGLE_BUNDLE ("video-v1", NS_GOOGLE_FEAT_VIDEO);
-
-  /* File transfer support */
-  GOOGLE_BUNDLE ("share-v1", NS_GOOGLE_FEAT_SHARE);
-
-  /* Not really sure what this ones is. */
-  GOOGLE_BUNDLE ("sms-v1", NULL);
-
-  /* TODO: remove this when we fix fd.o#22768. */
-  GOOGLE_BUNDLE ("pmuc-v1", NULL);
-
-  /* The camera-v1 bundle seems to mean "I have a camera plugged in". Not
-   * having it doesn't seem to affect anything, and we have no way of exposing
-   * that information anyway.
-   */
-  GOOGLE_BUNDLE ("camera-v1", NULL);
-
-#undef GOOGLE_BUNDLE
-
-  /* We should also cache the ext='' bundles Gabble advertises: older Gabbles
-   * advertise these and don't support hashed caps, and we shouldn't need to
-   * disco them.
-   */
-  gabble_presence_cache_add_bundle_caps (cache,
-      NS_GABBLE_CAPS "#" BUNDLE_VOICE_V1, NS_GOOGLE_FEAT_VOICE);
-  gabble_presence_cache_add_bundle_caps (cache,
-      NS_GABBLE_CAPS "#" BUNDLE_VIDEO_V1, NS_GOOGLE_FEAT_VIDEO);
-  gabble_presence_cache_add_bundle_caps (cache,
-      NS_GABBLE_CAPS "#" BUNDLE_SHARE_V1, NS_GOOGLE_FEAT_SHARE);
-}
-
-const CapabilityConversionData capabilities_conversions[] =
-{
-  { TP_IFACE_CHANNEL_TYPE_STREAMED_MEDIA,
-    _gabble_media_factory_typeflags_to_caps,
-    _gabble_media_factory_caps_to_typeflags },
-  { NULL, NULL, NULL}
 };
 
 GabbleCapabilitySet *
@@ -438,23 +370,20 @@ gabble_capability_set_new_from_stanza (WockyNode *query_result)
 {
   GabbleCapabilitySet *ret;
   const gchar *var;
-  NodeIter ni;
+  GSList *ni;
 
   g_return_val_if_fail (query_result != NULL, NULL);
 
   ret = gabble_capability_set_new ();
 
-  for (ni = node_iter (query_result); ni != NULL; ni = node_iter_next (ni))
+  for (ni = query_result->children; ni != NULL; ni = g_slist_next (ni))
     {
-      WockyNode *child = node_iter_data (ni);
+      WockyNode *child = ni->data;
 
       if (!tp_strdiff (child->name, "identity"))
         {
           if (omits_content_creators (child))
             gabble_capability_set_add (ret, QUIRK_OMITS_CONTENT_CREATORS);
-
-          if (is_a_phone (child))
-            gabble_capability_set_add (ret, QUIRK_IS_A_PHONE);
 
           continue;
         }
@@ -462,7 +391,7 @@ gabble_capability_set_new_from_stanza (WockyNode *query_result)
       if (tp_strdiff (child->name, "feature"))
         continue;
 
-      var = lm_message_node_get_attribute (child, "var");
+      var = wocky_node_get_attribute (child, "var");
 
       if (NULL == var)
         continue;
@@ -733,28 +662,21 @@ gabble_capability_set_foreach (const GabbleCapabilitySet *caps,
     }
 }
 
-gchar *
-gabble_capability_set_dump (const GabbleCapabilitySet *caps,
+static void
+append_intset (GString *ret,
+    const TpIntSet *cap_ints,
     const gchar *indent)
 {
-  GString *ret;
-  TpIntSetIter iter;
+  TpIntSetFastIter iter;
+  guint element;
 
-  g_return_val_if_fail (caps != NULL, NULL);
+  tp_intset_fast_iter_init (&iter, cap_ints);
 
-  if (indent == NULL)
-    indent = "";
-
-  ret = g_string_new (indent);
-  g_string_append (ret, "--begin--\n");
-
-  tp_intset_iter_init (&iter, tp_handle_set_peek (caps->handles));
-
-  while (tp_intset_iter_next (&iter))
+  while (tp_intset_fast_iter_next (&iter, &element))
     {
-      const gchar *var = tp_handle_inspect (feature_handles, iter.element);
+      const gchar *var = tp_handle_inspect (feature_handles, element);
 
-      g_return_val_if_fail (var != NULL, NULL);
+      g_return_if_fail (var != NULL);
 
       if (var[0] == QUIRK_PREFIX_CHAR)
         {
@@ -765,8 +687,68 @@ gabble_capability_set_dump (const GabbleCapabilitySet *caps,
           g_string_append_printf (ret, "%sFeature: %s\n", indent, var);
         }
     }
+}
 
+gchar *
+gabble_capability_set_dump (const GabbleCapabilitySet *caps,
+    const gchar *indent)
+{
+  GString *ret;
+
+  g_return_val_if_fail (caps != NULL, NULL);
+
+  if (indent == NULL)
+    indent = "";
+
+  ret = g_string_new (indent);
+  g_string_append (ret, "--begin--\n");
+  append_intset (ret, tp_handle_set_peek (caps->handles), indent);
   g_string_append (ret, indent);
   g_string_append (ret, "--end--\n");
+  return g_string_free (ret, FALSE);
+}
+
+gchar *
+gabble_capability_set_dump_diff (const GabbleCapabilitySet *old_caps,
+    const GabbleCapabilitySet *new_caps,
+    const gchar *indent)
+{
+  TpIntSet *old_ints, *new_ints, *rem, *add;
+  GString *ret;
+
+  g_return_val_if_fail (old_caps != NULL, NULL);
+  g_return_val_if_fail (new_caps != NULL, NULL);
+
+  old_ints = tp_handle_set_peek (old_caps->handles);
+  new_ints = tp_handle_set_peek (new_caps->handles);
+
+  if (tp_intset_is_equal (old_ints, new_ints))
+    return g_strdup_printf ("%s--no change--", indent);
+
+  rem = tp_intset_difference (old_ints, new_ints);
+  add = tp_intset_difference (new_ints, old_ints);
+
+  ret = g_string_new ("");
+
+  if (!tp_intset_is_empty (rem))
+    {
+      g_string_append (ret, indent);
+      g_string_append (ret, "--removed--\n");
+      append_intset (ret, rem, indent);
+    }
+
+  if (!tp_intset_is_empty (add))
+    {
+      g_string_append (ret, indent);
+      g_string_append (ret, "--added--\n");
+      append_intset (ret, add, indent);
+    }
+
+  g_string_append (ret, indent);
+  g_string_append (ret, "--end--");
+
+  tp_intset_destroy (add);
+  tp_intset_destroy (rem);
+
   return g_string_free (ret, FALSE);
 }

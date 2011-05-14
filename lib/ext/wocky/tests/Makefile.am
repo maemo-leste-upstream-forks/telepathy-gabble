@@ -20,6 +20,7 @@ CRL_DIR  := $(CERT_DIR)/crl
 UNKNOWN_KEY  := $(CERT_DIR)/unknown-key.pem
 UNKNOWN_CERT := $(CERT_DIR)/unknown-cert.pem
 LIBWOCKY := $(top_builddir)/wocky/libwocky.la
+INCLUDES := -I$(top_builddir)/wocky
 TLSDEFS  := -DTLS_CA_KEY_FILE='"$(CA_KEY)"'      \
             -DTLS_CA_CRT_FILE='"$(CA_CERT)"'     \
             -DTLS_SS_KEY_FILE='"$(SS_KEY)"'      \
@@ -221,6 +222,15 @@ wocky_scram_sha1_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_scram_sha1_test_SOURCES = wocky-scram-sha1-test.c \
   wocky-test-helper.c wocky-test-helper.h \
   wocky-test-stream.c wocky-test-stream.h
+
+wocky_http_proxy_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_http_proxy_test_SOURCES = wocky-http-proxy-test.c \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h
+
+if HAVE_GIO_PROXY
+  TEST_PROGS += wocky-http-proxy-test
+endif
 
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ \
   @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@

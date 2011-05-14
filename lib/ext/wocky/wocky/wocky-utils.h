@@ -1,6 +1,6 @@
 /*
- * gibber-util.h - Header for Wocky utility functions
- * Copyright (C) 2007-2009 Collabora Ltd.
+ * wocky-utils.h - Header for Wocky utility functions
+ * Copyright © 2007–2010 Collabora Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __WOCKY_UTIL_H__
-#define __WOCKY_UTIL_H__
+#ifndef __WOCKY_UTILS_H__
+#define __WOCKY_UTILS_H__
 
 #include <glib.h>
 #include <glib-object.h>
@@ -79,38 +79,56 @@ void wocky_g_string_free (GString *str);
  * They should really be in GLib, but let's experiment here first.
  */
 #define wocky_implement_finish_void(source, tag) \
-    if (g_simple_async_result_propagate_error (\
-      G_SIMPLE_ASYNC_RESULT (result), error)) \
-      return FALSE; \
-    g_return_val_if_fail (g_simple_async_result_is_valid (result, \
-            G_OBJECT(source), tag), \
+    G_STMT_START { \
+      GSimpleAsyncResult *_simple; \
+      _simple = (GSimpleAsyncResult *) result; \
+      if (g_simple_async_result_propagate_error ( \
+          _simple, error)) \
+        return FALSE; \
+      g_return_val_if_fail (g_simple_async_result_is_valid (result, \
+          G_OBJECT (source), (tag)), \
         FALSE); \
-    return TRUE;
+      return TRUE; \
+    } G_STMT_END
 
 #define wocky_implement_finish_copy_pointer(source, tag, copy_func, \
     out_param) \
-    GSimpleAsyncResult *_simple; \
-    g_return_val_if_fail (g_simple_async_result_is_valid (result, \
-            G_OBJECT (source), tag), \
+    G_STMT_START { \
+      GSimpleAsyncResult *_simple; \
+      _simple = (GSimpleAsyncResult *) result; \
+      if (g_simple_async_result_propagate_error (_simple, error)) \
+        return FALSE; \
+      g_return_val_if_fail (g_simple_async_result_is_valid (result, \
+          G_OBJECT (source), (tag)), \
         FALSE); \
-    _simple = (GSimpleAsyncResult *) result; \
-    if (g_simple_async_result_propagate_error (_simple, error)) \
-      return FALSE; \
-    if (out_param != NULL) \
-      *out_param = copy_func ( \
-          g_simple_async_result_get_op_res_gpointer (_simple)); \
-    return TRUE;
+      if ((out_param) != NULL) \
+        { \
+          gpointer _p = g_simple_async_result_get_op_res_gpointer (_simple); \
+          if (_p != NULL) \
+            *(out_param) = (copy_func) (_p); \
+          else \
+            *(out_param) = NULL; \
+        } \
+      return TRUE; \
+    } G_STMT_END
 
-#define wocky_implement_finish_return_copy_pointer(source, tag, copy_func) \
-    GSimpleAsyncResult *_simple; \
-    g_return_val_if_fail (g_simple_async_result_is_valid (result, \
-            G_OBJECT (source), tag), \
-        FALSE); \
-    _simple = (GSimpleAsyncResult *) result; \
-    if (g_simple_async_result_propagate_error (_simple, error)) \
+#define wocky_implement_finish_return_copy_pointer(source, tag, \
+    copy_func) \
+    G_STMT_START { \
+      GSimpleAsyncResult *_simple; \
+      gpointer _p; \
+      _simple = (GSimpleAsyncResult *) result; \
+      if (g_simple_async_result_propagate_error (_simple, error)) \
+        return NULL; \
+      g_return_val_if_fail (g_simple_async_result_is_valid (result, \
+          G_OBJECT (source), (tag)), \
+        NULL); \
+      _p = g_simple_async_result_get_op_res_gpointer (_simple); \
+      if (_p != NULL) \
+        return (copy_func) (_p); \
       return NULL; \
-    return copy_func (g_simple_async_result_get_op_res_gpointer (_simple));
+    } G_STMT_END
 
 G_END_DECLS
 
-#endif /* #ifndef __WOCKY_UTIL_H__ */
+#endif /* #ifndef __WOCKY_UTILS_H__ */

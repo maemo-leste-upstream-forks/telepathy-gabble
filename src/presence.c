@@ -25,9 +25,11 @@
 #include <telepathy-glib/channel-manager.h>
 
 #include "capabilities.h"
+#include "conn-presence.h"
 #include "presence-cache.h"
 #include "namespaces.h"
 #include "util.h"
+#include "gabble-enumtypes.h"
 
 #define DEBUG_FLAG GABBLE_DEBUG_PRESENCE
 
@@ -35,12 +37,11 @@
 
 G_DEFINE_TYPE (GabblePresence, gabble_presence, G_TYPE_OBJECT);
 
-#define GABBLE_PRESENCE_PRIV(account) ((account)->priv)
-
 typedef struct _Resource Resource;
 
 struct _Resource {
     gchar *name;
+    guint client_type;
     GabbleCapabilitySet *cap_set;
     guint caps_serial;
     GabblePresenceId status;
@@ -63,6 +64,7 @@ _resource_new (gchar *name)
 {
   Resource *new = g_slice_new0 (Resource);
   new->name = name;
+  new->client_type = G_MAXUINT;
   new->cap_set = gabble_capability_set_new ();
   new->status = GABBLE_PRESENCE_OFFLINE;
   new->status_message = NULL;
@@ -88,7 +90,7 @@ gabble_presence_finalize (GObject *object)
 {
   GSList *i;
   GabblePresence *presence = GABBLE_PRESENCE (object);
-  GabblePresencePrivate *priv = GABBLE_PRESENCE_PRIV (presence);
+  GabblePresencePrivate *priv = presence->priv;
 
   for (i = priv->resources; NULL != i; i = i->next)
     _resource_free (i->data);
@@ -142,8 +144,8 @@ resource_better_than (
 
     if (preference == PREFER_PHONES)
       {
-        gboolean a_p = gabble_capability_set_has (a->cap_set, QUIRK_IS_A_PHONE);
-        gboolean b_p = gabble_capability_set_has (b->cap_set, QUIRK_IS_A_PHONE);
+        gboolean a_p = a->client_type & GABBLE_CLIENT_TYPE_PHONE;
+        gboolean b_p = b->client_type & GABBLE_CLIENT_TYPE_PHONE;
 
         if (a_p && !b_p)
           return TRUE;
@@ -200,20 +202,21 @@ gabble_presence_pick_resource_by_caps (
     GabbleCapabilitySetPredicate predicate,
     gconstpointer user_data)
 {
-  GabblePresencePrivate *priv = GABBLE_PRESENCE_PRIV (presence);
+  GabblePresencePrivate *priv = presence->priv;
   GSList *i;
   Resource *chosen = NULL;
 
   g_return_val_if_fail (presence != NULL, NULL);
-  g_return_val_if_fail (predicate != NULL, NULL);
 
   for (i = priv->resources; NULL != i; i = i->next)
     {
       Resource *res = (Resource *) i->data;
 
-      if (predicate (res->cap_set, user_data) &&
-          (resource_better_than (res, chosen, any_special_requests)))
-              chosen = res;
+      if (predicate != NULL && !predicate (res->cap_set, user_data))
+        continue;
+
+      if (resource_better_than (res, chosen, any_special_requests))
+        chosen = res;
     }
 
   if (chosen)
@@ -228,7 +231,7 @@ gabble_presence_resource_has_caps (GabblePresence *presence,
                                    GabbleCapabilitySetPredicate predicate,
                                    gconstpointer user_data)
 {
-  GabblePresencePrivate *priv = GABBLE_PRESENCE_PRIV (presence);
+  GabblePresencePrivate *priv = presence->priv;
   GSList *i;
 
   for (i = priv->resources; NULL != i; i = i->next)
@@ -248,7 +251,7 @@ gabble_presence_set_capabilities (GabblePresence *presence,
                                   const GabbleCapabilitySet *cap_set,
                                   guint serial)
 {
-  GabblePresencePrivate *priv = GABBLE_PRESENCE_PRIV (presence);
+  GabblePresencePrivate *priv = presence->priv;
   GSList *i;
 
   if (resource == NULL && priv->resources != NULL)
@@ -267,26 +270,12 @@ gabble_presence_set_capabilities (GabblePresence *presence,
 
   if (resource == NULL)
     {
-      if (DEBUGGING)
-        {
-          gchar *tmp = gabble_capability_set_dump (cap_set, "  ");
-
-          DEBUG ("Setting capabilities for bare JID:\n%s", tmp);
-          g_free (tmp);
-        }
-
+      DEBUG ("Setting capabilities for bare JID");
       gabble_capability_set_update (priv->cap_set, cap_set);
       return;
     }
 
-  if (DEBUGGING)
-    {
-      gchar *tmp = gabble_capability_set_dump (cap_set, "  ");
-
-      DEBUG ("about to add caps to resource %s with serial %u:\n%s", resource,
-          serial, tmp);
-      g_free (tmp);
-    }
+  DEBUG ("about to add caps to resource %s with serial %u", resource, serial);
 
   for (i = priv->resources; NULL != i; i = i->next)
     {
@@ -306,7 +295,7 @@ gabble_presence_set_capabilities (GabblePresence *presence,
 
           if (serial >= tmp->caps_serial)
             {
-              DEBUG ("adding caps to resource %s", resource);
+              DEBUG ("updating caps for resource %s", resource);
 
               gabble_capability_set_update (tmp->cap_set, cap_set);
             }
@@ -314,27 +303,22 @@ gabble_presence_set_capabilities (GabblePresence *presence,
 
       gabble_capability_set_update (priv->cap_set, tmp->cap_set);
     }
-
-  if (DEBUGGING)
-    {
-      gchar *tmp = gabble_capability_set_dump (priv->cap_set, "  ");
-
-      DEBUG ("Aggregate capabilities are now:\n%s", tmp);
-      g_free (tmp);
-    }
 }
 
 static Resource *
 _find_resource (GabblePresence *presence, const gchar *resource)
 {
   GSList *i;
-  GabblePresencePrivate *priv = GABBLE_PRESENCE_PRIV (presence);
 
-  for (i = priv->resources; NULL != i; i = i->next)
+  /* you've been warned! */
+  g_return_val_if_fail (presence != NULL, NULL);
+  g_return_val_if_fail (resource != NULL, NULL);
+
+  for (i = presence->priv->resources; NULL != i; i = i->next)
     {
-      Resource *res = (Resource *) i->data;
+      Resource *res = i->data;
 
-      if (0 == strcmp (res->name, resource))
+      if (!tp_strdiff (res->name, resource))
         return res;
     }
 
@@ -344,9 +328,10 @@ _find_resource (GabblePresence *presence, const gchar *resource)
 static void
 aggregate_resources (GabblePresence *presence)
 {
-  GabblePresencePrivate *priv = GABBLE_PRESENCE_PRIV (presence);
+  GabblePresencePrivate *priv = presence->priv;
   GSList *i;
   guint8 prio;
+  time_t activity;
 
   /* select the most preferable Resource and update presence->* based on our
    * choice */
@@ -354,6 +339,7 @@ aggregate_resources (GabblePresence *presence)
   presence->status = GABBLE_PRESENCE_OFFLINE;
 
   prio = -128;
+  activity = 0;
 
   for (i = priv->resources; NULL != i; i = i->next)
     {
@@ -362,13 +348,16 @@ aggregate_resources (GabblePresence *presence)
       gabble_capability_set_update (priv->cap_set, r->cap_set);
 
       /* trump existing status & message if it's more present
+       * or has the same presence and a more recent last activity
        * or has the same presence and a higher priority */
       if (r->status > presence->status ||
+          (r->status == presence->status && r->last_activity > activity) ||
           (r->status == presence->status && r->priority > prio))
         {
           presence->status = r->status;
           presence->status_message = r->status_message;
           prio = r->priority;
+          activity = r->last_activity;
         }
     }
 
@@ -389,7 +378,7 @@ gabble_presence_update (GabblePresence *presence,
                         const gchar *status_message,
                         gint8 priority)
 {
-  GabblePresencePrivate *priv = GABBLE_PRESENCE_PRIV (presence);
+  GabblePresencePrivate *priv = presence->priv;
   Resource *res;
   GabblePresenceId old_status;
   gchar *old_status_message;
@@ -517,8 +506,37 @@ gabble_presence_add_status_and_vcard (GabblePresence *presence,
           JABBER_PRESENCE_SHOW_XA);
       break;
     default:
-      g_critical ("%s: Unexpected Telepathy presence type", G_STRFUNC);
-      break;
+      {
+        /* FIXME: we're almost duplicate the add_child code here,
+         * and we're calling into conn-presence which is not nice.
+         */
+        TpConnectionPresenceType presence_type =
+            conn_presence_get_type (presence);
+
+        switch (presence_type)
+          {
+          case TP_CONNECTION_PRESENCE_TYPE_AVAILABLE:
+          case TP_CONNECTION_PRESENCE_TYPE_OFFLINE:
+          case TP_CONNECTION_PRESENCE_TYPE_HIDDEN:
+            break;
+          case TP_CONNECTION_PRESENCE_TYPE_AWAY:
+            wocky_node_add_child_with_content (node, "show",
+                JABBER_PRESENCE_SHOW_AWAY);
+            break;
+          case TP_CONNECTION_PRESENCE_TYPE_BUSY:
+            wocky_node_add_child_with_content (node, "show",
+                JABBER_PRESENCE_SHOW_DND);
+            break;
+          case TP_CONNECTION_PRESENCE_TYPE_EXTENDED_AWAY:
+            wocky_node_add_child_with_content (node, "show",
+                JABBER_PRESENCE_SHOW_XA);
+            break;
+          default:
+            g_critical ("%s: Unexpected Telepathy presence type: %d", G_STRFUNC,
+                presence_type);
+            break;
+          }
+      }
     }
 
   if (presence->status_message)
@@ -539,7 +557,7 @@ LmMessage *
 gabble_presence_as_message (GabblePresence *presence,
                             const gchar *to)
 {
-  GabblePresencePrivate *priv = GABBLE_PRESENCE_PRIV (presence);
+  GabblePresencePrivate *priv = presence->priv;
   LmMessage *message;
   LmMessageSubType subtype;
   Resource *res = priv->resources->data; /* pick first resource */
@@ -575,7 +593,7 @@ gabble_presence_dump (GabblePresence *presence)
   GSList *i;
   GString *ret = g_string_new ("");
   gchar *tmp;
-  GabblePresencePrivate *priv = GABBLE_PRESENCE_PRIV (presence);
+  GabblePresencePrivate *priv = presence->priv;
 
   g_string_append_printf (ret,
     "nickname: %s\n"
@@ -625,7 +643,7 @@ gabble_presence_dump (GabblePresence *presence)
 gboolean
 gabble_presence_added_to_view (GabblePresence *self)
 {
-  GabblePresencePrivate *priv = GABBLE_PRESENCE_PRIV (self);
+  GabblePresencePrivate *priv = self->priv;
   GabblePresenceId old_status;
   gchar *old_status_message;
   gboolean ret = FALSE;
@@ -649,7 +667,7 @@ gabble_presence_added_to_view (GabblePresence *self)
 gboolean
 gabble_presence_removed_from_view (GabblePresence *self)
 {
-  GabblePresencePrivate *priv = GABBLE_PRESENCE_PRIV (self);
+  GabblePresencePrivate *priv = self->priv;
   GabblePresenceId old_status;
   gchar *old_status_message;
   gboolean ret = FALSE;
@@ -721,4 +739,73 @@ gabble_presence_pick_best_feature (GabblePresence *presence,
     }
 
   return NULL;
+}
+
+void
+gabble_presence_update_client_types (GabblePresence *presence,
+    const gchar *resource,
+    GPtrArray *client_types)
+{
+  Resource *res;
+  guint i, value;
+
+  res = _find_resource (presence, resource);
+
+  if (res == NULL)
+    return;
+
+  /* since this method has been called, the client types have been
+   * discovered to be something, or discovered to be nothing, so set
+   * the client_type member to something other than G_MAXUINT */
+  res->client_type = 0;
+
+  if (client_types == NULL)
+    return;
+
+  for (i = 0; i < client_types->len; i++)
+    {
+      const gchar *type = g_ptr_array_index (client_types, i);
+
+      if (gabble_flag_from_nick (GABBLE_TYPE_CLIENT_TYPE, type, &value))
+        res->client_type |= value;
+    }
+}
+
+GPtrArray *
+gabble_presence_get_client_types_array (GabblePresence *presence,
+    const gchar *resource,
+    gboolean add_null)
+{
+  Resource *res;
+  GPtrArray *array;
+  GFlagsClass *klass;
+  GFlagsValue *value;
+  guint i;
+
+  array = g_ptr_array_new_with_free_func (g_free);
+
+  res = _find_resource (presence, resource);
+
+  if (res == NULL || res->client_type == G_MAXUINT)
+    return NULL;
+
+  klass = g_type_class_ref (GABBLE_TYPE_CLIENT_TYPE);
+
+  if (klass != NULL)
+    {
+      for (i = 0; i < klass->n_values; i++)
+        {
+          value = &klass->values[i];
+
+          if (res->client_type & value->value)
+            g_ptr_array_add (array, g_strdup (value->value_nick));
+        }
+
+      g_type_class_unref (klass);
+    }
+
+  if (add_null)
+    g_ptr_array_add (array, NULL);
+
+  return array;
 }

@@ -77,8 +77,8 @@ def test_google_featured(q, bus, conn, stream):
     # mail notification flags are set properly.
     check_properties_empty(conn, expected_flags)
 
-    # Check that Gabble queries mail data on initial call to Subscribe().
-    conn.MailNotification.Subscribe()
+    # Check that Gabble queries mail data on initial interest.
+    conn.AddClientInterest([cs.CONN_IFACE_MAIL_NOTIFICATION])
     event = q.expect('stream-iq', query_ns=ns.GOOGLE_MAIL_NOTIFY)
 
     result = make_result_iq(stream, event.stanza, False)
@@ -221,7 +221,7 @@ def test_google_featured(q, bus, conn, stream):
     # a different list.
     m = domish.Element((None, 'iq'))
     m['type'] = 'set'
-    m['from'] = 'alice@foo.com'
+    m['from'] = 'test@localhost'
     m['id'] = '3'
     m.addElement((ns.GOOGLE_MAIL_NOTIFY, 'new-mail'))
     stream.send(m)
@@ -287,7 +287,7 @@ def test_google_featured(q, bus, conn, stream):
     assert mail_address == "test@localhost"
  
     # Unsubscribe and check that all data has been dropped
-    conn.MailNotification.Unsubscribe()
+    conn.RemoveClientInterest([cs.CONN_IFACE_MAIL_NOTIFICATION])
     check_properties_empty(conn, expected_flags)
 
 
@@ -306,21 +306,14 @@ def test_no_google_featured(q, bus, conn, stream):
     # notification.
     m = domish.Element((None, 'iq'))
     m['type'] = 'set'
-    m['from'] = 'alice@foo.com'
+    m['from'] = 'test@localhost'
     m['id'] = '2'
     m.addElement((ns.GOOGLE_MAIL_NOTIFY, 'new-mail'))
     stream.send(m)
 
-    # Make sure method returns not implemented exception
-    try:
-        conn.MailNotification.Subscribe()
-    except dbus.DBusException, e:
-        assert e.get_dbus_name() == cs.NOT_IMPLEMENTED
-
-    try:
-        conn.MailNotification.Unsubscribe()
-    except dbus.DBusException, e:
-        assert e.get_dbus_name() == cs.NOT_IMPLEMENTED
+    # AddClientInterest and RemoveClientInterest always trivially "succeed"
+    conn.AddClientInterest([cs.CONN_IFACE_MAIL_NOTIFICATION])
+    conn.RemoveClientInterest([cs.CONN_IFACE_MAIL_NOTIFICATION])
 
     try:
         conn.MailNotification.RequestInboxURL()
@@ -340,10 +333,6 @@ def test_no_google_featured(q, bus, conn, stream):
 
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     interfaces = conn.GetInterfaces()
 
     if stream.__class__ is GoogleXmlStream:

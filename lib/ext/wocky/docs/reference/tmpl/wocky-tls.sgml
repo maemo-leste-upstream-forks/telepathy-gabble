@@ -50,48 +50,6 @@ wocky-tls
 @inst: 
 
 
-<!-- ##### TYPEDEF WockyTLSConnection ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### ARG WockyTLSConnection:session ##### -->
-<para>
-
-</para>
-
-<!-- ##### TYPEDEF WockyTLSSession ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### ARG WockyTLSSession:base-stream ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG WockyTLSSession:dh-bits ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG WockyTLSSession:server ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG WockyTLSSession:x509-cert ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG WockyTLSSession:x509-key ##### -->
-<para>
-
-</para>
-
 <!-- ##### ENUM WockyTLSVerificationLevel ##### -->
 <para>
 
@@ -152,6 +110,15 @@ wocky-tls
 @WOCKY_TLS_CERT_INTERNAL_ERROR: 
 @WOCKY_TLS_CERT_UNKNOWN_ERROR: 
 
+<!-- ##### ENUM WockyTLSCertType ##### -->
+<para>
+
+</para>
+
+@WOCKY_TLS_CERT_TYPE_NONE: 
+@WOCKY_TLS_CERT_TYPE_X509: 
+@WOCKY_TLS_CERT_TYPE_OPENPGP: 
+
 <!-- ##### FUNCTION wocky_tls_connection_get_type ##### -->
 <para>
 
@@ -179,6 +146,16 @@ wocky-tls
 @peername: 
 @level: 
 @status: 
+@Returns: 
+
+
+<!-- ##### FUNCTION wocky_tls_session_get_peers_certificate ##### -->
+<para>
+
+</para>
+
+@session: 
+@type: 
 @Returns: 
 
 
@@ -254,4 +231,46 @@ wocky-tls
 @cert: 
 @Returns: 
 
+
+<!-- ##### STRUCT WockyTLSSession ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG WockyTLSSession:base-stream ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG WockyTLSSession:dh-bits ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG WockyTLSSession:server ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG WockyTLSSession:x509-cert ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG WockyTLSSession:x509-key ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT WockyTLSConnection ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG WockyTLSConnection:session ##### -->
+<para>
+
+</para>
 

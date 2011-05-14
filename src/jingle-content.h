@@ -52,7 +52,7 @@ struct _JingleCandidate {
   int component;
   int generation;
 
-  gdouble preference;
+  int preference;
   gchar *username;
   gchar *password;
   int network;
@@ -126,6 +126,9 @@ gboolean gabble_jingle_content_is_ready (GabbleJingleContent *self);
 void gabble_jingle_content_set_transport_state (GabbleJingleContent *content,
     JingleTransportState state);
 void gabble_jingle_content_remove (GabbleJingleContent *c, gboolean signal_peer);
+void gabble_jingle_content_reject (GabbleJingleContent *c,
+    JingleReason reason);
+
 GList *gabble_jingle_content_get_remote_candidates (GabbleJingleContent *c);
 GList *gabble_jingle_content_get_local_candidates (GabbleJingleContent *c);
 gboolean gabble_jingle_content_change_direction (GabbleJingleContent *c,
@@ -152,6 +155,9 @@ void gabble_jingle_content_set_sending (GabbleJingleContent *self,
   gboolean send);
 
 void gabble_jingle_content_send_complete (GabbleJingleContent *self);
+
+JingleMediaType jingle_media_type_from_tp (TpMediaStreamType type);
+TpMediaStreamType jingle_media_type_to_tp (JingleMediaType type);
 
 #endif /* __JINGLE_CONTENT_H__ */
 

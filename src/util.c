@@ -34,9 +34,7 @@
 #include <telepathy-glib/handle-repo-dynamic.h>
 #include <telepathy-glib/dbus.h>
 
-#include <extensions/extensions.h>
-
-#include <uuid.h>
+#include <telepathy-yell/gtypes.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_JID
 
@@ -80,18 +78,63 @@ sha1_bin (const gchar *bytes,
   g_checksum_free (checksum);
 }
 
+
+/** gabble_generate_id:
+ *
+ * RFC4122 version 4 compliant random UUIDs generator.
+ *
+ * Returns: A string with RFC41122 version 4 random UUID, must be freed with
+ *          g_free().
+ */
 gchar *
 gabble_generate_id (void)
 {
-  /* generate random UUIDs */
-  uuid_t uu;
+  GRand *grand;
   gchar *str;
+  struct {
+      guint32 time_low;
+      guint16 time_mid;
+      guint16 time_hi_and_version;
+      guint8 clock_seq_hi_and_rsv;
+      guint8 clock_seq_low;
+      guint16 node_hi;
+      guint32 node_low;
+  } uuid;
 
-  str = g_new0 (gchar, 37);
-  uuid_generate_random (uu);
-  uuid_unparse_lower (uu, str);
+  /* Fill with random. Every new GRand are seede with 128 bit read from
+   * /dev/urandom (or the current time on non-unix systems). This makes the
+   * random source good enough for our usage, but may not be suitable for all
+   * situation outside Gabble. */
+  grand = g_rand_new ();
+  uuid.time_low = g_rand_int (grand);
+  uuid.time_mid = (guint16) g_rand_int_range (grand, 0, G_MAXUINT16);
+  uuid.time_hi_and_version = (guint16) g_rand_int_range (grand, 0, G_MAXUINT16);
+  uuid.clock_seq_hi_and_rsv = (guint8) g_rand_int_range (grand, 0, G_MAXUINT8);
+  uuid.clock_seq_low = (guint8) g_rand_int_range (grand, 0, G_MAXUINT8);
+  uuid.node_hi = (guint16) g_rand_int_range (grand, 0, G_MAXUINT16);
+  uuid.node_low = g_rand_int (grand);
+  g_rand_free (grand);
+
+  /* Set the two most significant bits (bits 6 and 7) of the
+   * clock_seq_hi_and_rsv to zero and one, respectively. */
+  uuid.clock_seq_hi_and_rsv = (uuid.clock_seq_hi_and_rsv & 0x3F) | 0x80;
+
+  /* Set the four most significant bits (bits 12 through 15) of the
+   * time_hi_and_version field to 4 */
+  uuid.time_hi_and_version = (uuid.time_hi_and_version & 0x0fff) | 0x4000;
+
+  str = g_strdup_printf ("%08x-%04x-%04x-%02x%02x-%04x%08x",
+    uuid.time_low,
+    uuid.time_mid,
+    uuid.time_hi_and_version,
+    uuid.clock_seq_hi_and_rsv,
+    uuid.clock_seq_low,
+    uuid.node_hi,
+    uuid.node_low);
+
   return str;
 }
+
 
 static void
 lm_message_node_add_nick (LmMessageNode *node, const gchar *nick)
@@ -118,6 +161,7 @@ lm_message_node_add_own_nick (LmMessageNode *node,
 
   g_free (nick);
 }
+
 
 void
 lm_message_node_steal_children (LmMessageNode *snatcher,
@@ -484,6 +528,19 @@ gabble_encode_jid (
   return ret;
 }
 
+/*
+ * gabble_normalize_contact
+ * @repo: The %TP_HANDLE_TYPE_ROOM handle repository or NULL
+ * @jid: A JID
+ * @context: One of %GabbleNormalizeContactJIDMode casted into gpointer
+ * @error: pointer in which to return a GError in case of failure.
+ *
+ * Normalize contact JID. If @repo is provided and the context is not
+ * clear (we don't know for sure whether it's global or room JID), it's
+ * used to try and detect room JIDs.
+ *
+ * Returns: Normalized JID.
+ */
 gchar *
 gabble_normalize_contact (TpHandleRepoIface *repo,
                           const gchar *jid,
@@ -1220,6 +1277,12 @@ jingle_pick_best_content_type (GabbleConnection *conn,
     }
 }
 
+/**
+ * @candidates: (element-type JingleCandidate): candidates
+ *
+ * Returns: (transfer full): a GABBLE_ARRAY_TYPE_CANDIDATE_LIST, i.e.
+ *  a(usqa{sv})
+ */
 GPtrArray *
 gabble_call_candidates_to_array (GList *candidates)
 {
@@ -1238,8 +1301,7 @@ gabble_call_candidates_to_array (GList *candidates)
           "Protocol", G_TYPE_UINT, cand->protocol,
           "Type", G_TYPE_UINT, cand->type,
           "Foundation", G_TYPE_STRING, cand->id,
-          "Priority", G_TYPE_UINT,
-            (guint) cand->preference * 65536,
+          "Priority", G_TYPE_UINT, cand->preference,
           "Username", G_TYPE_STRING, cand->username,
           "Password", G_TYPE_STRING, cand->password,
           NULL);
@@ -1248,7 +1310,7 @@ gabble_call_candidates_to_array (GList *candidates)
             G_TYPE_UINT, cand->component,
             G_TYPE_STRING, cand->address,
             G_TYPE_UINT, cand->port,
-            GABBLE_HASH_TYPE_CANDIDATE_INFO, info,
+            TPY_HASH_TYPE_CANDIDATE_INFO, info,
             G_TYPE_INVALID);
 
         g_ptr_array_add (arr, a);
@@ -1294,13 +1356,10 @@ gabble_disco_identity_new (const gchar *category,
 GabbleDiscoIdentity *
 gabble_disco_identity_copy (const GabbleDiscoIdentity *source)
 {
-  GabbleDiscoIdentity *ret = g_new (GabbleDiscoIdentity, 1);
+  g_return_val_if_fail (source != NULL, NULL);
 
-  ret->category = g_strdup (source->category);
-  ret->type = g_strdup (source->type);
-  ret->lang = g_strdup (source->lang);
-  ret->name = g_strdup (source->name);
-  return ret;
+  return gabble_disco_identity_new (source->category, source->type,
+      source->lang, source->name);
 }
 
 const gchar *
@@ -1405,4 +1464,161 @@ gabble_disco_identity_array_free (GPtrArray *arr)
     return;
 
   g_ptr_array_free (arr, TRUE);
+}
+
+/* Like wocky_enum_from_nick, but for GFlagsValues instead. */
+gboolean
+gabble_flag_from_nick (GType flag_type,
+    const gchar *nick,
+    guint *value)
+{
+  GFlagsClass *klass = g_type_class_ref (flag_type);
+  GFlagsValue *flag_value;
+
+  g_return_val_if_fail (klass != NULL, FALSE);
+  g_return_val_if_fail (value != NULL, FALSE);
+
+  flag_value = g_flags_get_value_by_nick (klass, nick);
+  g_type_class_unref (klass);
+
+  if (flag_value != NULL)
+    {
+      *value = flag_value->value;
+      return TRUE;
+    }
+  else
+    {
+      return FALSE;
+    }
+}
+
+/**
+ * gabble_simple_async_succeed_or_fail_in_idle:
+ * @self: the source object for an asynchronous function
+ * @callback: a callback to call when @todo things have been done
+ * @user_data: user data for the callback
+ * @source_tag: the source tag for a #GSimpleAsyncResult
+ * @error: (allow-none): %NULL to indicate success, or an error on failure
+ *
+ * Create a new #GSimpleAsyncResult and schedule it to call its callback
+ * in an idle. If @error is %NULL, report success with
+ * tp_simple_async_report_success_in_idle(); if @error is non-%NULL,
+ * use g_simple_async_report_gerror_in_idle().
+ */
+void
+gabble_simple_async_succeed_or_fail_in_idle (gpointer self,
+    GAsyncReadyCallback callback,
+    gpointer user_data,
+    gpointer source_tag,
+    const GError *error)
+{
+  if (error == NULL)
+    {
+      tp_simple_async_report_success_in_idle (self, callback, user_data,
+          source_tag);
+    }
+  else
+    {
+      /* not const-correct yet: GNOME #622004 */
+      g_simple_async_report_gerror_in_idle (self, callback, user_data,
+          (GError *) error);
+    }
+}
+
+/**
+ * gabble_simple_async_countdown_new:
+ * @self: the source object for an asynchronous function
+ * @callback: a callback to call when @todo things have been done
+ * @user_data: user data for the callback
+ * @source_tag: the source tag for a #GSimpleAsyncResult
+ * @todo: number of things to do before calling @callback (at least 1)
+ *
+ * Create a new #GSimpleAsyncResult that will call its callback when a number
+ * of asynchronous operations have happened.
+ *
+ * An internal counter is initialized to @todo, incremented with
+ * gabble_simple_async_countdown_inc() or decremented with
+ * gabble_simple_async_countdown_dec().
+ *
+ * When that counter reaches zero, if an error has been set with
+ * g_simple_async_result_set_from_error() or similar, the operation fails;
+ * otherwise, it succeeds.
+ *
+ * The caller must not use the operation result functions, such as
+ * g_simple_async_result_get_op_res_gssize() - this async result is only
+ * suitable for "void" async methods which return either success or a #GError,
+ * i.e. the same signature as g_async_initable_init_async().
+ *
+ * Returns: (transfer full): a counter
+ */
+GSimpleAsyncResult *
+gabble_simple_async_countdown_new (gpointer self,
+    GAsyncReadyCallback callback,
+    gpointer user_data,
+    gpointer source_tag,
+    gssize todo)
+{
+  GSimpleAsyncResult *simple;
+
+  g_return_val_if_fail (todo >= 1, NULL);
+
+  simple = g_simple_async_result_new (self, callback, user_data, source_tag);
+  /* We (ab)use the op_res member as a count of things to do. When
+   * it reaches zero, the operation completes with any error that has been
+   * set, or with success. */
+  g_simple_async_result_set_op_res_gssize (simple, todo);
+
+  /* we keep one extra reference as long as the counter is nonzero */
+  g_object_ref (simple);
+
+  return simple;
+}
+
+/**
+ * gabble_simple_async_countdown_inc:
+ * @simple: a result created by gabble_simple_async_countdown_new()
+ *
+ * Increment the counter in @simple, indicating that an additional async
+ * operation has been started. An additional call to
+ * gabble_simple_async_countdown_dec() will be needed to make @simple
+ * call its callback.
+ */
+void
+gabble_simple_async_countdown_inc (GSimpleAsyncResult *simple)
+{
+  gssize todo = g_simple_async_result_get_op_res_gssize (simple);
+
+  g_return_if_fail (todo >= 1);
+  g_simple_async_result_set_op_res_gssize (simple, todo + 1);
+}
+
+/**
+ * gabble_simple_async_countdown_dec:
+ * @simple: a result created by gabble_simple_async_countdown_new()
+ *
+ * Decrement the counter in @simple. If the number of things to do has
+ * reached zero, schedule @simple to call its callback in an idle, then
+ * unref it.
+ *
+ * When one of the asynchronous operations needed for @simple succeeds,
+ * this should be signalled by a call to this function.
+ *
+ * When one of the asynchronous operations needed for @simple fails,
+ * this should be signalled by a call to g_simple_async_result_set_from_error()
+ * (or one of the similar functions), followed by a call to this function.
+ * If more than one async operation fails in this way, the #GError from the
+ * last failure will be used.
+ */
+void
+gabble_simple_async_countdown_dec (GSimpleAsyncResult *simple)
+{
+  gssize todo = g_simple_async_result_get_op_res_gssize (simple);
+
+  g_simple_async_result_set_op_res_gssize (simple, --todo);
+
+  if (todo <= 0)
+    {
+      g_simple_async_result_complete_in_idle (simple);
+      g_object_unref (simple);
+    }
 }

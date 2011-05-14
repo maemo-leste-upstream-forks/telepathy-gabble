@@ -40,16 +40,23 @@ OPENSSL_SRC = \
 
 GNUTLS_SRC = wocky-tls.c
 
+PROXY_SRC = \
+  wocky-http-proxy.h \
+  wocky-http-proxy.c
+
 handwritten_headers = \
   wocky.h \
   wocky-auth-handler.h \
   wocky-auth-registry.h \
   wocky-bare-contact.h \
+  wocky-c2s-porter.h \
+  wocky-caps-cache.h \
   wocky-connector.h \
   wocky-contact.h \
   wocky-contact-factory.h \
   wocky-data-form.h \
   wocky-debug.h \
+  wocky-heartbeat-source.h \
   wocky-jabber-auth.h \
   wocky-jabber-auth-digest.h \
   wocky-jabber-auth-password.h \
@@ -76,6 +83,8 @@ handwritten_headers = \
   wocky-session.h \
   wocky-stanza.h \
   wocky-tls.h \
+  wocky-tls-handler.h \
+  wocky-tls-connector.h \
   wocky-types.h \
   wocky-utils.h \
   wocky-xmpp-connection.h \
@@ -88,11 +97,14 @@ handwritten_sources = \
   wocky-auth-handler.c \
   wocky-auth-registry.c \
   wocky-bare-contact.c \
+  wocky-c2s-porter.c \
+  wocky-caps-cache.c \
   wocky-connector.c \
   wocky-contact.c \
   wocky-contact-factory.c \
   wocky-data-form.c \
   wocky-debug.c \
+  wocky-heartbeat-source.c \
   wocky-jabber-auth.c \
   wocky-jabber-auth-digest.c \
   wocky-jabber-auth-password.c \
@@ -115,6 +127,8 @@ handwritten_sources = \
   wocky-session.c \
   wocky-stanza.c \
   wocky-utils.c \
+  wocky-tls-handler.c \
+  wocky-tls-connector.c \
   wocky-xmpp-connection.c \
   wocky-xmpp-error.c \
   wocky-xmpp-reader.c \
@@ -126,6 +140,12 @@ if USING_OPENSSL
 else
   handwritten_sources += $(GNUTLS_SRC)
   EXTRA_DIST += $(OPENSSL_SRC)
+endif
+
+if HAVE_GIO_PROXY
+  handwritten_sources += $(PROXY_SRC)
+else
+  EXTRA_DIST += $(PROXY_SRC)
 endif
 
 libwocky_la_SOURCES = $(handwritten_sources) $(built_sources) \
@@ -172,17 +192,18 @@ wocky-signals-marshal.list: $(handwritten_sources) Makefile.am
 
 
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) \
-            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ \
+            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @SQLITE_CFLAGS@ @TLS_CFLAGS@ \
+            @LIBIPHB_CFLAGS@ \
             -DG_LOG_DOMAIN=\"wocky\"
 
-AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
+AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @SQLITE_LIBS@ @TLS_LIBS@ @LIBIPHB_LIBS@
 
 # rules for making the glib enum objects
 # The shell variable $long is something like WOCKY_XMPP_ERROR for
 # wocky-xmpp-error-enumtypes.h, and $short is WOCKY.
 $(filter %-enumtypes.h,$(built_headers)): %-enumtypes.h: %.h Makefile.in
 	$(AM_V_GEN)set -e; \
-	long=`echo $* | tr [:lower:]- [:upper:]_`; \
+	long=`echo $(notdir $*) | tr [:lower:]- [:upper:]_`; \
 	short=$${long%%_*}; \
 	guard="__$${long}_ENUM_TYPES_H__"; \
 	glib-mkenums \

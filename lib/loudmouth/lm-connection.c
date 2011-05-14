@@ -76,8 +76,8 @@ lm_connection_register_message_handler (LmConnection *connection,
 
   handler->connection = connection;
 
-  handler->handler_id = wocky_porter_register_handler (connection->porter,
-      type, WOCKY_STANZA_SUB_TYPE_NONE, NULL, priority, stanza_cb,
+  handler->handler_id = wocky_porter_register_handler_from_anyone (
+      connection->porter, type, WOCKY_STANZA_SUB_TYPE_NONE, priority, stanza_cb,
       handler, NULL);
 }
 
@@ -124,18 +124,6 @@ lm_connection_unref (LmConnection *connection)
     }
 
   g_free (connection);
-}
-
-gboolean
-lm_connection_send (LmConnection *connection,
-    LmMessage *message,
-    GError **error)
-{
-  g_assert (connection != NULL);
-  g_assert (connection->porter != NULL);
-
-  wocky_porter_send (connection->porter, message);
-  return TRUE;
 }
 
 static void

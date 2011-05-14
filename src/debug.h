@@ -7,6 +7,7 @@
 
 G_BEGIN_DECLS
 
+/* Remember to keep this enum up to date with the keys array in debug.c */
 typedef enum
 {
   GABBLE_DEBUG_PRESENCE      = 1 << 0,
@@ -33,7 +34,9 @@ typedef enum
   GABBLE_DEBUG_MAIL_NOTIF    = 1 << 22,
   GABBLE_DEBUG_AUTH          = 1 << 23,
   GABBLE_DEBUG_SLACKER       = 1 << 24,
-  GABBLE_DEBUG_SHARE         = 1 << 25
+  GABBLE_DEBUG_SHARE         = 1 << 25,
+  GABBLE_DEBUG_TLS           = 1 << 26,
+  GABBLE_DEBUG_CLIENT_TYPES  = 1 << 27,
 } GabbleDebugFlags;
 
 void gabble_debug_set_flags_from_env (void);
@@ -50,29 +53,29 @@ G_END_DECLS
 #define ERROR(format, ...) \
   G_STMT_START \
     { \
-      gabble_log (G_LOG_LEVEL_ERROR, DEBUG_FLAG, "%s: " format, \
-          G_STRFUNC, ##__VA_ARGS__); \
+      gabble_log (G_LOG_LEVEL_ERROR, DEBUG_FLAG, "%s (%s): " format, \
+          G_STRFUNC, G_STRLOC, ##__VA_ARGS__); \
       g_assert_not_reached (); \
     } \
   G_STMT_END
 
 #define CRITICAL(format, ...) \
-  gabble_log (G_LOG_LEVEL_CRITICAL, DEBUG_FLAG, "%s: " format, \
-      G_STRFUNC, ##__VA_ARGS__)
+  gabble_log (G_LOG_LEVEL_CRITICAL, DEBUG_FLAG, "%s (%s): " format, \
+      G_STRFUNC, G_STRLOC, ##__VA_ARGS__)
 #define WARNING(format, ...) \
-  gabble_log (G_LOG_LEVEL_WARNING, DEBUG_FLAG, "%s: " format, \
-      G_STRFUNC, ##__VA_ARGS__)
+  gabble_log (G_LOG_LEVEL_WARNING, DEBUG_FLAG, "%s (%s): " format, \
+      G_STRFUNC, G_STRLOC, ##__VA_ARGS__)
 #define MESSAGE(format, ...) \
-  gabble_log (G_LOG_LEVEL_MESSAGE, DEBUG_FLAG, "%s: " format, \
-      G_STRFUNC, ##__VA_ARGS__)
+  gabble_log (G_LOG_LEVEL_MESSAGE, DEBUG_FLAG, "%s (%s): " format, \
+      G_STRFUNC, G_STRLOC, ##__VA_ARGS__)
 #define INFO(format, ...) \
-  gabble_log (G_LOG_LEVEL_INFO, DEBUG_FLAG, "%s: " format, \
-      G_STRFUNC, ##__VA_ARGS__)
+  gabble_log (G_LOG_LEVEL_INFO, DEBUG_FLAG, "%s (%s): " format, \
+      G_STRFUNC, G_STRLOC, ##__VA_ARGS__)
 
 #ifdef ENABLE_DEBUG
 #   define DEBUG(format, ...) \
-      gabble_log (G_LOG_LEVEL_DEBUG, DEBUG_FLAG, "%s: " format, \
-          G_STRFUNC, ##__VA_ARGS__)
+      gabble_log (G_LOG_LEVEL_DEBUG, DEBUG_FLAG, "%s (%s): " format, \
+          G_STRFUNC, G_STRLOC, ##__VA_ARGS__)
 #   define DEBUGGING gabble_debug_flag_is_set (DEBUG_FLAG)
 
 #   define STANZA_DEBUG(st, s) \

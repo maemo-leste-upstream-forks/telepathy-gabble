@@ -1,23 +1,20 @@
-
+# vim: set fileencoding=utf-8 : Python sucks!
 """
 Test MUC support.
 """
 
 import dbus
 
-from twisted.words.xish import domish
+from twisted.words.xish import domish, xpath
 
 from gabbletest import exec_test
 from servicetest import EventPattern, assertEquals, assertLength
 import constants as cs
+import ns
 
 from mucutil import join_muc_and_check
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     room = 'chat@conf.localhost'
     room_handle, chan, test_handle, bob_handle = \
         join_muc_and_check(q, bus, conn, stream, room)
@@ -134,6 +131,8 @@ def test(q, bus, conn, stream):
     assert len(sent_message) == 2, sent_message
     header = sent_message[0]
     assert header['message-type'] == 1, header # Action
+    assertEquals(test_handle, header['message-sender'])
+    assertEquals('chat@conf.localhost/test', header['message-sender-id'])
     body = sent_message[1]
     assert body['content-type'] == 'text/plain', body
     assert body['content'] == u'peers through a gap in the curtains', body
@@ -247,6 +246,17 @@ def test(q, bus, conn, stream):
     status = [e for e in elem.elements() if e.name == 'status'][0]
     assert status
     assert status.children[0] == u'hurrah'
+
+    # Check that there's no <x xmlns='.../muc'/> element in the <presence>
+    # stanza when we're just updating our presence, as opposed to joining the
+    # MUC in the first place. This is a regression test for
+    # <https://bugs.freedesktop.org/show_bug.cgi?id=29147>. XEP-0045 §7.4 shows
+    # that you do not need to include this element in presence updates; if we
+    # erroneously include it, some implementations take this to mean that we're
+    # trying to join the MUC again and helpfully send us all the scrollback
+    # again.
+    x_muc_nodes = xpath.queryForNodes('/presence/x[@xmlns="%s"]' % ns.MUC, elem)
+    assert x_muc_nodes is None, elem.toXml()
 
     # test that leaving the channel results in an unavailable message
     chan.Group.RemoveMembers([chan.Group.GetSelfHandle()], 'booo')

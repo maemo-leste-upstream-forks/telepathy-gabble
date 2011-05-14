@@ -7,22 +7,21 @@ Uploaders: Dafydd Harries <daf@debian.org>,
            Simon McVittie <smcv@debian.org>,
            Sjoerd Simons <sjoerd@debian.org>,
            Jonny Lamb <jonny@debian.org>
-Build-Depends: cdbs,
-               debhelper (>= 5),
+Build-Depends: autotools-dev (>= 20100122.1~),
+               debhelper (>= 8),
                gnutls-bin,
                libdbus-1-dev (>= 1.1.0),
                libdbus-glib-1-dev (>= 0.82),
-               libglib2.0-dev (>= 2.21),
+               libglib2.0-dev (>= 2.24),
                libgnutls-dev (>= 2.8.2),
                libsasl2-dev,
                libsoup2.4-dev,
-               libtelepathy-glib-dev (>= 0.11.6),
+               libtelepathy-glib-dev (>= 0.14.3),
                python,
                xsltproc,
-               uuid-dev,
                libsqlite3-dev,
                libnice-dev (>= 0.0.11)
-Standards-Version: 3.9.0
+Standards-Version: 3.9.1
 Vcs-Git: git://git.debian.org/git/pkg-telepathy/telepathy-gabble.git
 Vcs-Browser: http://git.debian.org/?p=pkg-telepathy/telepathy-gabble.git
 Homepage: http://telepathy.freedesktop.org/wiki/
@@ -30,6 +29,7 @@ Homepage: http://telepathy.freedesktop.org/wiki/
 Package: telepathy-gabble
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Breaks: telepathy-mission-control-5 (<< 1:5.5)
 Provides: telepathy-connection-manager
 Description: Jabber/XMPP connection manager
  Gabble is a Jabber/XMPP connection manager for the Telepathy framework,

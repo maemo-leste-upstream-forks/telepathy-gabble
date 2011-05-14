@@ -7,14 +7,10 @@ import dbus
 from twisted.words.xish import domish
 
 from gabbletest import exec_test
-from servicetest import call_async, EventPattern
+from servicetest import call_async, EventPattern, assertEquals
 import constants as cs
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     self_handle = conn.GetSelfHandle()
 
     jid = 'foo@bar.com'
@@ -136,9 +132,9 @@ def test(q, bus, conn, stream):
 
     messages = text_chan.ListPendingMessages(False,
         dbus_interface=cs.CHANNEL_TYPE_TEXT)
-    assert messages == \
-            [(hello_message_id, hello_message_time, foo_handle,
-                0, 8, 'hello')], messages
+    assertEquals(
+        [(hello_message_id, hello_message_time, foo_handle, 0, 8, 'hello')],
+        messages)
 
     # acknowledge it
 

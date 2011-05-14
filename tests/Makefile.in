@@ -156,7 +156,7 @@ ETAGS = etags
 CTAGS = ctags
 am__tty_colors = \
 red=; grn=; lgn=; blu=; std=
-DIST_SUBDIRS = twisted suppressions
+DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 am__relativize = \
   dir0=`pwd`; \
@@ -234,8 +234,6 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MCE_CFLAGS = @MCE_CFLAGS@
-MCE_LIBS = @MCE_LIBS@
 MKDIR_P = @MKDIR_P@
 NICE_CFLAGS = @NICE_CFLAGS@
 NICE_LIBS = @NICE_LIBS@
@@ -267,14 +265,12 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SOUP_CFLAGS = @SOUP_CFLAGS@
 SOUP_LIBS = @SOUP_LIBS@
-SQLITE_CFLAGS = @SQLITE_CFLAGS@
-SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TEST_PYTHON = @TEST_PYTHON@
 TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
 TP_GLIB_LIBS = @TP_GLIB_LIBS@
-UUID_CFLAGS = @UUID_CFLAGS@
-UUID_LIBS = @UUID_LIBS@
+TP_YELL_CFLAGS = @TP_YELL_CFLAGS@
+TP_YELL_LIBS = @TP_YELL_LIBS@
 VERSION = @VERSION@
 WOCKY_CFLAGS = @WOCKY_CFLAGS@
 WOCKY_LIBS = @WOCKY_LIBS@
@@ -335,11 +331,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@WANT_TWISTED_TESTS_TRUE@CHECKTWISTED = twisted
-SUBDIRS = $(CHECKTWISTED) suppressions
+SUBDIRS = twisted suppressions
 LDADD = $(top_builddir)/src/libgabble-convenience.la
 AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
-    @TP_GLIB_CFLAGS@ \
+    @TP_GLIB_CFLAGS@ @TP_YELL_CFLAGS@ \
     -I $(top_srcdir) -I $(top_builddir) \
     -I $(top_srcdir)/lib -I $(top_builddir)/lib
 

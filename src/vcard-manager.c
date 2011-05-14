@@ -382,8 +382,7 @@ cache_entry_free (gpointer data)
       gabble_request_pipeline_item_cancel (entry->pipeline_item);
     }
 
-  if (entry->vcard_node)
-      lm_message_node_unref (entry->vcard_node);
+  tp_clear_pointer (&entry->vcard_node, lm_message_node_unref);
 
   tp_handle_unref (contact_repo, entry->handle);
 
@@ -504,11 +503,7 @@ gabble_vcard_manager_invalidate_cache (GabbleVCardManager *manager,
 
   tp_heap_remove (priv->timed_cache, entry);
 
-  if (entry->vcard_node)
-    {
-      lm_message_node_unref (entry->vcard_node);
-      entry->vcard_node = NULL;
-    }
+  tp_clear_pointer (&entry->vcard_node, lm_message_node_unref);
 
   cache_entry_attempt_to_free (entry);
 }
@@ -916,10 +911,7 @@ replace_reply_cb (GabbleConnection *conn,
   if (error)
     {
       /* We won't need our patched vcard after all */
-      if (priv->patched_vcard != NULL)
-          lm_message_node_unref (priv->patched_vcard);
-
-      priv->patched_vcard = NULL;
+      tp_clear_pointer (&priv->patched_vcard, lm_message_node_unref);
     }
   else
     {
@@ -929,8 +921,7 @@ replace_reply_cb (GabbleConnection *conn,
       g_assert (priv->patched_vcard != NULL);
 
       /* Finally we may put the new vcard in the cache. */
-      if (entry->vcard_node)
-          lm_message_node_unref (entry->vcard_node);
+      tp_clear_pointer (&entry->vcard_node, lm_message_node_unref);
 
       entry->vcard_node = priv->patched_vcard;
       priv->patched_vcard = NULL;
@@ -1270,8 +1261,7 @@ manager_patch_vcard (GabbleVCardManager *self,
       if (new_msg == NULL)
         continue;
 
-      if (msg != NULL)
-        lm_message_unref (msg);
+      tp_clear_pointer (&msg, lm_message_unref);
 
       msg = new_msg;
       /* gabble_vcard_manager_edit_info_apply always returns an IQ message
@@ -1539,6 +1529,8 @@ request_send (GabbleVCardManagerRequest *request, guint timeout)
  *
  * FIXME: the timeout is not always obeyed when there is already a request
  *        on the same handle. It should perhaps be removed.
+ *
+ * The connection must be connected.
  */
 GabbleVCardManagerRequest *
 gabble_vcard_manager_request (GabbleVCardManager *self,
@@ -1555,6 +1547,8 @@ gabble_vcard_manager_request (GabbleVCardManager *self,
   GabbleVCardManagerRequest *request;
   GabbleVCardCacheEntry *entry = cache_entry_get (self, handle);
 
+  g_return_val_if_fail (connection->status == TP_CONNECTION_STATUS_CONNECTED,
+      NULL);
   g_return_val_if_fail (tp_handle_is_valid (contact_repo, handle, NULL), NULL);
   g_assert (entry->vcard_node == NULL);
 
@@ -1580,38 +1574,13 @@ gabble_vcard_manager_request (GabbleVCardManager *self,
   return request;
 }
 
-GabbleVCardManagerEditRequest *
-gabble_vcard_manager_edit_one (GabbleVCardManager *self,
-                               guint timeout,
-                               GabbleVCardManagerEditCb callback,
-                               gpointer user_data,
-                               GObject *object,
-                               const gchar *element_name,
-                               const gchar *element_value)
-{
-  GList *edits = NULL;
-  GabbleVCardManagerEditInfo *info;
-
-  info = gabble_vcard_manager_edit_info_new (
-      element_name, element_value, GABBLE_VCARD_EDIT_REPLACE, NULL);
-
-  if (info->element_value)
-    DEBUG ("%s => value of length %ld starting %.30s", info->element_name,
-        (long) strlen (info->element_value), info->element_value);
-  else
-    DEBUG ("%s => null value", info->element_name);
-
-  edits = g_list_append (edits, info);
-
-  return gabble_vcard_manager_edit (self, timeout, callback,
-      user_data, object, edits);
-}
-
 /* Add a pending request to edit the vCard. When it finishes, call the given
  * callback. The callback may be NULL.
  *
  * The method takes over the ownership of the callers reference to \a edits and
  * its contents.
+ *
+ * The connection must be connected to call this method.
  */
 GabbleVCardManagerEditRequest *
 gabble_vcard_manager_edit (GabbleVCardManager *self,
@@ -1625,6 +1594,8 @@ gabble_vcard_manager_edit (GabbleVCardManager *self,
   TpBaseConnection *base = (TpBaseConnection *) priv->connection;
   GabbleVCardManagerEditRequest *req;
   GabbleVCardCacheEntry *entry;
+
+  g_return_val_if_fail (base->status == TP_CONNECTION_STATUS_CONNECTED, NULL);
 
   /* Invalidate our current vCard and ensure that we're going to get
    * it in the near future */

@@ -309,6 +309,14 @@ parse_description (GabbleJingleContent *content,
     }
 
   manifest_node = lm_message_node_get_child (desc_node, "manifest");
+
+  if (manifest_node == NULL)
+    {
+      g_set_error (error, GABBLE_XMPP_ERROR, XMPP_ERROR_BAD_REQUEST,
+          "description missing <manifest/> node");
+      return;
+    }
+
   protocol_node = lm_message_node_get_child (desc_node, "protocol");
   if (protocol_node != NULL)
     http_node = lm_message_node_get_child (protocol_node, "http");
@@ -343,7 +351,7 @@ parse_description (GabbleJingleContent *content,
 
       size = lm_message_node_get_attribute (node, "size");
       if (size)
-        m->size = strtoull (size, NULL, 10);
+        m->size = g_ascii_strtoull (size, NULL, 10);
 
       image = lm_message_node_get_child (node, "image");
       if (image)

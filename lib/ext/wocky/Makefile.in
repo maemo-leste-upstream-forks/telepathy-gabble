@@ -36,8 +36,8 @@ host_triplet = @host@
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/configure $(top_srcdir)/rules/lcov.mak AUTHORS \
-	COPYING ChangeLog INSTALL NEWS config.guess config.sub depcomp \
-	install-sh ltmain.sh missing
+	COPYING ChangeLog INSTALL NEWS compile config.guess config.sub \
+	depcomp install-sh ltmain.sh missing
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-compiler-flag.m4 \
@@ -166,6 +166,8 @@ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LCOV_PATH = @LCOV_PATH@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LIBIPHB_CFLAGS = @LIBIPHB_CFLAGS@
+LIBIPHB_LIBS = @LIBIPHB_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBSASL2_CFLAGS = @LIBSASL2_CFLAGS@
@@ -200,6 +202,8 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TLS_CFLAGS = @TLS_CFLAGS@
 TLS_LIBS = @TLS_LIBS@
@@ -807,6 +811,11 @@ check-local::
 		$(srcdir)/tests/*.[ch] \
 		$(srcdir)/examples/*.[ch] \
 		> FIXME.out || true
+
+# one day we'll have a wocky.freedesktop.org but today is not that day
+maintainer-upload-docs:
+	rsync -rvzPp --chmod=Dg+s,ug+rwX,o=rX $(srcdir)/docs/reference/html/ \
+	telepathy.freedesktop.org:/srv/telepathy.freedesktop.org/www/doc/wocky/
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

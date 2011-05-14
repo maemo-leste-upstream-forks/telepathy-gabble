@@ -3,8 +3,6 @@
 Test workarounds for gtalk
 """
 
-import dbus
-
 from gabbletest import (
     acknowledge_iq, exec_test, sync_stream, make_result_iq, GoogleXmlStream,
     )
@@ -137,17 +135,20 @@ def test_flickering(q, bus, conn, stream, subscribe):
     sometimes. Here, we test that Gabble is suppressing the flickers.
     """
 
+    self_handle = conn.GetSelfHandle()
     contact = 'bob@foo.com'
     handle = conn.RequestHandles(cs.HT_CONTACT, ['bob@foo.com'])[0]
 
     # request subscription
-    subscribe.Group.AddMembers([handle], '')
+    call_async(q, subscribe.Group, 'AddMembers', [handle], "")
 
     event = q.expect('stream-iq', iq_type='set', query_ns=ns.ROSTER)
     item = event.query.firstChildElement()
     assertEquals(contact, item['jid'])
 
     acknowledge_iq(stream, event.stanza)
+    # FIXME: when we depend on a new enough tp-glib we could expect
+    # AddMembers to return at this point
 
     # send empty roster item
     iq = make_set_roster_iq(stream, 'test@localhost/Resource', contact,
@@ -179,8 +180,12 @@ def test_flickering(q, bus, conn, stream, subscribe):
             args=['', [handle], [], [], [], 0, cs.GC_REASON_NONE],
             predicate=is_stored),
         EventPattern('dbus-signal', signal='MembersChanged',
-            args=['', [], [], [], [handle], 0, cs.GC_REASON_NONE],
+            args=['', [], [], [], [handle], self_handle, cs.GC_REASON_NONE],
             predicate=is_subscribe),
+        EventPattern('dbus-signal', signal='ContactsChanged',
+            args=[{handle:
+                (cs.SUBSCRIPTION_STATE_ASK, cs.SUBSCRIPTION_STATE_NO, ''),
+                }, []]),
         )
 
     # Gabble shouldn't report any changes to subscribe or stored's members in
@@ -190,6 +195,7 @@ def test_flickering(q, bus, conn, stream, subscribe):
             predicate=is_subscribe),
         EventPattern('dbus-signal', signal='MembersChanged',
             predicate=is_stored),
+        EventPattern('dbus-signal', signal='ContactsChanged'),
         ]
     q.forbid_events(change_events)
 
@@ -228,9 +234,15 @@ def test_flickering(q, bus, conn, stream, subscribe):
     stream.send(presence)
 
     # Gabble should report this update to the UI.
-    q.expect('dbus-signal', signal='MembersChanged',
-        args=['', [handle], [], [], [], 0, cs.GC_REASON_NONE],
-        predicate=is_subscribe)
+    q.expect_many(
+        EventPattern('dbus-signal', signal='MembersChanged',
+            args=['', [handle], [], [], [], handle, cs.GC_REASON_NONE],
+            predicate=is_subscribe),
+        EventPattern('dbus-signal', signal='ContactsChanged',
+            args=[{handle:
+                (cs.SUBSCRIPTION_STATE_YES, cs.SUBSCRIPTION_STATE_NO, ''),
+                }, []]),
+        )
 
     # Gabble shouldn't report any changes to subscribe or stored's members in
     # response to the next two roster updates.
@@ -267,13 +279,11 @@ def test_deny_simple(q, bus, conn, stream, stored, deny):
     directions, at which point they will vanish from 'stored', while
     remaining on 'deny'.
     """
-    self_handle = conn.GetSelfHandle()
-
     contact = 'blocked-but-subscribed@boards.ca'
     handle = conn.RequestHandles(cs.HT_CONTACT, [contact])[0]
     assertContains(handle,
         stored.Properties.Get(cs.CHANNEL_IFACE_GROUP, "Members"))
-    stored.Group.RemoveMembers([handle], "")
+    call_async(q, stored.Group, 'RemoveMembers', [handle], "")
 
     q.forbid_events(remove_events)
 
@@ -282,6 +292,7 @@ def test_deny_simple(q, bus, conn, stream, stored, deny):
             presence_type='unsubscribe'),
         EventPattern('stream-presence', to=contact,
             presence_type='unsubscribed'),
+        EventPattern('dbus-return', method='RemoveMembers'),
         )
 
     # Our server sends roster pushes in response to our unsubscribe and
@@ -294,6 +305,8 @@ def test_deny_simple(q, bus, conn, stream, stored, deny):
     # As a result they should drop off all three non-deny lists, but not fall
     # off deny:
     q.expect_many(
+        EventPattern('dbus-signal', signal='ContactsChanged',
+            args=[{}, [handle]]),
         *[ EventPattern('dbus-signal', signal='MembersChanged',
                         args=['', [], [handle], [], [], 0, cs.GC_REASON_NONE],
                         predicate=p)
@@ -372,6 +385,8 @@ def test_deny_overlap_one(q, bus, conn, stream, subscribe, stored, deny):
         EventPattern('dbus-signal', signal='MembersChanged',
             predicate=is_stored,
             args=["", [], [handle], [], [], 0, 0]),
+        EventPattern('dbus-signal', signal='ContactsChanged',
+            args=[{}, [handle]]),
         )
 
     # And he should definitely still be on deny. That rascal.
@@ -419,8 +434,8 @@ def test_deny_overlap_two(q, bus, conn, stream,
         ]
     q.forbid_events(patterns)
 
-    deny.Group.AddMembers([handle], '')
-    stored.Group.RemoveMembers([handle], '')
+    call_async(q, deny.Group, 'AddMembers', [handle], "")
+    call_async(q, stored.Group, 'RemoveMembers', [handle], "")
 
     # Make sure if the edits are sent prematurely, we've got them.
     sync_stream(q, stream)
@@ -459,7 +474,7 @@ def test_deny_unblock_remove(q, bus, conn, stream, stored, deny):
         stored.Properties.Get(cs.CHANNEL_IFACE_GROUP, "Members"))
 
     # Unblock them.
-    deny.Group.RemoveMembers([handle], '')
+    call_async(q, deny.Group, 'RemoveMembers', [handle], "")
 
     roster_event = q.expect('stream-iq', query_ns=ns.ROSTER)
     item = roster_event.query.firstChildElement()
@@ -469,7 +484,7 @@ def test_deny_unblock_remove(q, bus, conn, stream, stored, deny):
     # If we now remove them from stored, the edit shouldn't be sent until the
     # unblock event has had a reply.
     q.forbid_events(remove_events)
-    stored.Group.RemoveMembers([handle], '')
+    call_async(q, stored.Group, 'RemoveMembers', [handle], "")
 
     # Make sure if the remove is sent prematurely, we catch it.
     sync_stream(q, stream)
@@ -502,8 +517,6 @@ def test_deny_unblock_remove(q, bus, conn, stream, stored, deny):
 
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-
     publish, subscribe, stored, deny = test_inital_roster(q, bus, conn, stream)
 
     test_flickering(q, bus, conn, stream, subscribe)

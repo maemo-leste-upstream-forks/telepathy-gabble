@@ -29,15 +29,22 @@
 
 G_BEGIN_DECLS
 
+/**
+ * WockyPubsubNodeClass:
+ *
+ * The class of a #WockyPubsubNode.
+ */
 typedef struct _WockyPubsubNodeClass WockyPubsubNodeClass;
 typedef struct _WockyPubsubNodePrivate WockyPubsubNodePrivate;
 
 
 struct _WockyPubsubNodeClass {
+  /*<private>*/
   GObjectClass parent_class;
 };
 
 struct _WockyPubsubNode {
+  /*<private>*/
   GObject parent;
 
   WockyPubsubNodePrivate *priv;
@@ -124,6 +131,7 @@ typedef enum {
 
 typedef struct _WockyPubsubAffiliation WockyPubsubAffiliation;
 struct _WockyPubsubAffiliation {
+    /*< public >*/
     WockyPubsubNode *node;
     gchar *jid;
     WockyPubsubAffiliationState state;

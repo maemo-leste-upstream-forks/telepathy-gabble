@@ -66,7 +66,7 @@ main (int argc,
   mainloop = g_main_loop_new (NULL, FALSE);
 
   if ((host != NULL) && (*host != '\0'))
-    wcon = wocky_connector_new (jid, pass, NULL, NULL);
+    wcon = wocky_connector_new (jid, pass, NULL, NULL, NULL);
   else
     wcon = g_object_new (WOCKY_TYPE_CONNECTOR,
         "jid"        , jid ,
@@ -74,7 +74,7 @@ main (int argc,
         "xmpp-server", host, NULL);
 
   g_object_set (G_OBJECT (wcon), "email", email, NULL);
-  wocky_connector_register_async (wcon, connector_callback, NULL);
+  wocky_connector_register_async (wcon, NULL, connector_callback, NULL);
   g_main_loop_run (mainloop);
 
   return 0;

@@ -446,6 +446,7 @@ subscribe_cb (GObject *source,
 
   g_simple_async_result_complete (simple);
   g_object_unref (simple);
+  g_object_unref (self);
 }
 
 /**
@@ -589,7 +590,7 @@ wocky_pubsub_node_unsubscribe_finish (WockyPubsubNode *self,
     GAsyncResult *result,
     GError **error)
 {
-  wocky_implement_finish_void (self, wocky_pubsub_node_unsubscribe_async)
+  wocky_implement_finish_void (self, wocky_pubsub_node_unsubscribe_async);
 }
 
 WockyStanza *
@@ -625,7 +626,7 @@ wocky_pubsub_node_delete_finish (WockyPubsubNode *self,
     GAsyncResult *result,
     GError **error)
 {
-  wocky_implement_finish_void (self, wocky_pubsub_node_delete_async)
+  wocky_implement_finish_void (self, wocky_pubsub_node_delete_async);
 }
 
 WockyStanza *
@@ -669,6 +670,7 @@ list_subscribers_cb (GObject *source,
 
   g_simple_async_result_complete (simple);
   g_object_unref (simple);
+  g_object_unref (self);
 }
 
 /**
@@ -729,7 +731,7 @@ wocky_pubsub_node_list_subscribers_finish (
 {
   wocky_implement_finish_copy_pointer (self,
       wocky_pubsub_node_list_subscribers_async,
-      wocky_pubsub_subscription_list_copy, subscribers)
+      wocky_pubsub_subscription_list_copy, subscribers);
 }
 
 WockyStanza *
@@ -816,6 +818,7 @@ list_affiliates_cb (GObject *source,
 
   g_simple_async_result_complete (simple);
   g_object_unref (simple);
+  g_object_unref (self);
 }
 
 /**
@@ -876,7 +879,7 @@ wocky_pubsub_node_list_affiliates_finish (
 {
   wocky_implement_finish_copy_pointer (self,
       wocky_pubsub_node_list_affiliates_async,
-      wocky_pubsub_affiliation_list_copy, affiliates)
+      wocky_pubsub_affiliation_list_copy, affiliates);
 }
 
 /**
@@ -998,7 +1001,7 @@ wocky_pubsub_node_modify_affiliates_finish (
     GAsyncResult *result,
     GError **error)
 {
-  wocky_implement_finish_void (self, wocky_pubsub_node_modify_affiliates_async)
+  wocky_implement_finish_void (self, wocky_pubsub_node_modify_affiliates_async);
 }
 
 /**
@@ -1100,7 +1103,7 @@ wocky_pubsub_node_get_configuration_finish (
     GError **error)
 {
   wocky_implement_finish_return_copy_pointer (self,
-      wocky_pubsub_node_get_configuration_async, g_object_ref)
+      wocky_pubsub_node_get_configuration_async, g_object_ref);
 }
 
 WockyPorter *

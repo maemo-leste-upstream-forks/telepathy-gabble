@@ -39,8 +39,6 @@
 #include "ft-manager.h"
 #include "jingle-factory.h"
 #include "muc-factory.h"
-#include "olpc-gadget-manager.h"
-#include "slacker.h"
 #include "types.h"
 
 G_BEGIN_DECLS
@@ -78,26 +76,20 @@ typedef enum
   GABBLE_CONNECTION_FEATURES_PRIVACY = 1 << 3,
   GABBLE_CONNECTION_FEATURES_PEP = 1 << 4,
   GABBLE_CONNECTION_FEATURES_GOOGLE_MAIL_NOTIFY = 1 << 5,
+  GABBLE_CONNECTION_FEATURES_INVISIBLE = 1 << 6,
+  GABBLE_CONNECTION_FEATURES_GOOGLE_SHARED_STATUS = 1 << 7,
+  GABBLE_CONNECTION_FEATURES_GOOGLE_QUEUE = 1 << 8,
 } GabbleConnectionFeatures;
 
 typedef struct _GabbleConnectionPrivate GabbleConnectionPrivate;
 typedef struct _GabbleConnectionMailNotificationPrivate GabbleConnectionMailNotificationPrivate;
+typedef struct _GabbleConnectionPresencePrivate GabbleConnectionPresencePrivate;
 
 typedef LmHandlerResult (*GabbleConnectionMsgReplyFunc) (GabbleConnection *conn,
                                                          LmMessage *sent_msg,
                                                          LmMessage *reply_msg,
                                                          GObject *object,
                                                          gpointer user_data);
-
-/* must be in the same order as the list_handle_strings in
- * connection.c */
-typedef enum
-{
-  GABBLE_LIST_HANDLE_STORED = 1,
-  GABBLE_LIST_HANDLE_PUBLISH,
-  GABBLE_LIST_HANDLE_SUBSCRIBE,
-  GABBLE_LIST_HANDLE_DENY
-} GabbleListHandle;
 
 typedef enum {
     /* The JID could be a "global" JID, or a MUC room member. We'll assume
@@ -145,6 +137,7 @@ struct _GabbleConnection {
     /* presence */
     GabblePresenceCache *presence_cache;
     GabblePresence *self_presence;
+    GabbleConnectionPresencePrivate *presence_priv;
 
     /* IQ request pipeline helper, so simultaneous requests don't make
      * servers hate us */
@@ -158,14 +151,6 @@ struct _GabbleConnection {
     GHashTable *olpc_pep_activities;
     GHashTable *olpc_invited_activities;
     GHashTable *olpc_current_act;
-
-    /* OLPC services */
-    const gchar *olpc_gadget_buddy;
-    const gchar *olpc_gadget_activity;
-    gboolean olpc_gadget_publish;
-
-    /* OLPC Gadget manager */
-    GabbleOlpcGadgetManager *olpc_gadget_manager;
 
     /* bytestream factory */
     GabbleBytestreamFactory *bytestream_factory;
@@ -203,9 +188,6 @@ struct _GabbleConnection {
     /* ContactInfo.SupportedFields, or NULL to use the generic one */
     GPtrArray *contact_info_fields;
 
-    GabbleSlacker *slacker;
-    guint slacker_inactivity_changed_id;
-
     GabbleConnectionPrivate *priv;
 };
 
@@ -221,7 +203,7 @@ typedef enum {
 
 gchar *gabble_connection_get_full_jid (GabbleConnection *conn);
 
-WockyPorter *gabble_connection_get_porter (GabbleConnection *conn);
+WockyPorter *gabble_connection_dup_porter (GabbleConnection *conn);
 
 gboolean _gabble_connection_set_properties_from_account (
     GabbleConnection *conn, const gchar *account, GError **error);
@@ -254,6 +236,14 @@ gboolean gabble_connection_request_decloak (GabbleConnection *self,
 
 void gabble_connection_fill_in_caps (GabbleConnection *self,
     LmMessage *presence_message);
+
+gboolean _gabble_connection_invisible_privacy_list_set_active (
+    GabbleConnection *self,
+    gboolean active,
+    GError **error);
+
+const gchar **gabble_connection_get_implemented_interfaces (void);
+const gchar **gabble_connection_get_guaranteed_interfaces (void);
 
 /* extern only for the benefit of the unit tests */
 void _gabble_connection_create_handle_repos (TpBaseConnection *conn,

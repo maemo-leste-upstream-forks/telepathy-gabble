@@ -18,9 +18,11 @@
 #include <glib/gstdio.h>
 #include <telepathy-glib/debug.h>
 #include <telepathy-glib/debug-sender.h>
+#include <telepathy-yell/debug.h>
 
 static GabbleDebugFlags flags = 0;
 
+/* Remember to keep this array up to date with the GabbleDebugFlags enum in debug.h */
 static GDebugKey keys[] = {
   { "presence",       GABBLE_DEBUG_PRESENCE },
   { "groups",         GABBLE_DEBUG_GROUPS },
@@ -46,6 +48,8 @@ static GDebugKey keys[] = {
   { "mail",           GABBLE_DEBUG_MAIL_NOTIF },
   { "authentication", GABBLE_DEBUG_AUTH },
   { "share",          GABBLE_DEBUG_SHARE },
+  { "tls",            GABBLE_DEBUG_TLS },
+  { "client-types",   GABBLE_DEBUG_CLIENT_TYPES },
   { 0, },
 };
 
@@ -59,6 +63,7 @@ void gabble_debug_set_flags_from_env ()
   flags_string = g_getenv ("GABBLE_DEBUG");
 
   tp_debug_set_flags (flags_string);
+  tpy_debug_set_flags (flags_string);
 
   if (flags_string != NULL)
     {
@@ -91,7 +96,7 @@ debug_flag_to_domain (GabbleDebugFlags flag)
 
       for (i = 0; keys[i].value; i++)
         {
-          GDebugKey key = (GDebugKey) keys[i];
+          GDebugKey key = keys[i];
           gchar *val;
 
           val = g_strdup_printf ("%s/%s", G_LOG_DOMAIN, key.key);

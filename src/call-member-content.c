@@ -292,11 +292,7 @@ gabble_call_member_content_dispose (GObject *object)
 
   priv->dispose_has_run = TRUE;
 
-  if (priv->jingle_content != NULL)
-    g_object_unref (priv->jingle_content);
-  priv->jingle_content = NULL;
-
-  /* release any references held by the object here */
+  tp_clear_object (&priv->jingle_content);
 
   if (G_OBJECT_CLASS (gabble_call_member_content_parent_class)->dispose)
     G_OBJECT_CLASS (gabble_call_member_content_parent_class)->dispose (object);
@@ -357,8 +353,8 @@ call_member_content_jingle_removed_cb (GabbleJingleContent *jingle_content,
 }
 
 static void
-call_member_content_jingle_codecs_cb (GabbleJingleMediaRtp *media,
-    GList *codecs,
+call_member_content_jingle_media_description_cb (GabbleJingleMediaRtp *media,
+    JingleMediaDescription *md,
     gpointer user_data)
 {
   GabbleCallMemberContent *self = GABBLE_CALL_MEMBER_CONTENT (user_data);
@@ -404,8 +400,13 @@ gabble_call_member_content_get_remote_codecs (GabbleCallMemberContent *self)
   GList *jcodecs = NULL;
 
   if (self->priv->jingle_content != NULL)
-    jcodecs = gabble_jingle_media_rtp_get_remote_codecs (
-      GABBLE_JINGLE_MEDIA_RTP (self->priv->jingle_content));
+    {
+      JingleMediaDescription *md;
+      md = gabble_jingle_media_rtp_get_remote_media_description (
+          GABBLE_JINGLE_MEDIA_RTP (self->priv->jingle_content));
+      if (md != NULL)
+        jcodecs = md->codecs;
+    }
 
   return jcodecs != NULL ? jcodecs : self->priv->remote_codecs;
 }
@@ -455,8 +456,9 @@ gabble_call_member_content_set_jingle_content (GabbleCallMemberContent *self,
 
   gabble_signal_connect_weak (content, "removed",
       G_CALLBACK (call_member_content_jingle_removed_cb), G_OBJECT (self));
-  gabble_signal_connect_weak (content, "remote-codecs",
-    G_CALLBACK (call_member_content_jingle_codecs_cb), G_OBJECT (self));
+  gabble_signal_connect_weak (content, "remote-media-description",
+    G_CALLBACK (call_member_content_jingle_media_description_cb),
+      G_OBJECT (self));
 
   g_signal_emit (self, signals[GOT_JINGLE_CONTENT], 0);
 }
@@ -466,14 +468,16 @@ gabble_call_member_content_remove (GabbleCallMemberContent *self)
 {
   GabbleCallMemberContentPrivate *priv = self->priv;
 
+  if (priv->removed)
+    return;
+
+  priv->removed = TRUE;
+
   g_object_ref (self);
   /* Remove ourselves from the sesison */
   if (priv->jingle_content != NULL)
       gabble_jingle_content_remove (priv->jingle_content, TRUE);
 
-  if (!priv->removed)
-    g_signal_emit (self, signals[REMOVED], 0);
-  priv->removed = TRUE;
-
+  g_signal_emit (self, signals[REMOVED], 0);
   g_object_unref (self);
 }

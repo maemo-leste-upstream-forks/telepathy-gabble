@@ -249,17 +249,8 @@ gabble_bytestream_socks5_dispose (GObject *object)
       gabble_bytestream_iface_close (GABBLE_BYTESTREAM_IFACE (self), NULL);
     }
 
-  if (priv->transport != NULL)
-    {
-      g_object_unref (priv->transport);
-      priv->transport = NULL;
-    }
-
-  if (priv->listener != NULL)
-    {
-      g_object_unref (priv->listener);
-      priv->listener = NULL;
-    }
+  tp_clear_object (&priv->transport);
+  tp_clear_object (&priv->listener);
 
   G_OBJECT_CLASS (gabble_bytestream_socks5_parent_class)->dispose (object);
 }
@@ -575,8 +566,7 @@ socks5_close_transport (GabbleBytestreamSocks5 *self)
   g_signal_handlers_disconnect_matched (priv->transport,
       G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, self);
 
-  g_object_unref (priv->transport);
-  priv->transport = NULL;
+  tp_clear_object (&priv->transport);
 }
 
 static void
@@ -1138,8 +1128,7 @@ socks5_handle_received_data (GabbleBytestreamSocks5 *self,
 
         DEBUG ("sock5 stream connected. Stop to listen for connections");
         g_assert (priv->listener != NULL);
-        g_object_unref (priv->listener);
-        priv->listener = NULL;
+        tp_clear_object (&priv->listener);
 
         return SOCKS5_MIN_LENGTH + addr_len;
 
@@ -1648,10 +1637,74 @@ socks5_init_error:
 static GSList *
 get_local_interfaces_ips (void)
 {
-  /* FIXME: fd.o#24775: please implement this using ioctlsocket() and
-   * SIO_GET_INTERFACE_LIST, if you care about doing SOCKS5 bytestreams on
-   * Windows */
-  return NULL;
+  gint sockfd;
+  INTERFACE_INFO *iflist = NULL;
+  gsize size = 0;
+  int ret;
+  int error;
+  gsize bytes;
+  gsize num;
+  gsize i;
+  struct sockaddr_in *sa;
+  GSList *ips = NULL;
+
+  /* FIXME: add IPv6 addresses */
+  if ((sockfd = socket (AF_INET, SOCK_DGRAM, IPPROTO_IP)) == INVALID_SOCKET)
+    {
+      DEBUG ("Cannot open socket to retrieve interface list");
+      return NULL;
+    }
+
+  /* Loop and get each interface the system has, one by one... */
+  do
+    {
+      size += sizeof (INTERFACE_INFO);
+      /* realloc buffer size until no overflow occurs  */
+      if (NULL == (iflist = realloc (iflist, size)))
+        {
+          DEBUG ("Out of memory while allocation interface configuration"
+              " structure");
+          closesocket (sockfd);
+          return NULL;
+        }
+
+        ret = WSAIoctl (sockfd, SIO_GET_INTERFACE_LIST, NULL, 0, iflist,
+                        size, &bytes, NULL, NULL);
+        error = WSAGetLastError ();
+
+        if (ret == SOCKET_ERROR && error != WSAEFAULT)
+          {
+            DEBUG ("Cannot retrieve interface list");
+            closesocket (sockfd);
+            free (iflist);
+            return NULL;
+          }
+    } while (ret == SOCKET_ERROR);
+
+  num = bytes / sizeof (INTERFACE_INFO);
+
+  /* Loop throught the interface list and get the IP address of each IF */
+  for (i = 0; i < num; i++)
+    {
+      /* no ip address from interface that is down */
+      if ((iflist[i].iiFlags & IFF_UP) == 0)
+        continue;
+
+      if ((iflist[i].iiFlags & IFF_LOOPBACK) == IFF_LOOPBACK)
+        {
+          DEBUG ("Ignoring loopback interface");
+          continue;
+        }
+
+      sa = (struct sockaddr_in *) &(iflist[i].iiAddress);
+      ips = g_slist_prepend (ips, g_strdup (inet_ntoa (sa->sin_addr)));
+      DEBUG ("IP Address: %s", inet_ntoa (sa->sin_addr));
+    }
+
+  closesocket (sockfd);
+  free (iflist);
+
+  return ips;
 }
 
 #else

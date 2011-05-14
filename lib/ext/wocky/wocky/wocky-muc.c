@@ -202,11 +202,11 @@ wocky_muc_dispose (GObject *object)
     wocky_porter_unregister_handler (priv->porter, priv->mesg_handler);
   priv->mesg_handler = 0;
 
-  if (priv->porter)
+  if (priv->porter != NULL)
     g_object_unref (priv->porter);
   priv->porter = NULL;
 
-  if (priv->members)
+  if (priv->members != NULL)
     g_hash_table_unref (priv->members);
   priv->members = NULL;
 
@@ -690,9 +690,9 @@ muc_disco_info (GObject *source,
 
       case WOCKY_STANZA_SUB_TYPE_RESULT:
         query = wocky_node_get_child_ns (
-          wocky_stanza_get_top_node (iq), "query", NS_DISCO_INFO);
+          wocky_stanza_get_top_node (iq), "query", WOCKY_NS_DISCO_INFO);
 
-        if (!query)
+        if (query == NULL)
           {
             error = g_error_new (WOCKY_XMPP_ERROR,
                 WOCKY_XMPP_ERROR_UNDEFINED_CONDITION,
@@ -702,7 +702,7 @@ muc_disco_info (GObject *source,
 
         node = wocky_node_get_child (query, "identity");
 
-        if (!node)
+        if (node == NULL)
           {
             error = g_error_new (WOCKY_XMPP_ERROR,
                 WOCKY_XMPP_ERROR_UNDEFINED_CONDITION,
@@ -780,12 +780,12 @@ wocky_muc_disco_info_async (WockyMuc *muc,
       priv->user,
       priv->jid,
       '(', "query",
-      ':', NS_DISCO_INFO,
+      ':', WOCKY_NS_DISCO_INFO,
       ')',
       NULL);
 
   result = g_simple_async_result_new (G_OBJECT (muc), callback, data,
-    wocky_muc_disco_info_finish);
+    wocky_muc_disco_info_async);
 
   wocky_porter_send_iq_async (priv->porter, iq, cancel, muc_disco_info,
       result);
@@ -798,8 +798,7 @@ wocky_muc_disco_info_async (WockyMuc *muc,
 WockyStanza *
 wocky_muc_create_presence (WockyMuc *muc,
     WockyStanzaSubType type,
-    const gchar *status,
-    const gchar *password)
+    const gchar *status)
 {
   WockyMucPrivate *priv = muc->priv;
   WockyStanza *stanza =
@@ -809,8 +808,6 @@ wocky_muc_create_presence (WockyMuc *muc,
         priv->jid,
         NULL);
   WockyNode *presence = wocky_stanza_get_top_node (stanza);
-  WockyNode *x = wocky_node_add_child_ns (presence,
-      "x", WOCKY_NS_MUC);
 
 
   /* There should be separate API to leave a room, but atm there isn't... so
@@ -827,23 +824,7 @@ wocky_muc_create_presence (WockyMuc *muc,
       g_signal_emit (muc, signals[SIG_FILL_PRESENCE], 0, stanza);
     }
 
-  if (password != NULL)
-    wocky_node_add_child_with_content (x, "password", password);
-
   return stanza;
-}
-
-static void
-wocky_muc_send_presence (WockyMuc *muc,
-    WockyStanzaSubType type,
-    const gchar *status)
-{
-  WockyMucPrivate *priv = muc->priv;
-  WockyStanza *pres = wocky_muc_create_presence (muc, type, status,
-      priv->pass);
-
-  wocky_porter_send (priv->porter, pres);
-  g_object_unref (pres);
 }
 
 /* ************************************************************************ */
@@ -854,7 +835,7 @@ register_presence_handler (WockyMuc *muc)
   WockyMucPrivate *priv = muc->priv;
 
   if (priv->pres_handler == 0)
-    priv->pres_handler = wocky_porter_register_handler (priv->porter,
+    priv->pres_handler = wocky_porter_register_handler_from (priv->porter,
         WOCKY_STANZA_TYPE_PRESENCE,
         WOCKY_STANZA_SUB_TYPE_NONE,
         priv->rjid,
@@ -873,7 +854,7 @@ register_message_handler (WockyMuc *muc)
   WockyMucPrivate *priv = muc->priv;
 
   if (priv->mesg_handler == 0)
-    priv->mesg_handler = wocky_porter_register_handler (priv->porter,
+    priv->mesg_handler = wocky_porter_register_handler_from (priv->porter,
         WOCKY_STANZA_TYPE_MESSAGE,
         WOCKY_STANZA_SUB_TYPE_NONE,
         priv->rjid,
@@ -1130,9 +1111,9 @@ handle_presence_standard (WockyMuc *muc,
   gboolean ok = FALSE;
   WockyNode *node = wocky_stanza_get_top_node (stanza);
   WockyNode *x = wocky_node_get_child_ns (node,
-      "x", WOCKY_NS_MUC_USR);
+      "x", WOCKY_NS_MUC_USER);
   WockyNode *item = NULL;
-  const gchar *from = wocky_node_get_attribute (node, "from");
+  const gchar *from = wocky_stanza_get_from (stanza);
   const gchar *pjid = NULL;
   const gchar *pnic = NULL;
   const gchar *role = NULL;
@@ -1298,8 +1279,7 @@ handle_presence_error (WockyMuc *muc,
   gchar *room = NULL;
   gchar *serv = NULL;
   gchar *nick = NULL;
-  const gchar *from = wocky_node_get_attribute (
-      wocky_stanza_get_top_node (stanza), "from");
+  const gchar *from = wocky_stanza_get_from (stanza);
   WockyMucPrivate *priv = muc->priv;
   GError *error = NULL;
 
@@ -1573,6 +1553,13 @@ wocky_muc_join (WockyMuc *muc,
     GCancellable *cancel)
 {
   WockyMucPrivate *priv = muc->priv;
+  WockyStanza *presence = wocky_muc_create_presence (muc,
+      WOCKY_STANZA_SUB_TYPE_NONE, NULL);
+  WockyNode *x = wocky_node_add_child_ns (wocky_stanza_get_top_node (presence),
+      "x", WOCKY_NS_MUC);
+
+  if (priv->pass != NULL)
+    wocky_node_add_child_with_content (x, "password", priv->pass);
 
   if (priv->state < WOCKY_MUC_INITIATED)
     {
@@ -1582,8 +1569,8 @@ wocky_muc_join (WockyMuc *muc,
 
   priv->state = WOCKY_MUC_INITIATED;
 
-
-  wocky_muc_send_presence (muc, WOCKY_STANZA_SUB_TYPE_NONE, NULL);
+  wocky_porter_send (priv->porter, presence);
+  g_object_unref (presence);
 }
 
 /* misc meta data */

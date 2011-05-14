@@ -382,7 +382,7 @@ new_jingle_session_cb (GabbleJingleFactory *jf,
               channel = gabble_file_transfer_channel_new (self->priv->connection,
                   sess->peer, sess->peer, TP_FILE_TRANSFER_STATE_PENDING,
                   NULL, filename, entry->size, TP_FILE_HASH_TYPE_NONE, NULL,
-                  NULL, 0, 0, FALSE, NULL, gtalk_fc, token);
+                  NULL, 0, 0, FALSE, NULL, gtalk_fc, token, NULL);
               g_free (filename);
 
               gtalk_file_collection_add_channel (gtalk_fc, channel);
@@ -443,6 +443,7 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
       tp_base_connection_get_handles (base_connection, TP_HANDLE_TYPE_CONTACT);
   TpHandle handle;
   const gchar *content_type, *filename, *content_hash, *description;
+  const gchar *file_uri;
   guint64 size, date, initial_offset;
   TpFileHashType content_hash_type;
   GError *error = NULL;
@@ -546,13 +547,16 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
   initial_offset = tp_asv_get_uint64 (request_properties,
       TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER ".InitialOffset", NULL);
 
+  file_uri = tp_asv_get_string (request_properties,
+      TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_URI);
+
   DEBUG ("Requested outgoing channel with contact: %s",
       tp_handle_inspect (contact_repo, handle));
 
   chan = gabble_file_transfer_channel_new (self->priv->connection,
       handle, base_connection->self_handle, TP_FILE_TRANSFER_STATE_PENDING,
       content_type, filename, size, content_hash_type, content_hash,
-      description, date, initial_offset, TRUE, NULL, NULL, NULL);
+      description, date, initial_offset, TRUE, NULL, NULL, NULL, file_uri);
 
   if (!gabble_file_transfer_channel_offer_file (chan, &error))
     {
@@ -571,7 +575,8 @@ error:
   return TRUE;
 }
 
-/* Keep in sync with values set in gabble_ft_manager_foreach_channel_class */
+/* Keep in sync with values set in gabble_ft_manager_type_foreach_channel_class
+ */
 static const gchar * const file_transfer_channel_fixed_properties[] = {
     TP_IFACE_CHANNEL ".ChannelType",
     TP_IFACE_CHANNEL ".TargetHandleType",
@@ -581,22 +586,23 @@ static const gchar * const file_transfer_channel_fixed_properties[] = {
 static const gchar * const file_transfer_channel_allowed_properties[] =
 {
    /* ContentHashType has to be first so we can easily skip it when needed */
-   TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER ".ContentHashType",
-   TP_IFACE_CHANNEL ".TargetHandle",
-   TP_IFACE_CHANNEL ".TargetID",
-   TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER ".ContentType",
-   TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER ".Filename",
-   TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER ".Size",
-   TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER ".ContentHash",
-   TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER ".Description",
-   TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER ".Date",
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_CONTENT_HASH_TYPE,
+   TP_PROP_CHANNEL_TARGET_HANDLE,
+   TP_PROP_CHANNEL_TARGET_ID,
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_CONTENT_TYPE,
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_FILENAME,
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_SIZE,
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_CONTENT_HASH,
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_DESCRIPTION,
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_DATE,
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_URI,
    NULL
 };
 
 static void
-gabble_ft_manager_foreach_channel_class (TpChannelManager *manager,
-                                         TpChannelManagerChannelClassFunc func,
-                                         gpointer user_data)
+gabble_ft_manager_type_foreach_channel_class (GType type,
+    TpChannelManagerTypeChannelClassFunc func,
+    gpointer user_data)
 {
   GHashTable *table;
 
@@ -610,7 +616,7 @@ gabble_ft_manager_foreach_channel_class (TpChannelManager *manager,
   g_hash_table_insert (table, TP_IFACE_CHANNEL ".TargetHandleType",
       tp_g_value_slice_new_uint (TP_HANDLE_TYPE_CONTACT));
 
-  func (manager, table, file_transfer_channel_allowed_properties,
+  func (type, table, file_transfer_channel_allowed_properties,
       user_data);
 
   /* MD5 HashType class */
@@ -619,7 +625,7 @@ gabble_ft_manager_foreach_channel_class (TpChannelManager *manager,
       tp_g_value_slice_new_uint (TP_FILE_HASH_TYPE_MD5));
 
   /* skip ContentHashType in allowed properties */
-  func (manager, table, file_transfer_channel_allowed_properties + 1,
+  func (type, table, file_transfer_channel_allowed_properties + 1,
       user_data);
 
   g_hash_table_destroy (table);
@@ -716,7 +722,7 @@ void gabble_ft_manager_handle_si_request (GabbleFtManager *self,
   chan = gabble_file_transfer_channel_new (self->priv->connection,
       handle, handle, TP_FILE_TRANSFER_STATE_PENDING,
       content_type, filename, size, content_hash_type, content_hash,
-      description, date, 0, resume_supported, bytestream, NULL, NULL);
+      description, date, 0, resume_supported, bytestream, NULL, NULL, NULL);
 
   gabble_ft_manager_channel_created (self, chan, NULL);
 }
@@ -728,7 +734,8 @@ channel_manager_iface_init (gpointer g_iface,
   TpChannelManagerIface *iface = g_iface;
 
   iface->foreach_channel = gabble_ft_manager_foreach_channel;
-  iface->foreach_channel_class = gabble_ft_manager_foreach_channel_class;
+  iface->type_foreach_channel_class =
+      gabble_ft_manager_type_foreach_channel_class;
   iface->create_channel = gabble_ft_manager_handle_request;
   iface->ensure_channel = gabble_ft_manager_handle_request;
 }
@@ -848,7 +855,7 @@ static void
 caps_channel_manager_iface_init (gpointer g_iface,
                                  gpointer iface_data)
 {
-  GabbleCapsChannelManagerIface *iface = g_iface;
+  GabbleCapsChannelManagerInterface *iface = g_iface;
 
   iface->get_contact_caps = gabble_ft_manager_get_contact_caps;
   iface->represent_client = gabble_ft_manager_represent_client;

@@ -69,10 +69,6 @@ AC_ARG_ENABLE(coding-style-checks,
     [ENABLE_CODING_STYLE_CHECKS=$enableval], [ENABLE_CODING_STYLE_CHECKS=yes])
     ])
 
-if test x$enable_debug = xyes; then
-  AC_DEFINE(ENABLE_DEBUG, [], [Enable debug code])
-fi
-
 AC_SUBST([ENABLE_CODING_STYLE_CHECKS])
 
 dnl debugging stuff
@@ -80,14 +76,16 @@ AC_ARG_ENABLE(debug,
   AC_HELP_STRING([--disable-debug],[compile without debug code]),
   [
     case "${enableval}" in
-      yes|no) enable="${enableval}" ;;
+      yes|no) enable_debug="${enableval}" ;;
       *)   AC_MSG_ERROR(bad value ${enableval} for --enable-debug) ;;
     esac
   ],
-  [enable=yes])
+  [enable_debug=yes])
 
-if test "$enable" = yes; then
+if test "$enable_debug" = yes; then
   AC_DEFINE(ENABLE_DEBUG, [], [Enable debug code])
+else
+  enable_debug=no
 fi
 
 AC_ARG_WITH(installed-headers,
@@ -116,6 +114,14 @@ PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >=
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
+dnl Check GIO proxy support
+PKG_CHECK_EXISTS([gio-2.0 >= 2.25.15],
+  [HAVE_GIO_PROXY=yes
+   AC_DEFINE(HAVE_GIO_PROXY, [1], [Defined if GIO supports proxy])],
+  [HAVE_GIO_PROXY=no])
+AM_CONDITIONAL(HAVE_GIO_PROXY, [test "x${HAVE_GIO_PROXY}" = "xyes"])
+
+
 dnl Choose an SSL/TLS backend (default gnutls)
 AC_ARG_WITH([tls],
   AC_HELP_STRING([--with-tls=BACKEND],
@@ -130,10 +136,10 @@ AS_CASE([$with_tls],
                 AC_DEFINE(USING_OPENSSL, 1, [Define if using openssl])
                 PKG_CHECK_MODULES(TLS, [openssl >= 0.9.8g])],
     [auto],    [PKG_CHECK_MODULES(TLS, [gnutls  >= 2.8.2 ],
-                    [],
+                    [with_tls=gnutls],
                     [USING_OPENSSL=yes
                      AC_DEFINE(USING_OPENSSL, 1, [Define if using openssl])
-                     PKG_CHECK_MODULES(TLS, [openssl >= 0.9.8g],[],
+                     PKG_CHECK_MODULES(TLS, [openssl >= 0.9.8g],[with_tls=openssl],
                          AC_MSG_ERROR([Neither gnutls nor openssl found]))])],
     [*],       AC_MSG_ERROR([Must have a TLS backend (gnutls or openssl)]))
 
@@ -146,6 +152,13 @@ AC_SUBST(GLIB_GENMARSHAL)
 
 dnl Check for libxml2
 PKG_CHECK_MODULES(LIBXML2, [libxml-2.0])
+AC_SUBST(LIBXML2_CFLAGS)
+AC_SUBST(LIBXML2_LIBS)
+
+dnl Check for sqlite
+PKG_CHECK_MODULES(SQLITE, [sqlite3])
+AC_SUBST(SQLITE_CFLAGS)
+AC_SUBST(SQLITE_LIBS)
 
 dnl check for libsasl2 (for sasl test)
 dnl must check for headers as well as library (no .pc so can't use pkg-config)
@@ -162,21 +175,30 @@ AC_SUBST(LIBSASL2_LIBS)
 AC_SUBST(LIBSASL2_CFLAGS)
 AM_CONDITIONAL(HAVE_LIBSASL2, test "x$HAVE_LIBSASL2" = "xyes")
 
-AC_SUBST(LIBXML2_CFLAGS)
-AC_SUBST(LIBXML2_LIBS)
+PKG_CHECK_MODULES(LIBIPHB, [libiphb],
+    [AC_DEFINE(HAVE_IPHB, 1, [libiphb is available])
+     have_iphb=yes
+    ],
+    [have_iphb=no])
+AC_SUBST(LIBIPHB_CFLAGS)
+AC_SUBST(LIBIPHB_LIBS)
 
 AC_ARG_ENABLE(coverage, AC_HELP_STRING([--enable-coverage],
       [compile with coverage profiling instrumentation (gcc only)]),
     [
       case "${enableval}" in
-        "yes"|"no") coverage="${enableval}" ;;
+        "yes"|"no") enable_coverage="${enableval}" ;;
         *)   AC_MSG_ERROR(bad value ${enableval} for --enable-coverage) ;;
       esac
     ]
 )
 
-WOCKY_GCOV(${coverage})
-WOCKY_LCOV(${coverage})
+WOCKY_GCOV(${enable_coverage})
+WOCKY_LCOV(${enable_coverage})
+
+if test "x$enable_coverage" = "x"; then
+  enable_coverage=no
+fi
 
 AC_SUBST(PACKAGE_STRING)
 
@@ -196,3 +218,19 @@ AC_OUTPUT( Makefile            \
            docs/Makefile      \
            docs/reference/Makefile
 )
+
+echo "
+Configure summary:
+
+        Compiler Flags.......: ${CFLAGS}
+        Prefix...............: ${prefix}
+        Coverage profiling...: ${enable_coverage}
+        Coding style checks..: ${ENABLE_CODING_STYLE_CHECKS}
+        Debug................: ${enable_debug}
+
+    Features:
+        TLS Backend..........: ${with_tls}
+        SASL2 Tests..........: ${HAVE_LIBSASL2}
+        gtk-doc documentation: ${enable_gtk_doc}
+        libiphb integration..: ${have_iphb}
+"

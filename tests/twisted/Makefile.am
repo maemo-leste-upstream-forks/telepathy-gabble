@@ -13,13 +13,17 @@ TWISTED_TESTS = \
 	caps/hashed-caps.py \
 	caps/initial-caps.py \
 	caps/jingle-caps.py \
+	caps/offline.py \
 	caps/receive-jingle.py \
 	caps/trust-thyself.py \
 	caps/tube-caps.py \
-	device-idleness.py \
+	client-types.py \
+	cm/protocol.py \
 	gateways.py \
 	muc/conference.py \
+	muc/chat-states.py \
 	muc/name-conflict.py \
+	muc/presence-before-closing.py \
 	muc/renamed.py \
 	muc/roomlist.py \
 	muc/scrollback.py \
@@ -31,26 +35,30 @@ TWISTED_TESTS = \
 	muc/test-muc-ownership.py \
 	muc/test-muc-properties.py \
 	muc/test-muc.py \
-	olpc/olpc-activity-search.py \
 	olpc/current-activity.py \
 	olpc/olpc-muc-invitation.py \
 	olpc/olpc-muc-prop-change.py \
 	olpc/test-olpc-bundle.py \
 	olpc/test-olpc-set-props-preload.py \
 	olpc/change-notifications.py \
-	olpc/olpc-buddy-search.py \
-	olpc/gadget-invite.py \
-	olpc/gadget-publish.py \
-	olpc/gadget-restarted.py \
-	olpc/view-presence.py \
 	pep-support.py \
+	power-save.py \
 	presence/decloak.py \
 	presence/initial-contact-presence.py \
 	presence/initial-presence.py \
+	presence/invisible_xep_0126.py \
+	presence/invisible_xep_0186.py \
 	presence/presence.py \
+	presence/plugins.py \
+	presence/set-idempotence.py \
+	presence/shared-status.py \
+	roster/authorize.py \
+	roster/edit-before-roster.py \
 	roster/ensure.py \
 	roster/groups.py \
 	roster/groups-12791.py \
+	roster/push-from-contact.py \
+	roster/push-without-id.py \
 	roster/removed-from-rp-subscribe.py \
 	roster/request-group-before-roster.py \
 	roster/request-group-after-roster.py \
@@ -60,9 +68,11 @@ TWISTED_TESTS = \
 	roster/test-roster-subscribe.py \
 	roster/test-save-alias-to-roster.py \
 	sasl/abort.py \
+	sasl/close.py \
 	sasl/jabber_auth.py \
 	sasl/plain.py \
 	sasl/complex.py \
+	sasl/telepathy-password.py \
 	search/ceci-nest-pas-un-serveur.py \
 	search/extended.py \
 	search/no-server-property.py \
@@ -78,10 +88,16 @@ TWISTED_TESTS = \
 	text/test-text-delayed.py \
 	text/test-text-no-body.py \
 	text/test-text.py \
+	tls/server-tls-channel.py \
+	version.py \
+	$(NULL)
+
+TWISTED_TUBE_TESTS = \
 	tubes/accept-muc-dbus-tube.py \
 	tubes/accept-muc-stream-tube.py \
 	tubes/accept-private-dbus-tube.py \
 	tubes/accept-private-stream-tube.py \
+	tubes/check-create-tube-return.py \
 	tubes/close-muc-with-closed-tube.py \
 	tubes/crash-on-list-channels.py \
 	tubes/create-invalid-tube-channels.py \
@@ -95,6 +111,10 @@ TWISTED_TESTS = \
 	tubes/request-invalid-dbus-tube.py \
 	tubes/test-get-available-tubes.py \
 	tubes/test-socks5-muc.py \
+	$(NULL)
+
+TWISTED_VCARD_TESTS = \
+	vcard/disconnect-during-pep.py \
 	vcard/get-contact-info.py \
 	vcard/item-not-found.py \
 	vcard/overlapping-sets.py \
@@ -117,14 +137,20 @@ TWISTED_TESTS = \
 	vcard/test-vcard-race.py \
 	vcard/update-get-failed.py \
 	vcard/update-rejected.py \
+	$(NULL)
+
+TWISTED_JINGLE_TESTS = \
 	jingle/accept-extra-stream.py \
 	jingle/call-basics.py \
 	jingle/call-codecoffer.py \
+	jingle/call-dtmf.py \
 	jingle/call-muc.py \
 	jingle/call-muc-cancel.py \
 	jingle/call-muc-re-re-request.py \
 	jingle/call-state.py \
 	jingle/decloak-peer.py \
+	jingle/dtmf.py \
+	jingle/dtmf-no-audio.py \
 	jingle/google-relay.py \
 	jingle/hold-audio.py \
 	jingle/hold-av.py \
@@ -133,12 +159,15 @@ TWISTED_TESTS = \
 	jingle/initial-audio-video.py \
 	jingle/misuse.py \
 	jingle/stun-server.py \
+	jingle/transport-info-parsing.py \
 	jingle/outgoing-basics.py \
 	jingle/outgoing-ensure.py \
 	jingle/outgoing-many-streams.py \
 	jingle/payload-types.py \
 	jingle/preload-caps-crash.py \
 	jingle/session-id-collision.py \
+	jingle/stream-errors-on-terminate.py \
+	jingle/stream-errors-on-content-reject.py \
 	jingle/stream-handler-error.py \
 	jingle/test-content-adding-removal.py \
 	jingle/test-description-info.py \
@@ -149,6 +178,9 @@ TWISTED_TESTS = \
 	jingle/test-content-complex.py \
 	jingle/test-wait-for-caps.py \
 	jingle/test-wait-for-caps-incomplete.py \
+	$(NULL)
+
+TWISTED_FT_TESTS = \
 	jingle-share/test-caps-file-transfer.py \
 	jingle-share/test-send-file.py \
 	jingle-share/test-send-file-send-before-accept.py \
@@ -174,6 +206,10 @@ TWISTED_TESTS = \
 	file-transfer/test-send-file-to-unknown-contact.py \
 	file-transfer/test-send-file-wait-to-provide.py \
 	file-transfer/test-send-file-send-before-accept.py \
+	file-transfer/test-uri.py \
+	$(NULL)
+
+TWISTED_TESTS += \
 	test-debug.py \
 	connect/disco-error-from-bare-jid.py \
 	connect/disco-no-reply.py \
@@ -186,17 +222,18 @@ TWISTED_TESTS = \
 	connect/network-error.py \
 	test-fallback-socks5-proxy.py \
 	test-register.py \
-	test-set-status-idempotence.py \
 	test-location.py \
 	pubsub.py \
 	sidecar-own-caps.py \
 	sidecars.py \
-	mail-notification.py
+	mail-notification.py \
+	$(NULL)
 
 TESTS =
 
 TESTS_ENVIRONMENT = \
-	PYTHONPATH=@abs_top_srcdir@/tests/twisted:@abs_top_builddir@/tests/twisted
+	PYTHONPATH=@abs_top_srcdir@/tests/twisted:@abs_top_builddir@/tests/twisted \
+	GABBLE_TWISTED_SRCDIR=@srcdir@
 
 check-local: check-coding-style check-twisted
 
@@ -204,7 +241,7 @@ check-local: check-coding-style check-twisted
 CHECK_TWISTED_SLEEP=0
 
 check-twisted:
-	$(MAKE) -C tools
+if WANT_TWISTED_TESTS
 	rm -f tools/core
 	rm -f tools/vgcore.*
 	rm -f tools/gabble-testing.log
@@ -214,16 +251,29 @@ check-twisted:
         else \
 	  sleep=$(CHECK_TWISTED_SLEEP); \
 	fi; \
+	failed=0; \
 	sh $(srcdir)/tools/with-session-bus.sh \
 		--sleep=$$sleep \
 		--config-file=tools/tmp-session-bus.conf \
 		-- $(MAKE) check-TESTS \
 		TESTS="$(TWISTED_TESTS)" \
-		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON) -u"
-	@if test -e tools/core; then\
-		echo "Core dump exists: tools/core";\
+		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON) -u" || \
+		failed=1; \
+	if test -e tools/core; then\
+		echo -e "\033[0;31;1mCore dump exists: tools/core\033[0m";\
 		exit 1;\
-	fi
+	fi; \
+	if test $$failed = 1; then\
+		exit 1;\
+	fi;
+else
+	@echo "Configured without Twisted test support. To enable them,"
+	@echo "ensure that these Python modules are available:"
+	@echo " • twisted.words.xish.domish"
+	@echo " • twisted.words.protocols.jabber"
+	@echo " • twisted.internet.reactor"
+	@echo "and then re-run configure."
+endif
 
 if ENABLE_DEBUG
 DEBUGGING_PYBOOL = True
@@ -243,12 +293,6 @@ else
 CHANNEL_TYPE_CALL_ENABLED_PYBOOL = False
 endif
 
-if HAVE_MCE
-HAVE_MCE_PYBOOL = True
-else
-HAVE_MCE_PYBOOL = False
-endif
-
 config.py: Makefile
 	$(AM_V_GEN) { \
 		echo "PACKAGE_STRING = \"$(PACKAGE_STRING)\""; \
@@ -256,7 +300,6 @@ config.py: Makefile
 		echo "DEBUGGING = $(DEBUGGING_PYBOOL)"; \
 		echo "PLUGINS_ENABLED = $(PLUGINS_ENABLED_PYBOOL)"; \
 		echo "CHANNEL_TYPE_CALL_ENABLED = $(CHANNEL_TYPE_CALL_ENABLED_PYBOOL)"; \
-		echo "HAVE_MCE = $(HAVE_MCE_PYBOOL)"; \
 	} > $@
 
 BUILT_SOURCES = config.py
@@ -281,7 +324,13 @@ EXTRA_DIST = \
 	tubes/tubetestutil.py \
 	sasl/saslutil.py \
 	search/search_helper.py \
-	file-transfer/file_transfer_helper.py
+	file-transfer/file_transfer_helper.py \
+	presence/invisible_helper.py \
+	tls-cert.pem \
+	tls-key.pem
+
+TWISTED_TESTS += $(TWISTED_FT_TESTS) $(TWISTED_TUBE_TESTS)
+TWISTED_TESTS += $(TWISTED_JINGLE_TESTS) $(TWISTED_VCARD_TESTS)
 
 noinst_PROGRAMS = \
 	telepathy-gabble-debug
@@ -308,6 +357,42 @@ CLEANFILES = gabble-[1-9]*.log *.pyc */*.pyc config.py
 
 check_misc_sources = $(TESTS)
 
+# the following used to be in tools/
 include $(top_srcdir)/tools/check-coding-style.mk
 
-SUBDIRS = tools
+tools/exec-with-log.sh: tools/exec-with-log.sh.in
+	@mkdir -p tools
+	$(AM_V_GEN)sed -e "s|[@]abs_top_builddir[@]|@abs_top_builddir@|g" \
+		-e "s|[@]abs_top_srcdir[@]|@abs_top_srcdir@|g" $< > $@
+	@chmod +x $@
+
+tools/%.conf: tools/%.conf.in
+	@mkdir -p tools
+	$(AM_V_GEN)sed -e "s|[@]abs_top_builddir[@]|@abs_top_builddir@|g" $< > $@
+
+# We don't use the full filename for the .in because > 99 character filenames
+# in tarballs are non-portable (and automake 1.8 doesn't let us build
+# non-archaic tarballs)
+tools/org.freedesktop.Telepathy.ConnectionManager.%.service: tools/%.service.in
+	@mkdir -p tools
+	$(AM_V_GEN)sed -e "s|[@]abs_top_builddir[@]|@abs_top_builddir@|g" $< > $@
+
+# D-Bus service file for testing
+service_in_files = tools/gabble.service.in
+service_files = tools/org.freedesktop.Telepathy.ConnectionManager.gabble.service
+
+# D-Bus config file for testing
+conf_in_files = tools/tmp-session-bus.conf.in
+conf_files = $(conf_in_files:.conf.in=.conf)
+
+BUILT_SOURCES += $(service_files) $(conf_files) tools/exec-with-log.sh
+
+EXTRA_DIST += \
+	$(service_in_files) \
+	$(conf_in_files) \
+	tools/exec-with-log.sh.in \
+	tools/with-session-bus.sh
+
+CLEANFILES += \
+    $(BUILT_SOURCES) \
+    tools/gabble-testing.log

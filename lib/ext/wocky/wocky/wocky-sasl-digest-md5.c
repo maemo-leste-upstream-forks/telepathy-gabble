@@ -147,7 +147,7 @@ auth_handler_iface_init (gpointer g_iface)
 {
   WockyAuthHandlerIface *iface = g_iface;
 
-  iface->mechanism = MECH_SASL_DIGEST_MD5;
+  iface->mechanism = WOCKY_AUTH_MECH_SASL_DIGEST_MD5;
   iface->plain = FALSE;
   iface->auth_data_func = digest_md5_handle_auth_data;
   iface->success_func = digest_md5_handle_success;
@@ -402,10 +402,11 @@ digest_md5_make_initial_response (
     GString **response,
     GError **error)
 {
+  g_return_val_if_fail (response != NULL, FALSE);
 
   *response = md5_prepare_response (priv, challenge, error);
 
-  if (response == NULL)
+  if (*response == NULL)
     return FALSE;
 
   DEBUG ("Prepared response: %s", (*response)->str);

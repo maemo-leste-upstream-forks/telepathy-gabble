@@ -34,7 +34,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @HAVE_LIBSASL2_TRUE@am__append_1 = wocky-test-sasl-auth
-check_PROGRAMS = $(am__EXEEXT_2)
+@HAVE_GIO_PROXY_TRUE@am__append_2 = wocky-http-proxy-test
+check_PROGRAMS = $(am__EXEEXT_3)
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/tools/check-coding-style.mk
 subdir = tests
@@ -54,7 +55,8 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 @HAVE_LIBSASL2_TRUE@am__EXEEXT_1 = wocky-test-sasl-auth$(EXEEXT)
-am__EXEEXT_2 = wocky-xmpp-reader-test$(EXEEXT) \
+@HAVE_GIO_PROXY_TRUE@am__EXEEXT_2 = wocky-http-proxy-test$(EXEEXT)
+am__EXEEXT_3 = wocky-xmpp-reader-test$(EXEEXT) \
 	wocky-xmpp-readwrite-test$(EXEEXT) \
 	wocky-xmpp-connection-test$(EXEEXT) wocky-porter-test$(EXEEXT) \
 	wocky-xmpp-node-test$(EXEEXT) wocky-node-tree-test$(EXEEXT) \
@@ -68,7 +70,7 @@ am__EXEEXT_2 = wocky-xmpp-reader-test$(EXEEXT) \
 	wocky-pubsub-node-test$(EXEEXT) wocky-connector-test$(EXEEXT) \
 	wocky-ping-test$(EXEEXT) wocky-jid-validation-test$(EXEEXT) \
 	wocky-sasl-utils-test$(EXEEXT) wocky-utils-test$(EXEEXT) \
-	wocky-scram-sha1-test$(EXEEXT) $(am__EXEEXT_1)
+	wocky-scram-sha1-test$(EXEEXT) $(am__EXEEXT_1) $(am__EXEEXT_2)
 am_wocky_bare_contact_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-bare-contact-test.$(OBJEXT)
 wocky_bare_contact_test_OBJECTS =  \
@@ -99,6 +101,10 @@ am_wocky_data_form_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-data-form-test.$(OBJEXT)
 wocky_data_form_test_OBJECTS = $(am_wocky_data_form_test_OBJECTS)
 wocky_data_form_test_LDADD = $(LDADD)
+am_wocky_http_proxy_test_OBJECTS = wocky-http-proxy-test.$(OBJEXT) \
+	wocky-test-helper.$(OBJEXT) wocky-test-stream.$(OBJEXT)
+wocky_http_proxy_test_OBJECTS = $(am_wocky_http_proxy_test_OBJECTS)
+wocky_http_proxy_test_LDADD = $(LDADD)
 am_wocky_jid_validation_test_OBJECTS =  \
 	wocky-jid-validation-test.$(OBJEXT) \
 	wocky-test-helper.$(OBJEXT) wocky-test-stream.$(OBJEXT)
@@ -233,6 +239,7 @@ SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_connector_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
 	$(wocky_data_form_test_SOURCES) \
+	$(wocky_http_proxy_test_SOURCES) \
 	$(wocky_jid_validation_test_SOURCES) \
 	$(wocky_node_tree_test_SOURCES) \
 	$(wocky_pep_service_test_SOURCES) $(wocky_ping_test_SOURCES) \
@@ -251,6 +258,7 @@ DIST_SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_connector_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
 	$(wocky_data_form_test_SOURCES) \
+	$(wocky_http_proxy_test_SOURCES) \
 	$(wocky_jid_validation_test_SOURCES) \
 	$(wocky_node_tree_test_SOURCES) \
 	$(wocky_pep_service_test_SOURCES) $(wocky_ping_test_SOURCES) \
@@ -319,6 +327,8 @@ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LCOV_PATH = @LCOV_PATH@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LIBIPHB_CFLAGS = @LIBIPHB_CFLAGS@
+LIBIPHB_LIBS = @LIBIPHB_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBSASL2_CFLAGS = @LIBSASL2_CFLAGS@
@@ -353,6 +363,8 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TLS_CFLAGS = @TLS_CFLAGS@
 TLS_LIBS = @TLS_LIBS@
@@ -434,6 +446,7 @@ CRL_DIR := $(CERT_DIR)/crl
 UNKNOWN_KEY := $(CERT_DIR)/unknown-key.pem
 UNKNOWN_CERT := $(CERT_DIR)/unknown-cert.pem
 LIBWOCKY := $(top_builddir)/wocky/libwocky.la
+INCLUDES := -I$(top_builddir)/wocky
 TLSDEFS := -DTLS_CA_KEY_FILE='"$(CA_KEY)"'      \
             -DTLS_CA_CRT_FILE='"$(CA_CERT)"'     \
             -DTLS_SS_KEY_FILE='"$(SS_KEY)"'      \
@@ -461,7 +474,8 @@ TEST_PROGS = wocky-xmpp-reader-test wocky-xmpp-readwrite-test \
 	wocky-data-form-test wocky-pubsub-service-test \
 	wocky-pubsub-node-test wocky-connector-test wocky-ping-test \
 	wocky-jid-validation-test wocky-sasl-utils-test \
-	wocky-utils-test wocky-scram-sha1-test $(am__append_1)
+	wocky-utils-test wocky-scram-sha1-test $(am__append_1) \
+	$(am__append_2)
 wocky_tls_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_tls_test_SOURCES = \
   wocky-tls-test.c        \
@@ -614,6 +628,11 @@ wocky_scram_sha1_test_SOURCES = wocky-scram-sha1-test.c \
   wocky-test-helper.c wocky-test-helper.h \
   wocky-test-stream.c wocky-test-stream.h
 
+wocky_http_proxy_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_http_proxy_test_SOURCES = wocky-http-proxy-test.c \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h
+
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ \
   @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@
 
@@ -697,6 +716,9 @@ wocky-contact-factory-test$(EXEEXT): $(wocky_contact_factory_test_OBJECTS) $(woc
 wocky-data-form-test$(EXEEXT): $(wocky_data_form_test_OBJECTS) $(wocky_data_form_test_DEPENDENCIES) 
 	@rm -f wocky-data-form-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_data_form_test_OBJECTS) $(wocky_data_form_test_LDADD) $(LIBS)
+wocky-http-proxy-test$(EXEEXT): $(wocky_http_proxy_test_OBJECTS) $(wocky_http_proxy_test_DEPENDENCIES) 
+	@rm -f wocky-http-proxy-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(wocky_http_proxy_test_OBJECTS) $(wocky_http_proxy_test_LDADD) $(LIBS)
 wocky-jid-validation-test$(EXEEXT): $(wocky_jid_validation_test_OBJECTS) $(wocky_jid_validation_test_DEPENDENCIES) 
 	@rm -f wocky-jid-validation-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_jid_validation_test_OBJECTS) $(wocky_jid_validation_test_LDADD) $(LIBS)
@@ -767,6 +789,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-bare-contact-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact-factory-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-http-proxy-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jid-validation-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-node-tree-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service-test.Po@am__quote@

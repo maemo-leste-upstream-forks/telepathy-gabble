@@ -64,6 +64,10 @@
 #define NS_JINGLE_RTP_AUDIO     "urn:xmpp:jingle:apps:rtp:audio"
 #define NS_JINGLE_RTP_VIDEO     "urn:xmpp:jingle:apps:rtp:video"
 
+/* ProtoXEPs for rtcp-fb and rtp-hdrext */
+#define NS_JINGLE_RTCP_FB       "urn:xmpp:jingle:apps:rtp:rtcp-fb:0"
+#define NS_JINGLE_RTP_HDREXT    "urn:xmpp:jingle:apps:rtp:rtp-hdrext:0"
+
 /* Google's Jingle dialect */
 #define NS_GOOGLE_SESSION       "http://www.google.com/session"
 /* Audio capability in Google Jingle dialect */
@@ -96,6 +100,7 @@
 #define NS_PUBSUB               "http://jabber.org/protocol/pubsub"
 #define NS_PRESENCE_INVISIBLE   "presence-invisible"
 #define NS_PRIVACY              "jabber:iq:privacy"
+#define NS_INVISIBLE            "urn:xmpp:invisible:0"
 #define NS_REGISTER             "jabber:iq:register"
 #define NS_ROSTER               "jabber:iq:roster"
 #define NS_SEARCH               "jabber:iq:search"
@@ -109,10 +114,11 @@
 #define NS_X_DELAY              "jabber:x:delay"
 #define NS_X_CONFERENCE         "jabber:x:conference"
 #define NS_XMPP_STANZAS         "urn:ietf:params:xml:ns:xmpp-stanzas"
+#define NS_VERSION              "jabber:iq:version"
 #define NS_GEOLOC               "http://jabber.org/protocol/geoloc"
 #define NS_GOOGLE_MAIL_NOTIFY   "google:mail:notify"
 
 #define NS_TEMPPRES "urn:xmpp:temppres:0"
-
+#define NS_GOOGLE_SHARED_STATUS "google:shared-status"
 
 #endif /* __GABBLE_NAMESPACES__H__ */

@@ -289,6 +289,39 @@ xmpp_error_find_domain (GQuark domain)
   return NULL;
 }
 
+/**
+ * wocky_xmpp_stanza_error_to_string:
+ * @error: an error in the domain %WOCKY_XMPP_ERROR, or another domain
+ *  registered with wocky_xmpp_error_register_domain() (such as
+ *  %WOCKY_JINGLE_ERROR).
+ *
+ * Returns the name of the XMPP stanza error element represented by @error.
+ * This is intended for use in debugging messages, with %GErrors returned by
+ * wocky_stanza_extract_errors().
+ *
+ * Returns: the error code as a string, or %NULL if
+ *  <code>error-&gt;domain</code> is not known to Wocky.
+ */
+const gchar *
+wocky_xmpp_stanza_error_to_string (GError *error)
+{
+  g_return_val_if_fail (error != NULL, NULL);
+
+  if (error->domain == WOCKY_XMPP_ERROR)
+    {
+      return wocky_enum_to_nick (WOCKY_TYPE_XMPP_ERROR, error->code);
+    }
+  else
+    {
+      WockyXmppErrorDomain *domain = xmpp_error_find_domain (error->domain);
+
+      if (domain != NULL)
+        return wocky_enum_to_nick (domain->enum_type, error->code);
+      else
+        return NULL;
+    }
+}
+
 /* Static, but bears documenting.
  *
  * xmpp_error_from_node_for_ns:
@@ -396,6 +429,7 @@ wocky_xmpp_error_extract (WockyNode *error,
   gint core_code = WOCKY_XMPP_ERROR_UNDEFINED_CONDITION;
   GQuark specialized_domain = 0;
   gint specialized_code;
+  gboolean have_specialized = FALSE;
   WockyNode *specialized_node_tmp = NULL;
   const gchar *message = NULL;
   GSList *l;
@@ -410,12 +444,13 @@ wocky_xmpp_error_extract (WockyNode *error,
   if (type != NULL)
     {
       const gchar *type_attr = wocky_node_get_attribute (error, "type");
-      gint type_i = WOCKY_XMPP_ERROR_TYPE_CANCEL;
+      gint type_i;
 
-      if (type_attr != NULL)
-        wocky_enum_from_nick (WOCKY_TYPE_XMPP_ERROR_TYPE, type_attr, &type_i);
-
-      *type = type_i;
+      if (type_attr != NULL &&
+          wocky_enum_from_nick (WOCKY_TYPE_XMPP_ERROR_TYPE, type_attr, &type_i))
+        *type = type_i;
+      else
+        *type = WOCKY_XMPP_ERROR_TYPE_CANCEL;
     }
 
   for (l = error->children; l != NULL; l = g_slist_next (l))
@@ -437,20 +472,25 @@ wocky_xmpp_error_extract (WockyNode *error,
                   child->name, &core_code);
             }
         }
-      else if (specialized_domain == 0)
+      else if (specialized_node_tmp == NULL)
         {
+          WockyXmppErrorDomain *domain;
+
+          specialized_node_tmp = child;
+
           /* This could be a specialized error; let's check if it's in a
            * namespace we know about, and if so that it's an element name we
            * know.
            */
-          WockyXmppErrorDomain *domain = xmpp_error_find_domain (child->ns);
-
-          if (domain != NULL &&
-              wocky_enum_from_nick (domain->enum_type, child->name,
-                  &specialized_code))
+          domain = xmpp_error_find_domain (child->ns);
+          if (domain != NULL)
             {
               specialized_domain = child->ns;
-              specialized_node_tmp = child;
+              if (wocky_enum_from_nick (domain->enum_type, child->name,
+                    &specialized_code))
+                {
+                  have_specialized = TRUE;
+                }
             }
         }
     }
@@ -467,7 +507,7 @@ wocky_xmpp_error_extract (WockyNode *error,
 
   g_set_error_literal (core, WOCKY_XMPP_ERROR, core_code, message);
 
-  if (specialized_domain != 0)
+  if (have_specialized)
     g_set_error_literal (specialized, specialized_domain, specialized_code,
         message);
 
@@ -482,10 +522,11 @@ wocky_xmpp_error_extract (WockyNode *error,
  *         wocky_xmpp_error_register_domain()
  * @parent_node: the node to which to add an error (such as an IQ error)
  *
- * Adds an <error/> node to a stanza corresponding to the error described by
- * @error. If @error is in a domain other than #WOCKY_XMPP_ERROR, both the
- * application-specific error name and the error from #WOCKY_XMPP_ERROR will be
- * created. See RFC 3902 (XMPP Core) §9.3, “Stanza Errors”.
+ * Adds an <code>&lt;error/&gt;</code> node to a stanza corresponding
+ * to the error described by @error. If @error is in a domain other
+ * than #WOCKY_XMPP_ERROR, both the application-specific error name
+ * and the error from #WOCKY_XMPP_ERROR will be created. See RFC 3902
+ * (XMPP Core) §9.3, “Stanza Errors”.
  *
  * There is currently no way to override the type='' of an XMPP Core stanza
  * error without creating an application-specific error code which does so.
@@ -496,7 +537,7 @@ WockyNode *
 wocky_stanza_error_to_node (const GError *error,
     WockyNode *parent_node)
 {
-  WockyNode *error_node, *node;
+  WockyNode *error_node;
   WockyXmppErrorDomain *domain = NULL;
   WockyXmppError core_error;
   const XmppErrorSpec *spec;
@@ -538,17 +579,16 @@ wocky_stanza_error_to_node (const GError *error,
   wocky_node_set_attribute (error_node, "code", str);
 
   wocky_node_set_attribute (error_node, "type",
-      wocky_enum_to_nick (WOCKY_TYPE_XMPP_ERROR_TYPE, spec->type));
+      wocky_enum_to_nick (WOCKY_TYPE_XMPP_ERROR_TYPE, type));
 
-  node = wocky_node_add_child_ns (error_node,
-      wocky_xmpp_error_string (core_error),
+  wocky_node_add_child_ns (error_node, wocky_xmpp_error_string (core_error),
       WOCKY_XMPP_NS_STANZAS);
 
   if (domain != NULL)
     {
       const gchar *name = wocky_enum_to_nick (domain->enum_type, error->code);
 
-      node = wocky_node_add_child_ns_q (error_node, name, domain->domain);
+      wocky_node_add_child_ns_q (error_node, name, domain->domain);
     }
 
   if (error->message != NULL && *error->message != '\0')
@@ -557,12 +597,6 @@ wocky_stanza_error_to_node (const GError *error,
 
   return error_node;
 }
-
-/**
- * WockyXmppStreamError:
- *
- * Possible XMPP stream errors, as defined by RFC 3920 §4.7.
- */
 
 /**
  * wocky_xmpp_stream_error_quark

@@ -10,14 +10,12 @@ import dbus
 
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-    _, event = q.expect_many(
-        EventPattern('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED]),
-        EventPattern('stream-iq', to=None, query_ns='vcard-temp',
-            query_name='vCard'))
+    event = q.expect('stream-iq', to=None, query_ns='vcard-temp',
+            query_name='vCard')
 
     acknowledge_iq(stream, event.stanza)
+    # returning an empty vcard will cause ContactInfoChanged to fire
+    q.expect('dbus-signal', signal='ContactInfoChanged')
 
     handle = conn.RequestHandles(1, ['bob@foo.com'])[0]
     call_async(q, conn.ContactInfo, 'RefreshContactInfo', [handle])

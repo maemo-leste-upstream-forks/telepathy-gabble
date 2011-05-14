@@ -5,14 +5,11 @@ Test text channel initiated by me, using Requests.
 import dbus
 
 from gabbletest import exec_test
-from servicetest import call_async, EventPattern
+from servicetest import (call_async, EventPattern, assertContains,
+        assertEquals)
 import constants as cs
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     self_handle = conn.GetSelfHandle()
 
     jid = 'foo@bar.com'
@@ -49,6 +46,10 @@ def test(q, bus, conn, stream):
     assert emitted_props[cs.REQUESTED] == True
     assert emitted_props[cs.INITIATOR_HANDLE] == self_handle
     assert emitted_props[cs.INITIATOR_ID] == 'test@localhost'
+    assertContains('text/plain', emitted_props[cs.SUPPORTED_CONTENT_TYPES])
+    assertEquals(0, emitted_props[cs.MESSAGE_PART_SUPPORT_FLAGS])
+    assertEquals(cs.DELIVERY_REPORTING_SUPPORT_FLAGS_RECEIVE_FAILURES,
+            emitted_props[cs.DELIVERY_REPORTING_SUPPORT])
 
     assert old_sig.args[0] == ret.value[0]
     assert old_sig.args[1] == cs.CHANNEL_TYPE_TEXT

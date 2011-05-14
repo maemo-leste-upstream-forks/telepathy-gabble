@@ -22,10 +22,7 @@
 #define __GABBLE_FILE_TRANSFER_CHANNEL_H__
 
 #include <glib-object.h>
-
-#include <extensions/_gen/svc.h>
-#include <extensions/_gen/interfaces.h>
-#include <extensions/_gen/enums.h>
+#include <extensions/extensions.h>
 
 typedef struct _GabbleFileTransferChannel GabbleFileTransferChannel;
 
@@ -74,7 +71,8 @@ gabble_file_transfer_channel_new (GabbleConnection *conn,
     TpFileHashType content_hash_type, const gchar *content_hash,
     const gchar *description, guint64 date, guint64 initial_offset,
     gboolean resume_supported, GabbleBytestreamIface *bytestream,
-    GTalkFileCollection *gtalk_fc, const gchar *file_collection);
+    GTalkFileCollection *gtalk_fc, const gchar *file_collection,
+    const gchar *uri);
 
 gboolean gabble_file_transfer_channel_offer_file (
     GabbleFileTransferChannel *self, GError **error);

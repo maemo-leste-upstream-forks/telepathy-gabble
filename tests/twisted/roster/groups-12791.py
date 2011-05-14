@@ -23,16 +23,14 @@ def _expect_group_channel(q, bus, conn, name, contacts):
     assert inspected == contacts, (inspected, contacts)
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-
     event = q.expect('stream-iq', query_ns=ns.ROSTER)
     event.stanza['type'] = 'result'
 
     item = event.query.addElement('item')
     item['jid'] = 'amy@foo.com'
     item['subscription'] = 'both'
-    group = item.addElement('group', content='women')
-    group = item.addElement('group', content='affected-by-fdo-12791')
+    item.addElement('group', content='women')
+    item.addElement('group', content='affected-by-fdo-12791')
 
     # This is a broken roster - Amy appears twice. This should only happen
     # if the server is somehow buggy. This was my initial attempt at
@@ -41,12 +39,12 @@ def test(q, bus, conn, stream):
     item = event.query.addElement('item')
     item['jid'] = 'amy@foo.com'
     item['subscription'] = 'both'
-    group = item.addElement('group', content='women')
+    item.addElement('group', content='women')
 
     item = event.query.addElement('item')
     item['jid'] = 'bob@foo.com'
     item['subscription'] = 'from'
-    group = item.addElement('group', content='men')
+    item.addElement('group', content='men')
 
     # This is what was *actually* strange about the #12791 submitter's roster -
     # Bob appears, fully subscribed, but also there's an attempt to subscribe
@@ -59,7 +57,7 @@ def test(q, bus, conn, stream):
     item = event.query.addElement('item')
     item['jid'] = 'che@foo.com'
     item['subscription'] = 'to'
-    group = item.addElement('group', content='men')
+    item.addElement('group', content='men')
 
     stream.send(event.stanza)
 

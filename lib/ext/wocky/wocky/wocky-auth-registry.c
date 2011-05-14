@@ -253,7 +253,7 @@ wocky_auth_registry_start_auth_async_func (WockyAuthRegistry *self,
   GSimpleAsyncResult *result;
 
   result = g_simple_async_result_new (G_OBJECT (self), callback, user_data,
-      wocky_auth_registry_start_auth_finish);
+      wocky_auth_registry_start_auth_async);
 
   g_assert (priv->handler == NULL);
 
@@ -271,20 +271,20 @@ wocky_auth_registry_start_auth_async_func (WockyAuthRegistry *self,
               server, username, password));
         }
       else if (wocky_auth_registry_has_mechanism (mechanisms,
-              MECH_SASL_DIGEST_MD5))
+              WOCKY_AUTH_MECH_SASL_DIGEST_MD5))
         {
           /* XXX: check for username and password here? */
           priv->handler = WOCKY_AUTH_HANDLER (wocky_sasl_digest_md5_new (
                   server, username, password));
         }
       else if (wocky_auth_registry_has_mechanism (mechanisms,
-              MECH_JABBER_DIGEST))
+              WOCKY_AUTH_MECH_JABBER_DIGEST))
         {
           priv->handler = WOCKY_AUTH_HANDLER (wocky_jabber_auth_digest_new (
                   session_id, password));
         }
       else if (allow_plain && wocky_auth_registry_has_mechanism (mechanisms,
-              MECH_SASL_PLAIN))
+              WOCKY_AUTH_MECH_SASL_PLAIN))
         {
           /* XXX: check for username and password here? */
           DEBUG ("Choosing PLAIN as auth mechanism");
@@ -292,7 +292,7 @@ wocky_auth_registry_start_auth_async_func (WockyAuthRegistry *self,
                   username, password));
         }
       else if (allow_plain && wocky_auth_registry_has_mechanism (mechanisms,
-              MECH_JABBER_PASSWORD))
+              WOCKY_AUTH_MECH_JABBER_PASSWORD))
         {
           priv->handler = WOCKY_AUTH_HANDLER (wocky_jabber_auth_password_new (
                   password));
@@ -370,7 +370,7 @@ wocky_auth_registry_start_auth_finish_func (WockyAuthRegistry *self,
     GError **error)
 {
   wocky_implement_finish_copy_pointer (self,
-      wocky_auth_registry_start_auth_finish,
+      wocky_auth_registry_start_auth_async,
       wocky_auth_registry_start_data_dup,
       start_data);
 }
@@ -385,7 +385,7 @@ wocky_auth_registry_challenge_async_func (WockyAuthRegistry *self,
   GString *response = NULL;
   GError *error = NULL;
   GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self),
-      callback, user_data, wocky_auth_registry_challenge_finish);
+      callback, user_data, wocky_auth_registry_challenge_async);
 
   g_assert (priv->handler != NULL);
 
@@ -434,7 +434,7 @@ wocky_auth_registry_challenge_finish_func (WockyAuthRegistry *self,
     GError **error)
 {
   wocky_implement_finish_copy_pointer (self,
-      wocky_auth_registry_challenge_finish,
+      wocky_auth_registry_challenge_async,
       wocky_g_string_dup,
       response);
 }
@@ -447,7 +447,7 @@ wocky_auth_registry_success_async_func (WockyAuthRegistry *self,
   WockyAuthRegistryPrivate *priv = self->priv;
   GError *error = NULL;
   GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self),
-      callback, user_data, wocky_auth_registry_success_finish);
+      callback, user_data, wocky_auth_registry_success_async);
 
   g_assert (priv->handler != NULL);
 
@@ -487,7 +487,7 @@ wocky_auth_registry_success_finish_func (WockyAuthRegistry *self,
     GAsyncResult *result,
     GError **error)
 {
-  wocky_implement_finish_void (self, wocky_auth_registry_success_finish);
+  wocky_implement_finish_void (self, wocky_auth_registry_success_async);
 }
 
 void

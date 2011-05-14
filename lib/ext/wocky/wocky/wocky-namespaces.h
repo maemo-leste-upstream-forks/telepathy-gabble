@@ -23,10 +23,10 @@
 #define WOCKY_XMPP_NS_SASL_AUTH \
   "urn:ietf:params:xml:ns:xmpp-sasl"
 
-#define NS_DISCO_INFO \
+#define WOCKY_NS_DISCO_INFO \
   "http://jabber.org/protocol/disco#info"
 
-#define NS_DISCO_ITEMS \
+#define WOCKY_NS_DISCO_ITEMS \
   "http://jabber.org/protocol/disco#items"
 
 #define WOCKY_XMPP_NS_XHTML_IM \
@@ -130,16 +130,16 @@
 #define WOCKY_NS_MUC \
   "http://jabber.org/protocol/muc"
 
-#define WOCKY_NS_MUC_USR \
+#define WOCKY_NS_MUC_USER \
   WOCKY_NS_MUC "#user"
 
-#define WOCKY_NS_MUC_ADM \
+#define WOCKY_NS_MUC_ADMIN \
   WOCKY_NS_MUC "#admin"
 
-#define WOCKY_NS_MUC_OWN \
+#define WOCKY_NS_MUC_OWNER \
   WOCKY_NS_MUC "#owner"
 
-#define WOCKY_NS_MUC_UNIQ \
+#define WOCKY_NS_MUC_UNIQUE \
   WOCKY_NS_MUC "#unique"
 
 #define WOCKY_NS_CHATSTATE \

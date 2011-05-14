@@ -7,7 +7,7 @@
 
 #ifdef ENABLE_DEBUG
 
-static DebugFlags flags = 0;
+static WockyDebugFlags flags = 0;
 static gboolean initialized = FALSE;
 
 static GDebugKey keys[] = {
@@ -30,6 +30,8 @@ static GDebugKey keys[] = {
   { "pubsub",            DEBUG_PUBSUB            },
   { "dataform",          DEBUG_DATA_FORM         },
   { "ping",              DEBUG_PING              },
+  { "heartbeat",         DEBUG_HEARTBEAT         },
+  { "presence",          DEBUG_PRESENCE          },
   { 0, },
 };
 
@@ -48,35 +50,41 @@ void wocky_debug_set_flags_from_env ()
   initialized = TRUE;
 }
 
-void wocky_debug_set_flags (DebugFlags new_flags)
+void wocky_debug_set_flags (WockyDebugFlags new_flags)
 {
   flags |= new_flags;
   initialized = TRUE;
 }
 
 gboolean
-wocky_debug_flag_is_set (DebugFlags flag)
+wocky_debug_flag_is_set (WockyDebugFlags flag)
 {
   return flag & flags;
 }
 
-void wocky_debug (DebugFlags flag,
+void wocky_debug (WockyDebugFlags flag,
                    const gchar *format,
                    ...)
 {
+  va_list args;
+  va_start (args, format);
+  wocky_debug_valist (flag, format, args);
+  va_end (args);
+}
+
+void wocky_debug_valist (WockyDebugFlags flag,
+    const gchar *format,
+    va_list args)
+{
   if (G_UNLIKELY(!initialized))
     wocky_debug_set_flags_from_env ();
+
   if (flag & flags)
-    {
-      va_list args;
-      va_start (args, format);
-      g_logv (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, args);
-      va_end (args);
-    }
+    g_logv (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, args);
 }
 
 static void
-wocky_debug_node_tree_va (DebugFlags flag,
+wocky_debug_node_tree_va (WockyDebugFlags flag,
     WockyNodeTree *tree,
     const gchar *format,
     va_list args)
@@ -100,7 +108,7 @@ wocky_debug_node_tree_va (DebugFlags flag,
 }
 
 void
-wocky_debug_node_tree (DebugFlags flag,
+wocky_debug_node_tree (WockyDebugFlags flag,
     WockyNodeTree *tree,
     const gchar *format,
     ...)
@@ -108,12 +116,12 @@ wocky_debug_node_tree (DebugFlags flag,
   va_list args;
 
   va_start (args, format);
-  wocky_debug_node_tree_va (flags, tree, format, args);
+  wocky_debug_node_tree_va (flag, tree, format, args);
   va_end (args);
 }
 
 void
-wocky_debug_stanza (DebugFlags flag,
+wocky_debug_stanza (WockyDebugFlags flag,
     WockyStanza *stanza,
     const gchar *format,
     ...)
@@ -121,7 +129,7 @@ wocky_debug_stanza (DebugFlags flag,
   va_list args;
 
   va_start (args, format);
-  wocky_debug_node_tree_va (flags, (WockyNodeTree *) stanza, format, args);
+  wocky_debug_node_tree_va (flag, (WockyNodeTree *) stanza, format, args);
   va_end (args);
 }
 

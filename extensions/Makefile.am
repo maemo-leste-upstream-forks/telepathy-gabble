@@ -2,31 +2,13 @@ tools_dir = $(top_srcdir)/tools
 
 EXTRA_DIST = \
     all.xml \
-    Call_Content_Codec_Offer.xml \
-    Call_Content_Interface_Media.xml \
-    Call_Content.xml \
-    Call_Stream_Endpoint.xml \
-    Call_Stream_Interface_Media.xml \
-    Call_Stream.xml \
-    Channel_Bundle.xml \
-    Channel_Future.xml \
-    Channel_Interface_Conference.xml \
-    Channel_Type_Call.xml \
     Channel_Type_FileTransfer_Future.xml \
     Connection_Future.xml \
     Connection_Interface_Gabble_Decloak.xml \
-    Connection_Interface_Mail_Notification.xml \
-    Channel_Type_Contact_Search.xml \
     Gabble_Plugin_Gateways.xml \
     Gabble_Plugin_Test.xml \
     OLPC_Activity_Properties.xml \
-    OLPC_Buddy_Info.xml \
-    OLPC_Gadget.xml \
-    OLPC_Channel_Interface_View.xml \
-    OLPC_Channel_Type_BuddyView.xml \
-    OLPC_Channel_Type_ActivityView.xml \
-    Channel_Interface_Sasl_Authentication.xml \
-    Channel_Type_Server_Authentication.xml
+    OLPC_Buddy_Info.xml
 
 noinst_LTLIBRARIES = libgabble-extensions.la
 

@@ -60,19 +60,15 @@
 #define PORT_XMPP 5222
 #define PORT_NONE 0
 
-#define DOMAIN_NONE NULL
-#define DOMAIN_ANY  "*any*"
-#define DOMAIN_AUTH "wocky_auth_error"
-#define DOMAIN_CONN "wocky-connector-error"
-#define DOMAIN_XCON "wocky-xmpp-connection-error"
-#define DOMAIN_GIO  "g-io-error-quark"
-#define DOMAIN_RES  "g-resolver-error-quark"
-#define DOMAIN_CERT "wocky-tls-cert-error"
-
 #define CONNECTOR_INTERNALS_TEST "/connector/basic/internals"
 
 #define OK 0
 #define CONNECTOR_OK { OK, OK, OK, OK, OK, OK }
+
+#if ! GLIB_CHECK_VERSION(2, 26, 0)
+#  define G_IO_ERROR_CONNECTION_REFUSED -1
+#  define G_IO_ERROR_NETWORK_UNREACHABLE -1
+#endif
 
 gboolean running_test = FALSE;
 static GError *error = NULL;
@@ -86,13 +82,46 @@ enum {
   OP_CANCEL,
 };
 
+enum {
+  S_NO_ERROR = 0,
+  S_WOCKY_AUTH_ERROR,
+  S_WOCKY_CONNECTOR_ERROR,
+  S_WOCKY_XMPP_CONNECTION_ERROR,
+  S_WOCKY_TLS_CERT_ERROR,
+  S_WOCKY_XMPP_STREAM_ERROR,
+  S_G_IO_ERROR,
+  S_G_RESOLVER_ERROR,
+  S_ANY_ERROR = 0xff
+};
+
+#define MAP(x)  case S_##x: return x
+static GQuark
+map_static_domain (gint domain)
+{
+  switch (domain)
+    {
+      MAP (WOCKY_AUTH_ERROR);
+      MAP (WOCKY_CONNECTOR_ERROR);
+      MAP (WOCKY_XMPP_CONNECTION_ERROR);
+      MAP (WOCKY_TLS_CERT_ERROR);
+      MAP (WOCKY_XMPP_STREAM_ERROR);
+      MAP (G_IO_ERROR);
+      MAP (G_RESOLVER_ERROR);
+      default:
+        g_assert_not_reached ();
+    }
+}
+#undef MAP
+
+
 typedef void (*test_setup) (gpointer);
 
 typedef struct {
   gchar *desc;
   gboolean quiet;
-  struct { gchar *domain;
+  struct { int domain;
            int code;
+           int fallback_code;
            gchar *mech;
            gchar *used_mech;
            gpointer xmpp;
@@ -132,7 +161,11 @@ test_t tests[] =
     { "/name/of/test",
       SUPPRESS_STDERR,
       // result of test:
-      { DOMAIN, CODE, AUTH_MECH_USED, XMPP_CONNECTION_PLACEHOLDER },
+      { DOMAIN, CODE, FALLBACK_CODE,
+        AUTH_MECH_USED, XMPP_CONNECTION_PLACEHOLDER },
+      // When an error is expected it should match the domain and either
+      // the given CODE or the FALLBACK_CODE (GIO over time became more
+      // specific about the error codes it gave in certain conditions)
 
       // Server Details:
       { { TLS_SUPPORT, AUTH_MECH_OR_NULL_FOR_ALL  },
@@ -157,7 +190,7 @@ test_t tests[] =
 
     { CONNECTOR_INTERNALS_TEST,
       NOISY,
-      { NULL, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -170,7 +203,7 @@ test_t tests[] =
     /* No SRV or connect host specified */
     { "/connector/basic/noserv/nohost/noport",
       NOISY,
-      { NULL, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -183,7 +216,7 @@ test_t tests[] =
     /* No SRV or connect host specified, connect port specified */
     { "/connector/basic/noserv/nohost/port",
       NOISY,
-      { NULL, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -196,7 +229,7 @@ test_t tests[] =
     /* No SRV or connect host specified, bad port specified: FAIL */
     { "/connector/basic/noserv/nohost/duffport",
       NOISY,
-      { DOMAIN_GIO, 0 },
+      { S_G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED, G_IO_ERROR_FAILED },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -209,7 +242,7 @@ test_t tests[] =
     /* No SRV record, connect host specified */
     { "/connector/basic/noserv/host/noport",
       NOISY,
-      { NULL, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -222,7 +255,7 @@ test_t tests[] =
     /* No SRV record, connect host and port specified */
     { "/connector/basic/noserv/host/port",
       NOISY,
-      { NULL, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -235,7 +268,7 @@ test_t tests[] =
     /* No SRV record, connect host and bad port specified: FAIL */
     { "/connector/basic/noserv/host/duffport",
       NOISY,
-      { DOMAIN_GIO, 0 },
+      { S_G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED, G_IO_ERROR_FAILED },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -248,7 +281,7 @@ test_t tests[] =
     /* No SRV record, bad connect host: FAIL */
     { "/connector/basic/noserv/duffhost/noport",
       NOISY,
-      { DOMAIN_RES, 0 },
+      { S_G_RESOLVER_ERROR, G_RESOLVER_ERROR_NOT_FOUND, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { NULL, NULL },
@@ -261,7 +294,7 @@ test_t tests[] =
     /* No SRV record, bad connect host, port specified: FAIL */
     { "/connector/basic/noserv/duffhost/port",
       NOISY,
-      { DOMAIN_RES, 0 },
+      { S_G_RESOLVER_ERROR, G_RESOLVER_ERROR_NOT_FOUND, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { NULL, NULL },
@@ -274,7 +307,7 @@ test_t tests[] =
     /* SRV record specified */
     { "/connector/basic/serv/nohost/noport",
       NOISY,
-      { NULL, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -287,7 +320,7 @@ test_t tests[] =
     /* SRV record specified, port specified: ignore SRV and connect */
     { "/connector/basic/serv/nohost/port",
       NOISY,
-      { NULL, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -300,7 +333,7 @@ test_t tests[] =
     /* SRV record specified, bad port: ignore SRV and FAIL */
     { "/connector/basic/serv/nohost/duffport",
       NOISY,
-      { DOMAIN_GIO, 0 },
+      { S_G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED, G_IO_ERROR_FAILED },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -313,7 +346,7 @@ test_t tests[] =
     /* SRV record, connect host specified: use connect host */
     { "/connector/basic/serv/host/noport",
       NOISY,
-      { NULL, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -326,7 +359,7 @@ test_t tests[] =
     /* SRV, connect host and port specified: use host and port */
     { "/connector/basic/serv/host/port",
       NOISY,
-      { NULL, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -339,7 +372,7 @@ test_t tests[] =
     /* SRV record, connect host, bad port: ignore SRV, FAIL */
     { "/connector/basic/serv/host/duffport",
       NOISY,
-      { DOMAIN_GIO, 0 },
+      { S_G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED, G_IO_ERROR_FAILED },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -352,7 +385,7 @@ test_t tests[] =
     /* SRV record, bad connect host: use bad host and FAIL */
     { "/connector/basic/serv/duffhost/noport",
       NOISY,
-      { DOMAIN_RES, 0 },
+      { S_G_RESOLVER_ERROR, G_RESOLVER_ERROR_NOT_FOUND, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -365,7 +398,7 @@ test_t tests[] =
     /* SRV record, bad connect host, connect port: use bad host and FAIL */
     { "/connector/basic/serv/duffhost/port",
       NOISY,
-      { DOMAIN_RES, 0 },
+      { S_G_RESOLVER_ERROR, G_RESOLVER_ERROR_NOT_FOUND, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -375,10 +408,19 @@ test_t tests[] =
         { "moose@weasel-juice.org", "something", PLAIN, NOTLS },
         { DUFF_H0ST, PORT_XMPP } } },
 
-    /* Bad SRV record: use it and FAIL */
-    { "/connector/basic/duffserv/nohost/noport",
+    /* Facebook Chat has a broken SRV record: you ask for
+     * _xmpp-client._tcp.chat.facebook.com, and it gives you back a CNAME! So
+     * g_socket_client_connect_to_service() fails. But as it happens the real
+     * result should have just been chat.facebook.com anyway, so Wocky tries to
+     * fall back to that.
+     *
+     * So this test has a fake SRV record for an unreachable server, but
+     * expects to succeed because it's listening on the default XMPP port on
+     * our hypothetical 'weasel-juice.org'.
+     */
+    { "/connector/basic/facebook-chat-srv-workaround",
       NOISY,
-      { DOMAIN_GIO, 0 },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -388,10 +430,27 @@ test_t tests[] =
         { "moose@weasel-juice.org", "something", PLAIN, NOTLS },
         { NULL, 0 } } },
 
+    /* Further to the above test, this one tests the case where the fallback
+     * doesn't work either. The server isn't listening anywhere (that's the
+     * PORT_NONE in the server_parameters sub-struct), and thud.org (the result
+     * of the SRV lookup) is unreachable. So the connection should fail.
+     */
+    { "/connector/basic/duffserv/nohost/noport",
+      NOISY,
+      { S_G_IO_ERROR, G_IO_ERROR_NETWORK_UNREACHABLE, G_IO_ERROR_FAILED },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
+        { "moose", "something" },
+        PORT_NONE },
+      { "not.an.xmpp.server", PORT_XMPP, "thud.org", UNREACHABLE, REACHABLE },
+      { PLAINTEXT_OK,
+        { "moose@not.an.xmpp.server", "something", PLAIN, NOTLS },
+        { NULL, 0 } } },
+
     /* Bad SRV record, port specified, ignore SRV and connect to domain host */
     { "/connector/basic/duffserv/nohost/port",
       NOISY,
-      { NULL, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -404,7 +463,7 @@ test_t tests[] =
     /* Bad SRV record, bad port specified, ignore SRV and FAIL */
     { "/connector/basic/duffserv/nohost/duffport",
       NOISY,
-      { DOMAIN_GIO, 0 },
+      { S_G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED, G_IO_ERROR_FAILED },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -417,7 +476,7 @@ test_t tests[] =
     /* Bad SRV record, connect host specified, ignore SRV */
     { "/connector/basic/duffserv/host/noport",
       NOISY,
-      { NULL, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -430,7 +489,7 @@ test_t tests[] =
     /* Bad SRV record, connect host and port given: ignore SRV */
     { "/connector/basic/duffserv/host/port",
       NOISY,
-      { NULL, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -443,7 +502,7 @@ test_t tests[] =
     /* Bad SRV record, connect host and bad port, ignore SRV and FAIL */
     { "/connector/basic/duffserv/host/duffport",
       NOISY,
-      { DOMAIN_GIO, 0 },
+      { S_G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED, G_IO_ERROR_FAILED },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -456,7 +515,7 @@ test_t tests[] =
     /* Bad SRV record, bad host and bad port: Just FAIL */
     { "/connector/basic/duffserv/duffhost/noport",
       NOISY,
-      { DOMAIN_GIO, 0 },
+      { S_G_IO_ERROR, G_IO_ERROR_NETWORK_UNREACHABLE, G_IO_ERROR_FAILED },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -469,7 +528,7 @@ test_t tests[] =
     /*Bad SRV and connect host, ignore SRV and FAIL */
     { "/connector/basic/duffserv/duffhost/port",
       NOISY,
-      { DOMAIN_GIO, 0 },
+      { S_G_IO_ERROR, G_IO_ERROR_NETWORK_UNREACHABLE, G_IO_ERROR_FAILED },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -484,7 +543,7 @@ test_t tests[] =
      * now onto the post-tcp-connect stages:                               */
     { "/connector/auth/secure/no-tlsplain/notls/nodigest",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS, -1 },
       { { NOTLS, "PLAIN" },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -496,7 +555,7 @@ test_t tests[] =
 
     { "/connector/auth/secure/no-tlsplain/notls/digest",
       NOISY,
-      { NULL, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { NOTLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -508,7 +567,7 @@ test_t tests[] =
 
     { "/connector/auth/insecure/no-tlsplain/notls/nodigest",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { NOTLS, "PLAIN" },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -520,7 +579,7 @@ test_t tests[] =
 
     { "/connector/auth/insecure/no-tlsplain/notls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { NOTLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -534,7 +593,7 @@ test_t tests[] =
      * This block of tests will fail as we don't advertise TLS support */
     { "/connector/auth/insecure/no-tlsplain/notls/any",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_TLS_UNAVAILABLE },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_TLS_UNAVAILABLE, -1 },
       { { NOTLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -546,7 +605,7 @@ test_t tests[] =
 
     { "/connector/auth/insecure/tlsplain/notls/any",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_TLS_UNAVAILABLE },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_TLS_UNAVAILABLE, -1 },
       { { NOTLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -558,7 +617,7 @@ test_t tests[] =
 
     { "/connector/auth/secure/no-tlsplain/notls/any",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_TLS_UNAVAILABLE },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_TLS_UNAVAILABLE, -1 },
       { { NOTLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -570,7 +629,7 @@ test_t tests[] =
 
     { "/connector/auth/secure/tlsplain/notls/any",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_TLS_UNAVAILABLE },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_TLS_UNAVAILABLE, -1 },
       { { NOTLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -585,7 +644,7 @@ test_t tests[] =
      * we allow plain auth or not                                       */
     { "/connector/auth/secure/no-tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS, -1 },
       { { TLS, "PLAIN" },
         { SERVER_PROBLEM_INVALID_PASSWORD, CONNECTOR_OK },
         { "moose", "something" },
@@ -597,7 +656,7 @@ test_t tests[] =
 
     { "/connector/auth/secure/tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { TLS, "PLAIN" },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -609,7 +668,7 @@ test_t tests[] =
 
     { "/connector/auth/insecure/no-tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { TLS, "PLAIN" },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -621,7 +680,7 @@ test_t tests[] =
 
     { "/connector/auth/insecure/tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { TLS, "PLAIN" },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -633,7 +692,7 @@ test_t tests[] =
 
     { "/connector/tls+auth/secure/no-tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS, -1 },
       { { TLS, "PLAIN" },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -645,7 +704,7 @@ test_t tests[] =
 
     { "/connector/tls+auth/secure/tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { TLS, "PLAIN" },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -657,7 +716,7 @@ test_t tests[] =
 
     { "/connector/tls+auth/insecure/no-tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { TLS, "PLAIN" },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -669,7 +728,7 @@ test_t tests[] =
 
     { "/connector/tls+auth/insecure/tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { TLS, "PLAIN" },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -682,7 +741,7 @@ test_t tests[] =
      * these should all be digest auth successes                        */
     { "/connector/auth/secure/no-tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -694,7 +753,7 @@ test_t tests[] =
 
     { "/connector/auth/secure/tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -706,7 +765,7 @@ test_t tests[] =
 
     { "/connector/auth/insecure/no-tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -718,7 +777,7 @@ test_t tests[] =
 
     { "/connector/auth/insecure/tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -730,7 +789,7 @@ test_t tests[] =
 
     { "/connector/tls+auth/secure/no-tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -742,7 +801,7 @@ test_t tests[] =
 
     { "/connector/tls+auth/secure/tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -754,7 +813,7 @@ test_t tests[] =
 
     { "/connector/tls+auth/insecure/no-tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -766,7 +825,7 @@ test_t tests[] =
 
     { "/connector/tls+auth/insecure/tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -780,7 +839,7 @@ test_t tests[] =
      * SASL problems                                                     */
     { "/connector/problem/sasl/bad-pass",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_FAILURE },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_FAILURE, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_INVALID_PASSWORD, CONNECTOR_OK },
         { "foo", "bar" },
@@ -792,7 +851,7 @@ test_t tests[] =
 
     { "/connector/problem/sasl/bad-user",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_FAILURE },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_FAILURE, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_INVALID_USERNAME, CONNECTOR_OK },
         { "moose", "something" },
@@ -804,7 +863,7 @@ test_t tests[] =
 
     { "/connector/problem/sasl/no-sasl",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NOT_SUPPORTED },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NOT_SUPPORTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_SASL, CONNECTOR_OK },
         { "moose", "something" },
@@ -814,9 +873,9 @@ test_t tests[] =
         { "moose@weasel-juice.org", "something", PLAIN, NOTLS },
         { NULL, 0 } } },
 
-    { "/connector/problem/sas/no-mechanisms",
+    { "/connector/problem/sasl/no-mechanisms",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NOT_SUPPORTED },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NOT_SUPPORTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_MECHANISMS, CONNECTOR_OK },
         { "moose", "something" },
@@ -828,7 +887,7 @@ test_t tests[] =
 
     { "/connector/problem/sasl/bad-mechanism",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS, -1 },
       { { TLS, "omg-poniez" },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -842,7 +901,7 @@ test_t tests[] =
     /* TLS error conditions */
     { "/connector/problem/tls/refused",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_TLS_REFUSED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_TLS_REFUSED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_TLS_REFUSED, OK, OK, OK, OK} },
@@ -857,7 +916,7 @@ test_t tests[] =
      * Invalid JID                                                           */
     { "/connector/problem/jid/invalid",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BAD_JID },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BAD_JID, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -869,7 +928,7 @@ test_t tests[] =
 
     { "/connector/problem/jid/domainless",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BAD_JID },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BAD_JID, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -883,7 +942,8 @@ test_t tests[] =
      * XMPP errors                                                           */
     { "/connector/problem/xmpp/version/0.x",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_NON_XMPP_V1_SERVER },
+      { S_WOCKY_CONNECTOR_ERROR,
+          WOCKY_CONNECTOR_ERROR_NON_XMPP_V1_SERVER, -1 },
       { { TLS, NULL, "0.9" },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -896,7 +956,7 @@ test_t tests[] =
     /* we actually tolerate > 1.0 versions */
     { "/connector/problem/xmpp/version/1.x",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL, "1.1" },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -908,7 +968,8 @@ test_t tests[] =
 
     { "/connector/problem/xmpp/error/host-unknown",
       NOISY,
-      { WOCKY_XMPP_NS_STREAMS, WOCKY_XMPP_STREAM_ERROR_HOST_UNKNOWN },
+      { S_WOCKY_XMPP_STREAM_ERROR,
+        WOCKY_XMPP_STREAM_ERROR_HOST_UNKNOWN, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OTHER_HOST, OK, OK, OK, OK } },
@@ -921,7 +982,8 @@ test_t tests[] =
 
     { "/connector/problem/xmpp/error/tls-load",
       NOISY,
-      { WOCKY_XMPP_NS_STREAMS, WOCKY_XMPP_STREAM_ERROR_RESOURCE_CONSTRAINT },
+      { S_WOCKY_XMPP_STREAM_ERROR,
+        WOCKY_XMPP_STREAM_ERROR_RESOURCE_CONSTRAINT, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_TLS_LOAD, OK, OK, OK, OK } },
@@ -934,7 +996,7 @@ test_t tests[] =
 
     { "/connector/problem/xmpp/error/bind-conflict",
       NOISY,
-      { WOCKY_XMPP_NS_STREAMS, WOCKY_XMPP_STREAM_ERROR_CONFLICT },
+      { S_WOCKY_XMPP_STREAM_ERROR, WOCKY_XMPP_STREAM_ERROR_CONFLICT, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, BIND_PROBLEM_CLASH, OK, OK, OK } },
@@ -947,7 +1009,8 @@ test_t tests[] =
 
     { "/connector/problem/xmpp/error/session-fail",
       NOISY,
-      { WOCKY_XMPP_NS_STREAMS, WOCKY_XMPP_STREAM_ERROR_RESOURCE_CONSTRAINT },
+      { S_WOCKY_XMPP_STREAM_ERROR,
+        WOCKY_XMPP_STREAM_ERROR_RESOURCE_CONSTRAINT, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, SESSION_PROBLEM_NO_SESSION, OK, OK } },
@@ -960,7 +1023,7 @@ test_t tests[] =
 
     { "/connector/problem/xmpp/features",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BAD_FEATURES },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BAD_FEATURES, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_FEATURES, OK, OK, OK, OK } },
@@ -974,7 +1037,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_BIND_UNAVAILABLE */
     { "/connector/problem/xmpp/no-bind",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_UNAVAILABLE },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_UNAVAILABLE, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_CANNOT_BIND, OK, OK, OK, OK } },
@@ -988,7 +1051,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_BIND_INVALID      */
     { "/connector/problem/xmpp/bind/invalid",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_INVALID },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_INVALID, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, BIND_PROBLEM_INVALID, OK, OK, OK } },
@@ -1002,7 +1065,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_BIND_DENIED     */
     { "/connector/problem/xmpp/bind/denied",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_DENIED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_DENIED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, BIND_PROBLEM_DENIED, OK, OK, OK } },
@@ -1016,7 +1079,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_BIND_CONFLICT      */
     { "/connector/problem/xmpp/bind/conflict",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_CONFLICT },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_CONFLICT, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, BIND_PROBLEM_CONFLICT, OK, OK, OK } },
@@ -1030,7 +1093,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_BIND_REJECTED    */
     { "/connector/problem/xmpp/bind/rejected",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_REJECTED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_REJECTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, BIND_PROBLEM_REJECTED, OK, OK, OK } },
@@ -1044,7 +1107,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_BIND_FAILED    */
     { "/connector/problem/xmpp/bind/failed",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_FAILED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_FAILED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, BIND_PROBLEM_FAILED, OK, OK, OK } },
@@ -1057,7 +1120,7 @@ test_t tests[] =
 
     { "/connector/problem/xmpp/bind/nonsense",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_FAILED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_FAILED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, BIND_PROBLEM_NONSENSE, OK, OK, OK } },
@@ -1070,7 +1133,7 @@ test_t tests[] =
 
     { "/connector/problem/xmpp/bind/no-jid",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, BIND_PROBLEM_NO_JID, OK, OK, OK } },
@@ -1083,7 +1146,7 @@ test_t tests[] =
 
     { "/connector/problem/xmpp/session/none",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_NO_SESSION, OK, OK, OK, OK } },
@@ -1097,7 +1160,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_SESSION_FAILED   */
     { "/connector/problem/xmpp/session/failed",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_SESSION_FAILED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_SESSION_FAILED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, SESSION_PROBLEM_FAILED, OK, OK } },
@@ -1111,7 +1174,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_SESSION_DENIED   */
     { "/connector/problem/xmpp/session/denied",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_SESSION_DENIED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_SESSION_DENIED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, SESSION_PROBLEM_DENIED, OK, OK } },
@@ -1125,7 +1188,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_SESSION_CONFLICT */
     { "/connector/problem/xmpp/session/conflict",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_SESSION_CONFLICT },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_SESSION_CONFLICT, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, SESSION_PROBLEM_CONFLICT, OK, OK } },
@@ -1139,7 +1202,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_SESSION_REJECTED */
     { "/connector/problem/xmpp/session/rejected",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_SESSION_REJECTED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_SESSION_REJECTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, SESSION_PROBLEM_REJECTED, OK, OK } },
@@ -1152,7 +1215,7 @@ test_t tests[] =
 
     { "/connector/problem/xmpp/session/nonsense",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_SESSION_FAILED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_SESSION_FAILED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, SESSION_PROBLEM_NONSENSE, OK, OK } },
@@ -1165,7 +1228,7 @@ test_t tests[] =
 
     { "/connector/econnreset/server-start",
       NOISY,
-      { DOMAIN_ANY, 0 },
+      { S_ANY_ERROR, 0 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, SERVER_DEATH_SERVER_START, OK } },
@@ -1178,7 +1241,7 @@ test_t tests[] =
 
     { "/connector/econnreset/client-open",
       NOISY,
-      { DOMAIN_ANY, 0 },
+      { S_ANY_ERROR, 0 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, SERVER_DEATH_CLIENT_OPEN, OK } },
@@ -1191,7 +1254,7 @@ test_t tests[] =
 
     { "/connector/econnreset/server-open",
       NOISY,
-      { DOMAIN_ANY, 0 },
+      { S_ANY_ERROR, 0 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, SERVER_DEATH_SERVER_OPEN, OK } },
@@ -1204,7 +1267,7 @@ test_t tests[] =
 
     { "/connector/econnreset/features",
       NOISY,
-      { DOMAIN_ANY, 0 },
+      { S_ANY_ERROR, 0 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, SERVER_DEATH_FEATURES, OK } },
@@ -1217,7 +1280,7 @@ test_t tests[] =
 
     { "/connector/econnreset/tls-negotiate",
       QUIET,
-      { DOMAIN_ANY, 0 },
+      { S_ANY_ERROR, 0 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, SERVER_DEATH_TLS_NEG, OK } },
@@ -1231,7 +1294,7 @@ test_t tests[] =
     /* quirks                                                               */
     { "/connector/google/domain-discovery/require",
       QUIET,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_REQUIRE_GOOGLE_JDD, CONNECTOR_OK },
         { "moose", "something" },
@@ -1243,7 +1306,7 @@ test_t tests[] =
 
     { "/connector/google/domain-discovery/dislike",
       QUIET,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_FAILURE },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_FAILURE, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_DISLIKE_GOOGLE_JDD, CONNECTOR_OK },
         { "moose", "something" },
@@ -1257,7 +1320,7 @@ test_t tests[] =
     /* XEP 0077                                                             */
     { "/connector/xep77/register/ok",
       NOISY,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -1270,7 +1333,8 @@ test_t tests[] =
 
     { "/connector/xep77/register/no-args",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_REGISTRATION_EMPTY },
+      { S_WOCKY_CONNECTOR_ERROR,
+        WOCKY_CONNECTOR_ERROR_REGISTRATION_EMPTY, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_NO_ARGS } },
@@ -1284,7 +1348,8 @@ test_t tests[] =
 
     { "/connector/xep77/register/email-missing",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_REGISTRATION_REJECTED },
+      { S_WOCKY_CONNECTOR_ERROR,
+        WOCKY_CONNECTOR_ERROR_REGISTRATION_REJECTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_EMAIL_ARG } },
@@ -1298,7 +1363,8 @@ test_t tests[] =
 
     { "/connector/xep77/register/unknown-arg",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_REGISTRATION_UNSUPPORTED },
+      { S_WOCKY_CONNECTOR_ERROR,
+        WOCKY_CONNECTOR_ERROR_REGISTRATION_UNSUPPORTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_STRANGE_ARG } },
@@ -1312,7 +1378,7 @@ test_t tests[] =
 
     { "/connector/xep77/register/unknown+email-args",
       NOISY,
-      { DOMAIN_ANY, 0 },
+      { S_ANY_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK,
@@ -1327,7 +1393,7 @@ test_t tests[] =
 
     { "/connector/xep77/register/email-arg-ok",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_EMAIL_ARG } },
@@ -1342,7 +1408,8 @@ test_t tests[] =
 
     { "/connector/xep77/register/email-arg-ok/unknown-arg",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_REGISTRATION_UNSUPPORTED },
+      { S_WOCKY_CONNECTOR_ERROR,
+        WOCKY_CONNECTOR_ERROR_REGISTRATION_UNSUPPORTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK,
@@ -1358,7 +1425,8 @@ test_t tests[] =
 
     { "/connector/xep77/register/fail/conflict",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_REGISTRATION_CONFLICT },
+      { S_WOCKY_CONNECTOR_ERROR,
+        WOCKY_CONNECTOR_ERROR_REGISTRATION_CONFLICT, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_FAIL_CONFLICT } },
@@ -1372,7 +1440,8 @@ test_t tests[] =
 
     { "/connector/xep77/register/fail/other",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_REGISTRATION_REJECTED },
+      { S_WOCKY_CONNECTOR_ERROR,
+        WOCKY_CONNECTOR_ERROR_REGISTRATION_REJECTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_FAIL_REJECTED } },
@@ -1386,7 +1455,8 @@ test_t tests[] =
 
     { "/connector/xep77/register/nonsense",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_REGISTRATION_FAILED },
+      { S_WOCKY_CONNECTOR_ERROR,
+        WOCKY_CONNECTOR_ERROR_REGISTRATION_FAILED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_QUERY_NONSENSE } },
@@ -1400,7 +1470,7 @@ test_t tests[] =
 
     { "/connector/xep77/register/already/get",
       NOISY,
-      { DOMAIN_NONE, 0 , "DIGEST-MD5" },
+      { S_NO_ERROR, 0 , 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_QUERY_ALREADY } },
@@ -1414,7 +1484,7 @@ test_t tests[] =
 
     { "/connector/xep77/register/already/set",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_ALREADY } },
@@ -1428,7 +1498,8 @@ test_t tests[] =
 
     { "/connector/xep77/register/not-available",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_REGISTRATION_UNAVAILABLE },
+      { S_WOCKY_CONNECTOR_ERROR,
+        WOCKY_CONNECTOR_ERROR_REGISTRATION_UNAVAILABLE, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_NOT_AVAILABLE } },
@@ -1442,7 +1513,7 @@ test_t tests[] =
     /* ******************************************************************** */
     { "/connector/xep77/cancel/ok",
       NOISY,
-      { DOMAIN_NONE, 0 },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -1455,7 +1526,7 @@ test_t tests[] =
 
     { "/connector/xep77/cancel/denied",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_UNREGISTER_DENIED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_UNREGISTER_DENIED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_CANCEL_FAILED } },
@@ -1469,7 +1540,7 @@ test_t tests[] =
 
     { "/connector/xep77/cancel/disabled",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_UNREGISTER_DENIED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_UNREGISTER_DENIED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_CANCEL_DISABLED } },
@@ -1483,7 +1554,7 @@ test_t tests[] =
 
     { "/connector/xep77/cancel/rejected",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_UNREGISTER_FAILED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_UNREGISTER_FAILED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_CANCEL_REJECTED } },
@@ -1497,7 +1568,7 @@ test_t tests[] =
 
     { "/connector/xep77/cancel/stream-closed",
       NOISY,
-      { DOMAIN_NONE, 0 },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { OK, OK, OK, OK, OK, XEP77_PROBLEM_CANCEL_STREAM } },
@@ -1513,7 +1584,7 @@ test_t tests[] =
     /* old school jabber tests (pre XMPP 1.0)                               */
     { "/connector/jabber/no-ssl/auth/digest",
       NOISY,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER, OK, OK, OK, OK } },
@@ -1526,7 +1597,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/reject",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NOT_AUTHORIZED },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NOT_AUTHORIZED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER, OK, OK, OK, OK } },
@@ -1539,7 +1610,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/unavailable",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NOT_SUPPORTED },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NOT_SUPPORTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER, OK, OK, OK, JABBER_PROBLEM_AUTH_NIH } },
@@ -1552,7 +1623,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/bind-error",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_RESOURCE_CONFLICT },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_RESOURCE_CONFLICT, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER, OK, OK, OK, JABBER_PROBLEM_AUTH_BIND } },
@@ -1565,7 +1636,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/incomplete",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NO_CREDENTIALS },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NO_CREDENTIALS, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER, OK, OK, OK,
@@ -1579,7 +1650,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/failure",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_FAILURE },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_FAILURE, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER, OK, OK, OK, JABBER_PROBLEM_AUTH_FAILED } },
@@ -1592,7 +1663,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/bizarre",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_INVALID_REPLY },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_INVALID_REPLY, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER, OK, OK, OK,
@@ -1606,7 +1677,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/nonsense",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_INVALID_REPLY },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_INVALID_REPLY, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER, OK, OK, OK,
@@ -1620,7 +1691,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/no-mechs",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS, -1 },
       { { TLS, "none" },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER, OK, OK, OK, OK } },
@@ -1633,7 +1704,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/plain",
       NOISY,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, "password" },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER, OK, OK, OK, OK } },
@@ -1646,7 +1717,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/plain/rejected",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NOT_AUTHORIZED },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NOT_AUTHORIZED, -1 },
       { { TLS, "password" },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER, OK, OK, OK, JABBER_PROBLEM_AUTH_REJECT } },
@@ -1659,7 +1730,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/digest/rejected",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NOT_AUTHORIZED },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NOT_AUTHORIZED, -1 },
       { { TLS, "digest" },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER, OK, OK, OK, JABBER_PROBLEM_AUTH_REJECT } },
@@ -1672,7 +1743,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/old+sasl",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_AUTH_FEATURE, OK, OK, OK, OK } },
@@ -1685,7 +1756,7 @@ test_t tests[] =
 
     { "/connector/jabber/no-ssl/auth/old-sasl",
       NOISY,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_SASL,
           { XMPP_PROBLEM_OLD_AUTH_FEATURE, OK, OK, OK, OK } },
@@ -1700,7 +1771,7 @@ test_t tests[] =
     /* old SSL                                                              */
     { "/connector/jabber/ssl/auth/digest",
       NOISY,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER|XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
@@ -1713,7 +1784,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/reject",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NOT_AUTHORIZED },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NOT_AUTHORIZED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER|XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
@@ -1726,7 +1797,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/unavailable",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NOT_SUPPORTED },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NOT_SUPPORTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER|XMPP_PROBLEM_OLD_SSL, OK, OK, OK,
@@ -1740,7 +1811,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/bind-error",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_RESOURCE_CONFLICT },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_RESOURCE_CONFLICT, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER|XMPP_PROBLEM_OLD_SSL, OK, OK, OK,
@@ -1754,7 +1825,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/incomplete",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NO_CREDENTIALS },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NO_CREDENTIALS, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER|XMPP_PROBLEM_OLD_SSL, OK, OK, OK,
@@ -1768,7 +1839,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/failure",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_FAILURE },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_FAILURE, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER|XMPP_PROBLEM_OLD_SSL, OK, OK, OK,
@@ -1782,7 +1853,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/bizarre",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_INVALID_REPLY },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_INVALID_REPLY, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER|XMPP_PROBLEM_OLD_SSL, OK, OK, OK,
@@ -1796,7 +1867,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/nonsense",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_INVALID_REPLY },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_INVALID_REPLY, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER|XMPP_PROBLEM_OLD_SSL, OK, OK, OK,
@@ -1810,7 +1881,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/no-mechs",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS, -1 },
       { { TLS, "none" },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER|XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
@@ -1823,7 +1894,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/plain",
       NOISY,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, "password" },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER|XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
@@ -1836,7 +1907,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/plain/rejected",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NOT_AUTHORIZED },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NOT_AUTHORIZED, -1 },
       { { TLS, "password" },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER|XMPP_PROBLEM_OLD_SSL, OK, OK, OK,
@@ -1850,7 +1921,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/digest/rejected",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NOT_AUTHORIZED },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NOT_AUTHORIZED, -1 },
       { { TLS, "digest" },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SERVER|XMPP_PROBLEM_OLD_SSL, OK, OK, OK,
@@ -1864,7 +1935,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/old+sasl",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
           { SERVER_PROBLEM_NO_PROBLEM,
             { XMPP_PROBLEM_OLD_AUTH_FEATURE|XMPP_PROBLEM_OLD_SSL,
@@ -1878,7 +1949,7 @@ test_t tests[] =
 
     { "/connector/jabber/ssl/auth/old-sasl",
       NOISY,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_SASL,
           { XMPP_PROBLEM_OLD_AUTH_FEATURE|XMPP_PROBLEM_OLD_SSL,
@@ -1894,7 +1965,7 @@ test_t tests[] =
     /* duplicate earlier blocks of tests, but with old SSL                 */
     { "/connector+ssl/auth/secure/no-tlsplain/notls/nodigest",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS, -1 },
       { { NOTLS, "PLAIN" },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -1906,7 +1977,7 @@ test_t tests[] =
 
     { "/connector+ssl/auth/secure/no-tlsplain/notls/digest",
       NOISY,
-      { NULL, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { NOTLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -1918,7 +1989,7 @@ test_t tests[] =
 
     { "/connector+ssl/auth/insecure/no-tlsplain/notls/nodigest",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { NOTLS, "PLAIN" },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -1930,7 +2001,7 @@ test_t tests[] =
 
     { "/connector+ssl/auth/insecure/no-tlsplain/notls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { NOTLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -1945,9 +2016,10 @@ test_t tests[] =
      * we allow plain auth or not                                       */
     { "/connector+ssl/auth/secure/no-tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS, -1 },
       { { TLS, "PLAIN" },
-        { SERVER_PROBLEM_INVALID_PASSWORD, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { SERVER_PROBLEM_INVALID_PASSWORD,
+          { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
         PORT_XMPP },
       { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
@@ -1957,9 +2029,10 @@ test_t tests[] =
 
     { "/connector+ssl/auth/secure/tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { TLS, "PLAIN" },
-        { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { SERVER_PROBLEM_NO_PROBLEM,
+          { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
         PORT_XMPP },
       { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
@@ -1969,9 +2042,10 @@ test_t tests[] =
 
     { "/connector+ssl/auth/insecure/no-tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { TLS, "PLAIN" },
-        { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { SERVER_PROBLEM_NO_PROBLEM,
+          { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
         PORT_XMPP },
       { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
@@ -1981,9 +2055,10 @@ test_t tests[] =
 
     { "/connector+ssl/auth/insecure/tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { TLS, "PLAIN" },
-        { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { SERVER_PROBLEM_NO_PROBLEM,
+          { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
         PORT_XMPP },
       { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
@@ -1993,9 +2068,10 @@ test_t tests[] =
 
     { "/connector+ssl/tls+auth/secure/no-tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS, -1 },
       { { TLS, "PLAIN" },
-        { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { SERVER_PROBLEM_NO_PROBLEM,
+          { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
         PORT_XMPP },
       { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
@@ -2005,9 +2081,10 @@ test_t tests[] =
 
     { "/connector+ssl/tls+auth/secure/tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { TLS, "PLAIN" },
-        { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { SERVER_PROBLEM_NO_PROBLEM,
+          { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
         PORT_XMPP },
       { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
@@ -2017,9 +2094,10 @@ test_t tests[] =
 
     { "/connector+ssl/tls+auth/insecure/no-tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { TLS, "PLAIN" },
-        { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { SERVER_PROBLEM_NO_PROBLEM,
+          { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
         PORT_XMPP },
       { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
@@ -2029,7 +2107,7 @@ test_t tests[] =
 
     { "/connector+ssl/tls+auth/insecure/tlsplain/tls/plain",
       NOISY,
-      { DOMAIN_NONE, 0, "PLAIN" },
+      { S_NO_ERROR, 0, 0, "PLAIN" },
       { { TLS, "PLAIN" },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2043,7 +2121,7 @@ test_t tests[] =
      * these should all be digest auth successes                        */
     { "/connector+ssl/auth/secure/no-tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2055,7 +2133,7 @@ test_t tests[] =
 
     { "/connector+ssl/auth/secure/tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2067,7 +2145,7 @@ test_t tests[] =
 
     { "/connector+ssl/auth/insecure/no-tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2079,7 +2157,7 @@ test_t tests[] =
 
     { "/connector+ssl/auth/insecure/tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2091,7 +2169,7 @@ test_t tests[] =
 
     { "/connector+ssl/tls+auth/secure/no-tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2103,7 +2181,7 @@ test_t tests[] =
 
     { "/connector+ssl/tls+auth/secure/tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2115,7 +2193,7 @@ test_t tests[] =
 
     { "/connector+ssl/tls+auth/insecure/no-tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2127,7 +2205,7 @@ test_t tests[] =
 
     { "/connector+ssl/tls+auth/insecure/tlsplain/tls/digest",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2141,7 +2219,7 @@ test_t tests[] =
      * SASL problems                                                     */
     { "/connector+ssl/problem/sasl/bad-pass",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_FAILURE },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_FAILURE, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_INVALID_PASSWORD,
           { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
@@ -2154,7 +2232,7 @@ test_t tests[] =
 
     { "/connector+ssl/problem/sasl/bad-user",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_FAILURE },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_FAILURE, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_INVALID_USERNAME,
           { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
@@ -2167,7 +2245,7 @@ test_t tests[] =
 
     { "/connector+ssl/problem/sasl/no-sasl",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NOT_SUPPORTED },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NOT_SUPPORTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_SASL, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2179,7 +2257,7 @@ test_t tests[] =
 
     { "/connector+ssl/problem/sas/no-mechanisms",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NOT_SUPPORTED },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NOT_SUPPORTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_MECHANISMS,
           { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
@@ -2192,7 +2270,7 @@ test_t tests[] =
 
     { "/connector+ssl/problem/sasl/bad-mechanism",
       NOISY,
-      { DOMAIN_AUTH, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS },
+      { S_WOCKY_AUTH_ERROR, WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS, -1 },
       { { TLS, "omg-poniez" },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2204,7 +2282,8 @@ test_t tests[] =
 
     { "/connector+ssl/problem/xmpp/version/0.x",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_NON_XMPP_V1_SERVER },
+      { S_WOCKY_CONNECTOR_ERROR,
+        WOCKY_CONNECTOR_ERROR_NON_XMPP_V1_SERVER, -1 },
       { { TLS, NULL, "0.9" },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2217,7 +2296,7 @@ test_t tests[] =
     /* we actually tolerate > 1.0 versions */
     { "/connector+ssl/problem/xmpp/version/1.x",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL, "1.1" },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2229,7 +2308,7 @@ test_t tests[] =
 
     { "/connector+ssl/problem/xmpp/error/host-unknown",
       NOISY,
-      { WOCKY_XMPP_NS_STREAMS, WOCKY_XMPP_STREAM_ERROR_HOST_UNKNOWN },
+      { S_WOCKY_XMPP_STREAM_ERROR, WOCKY_XMPP_STREAM_ERROR_HOST_UNKNOWN, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OTHER_HOST|XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
@@ -2242,7 +2321,7 @@ test_t tests[] =
 
     { "/connector+ssl/problem/xmpp/error/bind-conflict",
       NOISY,
-      { WOCKY_XMPP_NS_STREAMS, WOCKY_XMPP_STREAM_ERROR_CONFLICT },
+      { S_WOCKY_XMPP_STREAM_ERROR, WOCKY_XMPP_STREAM_ERROR_CONFLICT, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, BIND_PROBLEM_CLASH, OK, OK, OK } },
@@ -2255,7 +2334,8 @@ test_t tests[] =
 
     { "/connector+ssl/problem/xmpp/error/session-fail",
       NOISY,
-      { WOCKY_XMPP_NS_STREAMS, WOCKY_XMPP_STREAM_ERROR_RESOURCE_CONSTRAINT },
+      { S_WOCKY_XMPP_STREAM_ERROR,
+        WOCKY_XMPP_STREAM_ERROR_RESOURCE_CONSTRAINT, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, OK, SESSION_PROBLEM_NO_SESSION, OK, OK } },
@@ -2268,7 +2348,7 @@ test_t tests[] =
 
     { "/connector+ssl/problem/xmpp/features",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BAD_FEATURES },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BAD_FEATURES, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_FEATURES|XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
@@ -2282,7 +2362,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_BIND_UNAVAILABLE */
     { "/connector+ssl/problem/xmpp/no-bind",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_UNAVAILABLE },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_UNAVAILABLE, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_CANNOT_BIND|XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
@@ -2296,7 +2376,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_BIND_INVALID      */
     { "/connector+ssl/problem/xmpp/bind/invalid",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_INVALID },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_INVALID, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
             { XMPP_PROBLEM_OLD_SSL, BIND_PROBLEM_INVALID, OK, OK, OK } },
@@ -2310,7 +2390,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_BIND_DENIED     */
     { "/connector+ssl/problem/xmpp/bind/denied",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_DENIED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_DENIED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, BIND_PROBLEM_DENIED, OK, OK, OK } },
@@ -2324,7 +2404,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_BIND_CONFLICT      */
     { "/connector+ssl/problem/xmpp/bind/conflict",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_CONFLICT },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_CONFLICT, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, BIND_PROBLEM_CONFLICT, OK, OK, OK } },
@@ -2338,7 +2418,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_BIND_REJECTED    */
     { "/connector+ssl/problem/xmpp/bind/rejected",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_REJECTED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_REJECTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, BIND_PROBLEM_REJECTED, OK, OK, OK } },
@@ -2352,7 +2432,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_BIND_FAILED    */
     { "/connector+ssl/problem/xmpp/bind/failed",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_FAILED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_FAILED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, BIND_PROBLEM_FAILED, OK, OK, OK } },
@@ -2365,7 +2445,7 @@ test_t tests[] =
 
     { "/connector+ssl/problem/xmpp/bind/nonsense",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_BIND_FAILED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_BIND_FAILED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, BIND_PROBLEM_NONSENSE, OK, OK, OK } },
@@ -2378,7 +2458,7 @@ test_t tests[] =
 
     { "/connector+ssl/problem/xmpp/bind/no-jid",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, BIND_PROBLEM_NO_JID, OK, OK, OK } },
@@ -2391,7 +2471,7 @@ test_t tests[] =
 
     { "/connector+ssl/problem/xmpp/session/none",
       NOISY,
-      { DOMAIN_NONE, 0, "DIGEST-MD5" },
+      { S_NO_ERROR, 0, 0, "DIGEST-MD5" },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_NO_SESSION|XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
@@ -2405,7 +2485,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_SESSION_FAILED   */
     { "/connector+ssl/problem/xmpp/session/failed",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_SESSION_FAILED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_SESSION_FAILED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, OK, SESSION_PROBLEM_FAILED, OK, OK } },
@@ -2419,7 +2499,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_SESSION_DENIED   */
     { "/connector+ssl/problem/xmpp/session/denied",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_SESSION_DENIED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_SESSION_DENIED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, OK, SESSION_PROBLEM_DENIED, OK, OK } },
@@ -2433,7 +2513,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_SESSION_CONFLICT */
     { "/connector+ssl/problem/xmpp/session/conflict",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_SESSION_CONFLICT },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_SESSION_CONFLICT, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, OK, SESSION_PROBLEM_CONFLICT, OK, OK } },
@@ -2447,7 +2527,7 @@ test_t tests[] =
     /* WOCKY_CONNECTOR_ERROR_SESSION_REJECTED */
     { "/connector+ssl/problem/xmpp/session/rejected",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_SESSION_REJECTED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_SESSION_REJECTED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, OK, SESSION_PROBLEM_REJECTED, OK, OK } },
@@ -2460,7 +2540,7 @@ test_t tests[] =
 
     { "/connector+ssl/problem/xmpp/session/nonsense",
       NOISY,
-      { DOMAIN_CONN, WOCKY_CONNECTOR_ERROR_SESSION_FAILED },
+      { S_WOCKY_CONNECTOR_ERROR, WOCKY_CONNECTOR_ERROR_SESSION_FAILED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, OK, SESSION_PROBLEM_NONSENSE, OK, OK } },
@@ -2473,7 +2553,7 @@ test_t tests[] =
 
     { "/connector+ssl/econnreset/server-start",
       NOISY,
-      { DOMAIN_ANY, 0 },
+      { S_ANY_ERROR, 0 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, OK, OK, SERVER_DEATH_SERVER_START, OK } },
@@ -2486,7 +2566,7 @@ test_t tests[] =
 
     { "/connector+ssl/econnreset/client-open",
       NOISY,
-      { DOMAIN_ANY, 0 },
+      { S_ANY_ERROR, 0 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, OK, OK, SERVER_DEATH_CLIENT_OPEN, OK } },
@@ -2499,7 +2579,7 @@ test_t tests[] =
 
     { "/connector+ssl/econnreset/server-open",
       NOISY,
-      { DOMAIN_ANY, 0 },
+      { S_ANY_ERROR, 0 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, OK, OK, SERVER_DEATH_SERVER_OPEN, OK } },
@@ -2512,7 +2592,7 @@ test_t tests[] =
 
     { "/connector+ssl/econnreset/features",
       NOISY,
-      { DOMAIN_ANY, 0 },
+      { S_ANY_ERROR, 0 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, OK, OK, SERVER_DEATH_FEATURES, OK } },
@@ -2525,7 +2605,7 @@ test_t tests[] =
 
     { "/connector+ssl/econnreset/ssl-negotiate",
       QUIET,
-      { DOMAIN_ANY, 0 },
+      { S_ANY_ERROR, 0 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM,
           { XMPP_PROBLEM_OLD_SSL, OK, OK, SERVER_DEATH_TLS_NEG, OK } },
@@ -2540,7 +2620,7 @@ test_t tests[] =
     /* certificate verification tests                                        */
     { "/connector/cert-verification/tls/nohost/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2552,7 +2632,7 @@ test_t tests[] =
 
     { "/connector/multica-verification/tls/nohost/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2564,7 +2644,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/tls/host/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2576,7 +2656,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/tls/nohost/fail/name-mismatch",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_NAME_MISMATCH },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NAME_MISMATCH, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2588,7 +2668,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/tls/host/fail/name-mismatch",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_NAME_MISMATCH },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NAME_MISMATCH, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2600,7 +2680,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/tls/crl/fail",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_REVOKED },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_REVOKED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2612,7 +2692,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/tls/expired/fail",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_EXPIRED },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_EXPIRED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2624,7 +2704,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/tls/inactive/fail",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_NOT_ACTIVE },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NOT_ACTIVE, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2636,7 +2716,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/tls/selfsigned/fail",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_INVALID },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_INVALID, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2648,7 +2728,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/tls/unknown/fail",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_SIGNER_UNKNOWN },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_SIGNER_UNKNOWN, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2658,11 +2738,29 @@ test_t tests[] =
           { "moose@weasel-juice.org", "something", PLAIN, TLS },
           { NULL, 0, XMPP_V1 } } },
 
+    /* This is a combination of the above test
+     * (/connector/cert-verification/tls/unknown/fail) and
+     * /connector/cert-verification/tls/host/fail/name-mismatch. It checks that
+     * Wocky considers a hostname mismatch more erroneous than the certificate
+     * being broken.
+     */
+    { "/connector/cert-verification/tls/host/fail/name-mismatch-and-unknown",
+      QUIET,
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NAME_MISMATCH, -1 },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
+        { "moose", "something" },
+        PORT_XMPP, CERT_UNKNOWN },
+        { "tomato-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { PLAINTEXT_OK,
+          { "moose@tomato-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1 } } },
+
     /* ********************************************************************* */
     /* as above but with legacy ssl                                          */
     { "/connector/cert-verification/ssl/nohost/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2674,7 +2772,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/ssl/host/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2686,7 +2784,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/ssl/nohost/fail/name-mismatch",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_NAME_MISMATCH },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NAME_MISMATCH, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2698,7 +2796,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/ssl/host/fail/name-mismatch",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_NAME_MISMATCH },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NAME_MISMATCH, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2710,7 +2808,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/ssl/crl/fail",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_REVOKED },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_REVOKED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2722,7 +2820,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/ssl/expired/fail",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_EXPIRED },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_EXPIRED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2734,7 +2832,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/ssl/inactive/fail",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_NOT_ACTIVE },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NOT_ACTIVE, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2746,7 +2844,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/ssl/selfsigned/fail",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_INVALID },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_INVALID, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2758,7 +2856,7 @@ test_t tests[] =
 
     { "/connector/cert-verification/ssl/unknown/fail",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_SIGNER_UNKNOWN },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_SIGNER_UNKNOWN, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2772,7 +2870,7 @@ test_t tests[] =
     /* certificate non-verification tests                                    */
     { "/connector/cert-nonverification/tls/nohost/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2784,7 +2882,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/tls/host/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2796,7 +2894,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/tls/nohost/ok/name-mismatch",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2808,7 +2906,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/tls/host/ok/name-mismatch",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2820,7 +2918,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/tls/crl/fail",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_REVOKED },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_REVOKED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2832,7 +2930,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/tls/expired/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2844,7 +2942,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/tls/inactive/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2856,7 +2954,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/tls/selfsigned/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2868,7 +2966,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/tls/unknown/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
         { "moose", "something" },
@@ -2882,7 +2980,7 @@ test_t tests[] =
     /* as above but with legacy ssl                                          */
     { "/connector/cert-nonverification/ssl/nohost/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2894,7 +2992,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/ssl/host/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2906,7 +3004,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/ssl/nohost/ok/name-mismatch",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2918,7 +3016,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/ssl/host/ok/name-mismatch",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2930,7 +3028,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/ssl/crl/fail",
       QUIET,
-      { DOMAIN_CERT, WOCKY_TLS_CERT_REVOKED },
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_REVOKED, -1 },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2942,7 +3040,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/ssl/expired/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2954,7 +3052,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/ssl/inactive/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2966,7 +3064,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/ssl/selfsigned/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -2978,7 +3076,7 @@ test_t tests[] =
 
     { "/connector/cert-nonverification/ssl/unknown/ok",
       QUIET,
-      { DOMAIN_NONE, 0, NULL },
+      { S_NO_ERROR, },
       { { TLS, NULL },
         { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
         { "moose", "something" },
@@ -3052,6 +3150,7 @@ client_connected (GIOChannel *channel,
   flags = flags & ~O_NONBLOCK;
   fcntl (csock, F_SETFL, flags);
   gconn = g_object_new (G_TYPE_SOCKET_CONNECTION, "socket", gsock, NULL);
+  g_object_unref (gsock);
   test->server = test_connector_server_new (G_IO_STREAM (gconn),
       test->server_parameters.features.auth_mech,
       test->server_parameters.auth.user,
@@ -3202,13 +3301,16 @@ start_test (gpointer data)
   switch (test->client.op)
     {
       case OP_CONNECT:
-        wocky_connector_connect_async (test->connector, test_done, data);
+        wocky_connector_connect_async (test->connector, NULL,
+            test_done, data);
         break;
       case OP_REGISTER:
-        wocky_connector_register_async (test->connector, test_done, data);
+        wocky_connector_register_async (test->connector, NULL,
+            test_done, data);
         break;
       case OP_CANCEL:
-        wocky_connector_unregister_async (test->connector, test_done, data);
+        wocky_connector_unregister_async (test->connector, NULL,
+            test_done, data);
         break;
     }
   return FALSE;
@@ -3218,6 +3320,7 @@ static void
 run_test (gpointer data)
 {
   WockyConnector *wcon = NULL;
+  WockyTLSHandler *handler;
   test_t *test = data;
   struct stat dummy;
   gchar *base;
@@ -3238,6 +3341,9 @@ run_test (gpointer data)
 
   ca = test->client.options.ca ? test->client.options.ca : TLS_CA_CRT_FILE;
 
+  /* insecure tls cert/etc not yet implemented */
+  handler = wocky_tls_handler_new (test->client.options.lax_ssl);
+
   wcon = g_object_new ( WOCKY_TYPE_CONNECTOR,
       "jid"                     , test->client.auth.jid,
       "password"                , test->client.auth.pass,
@@ -3249,12 +3355,13 @@ run_test (gpointer data)
       "plaintext-auth-allowed"  , !test->client.auth.tls,
       "legacy"                  , test->client.options.jabber,
       "old-ssl"                 , test->client.options.ssl,
-      /* insecure tls cert/etc not yet implemented */
-      "ignore-ssl-errors"       , test->client.options.lax_ssl,
+      "tls-handler"             , handler,
       NULL);
 
-  wocky_connector_add_ca (wcon, ca);
-  wocky_connector_add_crl (wcon, TLS_CRL_DIR);
+  wocky_tls_handler_add_ca (handler, ca);
+  wocky_tls_handler_add_crl (handler, TLS_CRL_DIR);
+
+  g_object_unref (handler);
 
   test->connector = wcon;
   running_test = TRUE;
@@ -3262,9 +3369,9 @@ run_test (gpointer data)
 
   g_main_loop_run (mainloop);
 
-  if (test->result.domain == NULL)
+  if (test->result.domain == S_NO_ERROR)
     {
-      if (error)
+      if (error != NULL)
         fprintf (stderr, "Error: %s.%d: %s\n",
             g_quark_to_string (error->domain),
             error->code,
@@ -3304,7 +3411,7 @@ run_test (gpointer data)
           int i;
           gchar *identity = NULL;
           WockyConnector *tmp =
-            wocky_connector_new ("foo@bar.org", "abc", "xyz", NULL);
+            wocky_connector_new ("foo@bar.org", "abc", "xyz", NULL, NULL);
           WockyStanza *feat = NULL;
           gboolean jabber;
           gboolean oldssl;
@@ -3314,8 +3421,7 @@ run_test (gpointer data)
                                       "xmpp-server", "email", NULL };
           const gchar *str_vals[] = { "abc", "PASSWORD",
                                       "xmpp.server", "e@org", NULL };
-          const gchar *boolprop[] = { "ignore-ssl-errors",
-                                      "plaintext-auth-allowed",
+          const gchar *boolprop[] = { "plaintext-auth-allowed",
                                       "encrypted-plain-auth-ok",
                                       "tls-required",
                                       NULL };
@@ -3371,26 +3477,22 @@ run_test (gpointer data)
           g_object_unref (tmp);
         }
     }
-  else if (!strcmp (test->result.domain, DOMAIN_ANY))
+  else if (test->result.domain == S_ANY_ERROR)
     {
       g_assert (test->result.xmpp == NULL);
     }
   else
     {
-      GQuark domain = 0;
-      domain = g_quark_from_string (test->result.domain);
-
-      if (error == NULL)
-        fprintf (stderr, "Expected %s error, got NULL\n",
-            g_quark_to_string (domain));
-      else if (!g_error_matches (error, domain, test->result.code))
-        fprintf (stderr, "ERROR: %s.%d: %s\n",
-            g_quark_to_string (error->domain),
-            error->code,
-            error->message);
-
-      g_assert (error != NULL);
-      g_assert_error (error, domain, test->result.code);
+      /* We want the error to match either of result.code or
+       * result.fallback_code, but don't care which.
+       * The expected error domain is the same for either code.
+       */
+      if (error->code == test->result.fallback_code)
+        g_assert_error (error, map_static_domain (test->result.domain),
+          test->result.fallback_code);
+      else
+        g_assert_error (error, map_static_domain (test->result.domain),
+          test->result.code);
     }
 
   if (wcon != NULL)

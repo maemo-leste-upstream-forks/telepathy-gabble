@@ -24,7 +24,9 @@
 #include <glib-object.h>
 
 #include "types.h"
+#include <telepathy-glib/dtmf.h>
 #include <telepathy-glib/enums.h>
+#include <telepathy-glib/dbus-properties-mixin.h>
 
 G_BEGIN_DECLS
 
@@ -44,6 +46,8 @@ typedef struct _GabbleMediaStreamPrivate GabbleMediaStreamPrivate;
 
 struct _GabbleMediaStreamClass {
     GObjectClass parent_class;
+
+    TpDBusPropertiesMixinClass props_class;
 };
 
 struct _GabbleMediaStream {
@@ -103,7 +107,13 @@ GabbleMediaStream *gabble_media_stream_new (const gchar *object_path,
     gboolean local_hold);
 TpMediaStreamType gabble_media_stream_get_media_type (GabbleMediaStream *self);
 
+void gabble_media_stream_add_dtmf_player (GabbleMediaStream *self,
+    TpDTMFPlayer *dtmf_player);
+
 GabbleJingleMediaRtp *gabble_media_stream_get_content (GabbleMediaStream *self);
+
+void gabble_media_stream_start_telephony_event (GabbleMediaStream *self, guchar event);
+void gabble_media_stream_stop_telephony_event (GabbleMediaStream *self);
 
 G_END_DECLS
 

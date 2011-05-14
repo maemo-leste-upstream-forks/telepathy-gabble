@@ -31,6 +31,7 @@
 #include <glib-object.h>
 #include <loudmouth/loudmouth.h>
 #include <wocky/wocky-connector.h>
+#include <wocky/wocky-tls-handler.h>
 #include <wocky/wocky-ping.h>
 #include <wocky/wocky-xmpp-error.h>
 #include <telepathy-glib/channel-manager.h>
@@ -39,7 +40,6 @@
 #include <telepathy-glib/errors.h>
 #include <telepathy-glib/gtypes.h>
 #include <telepathy-glib/handle-repo-dynamic.h>
-#include <telepathy-glib/handle-repo-static.h>
 #include <telepathy-glib/interfaces.h>
 #include <telepathy-glib/svc-generic.h>
 
@@ -54,31 +54,35 @@
 #include "auth-manager.h"
 #include "conn-aliasing.h"
 #include "conn-avatars.h"
+#include "conn-client-types.h"
 #include "conn-contact-info.h"
 #include "conn-location.h"
 #include "conn-presence.h"
 #include "conn-sidecars.h"
 #include "conn-mail-notif.h"
 #include "conn-olpc.h"
-#include "conn-slacker.h"
+#include "conn-power-saving.h"
 #include "debug.h"
 #include "disco.h"
 #include "media-channel.h"
 #include "im-factory.h"
 #include "jingle-factory.h"
+#include "legacy-caps.h"
 #include "media-factory.h"
 #include "muc-factory.h"
 #include "namespaces.h"
-#include "olpc-gadget-manager.h"
 #include "presence-cache.h"
 #include "presence.h"
 #include "request-pipeline.h"
 #include "roomlist-manager.h"
 #include "roster.h"
 #include "search-manager.h"
+#include "server-tls-channel.h"
+#include "server-tls-manager.h"
 #include "private-tubes-factory.h"
 #include "util.h"
 #include "vcard-manager.h"
+#include "conn-util.h"
 
 static guint disco_reply_timeout = 5;
 
@@ -106,6 +110,10 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
        tp_dbus_properties_mixin_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CONTACTS,
       tp_contacts_mixin_iface_init);
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CONTACT_LIST,
+      tp_base_contact_list_mixin_list_iface_init);
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CONTACT_GROUPS,
+      tp_base_contact_list_mixin_groups_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_SIMPLE_PRESENCE,
       tp_presence_mixin_simple_presence_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_PRESENCE,
@@ -121,18 +129,21 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
     G_IMPLEMENT_INTERFACE
       (TP_TYPE_SVC_CONNECTION_INTERFACE_CONTACT_CAPABILITIES,
       gabble_conn_contact_caps_iface_init);
-    G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_OLPC_GADGET,
-      olpc_gadget_iface_init);
     G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_CONNECTION_FUTURE,
       conn_future_iface_init);
-    G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
       conn_mail_notif_iface_init);
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CLIENT_TYPES,
+      conn_client_types_iface_init);
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_POWER_SAVING,
+      conn_power_saving_iface_init);
     )
 
 /* properties */
 enum
 {
     PROP_CONNECT_SERVER = 1,
+    PROP_EXPLICIT_SERVER,
     PROP_PORT,
     PROP_OLD_SSL,
     PROP_REQUIRE_ENCRYPTION,
@@ -155,6 +166,9 @@ enum
     PROP_FALLBACK_SOCKS5_PROXIES,
     PROP_KEEPALIVE_INTERVAL,
     PROP_DECLOAK_AUTOMATICALLY,
+    PROP_FALLBACK_SERVERS,
+    PROP_EXTRA_CERTIFICATE_IDENTITIES,
+    PROP_POWER_SAVING,
 
     LAST_PROPERTY
 };
@@ -167,13 +181,11 @@ struct _GabbleConnectionPrivate
   WockyPorter *porter;
   WockyPing *pinger;
 
-  LmMessageHandler *iq_disco_cb;
-  LmMessageHandler *iq_unknown_cb;
-  LmMessageHandler *olpc_msg_cb;
-  LmMessageHandler *olpc_presence_cb;
+  GCancellable *cancellable;
 
   /* connection properties */
   gchar *connect_server;
+  gchar *explicit_server;
   guint port;
   gboolean old_ssl;
   gboolean require_encryption;
@@ -201,6 +213,13 @@ struct _GabbleConnectionPrivate
   GStrv fallback_socks5_proxies;
 
   gboolean decloak_automatically;
+
+  GStrv fallback_servers;
+  guint fallback_server_index;
+
+  GStrv extra_certificate_identities;
+
+  gboolean power_saving;
 
   /* authentication properties */
   gchar *stream_server;
@@ -237,6 +256,14 @@ struct _GabbleConnectionPrivate
   /* auth manager */
   GabbleAuthManager *auth_manager;
 
+  /* server TLS manager */
+  GabbleServerTLSManager *server_tls_manager;
+
+  /* IM factory; we need this to add text caps for everyone (even
+   * offline contacts) which is done through the IM factory's
+   * GabbleCapsChannelManagerInterface->get_contact_caps function. */
+  GabbleImFactory *im_factory;
+
   /* stream id returned by the connector */
   gchar *stream_id;
 
@@ -251,6 +278,8 @@ struct _GabbleConnectionPrivate
   /* gobject housekeeping */
   gboolean dispose_has_run;
 };
+
+static guint sig_id_porter_available = 0;
 
 static void connection_capabilities_update_cb (GabblePresenceCache *cache,
     TpHandle handle,
@@ -272,10 +301,10 @@ _gabble_connection_create_channel_managers (TpBaseConnection *conn)
       (gabble_conn_aliasing_nickname_updated), self);
   g_ptr_array_add (channel_managers, self->roster);
 
-  g_ptr_array_add (channel_managers,
-      g_object_new (GABBLE_TYPE_IM_FACTORY,
-        "connection", self,
-        NULL));
+  self->priv->im_factory = g_object_new (GABBLE_TYPE_IM_FACTORY,
+      "connection", self,
+      NULL);
+  g_ptr_array_add (channel_managers, self->priv->im_factory);
 
   g_ptr_array_add (channel_managers,
       g_object_new (GABBLE_TYPE_ROOMLIST_MANAGER,
@@ -290,6 +319,12 @@ _gabble_connection_create_channel_managers (TpBaseConnection *conn)
   self->priv->auth_manager = g_object_new (GABBLE_TYPE_AUTH_MANAGER,
       "connection", self, NULL);
   g_ptr_array_add (channel_managers, self->priv->auth_manager);
+
+  self->priv->server_tls_manager =
+    g_object_new (GABBLE_TYPE_SERVER_TLS_MANAGER,
+        "connection", self,
+        NULL);
+  g_ptr_array_add (channel_managers, self->priv->server_tls_manager);
 
   self->muc_factory = g_object_new (GABBLE_TYPE_MUC_FACTORY,
       "connection", self,
@@ -307,11 +342,6 @@ _gabble_connection_create_channel_managers (TpBaseConnection *conn)
         "connection", self,
         NULL));
 
-  self->olpc_gadget_manager = g_object_new (GABBLE_TYPE_OLPC_GADGET_MANAGER,
-      "connection", self,
-      NULL);
-  g_ptr_array_add (channel_managers, self->olpc_gadget_manager);
-
   self->ft_manager = gabble_ft_manager_new (self);
   g_ptr_array_add (channel_managers, self->ft_manager);
 
@@ -328,8 +358,12 @@ gabble_connection_constructor (GType type,
         type, n_construct_properties, construct_params));
   GabbleConnectionPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       GABBLE_TYPE_CONNECTION, GabbleConnectionPrivate);
+  TpBaseConnection *base = TP_BASE_CONNECTION (self);
 
   DEBUG("Post-construction: (GabbleConnection *)%p", self);
+
+  tp_base_connection_add_possible_client_interest (base,
+      TP_IFACE_QUARK_CONNECTION_INTERFACE_MAIL_NOTIFICATION);
 
   self->req_pipeline = gabble_request_pipeline_new (self);
   self->disco = gabble_disco_new (self);
@@ -343,12 +377,11 @@ gabble_connection_constructor (GType type,
   g_signal_connect (self->presence_cache, "capabilities-update", G_CALLBACK
       (connection_capabilities_update_cb), self);
 
-  capabilities_fill_cache (self->presence_cache);
-
   tp_contacts_mixin_init (G_OBJECT (self),
       G_STRUCT_OFFSET (GabbleConnection, contacts));
 
-  tp_base_connection_register_with_contacts_mixin (TP_BASE_CONNECTION (self));
+  tp_base_connection_register_with_contacts_mixin (base);
+  tp_base_contact_list_mixin_register_with_contacts_mixin (base);
 
   conn_aliasing_init (self);
   conn_avatars_init (self);
@@ -358,6 +391,7 @@ gabble_connection_constructor (GType type,
   conn_location_init (self);
   conn_sidecars_init (self);
   conn_mail_notif_init (self);
+  conn_client_types_init (self);
 
   tp_contacts_mixin_add_contact_attributes_iface (G_OBJECT (self),
       TP_IFACE_CONNECTION_INTERFACE_CAPABILITIES,
@@ -483,6 +517,9 @@ gabble_connection_get_property (GObject    *object,
     case PROP_CONNECT_SERVER:
       g_value_set_string (value, priv->connect_server);
       break;
+    case PROP_EXPLICIT_SERVER:
+      g_value_set_string (value, priv->explicit_server);
+      break;
     case PROP_STREAM_SERVER:
       g_value_set_string (value, priv->stream_server);
       break;
@@ -551,6 +588,18 @@ gabble_connection_get_property (GObject    *object,
       g_value_set_boolean (value, priv->decloak_automatically);
       break;
 
+    case PROP_FALLBACK_SERVERS:
+      g_value_set_boxed (value, priv->fallback_servers);
+      break;
+
+    case PROP_EXTRA_CERTIFICATE_IDENTITIES:
+      g_value_set_boxed (value, priv->extra_certificate_identities);
+      break;
+
+    case PROP_POWER_SAVING:
+      g_value_set_boolean (value, priv->power_saving);
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -567,9 +616,11 @@ gabble_connection_set_property (GObject      *object,
   GabbleConnectionPrivate *priv = self->priv;
 
   switch (property_id) {
-    case PROP_CONNECT_SERVER:
-      g_free (priv->connect_server);
-      priv->connect_server = g_value_dup_string (value);
+    case PROP_EXPLICIT_SERVER:
+      g_free (priv->explicit_server);
+      priv->explicit_server = g_value_dup_string (value);
+      if (priv->connect_server == NULL)
+        priv->connect_server = g_value_dup_string (value);
       break;
     case PROP_PORT:
       priv->port = g_value_get_uint (value);
@@ -668,6 +719,23 @@ gabble_connection_set_property (GObject      *object,
       priv->decloak_automatically = g_value_get_boolean (value);
       break;
 
+    case PROP_FALLBACK_SERVERS:
+      if (priv->fallback_servers != NULL)
+        g_strfreev (priv->fallback_servers);
+      priv->fallback_servers = g_value_dup_boxed (value);
+      priv->fallback_server_index = 0;
+      break;
+
+    case PROP_EXTRA_CERTIFICATE_IDENTITIES:
+      if (priv->extra_certificate_identities != NULL)
+        g_strfreev (priv->extra_certificate_identities);
+      priv->extra_certificate_identities = g_value_dup_boxed (value);
+      break;
+
+    case PROP_POWER_SAVING:
+      priv->power_saving = g_value_get_boolean (value);
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -676,8 +744,6 @@ gabble_connection_set_property (GObject      *object,
 
 static void gabble_connection_dispose (GObject *object);
 static void gabble_connection_finalize (GObject *object);
-static void connect_callbacks (TpBaseConnection *base);
-static void disconnect_callbacks (TpBaseConnection *base);
 static void connection_shut_down (TpBaseConnection *base);
 static gboolean _gabble_connection_connect (TpBaseConnection *base,
     GError **error);
@@ -699,16 +765,6 @@ gabble_connection_get_unique_name (TpBaseConnection *self)
   return unique_name;
 }
 
-/* must be in the same order as GabbleListHandle in connection.h */
-static const char *list_handle_strings[] =
-{
-    "stored",       /* GABBLE_LIST_HANDLE_STORED */
-    "publish",      /* GABBLE_LIST_HANDLE_PUBLISH */
-    "subscribe",    /* GABBLE_LIST_HANDLE_SUBSCRIBE */
-    "deny",         /* GABBLE_LIST_HANDLE_DENY */
-    NULL
-};
-
 /* For the benefit of the unit tests, this will allow the connection to
  * be NULL
  */
@@ -722,10 +778,6 @@ _gabble_connection_create_handle_repos (TpBaseConnection *conn,
   repos[TP_HANDLE_TYPE_ROOM] =
       tp_dynamic_handle_repo_new (TP_HANDLE_TYPE_ROOM, gabble_normalize_room,
           conn);
-  repos[TP_HANDLE_TYPE_GROUP] =
-      tp_dynamic_handle_repo_new (TP_HANDLE_TYPE_GROUP, NULL, NULL);
-  repos[TP_HANDLE_TYPE_LIST] =
-      tp_static_handle_repo_new (TP_HANDLE_TYPE_LIST, list_handle_strings);
 }
 
 static void
@@ -734,10 +786,48 @@ base_connected_cb (TpBaseConnection *base_conn)
   GabbleConnection *conn = GABBLE_CONNECTION (base_conn);
 
   gabble_connection_connected_olpc (conn);
-  gabble_connection_slacker_start (conn);
 }
 
 #define TWICE(x) (x), (x)
+
+static const gchar *implemented_interfaces[] = {
+    /* conditionally present interfaces */
+    TP_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
+    GABBLE_IFACE_OLPC_ACTIVITY_PROPERTIES,
+    GABBLE_IFACE_OLPC_BUDDY_INFO,
+
+    /* always present interfaces */
+    TP_IFACE_CONNECTION_INTERFACE_POWER_SAVING,
+    TP_IFACE_CONNECTION_INTERFACE_ALIASING,
+    TP_IFACE_CONNECTION_INTERFACE_CAPABILITIES,
+    TP_IFACE_CONNECTION_INTERFACE_SIMPLE_PRESENCE,
+    TP_IFACE_CONNECTION_INTERFACE_PRESENCE,
+    TP_IFACE_CONNECTION_INTERFACE_AVATARS,
+    TP_IFACE_CONNECTION_INTERFACE_CONTACT_INFO,
+    TP_IFACE_CONNECTION_INTERFACE_CONTACTS,
+    TP_IFACE_CONNECTION_INTERFACE_CONTACT_LIST,
+    TP_IFACE_CONNECTION_INTERFACE_CONTACT_GROUPS,
+    TP_IFACE_CONNECTION_INTERFACE_REQUESTS,
+    TP_IFACE_CONNECTION_INTERFACE_CONTACT_CAPABILITIES,
+    TP_IFACE_CONNECTION_INTERFACE_LOCATION,
+    GABBLE_IFACE_CONNECTION_INTERFACE_GABBLE_DECLOAK,
+    GABBLE_IFACE_CONNECTION_FUTURE,
+    TP_IFACE_CONNECTION_INTERFACE_CLIENT_TYPES,
+    NULL
+};
+static const gchar **interfaces_always_present = implemented_interfaces + 3;
+
+const gchar **
+gabble_connection_get_implemented_interfaces (void)
+{
+    return implemented_interfaces;
+}
+
+const gchar **
+gabble_connection_get_guaranteed_interfaces (void)
+{
+    return interfaces_always_present;
+}
 
 static void
 gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
@@ -745,24 +835,6 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
   GObjectClass *object_class = G_OBJECT_CLASS (gabble_connection_class);
   TpBaseConnectionClass *parent_class = TP_BASE_CONNECTION_CLASS (
       gabble_connection_class);
-  static const gchar *interfaces_always_present[] = {
-      TP_IFACE_CONNECTION_INTERFACE_ALIASING,
-      TP_IFACE_CONNECTION_INTERFACE_CAPABILITIES,
-      TP_IFACE_CONNECTION_INTERFACE_SIMPLE_PRESENCE,
-      TP_IFACE_CONNECTION_INTERFACE_PRESENCE,
-      TP_IFACE_CONNECTION_INTERFACE_AVATARS,
-      TP_IFACE_CONNECTION_INTERFACE_CONTACT_INFO,
-      TP_IFACE_CONNECTION_INTERFACE_CONTACTS,
-      TP_IFACE_CONNECTION_INTERFACE_REQUESTS,
-      GABBLE_IFACE_OLPC_GADGET,
-      TP_IFACE_CONNECTION_INTERFACE_CONTACT_CAPABILITIES,
-      TP_IFACE_CONNECTION_INTERFACE_LOCATION,
-      GABBLE_IFACE_CONNECTION_INTERFACE_GABBLE_DECLOAK,
-      NULL };
-  static TpDBusPropertiesMixinPropImpl olpc_gadget_props[] = {
-        { "GadgetAvailable", NULL, NULL },
-        { NULL }
-  };
   static TpDBusPropertiesMixinPropImpl location_props[] = {
         { "LocationAccessControlTypes", NULL, NULL },
         { "LocationAccessControl", NULL, NULL },
@@ -780,42 +852,46 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
         { "MailAddress", NULL, NULL },
         { NULL }
   };
+  static TpDBusPropertiesMixinPropImpl power_saving_props[] = {
+        { "PowerSavingActive", "power-saving", NULL },
+        { NULL }
+  };
   static TpDBusPropertiesMixinIfaceImpl prop_interfaces[] = {
-        /* 0 */ { GABBLE_IFACE_OLPC_GADGET,
-          conn_olpc_gadget_properties_getter,
-          NULL,
-          olpc_gadget_props,
-        },
-        /* 1 */ { TP_IFACE_CONNECTION_INTERFACE_LOCATION,
+        /* 0 */ { TP_IFACE_CONNECTION_INTERFACE_LOCATION,
           conn_location_properties_getter,
           conn_location_properties_setter,
           location_props,
         },
-        /* 2 */ { TP_IFACE_CONNECTION_INTERFACE_AVATARS,
+        /* 1 */ { TP_IFACE_CONNECTION_INTERFACE_AVATARS,
           conn_avatars_properties_getter,
           NULL,
           NULL,
         },
-        /* 3 */ { TP_IFACE_CONNECTION_INTERFACE_CONTACT_INFO,
+        /* 2 */ { TP_IFACE_CONNECTION_INTERFACE_CONTACT_INFO,
           conn_contact_info_properties_getter,
           NULL,
           NULL,
         },
-        /* 4 */ { GABBLE_IFACE_CONNECTION_INTERFACE_GABBLE_DECLOAK,
+        /* 3 */ { GABBLE_IFACE_CONNECTION_INTERFACE_GABBLE_DECLOAK,
           tp_dbus_properties_mixin_getter_gobject_properties,
           tp_dbus_properties_mixin_setter_gobject_properties,
           decloak_props,
         },
-        { GABBLE_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
+        { TP_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION,
           conn_mail_notif_properties_getter,
           NULL,
           mail_notif_props,
         },
+        { TP_IFACE_CONNECTION_INTERFACE_POWER_SAVING,
+          tp_dbus_properties_mixin_getter_gobject_properties,
+          NULL,
+          power_saving_props,
+        },
         { NULL }
   };
 
-  prop_interfaces[2].props = conn_avatars_properties;
-  prop_interfaces[3].props = conn_contact_info_properties;
+  prop_interfaces[1].props = conn_avatars_properties;
+  prop_interfaces[2].props = conn_contact_info_properties;
 
   DEBUG("Initializing (GabbleConnectionClass *)%p", gabble_connection_class);
 
@@ -829,9 +905,7 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
   parent_class->create_channel_factories = NULL;
   parent_class->create_channel_managers =
     _gabble_connection_create_channel_managers;
-  parent_class->connecting = connect_callbacks;
   parent_class->connected = base_connected_cb;
-  parent_class->disconnected = disconnect_callbacks;
   parent_class->shut_down = connection_shut_down;
   parent_class->start_connecting = _gabble_connection_connect;
   parent_class->interfaces_always_present = interfaces_always_present;
@@ -846,6 +920,20 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
       g_param_spec_string (
           "connect-server", "Hostname or IP of Jabber server",
           "The server used when establishing a connection.",
+          NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+  /*
+   * The explicit-server property can be used for verification of a
+   * server certificate. It's important that it comes from the user
+   * and is not the result of any other outside lookup, unlike the
+   * connect-server property.
+   */
+
+  g_object_class_install_property (object_class, PROP_EXPLICIT_SERVER,
+      g_param_spec_string (
+          "explicit-server", "Explicit Hostname or IP of Jabber server",
+          "Server explicitly specified by the user to connect to.",
           NULL,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -1013,6 +1101,42 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
           FALSE,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (object_class, PROP_FALLBACK_SERVERS,
+      g_param_spec_boxed (
+        "fallback-servers", "Fallback servers",
+        "List of servers to fallback to (syntax server[:port][,oldssl]",
+        G_TYPE_STRV,
+        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class,
+      PROP_EXTRA_CERTIFICATE_IDENTITIES,
+      g_param_spec_boxed (
+        "extra-certificate-identities",
+        "Extra Certificate Reference Identities",
+        "Extra identities to check certificate against. These are present as a "
+        "result of a user choice or configuration.",
+        G_TYPE_STRV,
+        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (
+      object_class, PROP_DECLOAK_AUTOMATICALLY,
+      g_param_spec_boolean (
+          "power-saving", "Power saving active?",
+          "Queue remote presence updates server-side for less network chatter",
+          FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  /**
+   * @self: a connection
+   * @porter: a porter
+   *
+   * Emitted when the WockyPorter becomes available.
+   */
+  sig_id_porter_available = g_signal_new ("porter-available",
+      G_OBJECT_CLASS_TYPE (gabble_connection_class),
+      G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED, 0, NULL, NULL,
+      g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, WOCKY_TYPE_PORTER);
+
   gabble_connection_class->properties_class.interfaces = prop_interfaces;
   tp_dbus_properties_mixin_class_init (object_class,
       G_STRUCT_OFFSET (GabbleConnectionClass, properties_class));
@@ -1023,6 +1147,8 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
   conn_presence_class_init (gabble_connection_class);
 
   conn_contact_info_class_init (gabble_connection_class);
+
+  tp_base_contact_list_mixin_class_init (parent_class);
 }
 
 static void
@@ -1042,20 +1168,11 @@ gabble_connection_dispose (GObject *object)
   g_assert ((base->status == TP_CONNECTION_STATUS_DISCONNECTED) ||
             (base->status == TP_INTERNAL_CONNECTION_STATUS_NEW));
 
-  g_object_unref (self->bytestream_factory);
-  self->bytestream_factory = NULL;
-
-  g_object_unref (self->disco);
-  self->disco = NULL;
-
-  g_object_unref (self->req_pipeline);
-  self->req_pipeline = NULL;
-
-  g_object_unref (self->vcard_manager);
-  self->vcard_manager = NULL;
-
-  g_object_unref (self->jingle_factory);
-  self->jingle_factory = NULL;
+  tp_clear_object (&self->bytestream_factory);
+  tp_clear_object (&self->disco);
+  tp_clear_object (&self->req_pipeline);
+  tp_clear_object (&self->vcard_manager);
+  tp_clear_object (&self->jingle_factory);
 
   /* remove borrowed references before TpBaseConnection unrefs the channel
    * factories */
@@ -1064,42 +1181,24 @@ gabble_connection_dispose (GObject *object)
   self->private_tubes_factory = NULL;
   priv->auth_manager = NULL;
 
-  if (self->self_presence != NULL)
-    g_object_unref (self->self_presence);
-  self->self_presence = NULL;
-
-  g_object_unref (self->presence_cache);
-  self->presence_cache = NULL;
+  tp_clear_object (&self->self_presence);
+  tp_clear_object (&self->presence_cache);
 
   conn_olpc_activity_properties_dispose (self);
 
   g_hash_table_destroy (self->avatar_requests);
   g_hash_table_destroy (self->vcard_requests);
 
+  conn_presence_dispose (self);
+
   conn_mail_notif_dispose (self);
 
-  g_assert (priv->iq_disco_cb == NULL);
-  g_assert (priv->iq_unknown_cb == NULL);
-  g_assert (priv->olpc_msg_cb == NULL);
-  g_assert (priv->olpc_presence_cb == NULL);
+  tp_clear_object (&priv->connector);
+  tp_clear_object (&self->session);
 
-  if (priv->connector != NULL)
-    {
-      g_object_unref (priv->connector);
-      priv->connector = NULL;
-    }
-
-  if (self->session != NULL)
-    {
-      g_object_unref (self->session);
-      self->session = NULL;
-    }
-
-  if (self->lmconn != NULL)
-    {
-      lm_connection_unref (self->lmconn);
-      self->lmconn = NULL;
-    }
+  /* ownership of our porter was transferred to the LmConnection */
+  priv->porter = NULL;
+  tp_clear_pointer (&self->lmconn, lm_connection_unref);
 
   g_hash_table_destroy (priv->client_caps);
   gabble_capability_set_free (priv->all_caps);
@@ -1114,49 +1213,16 @@ gabble_connection_dispose (GObject *object)
       priv->disconnect_timer = 0;
     }
 
-  if (self->pep_location != NULL)
-    {
-      g_object_unref (self->pep_location);
-      self->pep_location = NULL;
-    }
-
-  if (self->pep_nick != NULL)
-    {
-      g_object_unref (self->pep_nick);
-      self->pep_nick = NULL;
-    }
-
-  if (self->pep_olpc_buddy_props != NULL)
-    {
-      g_object_unref (self->pep_olpc_buddy_props);
-      self->pep_olpc_buddy_props = NULL;
-    }
-
-  if (self->pep_olpc_activities != NULL)
-    {
-      g_object_unref (self->pep_olpc_activities);
-      self->pep_olpc_activities = NULL;
-    }
-
-  if (self->pep_olpc_current_act != NULL)
-    {
-      g_object_unref (self->pep_olpc_current_act);
-      self->pep_olpc_current_act = NULL;
-    }
-
-  if (self->pep_olpc_act_props != NULL)
-    {
-      g_object_unref (self->pep_olpc_act_props);
-      self->pep_olpc_act_props = NULL;
-    }
+  tp_clear_object (&self->pep_location);
+  tp_clear_object (&self->pep_nick);
+  tp_clear_object (&self->pep_olpc_buddy_props);
+  tp_clear_object (&self->pep_olpc_activities);
+  tp_clear_object (&self->pep_olpc_current_act);
+  tp_clear_object (&self->pep_olpc_act_props);
 
   conn_sidecars_dispose (self);
 
-  if (self->daemon != NULL)
-    {
-      g_object_unref (self->daemon);
-      self->daemon = NULL;
-    }
+  tp_clear_object (&self->daemon);
 
   if (G_OBJECT_CLASS (gabble_connection_parent_class)->dispose)
     G_OBJECT_CLASS (gabble_connection_parent_class)->dispose (object);
@@ -1171,6 +1237,7 @@ gabble_connection_finalize (GObject *object)
   DEBUG ("called with %p", object);
 
   g_free (priv->connect_server);
+  g_free (priv->explicit_server);
   g_free (priv->stream_server);
   g_free (priv->username);
   g_free (priv->password);
@@ -1181,6 +1248,8 @@ gabble_connection_finalize (GObject *object)
   g_free (priv->fallback_stun_server);
   g_free (priv->fallback_conference_server);
   g_strfreev (priv->fallback_socks5_proxies);
+  g_strfreev (priv->fallback_servers);
+  g_strfreev (priv->extra_certificate_identities);
 
   g_free (priv->alias);
   g_free (priv->stream_id);
@@ -1210,14 +1279,11 @@ _gabble_connection_set_properties_from_account (GabbleConnection *conn,
                                                 const gchar      *account,
                                                 GError          **error)
 {
-  GabbleConnectionPrivate *priv;
   char *username, *server, *resource;
   gboolean result;
 
   g_assert (GABBLE_IS_CONNECTION (conn));
   g_assert (account != NULL);
-
-  priv = conn->priv;
 
   username = server = resource = NULL;
   result = TRUE;
@@ -1247,17 +1313,6 @@ OUT:
   return result;
 }
 
-static const gchar *
-get_bare_jid (GabbleConnection *conn)
-{
-  TpBaseConnection *base = TP_BASE_CONNECTION (conn);
-  TpHandleRepoIface *contact_handles = tp_base_connection_get_handles (base,
-      TP_HANDLE_TYPE_CONTACT);
-  TpHandle self = tp_base_connection_get_self_handle (base);
-
-  return tp_handle_inspect (contact_handles, self);
-}
-
 /**
  * gabble_connection_get_full_jid:
  *
@@ -1267,18 +1322,18 @@ get_bare_jid (GabbleConnection *conn)
 gchar *
 gabble_connection_get_full_jid (GabbleConnection *conn)
 {
-  const gchar *bare_jid = get_bare_jid (conn);
+  const gchar *bare_jid = conn_util_get_bare_self_jid (conn);
 
   return g_strconcat (bare_jid, "/", conn->priv->resource, NULL);
 }
 
 /**
- * gabble_connection_get_porter:
+ * gabble_connection_dup_porter:
  *
- * Returns: the #WockyPorter instance driving this connection.
+ * Returns: (transfer full): the #WockyPorter instance driving this connection.
  */
 
-WockyPorter *gabble_connection_get_porter (GabbleConnection *conn)
+WockyPorter *gabble_connection_dup_porter (GabbleConnection *conn)
 {
   GabbleConnectionPrivate *priv;
 
@@ -1300,32 +1355,16 @@ WockyPorter *gabble_connection_get_porter (GabbleConnection *conn)
 gboolean
 _gabble_connection_send (GabbleConnection *conn, LmMessage *msg, GError **error)
 {
-  GabbleConnectionPrivate *priv;
-  GError *lmerror = NULL;
-
   g_assert (GABBLE_IS_CONNECTION (conn));
 
-  if (conn->lmconn == NULL)
+  if (conn->lmconn == NULL || conn->priv->porter == NULL)
     {
       g_set_error_literal (error, TP_ERRORS, TP_ERROR_NETWORK_ERROR,
               "connection is disconnected");
       return FALSE;
     }
 
-  priv = conn->priv;
-
-  if (!lm_connection_send (conn->lmconn, msg, &lmerror))
-    {
-      DEBUG ("failed: %s", lmerror->message);
-
-      g_set_error (error, TP_ERRORS, TP_ERROR_NETWORK_ERROR,
-          "message send failed: %s", lmerror->message);
-
-      g_error_free (lmerror);
-
-      return FALSE;
-    }
-
+  wocky_porter_send (conn->priv->porter, msg);
   return TRUE;
 }
 
@@ -1417,7 +1456,6 @@ _gabble_connection_send_with_reply (GabbleConnection *conn,
                                     gpointer user_data,
                                     GError **error)
 {
-  GabbleConnectionPrivate *priv;
   LmMessageHandler *handler;
   GabbleMsgHandlerData *handler_data;
   gboolean ret;
@@ -1431,8 +1469,6 @@ _gabble_connection_send_with_reply (GabbleConnection *conn,
               "connection is disconnected");
       return FALSE;
     }
-
-  priv = conn->priv;
 
   lm_message_ref (msg);
 
@@ -1473,19 +1509,39 @@ _gabble_connection_send_with_reply (GabbleConnection *conn,
   return ret;
 }
 
-static LmHandlerResult connection_iq_disco_cb (LmMessageHandler *,
-    LmConnection *, LmMessage *, gpointer);
-static LmHandlerResult connection_iq_unknown_cb (LmMessageHandler *,
-    LmConnection *, LmMessage *, gpointer);
+static void connect_iq_callbacks (GabbleConnection *conn);
+static gboolean iq_disco_cb (WockyPorter *, WockyStanza *, gpointer);
+static gboolean iq_version_cb (WockyPorter *, WockyStanza *, gpointer);
+static gboolean iq_unknown_cb (WockyPorter *, WockyStanza *, gpointer);
 static void connection_disco_cb (GabbleDisco *, GabbleDiscoRequest *,
     const gchar *, const gchar *, LmMessageNode *, GError *, gpointer);
 static void decrement_waiting_connected (GabbleConnection *connection);
+static void connection_initial_presence_cb (GObject *, GAsyncResult *,
+    gpointer);
+
+static void
+gabble_connection_disconnect_with_tp_error (GabbleConnection *self,
+    const GError *tp_error,
+    TpConnectionStatusReason reason)
+{
+  TpBaseConnection *base = (TpBaseConnection *) self;
+  GHashTable *details = tp_asv_new (
+      "debug-message", G_TYPE_STRING, tp_error->message,
+      NULL);
+
+  g_assert (tp_error->domain == TP_ERRORS);
+  tp_base_connection_disconnect_with_dbus_error (base,
+      tp_error_get_dbus_name (tp_error->code), details, reason);
+  g_hash_table_unref (details);
+}
 
 static void
 remote_closed_cb (WockyPorter *porter,
     GabbleConnection *self)
 {
   TpBaseConnection *base = TP_BASE_CONNECTION (self);
+  GError e = { TP_ERRORS, TP_ERROR_CONNECTION_LOST,
+      "server closed its XMPP stream" };
 
   if (base->status == TP_CONNECTION_STATUS_DISCONNECTED)
     /* Ignore if we are already disconnecting/disconnected */
@@ -1495,8 +1551,7 @@ remote_closed_cb (WockyPorter *porter,
 
   /* Changing the state to Disconnect will call connection_shut_down which
    * will properly close the porter. */
-  tp_base_connection_change_status ((TpBaseConnection *) self,
-          TP_CONNECTION_STATUS_DISCONNECTED,
+  gabble_connection_disconnect_with_tp_error (self, &e,
           TP_CONNECTION_STATUS_REASON_NETWORK_ERROR);
 }
 
@@ -1532,147 +1587,75 @@ remote_error_cb (WockyPorter *porter,
   TpConnectionStatusReason reason = TP_CONNECTION_STATUS_REASON_NONE_SPECIFIED;
   TpBaseConnection *base = (TpBaseConnection *) self;
   GabbleConnectionPrivate *priv = self->priv;
+  GError e = { domain, code, msg };
+  GError *error = NULL;
 
   if (base->status == TP_CONNECTION_STATUS_DISCONNECTED)
     /* Ignore if we are already disconnecting/disconnected */
     return;
 
-  if (domain == WOCKY_XMPP_STREAM_ERROR)
-    {
-      /* stream error */
-      DEBUG ("Received stream error (%u): %s", code, msg);
-
-      if (code == WOCKY_XMPP_STREAM_ERROR_CONFLICT)
-        {
-          /* Another client with the same resource just appeared, we're going
-           * down. */
-          DEBUG ("Another client appeared with the same resource");
-          reason = TP_CONNECTION_STATUS_REASON_NAME_IN_USE;
-        }
-    }
-  else
-    {
-      DEBUG ("remote error: %s", msg);
-    }
+  gabble_set_tp_conn_error_from_wocky (&e, base->status, &reason, &error);
+  g_assert (error->domain == TP_ERRORS);
 
   DEBUG ("Force closing of the connection %p", self);
   priv->closing = TRUE;
   wocky_porter_force_close_async (priv->porter, NULL, force_close_cb,
       self);
 
-  tp_base_connection_change_status ((TpBaseConnection *) self,
-      TP_CONNECTION_STATUS_DISCONNECTED, reason);
+  gabble_connection_disconnect_with_tp_error (self, error, reason);
+  g_error_free (error);
 }
 
 static void
 connector_error_disconnect (GabbleConnection *self,
     GError *error)
 {
+  GError *tp_error = NULL;
   TpBaseConnection *base = (TpBaseConnection *) self;
-  TpConnectionStatusReason reason = \
-    TP_CONNECTION_STATUS_REASON_NETWORK_ERROR;
+  TpConnectionStatusReason reason = TP_CONNECTION_STATUS_REASON_NETWORK_ERROR;
+  gchar *dbus_error = NULL;
+  GHashTable *details = NULL;
 
-  DEBUG ("connection failed: %s", error->message);
-
-  if (error->domain == WOCKY_AUTH_ERROR)
+  if (error->domain == GABBLE_SERVER_TLS_ERROR)
     {
-      switch (error->code)
-        {
-          case WOCKY_AUTH_ERROR_NETWORK:
-          case WOCKY_AUTH_ERROR_CONNRESET:
-          case WOCKY_AUTH_ERROR_STREAM:
-            reason = TP_CONNECTION_STATUS_REASON_NETWORK_ERROR;
-            break;
-          default:
-            reason = TP_CONNECTION_STATUS_REASON_AUTHENTICATION_FAILED;
-        }
-    }
-  else if (error->domain == WOCKY_CONNECTOR_ERROR)
-    {
-      /* Connector error */
-      switch (error->code)
-        {
-          case WOCKY_CONNECTOR_ERROR_SESSION_DENIED:
-            reason = TP_CONNECTION_STATUS_REASON_AUTHENTICATION_FAILED;
-            break;
+      gabble_server_tls_manager_get_rejection_details (
+          self->priv->server_tls_manager, &dbus_error, &details, &reason);
 
-          case WOCKY_CONNECTOR_ERROR_REGISTRATION_CONFLICT:
-            DEBUG ("Registration failed; jid is already used");
-            reason = TP_CONNECTION_STATUS_REASON_NAME_IN_USE;
-            break;
+      /* new-style interactive TLS verification error */
+      DEBUG ("New-style TLS verification error, reason %u, dbus error %s",
+          reason, dbus_error);
 
-          case WOCKY_CONNECTOR_ERROR_REGISTRATION_REJECTED:
-          case WOCKY_CONNECTOR_ERROR_REGISTRATION_UNSUPPORTED:
-            /* AuthenticationFailed is the closest ConnectionStatusReason to
-             * "I tried but couldn't register you an account." */
-            DEBUG ("Registration rejected");
-            reason = TP_CONNECTION_STATUS_REASON_AUTHENTICATION_FAILED;
-            break;
+      tp_base_connection_disconnect_with_dbus_error (base, dbus_error,
+          details, reason);
 
-          default:
-            break;
-        }
+      tp_clear_pointer (&details, g_hash_table_unref);
+      g_free (dbus_error);
+
+      return;
     }
 
-  else if (error->domain == WOCKY_XMPP_STREAM_ERROR)
+  if (error->domain == WOCKY_AUTH_ERROR &&
+      gabble_auth_manager_get_failure_details (self->priv->auth_manager,
+        &dbus_error, &details, &reason))
     {
-      /* Stream error */
-      switch (error->code)
-        {
-          case WOCKY_XMPP_STREAM_ERROR_HOST_UNKNOWN:
-            /* If we get this while we're logging in, it's because we're trying
-             * to connect to foo@bar.com but the server doesn't know about
-             * bar.com, probably because the user entered a non-GTalk JID into
-             * a GTalk profile that forces the server. */
-            DEBUG ("got <host-unknown> while connecting");
-            reason = TP_CONNECTION_STATUS_REASON_AUTHENTICATION_FAILED;
-            break;
+      DEBUG ("Interactive authentication error, reason %u, dbus error %s",
+          reason, dbus_error);
 
-          default:
-            break;
-        }
-    }
-  else if (error->domain == WOCKY_TLS_CERT_ERROR)
-    {
-      /* certificate error */
-      switch (error->code)
-        {
-          case WOCKY_TLS_CERT_NO_CERTIFICATE:
-            DEBUG ("The server doesn't provide a certificate.");
-            reason = TP_CONNECTION_STATUS_REASON_CERT_NOT_PROVIDED;
-            break;
-          case WOCKY_TLS_CERT_INSECURE:
-          case WOCKY_TLS_CERT_SIGNER_UNKNOWN:
-          case WOCKY_TLS_CERT_SIGNER_UNAUTHORISED:
-          case WOCKY_TLS_CERT_REVOKED:
-          case WOCKY_TLS_CERT_MAYBE_DOS:
-            DEBUG ("The certificate cannot be trusted.");
-            reason = TP_CONNECTION_STATUS_REASON_CERT_UNTRUSTED;
-            break;
-          case WOCKY_TLS_CERT_EXPIRED:
-            DEBUG ("The certificate has expired.");
-            reason = TP_CONNECTION_STATUS_REASON_CERT_EXPIRED;
-            break;
-          case WOCKY_TLS_CERT_NOT_ACTIVE:
-            DEBUG ("The certificate has not been activated.");
-            reason = TP_CONNECTION_STATUS_REASON_CERT_NOT_ACTIVATED;
-            break;
-          case WOCKY_TLS_CERT_NAME_MISMATCH:
-            DEBUG ("The server hostname doesn't match the one in the"
-                " certificate.");
-            reason = TP_CONNECTION_STATUS_REASON_CERT_HOSTNAME_MISMATCH;
-            break;
-          case WOCKY_TLS_CERT_INTERNAL_ERROR:
-          case WOCKY_TLS_CERT_UNKNOWN_ERROR:
-          default:
-            DEBUG ("Unknown certificate error: %s", error->message);
-            reason = TP_CONNECTION_STATUS_REASON_CERT_OTHER_ERROR;
-            break;
-        }
+      tp_base_connection_disconnect_with_dbus_error (base, dbus_error,
+          details, reason);
+
+      tp_clear_pointer (&details, g_hash_table_unref);
+      g_free (dbus_error);
+      return;
     }
 
-  tp_base_connection_change_status (base,
-      TP_CONNECTION_STATUS_DISCONNECTED, reason);
+  gabble_set_tp_conn_error_from_wocky (error, base->status, &reason,
+      &tp_error);
+  DEBUG ("connection failed: %s", tp_error->message);
+  g_assert (tp_error->domain == TP_ERRORS);
+
+  gabble_connection_disconnect_with_tp_error (self, tp_error, reason);
+  g_error_free (tp_error);
 }
 
 static void
@@ -1717,6 +1700,73 @@ bare_jid_disco_cb (GabbleDisco *disco,
 }
 
 /**
+ * next_fallback_server
+ *
+ * Launch connection using next fallback server if any, return
+ * FALSE if they all have been tried or the error is not
+ * network related (e.g. login failed).
+ */
+static gboolean
+next_fallback_server (GabbleConnection *self,
+    const GError *error)
+{
+  GabbleConnectionPrivate *priv = self->priv;
+  const gchar *server;
+  gchar **split;
+  guint port = 5222;
+  gboolean old_ssl = FALSE;
+  GNetworkAddress *addr;
+  GError *tmp_error = NULL;
+
+  /* Only retry on connection failures */
+  if (error->domain != G_IO_ERROR)
+    return FALSE;
+
+  if (priv->fallback_servers == NULL
+      || priv->fallback_servers[priv->fallback_server_index] == NULL)
+    return FALSE;
+
+  server = priv->fallback_servers[priv->fallback_server_index++];
+  split = g_strsplit (server, ",", 2);
+
+  if (split[0] == NULL)
+    {
+      g_strfreev (split);
+      return FALSE;
+    }
+  else if (split[1] != NULL && !tp_strdiff (split[1], "oldssl"))
+    {
+      old_ssl = TRUE;
+      port = 5223;
+    }
+
+  addr = G_NETWORK_ADDRESS (
+      g_network_address_parse (split[0], port, &tmp_error));
+
+  if (!addr)
+    {
+      g_warning ("%s", tmp_error->message);
+      g_error_free (tmp_error);
+      return FALSE;
+    }
+
+  g_free (priv->connect_server);
+  priv->connect_server = g_strdup (g_network_address_get_hostname (addr));
+  priv->port = g_network_address_get_port (addr);
+  priv->old_ssl = old_ssl;
+  g_object_notify (G_OBJECT (self), "connect-server");
+  g_object_notify (G_OBJECT (self), "port");
+  g_object_notify (G_OBJECT (self), "old-ssl");
+
+  g_object_unref (addr);
+
+  _gabble_connection_connect (TP_BASE_CONNECTION (self), NULL);
+
+  g_strfreev (split);
+  return TRUE;
+}
+
+/**
  * connector_connected
  *
  * Stage 2 of connecting, this function is called once the connect operation
@@ -1735,6 +1785,9 @@ connector_connected (GabbleConnection *self,
   TpHandleRepoIface *contact_handles = tp_base_connection_get_handles (base,
       TP_HANDLE_TYPE_CONTACT);
 
+  /* cleanup the cancellable */
+  tp_clear_object (&priv->cancellable);
+
   /* We went to closing while we were connecting... drop the connection and
    * finish the shutdown */
   if (priv->closing)
@@ -1749,12 +1802,12 @@ connector_connected (GabbleConnection *self,
     }
 
   /* We don't need the connector any more */
-  g_object_unref (priv->connector);
-  priv->connector = NULL;
+  tp_clear_object (&priv->connector);
 
   if (conn == NULL)
     {
-      connector_error_disconnect (self, error);
+      if (!next_fallback_server (self, error))
+        connector_error_disconnect (self, error);
       g_error_free (error);
       return;
     }
@@ -1771,6 +1824,8 @@ connector_connected (GabbleConnection *self,
       G_CALLBACK (remote_error_cb), self);
 
   lm_connection_set_porter (self->lmconn, priv->porter);
+  g_signal_emit (self, sig_id_porter_available, 0, priv->porter);
+  connect_iq_callbacks (self);
 
   wocky_pep_service_start (self->pep_location, self->session);
   wocky_pep_service_start (self->pep_nick, self->session);
@@ -1789,11 +1844,15 @@ connector_connected (GabbleConnection *self,
     {
       DEBUG ("couldn't get our self handle: %s", error->message);
 
-      g_error_free (error);
+      if (error->domain != TP_ERRORS)
+        {
+          error->domain = TP_ERRORS;
+          error->code = TP_ERROR_INVALID_HANDLE;
+        }
 
-      tp_base_connection_change_status ((TpBaseConnection *) self,
-          TP_CONNECTION_STATUS_DISCONNECTED,
+      gabble_connection_disconnect_with_tp_error (self, error,
           TP_CONNECTION_STATUS_REASON_NETWORK_ERROR);
+      g_error_free (error);
 
       return;
     }
@@ -1803,11 +1862,15 @@ connector_connected (GabbleConnection *self,
     {
       DEBUG ("couldn't parse our own JID: %s", error->message);
 
-      g_error_free (error);
+      if (error->domain != TP_ERRORS)
+        {
+          error->domain = TP_ERRORS;
+          error->code = TP_ERROR_INVALID_ARGUMENT;
+        }
 
-      tp_base_connection_change_status ((TpBaseConnection *) self,
-          TP_CONNECTION_STATUS_DISCONNECTED,
+      gabble_connection_disconnect_with_tp_error (self, error,
           TP_CONNECTION_STATUS_REASON_NETWORK_ERROR);
+      g_error_free (error);
 
       return;
     }
@@ -1827,26 +1890,34 @@ connector_connected (GabbleConnection *self,
       DEBUG ("sending disco request failed: %s",
           error->message);
 
-      g_error_free (error);
+      if (error->domain != TP_ERRORS)
+        {
+          error->domain = TP_ERRORS;
+          error->code = TP_ERROR_NETWORK_ERROR;
+        }
 
-      tp_base_connection_change_status ((TpBaseConnection *) self,
-          TP_CONNECTION_STATUS_DISCONNECTED,
+      gabble_connection_disconnect_with_tp_error (self, error,
           TP_CONNECTION_STATUS_REASON_NETWORK_ERROR);
+      g_error_free (error);
     }
 
   /* Disco our own bare jid to check if PEP is supported */
   if (!gabble_disco_request_with_timeout (self->disco, GABBLE_DISCO_TYPE_INFO,
-      get_bare_jid (self), NULL, disco_reply_timeout, bare_jid_disco_cb, self,
-      G_OBJECT (self), &error))
+          conn_util_get_bare_self_jid (self), NULL, disco_reply_timeout,
+          bare_jid_disco_cb, self, G_OBJECT (self), &error))
     {
       DEBUG ("Sending disco request to our own bare jid failed: %s",
           error->message);
 
-      g_error_free (error);
+      if (error->domain != TP_ERRORS)
+        {
+          error->domain = TP_ERRORS;
+          error->code = TP_ERROR_NETWORK_ERROR;
+        }
 
-      tp_base_connection_change_status ((TpBaseConnection *) self,
-          TP_CONNECTION_STATUS_DISCONNECTED,
+      gabble_connection_disconnect_with_tp_error (self, error,
           TP_CONNECTION_STATUS_REASON_NETWORK_ERROR);
+      g_error_free (error);
     }
 
   self->priv->waiting_connected = 2;
@@ -1889,71 +1960,27 @@ connector_register_cb (GObject *source,
 }
 
 static void
-connect_callbacks (TpBaseConnection *base)
+connect_iq_callbacks (GabbleConnection *conn)
 {
-  GabbleConnection *conn = GABBLE_CONNECTION (base);
   GabbleConnectionPrivate *priv = conn->priv;
 
-  g_assert (priv->iq_disco_cb == NULL);
-  g_assert (priv->iq_unknown_cb == NULL);
-  g_assert (priv->olpc_msg_cb == NULL);
-  g_assert (priv->olpc_presence_cb == NULL);
+  wocky_porter_register_handler_from_anyone (priv->porter,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+      iq_disco_cb, conn,
+      '(', "query", ':', NS_DISCO_INFO, ')', NULL);
 
-  priv->iq_disco_cb = lm_message_handler_new (connection_iq_disco_cb,
-                                              conn, NULL);
-  lm_connection_register_message_handler (conn->lmconn, priv->iq_disco_cb,
-                                          LM_MESSAGE_TYPE_IQ,
-                                          LM_HANDLER_PRIORITY_NORMAL);
+  wocky_porter_register_handler_from_anyone (priv->porter,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+      iq_version_cb, conn,
+      '(', "query", ':', NS_VERSION, ')', NULL);
 
-  priv->iq_unknown_cb = lm_message_handler_new (connection_iq_unknown_cb,
-                                            conn, NULL);
-  lm_connection_register_message_handler (conn->lmconn, priv->iq_unknown_cb,
-                                          LM_MESSAGE_TYPE_IQ,
-                                          LM_HANDLER_PRIORITY_LAST);
-
-  priv->olpc_msg_cb = lm_message_handler_new (conn_olpc_msg_cb,
-                                            conn, NULL);
-  lm_connection_register_message_handler (conn->lmconn, priv->olpc_msg_cb,
-                                          LM_MESSAGE_TYPE_MESSAGE,
-                                          LM_HANDLER_PRIORITY_FIRST);
-
-  priv->olpc_presence_cb = lm_message_handler_new (conn_olpc_presence_cb,
-      conn, NULL);
-  lm_connection_register_message_handler (conn->lmconn, priv->olpc_presence_cb,
-                                          LM_MESSAGE_TYPE_PRESENCE,
-                                          LM_HANDLER_PRIORITY_NORMAL);
-}
-
-static void
-disconnect_callbacks (TpBaseConnection *base)
-{
-  GabbleConnection *conn = GABBLE_CONNECTION (base);
-  GabbleConnectionPrivate *priv = conn->priv;
-
-  g_assert (priv->iq_disco_cb != NULL);
-  g_assert (priv->iq_unknown_cb != NULL);
-  g_assert (priv->olpc_msg_cb != NULL);
-  g_assert (priv->olpc_presence_cb != NULL);
-
-  lm_connection_unregister_message_handler (conn->lmconn, priv->iq_disco_cb,
-                                            LM_MESSAGE_TYPE_IQ);
-  lm_message_handler_unref (priv->iq_disco_cb);
-  priv->iq_disco_cb = NULL;
-
-  lm_connection_unregister_message_handler (conn->lmconn, priv->iq_unknown_cb,
-                                            LM_MESSAGE_TYPE_IQ);
-  lm_message_handler_unref (priv->iq_unknown_cb);
-  priv->iq_unknown_cb = NULL;
-
-  lm_connection_unregister_message_handler (conn->lmconn, priv->olpc_msg_cb,
-                                            LM_MESSAGE_TYPE_MESSAGE);
-  lm_message_handler_unref (priv->olpc_msg_cb);
-  priv->olpc_msg_cb = NULL;
-
-  lm_connection_unregister_message_handler (conn->lmconn,
-      priv->olpc_presence_cb, LM_MESSAGE_TYPE_MESSAGE);
-  lm_message_handler_unref (priv->olpc_presence_cb);
-  priv->olpc_presence_cb = NULL;
+  /* FIXME: the porter should do this for us. */
+  wocky_porter_register_handler_from_anyone (priv->porter,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE,
+      WOCKY_PORTER_HANDLER_PRIORITY_MIN,
+      iq_unknown_cb, conn, NULL);
 }
 
 /**
@@ -1965,8 +1992,9 @@ disconnect_callbacks (TpBaseConnection *base)
  *
  * Stage 1 is _gabble_connection_connect calling wocky_connector_connect_async
  * Stage 2 is connector_connected initiating service discovery
- * Stage 3 is set_status_to_connected advertising initial presence, requesting
- *   the roster and setting the CONNECTED state
+ * Stage 3 is connection_disco_cb processing the server's features, and setting
+ *            initial presence
+ * Stage 4 is set_status_to_connected setting the CONNECTED state.
  */
 static gboolean
 _gabble_connection_connect (TpBaseConnection *base,
@@ -1974,7 +2002,9 @@ _gabble_connection_connect (TpBaseConnection *base,
 {
   GabbleConnection *conn = GABBLE_CONNECTION (base);
   GabbleConnectionPrivate *priv = conn->priv;
+  WockyTLSHandler *tls_handler;
   char *jid;
+  gboolean interactive_tls;
   gchar *user_certs_dir;
 
   g_assert (priv->connector == NULL);
@@ -1983,18 +2013,21 @@ _gabble_connection_connect (TpBaseConnection *base,
   g_assert (priv->resource != NULL);
 
   jid = gabble_encode_jid (priv->username, priv->stream_server, NULL);
+  tls_handler = WOCKY_TLS_HANDLER (priv->server_tls_manager);
   priv->connector = wocky_connector_new (jid, priv->password, priv->resource,
-      gabble_auth_manager_get_auth_registry (priv->auth_manager));
+      WOCKY_AUTH_REGISTRY (priv->auth_manager),
+      tls_handler);
   g_free (jid);
 
+#ifdef GTLS_SYSTEM_CA_CERTIFICATES
   /* system certs */
-  wocky_connector_add_ca (priv->connector,
-      "/etc/ssl/certs/ca-certificates.crt");
+  wocky_tls_handler_add_ca (tls_handler, GTLS_SYSTEM_CA_CERTIFICATES);
+#endif
 
   /* user certs */
   user_certs_dir = g_build_filename (g_get_user_config_dir (),
       "telepathy", "certs", NULL);
-  wocky_connector_add_ca (priv->connector, user_certs_dir);
+  wocky_tls_handler_add_ca (tls_handler, user_certs_dir);
   g_free (user_certs_dir);
 
   /* If the UI explicitly specified a port or a server, pass them to Loudmouth
@@ -2028,6 +2061,11 @@ _gabble_connection_connect (TpBaseConnection *base,
       DEBUG ("letting SRV lookup decide server and port");
     }
 
+  /* We want to enable interactive TLS verification also in
+   * case encryption is not required, and we don't ignore SSL errors.
+   */
+  interactive_tls = !conn->priv->ignore_ssl_errors;
+
   if (!conn->priv->require_encryption && !conn->priv->ignore_ssl_errors)
     {
       DEBUG ("require-encryption is False; flipping ignore_ssl_errors to True");
@@ -2035,10 +2073,14 @@ _gabble_connection_connect (TpBaseConnection *base,
     }
 
   g_object_set (priv->connector,
-      "ignore-ssl-errors", priv->ignore_ssl_errors,
       "old-ssl", priv->old_ssl,
       /* We always wants to support old servers */
       "legacy", TRUE,
+      NULL);
+
+  g_object_set (tls_handler,
+      "interactive-tls", interactive_tls,
+      "ignore-ssl-errors", priv->ignore_ssl_errors,
       NULL);
 
   if (priv->old_ssl)
@@ -2055,21 +2097,20 @@ _gabble_connection_connect (TpBaseConnection *base,
           NULL);
     }
 
-  /* FIXME: support proxy server */
-  /* FIXME: support keep alive */
+  priv->cancellable = g_cancellable_new ();
 
   if (priv->do_register)
     {
       DEBUG ("Start registering");
 
-      wocky_connector_register_async (priv->connector,
+      wocky_connector_register_async (priv->connector, priv->cancellable,
           connector_register_cb, conn);
     }
   else
     {
       DEBUG ("Start connecting");
 
-      wocky_connector_connect_async (priv->connector,
+      wocky_connector_connect_async (priv->connector, priv->cancellable,
           connector_connect_cb, conn);
     }
 
@@ -2138,18 +2179,12 @@ connection_shut_down (TpBaseConnection *base)
   GabbleConnection *self = GABBLE_CONNECTION (base);
   GabbleConnectionPrivate *priv = self->priv;
 
+  tp_clear_object (&priv->pinger);
+
   if (priv->closing)
     return;
 
   priv->closing = TRUE;
-
-  gabble_connection_slacker_stop (self);
-
-  if (priv->pinger != NULL)
-    {
-      g_object_unref (priv->pinger);
-      priv->pinger = NULL;
-    }
 
   if (priv->porter != NULL)
     {
@@ -2164,10 +2199,9 @@ connection_shut_down (TpBaseConnection *base)
     }
   else if (priv->connector != NULL)
     {
-      /* FIXME: cancel connecting if we are connecting, for now we wait *
-       * until the connection is finished and then drop it directly     *
-       * wocky connector does not support gcancellables yet             */
-      DEBUG ("wait for connector to finish before closing: %p", base);
+      DEBUG ("Cancelling the porter connection");
+      g_cancellable_cancel (priv->cancellable);
+
       return;
     }
 
@@ -2446,43 +2480,34 @@ add_identity_node (const GabbleDiscoIdentity *identity,
 }
 
 /**
- * connection_iq_disco_cb
+ * iq_disco_cb
  *
- * Called by loudmouth when we get an incoming <iq>. This handler handles
- * disco-related IQs.
+ * Called by Wocky when we get an incoming <iq> with a <query xmlns="disco#info">
+ * node. This handler handles disco-related IQs.
  */
-static LmHandlerResult
-connection_iq_disco_cb (LmMessageHandler *handler,
-                        LmConnection *connection,
-                        LmMessage *message,
-                        gpointer user_data)
+static gboolean
+iq_disco_cb (WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
 {
   GabbleConnection *self = GABBLE_CONNECTION (user_data);
-  LmMessage *result;
-  LmMessageNode *iq, *result_iq, *query, *result_query, *identity;
+  WockyStanza *result;
+  WockyNode *query, *result_query;
   const gchar *node, *suffix;
   const GabbleCapabilityInfo *info = NULL;
   const GabbleCapabilitySet *features = NULL;
   const GPtrArray *identities = NULL;
 
-  if (lm_message_get_sub_type (message) != LM_MESSAGE_SUB_TYPE_GET)
-    return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
-
-  iq = lm_message_get_node (message);
-  query = lm_message_node_get_child_with_namespace (iq, "query",
-      NS_DISCO_INFO);
-
-  if (!query)
-    return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
-
-  node = lm_message_node_get_attribute (query, "node");
+  /* query's existence is checked by WockyPorter before this function is called */
+  query = wocky_node_get_child (wocky_stanza_get_top_node (stanza), "query");
+  node = wocky_node_get_attribute (query, "node");
 
   if (node && (
       0 != strncmp (node, NS_GABBLE_CAPS "#", strlen (NS_GABBLE_CAPS) + 1) ||
       strlen (node) < strlen (NS_GABBLE_CAPS) + 2))
     {
-      NODE_DEBUG (iq, "got iq disco query with unexpected node attribute");
-      return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
+      STANZA_DEBUG (stanza, "got iq disco query with unexpected node attribute");
+      return FALSE;
     }
 
   if (node == NULL)
@@ -2490,20 +2515,15 @@ connection_iq_disco_cb (LmMessageHandler *handler,
   else
     suffix = node + strlen (NS_GABBLE_CAPS) + 1;
 
-  result = lm_iq_message_make_result (message);
+  result = wocky_stanza_build_iq_result (stanza,
+      '(', "query", ':', NS_DISCO_INFO, '*', &result_query, ')', NULL);
 
   /* If we get an IQ without an id='', there's not much we can do. */
   if (result == NULL)
-    return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
-
-  result_iq = lm_message_get_node (result);
-  result_query = lm_message_node_add_child (result_iq, "query", NULL);
-  lm_message_node_set_attribute (result_query, "xmlns", NS_DISCO_INFO);
+    return FALSE;
 
   if (node)
-    lm_message_node_set_attribute (result_query, "node", node);
-
-  DEBUG ("got disco request for node %s", node);
+    wocky_node_set_attribute (result_query, "node", node);
 
   if (node == NULL)
     features = gabble_presence_peek_caps (self->self_presence);
@@ -2528,14 +2548,15 @@ connection_iq_disco_cb (LmMessageHandler *handler,
     }
   else
     {
-      /* Every entity MUST have at least one identity (XEP-0030). Gabble publishs
+      /* Every entity MUST have at least one identity (XEP-0030). Gabble publishes
        * one identity. If you change the identity here, you also need to change
        * caps_hash_compute_from_self_presence(). */
-      identity = lm_message_node_add_child
-          (result_query, "identity", NULL);
-      lm_message_node_set_attribute (identity, "category", "client");
-      lm_message_node_set_attribute (identity, "name", PACKAGE_STRING);
-      lm_message_node_set_attribute (identity, "type", CLIENT_TYPE);
+      wocky_node_add_build (result_query,
+        '(', "identity",
+          '@', "category", "client",
+          '@', "name", PACKAGE_STRING,
+          '@', "type", CLIENT_TYPE,
+        ')', NULL);
     }
 
   if (features == NULL)
@@ -2558,7 +2579,7 @@ connection_iq_disco_cb (LmMessageHandler *handler,
 
   if (features == NULL && tp_strdiff (suffix, BUNDLE_PMUC_V1))
     {
-      _gabble_connection_send_iq_error (self, message,
+      _gabble_connection_send_iq_error (self, stanza,
           XMPP_ERROR_ITEM_NOT_FOUND, NULL);
     }
   else
@@ -2570,64 +2591,76 @@ connection_iq_disco_cb (LmMessageHandler *handler,
               result_query);
         }
 
-      NODE_DEBUG (result_iq, "sending disco response");
-
-      if (!lm_connection_send (self->lmconn, result, NULL))
-        {
-          DEBUG ("sending disco response failed");
-        }
+      wocky_porter_send (self->priv->porter, result);
     }
 
-  lm_message_unref (result);
+  g_object_unref (result);
 
-  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+  return TRUE;
+}
+
+static gboolean
+iq_version_cb (WockyPorter *porter, WockyStanza *stanza, gpointer user_data)
+{
+  WockyStanza *result;
+
+  result = wocky_stanza_build_iq_result (stanza,
+      '(', "query", ':', NS_VERSION,
+        '(', "name", '$', PACKAGE_NAME, ')',
+        '(', "version", '$', PACKAGE_VERSION, ')',
+      ')', NULL);
+
+  if (result == NULL)
+    return FALSE;
+
+  wocky_porter_send (porter, result);
+
+  g_object_unref ((GObject *) result);
+
+  return TRUE;
 }
 
 /**
- * connection_iq_unknown_cb
+ * iq_unknown_cb
  *
- * Called by loudmouth when we get an incoming <iq>. This handler is
+ * Called by Wocky when we get an incoming <iq>. This handler is
  * at a lower priority than the others, and should reply with an error
  * about unsupported get/set attempts.
  */
-static LmHandlerResult
-connection_iq_unknown_cb (LmMessageHandler *handler,
-                          LmConnection *connection,
-                          LmMessage *message,
-                          gpointer user_data)
+static gboolean
+iq_unknown_cb (WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
 {
   GabbleConnection *conn = GABBLE_CONNECTION (user_data);
+  WockyStanzaSubType subtype;
 
-  g_assert (connection == conn->lmconn);
+  wocky_stanza_get_type_info (stanza, NULL, &subtype);
 
-  STANZA_DEBUG (message, "got unknown iq");
-
-  switch (lm_message_get_sub_type (message))
+  switch (subtype)
     {
-    case LM_MESSAGE_SUB_TYPE_GET:
-    case LM_MESSAGE_SUB_TYPE_SET:
-      _gabble_connection_send_iq_error (conn, message,
+    case WOCKY_STANZA_SUB_TYPE_GET:
+    case WOCKY_STANZA_SUB_TYPE_SET:
+      _gabble_connection_send_iq_error (conn, stanza,
           XMPP_ERROR_SERVICE_UNAVAILABLE, NULL);
-      break;
+      return TRUE;
     default:
       break;
     }
 
-  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+  return FALSE;
 }
 
 /**
  * set_status_to_connected
  *
- * Stage 3 of connecting, this function is called once all the events we were
+ * Stage 4 of connecting, this function is called once all the events we were
  * waiting for happened.
- * It sends the user's initial presence to the server, marking them as
- * available, and requests the roster.
+ *
  */
 static void
 set_status_to_connected (GabbleConnection *conn)
 {
-  GError *error = NULL;
   TpBaseConnection *base = (TpBaseConnection *) conn;
 
   if (conn->features & GABBLE_CONNECTION_FEATURES_PEP)
@@ -2642,32 +2675,14 @@ set_status_to_connected (GabbleConnection *conn)
   if (conn->features & GABBLE_CONNECTION_FEATURES_GOOGLE_MAIL_NOTIFY)
     {
        const gchar *ifaces[] =
-         { GABBLE_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION, NULL };
+         { TP_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION, NULL };
 
       tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
-    }
-
-  /* send presence to the server to indicate availability */
-  /* TODO: some way for the user to set this */
-  if (!conn_presence_signal_own_presence (conn, NULL, &error))
-    {
-      DEBUG ("sending initial presence failed: %s", error->message);
-      goto ERROR;
     }
 
   /* go go gadget on-line */
   tp_base_connection_change_status (base,
       TP_CONNECTION_STATUS_CONNECTED, TP_CONNECTION_STATUS_REASON_REQUESTED);
-
-  return;
-
-ERROR:
-  if (error != NULL)
-    g_error_free (error);
-
-  tp_base_connection_change_status (base,
-      TP_CONNECTION_STATUS_DISCONNECTED,
-      TP_CONNECTION_STATUS_REASON_NETWORK_ERROR);
 }
 
 static void
@@ -2688,19 +2703,14 @@ connection_disco_cb (GabbleDisco *disco,
                      GError *disco_error,
                      gpointer user_data)
 {
-  GabbleConnection *conn = user_data;
+  GabbleConnection *conn = GABBLE_CONNECTION (user_data);
   TpBaseConnection *base = (TpBaseConnection *) conn;
-  GabbleConnectionPrivate *priv;
-  GError *error = NULL;
 
   if (base->status != TP_CONNECTION_STATUS_CONNECTING)
     {
       g_assert (base->status == TP_CONNECTION_STATUS_DISCONNECTED);
       return;
     }
-
-  g_assert (GABBLE_IS_CONNECTION (conn));
-  priv = conn->priv;
 
   if (disco_error)
     {
@@ -2749,26 +2759,65 @@ connection_disco_cb (GabbleDisco *disco,
                 conn->features |= GABBLE_CONNECTION_FEATURES_PRESENCE_INVISIBLE;
               else if (0 == strcmp (var, NS_PRIVACY))
                 conn->features |= GABBLE_CONNECTION_FEATURES_PRIVACY;
+              else if (0 == strcmp (var, NS_INVISIBLE))
+                conn->features |= GABBLE_CONNECTION_FEATURES_INVISIBLE;
               else if (0 == strcmp (var, NS_GOOGLE_MAIL_NOTIFY))
                 conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_MAIL_NOTIFY;
+              else if (0 == strcmp (var, NS_GOOGLE_SHARED_STATUS))
+                conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_SHARED_STATUS;
+              else if (0 == strcmp (var, NS_GOOGLE_QUEUE))
+                conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_QUEUE;
             }
         }
 
       DEBUG ("set features flags to %d", conn->features);
     }
 
-  decrement_waiting_connected (conn);
+  conn_presence_set_initial_presence_async (conn,
+      connection_initial_presence_cb, NULL);
+
   return;
 
 ERROR:
-  if (error != NULL)
-    g_error_free (error);
-
   tp_base_connection_change_status (base,
       TP_CONNECTION_STATUS_DISCONNECTED,
       TP_CONNECTION_STATUS_REASON_NETWORK_ERROR);
 
   return;
+}
+
+/**
+ * connection_initial_presence_cb
+ *
+ * Stage 4 of connecting, this function is called after our initial presence
+ * has been set (or has failed unrecoverably). It marks the connection as
+ * online (or failed, as appropriate); the former triggers the roster being
+ * retrieved.
+ */
+static void
+connection_initial_presence_cb (GObject *source_object,
+    GAsyncResult *res,
+    gpointer user_data)
+{
+  GabbleConnection *self = (GabbleConnection *) source_object;
+  TpBaseConnection *base = (TpBaseConnection *) self;
+  GError *error = NULL;
+
+  if (!conn_presence_set_initial_presence_finish (self, res, &error))
+    {
+      DEBUG ("error setting up initial presence: %s", error->message);
+
+      if (base->status != TP_CONNECTION_STATUS_DISCONNECTED)
+        tp_base_connection_change_status (base,
+            TP_CONNECTION_STATUS_DISCONNECTED,
+            TP_CONNECTION_STATUS_REASON_NETWORK_ERROR);
+
+      g_error_free (error);
+    }
+  else
+    {
+      decrement_waiting_connected (self);
+    }
 }
 
 
@@ -2916,8 +2965,14 @@ gabble_connection_get_handle_contact_capabilities (
 
   if (p == NULL)
     {
-      DEBUG ("don't know %u's presence; no caps for them.", handle);
-      return NULL;
+      DEBUG ("don't know %u's presence; assuming text chat caps.", handle);
+
+      arr = g_ptr_array_new ();
+      gabble_caps_channel_manager_get_contact_capabilities (
+          GABBLE_CAPS_CHANNEL_MANAGER (self->priv->im_factory),
+          handle, NULL, arr);
+
+      return arr;
     }
 
   caps = gabble_presence_peek_caps (p);

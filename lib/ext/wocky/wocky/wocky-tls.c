@@ -52,7 +52,7 @@
 #include <dirent.h>
 
 #define DEFAULT_TLS_OPTIONS \
-  "SECURE:"         /* all algorithms on in most->least secure order     */ \
+  "NORMAL:"         /* all secure algorithms */ \
   "-COMP-NULL:"     /* remove null compression                           */ \
   "+COMP-DEFLATE:"  /* prefer deflate                                    */ \
   "+COMP-NULL"      /* fall back to null                                 */
@@ -174,7 +174,7 @@ static gnutls_dh_params_t dh_2048 = NULL;
 static gnutls_dh_params_t dh_3072 = NULL;
 static gnutls_dh_params_t dh_4096 = NULL;
 
-struct OPAQUE_TYPE__WockyTLSSession
+struct _WockyTLSSession
 {
   GObject parent;
 
@@ -216,7 +216,7 @@ typedef struct
   WockyTLSSession *session;
 } WockyTLSOutputStream;
 
-struct OPAQUE_TYPE__WockyTLSConnection
+struct _WockyTLSConnection
 {
   GIOStream parent;
 
@@ -312,7 +312,7 @@ wocky_tls_job_make_result (WockyTLSJob *job,
                                           job->user_data,
                                           job->source_tag);
 
-      if (job->error)
+      if (job->error != NULL)
         {
 #ifdef WOCKY_TLS_STRICT_ERROR_ASSERTIONS
           g_assert (result == GNUTLS_E_PUSH_ERROR ||
@@ -327,7 +327,13 @@ wocky_tls_job_make_result (WockyTLSJob *job,
           g_error_free (error);
         }
 
+      if (job->cancellable != NULL)
+        g_object_unref (job->cancellable);
+      job->cancellable = NULL;
+
       g_object_unref (job->source_object);
+      job->source_object = NULL;
+
       job->active = FALSE;
 
       return simple;
@@ -375,7 +381,7 @@ wocky_tls_session_try_operation (WockyTLSSession   *session,
   if (session->handshake_job.job.active)
     {
       gint result;
-      DEBUG ("async job handshake");
+      DEBUG ("session %p: async job handshake", session);
       session->async = TRUE;
       result = gnutls_handshake (session->session);
       g_assert (result != GNUTLS_E_INTERRUPTED);
@@ -385,12 +391,12 @@ wocky_tls_session_try_operation (WockyTLSSession   *session,
           gnutls_handshake_description_t i;
           gnutls_handshake_description_t o;
 
-          DEBUG ("async job handshake: %d %s", result, error_to_string(result));
+          DEBUG ("session %p: async job handshake: %d %s", session,
+              result, error_to_string(result));
           i = gnutls_handshake_get_last_in (session->session);
           o = gnutls_handshake_get_last_out (session->session);
-          DEBUG ("async job handshake: { in: %s; out: %s }",
-                 hdesc_to_string (i),
-                 hdesc_to_string (o));
+          DEBUG ("session %p: async job handshake: { in: %s; out: %s }",
+              session, hdesc_to_string (i), hdesc_to_string (o));
         }
 
       session->async = FALSE;
@@ -400,17 +406,25 @@ wocky_tls_session_try_operation (WockyTLSSession   *session,
 
   else if (operation == WOCKY_TLS_OP_READ)
     {
-      gssize result;
+      gssize result = 0;
+
       if (tls_debug_level >= DEBUG_ASYNC_DETAIL_LEVEL)
         DEBUG ("async job OP_READ");
       g_assert (session->read_job.job.active);
 
-      session->async = TRUE;
-      result = gnutls_record_recv (session->session,
-                                   session->read_job.buffer,
-                                   session->read_job.count);
-      g_assert (result != GNUTLS_E_INTERRUPTED);
-      session->async = FALSE;
+      /* If the read result is 0, the remote end disconnected us, no need to
+       * pull data through gnutls_record_recv in that case */
+
+      if (session->read_op.result != 0)
+        {
+
+          session->async = TRUE;
+          result = gnutls_record_recv (session->session,
+              session->read_job.buffer,
+              session->read_job.count);
+          g_assert (result != GNUTLS_E_INTERRUPTED);
+          session->async = FALSE;
+        }
 
       wocky_tls_job_result_gssize (&session->read_job.job, result);
     }
@@ -419,7 +433,8 @@ wocky_tls_session_try_operation (WockyTLSSession   *session,
     {
       gssize result;
       if (tls_debug_level >= DEBUG_ASYNC_DETAIL_LEVEL)
-        DEBUG ("async job OP_WRITE");
+        DEBUG ("async job OP_WRITE: %"G_GSIZE_FORMAT,
+          session->write_job.count);
       g_assert (operation == WOCKY_TLS_OP_WRITE);
       g_assert (session->write_job.job.active);
 
@@ -445,6 +460,7 @@ wocky_tls_job_start (WockyTLSJob             *job,
                      gpointer             source_tag)
 {
   g_assert (job->active == FALSE);
+  g_assert (job->cancellable == NULL);
 
   /* this is always a circular reference, so it will keep the
    * session alive for as long as the job is running.
@@ -452,9 +468,8 @@ wocky_tls_job_start (WockyTLSJob             *job,
   job->source_object = g_object_ref (source_object);
 
   job->io_priority = io_priority;
-  job->cancellable = cancellable;
-  if (cancellable)
-    g_object_ref (cancellable);
+  if (cancellable != NULL)
+    job->cancellable = g_object_ref (cancellable);
   job->callback = callback;
   job->user_data = user_data;
   job->source_tag = source_tag;
@@ -480,7 +495,7 @@ wocky_tls_session_handshake (WockyTLSSession   *session,
   if (tls_debug_level >= DEBUG_HANDSHAKE_LEVEL)
     DEBUG ("sync job handshake: %d %s", result, error_to_string (result));
 
-  if (session->error)
+  if (session->error != NULL)
     {
       g_assert (result == GNUTLS_E_PULL_ERROR ||
                 result == GNUTLS_E_PUSH_ERROR);
@@ -602,6 +617,49 @@ wocky_tls_session_handshake_finish (WockyTLSSession   *session,
   return g_object_new (WOCKY_TYPE_TLS_CONNECTION, "session", session, NULL);
 }
 
+GPtrArray *
+wocky_tls_session_get_peers_certificate (WockyTLSSession *session,
+    WockyTLSCertType *type)
+{
+  guint idx, cls;
+  const gnutls_datum_t *peers = NULL;
+  GPtrArray *certificates;
+
+  peers = gnutls_certificate_get_peers (session->session, &cls);
+
+  if (peers == NULL)
+    return NULL;
+
+  certificates =
+    g_ptr_array_new_with_free_func ((GDestroyNotify) g_array_unref);
+
+  for (idx = 0; idx < cls; idx++)
+    {
+      GArray *cert = g_array_sized_new (TRUE, TRUE, sizeof (guchar),
+          peers[idx].size);
+      g_array_append_vals (cert, peers[idx].data, peers[idx].size);
+      g_ptr_array_add (certificates, cert);
+    }
+
+  if (type != NULL)
+    {
+      switch (gnutls_certificate_type_get (session->session))
+        {
+        case GNUTLS_CRT_X509:
+          *type = WOCKY_TLS_CERT_TYPE_X509;
+          break;
+        case GNUTLS_CRT_OPENPGP:
+          *type = WOCKY_TLS_CERT_TYPE_OPENPGP;
+          break;
+        default:
+          *type = WOCKY_TLS_CERT_TYPE_NONE;
+          break;
+        }
+    }
+
+  return certificates;
+}
+
 int
 wocky_tls_session_verify_peer (WockyTLSSession    *session,
                                const gchar        *peername,
@@ -680,7 +738,7 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
           break;
         default:
           *status = WOCKY_TLS_CERT_UNKNOWN_ERROR;
-      }
+	}
 
       return rval;
     }
@@ -777,7 +835,7 @@ wocky_tls_input_stream_read (GInputStream  *stream,
   g_assert (result != GNUTLS_E_AGAIN);
   session->cancellable = NULL;
 
-  if (session->error)
+  if (session->error != NULL)
     {
       g_assert (result == GNUTLS_E_PULL_ERROR);
       g_propagate_error (error, session->error);
@@ -850,7 +908,7 @@ wocky_tls_output_stream_write (GOutputStream  *stream,
   g_assert (result != GNUTLS_E_AGAIN);
   session->cancellable = NULL;
 
-  if (session->error)
+  if (session->error != NULL)
     {
       g_assert (result == GNUTLS_E_PUSH_ERROR);
       g_propagate_error (error, session->error);
@@ -1223,6 +1281,7 @@ wocky_tls_session_pull_func (gpointer  user_data,
           if (session->read_op.result < 0)
             {
               g_free (session->read_op.buffer);
+              session->read_op.buffer = NULL;
               active_job->error = session->read_op.error;
               gnutls_transport_set_errno (session->session, EIO);
 
@@ -1236,6 +1295,7 @@ wocky_tls_session_pull_func (gpointer  user_data,
                       session->read_op.buffer,
                       session->read_op.result);
               g_free (session->read_op.buffer);
+              session->read_op.buffer = NULL;
 
               return session->read_op.result;
             }
@@ -1439,6 +1499,9 @@ wocky_tls_session_dispose (GObject *object)
   g_free (session->cert_file);
   session->cert_file = NULL;
 
+  g_free (session->read_op.buffer);
+  session->read_op.buffer = NULL;
+
   G_OBJECT_CLASS (wocky_tls_session_parent_class)->dispose (object);
 }
 
@@ -1565,10 +1628,10 @@ wocky_tls_connection_finalize (GObject *object)
 
   g_object_unref (connection->session);
 
-  if (connection->input)
+  if (connection->input != NULL)
     g_object_unref (connection->input);
 
-  if (connection->output)
+  if (connection->output != NULL)
     g_object_unref (connection->output);
 
   G_OBJECT_CLASS (wocky_tls_connection_parent_class)

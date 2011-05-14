@@ -39,9 +39,6 @@ def handle_muc_get_iq(stream, stanza):
     return True
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
     muc_handle = request_muc_handle(q, conn, stream, 'chat@conf.localhost')
 
     call_async(q, conn, 'RequestChannel', cs.CHANNEL_TYPE_TEXT, cs.HT_ROOM,
@@ -88,6 +85,18 @@ def test(q, bus, conn, stream):
         (props['password-required'], True)]]
 
     q.expect('dbus-return', method='SetProperties', value=())
+
+    call_async(q, text_chan.TpProperties, 'SetProperties',
+        [(31337, 'foo'), (props['password-required'], True)])
+    q.expect('dbus-error', name=cs.INVALID_ARGUMENT)
+
+    call_async(q, text_chan.TpProperties, 'SetProperties',
+        [(props['password'], True), (props['password-required'], 'foo')])
+    q.expect('dbus-error', name=cs.NOT_AVAILABLE)
+
+    call_async(q, text_chan.TpProperties, 'SetProperties',
+        [(props['subject-contact'], 42)])
+    q.expect('dbus-error', name=cs.PERMISSION_DENIED)
 
 if __name__ == '__main__':
     exec_test(test)

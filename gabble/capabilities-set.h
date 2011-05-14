@@ -25,8 +25,6 @@
 
 #include <wocky/wocky-node.h>
 
-#include <gabble/types.h>
-
 G_BEGIN_DECLS
 
 /**
@@ -34,6 +32,7 @@ G_BEGIN_DECLS
  *
  * A set of capabilities.
  */
+typedef struct _GabbleCapabilitySet GabbleCapabilitySet;
 
 GabbleCapabilitySet *gabble_capability_set_new (void);
 GabbleCapabilitySet *gabble_capability_set_new_from_stanza (
@@ -64,6 +63,9 @@ void gabble_capability_set_free (GabbleCapabilitySet *caps);
 void gabble_capability_set_foreach (const GabbleCapabilitySet *caps,
     GFunc func, gpointer user_data);
 gchar *gabble_capability_set_dump (const GabbleCapabilitySet *caps,
+    const gchar *indent);
+gchar *gabble_capability_set_dump_diff (const GabbleCapabilitySet *old_caps,
+    const GabbleCapabilitySet *new_caps,
     const gchar *indent);
 
 typedef gboolean (*GabbleCapabilitySetPredicate) (

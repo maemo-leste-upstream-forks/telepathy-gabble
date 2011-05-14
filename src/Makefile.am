@@ -1,7 +1,9 @@
 BUILT_SOURCES = \
     gabble-signals-marshal.h \
     gabble-signals-marshal.c \
-    gabble-signals-marshal.list
+    gabble-signals-marshal.list \
+    gabble-enumtypes.h \
+    gabble-enumtypes.c
 
 CLEANFILES = $(BUILT_SOURCES)
 
@@ -15,8 +17,6 @@ libgabble_convenience_la_SOURCES = \
     auth-manager.c \
     base64.h \
     base64.c \
-    base-channel.h \
-    base-channel.c \
     base-call-channel.h \
     base-call-channel.c \
     bytestream-factory.h \
@@ -33,8 +33,6 @@ libgabble_convenience_la_SOURCES = \
     bytestream-socks5.c \
     call-content.h \
     call-content.c \
-    call-content-codecoffer.h \
-    call-content-codecoffer.c \
     call-channel.h \
     call-channel.c \
     call-muc-channel.h \
@@ -45,13 +43,9 @@ libgabble_convenience_la_SOURCES = \
     call-member-content.c \
     call-stream.h \
     call-stream.c \
-    call-stream-endpoint.h \
-    call-stream-endpoint.c \
     $(top_srcdir)/gabble/capabilities-set.h \
     capabilities.h \
     capabilities.c \
-    caps-cache.h \
-    caps-cache.c \
     $(top_srcdir)/gabble/caps-hash.h \
     caps-hash.h \
     caps-hash.c \
@@ -61,18 +55,22 @@ libgabble_convenience_la_SOURCES = \
     conn-aliasing.c \
     conn-avatars.h \
     conn-avatars.c \
+    conn-client-types.h \
+    conn-client-types.c \
     conn-contact-info.h \
     conn-contact-info.c \
     conn-location.h \
     conn-location.c \
     conn-olpc.h \
     conn-olpc.c \
+    conn-power-saving.h \
+    conn-power-saving.c \
     conn-presence.h \
     conn-presence.c \
     conn-sidecars.h \
     conn-sidecars.c \
-    conn-slacker.h \
-    conn-slacker.c \
+    conn-util.h \
+    conn-util.c \
     conn-mail-notif.h \
     conn-mail-notif.c \
     $(top_srcdir)/gabble/connection.h \
@@ -117,6 +115,8 @@ libgabble_convenience_la_SOURCES = \
     jingle-transport-iceudp.c \
     jingle-transport-iface.h \
     jingle-transport-iface.c \
+    legacy-caps.h \
+    legacy-caps.c \
     media-channel.h \
     media-channel-internal.h \
     media-channel.c \
@@ -135,14 +135,6 @@ libgabble_convenience_la_SOURCES = \
     namespaces.h \
     olpc-activity.h \
     olpc-activity.c \
-    olpc-activity-view.h \
-    olpc-activity-view.c \
-    olpc-buddy-view.h \
-    olpc-buddy-view.c \
-    olpc-gadget-manager.h \
-    olpc-gadget-manager.c \
-    olpc-view.h \
-    olpc-view.c \
     plugin-loader.h \
     plugin-loader.c \
     $(top_srcdir)/gabble/plugin.h \
@@ -151,14 +143,14 @@ libgabble_convenience_la_SOURCES = \
     presence.c \
     presence-cache.h \
     presence-cache.c \
+    protocol.h \
+    protocol.c \
     private-tubes-factory.h \
     private-tubes-factory.c \
     request-pipeline.h \
     request-pipeline.c \
     roster.h \
     roster.c \
-    roster-channel.h \
-    roster-channel.c \
     roomlist-channel.h \
     roomlist-channel.c \
     roomlist-manager.h \
@@ -169,10 +161,14 @@ libgabble_convenience_la_SOURCES = \
     search-manager.c \
     server-sasl-channel.h \
     server-sasl-channel.c \
+    server-tls-channel.h \
+    server-tls-channel.c \
+    server-tls-manager.h \
+    server-tls-manager.c \
     $(top_srcdir)/gabble/sidecar.h \
     sidecar.c \
-    slacker.h \
-    slacker.c \
+    tls-certificate.h \
+    tls-certificate.c \
     tube-iface.h \
     tube-iface.c \
     tubes-channel.h \
@@ -188,10 +184,15 @@ libgabble_convenience_la_SOURCES = \
     vcard-manager.h \
     vcard-manager.c
 
+enumtype_sources = \
+    $(top_srcdir)/src/jingle-factory.h \
+    $(top_srcdir)/src/presence.h
+
 libgabble_convenience_la_LIBADD = \
    $(top_builddir)/extensions/libgabble-extensions.la \
    $(top_builddir)/lib/gibber/libgibber.la \
    $(top_builddir)/lib/loudmouth/libloudmouth.la \
+   $(top_builddir)/lib/ext/telepathy-yell/telepathy-yell/libtelepathy-yell.la \
    $(ALL_LIBS)
 
 nodist_libgabble_convenience_la_SOURCES = \
@@ -220,14 +221,14 @@ noinst_LTLIBRARIES = libgabble-convenience.la
 AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
-	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @UUID_CFLAGS@ @GMODULE_CFLAGS@ \
-	    @SQLITE_CFLAGS@ \
+	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @GMODULE_CFLAGS@ \
+	    @TP_YELL_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
 	    -DG_LOG_DOMAIN=\"gabble\" \
 	    -DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\"
 
 ALL_LIBS =  @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
-	    @SOUP_LIBS@ @NICE_LIBS@ @UUID_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
+	    @SOUP_LIBS@ @NICE_LIBS@ @GMODULE_LIBS@
 
 # build gibber first
 all: gibber
@@ -253,3 +254,21 @@ gabble-signals-marshal.list: $(libgabble_convenience_la_SOURCES) Makefile.am
 	$(AM_V_GEN){ echo '#include "$*-signals-marshal.h"' && \
 	glib-genmarshal --body --prefix=$(subst -,_,$*)_marshal $< ; \
 	} > $@
+
+# rules for making the glib enum objects
+gabble-enumtypes.h: $(enumtype_sources) Makefile.in
+	$(AM_V_GEN)glib-mkenums \
+	--fhead "#ifndef __GABBLE_ENUM_TYPES_H__\n#define __GABBLE_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
+	--fprod "/* enumerations from \"@filename@\" */\n" \
+	--vhead "GType @enum_name@_get_type (void);\n#define GABBLE_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
+	--ftail "G_END_DECLS\n\n#endif /* __GABBLE_ENUM_TYPES_H__ */" \
+	$(enumtype_sources) > $@
+
+gabble-enumtypes.c: $(enumtype_sources) Makefile.in
+	$(AM_V_GEN)glib-mkenums \
+	--fhead "#include <$*.h>" \
+	--fprod "\n/* enumerations from \"@filename@\" */\n#include \"@filename@\"" \
+	--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {"     \
+	--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
+	--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
+	$(enumtype_sources) > $@

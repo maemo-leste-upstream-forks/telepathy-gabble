@@ -28,49 +28,62 @@
 #include "wocky-stanza.h"
 
 #include "wocky-tls.h"
+#include "wocky-tls-enumtypes.h"
+#include "wocky-tls-handler.h"
 
 G_BEGIN_DECLS
 
 typedef struct _WockyConnector WockyConnector;
+
+/**
+ * WockyConnectorClass:
+ *
+ * The class of a #WockyConnector.
+ */
 typedef struct _WockyConnectorClass WockyConnectorClass;
 typedef struct _WockyConnectorPrivate WockyConnectorPrivate;
 
 /**
  * WockyConnectorError:
- * @WOCKY_CONNECTOR_ERROR_UNKNOWN                  : Unexpected Error Condition
- * @WOCKY_CONNECTOR_ERROR_IN_PROGRESS              : Connection Already Underway
- * @WOCKY_CONNECTOR_ERROR_BAD_JID                  : JID is Invalid
- * @WOCKY_CONNECTOR_ERROR_NON_XMPP_V1_SERVER       : XMPP Version < 1
- * @WOCKY_CONNECTOR_ERROR_BAD_FEATURES             : Feature Stanza Invalid
- * @WOCKY_CONNECTOR_ERROR_TLS_UNAVAILABLE          : TLS Unavailable
- * @WOCKY_CONNECTOR_ERROR_TLS_REFUSED              : TLS Refused by Server
- * @WOCKY_CONNECTOR_ERROR_TLS_SESSION_FAILED       : TLS Handshake Failed
- * @WOCKY_CONNECTOR_ERROR_BIND_UNAVAILABLE         : Bind Not Available
- * @WOCKY_CONNECTOR_ERROR_BIND_FAILED              : Bind Failed
- * @WOCKY_CONNECTOR_ERROR_BIND_INVALID             : Bind Args Invalid
- * @WOCKY_CONNECTOR_ERROR_BIND_DENIED              : Bind Not Allowed
- * @WOCKY_CONNECTOR_ERROR_BIND_CONFLICT            : Bind Resource In Use
- * @WOCKY_CONNECTOR_ERROR_BIND_REJECTED            : Bind Error (Generic)
- * @WOCKY_CONNECTOR_ERROR_SESSION_FAILED           : Session Failed
- * @WOCKY_CONNECTOR_ERROR_SESSION_DENIED           : Session Refused by Server
- * @WOCKY_CONNECTOR_ERROR_SESSION_CONFLICT         : Session Not Allowed
- * @WOCKY_CONNECTOR_ERROR_SESSION_REJECTED         : Session Error
- * @WOCKY_CONNECTOR_ERROR_JABBER_AUTH_UNAVAILABLE  : Jabber Auth Unavailable
- * @WOCKY_CONNECTOR_ERROR_JABBER_AUTH_FAILED       : Jabber Auth Failed
- * @WOCKY_CONNECTOR_ERROR_JABBER_AUTH_NO_MECHS     : Jabber Auth - No Mechanisms
- * @WOCKY_CONNECTOR_ERROR_JABBER_AUTH_REJECTED     : Jabber Auth - Unauthorised
- * @WOCKY_CONNECTOR_ERROR_JABBER_AUTH_INCOMPLETE   : Jabber Auth Args Incomplete
- * @WOCKY_CONNECTOR_ERROR_INSECURE                 : Insufficent Security for Requested Operation
- * @WOCKY_CONNECTOR_ERROR_REGISTRATION_FAILED      : Account Registration Error
- * @WOCKY_CONNECTOR_ERROR_REGISTRATION_UNAVAILABLE : Account Registration Not Available
- * @WOCKY_CONNECTOR_ERROR_REGISTRATION_UNSUPPORTED : Account Registration Not Implemented
- * @WOCKY_CONNECTOR_ERROR_REGISTRATION_EMPTY       : Account Registration Makes No Sense
- * @WOCKY_CONNECTOR_ERROR_REGISTRATION_CONFLICT    : Account Already Registered
- * @WOCKY_CONNECTOR_ERROR_REGISTRATION_REJECTED    : Account Registration Rejected
- * @WOCKY_CONNECTOR_ERROR_UNREGISTER_FAILED        : Account Cancellation Failed
- * @WOCKY_CONNECTOR_ERROR_UNREGISTER_DENIED        : Account Cancellation Refused
+ * @WOCKY_CONNECTOR_ERROR_UNKNOWN: Unexpected error condition
+ * @WOCKY_CONNECTOR_ERROR_IN_PROGRESS: Connection already underway
+ * @WOCKY_CONNECTOR_ERROR_BAD_JID: JID is invalid
+ * @WOCKY_CONNECTOR_ERROR_NON_XMPP_V1_SERVER: XMPP version < 1
+ * @WOCKY_CONNECTOR_ERROR_BAD_FEATURES: Feature stanza invalid
+ * @WOCKY_CONNECTOR_ERROR_TLS_UNAVAILABLE: TLS unavailable
+ * @WOCKY_CONNECTOR_ERROR_TLS_REFUSED: TLS refused by server
+ * @WOCKY_CONNECTOR_ERROR_TLS_SESSION_FAILED: TLS handshake failed
+ * @WOCKY_CONNECTOR_ERROR_BIND_UNAVAILABLE: Bind not available
+ * @WOCKY_CONNECTOR_ERROR_BIND_FAILED: Bind failed
+ * @WOCKY_CONNECTOR_ERROR_BIND_INVALID: Bind args invalid
+ * @WOCKY_CONNECTOR_ERROR_BIND_DENIED: Bind not allowed
+ * @WOCKY_CONNECTOR_ERROR_BIND_CONFLICT: Bind resource in use
+ * @WOCKY_CONNECTOR_ERROR_BIND_REJECTED: Bind error (generic)
+ * @WOCKY_CONNECTOR_ERROR_SESSION_FAILED: Session failed
+ * @WOCKY_CONNECTOR_ERROR_SESSION_DENIED: Session refused by server
+ * @WOCKY_CONNECTOR_ERROR_SESSION_CONFLICT: Session not allowed
+ * @WOCKY_CONNECTOR_ERROR_SESSION_REJECTED: Session error
+ * @WOCKY_CONNECTOR_ERROR_INSECURE: Insufficent security for requested
+ *   operation
+ * @WOCKY_CONNECTOR_ERROR_REGISTRATION_FAILED: Account registration
+ *   error
+ * @WOCKY_CONNECTOR_ERROR_REGISTRATION_UNAVAILABLE: Account
+ *   registration not available
+ * @WOCKY_CONNECTOR_ERROR_REGISTRATION_UNSUPPORTED: Account
+ *   registration not implemented
+ * @WOCKY_CONNECTOR_ERROR_REGISTRATION_EMPTY: Account registration
+ *   makes no sense
+ * @WOCKY_CONNECTOR_ERROR_REGISTRATION_CONFLICT: Account already
+ *   registered
+ * @WOCKY_CONNECTOR_ERROR_REGISTRATION_REJECTED: Account registration
+ *   rejected
+ * @WOCKY_CONNECTOR_ERROR_UNREGISTER_FAILED: Account cancellation
+ *   failed
+ * @WOCKY_CONNECTOR_ERROR_UNREGISTER_DENIED: Account cancellation
+ *   refused
  *
- * The #WockyConnector specific errors that can occur while connecting.
+ * The #WockyConnector specific errors that can occur while
+ * connecting.
  */
 typedef enum {
   WOCKY_CONNECTOR_ERROR_UNKNOWN,
@@ -112,10 +125,12 @@ GQuark wocky_connector_error_quark (void);
 #define WOCKY_CONNECTOR_ERROR (wocky_connector_error_quark ())
 
 struct _WockyConnectorClass {
+    /*<private>*/
     GObjectClass parent_class;
 };
 
 struct _WockyConnector {
+    /*<private>*/
     GObject parent;
     WockyConnectorPrivate *priv;
 };
@@ -153,31 +168,29 @@ WockyXmppConnection *wocky_connector_register_finish (WockyConnector *self,
     GError **error);
 
 void wocky_connector_connect_async (WockyConnector *self,
+    GCancellable *cancellable,
     GAsyncReadyCallback cb,
     gpointer user_data);
 
 WockyConnector *wocky_connector_new (const gchar *jid,
     const gchar *pass,
     const gchar *resource,
-    WockyAuthRegistry *auth_registry);
+    WockyAuthRegistry *auth_registry,
+    WockyTLSHandler *tls_handler);
 
 void wocky_connector_register_async (WockyConnector *self,
+    GCancellable *cancellable,
     GAsyncReadyCallback cb,
     gpointer user_data);
 
 void wocky_connector_unregister_async (WockyConnector *self,
+    GCancellable *cancellable,
     GAsyncReadyCallback cb,
     gpointer user_data);
 
 gboolean wocky_connector_unregister_finish (WockyConnector *self,
     GAsyncResult *res,
     GError **error);
-
-gboolean wocky_connector_add_crl (WockyConnector *self,
-    const gchar *path);
-
-gboolean wocky_connector_add_ca (WockyConnector *self,
-    const gchar *path);
 
 void wocky_connector_set_auth_registry (WockyConnector *self,
     WockyAuthRegistry *registry);

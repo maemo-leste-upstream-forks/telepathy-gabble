@@ -215,7 +215,7 @@ wocky_pubsub_service_constructed (GObject *object)
 
       t->mapping = m;
       t->self = self;
-      t->handler_id = wocky_porter_register_handler (priv->porter,
+      t->handler_id = wocky_porter_register_handler_from (priv->porter,
           WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
           priv->jid,
           WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
@@ -551,7 +551,7 @@ wocky_pubsub_service_get_default_node_configuration_async (
       WOCKY_XMPP_NS_PUBSUB_OWNER, "default", NULL, NULL);
 
   result = g_simple_async_result_new (G_OBJECT (self), callback, user_data,
-    wocky_pubsub_service_get_default_node_configuration_finish);
+    wocky_pubsub_service_get_default_node_configuration_async);
 
   wocky_porter_send_iq_async (priv->porter, stanza, NULL,
       default_configuration_iq_cb, result);
@@ -571,7 +571,7 @@ wocky_pubsub_service_get_default_node_configuration_finish (
 
   g_return_val_if_fail (g_simple_async_result_is_valid (result,
     G_OBJECT (self),
-    wocky_pubsub_service_get_default_node_configuration_finish), NULL);
+    wocky_pubsub_service_get_default_node_configuration_async), NULL);
 
   return g_simple_async_result_get_op_res_gpointer (
       G_SIMPLE_ASYNC_RESULT (result));
@@ -699,6 +699,7 @@ receive_subscriptions_cb (GObject *source,
 
   g_simple_async_result_complete (simple);
   g_object_unref (simple);
+  g_object_unref (self);
 }
 
 WockyStanza *
@@ -756,13 +757,13 @@ wocky_pubsub_service_retrieve_subscriptions_finish (
 {
   wocky_implement_finish_copy_pointer (self,
       wocky_pubsub_service_retrieve_subscriptions_async,
-      wocky_pubsub_subscription_list_copy, subscriptions)
+      wocky_pubsub_subscription_list_copy, subscriptions);
 }
 
 /**
  * wocky_pubsub_service_handle_create_node_reply:
  * @self: a pubsub service
- * @create_node: the &lt;create/&gt; tree from the reply to an attempt to
+ * @create_tree: the &lt;create/&gt; tree from the reply to an attempt to
  *               create a node, or %NULL if none was present in the reply.
  * @requested_name: the name we asked the server to use for the node, or %NULL
  *                  if we requested an instant node
@@ -860,7 +861,6 @@ create_node_iq_cb (GObject *source,
 
   g_simple_async_result_complete (result);
   g_object_unref (result);
-  /* g_async_result_get_source_object refs the object */
   g_object_unref (self);
 }
 

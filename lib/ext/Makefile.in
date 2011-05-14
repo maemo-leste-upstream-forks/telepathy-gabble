@@ -148,8 +148,6 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MCE_CFLAGS = @MCE_CFLAGS@
-MCE_LIBS = @MCE_LIBS@
 MKDIR_P = @MKDIR_P@
 NICE_CFLAGS = @NICE_CFLAGS@
 NICE_LIBS = @NICE_LIBS@
@@ -181,14 +179,12 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SOUP_CFLAGS = @SOUP_CFLAGS@
 SOUP_LIBS = @SOUP_LIBS@
-SQLITE_CFLAGS = @SQLITE_CFLAGS@
-SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TEST_PYTHON = @TEST_PYTHON@
 TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
 TP_GLIB_LIBS = @TP_GLIB_LIBS@
-UUID_CFLAGS = @UUID_CFLAGS@
-UUID_LIBS = @UUID_LIBS@
+TP_YELL_CFLAGS = @TP_YELL_CFLAGS@
+TP_YELL_LIBS = @TP_YELL_LIBS@
 VERSION = @VERSION@
 WOCKY_CFLAGS = @WOCKY_CFLAGS@
 WOCKY_LIBS = @WOCKY_LIBS@
@@ -250,7 +246,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = 
-DIST_SUBDIRS = wocky
+DIST_SUBDIRS = wocky telepathy-yell
 all: all-recursive
 
 .SUFFIXES:
@@ -601,17 +597,24 @@ uninstall-am: uninstall-local
 
 all-local:
 	@cd wocky && $(MAKE)
+	@cd telepathy-yell && $(MAKE)
 
 clean-local:
 	if test -e wocky/Makefile ; then \
 		cd wocky && $(MAKE) clean ; \
 	fi
 
+	if test -e telepathy-yell/Makefile ; then \
+		cd telepathy-yell && $(MAKE) clean ; \
+	fi
+
 uninstall-local:
 	@cd wocky/wocky && $(MAKE) uninstall
+	@cd telepathy-yell/telepathy-yell && $(MAKE) uninstall
 
 install-data-local:
 	@cd wocky/wocky && $(MAKE) install
+	@cd telepathy-yell/telepathy-yell && $(MAKE) install
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

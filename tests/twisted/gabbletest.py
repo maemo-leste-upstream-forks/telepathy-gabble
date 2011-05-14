@@ -21,12 +21,9 @@ import twisted
 from twisted.words.xish import domish, xpath
 from twisted.words.protocols.jabber.client import IQ
 from twisted.words.protocols.jabber import xmlstream
-from twisted.internet import reactor
+from twisted.internet import reactor, ssl
 
 import dbus
-
-NS_XMPP_SASL = 'urn:ietf:params:xml:ns:xmpp-sasl'
-NS_XMPP_BIND = 'urn:ietf:params:xml:ns:xmpp-bind'
 
 def make_result_iq(stream, iq, add_query_node=True):
     result = IQ(stream, "result")
@@ -94,7 +91,11 @@ class GabbleAuthenticator(xmlstream.Authenticator):
         self.resource = resource
         self.bare_jid = None
         self.full_jid = None
+        self._event_func = lambda e: None
         xmlstream.Authenticator.__init__(self)
+
+    def set_event_func(self, event_func):
+        self._event_func = event_func
 
 class JabberAuthenticator(GabbleAuthenticator):
     "Trivial XML stream authenticator that accepts one username/digest pair."
@@ -115,6 +116,10 @@ class JabberAuthenticator(GabbleAuthenticator):
     EventDispatcher._oldAddObserver = EventDispatcher._addObserver
     EventDispatcher._addObserver = _addObserver
 
+    def __init__(self, username, password, resource=None, emit_events=False):
+        GabbleAuthenticator.__init__(self, username, password, resource)
+        self.emit_events = emit_events
+
     def streamStarted(self, root=None):
         if root:
             self.xmlstream.sid = '%x' % random.randint(1, sys.maxint)
@@ -124,6 +129,15 @@ class JabberAuthenticator(GabbleAuthenticator):
             "/iq/query[@xmlns='jabber:iq:auth']", self.initialIq)
 
     def initialIq(self, iq):
+        if self.emit_events:
+            self._event_func(Event('auth-initial-iq', authenticator=self,
+                iq=iq, id=iq["id"]))
+        else:
+            self.respondToInitialIq(iq)
+
+        self.xmlstream.addOnetimeObserver('/iq/query/username', self.secondIq)
+
+    def respondToInitialIq(self, iq):
         result = IQ(self.xmlstream, "result")
         result["id"] = iq["id"]
         query = result.addElement('query')
@@ -132,10 +146,16 @@ class JabberAuthenticator(GabbleAuthenticator):
         query.addElement('password')
         query.addElement('digest')
         query.addElement('resource')
-        self.xmlstream.addOnetimeObserver('/iq/query/username', self.secondIq)
         self.xmlstream.send(result)
 
     def secondIq(self, iq):
+        if self.emit_events:
+            self._event_func(Event('auth-second-iq', authenticator=self,
+                iq=iq, id=iq["id"]))
+        else:
+            self.respondToSecondIq(self, iq)
+
+    def respondToSecondIq(self, iq):
         username = xpath.queryForNodes('/iq/query/username', iq)
         assert map(str, username) == [self.username]
 
@@ -156,40 +176,54 @@ class JabberAuthenticator(GabbleAuthenticator):
         self.xmlstream.send(result)
         self.xmlstream.dispatch(self.xmlstream, xmlstream.STREAM_AUTHD_EVENT)
 
-
 class XmppAuthenticator(GabbleAuthenticator):
     def __init__(self, username, password, resource=None):
         GabbleAuthenticator.__init__(self, username, password, resource)
         self.authenticated = False
 
-    def streamStarted(self, root=None):
+    def streamInitialize(self, root):
         if root:
             self.xmlstream.sid = root.getAttribute('id')
 
+        if self.xmlstream.sid is None:
+            self.xmlstream.sid = '%x' % random.randint(1, sys.maxint)
+
         self.xmlstream.sendHeader()
+
+    def streamIQ(self):
+        features = elem(xmlstream.NS_STREAMS, 'features')(
+            elem(ns.NS_XMPP_BIND, 'bind'),
+            elem(ns.NS_XMPP_SESSION, 'session'),
+        )
+        self.xmlstream.send(features)
+
+        self.xmlstream.addOnetimeObserver(
+            "/iq/bind[@xmlns='%s']" % ns.NS_XMPP_BIND, self.bindIq)
+        self.xmlstream.addOnetimeObserver(
+            "/iq/session[@xmlns='%s']" % ns.NS_XMPP_SESSION, self.sessionIq)
+
+    def streamSASL(self):
+        features = domish.Element((xmlstream.NS_STREAMS, 'features'))
+        mechanisms = features.addElement((ns.NS_XMPP_SASL, 'mechanisms'))
+        mechanism = mechanisms.addElement('mechanism', content='PLAIN')
+        self.xmlstream.send(features)
+
+        self.xmlstream.addOnetimeObserver("/auth", self.auth)
+
+    def streamStarted(self, root=None):
+        self.streamInitialize(root)
 
         if self.authenticated:
             # Initiator authenticated itself, and has started a new stream.
-
-            features = domish.Element((xmlstream.NS_STREAMS, 'features'))
-            bind = features.addElement((NS_XMPP_BIND, 'bind'))
-            self.xmlstream.send(features)
-
-            self.xmlstream.addOnetimeObserver(
-                "/iq/bind[@xmlns='%s']" % NS_XMPP_BIND, self.bindIq)
+            self.streamIQ()
         else:
-            features = domish.Element((xmlstream.NS_STREAMS, 'features'))
-            mechanisms = features.addElement((NS_XMPP_SASL, 'mechanisms'))
-            mechanism = mechanisms.addElement('mechanism', content='PLAIN')
-            self.xmlstream.send(features)
-
-            self.xmlstream.addOnetimeObserver("/auth", self.auth)
+            self.streamSASL()
 
     def auth(self, auth):
         assert (base64.b64decode(str(auth)) ==
             '\x00%s\x00%s' % (self.username, self.password))
 
-        success = domish.Element((NS_XMPP_SASL, 'success'))
+        success = domish.Element((ns.NS_XMPP_SASL, 'success'))
         self.xmlstream.send(success)
         self.xmlstream.reset()
         self.authenticated = True
@@ -203,13 +237,16 @@ class XmppAuthenticator(GabbleAuthenticator):
 
         result = IQ(self.xmlstream, "result")
         result["id"] = iq["id"]
-        bind = result.addElement((NS_XMPP_BIND, 'bind'))
+        bind = result.addElement((ns.NS_XMPP_BIND, 'bind'))
         self.bare_jid = '%s@localhost' % self.username
         self.full_jid = '%s/%s' % (self.bare_jid, resource)
         jid = bind.addElement('jid', content=self.full_jid)
         self.xmlstream.send(result)
 
         self.xmlstream.dispatch(self.xmlstream, xmlstream.STREAM_AUTHD_EVENT)
+
+    def sessionIq(self, iq):
+        self.xmlstream.send(make_result_iq(self.xmlstream, iq))
 
 def make_stream_event(type, stanza, stream):
     event = servicetest.Event(type, stanza=stanza)
@@ -238,6 +275,12 @@ def make_iq_event(stream, iq):
 def make_presence_event(stream, stanza):
     event = make_stream_event('stream-presence', stanza, stream)
     event.presence_type = stanza.getAttribute('type')
+
+    statuses = xpath.queryForNodes('/presence/status', stanza)
+
+    if statuses:
+        event.presence_status = str(statuses[0])
+
     return event
 
 def make_message_event(stream, stanza):
@@ -330,6 +373,9 @@ class StreamFactory(twisted.internet.protocol.Factory):
 class BaseXmlStream(xmlstream.XmlStream):
     initiating = False
     namespace = 'jabber:client'
+    pep_support = True
+    disco_features = []
+    handle_privacy_lists = True
 
     def __init__(self, event_func, authenticator):
         xmlstream.XmlStream.__init__(self, authenticator)
@@ -341,6 +387,12 @@ class BaseXmlStream(xmlstream.XmlStream):
         self.addObserver('//presence', lambda x: event_func(
             make_presence_event(self, x)))
         self.addObserver('//event/stream/authd', self._cb_authd)
+        if self.handle_privacy_lists:
+            self.addObserver("/iq/query[@xmlns='%s']" % ns.PRIVACY,
+                             self._cb_priv_list)
+
+    def _cb_priv_list(self, iq):
+        send_error_reply(self, iq)
 
     def _cb_authd(self, _):
         # called when stream is authenticated
@@ -357,6 +409,13 @@ class BaseXmlStream(xmlstream.XmlStream):
         self.event_func(servicetest.Event('stream-authenticated'))
 
     def _cb_disco_iq(self, iq):
+        nodes = xpath.queryForNodes(
+            "/iq/query[@xmlns='http://jabber.org/protocol/disco#info']", iq)
+        query = nodes[0]
+
+        for feature in self.disco_features:
+            query.addChild(elem('feature', var=feature))
+
         iq['type'] = 'result'
         iq['from'] = iq['to']
         self.send(iq)
@@ -381,6 +440,15 @@ class BaseXmlStream(xmlstream.XmlStream):
         # disconnect the TCP connection making tests as
         # connect/disconnect-timeout.py not working
 
+    def send_stream_error(self, error='system-shutdown'):
+        # Yes, there are meant to be two different STREAMS namespaces.
+        go_away = \
+            elem(xmlstream.NS_STREAMS, 'error')(
+                elem(ns.STREAMS, error)
+            )
+
+        self.send(go_away)
+
 class JabberXmlStream(BaseXmlStream):
     version = (0, 9)
 
@@ -390,22 +458,11 @@ class XmppXmlStream(BaseXmlStream):
 class GoogleXmlStream(BaseXmlStream):
     version = (1, 0)
 
-    def _cb_disco_iq(self, iq):
-        if iq.getAttribute('to') == 'localhost':
-            nodes = xpath.queryForNodes(
-                "/iq/query[@xmlns='http://jabber.org/protocol/disco#info']",
-                iq)
-            query = nodes[0]
-            feature = query.addElement('feature')
-            feature['var'] = ns.GOOGLE_ROSTER
-            feature = query.addElement('feature')
-            feature['var'] = ns.GOOGLE_JINGLE_INFO
-            feature = query.addElement('feature')
-            feature['var'] = ns.GOOGLE_MAIL_NOTIFY
-
-            iq['type'] = 'result'
-            iq['from'] = 'localhost'
-            self.send(iq)
+    pep_support = False
+    disco_features = [ns.GOOGLE_ROSTER,
+                      ns.GOOGLE_JINGLE_INFO,
+                      ns.GOOGLE_MAIL_NOTIFY,
+                     ]
 
     def _cb_bare_jid_disco_iq(self, iq):
         # Google talk doesn't support PEP :(
@@ -451,6 +508,8 @@ def make_stream(event_func, authenticator=None, protocol=None,
     if authenticator is None:
         authenticator = XmppAuthenticator('test%s' % suffix, 'pass', resource=resource)
 
+    authenticator.set_event_func(event_func)
+
     if protocol is None:
         protocol = XmppXmlStream
 
@@ -474,7 +533,8 @@ def disconnect_conn(q, conn, stream, expected_before=[], expected_after=[]):
     return before_events[:-2], after_events[:-1]
 
 def exec_test_deferred(fun, params, protocol=None, timeout=None,
-                        authenticator=None, num_instances=1):
+                        authenticator=None, num_instances=1,
+                        do_connect=True):
     # hack to ease debugging
     domish.Element.__repr__ = domish.Element.toXml
     colourer = None
@@ -498,7 +558,20 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
             suffix = ''
         else:
             suffix = str(i)
-        (conn, jid) = make_connection(bus, queue.append, params, suffix)
+
+        try:
+            (conn, jid) = make_connection(bus, queue.append, params, suffix)
+        except Exception, e:
+            # Crap. This is normally because the connection's still kicking
+            # around on the bus. Let's bin any connections we *did* manage to
+            # get going and then bail out unceremoniously.
+            print e
+
+            for conn in conns:
+                conn.Disconnect()
+
+            os._exit(1)
+
         conns.append(conn)
         jids.append(jid)
         streams.append(make_stream(queue.append, protocol=protocol,
@@ -537,6 +610,17 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
 
     error = None
 
+    if do_connect:
+        for conn in conns:
+            conn.Connect()
+            queue.expect('dbus-signal', signal='StatusChanged',
+                args=[cs.CONN_STATUS_CONNECTING, cs.CSR_REQUESTED])
+            queue.expect('stream-authenticated')
+            queue.expect('dbus-signal', signal='PresenceUpdate',
+                args=[{1L: (0L, {u'available': {}})}])
+            queue.expect('dbus-signal', signal='StatusChanged',
+                args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
+
     try:
         if len(conns) == 1:
             fun(queue, bus, conns[0], streams[0])
@@ -545,6 +629,7 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
     except Exception, e:
         traceback.print_exc()
         error = e
+        queue.verbose = False
 
     if colourer:
         sys.stdout = colourer.fh
@@ -568,7 +653,8 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
 
         try:
             conn.Disconnect()
-            raise AssertionError("Connection didn't disappear")
+            raise AssertionError("Connection didn't disappear; "
+                "all subsequent tests will probably fail")
         except dbus.DBusException, e:
             pass
         except Exception, e:
@@ -583,9 +669,10 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
 
 
 def exec_test(fun, params=None, protocol=None, timeout=None,
-              authenticator=None, num_instances=1):
+              authenticator=None, num_instances=1, do_connect=True):
     reactor.callWhenRunning(
-        exec_test_deferred, fun, params, protocol, timeout, authenticator, num_instances)
+        exec_test_deferred, fun, params, protocol, timeout, authenticator, num_instances,
+        do_connect)
     reactor.run()
 
 # Useful routines for server-side vCard handling

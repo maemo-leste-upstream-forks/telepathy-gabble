@@ -115,8 +115,8 @@ test_fetch_roster_send_iq (void)
 
   test_open_both_connections (test);
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       fetch_roster_send_iq_cb, test, NULL);
 
@@ -220,8 +220,7 @@ fetch_roster_reply_cb (WockyPorter *porter,
    * is left up to the server to know which client is the user and then throw
    * in a correct to attribute. Here we're just adding a from attribute so the
    * IQ result builder doesn't complain. */
-  if (wocky_node_get_attribute (wocky_stanza_get_top_node (stanza),
-        "from") == NULL)
+  if (wocky_stanza_get_from (stanza) == NULL)
     wocky_node_set_attribute (wocky_stanza_get_top_node (stanza), "from",
         "juliet@example.com/balcony");
 
@@ -264,8 +263,8 @@ create_initial_roster (test_data_t *test)
 {
   WockyRoster *roster;
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       fetch_roster_reply_cb, test, NULL);
 
@@ -718,8 +717,8 @@ test_roster_add_contact (void)
 
   roster = create_initial_roster (test);
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       add_contact_send_iq_cb, test,
       '(', "query",
@@ -821,8 +820,8 @@ test_roster_remove_contact (void)
   contact = wocky_roster_get_contact (roster, "romeo@example.net");
   g_assert (contact != NULL);
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       remove_contact_send_iq_cb, test,
       '(', "query",
@@ -950,8 +949,8 @@ test_roster_change_name (void)
   g_assert (contact != NULL);
   g_assert (wocky_bare_contact_equal (contact, romeo));
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       change_name_send_iq_cb, test,
       '(', "query",
@@ -1099,8 +1098,8 @@ test_contact_add_group (void)
   g_assert (contact != NULL);
   g_assert (wocky_bare_contact_equal (contact, romeo));
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       add_group_send_iq_cb, test,
       '(', "query",
@@ -1232,8 +1231,8 @@ test_contact_remove_group (void)
   g_assert (contact != NULL);
   g_assert (wocky_bare_contact_equal (contact, romeo));
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       remove_group_send_iq_cb, test,
       '(', "query",
@@ -1308,8 +1307,8 @@ test_remove_contact_re_add (void)
   contact = wocky_roster_get_contact (roster, "romeo@example.net");
   g_assert (contact != NULL);
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       iq_set_cb, test,
       '(', "query",
@@ -1391,8 +1390,8 @@ test_remove_contact_edit (void)
   contact = wocky_roster_get_contact (roster, "romeo@example.net");
   g_assert (contact != NULL);
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       iq_set_cb, test,
       '(', "query",
@@ -1461,8 +1460,8 @@ test_multi_contact_edit (void)
 
   juliet = create_juliet ();
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       iq_set_cb, test,
       '(', "query",
@@ -1574,8 +1573,8 @@ test_edit_contact_remove (void)
   contact = wocky_roster_get_contact (roster, "romeo@example.net");
   g_assert (contact != NULL);
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       iq_set_cb, test,
       '(', "query",
@@ -1655,8 +1654,8 @@ test_change_name_twice (void)
 
   romeo = create_romeo ();
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       iq_set_cb, test,
       '(', "query",
@@ -1722,8 +1721,8 @@ test_remove_contact_twice (void)
   contact = wocky_roster_get_contact (roster, "romeo@example.net");
   g_assert (contact != NULL);
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       iq_set_cb, test,
       '(', "query",
@@ -1791,8 +1790,8 @@ test_change_name_remove_add (void)
 
   romeo = create_romeo ();
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       iq_set_cb, test,
       '(', "query",
@@ -1868,8 +1867,8 @@ test_add_two_groups (void)
 
   romeo = create_romeo ();
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       iq_set_cb, test,
       '(', "query",
@@ -1953,8 +1952,8 @@ test_remove_two_groups (void)
 
   juliet = create_juliet ();
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       iq_set_cb, test,
       '(', "query",
@@ -2032,8 +2031,8 @@ test_add_contact_twice (void)
 
   roster = create_initial_roster (test);
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       iq_set_cb, test,
       '(', "query",

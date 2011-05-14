@@ -4,7 +4,7 @@
 
 #include <glib.h>
 
-#include <wocky/wocky-porter.h>
+#include <wocky/wocky-c2s-porter.h>
 #include <wocky/wocky-utils.h>
 #include <wocky/wocky-namespaces.h>
 #include <wocky/wocky-xmpp-error.h>
@@ -21,7 +21,7 @@ test_instantiation (void)
 
   stream = g_object_new (WOCKY_TYPE_TEST_STREAM, NULL);
   connection = wocky_xmpp_connection_new (stream->stream0);
-  porter = wocky_porter_new (connection, "juliet@example.com/Balcony");
+  porter = wocky_c2s_porter_new (connection, "juliet@example.com/Balcony");
 
   g_assert (porter != NULL);
   g_assert_cmpstr (wocky_porter_get_full_jid (porter), ==,
@@ -267,8 +267,8 @@ test_receive (void)
    * side */
   test->outstanding += 2;
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE, NULL, 0,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE, 0,
       test_receive_stanza_received_cb, test, NULL);
 
   wocky_porter_start (test->sched_out);
@@ -310,13 +310,13 @@ test_filter (void)
   test_open_both_connections (test);
 
   /* register an IQ filter */
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL, 0,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, 0,
       test_filter_iq_received_cb, test, NULL);
 
   /* register a presence filter */
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_PRESENCE, WOCKY_STANZA_SUB_TYPE_NONE, NULL, 0,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_PRESENCE, WOCKY_STANZA_SUB_TYPE_NONE, 0,
       test_filter_presence_received_cb, test, NULL);
 
   wocky_porter_start (test->sched_out);
@@ -846,13 +846,13 @@ test_handler_priority (void)
   test_open_both_connections (test);
 
   /* register an IQ handler with a priority of 10 */
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL, 10,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, 10,
       test_handler_priority_10, test, NULL);
 
   /* register an IQ handler with a priority of 5 */
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL, 5,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, 5,
       test_handler_priority_5, test, NULL);
 
   wocky_porter_start (test->sched_out);
@@ -865,8 +865,8 @@ test_handler_priority (void)
   send_stanza (test, iq, TRUE);
 
   /* register an IQ handler with a priority of 15 */
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL, 15,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, 15,
       test_handler_priority_15, test, NULL);
 
   /* Send a 'set' IQ */
@@ -911,13 +911,13 @@ test_unregister_handler (void)
   test_open_both_connections (test);
 
   /* register an IQ handler with a priority of 10 */
-  id = wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL, 10,
+  id = wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, 10,
       test_unregister_handler_10, test, NULL);
 
   /* register an IQ handler with a priority of 5 */
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL, 5,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, 5,
       test_unregister_handler_5, test, NULL);
 
   wocky_porter_start (test->sched_out);
@@ -956,7 +956,7 @@ test_handler_bare_jid (void)
   test_open_both_connections (test);
 
   /* register an IQ handler for all IQ from a bare jid */
-  wocky_porter_register_handler (test->sched_out,
+  wocky_porter_register_handler_from (test->sched_out,
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, "juliet@example.com", 0,
       test_handler_bare_jid_cb, test, NULL);
 
@@ -1004,7 +1004,7 @@ test_handler_full_jid (void)
   test_open_both_connections (test);
 
   /* register an IQ handler for all IQ from a bare jid */
-  wocky_porter_register_handler (test->sched_out,
+  wocky_porter_register_handler_from (test->sched_out,
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE,
       "juliet@example.com/Pub", 0,
       test_handler_full_jid_cb, test, NULL);
@@ -1074,9 +1074,9 @@ test_handler_stanza (void)
 
   /* register an IQ handler for all the jingle stanzas related to one jingle
    * session */
-  wocky_porter_register_handler (test->sched_out,
+  wocky_porter_register_handler_from (test->sched_out,
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE,
-      NULL, 0,
+      "juliet@example.com", 0,
       test_handler_stanza_jingle_cb, test,
       '(', "jingle",
         ':', "urn:xmpp:jingle:1",
@@ -1102,6 +1102,16 @@ test_handler_stanza (void)
     ')', NULL);
   send_stanza (test, iq, FALSE);
 
+  /* Send a jingle IQ with the right sid but from the wrong contact */
+  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+    WOCKY_STANZA_SUB_TYPE_SET, "tybalt@example.com", "romeo@example.net",
+    '@', "id", "2",
+    '(', "jingle",
+      ':', "urn:xmpp:jingle:1",
+      '@', "sid", "my_sid",
+    ')', NULL);
+  send_stanza (test, iq, FALSE);
+
   /* Send a jingle IQ related to the right session */
   iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
     WOCKY_STANZA_SUB_TYPE_SET, "juliet@example.com", "romeo@example.net",
@@ -1114,9 +1124,9 @@ test_handler_stanza (void)
 
   /* register a new IQ handler,with higher priority, handling session-terminate
    * with a specific test message */
-  wocky_porter_register_handler (test->sched_out,
+  wocky_porter_register_handler_from (test->sched_out,
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE,
-      NULL, 10,
+      "juliet@example.com", 10,
       test_handler_stanza_terminate_cb, test,
       '(', "jingle",
         ':', "urn:xmpp:jingle:1",
@@ -1206,9 +1216,9 @@ test_cancel_sent_stanza (void)
   wocky_porter_start (test->sched_in);
 
   /* register a message handler */
-  wocky_porter_register_handler (test->sched_out,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
       WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
-      NULL, 0,
+      0,
       test_cancel_sent_stanza_cb, test, NULL);
 
   stanza = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
@@ -1432,9 +1442,9 @@ test_send_iq (void)
   wocky_porter_start (test->sched_in);
 
   /* register an IQ handler */
-  wocky_porter_register_handler (test->sched_out,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE,
-      NULL, 0,
+      0,
       test_send_iq_cb, test, NULL);
 
   /* Send an IQ query. We are going to cancel it after it has been received
@@ -1467,6 +1477,373 @@ test_send_iq (void)
   teardown_test (test);
 }
 
+static gboolean
+test_acknowledge_iq_acknowledge_cb (
+    WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  test_data_t *test = user_data;
+
+  wocky_porter_acknowledge_iq (porter, stanza,
+      '(', "sup-dawg",
+        '@', "lions", "tigers",
+      ')',
+      NULL);
+
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+  return TRUE;
+}
+
+static void
+test_iq_reply_no_id_cb (
+    GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  WockyPorter *porter = WOCKY_PORTER (source);
+  test_data_t *test = user_data;
+  WockyStanza *reply;
+  WockyStanza *expected_reply;
+  GError *error = NULL;
+
+  reply = wocky_porter_send_iq_finish (porter, result, &error);
+  g_assert_no_error (error);
+  g_assert (reply != NULL);
+
+  expected_reply = g_queue_pop_head (test->expected_stanzas);
+  g_assert (expected_reply != NULL);
+
+  /* If we got the reply dispatched to us, the ID was correct — this is tested
+   * elsewhere. So we don't need to test it again here. */
+  test_assert_stanzas_equal_no_id (reply, expected_reply);
+
+  g_object_unref (reply);
+  g_object_unref (expected_reply);
+
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+}
+
+/* Tests wocky_porter_acknowledge_iq(). */
+static void
+test_acknowledge_iq (void)
+{
+  test_data_t *test = setup_test ();
+  WockyStanza *iq, *expected_reply;
+
+  test_open_both_connections (test);
+  wocky_porter_start (test->sched_out);
+  wocky_porter_start (test->sched_in);
+
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
+      0,
+      test_acknowledge_iq_acknowledge_cb, test, NULL);
+
+  /* We re-construct expected_reply for every test because…
+   * test_assert_stanzas_equal_no_id() modifies the stanzas it's comparing to
+   * add an id='' to the one which doesn't have one.
+   */
+
+  /* Send a legal IQ (with a single child element). */
+  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, "juliet@example.com", "romeo@example.net",
+      '(', "sup-dawg", ')', NULL);
+  expected_reply = wocky_stanza_build (
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_RESULT,
+      "romeo@example.net", "juliet@example.com",
+      '(', "sup-dawg",
+        '@', "lions", "tigers",
+      ')',
+      NULL);
+  wocky_porter_send_iq_async (test->sched_in, iq,
+      NULL, test_iq_reply_no_id_cb, test);
+  test->outstanding += 2;
+  g_queue_push_tail (test->expected_stanzas, expected_reply);
+  g_object_unref (iq);
+
+  /* Send an illegal IQ with two child elements. We expect that
+   * wocky_porter_acknowledge_iq() should cope. */
+  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, "juliet@example.com", "romeo@example.net",
+      '(', "sup-dawg", ')',
+      '(', "i-heard-you-like-stanzas", ')',
+      NULL);
+  expected_reply = wocky_stanza_build (
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_RESULT,
+      "romeo@example.net", "juliet@example.com",
+      '(', "sup-dawg",
+        '@', "lions", "tigers",
+      ')',
+      NULL);
+  wocky_porter_send_iq_async (test->sched_in, iq,
+      NULL, test_iq_reply_no_id_cb, test);
+  test->outstanding += 2;
+  g_queue_push_tail (test->expected_stanzas, expected_reply);
+  g_object_unref (iq);
+
+  /* Send another illegal IQ, with no child element at all. Obviously in real
+   * life it should be nacked, but wocky_porter_acknowledge_iq() should still
+   * cope. */
+  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, "juliet@example.com", "romeo@example.net",
+      NULL);
+  expected_reply = wocky_stanza_build (
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_RESULT,
+      "romeo@example.net", "juliet@example.com",
+      '(', "sup-dawg",
+        '@', "lions", "tigers",
+      ')',
+      NULL);
+  wocky_porter_send_iq_async (test->sched_in, iq,
+      NULL, test_iq_reply_no_id_cb, test);
+  test->outstanding += 2;
+  g_queue_push_tail (test->expected_stanzas, expected_reply);
+  g_object_unref (iq);
+
+  /* Finally, send an IQ that doesn't have an id='' attribute. This is really
+   * illegal, but wocky_porter_acknowledge_iq() needs to deal because it
+   * happens in practice.
+   */
+  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, "juliet@example.com", "romeo@example.net",
+      NULL);
+  wocky_porter_send (test->sched_in, iq);
+  /* In this case, we only expect the recipient's callback to fire. There's no
+   * way for it to send us an IQ back, so we don't need to wait for a reply
+   * there.
+   */
+  test->outstanding += 1;
+  g_object_unref (iq);
+
+  /* Off we go! */
+  test_wait_pending (test);
+
+  test_close_both_porters (test);
+  teardown_test (test);
+}
+
+static gboolean
+test_send_iq_error_nak_cb (
+    WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  test_data_t *test = user_data;
+
+  wocky_porter_send_iq_error (porter, stanza,
+      WOCKY_XMPP_ERROR_BAD_REQUEST, "bye bye beautiful");
+
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+  return TRUE;
+}
+
+/* Tests wocky_porter_send_iq_error(). */
+static void
+test_send_iq_error (void)
+{
+  test_data_t *test = setup_test ();
+  WockyStanza *iq, *expected_reply;
+
+  test_open_both_connections (test);
+  wocky_porter_start (test->sched_out);
+  wocky_porter_start (test->sched_in);
+
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
+      0,
+      test_send_iq_error_nak_cb, test, NULL);
+
+  /* Send a legal IQ (with a single child element). */
+  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, "juliet@example.com", "romeo@example.net",
+      '(', "sup-dawg", ')',
+      NULL);
+  expected_reply = wocky_stanza_build (
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_ERROR,
+      "romeo@example.net", "juliet@example.com",
+      '(', "sup-dawg", ')',
+      '(', "error",
+        '@', "code", "400",
+        '@', "type", "modify",
+        '(', "bad-request", ':', WOCKY_XMPP_NS_STANZAS, ')',
+        '(', "text", ':', WOCKY_XMPP_NS_STANZAS,
+          '$', "bye bye beautiful",
+        ')',
+      ')', NULL);
+  wocky_porter_send_iq_async (test->sched_in, iq,
+      NULL, test_iq_reply_no_id_cb, test);
+  test->outstanding += 2;
+  g_queue_push_tail (test->expected_stanzas, expected_reply);
+  g_object_unref (iq);
+
+  /* Send an illegal IQ with two child elements. We expect that
+   * wocky_porter_send_iq_error() should cope by just picking the first one.
+   */
+  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, "juliet@example.com", "romeo@example.net",
+      '(', "sup-dawg", ')',
+      '(', "i-heard-you-like-stanzas", ')',
+      NULL);
+  expected_reply = wocky_stanza_build (
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_ERROR,
+      "romeo@example.net", "juliet@example.com",
+      '(', "sup-dawg", ')',
+      '(', "error",
+        '@', "code", "400",
+        '@', "type", "modify",
+        '(', "bad-request", ':', WOCKY_XMPP_NS_STANZAS, ')',
+        '(', "text", ':', WOCKY_XMPP_NS_STANZAS,
+          '$', "bye bye beautiful",
+        ')',
+      ')', NULL);
+  wocky_porter_send_iq_async (test->sched_in, iq,
+      NULL, test_iq_reply_no_id_cb, test);
+  test->outstanding += 2;
+  g_queue_push_tail (test->expected_stanzas, expected_reply);
+  g_object_unref (iq);
+
+  /* Send another illegal IQ, with no child element at all.
+   * wocky_porter_send_iq_error() should not blow up.
+   */
+  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, "juliet@example.com", "romeo@example.net",
+      NULL);
+  expected_reply = wocky_stanza_build (
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_ERROR,
+      "romeo@example.net", "juliet@example.com",
+      '(', "error",
+        '@', "code", "400",
+        '@', "type", "modify",
+        '(', "bad-request", ':', WOCKY_XMPP_NS_STANZAS, ')',
+        '(', "text", ':', WOCKY_XMPP_NS_STANZAS,
+          '$', "bye bye beautiful",
+        ')',
+      ')', NULL);
+  wocky_porter_send_iq_async (test->sched_in, iq,
+      NULL, test_iq_reply_no_id_cb, test);
+  test->outstanding += 2;
+  g_queue_push_tail (test->expected_stanzas, expected_reply);
+  g_object_unref (iq);
+
+  /* Finally, send an IQ that doesn't have an id='' attribute. This is really
+   * illegal, but wocky_porter_send_iq_error() needs to deal because it
+   * happens in practice.
+   */
+  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, "juliet@example.com", "romeo@example.net",
+      NULL);
+  wocky_porter_send (test->sched_in, iq);
+  /* In this case, we only expect the recipient's callback to fire. There's no
+   * way for it to send us an IQ back, so we don't need to wait for a reply
+   * there.
+   */
+  test->outstanding += 1;
+  g_object_unref (iq);
+
+  test_wait_pending (test);
+
+  test_close_both_porters (test);
+  teardown_test (test);
+}
+
+typedef struct {
+    test_data_t *test;
+    GError error;
+} TestSendIqGErrorCtx;
+
+static gboolean
+test_send_iq_gerror_nak_cb (
+    WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  TestSendIqGErrorCtx *ctx = user_data;
+
+  wocky_porter_send_iq_gerror (porter, stanza, &ctx->error);
+
+  ctx->test->outstanding--;
+  g_main_loop_quit (ctx->test->loop);
+  return TRUE;
+}
+
+/* Tests wocky_porter_send_iq_gerror(). */
+static void
+test_send_iq_gerror (void)
+{
+  test_data_t *test = setup_test ();
+  TestSendIqGErrorCtx ctx = { test, };
+  WockyStanza *iq, *expected_reply;
+
+  test_open_both_connections (test);
+  wocky_porter_start (test->sched_out);
+  wocky_porter_start (test->sched_in);
+
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
+      0,
+      test_send_iq_gerror_nak_cb, &ctx, NULL);
+
+  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, "juliet@example.com", "romeo@example.net",
+      '(', "sup-dawg", ')',
+      NULL);
+
+  /* Test responding with a simple error */
+  ctx.error.domain = WOCKY_XMPP_ERROR;
+  ctx.error.code = WOCKY_XMPP_ERROR_UNEXPECTED_REQUEST;
+  ctx.error.message = "i'm twelve years old and what is this?";
+  expected_reply = wocky_stanza_build (
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_ERROR,
+      "romeo@example.net", "juliet@example.com",
+      '(', "sup-dawg", ')',
+      '(', "error",
+        '@', "code", "400",
+        '@', "type", "wait",
+        '(', "unexpected-request", ':', WOCKY_XMPP_NS_STANZAS, ')',
+        '(', "text", ':', WOCKY_XMPP_NS_STANZAS,
+          '$', ctx.error.message,
+        ')',
+      ')', NULL);
+  wocky_porter_send_iq_async (test->sched_in, iq,
+      NULL, test_iq_reply_no_id_cb, test);
+  test->outstanding += 2;
+  g_queue_push_tail (test->expected_stanzas, expected_reply);
+
+  test_wait_pending (test);
+
+  /* Test responding with an application-specific error */
+  ctx.error.domain = WOCKY_JINGLE_ERROR;
+  ctx.error.code = WOCKY_JINGLE_ERROR_OUT_OF_ORDER;
+  ctx.error.message = "i'm twelve years old and what is this?";
+  expected_reply = wocky_stanza_build (
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_ERROR,
+      "romeo@example.net", "juliet@example.com",
+      '(', "sup-dawg", ')',
+      '(', "error",
+        '@', "code", "400",
+        '@', "type", "wait",
+        '(', "unexpected-request", ':', WOCKY_XMPP_NS_STANZAS, ')',
+        '(', "out-of-order", ':', WOCKY_XMPP_NS_JINGLE_ERRORS, ')',
+        '(', "text", ':', WOCKY_XMPP_NS_STANZAS,
+          '$', ctx.error.message,
+        ')',
+      ')', NULL);
+  wocky_porter_send_iq_async (test->sched_in, iq,
+      NULL, test_iq_reply_no_id_cb, test);
+  test->outstanding += 2;
+  g_queue_push_tail (test->expected_stanzas, expected_reply);
+
+  test_wait_pending (test);
+
+  g_object_unref (iq);
+  test_close_both_porters (test);
+  teardown_test (test);
+}
+
 static void
 test_send_iq_abnormal (void)
 {
@@ -1478,9 +1855,9 @@ test_send_iq_abnormal (void)
   wocky_porter_start (test->sched_in);
 
   /* register an IQ handler (to send both the good and spoofed reply) */
-  wocky_porter_register_handler (test->sched_out,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE,
-      NULL, 0,
+      0,
       test_send_iq_abnormal_cb, test, NULL);
 
   /* Send an IQ query */
@@ -1520,7 +1897,7 @@ test_send_iq_error_cb (GObject *source,
 }
 
 static void
-test_send_iq_error (void)
+test_error_while_sending_iq (void)
 {
   test_data_t *test = setup_test ();
   WockyStanza *iq;
@@ -1593,14 +1970,14 @@ test_handler_filter (void)
   test_open_both_connections (test);
 
   /* register an IQ handler which will act as a filter */
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL, 10,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, 10,
       test_handler_filter_get_filter, test, NULL);
 
   /* register another handler with a smaller priority which will be called
    * after the filter */
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL, 5,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, 5,
       test_handler_filter_cb, test, NULL);
 
   wocky_porter_start (test->sched_out);
@@ -1631,8 +2008,7 @@ test_handler_filter_from_juliet_cb (WockyPorter *porter,
   test_data_t *test = (test_data_t *) user_data;
   const gchar *from;
 
-  from = wocky_node_get_attribute (wocky_stanza_get_top_node (stanza),
-      "from");
+  from = wocky_stanza_get_from (stanza);
   g_assert (!wocky_strdiff (from, "juliet@example.com"));
 
   test_expected_stanza_received (test, stanza);
@@ -1640,7 +2016,7 @@ test_handler_filter_from_juliet_cb (WockyPorter *porter,
 }
 
 static gboolean
-test_handler_filter_from_null_cb (WockyPorter *porter,
+test_handler_filter_from_anyone_cb (WockyPorter *porter,
     WockyStanza *stanza,
     gpointer user_data)
 {
@@ -1657,15 +2033,15 @@ test_handler_filter_from (void)
 
   test_open_both_connections (test);
 
-  /* Register a handler for from=juliet@example.com messages stanzas. */
-  wocky_porter_register_handler (test->sched_out,
+  /* Register a handler for IQs with from=juliet@example.com */
+  wocky_porter_register_handler_from (test->sched_out,
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, "juliet@example.com",
       10, test_handler_filter_from_juliet_cb, test, NULL);
 
-  /* Register a handler for from= unset or any messages stanzas. */
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL,
-      5, test_handler_filter_from_null_cb, test, NULL);
+  /* Register another handler, at a lower priority, for IQs from anyone */
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE,
+      5, test_handler_filter_from_anyone_cb, test, NULL);
 
   wocky_porter_start (test->sched_out);
 
@@ -1810,9 +2186,9 @@ test_send_iq_server (void)
   wocky_porter_start (test->sched_in);
 
   /* register an IQ handler */
-  wocky_porter_register_handler (test->sched_out,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
-      NULL, WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
       test_send_iq_server_received_cb, test, NULL);
 
   /* From XMPP RFC:
@@ -2326,9 +2702,9 @@ open_connections_and_send_one_iq (test_data_t *test,
   wocky_porter_start (test->sched_in);
 
   /* register an IQ handler */
-  wocky_porter_register_handler (test->sched_out,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
       WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE,
-      NULL, 0,
+      0,
       test_receive_stanza_received_cb, test, NULL);
 
   /* Send an IQ query */
@@ -2491,6 +2867,258 @@ test_remote_error (void)
   teardown_test (test);
 }
 
+/* Herein lies a regression test for a bug where, if a stanza had been passed
+ * by the porter to the XmppConnection but not actually sent when the porter
+ * was unreffed, the subsequent callback from the XmppConnection would crash
+ * us.
+ */
+static gboolean
+idle_main_loop_quit (gpointer user_data)
+{
+  g_main_loop_quit (user_data);
+  return FALSE;
+}
+
+static void
+send_and_disconnect (void)
+{
+  test_data_t *test = setup_test ();
+  WockyStanza *lions = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, NULL, NULL,
+      '(', "dummy", ':', "xmpp:stanza",
+        '(', "nothing-to-see-here", ')',
+      ')', NULL);
+  GMainLoop *loop = g_main_loop_ref (test->loop);
+
+  /* We try to send any old stanza. */
+  wocky_porter_send_async (test->sched_in, lions, NULL, NULL, NULL);
+
+  /* Without giving the mainloop a chance to spin to call any callbacks at all,
+   * we tear everything down, including the porters. This will make sched_in
+   * add an idle to dispatch the (non-existent) callback for the stanza sent
+   * above, saying that sending it failed.
+   */
+  teardown_test (test);
+
+  /* Now we spin the main loop until all (higher-priority) idles have fired.
+   *
+   * The bug we're testing for occured because the porter didn't keep itself
+   * alive for the duration of the wocky_xmpp_connection_send_stanza_async()
+   * call. So, when it'd finished calling the callback above, it'd die, and
+   * then the send_stanza() operations would finish, and the porter's callback
+   * would try to use the newly-freed porter and choke.
+   */
+  g_idle_add_full (G_PRIORITY_LOW, idle_main_loop_quit, loop, NULL);
+  g_main_loop_run (loop);
+  g_main_loop_unref (loop);
+
+  g_object_unref (lions);
+}
+
+static gboolean
+got_stanza_for_example_com (
+    WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  test_data_t *test = user_data;
+
+  g_assert_cmpstr (wocky_stanza_get_from (stanza), ==, "example.com");
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+
+  return TRUE;
+}
+
+/* This is a regression test for a bug where registering a handler for a JID
+ * with no node part was equivalent to registering a handler with from=NULL;
+ * that is, we'd erroneously pass stanzas from *any* server to the handler
+ * function even if it explicitly specified a JID which was just a domain, as
+ * opposed to a JID with an '@' sign in it.
+ */
+static void
+handler_for_domain (void)
+{
+  test_data_t *test = setup_test ();
+  WockyStanza *irrelevant, *relevant;
+
+  test_open_both_connections (test);
+  wocky_porter_start (test->sched_out);
+  wocky_porter_start (test->sched_in);
+
+  wocky_porter_register_handler_from (test->sched_in, WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, "example.com",
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+      got_stanza_for_example_com, test,
+      NULL);
+
+  /* Send a stanza from some other random jid (at example.com, for the sake of
+   * argument). The porter should ignore this stanza.
+   */
+  irrelevant = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, "lol@example.com", NULL,
+      '(', "this-is-bullshit", ')', NULL);
+  wocky_porter_send (test->sched_out, irrelevant);
+  g_object_unref (irrelevant);
+
+  relevant = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, "example.com", NULL,
+      '(', "i-am-a-fan-of-cocaine", ')', NULL);
+  wocky_porter_send (test->sched_out, relevant);
+  g_object_unref (relevant);
+
+  test->outstanding += 1;
+  test_wait_pending (test);
+
+  test_close_both_porters (test);
+  teardown_test (test);
+}
+
+static gboolean
+got_stanza_from_anyone (
+    WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  test_data_t *test = user_data;
+  WockyNode *top = wocky_stanza_get_top_node (stanza);
+  WockyNode *query = wocky_node_get_first_child (top);
+
+  g_assert_cmpstr (query->name, ==, "anyone");
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+  return TRUE;
+}
+
+static gboolean
+got_stanza_from_ourself (
+    WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  test_data_t *test = user_data;
+  WockyNode *top = wocky_stanza_get_top_node (stanza);
+  WockyNode *query = wocky_node_get_first_child (top);
+
+  g_assert_cmpstr (query->name, ==, "ourself");
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+  return TRUE;
+}
+
+static gboolean
+got_stanza_from_server (
+    WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  test_data_t *test = user_data;
+  WockyNode *top = wocky_stanza_get_top_node (stanza);
+  WockyNode *query = wocky_node_get_first_child (top);
+
+  g_assert_cmpstr (query->name, ==, "server");
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+  return TRUE;
+}
+
+static void
+send_query_from (
+    test_data_t *test,
+    const gchar *from,
+    const gchar *query)
+{
+  WockyStanza *s = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, from, NULL,
+      '(', query, ')', NULL);
+  wocky_porter_send (test->sched_out, s);
+  g_object_unref (s);
+
+  test->outstanding += 1;
+  test_wait_pending (test);
+}
+
+static void
+handler_from_anyone (void)
+{
+  test_data_t *test = setup_test_with_jids ("juliet@capulet.lit/Balcony",
+      "capulet.lit");
+
+  test_open_both_connections (test);
+  wocky_porter_start (test->sched_out);
+  wocky_porter_start (test->sched_in);
+
+
+  wocky_c2s_porter_register_handler_from_server (
+      WOCKY_C2S_PORTER (test->sched_in),
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL + 10,
+      got_stanza_from_server, test, NULL);
+
+  /* A catch-all IQ get handler. */
+  wocky_porter_register_handler_from_anyone (test->sched_in,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+      got_stanza_from_anyone, test, NULL);
+
+  /* And, for completeness, a handler for IQs sent by any incarnation
+   * of ourself, at a lower priority to the handler for stanzas from the
+   * server, but a higher priority to the catch-all handler. */
+  wocky_porter_register_handler_from (test->sched_in,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
+      "juliet@capulet.lit",
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL + 5,
+      got_stanza_from_ourself, test, NULL);
+
+  /* All of the handlers assert on the name of the first child node, and then
+   * return TRUE to prevent the stanza being handed to a lower-priority
+   * handler. */
+
+  /* A stanza from a contact on a completely different server should be picked
+   * up only by the general handler. */
+  send_query_from (test, "romeo@montague.lit/Garden", "anyone");
+
+  /* A stanza from a contact on our server should be picked up only by the
+   * general handler (irrespective of whether they have a resource). */
+  send_query_from (test, "tybalt@capulet.lit", "anyone");
+  send_query_from (test, "tybalt@capulet.lit/FIXME", "anyone");
+
+  /* Slightly counterintuitively, a stanza from our server's domain should not
+   * be matched by got_stanza_from_server().
+   */
+  send_query_from (test, "capulet.lit", "anyone");
+
+  /* On the other hand, a stanza with no sender should be picked up by
+   * got_stanza_from_server(). */
+  send_query_from (test, NULL, "server");
+
+  /* Similarly, stanzas from our bare JID should be handed to
+   * got_stanza_from_server(). Because that function returns TRUE, the stanza
+   * should not be handed to got_stanza_from_ourself().
+   */
+  send_query_from (test, "juliet@capulet.lit", "server");
+  send_query_from (test, "jULIet@cAPUlet.lIT", "server");
+
+  /* Similarly, stanzas from our own full JID go to got_stanza_from_server. */
+  send_query_from (test, "juliet@capulet.lit/Balcony", "server");
+  send_query_from (test, "JUlIet@CAPulet.LIt/Balcony", "server");
+
+  /* But stanzas from our other resources should go to
+   * got_stanza_from_ourself(). */
+  send_query_from (test, "juliet@capulet.lit/FIXME", "ourself");
+  /* Heh, heh, resources are case-sensitive */
+  send_query_from (test, "juliet@capulet.lit/balcony", "ourself");
+
+  /* Meanwhile, back in communist russia: */
+  /*
+  КАПУЛЭТ
+  капулэт
+  */
+
+  test_close_both_porters (test);
+  teardown_test (test);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -2519,8 +3147,12 @@ main (int argc, char **argv)
       test_cancel_sent_stanza);
   g_test_add_func ("/xmpp-porter/writing-error", test_writing_error);
   g_test_add_func ("/xmpp-porter/send-iq", test_send_iq);
-  g_test_add_func ("/xmpp-porter/send-iq-denormalised", test_send_iq_abnormal);
+  g_test_add_func ("/xmpp-porter/acknowledge-iq", test_acknowledge_iq);
   g_test_add_func ("/xmpp-porter/send-iq-error", test_send_iq_error);
+  g_test_add_func ("/xmpp-porter/send-iq-gerror", test_send_iq_gerror);
+  g_test_add_func ("/xmpp-porter/send-iq-denormalised", test_send_iq_abnormal);
+  g_test_add_func ("/xmpp-porter/error-while-sending-iq",
+      test_error_while_sending_iq);
   g_test_add_func ("/xmpp-porter/handler-filter", test_handler_filter);
   g_test_add_func ("/xmpp-porter/send-invalid-iq", test_send_invalid_iq);
   g_test_add_func ("/xmpp-porter/handler-filter-from",
@@ -2542,6 +3174,9 @@ main (int argc, char **argv)
   g_test_add_func ("/xmpp-porter/wait-iq-reply-force-close",
       test_wait_iq_reply_force_close);
   g_test_add_func ("/xmpp-porter/avoid-double-force-close", test_remote_error);
+  g_test_add_func ("/xmpp-porter/send-and-disconnect", send_and_disconnect);
+  g_test_add_func ("/xmpp-porter/handler-for-domain", handler_for_domain);
+  g_test_add_func ("/xmpp-porter/handler-from-anyone", handler_from_anyone);
 
   result = g_test_run ();
   test_deinit ();

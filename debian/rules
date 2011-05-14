@@ -1,18 +1,26 @@
 #!/usr/bin/make -f
-DEB_AUTO_CLEANUP_RCS            := yes
 
-include /usr/share/cdbs/1/class/autotools.mk
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
-include /usr/share/cdbs/1/rules/utils.mk
+%:
+	dh $@ --with autotools_dev
 
-# List any files which are not installed, except for the useless .la files
-common-binary-post-install-arch:: list-missing
-list-missing: prune-unwanted
-prune-unwanted:
+# dh_auto_configure defaults to one libexecdir per source package, which is
+# overkill for Telepathy.
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		--libexecdir="\$${prefix}/lib/telepathy" \
+		--with-ca-certificates=/etc/ssl/certs/ca-certificates.crt
+
+# parallel make works
+override_dh_auto_build:
+	dh_auto_build --parallel
+
+# the regression tests are too race-prone to run on Debian buildds
+override_dh_auto_test:
+	:
+
+override_dh_auto_install:
+	dh_auto_install
 	rm -f debian/tmp/usr/lib/telepathy/gabble-0/*.la
 
-# cdbs defaults to one subdirectory per source package, which is overkill for us
-DEB_CONFIGURE_LIBEXECDIR := "\$${prefix}/lib/telepathy"
-
-include $(CURDIR)/debian/update-patches.mk
+override_dh_strip:
+	dh_strip --dbg-package=telepathy-gabble-dbg

@@ -60,35 +60,35 @@ libgabble_convenience_la_DEPENDENCIES =  \
 	$(top_builddir)/extensions/libgabble-extensions.la \
 	$(top_builddir)/lib/gibber/libgibber.la \
 	$(top_builddir)/lib/loudmouth/libloudmouth.la \
+	$(top_builddir)/lib/ext/telepathy-yell/telepathy-yell/libtelepathy-yell.la \
 	$(am__DEPENDENCIES_1)
 am_libgabble_convenience_la_OBJECTS = auth-manager.lo base64.lo \
-	base-channel.lo base-call-channel.lo bytestream-factory.lo \
-	bytestream-ibb.lo bytestream-iface.lo bytestream-muc.lo \
-	bytestream-multiple.lo bytestream-socks5.lo call-content.lo \
-	call-content-codecoffer.lo call-channel.lo call-muc-channel.lo \
-	call-member.lo call-member-content.lo call-stream.lo \
-	call-stream-endpoint.lo capabilities.lo caps-cache.lo \
-	caps-hash.lo caps-channel-manager.lo conn-aliasing.lo \
-	conn-avatars.lo conn-contact-info.lo conn-location.lo \
-	conn-olpc.lo conn-presence.lo conn-sidecars.lo conn-slacker.lo \
-	conn-mail-notif.lo connection.lo connection-manager.lo \
-	debug.lo disco.lo error.lo ft-channel.lo ft-manager.lo \
-	gabble.lo gtalk-file-collection.lo im-channel.lo im-factory.lo \
-	jingle-content.lo jingle-factory.lo jingle-share.lo \
-	jingle-media-rtp.lo jingle-session.lo \
+	base-call-channel.lo bytestream-factory.lo bytestream-ibb.lo \
+	bytestream-iface.lo bytestream-muc.lo bytestream-multiple.lo \
+	bytestream-socks5.lo call-content.lo call-channel.lo \
+	call-muc-channel.lo call-member.lo call-member-content.lo \
+	call-stream.lo capabilities.lo caps-hash.lo \
+	caps-channel-manager.lo conn-aliasing.lo conn-avatars.lo \
+	conn-client-types.lo conn-contact-info.lo conn-location.lo \
+	conn-olpc.lo conn-power-saving.lo conn-presence.lo \
+	conn-sidecars.lo conn-util.lo conn-mail-notif.lo connection.lo \
+	connection-manager.lo debug.lo disco.lo error.lo ft-channel.lo \
+	ft-manager.lo gabble.lo gtalk-file-collection.lo im-channel.lo \
+	im-factory.lo jingle-content.lo jingle-factory.lo \
+	jingle-share.lo jingle-media-rtp.lo jingle-session.lo \
 	jingle-transport-google.lo jingle-transport-rawudp.lo \
 	jingle-transport-iceudp.lo jingle-transport-iface.lo \
-	media-channel.lo media-channel-hold.lo media-stream.lo \
-	media-factory.lo message-util.lo muc-channel.lo muc-factory.lo \
-	olpc-activity.lo olpc-activity-view.lo olpc-buddy-view.lo \
-	olpc-gadget-manager.lo olpc-view.lo plugin-loader.lo plugin.lo \
-	presence.lo presence-cache.lo private-tubes-factory.lo \
-	request-pipeline.lo roster.lo roster-channel.lo \
-	roomlist-channel.lo roomlist-manager.lo search-channel.lo \
-	search-manager.lo server-sasl-channel.lo sidecar.lo slacker.lo \
-	tube-iface.lo tubes-channel.lo tube-dbus.lo tube-stream.lo \
-	util.lo vcard-manager.lo
-am__objects_1 = gabble-signals-marshal.lo
+	legacy-caps.lo media-channel.lo media-channel-hold.lo \
+	media-stream.lo media-factory.lo message-util.lo \
+	muc-channel.lo muc-factory.lo olpc-activity.lo \
+	plugin-loader.lo plugin.lo presence.lo presence-cache.lo \
+	protocol.lo private-tubes-factory.lo request-pipeline.lo \
+	roster.lo roomlist-channel.lo roomlist-manager.lo \
+	search-channel.lo search-manager.lo server-sasl-channel.lo \
+	server-tls-channel.lo server-tls-manager.lo sidecar.lo \
+	tls-certificate.lo tube-iface.lo tubes-channel.lo tube-dbus.lo \
+	tube-stream.lo util.lo vcard-manager.lo
+am__objects_1 = gabble-signals-marshal.lo gabble-enumtypes.lo
 nodist_libgabble_convenience_la_OBJECTS = $(am__objects_1)
 libgabble_convenience_la_OBJECTS =  \
 	$(am_libgabble_convenience_la_OBJECTS) \
@@ -193,8 +193,6 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MCE_CFLAGS = @MCE_CFLAGS@
-MCE_LIBS = @MCE_LIBS@
 MKDIR_P = @MKDIR_P@
 NICE_CFLAGS = @NICE_CFLAGS@
 NICE_LIBS = @NICE_LIBS@
@@ -226,14 +224,12 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SOUP_CFLAGS = @SOUP_CFLAGS@
 SOUP_LIBS = @SOUP_LIBS@
-SQLITE_CFLAGS = @SQLITE_CFLAGS@
-SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TEST_PYTHON = @TEST_PYTHON@
 TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
 TP_GLIB_LIBS = @TP_GLIB_LIBS@
-UUID_CFLAGS = @UUID_CFLAGS@
-UUID_LIBS = @UUID_LIBS@
+TP_YELL_CFLAGS = @TP_YELL_CFLAGS@
+TP_YELL_LIBS = @TP_YELL_LIBS@
 VERSION = @VERSION@
 WOCKY_CFLAGS = @WOCKY_CFLAGS@
 WOCKY_LIBS = @WOCKY_LIBS@
@@ -297,7 +293,9 @@ top_srcdir = @top_srcdir@
 BUILT_SOURCES = \
     gabble-signals-marshal.h \
     gabble-signals-marshal.c \
-    gabble-signals-marshal.list
+    gabble-signals-marshal.list \
+    gabble-enumtypes.h \
+    gabble-enumtypes.c
 
 CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = 
@@ -306,8 +304,6 @@ libgabble_convenience_la_SOURCES = \
     auth-manager.c \
     base64.h \
     base64.c \
-    base-channel.h \
-    base-channel.c \
     base-call-channel.h \
     base-call-channel.c \
     bytestream-factory.h \
@@ -324,8 +320,6 @@ libgabble_convenience_la_SOURCES = \
     bytestream-socks5.c \
     call-content.h \
     call-content.c \
-    call-content-codecoffer.h \
-    call-content-codecoffer.c \
     call-channel.h \
     call-channel.c \
     call-muc-channel.h \
@@ -336,13 +330,9 @@ libgabble_convenience_la_SOURCES = \
     call-member-content.c \
     call-stream.h \
     call-stream.c \
-    call-stream-endpoint.h \
-    call-stream-endpoint.c \
     $(top_srcdir)/gabble/capabilities-set.h \
     capabilities.h \
     capabilities.c \
-    caps-cache.h \
-    caps-cache.c \
     $(top_srcdir)/gabble/caps-hash.h \
     caps-hash.h \
     caps-hash.c \
@@ -352,18 +342,22 @@ libgabble_convenience_la_SOURCES = \
     conn-aliasing.c \
     conn-avatars.h \
     conn-avatars.c \
+    conn-client-types.h \
+    conn-client-types.c \
     conn-contact-info.h \
     conn-contact-info.c \
     conn-location.h \
     conn-location.c \
     conn-olpc.h \
     conn-olpc.c \
+    conn-power-saving.h \
+    conn-power-saving.c \
     conn-presence.h \
     conn-presence.c \
     conn-sidecars.h \
     conn-sidecars.c \
-    conn-slacker.h \
-    conn-slacker.c \
+    conn-util.h \
+    conn-util.c \
     conn-mail-notif.h \
     conn-mail-notif.c \
     $(top_srcdir)/gabble/connection.h \
@@ -408,6 +402,8 @@ libgabble_convenience_la_SOURCES = \
     jingle-transport-iceudp.c \
     jingle-transport-iface.h \
     jingle-transport-iface.c \
+    legacy-caps.h \
+    legacy-caps.c \
     media-channel.h \
     media-channel-internal.h \
     media-channel.c \
@@ -426,14 +422,6 @@ libgabble_convenience_la_SOURCES = \
     namespaces.h \
     olpc-activity.h \
     olpc-activity.c \
-    olpc-activity-view.h \
-    olpc-activity-view.c \
-    olpc-buddy-view.h \
-    olpc-buddy-view.c \
-    olpc-gadget-manager.h \
-    olpc-gadget-manager.c \
-    olpc-view.h \
-    olpc-view.c \
     plugin-loader.h \
     plugin-loader.c \
     $(top_srcdir)/gabble/plugin.h \
@@ -442,14 +430,14 @@ libgabble_convenience_la_SOURCES = \
     presence.c \
     presence-cache.h \
     presence-cache.c \
+    protocol.h \
+    protocol.c \
     private-tubes-factory.h \
     private-tubes-factory.c \
     request-pipeline.h \
     request-pipeline.c \
     roster.h \
     roster.c \
-    roster-channel.h \
-    roster-channel.c \
     roomlist-channel.h \
     roomlist-channel.c \
     roomlist-manager.h \
@@ -460,10 +448,14 @@ libgabble_convenience_la_SOURCES = \
     search-manager.c \
     server-sasl-channel.h \
     server-sasl-channel.c \
+    server-tls-channel.h \
+    server-tls-channel.c \
+    server-tls-manager.h \
+    server-tls-manager.c \
     $(top_srcdir)/gabble/sidecar.h \
     sidecar.c \
-    slacker.h \
-    slacker.c \
+    tls-certificate.h \
+    tls-certificate.c \
     tube-iface.h \
     tube-iface.c \
     tubes-channel.h \
@@ -479,10 +471,15 @@ libgabble_convenience_la_SOURCES = \
     vcard-manager.h \
     vcard-manager.c
 
+enumtype_sources = \
+    $(top_srcdir)/src/jingle-factory.h \
+    $(top_srcdir)/src/presence.h
+
 libgabble_convenience_la_LIBADD = \
    $(top_builddir)/extensions/libgabble-extensions.la \
    $(top_builddir)/lib/gibber/libgibber.la \
    $(top_builddir)/lib/loudmouth/libloudmouth.la \
+   $(top_builddir)/lib/ext/telepathy-yell/telepathy-yell/libtelepathy-yell.la \
    $(ALL_LIBS)
 
 nodist_libgabble_convenience_la_SOURCES = \
@@ -504,14 +501,14 @@ noinst_LTLIBRARIES = libgabble-convenience.la
 AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
 	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
-	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @UUID_CFLAGS@ @GMODULE_CFLAGS@ \
-	    @SQLITE_CFLAGS@ \
+	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @GMODULE_CFLAGS@ \
+	    @TP_YELL_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
 	    -DG_LOG_DOMAIN=\"gabble\" \
 	    -DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\"
 
 ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
-	    @SOUP_LIBS@ @NICE_LIBS@ @UUID_LIBS@ @GMODULE_LIBS@ @SQLITE_LIBS@
+	    @SOUP_LIBS@ @NICE_LIBS@ @GMODULE_LIBS@
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -626,7 +623,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/auth-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base-call-channel.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bytestream-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bytestream-ibb.Plo@am__quote@
@@ -635,26 +631,25 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bytestream-multiple.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bytestream-socks5.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-channel.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-content-codecoffer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-content.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-member-content.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-member.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-muc-channel.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-stream-endpoint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/call-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/capabilities.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/caps-cache.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/caps-channel-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/caps-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-aliasing.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-avatars.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-client-types.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-contact-info.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-location.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-mail-notif.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-olpc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-power-saving.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-presence.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-sidecars.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-slacker.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-util.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connection-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug.Plo@am__quote@
@@ -662,6 +657,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ft-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ft-manager.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gabble-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gabble-signals-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gabble.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtalk-file-collection.Plo@am__quote@
@@ -676,6 +672,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-iceudp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-iface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-rawudp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/legacy-caps.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/media-channel-hold.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/media-channel.Plo@am__quote@
@@ -684,26 +681,24 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/message-util.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muc-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muc-factory.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-activity-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-activity.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-buddy-view.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-gadget-manager.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugin-loader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/presence-cache.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/presence.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/private-tubes-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/protocol.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/request-pipeline.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roomlist-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roomlist-manager.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roster-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roster.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/search-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/search-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server-sasl-channel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server-tls-channel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server-tls-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sidecar.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/slacker.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tls-certificate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-dbus.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-iface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tube-stream.Plo@am__quote@
@@ -992,6 +987,24 @@ gabble-signals-marshal.list: $(libgabble_convenience_la_SOURCES) Makefile.am
 	$(AM_V_GEN){ echo '#include "$*-signals-marshal.h"' && \
 	glib-genmarshal --body --prefix=$(subst -,_,$*)_marshal $< ; \
 	} > $@
+
+# rules for making the glib enum objects
+gabble-enumtypes.h: $(enumtype_sources) Makefile.in
+	$(AM_V_GEN)glib-mkenums \
+	--fhead "#ifndef __GABBLE_ENUM_TYPES_H__\n#define __GABBLE_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
+	--fprod "/* enumerations from \"@filename@\" */\n" \
+	--vhead "GType @enum_name@_get_type (void);\n#define GABBLE_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
+	--ftail "G_END_DECLS\n\n#endif /* __GABBLE_ENUM_TYPES_H__ */" \
+	$(enumtype_sources) > $@
+
+gabble-enumtypes.c: $(enumtype_sources) Makefile.in
+	$(AM_V_GEN)glib-mkenums \
+	--fhead "#include <$*.h>" \
+	--fprod "\n/* enumerations from \"@filename@\" */\n#include \"@filename@\"" \
+	--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {"     \
+	--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
+	--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
+	$(enumtype_sources) > $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

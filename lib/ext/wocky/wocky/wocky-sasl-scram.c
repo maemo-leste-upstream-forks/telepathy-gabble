@@ -137,6 +137,14 @@ wocky_sasl_scram_dispose (GObject *object)
   g_free (priv->nonce);
   g_free (priv->salt);
 
+  g_free (priv->client_first_bare);
+  g_free (priv->server_first_bare);
+
+  g_free (priv->auth_message);
+
+  if (priv->salted_password != NULL)
+    g_byte_array_free (priv->salted_password, TRUE);
+
   G_OBJECT_CLASS (wocky_sasl_scram_parent_class)->dispose (object);
 }
 
@@ -290,7 +298,7 @@ static void
 scram_calculate_salted_password (WockySaslScram *self)
 {
   WockySaslScramPrivate *priv = self->priv;
-  guint64 i = priv->iterations;
+  guint64 i;
   GByteArray *result, *prev, *salt;
   guint8 one[] = {0,0,0,1};
   gint state = 0;
