@@ -31,6 +31,7 @@
 #include <glib-object.h>
 #include <loudmouth/loudmouth.h>
 #include <wocky/wocky-connector.h>
+#include <wocky/wocky-disco-identity.h>
 #include <wocky/wocky-tls-handler.h>
 #include <wocky/wocky-ping.h>
 #include <wocky/wocky-xmpp-error.h>
@@ -2682,6 +2683,13 @@ set_status_to_connected (GabbleConnection *conn)
 {
   TpBaseConnection *base = (TpBaseConnection *) conn;
 
+  if (base->status == TP_CONNECTION_STATUS_DISCONNECTED)
+    {
+      /* We already failed to connect, but at the time an async thing was
+       * still pending, and now it has finished. Do nothing special. */
+      return;
+    }
+
   if (conn->features & GABBLE_CONNECTION_FEATURES_PEP)
     {
       const gchar *ifaces[] = { GABBLE_IFACE_OLPC_BUDDY_INFO,
@@ -3637,20 +3645,21 @@ gabble_connection_update_sidecar_capabilities (GabbleConnection *self,
     }
 }
 
+/* identities is actually a WockyDiscoIdentityArray */
 gchar *
 gabble_connection_add_sidecar_own_caps (GabbleConnection *self,
     const GabbleCapabilitySet *cap_set,
     const GPtrArray *identities)
 {
   GPtrArray *identities_copy = ((identities == NULL) ?
-      gabble_disco_identity_array_new () :
-      gabble_disco_identity_array_copy (identities));
+      wocky_disco_identity_array_new () :
+      wocky_disco_identity_array_copy (identities));
   gchar *ver;
 
   /* XEP-0030 requires at least 1 identity. We don't need more. */
   if (identities_copy->len == 0)
     g_ptr_array_add (identities_copy,
-        gabble_disco_identity_new ("client", CLIENT_TYPE,
+        wocky_disco_identity_new ("client", CLIENT_TYPE,
             NULL, PACKAGE_STRING));
 
   ver = gabble_caps_hash_compute (cap_set, identities_copy);
@@ -3658,7 +3667,7 @@ gabble_connection_add_sidecar_own_caps (GabbleConnection *self,
   gabble_presence_cache_add_own_caps (self->presence_cache, ver,
       cap_set, identities_copy);
 
-  gabble_disco_identity_array_free (identities_copy);
+  wocky_disco_identity_array_free (identities_copy);
 
   return ver;
 }

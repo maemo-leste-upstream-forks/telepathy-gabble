@@ -2461,6 +2461,7 @@ gnu*)
   library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}${major} ${libname}${shared_ext}'
   soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
+  shlibpath_overrides_runpath=no
   hardcode_into_libs=yes
   ;;
 
@@ -4511,7 +4512,7 @@ m4_if([$1], [CXX], [
       ;;
     esac
     ;;
-  linux* | k*bsd*-gnu)
+  linux* | k*bsd*-gnu | gnu*)
     _LT_TAGVAR(link_all_deplibs, $1)=no
     ;;
   *)
@@ -4577,7 +4578,7 @@ dnl Note also adjust exclude_expsyms for C++ above.
   openbsd*)
     with_gnu_ld=no
     ;;
-  linux* | k*bsd*-gnu)
+  linux* | k*bsd*-gnu | gnu*)
     _LT_TAGVAR(link_all_deplibs, $1)=no
     ;;
   esac
