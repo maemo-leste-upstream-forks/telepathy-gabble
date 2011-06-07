@@ -34,7 +34,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = test-base64$(EXEEXT) test-caps-hash$(EXEEXT) \
+noinst_PROGRAMS = test-base64$(EXEEXT) \
 	test-dtube-unique-names$(EXEEXT) \
 	test-gabble-idle-weak$(EXEEXT) test-handles$(EXEEXT) \
 	test-jid-decode$(EXEEXT) test-parse-message$(EXEEXT) \
@@ -65,11 +65,6 @@ test_base64_DEPENDENCIES =  \
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
-test_caps_hash_SOURCES = test-caps-hash.c
-test_caps_hash_OBJECTS = test-caps-hash.$(OBJEXT)
-test_caps_hash_LDADD = $(LDADD)
-test_caps_hash_DEPENDENCIES =  \
-	$(top_builddir)/src/libgabble-convenience.la
 test_dtube_unique_names_SOURCES = test-dtube-unique-names.c
 test_dtube_unique_names_OBJECTS = test-dtube-unique-names.$(OBJEXT)
 test_dtube_unique_names_LDADD = $(LDADD)
@@ -132,14 +127,14 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = test-base64.c test-caps-hash.c test-dtube-unique-names.c \
+SOURCES = test-base64.c test-dtube-unique-names.c \
 	test-gabble-idle-weak.c test-handles.c test-jid-decode.c \
 	test-parse-message.c test-presence.c \
 	$(test_tp_error_from_wocky_SOURCES)
-DIST_SOURCES = test-base64.c test-caps-hash.c \
-	test-dtube-unique-names.c test-gabble-idle-weak.c \
-	test-handles.c test-jid-decode.c test-parse-message.c \
-	test-presence.c $(test_tp_error_from_wocky_SOURCES)
+DIST_SOURCES = test-base64.c test-dtube-unique-names.c \
+	test-gabble-idle-weak.c test-handles.c test-jid-decode.c \
+	test-parse-message.c test-presence.c \
+	$(test_tp_error_from_wocky_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -350,7 +345,6 @@ TESTS_ENVIRONMENT = \
 check_c_sources = \
 	$(dbus_test_sources) \
 	test-base64.c \
-	test-caps-hash.c \
 	test-dtube-unique-names.c \
 	test-presence.c \
 	test-jid-decode.c \
@@ -405,9 +399,6 @@ clean-noinstPROGRAMS:
 test-base64$(EXEEXT): $(test_base64_OBJECTS) $(test_base64_DEPENDENCIES) 
 	@rm -f test-base64$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_base64_OBJECTS) $(test_base64_LDADD) $(LIBS)
-test-caps-hash$(EXEEXT): $(test_caps_hash_OBJECTS) $(test_caps_hash_DEPENDENCIES) 
-	@rm -f test-caps-hash$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(test_caps_hash_OBJECTS) $(test_caps_hash_LDADD) $(LIBS)
 test-dtube-unique-names$(EXEEXT): $(test_dtube_unique_names_OBJECTS) $(test_dtube_unique_names_DEPENDENCIES) 
 	@rm -f test-dtube-unique-names$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_dtube_unique_names_OBJECTS) $(test_dtube_unique_names_LDADD) $(LIBS)
@@ -437,7 +428,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-base64.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-caps-hash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-dtube-unique-names.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-gabble-idle-weak.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-handles.Po@am__quote@

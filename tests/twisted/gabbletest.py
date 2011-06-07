@@ -62,7 +62,7 @@ def request_muc_handle(q, conn, stream, muc_jid):
     event = q.expect('dbus-return', method='RequestHandles')
     return event.value[0][0]
 
-def make_muc_presence(affiliation, role, muc_jid, alias, jid=None):
+def make_muc_presence(affiliation, role, muc_jid, alias, jid=None, photo=None):
     presence = domish.Element((None, 'presence'))
     presence['from'] = '%s/%s' % (muc_jid, alias)
     x = presence.addElement((ns.MUC_USER, 'x'))
@@ -71,6 +71,13 @@ def make_muc_presence(affiliation, role, muc_jid, alias, jid=None):
     item['role'] = role
     if jid is not None:
         item['jid'] = jid
+
+    if photo is not None:
+        presence.addChild(
+            elem(ns.VCARD_TEMP_UPDATE, 'x')(
+              elem('photo')(unicode(photo))
+            ))
+
     return presence
 
 def sync_stream(q, stream):
@@ -462,6 +469,7 @@ class GoogleXmlStream(BaseXmlStream):
     disco_features = [ns.GOOGLE_ROSTER,
                       ns.GOOGLE_JINGLE_INFO,
                       ns.GOOGLE_MAIL_NOTIFY,
+                      ns.GOOGLE_QUEUE,
                      ]
 
     def _cb_bare_jid_disco_iq(self, iq):

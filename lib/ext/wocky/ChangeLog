@@ -1,3 +1,378 @@
+commit 9064ddfd7afd83c892f65be8365dec242dcce880
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 1 13:43:41 2011 +0100
+
+    MUC: allow own presence to be passed to other handlers
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=32017>
+
+ wocky/wocky-muc.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit e3b3e06417dd95e9b36b0bcc4a2ca8d8a437fd5c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 1 11:49:32 2011 +0100
+
+    MUC: remove now-unnecessary goto
+    
+    This does not modify the values returned by handle_presence_standard()
+    in each case.
+
+ wocky/wocky-muc.c |   21 +++++++++------------
+ 1 files changed, 9 insertions(+), 12 deletions(-)
+
+commit 961ab6f804ef504b7d0555fd1932d0d66785f22b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 31 18:16:40 2011 +0100
+
+    MUC: early-return for presence without <x ...muc#user>
+    
+    There are no code changes in this commit: it's just turning a big if
+    block into an early return.
+
+ wocky/wocky-muc.c |  174 ++++++++++++++++++++++++++--------------------------
+ 1 files changed, 87 insertions(+), 87 deletions(-)
+
+commit 191337045819cbdd2781c03e652ca2551ce3ede9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 31 18:05:05 2011 +0100
+
+    MUC: hoist JID decoding up to main <presence> handler
+    
+    The <presence type='error'/> sub-handler actually didn't use the JID
+    components at all, it just parsed it for fun. And the other sub-handler
+    only uses the resource. It's neater to pull extracting that into the top
+    handler: it'll save us needing a 'goto' for cleanup.
+
+ wocky/wocky-muc.c |   50 +++++++++++++++++---------------------------------
+ 1 files changed, 17 insertions(+), 33 deletions(-)
+
+commit bf3d194a15e5efd870a8df48873564897c06270e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 31 17:53:35 2011 +0100
+
+    MUC: remove redundant checks
+    
+    We know that presence stanzas passed to this callback have a from='',
+    and that it's right, because we specified it when calling
+    wocky_porter_register_handler_from(). And we know that they're presence
+    stanzas, for the same reason.
+
+ wocky/wocky-muc.c |   22 +---------------------
+ 1 files changed, 1 insertions(+), 21 deletions(-)
+
+commit b37d550628783049c3cbb36e7d4c775e2269c068
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 31 17:44:24 2011 +0100
+
+    MUC: simplify extracting <status> from <presence>
+    
+    It's technically legal to have more than one <status> within <presence>:
+    
+        Multiple instances of the <status/> element MAY be included but only
+        if each instance possesses an 'xml:lang' attribute with a distinct
+        language value.
+    
+            — http://xmpp.org/rfcs/rfc3921.html#rfc.section.2.2.2.2
+    
+    So what we were doing before (concatenating the contents of all of them)
+    is even more wrong than just picking the first one.
+
+ wocky/wocky-muc.c |   27 ++-------------------------
+ 1 files changed, 2 insertions(+), 25 deletions(-)
+
+commit 6c1e30ecb10ff10391437d16275fb1e20ff52915
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 31 17:18:57 2011 +0100
+
+    MUC: represent status code set as a bitfield
+
+ wocky/wocky-muc.c |  124 ++++++++++++++++++++++-------------------------------
+ 1 files changed, 51 insertions(+), 73 deletions(-)
+
+commit 80289030646436225c6f6e8cc9ce5fd9025238ab
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 31 16:56:18 2011 +0100
+
+    MUC: use a node iterator when parsing status codes
+
+ wocky/wocky-muc.c |   66 ++++++++++++++++++++++++++++-------------------------
+ 1 files changed, 35 insertions(+), 31 deletions(-)
+
+commit 0a764d2151bdda2d6d5314122110faf0fd2f4dc8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 31 16:48:13 2011 +0100
+
+    MUC: remove weird casts when parsing status codes
+
+ wocky/wocky-muc.c |   12 +++---------
+ 1 files changed, 3 insertions(+), 9 deletions(-)
+
+commit 4e4ad3674b7f96f4fdfc39375715aff6b703ef7c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 31 16:39:46 2011 +0100
+
+    MUC: document WockyMucStatusCode marginally more usefully
+
+ wocky/wocky-muc.h |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 0d7c58ce7fcf3b909857147afc38571bdd0bf689
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 31 16:34:40 2011 +0100
+
+    MUC: turn status code enum into bit flags
+
+ wocky/wocky-muc.h |   38 +++++++++++++++++++-------------------
+ 1 files changed, 19 insertions(+), 19 deletions(-)
+
+commit 3db3ab03828b5d953a8cf05c95f995e5cb8e27b9
+Merge: 07a2269 161e973
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon May 16 16:37:39 2011 +0100
+
+    Merge branch 'iphb-system-sync'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=37115>
+
+commit 161e97327b1cf1b3013801f86c9e86f2a945017f
+Author: Marco Barisione <marco@barisione.org>
+Date:   Wed May 11 18:29:24 2011 +0100
+
+    Heartbeat: synchronise the wakeups with other applications
+
+ wocky/wocky-heartbeat-source.c |   61 ++++++++++++++++++++++++++++++----------
+ 1 files changed, 46 insertions(+), 15 deletions(-)
+
+commit 06e8d6978a7a9a28b1d34b1d079e8e33d48e1267
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon May 16 15:01:57 2011 +0100
+
+    configure: depend on libiphb >= 0.61.31
+    
+    The newer libiphb is needed to help synchronisation between multiple
+    applications.
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 07a226925f7fccad7d38dc165318858f76f36bd3
+Merge: 7608a03 3c2ab01
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed May 4 09:50:59 2011 +0100
+
+    Merge branch 'ns'
+
+commit 3c2ab0158eabc1e82e1cadb457719ffddc6cc3d5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed May 4 09:07:08 2011 +0100
+
+    namespaces: include both jabber:iq:oob and jabber:x:oob
+    
+    Nothing appears to use the old WOCKY_XMPP_NS_OOB, so I don't think
+    this will break anything.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-namespaces.h |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 7608a038991602233a146e3fa8d2d770d599ca34
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 3 16:00:55 2011 +0100
+
+    MetaPorter: fix chaining up to constructed.
+    
+    (I'd forgotten to actually amend the patch. Whoops.)
+
+ wocky/wocky-meta-porter.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit f7b2930b22d9bcb1d964b12110ee5d320694400e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Tue May 3 15:40:58 2011 +0100
+
+    Porters: chain up in constructed
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-c2s-porter.c  |    3 +++
+ wocky/wocky-meta-porter.c |    3 +++
+ 2 files changed, 6 insertions(+), 0 deletions(-)
+
+commit d4f7e060c7e967bc0d78a823e88b3b45390dcff6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue May 3 10:03:22 2011 +0100
+
+    ll-connector: remove set but unused variable
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-ll-connector.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+commit 3d127bedd7da28a6af3e32334ce8545f1cb7369e
+Author: Marco Barisione <marco@barisione.org>
+Date:   Thu Apr 28 17:50:28 2011 +0100
+
+    openssl: maintain compatibility with OpenSSL < 1.0 too
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+ wocky/wocky-openssl.c |   16 +++++++++++-----
+ 1 files changed, 11 insertions(+), 5 deletions(-)
+
+commit 471b25356420d33670a18b8310cfd2c7bfd9efdd
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Apr 28 14:32:32 2011 +0100
+
+    xmpp-reader: ifdef out a variable that's only used in a DEBUG call
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-xmpp-reader.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 5455a6c494e2f65e8a3ba7cd0f955e02f3d65af9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Apr 22 12:12:25 2011 +0100
+
+    data-form: add more docs for add_to_node()
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-data-form.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+commit a56c69c450c0062797903a1a468f3db2399108f1
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Apr 22 11:56:05 2011 +0100
+
+    data-form: add a add_to_node function
+    
+    This is for adding a data form to an existing node like the query node
+    of a disco response.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-data-form.c |   35 +++++++++++++++++++++++++++++++++++
+ wocky/wocky-data-form.h |    2 ++
+ 2 files changed, 37 insertions(+), 0 deletions(-)
+
+commit 65d4af1972fc4b7d3519421ec7080b07c23a88ae
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Apr 22 11:54:53 2011 +0100
+
+    xep-0115-capabilities: add TODO for features and identities
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-xep-0115-capabilities.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 7462be59c033f03804c754ddb13c80e2f97c88aa
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Apr 22 09:18:28 2011 +0100
+
+    session: add get_jid() function
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-session.c |    8 ++++++++
+ wocky/wocky-session.h |    2 ++
+ 2 files changed, 10 insertions(+), 0 deletions(-)
+
+commit d118866339f92736be01b7bdf10ef48694f77037
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Apr 19 13:17:32 2011 +0100
+
+    XEP-0115 capabilities: add interface
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/Makefile.am                   |    2 +
+ wocky/wocky-xep-0115-capabilities.c |   60 ++++++++++++++++++++++++++++++++
+ wocky/wocky-xep-0115-capabilities.h |   65 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 127 insertions(+), 0 deletions(-)
+
+commit c3f7e85443d95a762cd804adeb42c13f0f9b2a43
+Merge: a36dd1f deb4840
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Apr 22 08:57:16 2011 +0100
+
+    Merge branch 'caps-hash'
+    
+    Conflicts:
+    	docs/reference/wocky-docs.sgml
+    	wocky/Makefile.am
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit deb4840972ef760c2c24d03c81e73f4d060adfb6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Apr 19 12:10:41 2011 +0100
+
+    data-form: rename default_value_str to raw_value_contents
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    6 +++---
+ wocky/wocky-data-form.c |   30 +++++++++++++++---------------
+ wocky/wocky-data-form.h |    2 +-
+ 3 files changed, 19 insertions(+), 19 deletions(-)
+
+commit 7567223d6898d9b52e2ca4e7dcf913dd07f01763
+Author: Jonny Lamb <jonny@debian.org>
+Date:   Mon Apr 11 17:07:18 2011 +0100
+
+    data-form: change the default_value_str field struct member to hold a strv
+    
+    This moves the converting different GValue types to strings from the
+    caps hash code back into the data form code and simplifies things.
+    
+    Signed-off-by: Jonny Lamb <jonny@debian.org>
+
+ wocky/wocky-caps-hash.c |   96 +++++++++++------------------------------------
+ wocky/wocky-data-form.c |   69 ++++++++++++++++++++--------------
+ wocky/wocky-data-form.h |    6 +-
+ 3 files changed, 66 insertions(+), 105 deletions(-)
+
+commit b1b031b49febb4323679cbb3f64d6f1c4611393a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Apr 4 12:53:51 2011 +0100
+
+    caps-hash: use the actual string value when hashing boolean default values
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-caps-hash-test.c |   74 ++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-caps-hash.c      |   11 ++----
+ 2 files changed, 77 insertions(+), 8 deletions(-)
+
+commit c2a09a2edac255c0e1fa592cfd4ae8a582fd138d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Apr 4 12:53:20 2011 +0100
+
+    data-form: add another member to Field struct for actual boolean values
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-data-form.c |   47 ++++++++++++++++++++++++++++++++++-------------
+ wocky/wocky-data-form.h |    3 +++
+ 2 files changed, 37 insertions(+), 13 deletions(-)
+
+commit f26dd38b1a97e34093e009b633cad54b43141d8b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Apr 4 13:27:47 2011 +0100
+
+    caps-hash: check whether there are multiple forms with the same name during, not before
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |   41 ++++++++++++++++++-----------------------
+ 1 files changed, 18 insertions(+), 23 deletions(-)
+
 commit a36dd1fec168abf1924757aeba7124172b9a79f5
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   Thu Apr 7 10:47:31 2011 +0100
@@ -1134,6 +1509,120 @@ Date:   Mon Mar 14 09:22:58 2011 +0000
  wocky/wocky-utils.h |   18 ++++++++++--------
  1 files changed, 10 insertions(+), 8 deletions(-)
 
+commit 13bd32864d690f61267b61389b1f414754f44f6c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 15:22:39 2011 +0000
+
+    caps-hash: fix up some code after running it through the style checker
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 72ad9c1e37fd05fbda8549a3b14ddb2a77da418e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 15:17:00 2011 +0000
+
+    caps-hash: test having bad <field/> nodes in data form fields
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-caps-hash-test.c |   93 ++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-caps-hash.c      |   41 ++++++++++++++++--
+ 2 files changed, 129 insertions(+), 5 deletions(-)
+
+commit 9d50b575a41fc5e3648023fbae372c06168ce983
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 14:27:33 2011 +0000
+
+    caps-hash: fail if there are multiple data forms with the same type
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-caps-hash-test.c |   84 ++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-caps-hash.c      |   24 ++++++++++++
+ 2 files changed, 108 insertions(+), 0 deletions(-)
+
+commit 21d7db7c112b3397416a4ccb660243d218816fa1
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 14:26:12 2011 +0000
+
+    caps-hash: add more debugging for a missing FORM_TYPE field
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit f4562b8d5588f7bb18d3618af447aef735928833
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 14:15:31 2011 +0000
+
+    caps-hash-test: add a test for a dataform without FORM_TYPE
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-caps-hash-test.c |   29 ++++++++++++++++++++++++++++-
+ 1 files changed, 28 insertions(+), 1 deletions(-)
+
+commit 59d84e5eb286595ee5b4f68f1c280c07479f2c45
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 14:08:18 2011 +0000
+
+    caps-hash: bail if there is no FORM_TYPE field in the data form
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 3d2d30ef018a16ec7d80c055eddf734ea0f56007
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 14:07:52 2011 +0000
+
+    caps-hash: free sha1'd string
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 7b640b914b214fc9c3248652e4af07d3a9d94e93
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 13:58:10 2011 +0000
+
+    caps-hash: also handle booleans
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-caps-hash-test.c |   10 ++++++++++
+ wocky/wocky-caps-hash.c      |    6 +++++-
+ 2 files changed, 15 insertions(+), 1 deletions(-)
+
+commit 116af1e57c66bc2183cc667e5970ec8f93860965
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 13:57:48 2011 +0000
+
+    caps-hash: ensure multi-text values are sorted
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-caps-hash-test.c |    2 +-
+ wocky/wocky-caps-hash.c      |   20 +++++++++++++++++++-
+ 2 files changed, 20 insertions(+), 2 deletions(-)
+
+commit 4e4226dfef22e367dd7eb153f44578b7fc6bf67e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Mar 11 13:42:39 2011 +0000
+
+    caps-hash: use a switch and deal with all dataform field types
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |   51 +++++++++++++++++++++++++++++++++-------------
+ 1 files changed, 36 insertions(+), 15 deletions(-)
+
 commit 3f0a9c6a3d03e6dd92874fb328e637aecce782e4
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   Fri Mar 11 10:28:18 2011 +0000
@@ -2196,6 +2685,66 @@ Date:   Thu Mar 3 15:38:03 2011 +0000
  wocky/wocky-xmpp-reader.c |  181 +++++++++++++++++++++++++-------------------
  1 files changed, 103 insertions(+), 78 deletions(-)
 
+commit 22642c634a4f0ecc21fae76c0af049fa6277aeee
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 3 13:14:59 2011 +0000
+
+    caps-hash: bail on making the caps hash if parsing a dataform fails
+    
+    Also add a test! zomg!
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-caps-hash-test.c |   28 ++++++++++++++++++++++++++++
+ wocky/wocky-caps-hash.c      |    5 +++--
+ 2 files changed, 31 insertions(+), 2 deletions(-)
+
+commit e0bd0226312ac485e6b635e97593502d5537d86a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 3 11:06:35 2011 +0000
+
+    disco-identity: don't critical when trying to copy NULL
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-disco-identity.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 6790d6b9e64104fdc6aea6df994ccc4117a35d92
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 3 10:35:24 2011 +0000
+
+    caps-hash: display a warning when hitting an unknown data field type
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit a83447a22c090cfbf078849998a19a1979e474ea
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 3 10:28:41 2011 +0000
+
+    caps-hash: remove assertion that we have a FORM_TYPE field
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit df42485b6257086d177e92b326926934c1be4a68
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Mar 3 10:26:14 2011 +0000
+
+    data-form: clean up code for determining data form field types
+    
+    Thanks to William Thompson for the suggestion.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-data-form.c |   23 ++++++-----------------
+ 1 files changed, 6 insertions(+), 17 deletions(-)
+
 commit 55b4db92591ecc72bd5393d2ae66d84fbc8e9063
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Mon Feb 7 14:21:13 2011 +0100
@@ -2728,6 +3277,99 @@ Date:   Fri Feb 4 15:37:37 2011 +0000
  wocky/wocky-node.h |    3 +++
  2 files changed, 33 insertions(+), 0 deletions(-)
 
+commit 58d08be6bdbe119add2a6fb0ebe2298bb383c857
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 4 11:15:12 2011 +0000
+
+    caps-hash: allow @dataforms be NULL
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+commit 19a7d037cc4e1be0666e1f6528e09a58490d0524
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 4 11:09:06 2011 +0000
+
+    caps-hash-test: add a complex sorting test
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-caps-hash-test.c |  161 +++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 159 insertions(+), 2 deletions(-)
+
+commit 4386247cefa33464c7730c172bfe92ac6b0a4d3e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 4 11:08:40 2011 +0000
+
+    caps-hash: fix creating hash from node with multiple data forms
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit bfd5f5383dc9288e2f1e9ecaab0fdce846dc6553
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 4 11:08:25 2011 +0000
+
+    caps-hash: remove silly free function
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |   24 +++++++-----------------
+ 1 files changed, 7 insertions(+), 17 deletions(-)
+
+commit 8ff62bd7353593783f5c59f5b07720fc9ac1a146
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 4 10:42:08 2011 +0000
+
+    caps-hash: clarify dataforms_cmp
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |   20 ++++++--------------
+ 1 files changed, 6 insertions(+), 14 deletions(-)
+
+commit 9955dd81eba5477cecc2f321547dbc954971c8df
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 4 09:50:15 2011 +0000
+
+    caps-hash: also sort dataform fields
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |   10 ++++++++--
+ wocky/wocky-data-form.c |    9 +++++++++
+ wocky/wocky-data-form.h |    3 +++
+ 3 files changed, 20 insertions(+), 2 deletions(-)
+
+commit be9f692fd9e535b405e6835c17a9d8141d884cf7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Feb 4 09:49:18 2011 +0000
+
+    caps-hash: fix typo in dataform sorting code
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 1905ed28823b119eb0d290cc9a1ed79a50712963
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Feb 3 11:33:56 2011 +0000
+
+    caps-hash: ensure the features, identities and dataforms are sorted
+    
+    ...and add a test for it.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-caps-hash-test.c |   53 ++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-caps-hash.c      |   47 +++++++++++++++++++++++++++++--------
+ 2 files changed, 90 insertions(+), 10 deletions(-)
+
 commit 6a1374307087ae19db8df3059ac8c1057290e3e8
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Wed Dec 1 19:16:39 2010 +0000
@@ -2783,6 +3425,344 @@ Date:   Thu Jun 24 12:03:40 2010 +0100
 
  wocky/wocky-caps-cache.c |   75 ++++++++++++++++++++++++++++++++++-----------
  1 files changed, 56 insertions(+), 19 deletions(-)
+
+commit 863a47e086152ed72df3e59dec69bfb9266014c4
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jan 26 13:06:40 2011 +0000
+
+    disco-identity: add WOCKY_TYPE_... macro
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-disco-identity.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit efa313340ff1b5ed53030b8d23057f3e59e9a7df
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jan 26 10:31:16 2011 +0000
+
+    data-form: fix default type and text-multi detection
+    
+    The type defaults to text-single regardless of the existance of a
+    <value> child.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-data-form.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit cbc8ff8fa5d8acedeadb0ba18f313711ce661a47
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jan 26 09:47:10 2011 +0000
+
+    caps-hash: turn caps_hash_compute into wocky_caps_hash_compute_from_lists
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |   18 +++++++++++++++---
+ wocky/wocky-caps-hash.h |    6 +++++-
+ 2 files changed, 20 insertions(+), 4 deletions(-)
+
+commit 837b31eeef93f1c46692a76befa7f600c6594e65
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jan 26 09:32:48 2011 +0000
+
+    caps-hash: support multiple data forms
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |   77 ++++++++++++++++++++++++++++++++++++----------
+ 1 files changed, 60 insertions(+), 17 deletions(-)
+
+commit aac6f882e8bab79e51e20bf0fbee80ae86f9fd98
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jan 26 09:30:19 2011 +0000
+
+    data-form: add new_from_node function
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-data-form.c |   30 ++++++++++++++++++++++++------
+ wocky/wocky-data-form.h |    3 +++
+ 2 files changed, 27 insertions(+), 6 deletions(-)
+
+commit 578a1b74e9743d7a60373fb5074924a3108f49a0
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jan 26 09:17:08 2011 +0000
+
+    caps-hash: removed "wocky does not do..." comment
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+commit 5de07e3513f662160233165712fe5b9358f9a676
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jan 26 09:15:01 2011 +0000
+
+    caps-hash: fixed typo
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 2270ffc468ae4358144f10a0f8c2b3423b0d1ba8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Jan 26 09:14:21 2011 +0000
+
+    disco-identity: add cmp function
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c      |   17 ++++++-----------
+ wocky/wocky-disco-identity.c |   30 ++++++++++++++++++++++++++++++
+ wocky/wocky-disco-identity.h |    2 ++
+ 3 files changed, 38 insertions(+), 11 deletions(-)
+
+commit 27de40f87c5620f3cbf27ececfa30ccbe66b8124
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jan 25 17:35:24 2011 +0000
+
+    disco-identity: fix header guard
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-disco-identity.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit ca4e3f7ad0a6ef89b641f694258f0baf4fad7e7c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jan 25 17:32:49 2011 +0000
+
+    caps-hash: fix year
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    2 +-
+ wocky/wocky-caps-hash.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit b388359cecab1c354580fa98561fcff2534180c0
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jan 25 17:31:50 2011 +0000
+
+    disco-identity: style trivia
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-disco-identity.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 521cc33c40ec568c54dc2ad3a46d19a6596e2d59
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jan 25 17:28:21 2011 +0000
+
+    disco-identity: remove getters
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-disco-identity.c |   56 ------------------------------------------
+ wocky/wocky-disco-identity.h |   10 +++----
+ 2 files changed, 4 insertions(+), 62 deletions(-)
+
+commit 37f9038739938e8a6f2a339b81a34a32137cd7cd
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jan 25 17:02:40 2011 +0000
+
+    caps-cache: use WockyDataForm to parse the data forms
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |  215 +++++++++--------------------------------------
+ 1 files changed, 41 insertions(+), 174 deletions(-)
+
+commit 0f44eccae95249ecaec69715c380eb9707f24496
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jan 25 16:42:56 2011 +0000
+
+    data-form: detect whether we're actually text-multi
+    
+    We need this for this:
+    
+        http://xmpp.org/extensions/xep-0115.html#ver-gen-complex
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-data-form.c |   22 ++++++++++++++++++++--
+ 1 files changed, 20 insertions(+), 2 deletions(-)
+
+commit 9e5f94f4d87818126ca69988689ef66ba7d4dace
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jan 25 15:54:26 2011 +0000
+
+    data-form: allow type="result" as well as type="form"
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-data-form.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 2f3f9c890a76d630f72991f071819cac8ebf3fb9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jan 25 14:34:10 2011 +0000
+
+    tests: add caps hash test
+    
+    ...from Gabble.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/Makefile.am            |    9 +++-
+ tests/wocky-caps-hash-test.c |  114 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 121 insertions(+), 2 deletions(-)
+
+commit 9e15a33f9c8ac94448b33d7088f7a93cef8121a6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jan 25 14:33:33 2011 +0000
+
+    node: add attribute build tag for wocky_stanza_build
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-node.c |    9 +++++++++
+ wocky/wocky-node.h |    3 ++-
+ 2 files changed, 11 insertions(+), 1 deletions(-)
+
+commit f3c69e238ea1683a88978ac4c59031edd8af0870
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jan 25 10:54:23 2011 +0000
+
+    disco-identity: make a boxed type
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-disco-identity.c |    3 +++
+ wocky/wocky-disco-identity.h |    4 +++-
+ 2 files changed, 6 insertions(+), 1 deletions(-)
+
+commit a37948c77254c53fc830e527c3d6718e91df7ba9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Jan 25 10:54:07 2011 +0000
+
+    disco-identity: rename _get_type to _get_identity_type
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-disco-identity.c |    4 ++--
+ wocky/wocky-disco-identity.h |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 1efddcfc52f46202a516c97c754938528f635d83
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Jan 24 11:29:49 2011 +0000
+
+    disco-identity: add more documentation
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ docs/reference/wocky-docs.sgml |    1 +
+ wocky/wocky-disco-identity.c   |   87 ++++++++++++++++++++++++++++++++++++----
+ wocky/wocky-disco-identity.h   |   11 ++++-
+ 3 files changed, 89 insertions(+), 10 deletions(-)
+
+commit 72657801003469feab10665b32a582fbc6c08218
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Jan 24 11:26:38 2011 +0000
+
+    disco-identity: add some WARN_UNUSED_RESULTs
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-disco-identity.h |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+commit 704ce8ef6aac173f67164ab23e216cfd2afe5e2b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Jan 24 10:57:05 2011 +0000
+
+    caps-hash: add documentation
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ docs/reference/wocky-docs.sgml |    1 +
+ wocky/wocky-caps-hash.c        |   28 ++++++++++++++++------------
+ wocky/wocky-caps-hash.h        |    2 +-
+ 3 files changed, 18 insertions(+), 13 deletions(-)
+
+commit c08c0f7c002a8a1755f198367ced6858bdbf2253
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Mon Jan 24 10:50:35 2011 +0000
+
+    caps-cache: remove copy-paste error in documentation
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-cache.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 339635a4b2129f585ae720dde3af8ccfc81730ea
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Jan 21 16:34:53 2011 +0000
+
+    caps-hash: use wocky_node convenience functions
+    
+    WockyNode knows that xml:lang and xmlns attributes mean a bit more
+    than an attribute with those names.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 469d81f9f36fb35ab2947eaadbc452bf00b6418a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Fri Jan 21 16:34:42 2011 +0000
+
+    caps-hash: fix typo
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit dbcc556adcf59612ee231ab410ff6115b83c0d6f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Jan 20 14:13:39 2011 +0000
+
+    caps-hash: make build in Wocky and rename s/gabble/wocky/g
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |  218 +++++++++++++++++------------------------------
+ wocky/wocky-caps-hash.h |   10 +--
+ 2 files changed, 81 insertions(+), 147 deletions(-)
+
+commit 8ebef4c221f56c55d175af880b1bda99cf0efcfe
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Jan 20 14:13:29 2011 +0000
+
+    disco-identity: add from Gabble
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/Makefile.am            |    4 +
+ wocky/wocky-disco-identity.c |  160 ++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-disco-identity.h |   58 +++++++++++++++
+ 3 files changed, 222 insertions(+), 0 deletions(-)
+
+commit 2c648be4944d3f65032fe2c5ad96ddcf58aaf852
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Jan 20 13:34:10 2011 +0000
+
+    caps-hash: add caps-hash.[ch] from gabble
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |  439 +++++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-caps-hash.h |   32 ++++
+ 2 files changed, 471 insertions(+), 0 deletions(-)
 
 commit b3812fad955afdbf21602039035ae9c377e99d5d
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>

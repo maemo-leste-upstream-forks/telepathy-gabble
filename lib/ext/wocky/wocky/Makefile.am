@@ -52,11 +52,13 @@ handwritten_headers = \
   wocky-c2s-porter.h \
   wocky-caps-cache.h \
   wocky-ll-connection-factory.h \
+  wocky-caps-hash.h \
   wocky-connector.h \
   wocky-contact.h \
   wocky-contact-factory.h \
   wocky-data-form.h \
   wocky-debug.h \
+  wocky-disco-identity.h \
   wocky-heartbeat-source.h \
   wocky-jabber-auth.h \
   wocky-jabber-auth-digest.h \
@@ -92,6 +94,7 @@ handwritten_headers = \
   wocky-tls-connector.h \
   wocky-types.h \
   wocky-utils.h \
+  wocky-xep-0115-capabilities.h \
   wocky-xmpp-connection.h \
   wocky-xmpp-error.h \
   wocky-xmpp-reader.h \
@@ -105,11 +108,13 @@ handwritten_sources = \
   wocky-c2s-porter.c \
   wocky-caps-cache.c \
   wocky-ll-connection-factory.c \
+  wocky-caps-hash.c \
   wocky-connector.c \
   wocky-contact.c \
   wocky-contact-factory.c \
   wocky-data-form.c \
   wocky-debug.c \
+  wocky-disco-identity.c \
   wocky-heartbeat-source.c \
   wocky-jabber-auth.c \
   wocky-jabber-auth-digest.c \
@@ -139,6 +144,7 @@ handwritten_sources = \
   wocky-utils.c \
   wocky-tls-handler.c \
   wocky-tls-connector.c \
+  wocky-xep-0115-capabilities.c \
   wocky-xmpp-connection.c \
   wocky-xmpp-error.c \
   wocky-xmpp-reader.c \

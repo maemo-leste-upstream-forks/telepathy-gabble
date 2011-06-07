@@ -1,0 +1,535 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyDataForm</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="wocky-wocky-data-form-enumtypes.html" title="wocky-data-form-enumtypes">
+<link rel="next" href="wocky-wocky-debug.html" title="wocky-debug">
+<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="wocky-wocky-data-form-enumtypes.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="wocky-wocky-debug.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockyDataForm.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockyDataForm.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#wocky-WockyDataForm.object-hierarchy" class="shortcut">Object Hierarchy</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="wocky-WockyDataForm"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockyDataForm.top_of_page"></a>WockyDataForm</span></h2>
+<p>WockyDataForm — An object to represent an XMPP data form</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="wocky-WockyDataForm.synopsis"></a><h2>Synopsis</h2>
+<a name="WockyDataFormFieldType"></a><a name="WockyDataFormError"></a><pre class="synopsis">
+#include &lt;wocky/wocky-data-form.h&gt;
+
+enum                <a class="link" href="wocky-WockyDataForm.html#WockyDataFormFieldType">WockyDataFormFieldType</a>;
+struct              <a class="link" href="wocky-WockyDataForm.html#WockyDataFormFieldOption" title="struct WockyDataFormFieldOption">WockyDataFormFieldOption</a>;
+struct              <a class="link" href="wocky-WockyDataForm.html#WockyDataFormField" title="struct WockyDataFormField">WockyDataFormField</a>;
+enum                <a class="link" href="wocky-WockyDataForm.html#WockyDataFormError">WockyDataFormError</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-error-quark" title="wocky_data_form_error_quark ()">wocky_data_form_error_quark</a>         (<em class="parameter"><code><span class="type">void</span></code></em>);
+#define             <a class="link" href="wocky-WockyDataForm.html#WOCKY-DATA-FORM-ERROR:CAPS" title="WOCKY_DATA_FORM_ERROR">WOCKY_DATA_FORM_ERROR</a>
+struct              <a class="link" href="wocky-WockyDataForm.html#WockyDataFormClass" title="struct WockyDataFormClass">WockyDataFormClass</a>;
+<span class="returnvalue">WockyDataForm</span> *     <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-new-from-form" title="wocky_data_form_new_from_form ()">wocky_data_form_new_from_form</a>       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">WockyDataForm</span> *     <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-new-from-node" title="wocky_data_form_new_from_node ()">wocky_data_form_new_from_node</a>       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *x</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-set-type" title="wocky_data_form_set_type ()">wocky_data_form_set_type</a>            (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *form_type</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-set-boolean" title="wocky_data_form_set_boolean ()">wocky_data_form_set_boolean</a>         (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *field_name</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> field_value</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> create_if_missing</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-set-string" title="wocky_data_form_set_string ()">wocky_data_form_set_string</a>          (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *field_name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *field_value</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> create_if_missing</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-set-strv" title="wocky_data_form_set_strv ()">wocky_data_form_set_strv</a>            (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *field_name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> * const *field_values</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> create_if_missing</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-submit" title="wocky_data_form_submit ()">wocky_data_form_submit</a>              (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-parse-result" title="wocky_data_form_parse_result ()">wocky_data_form_parse_result</a>        (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-get-title" title="wocky_data_form_get_title ()">wocky_data_form_get_title</a>           (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-get-instructions" title="wocky_data_form_get_instructions ()">wocky_data_form_get_instructions</a>    (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-field-cmp" title="wocky_data_form_field_cmp ()">wocky_data_form_field_cmp</a>           (<em class="parameter"><code>const <a class="link" href="wocky-WockyDataForm.html#WockyDataFormField" title="struct WockyDataFormField"><span class="type">WockyDataFormField</span></a> *left</code></em>,
+                                                         <em class="parameter"><code>const <a class="link" href="wocky-WockyDataForm.html#WockyDataFormField" title="struct WockyDataFormField"><span class="type">WockyDataFormField</span></a> *right</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-add-to-node" title="wocky_data_form_add_to_node ()">wocky_data_form_add_to_node</a>         (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
+                    <a class="link" href="wocky-WockyDataForm.html#WockyDataFormPrivate" title="WockyDataFormPrivate">WockyDataFormPrivate</a>;
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyDataForm.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GEnum
+   +----WockyDataFormFieldType
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----WockyDataFormError
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyDataForm.description"></a><h2>Description</h2>
+<p>
+An object that represents an XMPP data form as described in
+XEP-0004.
+</p>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyDataForm.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyDataFormFieldType"></a><h3>enum WockyDataFormFieldType</h3>
+<pre class="programlisting">typedef enum
+{
+  WOCKY_DATA_FORM_FIELD_TYPE_UNSPECIFIED, /*&lt; skip &gt;*/
+  WOCKY_DATA_FORM_FIELD_TYPE_BOOLEAN,
+  WOCKY_DATA_FORM_FIELD_TYPE_FIXED,
+  WOCKY_DATA_FORM_FIELD_TYPE_HIDDEN,
+  WOCKY_DATA_FORM_FIELD_TYPE_JID_MULTI,
+  WOCKY_DATA_FORM_FIELD_TYPE_JID_SINGLE,
+  WOCKY_DATA_FORM_FIELD_TYPE_LIST_MULTI,
+  WOCKY_DATA_FORM_FIELD_TYPE_LIST_SINGLE,
+  WOCKY_DATA_FORM_FIELD_TYPE_TEXT_MULTI,
+  WOCKY_DATA_FORM_FIELD_TYPE_TEXT_PRIVATE,
+  WOCKY_DATA_FORM_FIELD_TYPE_TEXT_SINGLE
+} WockyDataFormFieldType;
+</pre>
+<p>
+Data form field types, as documented in XEP-0004 §3.3.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-FIELD-TYPE-UNSPECIFIED:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_UNSPECIFIED</code></span></p></td>
+<td>Unspecified field type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-FIELD-TYPE-BOOLEAN:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_BOOLEAN</code></span></p></td>
+<td>Boolean field type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-FIELD-TYPE-FIXED:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_FIXED</code></span></p></td>
+<td>Fixed description field type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-FIELD-TYPE-HIDDEN:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_HIDDEN</code></span></p></td>
+<td>Hidden field type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-FIELD-TYPE-JID-MULTI:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_JID_MULTI</code></span></p></td>
+<td>A list of multiple JIDs
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-FIELD-TYPE-JID-SINGLE:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_JID_SINGLE</code></span></p></td>
+<td>A single JID
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-FIELD-TYPE-LIST-MULTI:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_LIST_MULTI</code></span></p></td>
+<td>Many options to choose one
+  or more from
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-FIELD-TYPE-LIST-SINGLE:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_LIST_SINGLE</code></span></p></td>
+<td>Many options to choose one
+  from
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-FIELD-TYPE-TEXT-MULTI:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_TEXT_MULTI</code></span></p></td>
+<td>Multiple lines of text
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-FIELD-TYPE-TEXT-PRIVATE:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_TEXT_PRIVATE</code></span></p></td>
+<td>A single line of text
+  that should be obscured (by, say, asterisks)
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-FIELD-TYPE-TEXT-SINGLE:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_TEXT_SINGLE</code></span></p></td>
+<td>A single line of text
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyDataFormFieldOption"></a><h3>struct WockyDataFormFieldOption</h3>
+<pre class="programlisting">struct WockyDataFormFieldOption {
+  gchar *label;
+  gchar *value;
+};
+</pre>
+<p>
+A single data form field option.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDataFormFieldOption.label"></a>label</code></em>;</span></p></td>
+<td>the option label</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDataFormFieldOption.value"></a>value</code></em>;</span></p></td>
+<td>the option value</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyDataFormField"></a><h3>struct WockyDataFormField</h3>
+<pre class="programlisting">struct WockyDataFormField {
+  WockyDataFormFieldType type;
+  gchar *var;
+  gchar *label;
+  gchar *desc;
+  gboolean required;
+  GValue *default_value;
+  /* a GStrv of actual values so can be {"1", NULL} or {"false", NULL}
+   * for BOOLEAN or {"hi", "there", NULL} TEXT_MULTI, for example. */
+  gchar **raw_value_contents;
+  GValue *value;
+  /* for LIST_MULTI and LIST_SINGLE only.
+   * List of (WockyDataFormFieldOption *)*/
+  GSList *options;
+};
+</pre>
+<p>
+Details about a single data form field in a <span class="type">WockyDataForm</span>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><a class="link" href="wocky-WockyDataForm.html#WockyDataFormFieldType"><span class="type">WockyDataFormFieldType</span></a> <em class="structfield"><code><a name="WockyDataFormField.type"></a>type</code></em>;</span></p></td>
+<td>the type of the field</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDataFormField.var"></a>var</code></em>;</span></p></td>
+<td>the field name</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDataFormField.label"></a>label</code></em>;</span></p></td>
+<td>the label of the field</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDataFormField.desc"></a>desc</code></em>;</span></p></td>
+<td>the description of the field</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="WockyDataFormField.required"></a>required</code></em>;</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the field is required, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *<em class="structfield"><code><a name="WockyDataFormField.default-value"></a>default_value</code></em>;</span></p></td>
+<td>the default of the field</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **<em class="structfield"><code><a name="WockyDataFormField.raw-value-contents"></a>raw_value_contents</code></em>;</span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *<em class="structfield"><code><a name="WockyDataFormField.value"></a>value</code></em>;</span></p></td>
+<td>the field value</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="type">GSList</span></a> *<em class="structfield"><code><a name="WockyDataFormField.options"></a>options</code></em>;</span></p></td>
+<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="type">GSList</span></a> of <a class="link" href="wocky-WockyDataForm.html#WockyDataFormFieldOption" title="struct WockyDataFormFieldOption"><span class="type">WockyDataFormFieldOption</span></a>s if <em class="parameter"><code>type</code></em>
+if <a class="link" href="wocky-WockyDataForm.html#WOCKY-DATA-FORM-FIELD-TYPE-LIST-MULTI:CAPS"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_LIST_MULTI</code></a> or
+<a class="link" href="wocky-WockyDataForm.html#WOCKY-DATA-FORM-FIELD-TYPE-LIST-SINGLE:CAPS"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_LIST_SINGLE</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyDataFormError"></a><h3>enum WockyDataFormError</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_DATA_FORM_ERROR_NOT_FORM,
+  WOCKY_DATA_FORM_ERROR_WRONG_TYPE,
+} WockyDataFormError;
+</pre>
+<p>
+<span class="type">WockyDataForm</span> specific errors.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-ERROR-NOT-FORM:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_ERROR_NOT_FORM</code></span></p></td>
+<td>Node is not a data form
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-DATA-FORM-ERROR-WRONG-TYPE:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_ERROR_WRONG_TYPE</code></span></p></td>
+<td>Data form is of the wrong type
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-error-quark"></a><h3>wocky_data_form_error_quark ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_data_form_error_quark         (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WOCKY-DATA-FORM-ERROR:CAPS"></a><h3>WOCKY_DATA_FORM_ERROR</h3>
+<pre class="programlisting">#define WOCKY_DATA_FORM_ERROR (wocky_data_form_error_quark ())
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyDataFormClass"></a><h3>struct WockyDataFormClass</h3>
+<pre class="programlisting">struct WockyDataFormClass {
+};
+</pre>
+<p>
+The class of a <span class="type">WockyDataForm</span>.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-new-from-form"></a><h3>wocky_data_form_new_from_form ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyDataForm</span> *     wocky_data_form_new_from_form       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-new-from-node"></a><h3>wocky_data_form_new_from_node ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyDataForm</span> *     wocky_data_form_new_from_node       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *x</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-set-type"></a><h3>wocky_data_form_set_type ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_data_form_set_type            (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *form_type</code></em>);</pre>
+<p>
+Creates a hidden FORM_TYPE field in <em class="parameter"><code>self</code></em> and sets its value to <em class="parameter"><code>form_type</code></em>.
+This is intended only to be used on empty forms created for blind
+submission.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <span class="type">WockyDataForm</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>form_type</code></em> :</span></p></td>
+<td>the URI to use as the FORM_TYPE field; may not be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the form's type was set; <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if the form already had a
+type.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-set-boolean"></a><h3>wocky_data_form_set_boolean ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_data_form_set_boolean         (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *field_name</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> field_value</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> create_if_missing</code></em>);</pre>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a data form</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>field_name</code></em> :</span></p></td>
+<td>the name of a boolean field of <em class="parameter"><code>self</code></em>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>field_value</code></em> :</span></p></td>
+<td>the value to fill in for <em class="parameter"><code>field_name</code></em>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>create_if_missing</code></em> :</span></p></td>
+<td>if no field named <em class="parameter"><code>field_name</code></em> exists, create it</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the field was successfully filled in; <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if the field
+did not exist or does not accept a boolean</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-set-string"></a><h3>wocky_data_form_set_string ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_data_form_set_string          (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *field_name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *field_value</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> create_if_missing</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-set-strv"></a><h3>wocky_data_form_set_strv ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_data_form_set_strv            (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *field_name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> * const *field_values</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> create_if_missing</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-submit"></a><h3>wocky_data_form_submit ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_data_form_submit              (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
+<p>
+Adds a node tree which submits <em class="parameter"><code>self</code></em> based on the current values set on
+<em class="parameter"><code>self</code></em>'s fields.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a data form</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a node to which to add a form submission</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-parse-result"></a><h3>wocky_data_form_parse_result ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_data_form_parse_result        (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-get-title"></a><h3>wocky_data_form_get_title ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_data_form_get_title           (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-get-instructions"></a><h3>wocky_data_form_get_instructions ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_data_form_get_instructions    (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-field-cmp"></a><h3>wocky_data_form_field_cmp ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                wocky_data_form_field_cmp           (<em class="parameter"><code>const <a class="link" href="wocky-WockyDataForm.html#WockyDataFormField" title="struct WockyDataFormField"><span class="type">WockyDataFormField</span></a> *left</code></em>,
+                                                         <em class="parameter"><code>const <a class="link" href="wocky-WockyDataForm.html#WockyDataFormField" title="struct WockyDataFormField"><span class="type">WockyDataFormField</span></a> *right</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-data-form-add-to-node"></a><h3>wocky_data_form_add_to_node ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_data_form_add_to_node         (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
+<p>
+Adds a node tree with default values of <em class="parameter"><code>self</code></em> based on the defaults
+set on each field when first created.
+</p>
+<p>
+This function is for adding a data form to an existing node, like
+the query node of a disco response. <a class="link" href="wocky-WockyDataForm.html#wocky-data-form-submit" title="wocky_data_form_submit ()"><code class="function">wocky_data_form_submit()</code></a>, in
+contrast, is for adding a node tree which submits the data form
+based on the current values set on its fields.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>the <span class="type">WockyDataForm</span> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a node to which to add the form</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyDataFormPrivate"></a><h3>WockyDataFormPrivate</h3>
+<pre class="programlisting">typedef struct _WockyDataFormPrivate WockyDataFormPrivate;</pre>
+<p>
+</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.17</div>
+</body>
+</html>

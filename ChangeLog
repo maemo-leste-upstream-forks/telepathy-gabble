@@ -1,3 +1,534 @@
+commit c4a118850bcaccd6502b6a19cbb61238de1d157e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-02 19:20:59 +0100
+
+    Version 0.13.0
+
+commit 3fbd382bf99ce3584d9e167f60c47b9f973cd8c3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-02 19:20:36 +0100
+
+    NEWS for 0.13.0
+
+commit 9f1fa8b567e7f792013ab8a624ad46aa0735e606
+Merge: 8d5a2f5 828f2e7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-02 17:10:08 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+    
+    Conflicts:
+    	configure.ac
+    	lib/ext/wocky
+
+commit 828f2e79137acfd1079a6d1efcc527d8bec724b1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-02 17:06:55 +0100
+
+    Post-release nano-version and NEWS bump
+
+commit fe551853438ca44f6f28e5ce334a53e9b9c6b693
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-02 16:11:37 +0100
+
+    Version 0.12.1
+
+commit dbc9a937f335ac403436c6fddbd0129693247e49
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-02 16:08:51 +0100
+
+    NEWS for 0.12.1
+
+commit b756564ad0a27e1d210b38bf7583ec41d7007574
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-01 14:54:45 +0100
+
+    httptest: chain up from HTTPFactory constructor.
+    
+    This fixes jingle/google-relay.py with recent versions of Twisted Web.
+
+commit 8f19db01eac316b81d76f4533399fac2d05d72ac
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-02 14:59:09 +0100
+
+    Update Wocky snapshot to fix self avatar in MUCs
+    
+    (That is: fd.o#32017)
+
+commit 8d5a2f593c4f6c3b2db161be74a03bb3f05270b9
+Merge: 5bfe3ed 34b9066
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-01 18:12:51 +0100
+
+    Merge branch 'fd.o-32017-muc-self-avatar'
+
+commit 34b90665e4860ff5dc022cc7549f070d1de645de
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-31 15:07:24 +0100
+
+    Add a regression test for avatars in MUCs.
+
+commit ef057a2fb297ce639618e89dae4b6cdbd732ff3c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-31 17:42:51 +0100
+
+    Update Wocky snapshot for WockyMuc changes
+    
+    This update changes the signature of various signals to include MUC
+    status codes as bits in a guint rather than in a hash table. It also
+    fixes WockyMuc stealing <presence/> stanzas before Gabble's handlers
+    have a chance to get stuff out of them; test for that to follow.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=32017> but I am not
+    very happy with the fix.
+
+commit 4f80d8e0aa86a0b8759c29f0e9e91aaeb909e76e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-31 15:14:46 +0100
+
+    mucutil: return event from try_to_join_muc
+
+commit 0fb508d1b269069aa25f701f82e14060b90051ef
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-01 14:54:45 +0100
+
+    httptest: chain up from HTTPFactory constructor.
+    
+    This fixes jingle/google-relay.py with recent versions of Twisted Web.
+
+commit 5bfe3ede2c17b7dd10d258e5661892967cabcc60
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-24 19:41:00 +0100
+
+    Explicitly cast to guint64 when passing varargs
+    
+    Without any additional type information, integers used in varargs lists
+    can get passed as the wrong type. In this call to tp_value_array_build()
+    in gabble_muc_channel_constructed(), we should be passing 0 as a a
+    gint64, but I think in practice we're passing it as a pointer-sized
+    thing. (I'm not a C language lawyer, I'm sure someone could correct me
+    on this.) If the type we're passing it as is not the same size as a
+    gint64, this will cause tp_value_array_build() to read off the end of
+    its varargs, probably crashing in the process (because what it reads
+    will probably not be a valid GType).
+    
+    The other call to tp_value_array_build() added in ec8ca6e (for the Room
+    interface) does cast correctly.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=37165>
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 9b81db6ba12edb6e5c8f9b901f83b9a92d9e23fa
+Merge: e27aa6f 04f044f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-24 14:17:52 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+
+commit 04f044fe0ce68dd73d6bb92477106a09fd43dbdd
+Merge: 53401b9 487dce0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-24 14:17:17 +0100
+
+    Merge remote-tracking branch 'origin/telepathy-gabble-0.12' into telepathy-gabble-0.12
+
+commit e27aa6f6fd58533c22b0a2c30579f969378bad3e
+Merge: efaebdd 53401b9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-24 14:16:31 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+
+commit 53401b9d16dc6ed2c2e15b7af5f7c2ad254aac1f
+Author: Chandni Verma <chandniverma2112@gmail.com>
+Date:   2011-05-10 20:25:43 +0530
+
+    Filter out google-rbc-announcement messages
+    
+    They are server generated containing no interesting information
+    and appear in clients as if sent by peer
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=36647
+
+commit efaebdd96fdfec40aec3e257176e9d16faf44112
+Author: Debarshi Ray <rishi@gnu.org>
+Date:   2011-05-24 01:49:08 +0530
+
+    Update wocky (fixes build failure with GCC 4.6)
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=37518>
+
+commit 51fdf722717a5646116b554f5feb860d82a26566
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2011-05-23 19:43:57 +0530
+
+    fixes : telepathy gabble build break
+    
+    build breaks due to my previous two patches when doing make check
+    this commit fixes those errors
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 1794df70dd67d70e6c8649e47a4f3719fee268d7
+Merge: 987722a 4087b2a
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-23 14:18:37 +0100
+
+    Merge branch 'error_reports'
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 4087b2a87a9ceb6553030f3514771e7e8ffaf2f8
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2011-05-20 23:52:14 +0530
+
+    gabble_message_util_build_stanza: clearer renaming of variables
+    
+    The commit renames INVALID_ARGUMENT to RETURN_INVALID_ARGUMENT,
+    and msg to stanza renamed msg to stanza, the difference between
+    message (a TpMessagerepresenting an abstract message) and msg
+    (a WockyStanza representing an XMPPXML stanza) would be clearer.
+    (based on the comments by:Simon McVittie on f.d.o BUG#33460)
+
+commit 1c86beea6be1cb0b5b946da2345d98139072a3ea
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2011-04-28 18:53:23 +0530
+
+    Fixes : fd.o#33460  by using wocky_porter_send_async()
+    
+    Bug - 33460 - IM and MUC channels should use wocky_porter_send_async(),
+    and emit failing delivery reports
+    
+    url : https://bugs.freedesktop.org/show_bug.cgi?id=33460
+
+commit 5aa9d93472ba3a90410496f453d861ce16f6bd5a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-19 16:47:11 +0100
+
+    Smoke-test MUC delivery report flags
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 5ba21edcf88ef60be5558acc0b0259b5f29e98e9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-05-18 16:06:52 +0100
+
+    muc-factory: don't use a string after freeing it
+    
+    Uh oh!
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 987722a87f929035c4c6dcbcd069e0ba414b25ee
+Merge: ba3c764 487dce0
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-17 16:42:29 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+
+commit 487dce00f8f54ea30edb807b1e1c8eb3c717a85d
+Merge: e704ea0 a776a13
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-17 16:33:19 +0100
+
+    Merge branch 'shared-presence' into telepathy-gabble-0.12
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=37283>
+
+commit a776a13404c9af8f29a0e52d8645bd66622c27d4
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-17 11:41:47 +0100
+
+    presence/shared-status.py: test that remote presence doesn't override away
+
+commit ba640e0f9d1fd0ab7aa42e21ec5ad2f2bee5622b
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-17 15:51:34 +0100
+
+    presence/shared-status.py: don't use a weird and avoidable "or" construct
+
+commit ca600286bd3f42771a2b8bd35ca2e5d278644d45
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-17 11:39:40 +0100
+
+    conn-presence.c: don't override away when the remote status changes
+
+commit ba3c764bf634fad3af4ca0a8f35b180ca9ba221d
+Merge: 52b2d76 e704ea0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2011-05-16 10:12:01 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+
+commit e704ea03ac1cc6a4e38670e3b8f89386154f8894
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2011-05-10 18:52:07 +0100
+
+    set_status_to_connected: do nothing if we already disconnected
+    
+    Now that we're making more use of GAsyncResult, we can easily get into
+    this situation:
+    
+    * all but one of the preconditions for being CONNECTED have happened;
+      the remaining one uses GAsyncResult (currently that can only be
+      conn_presence_set_initial_presence_async)
+    
+    * conn_presence_set_initial_presence succeeds, and schedules a call
+      to its callback in an idle; we are now ready to be CONNECTED, but because
+      of GAsyncResult calling conventions, we won't call the callback right now
+    
+    * someone calls Disconnect(), and we do so, synchronously; we are now
+      DISCONNECTED
+    
+    * the idle goes off and connection_initial_presence_cb is called,
+      with success, while DISCONNECTED!
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=37078
+    Reviewed-by: Vivek Dasmohapatra <vivek@collabora.co.uk>
+
+commit 52b2d7691404457a559fc3fbb09e6f064d7dc33b
+Merge: 02ad9c4 8f08873
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-12 16:55:32 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+
+commit 8f088732c364f1b77f805d65590e30abaf61a707
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-12 16:40:38 +0100
+
+    conn-presence.c: remove a line forgotten when fixing a merge conflict
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 02ad9c4dcb40e047eab8fb8777ddf1ccb5e35dce
+Author: Debarshi Ray <rishi@gnu.org>
+Date:   2011-05-12 10:10:23 +0300
+
+    Update the release mail automation script to contain the Git URL
+
+commit 44c5d0ec3de8014efa79f15d85c630ee120db0c9
+Merge: d4ddbf7 f99b6f4
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-12 14:20:11 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+
+commit f99b6f43f92299c7eb99ccbfef7b806f5b52c1de
+Merge: fe15601 d5421d1
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-12 13:07:21 +0100
+
+    Merge branch 'shared-presence' into telepathy-gabble-0.12
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=37069>
+
+commit d5421d18d1fcb03a86ecfb81e37029c3f015c791
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-10 18:46:05 +0100
+
+    conn-presence.c: handle the transition from hidden to away on GTalk
+
+commit d895028ef03577768e19476e263455e7f7cbe4a7
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-10 18:33:12 +0100
+
+    conn-presence.c: add a function to know if a GabblePresenceId is away
+
+commit c5fc80a4d42c794d43332b3626e9ec50ea03580a
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-10 14:33:22 +0100
+
+    conn-presence.c: leave an away status using <presence/> too
+    
+    When setting an away status on a server that supports shared status, we
+    need to use <presence/> instead of shared status. When we then leave the
+    away status, we want to use the shared status, but GTalk also expects us
+    to also send a <presence/>.
+
+commit 1ee540de1b939c676a76cbcf046a4cfb7b77deab
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-10 18:47:06 +0100
+
+    presence/shared-status.py: test the transition from hidden to away
+
+commit 951991f33fea6525469cb712d205ffd1ba2b1eec
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-10 14:29:06 +0100
+
+    presence/shared-status.py: test the transition from away to non-away
+
+commit d669b203f4c09396b3ff04c6dd392c314211ee59
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-10 14:04:34 +0100
+
+    presence/shared-status.py: fix a typo (even → event)
+
+commit cb9807eb74a70df762d173b57ee04368572c1113
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-10 13:57:36 +0100
+
+    presence/shared-status.py: don't unforbid events too early
+
+commit d4ddbf79d3b4b845a01cdfcfb14b024d69105dc4
+Merge: 6ad9e1e b85a525
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-05-06 11:34:42 +0100
+
+    Merge branch 'room'
+    
+    Conflicts:
+    	src/muc-channel.c
+    	tests/twisted/constants.py
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 6ad9e1e3d6a553405394032ae7258beff37c6f2a
+Merge: d467f27 fe15601
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-05 15:26:02 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+
+commit fe156016db44b3cfd8bb3276d3c5a8944e7ff22f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-15 14:27:07 +0100
+
+    Don't assume google:queue support from google:roster
+    
+    Dave Cridland asked the Google Talk server team to advertise a
+    google:queue stream feature, and as of this month some time, they do! So
+    we can stop looking for google:roster as well.
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=36260>
+
+commit 5d2927d9155d2388145406c189fdf9d9f8dfcac6
+Merge: cacd814 e4ae0fe
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-05 15:01:59 +0100
+
+    Merge branch 'shared-presence' into telepathy-gabble-0.12
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=36058>
+
+commit e4ae0fe527dbbffe403026b25eb4c44b3b325715
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-03 18:43:22 +0100
+
+    presence/shared-status.py: test that "chat" falls back to "available"
+
+commit d010bb78008681707fc6cd4b4c2393c15affd442
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-03 18:41:05 +0100
+
+    conn-presence.c: don't allow the "chat" status when using shared status
+
+commit 42ca8dd32fa930c85fcdddc16b64220d45429f4f
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-03 16:19:06 +0100
+
+    conn-presence.c: simplify the non-connected case in status_available_cb
+
+commit 49633baeb861f9798cf87809f7421a087e9c9cff
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-04-18 18:32:39 +0100
+
+    presence/shared-status.py: always expect an initial <presence/>
+
+commit c2b8e2d64edfec296554f72a2d59cca26cbacfe4
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-04-18 18:29:20 +0100
+
+    conn-presence.c: send an initial <presence/> when using shared status
+
+commit c0ff90f6850ff80e682a86d45a4a5bda27e75425
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-04 11:54:25 +0100
+
+    presence/invisible_helper.py: don't handle privacy lists in XmppXmlStream
+
+commit 6bc9759f7140d0ac544659a4a6776c57e405699f
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-05-04 11:53:14 +0100
+
+    presence/shared-status.py: don't allow privacy list stanzas
+
+commit d04b628113fb93300f6dc82e88addbcf1e58b80e
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-04-15 17:13:11 +0100
+
+    conn-presence.c: don't try privacy lists when using shared status
+
+commit 06cc941cbada06c876e922df097d93956d88e00f
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-04-07 18:44:14 +0100
+
+    presence/shared-status.py: test the correct behaviour with away and xa
+
+commit 2a53547a92ec30a31cf4442e60f3f318269952d6
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-04-07 18:41:30 +0100
+
+    conn-presence.c: don't use shared presence for away statuses
+    
+    Away and extended away are mapped to idle in GTalk and are per
+    connection, so they are not set through shared presence.
+
+commit 2fb53a5a09c7dea0eee5bf7f54ab0d6c24e8b246
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-04-07 18:40:43 +0100
+
+    conn-presence.c: fix indentation
+
+commit c49ea89ae115ad8a0c537a1a491a79604c819072
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-04-07 18:38:53 +0100
+
+    conn-presence.c: don't send <presence/> if we already used shared status
+
+commit d467f276329264be0b24f5af6c854fd7a182b531
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-05 12:05:33 +0100
+
+    Bump micro version for unstable branch.
+    
+    The next release from master will be 0.13.0
+
+commit 160289f855182e9e2d00a91b38541d8e989eee17
+Merge: 4722b73 0d865ef
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-05-02 09:32:54 +0100
+
+    Merge branch 'caps-hash'
+
+commit 0d865efce5ca0840925abdca673a3f171258f767
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-05-02 09:11:57 +0100
+
+    caps-hash test: removed
+    
+    This has moved to wocky.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 4722b731516f98a810b97d1be0c5762cb87d9432
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-05-02 09:32:02 +0100
+
+    update wocky snapshot
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit cacd8147f3d0c0f4b0b851731b76dcacb4a9fb35
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-04-21 18:48:03 +0100
+
+    naaaa nanananano version katamari damacy
+
 commit 0622a8b21a3a0d8a52f12719b1d809d775ec6bb3
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2011-04-21 18:30:11 +0100
@@ -1662,6 +2193,55 @@ Date:   2011-02-04 16:07:20 +0000
     
     Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
+commit 8b00635e0c048bae7219c06f5e18ac8b33a9dacf
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-04 11:16:15 +0000
+
+    caps-hash: misc fixes to cleanup code
+    
+    wocky_caps_hash_compute_from_lists allows dataforms to be NULL if
+    there aren't any and will no longer assert on dataforms=NULL.
+    
+    Also, we no longer dup the feature strings as we free the pointer
+    array in the same function so we know what the memory allocation of
+    the array is.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit d34197fb00196aff94142d38216acf4efc36d2af
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-04 10:21:09 +0000
+
+    caps-hash: use wocky_caps_hash_compute_from_lists
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c7bba6807c7c236a3a7c7121e1e096f626c56dcb
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-04 10:19:31 +0000
+
+    connection: clarify add_sidecar_own_caps' identity arg
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 0917818df48202cf979e5911c968966b6384a84a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-04 10:19:14 +0000
+
+    presence-cache: don't try and copy a NULL disco identity array
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c330f99490d65b87698ecc3677cc7a521955a74a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-03 09:32:28 +0000
+
+    caps-hash: remove anything to do with dataforms
+    
+    We don't need it for self presence, and we're moving to Wocky.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit 52157c4a2edc830ba2fc523c17cd0767980e93d1
 Merge: cc19d6c 828040c
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -1986,6 +2566,32 @@ Date:   2011-01-24 10:42:08 +0000
     
     Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=32390>
 
+commit bfd15d09556a01079842e5f56b2fb3729f991cf8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-24 13:05:41 +0000
+
+    caps-hash: remove _from_lm_node
+    
+    We're slowly moving this into Wocky.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 969c73f63979dada565e9c36d51d34da0e5a68c3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-24 13:04:21 +0000
+
+    disco-identity: remove
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit df58879f27bced1367fe3c9011cce733952cfae5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-24 12:48:17 +0000
+
+    use WockyDiscoIdentity instead of the gabble version
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit d8c637f34cd2fada64244ce8f498e40fc7c6737b
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2011-01-24 10:29:10 +0000
@@ -1998,6 +2604,14 @@ Date:   2011-01-24 10:29:10 +0000
     in use.
     
     This already works, but previously wasn't tested.
+
+commit 926a07f594b303888ab98fe71735d288dfaf62cf
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-24 12:47:57 +0000
+
+    use wocky_caps_hash_ functions
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
 commit 76ba06a5def87adbd61040e890c7988851b57e41
 Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
@@ -2337,6 +2951,24 @@ Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   2011-01-13 10:13:33 +0000
 
     connection: document more why we need the IM factory in the private struct
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b85a52558e9260cf28dba25b60f894aa8075383c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-13 09:20:14 +0000
+
+    muc-factory: remove more assertions with side effects
+    
+    I forgot these last time, whoops.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 0986e22bcbff90cc12d4bef5cf27e42d8bde9853
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-13 09:18:14 +0000
+
+    muc-factory: improve debug messages when TargetID and room props conflict
     
     Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
@@ -2705,6 +3337,62 @@ Date:   2011-01-05 19:47:42 +0100
     
     Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
+commit 9806dea0ec26d3803f6f05e12666296bbfa527b7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-04 08:47:20 +0000
+
+    muc/room.py: fix copy-paste error
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 921f6ee9813814baead9a0672af6b42beab654c9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-04 08:46:18 +0000
+
+    muc-factory: give temporary variables better names
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 558fd89929b0b4dc978f0e02b9f694ab7f93ffb5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-04 08:42:33 +0000
+
+    muc-factory: also note why asserting on decoding a JID
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 86f10810b3f244d34d2cc79ac3f46176fabe1c64
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-04 08:40:58 +0000
+
+    muc-channel: re-add comment about valid TargetID
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 9ca2e3f94bd2ddb062d5eed6aff2f64fc929ad2b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-03 16:45:05 +0000
+
+    muc-factory: ensure RoomID and ServerID don't conflict with TargetID
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 35356cd6fda7dd10d223fd99b204c51c7aa3c28c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-03 16:03:44 +0000
+
+    muc-channel: check the result of gabble_decode_jid properly
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 23d4b72664d671374b6eaa48b703d7ea8e936f7d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-01-03 16:01:51 +0000
+
+    muc-channel: add newlines when calling g_object_get for clarity
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit ad01b35205c57a5f9d3ab2cd2894610a9e03aea3
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   2011-01-03 15:56:58 +0000
@@ -2748,6 +3436,54 @@ Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Date:   2010-12-24 19:38:02 +0100
 
     Factor out flushing the items queues
+
+commit 4312f26c61c9a61ca007575d23a521500931bc8b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-23 17:06:06 +0000
+
+    tests: add a test for Room interface
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 637ba03783fff269933a7802728d680f5a8b82e6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-23 17:04:55 +0000
+
+    muc-factory: allow channel requests with RoomID + Server set
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 51c40a378b1b1434b6ad3705fbd2744216c35bd8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-23 12:22:57 +0000
+
+    muc/subject.py: test the Room Subject property is correct
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit a8053079c2fafe334684be6ee34b768f89abd8ab
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-23 12:22:34 +0000
+
+    muc-channel: set Room properties as appropriate
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit ec8ca6ea5d945fae643b45cc5fdaa757cb070afa
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-23 10:30:08 +0000
+
+    muc-channel: implement Room properties
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 7c67a8eeac4a65597beb860a9750e4cd639061b1
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2010-12-23 09:54:43 +0000
+
+    extensions: add Chan_Iface_Room draft
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
 commit 44da351b55c563c7bf0aa974289bbc2be2934de8
 Author: Will Thompson <will.thompson@collabora.co.uk>
