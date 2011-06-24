@@ -1,3 +1,248 @@
+commit ea425adba81a2681af4c4ed7184972deae378331
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-24 19:57:18 +0100
+
+    Version 0.13.2
+
+commit ac2df5eacd34852d6d6ddf584bd2394812e66ad6
+Merge: cf9ed52 fcfbc06
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-24 19:55:03 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+    
+    Conflicts:
+    	NEWS
+    	configure.ac
+    	src/presence-cache.c
+
+commit fcfbc06d3f679a8266f13921ff3771bd07cf7f24
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-24 19:50:08 +0100
+
+    bump version to 0.12.3.1
+
+commit a1d33d82c8645303e279e20033d8f96bc6f6e567
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-24 18:48:03 +0100
+
+    Version 0.12.3
+
+commit 18a8b11833af6b8b2e62e4ee3bd3037a8b5b2c2f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-24 18:47:45 +0100
+
+    NEWS for 0.12.3
+
+commit 712bbe2b59ed5746cee50604956b0cb842ea9cc4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-24 19:35:23 +0100
+
+    FTChannel: don't assert about handle-type in setter
+    
+    telepathy-glib's default for TpChannelIface:handle-type has changed in
+    0.15.2: it used to be NONE, and now it's UNKNOWN. This broke both Salut
+    and Gabble…
+    
+    But as the comment says, it's not meaningfully writeable. It's not at
+    all obviously why this assertion is there.
+
+commit 276abd5ff84d635eb5f8cd3eee56978f75631722
+Author: Colin Walters <walters@verbum.org>
+Date:   2011-06-24 18:42:23 +0100
+
+    Honor NOCONFIGURE for compatibility with gnome-autogen.sh
+    
+    See also:
+    http://people.gnome.org/~walters/docs/build-api.txt
+
+commit 1ff589c1e89cf9bb90f59a961c23f2ffa9c3dff0
+Merge: cdff268 f7cdb73
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-24 15:31:29 +0100
+
+    Merge branch 'fd.o-38603-initial-contact-presence' into telepathy-gabble-0.12
+
+commit f7cdb735461e81b428f9a5d776e2b2487263c8aa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-23 16:53:23 +0100
+
+    Cite fd.o#38603 (presence-before-roster doesn't work)
+
+commit fa0990a9810b9629d32dd53840aa415e2d5dbe7d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-23 16:39:59 +0100
+
+    Roster: don't emit presence updates for available contacts
+    
+    Previously, when we received the roster we would announce that the
+    presence of everyone on it we're subscribed to has changed, just for the
+    side-effect of signalling that offline contacts really are offline, not
+    just unknown.
+    
+    This offended me. :)
+
+commit d1f7941c3343b1c498e55543c66ae72fa2b880f5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-23 16:28:20 +0100
+
+    initial-contact-presence: reduce duplication of presences
+
+commit e0cda613a166e9c538ccdcd8cf5d5feae72a2596
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-23 16:19:11 +0100
+
+    GabblePresence: start in state Unknown
+    
+    This has the effect of ensuring that receiving <presence
+    type='unavailable'/> for a contact not previously in the presence cache
+    will not cause a change from Unknown to Unknown to be signalled.
+
+commit 66788076de9fb0062d685346d4bb5c444befd3ea
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-23 15:58:11 +0100
+
+    PresenceCache: discard UNKNOWN presences in maybe_remove
+    
+    In various places, gabble_presence_cache_maybe_remove() is called to
+    allow the cache to relinquish its grip on content-free offline
+    presences. It should also be able to drop unknown presences: they're
+    basically equivalent, based on whether or not the contact is on our
+    roster.
+    
+    Specifically, this means that UNKNOWN presences for contacts received
+    before the roster has arrived do not linger in the cache, and hence
+    these contacts are correctly signalled as OFFLINE when the roster
+    arrives.
+    
+    Really, I think a better fix would be to change the presence cache to
+    not have this distinction between Unknown and Offline: it's completely
+    based on whether or not the contact is (known to be) on the roster, and
+    this is reflected in the way that the handler for incoming <presence/>
+    passes a different value into the presence cache based on whether or not
+    the contact is on the roster. But this would be a much more invasive
+    change, so I'm not prepared to make it just yet.
+
+commit 01d600f1f9f52ac7f021fed2a75e6aa8e7168274
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-23 15:46:28 +0100
+
+    Presence: debug GabblePresenceId names where possible
+    
+    (I may have missed a few places, but these are the two I came across.)
+
+commit b2616cbb5e25fcd28dbeaad68055b18a399db8b5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-23 13:48:27 +0100
+
+    Build GEnum/GFlags for enums in connection.h
+    
+    Specifically, I want a GEnum for GabblePresenceId so I can include the
+    stringy versions in debug strings.
+
+commit a6c0404419c7c84924e1b98783860f8ad99aa18f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-23 12:51:58 +0100
+
+    initial-contact-presence: split expect from assertion
+    
+    I think this makes things clearer: we're expecting some presences to
+    change in response to the roster arriving, and we're expecting the
+    changes to be these.
+    
+    This means that the test failing manifests itself as an assertion
+    failure, not a timeout.
+
+commit cf9ed5291015fd97b2121dcf38933e8bf885013d
+Merge: 0b6f5f5 cdff268
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-21 14:24:00 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+
+commit cdff268c3965046baa37aac100cceda3e9aafe37
+Merge: 63c4d27 6df83a1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-21 14:21:26 +0100
+
+    Merge branch 'aliases' into telepathy-gabble-0.12
+    
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 6df83a17ff312dc3ad99c79bb40163eba687449c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-21 12:25:05 +0100
+
+    Look for better aliases if roster says name=jid.
+    
+    When we discover that a contact doesn't have an alias at all, we fall
+    back to their JID, and write this to the roster (as we do for any other
+    alias we use, to spare our users' precious bandwidth).
+    
+    This is fine and all, but it means that we ignore any subsequent updates
+    from the contact to say that they have a better alias. For instance, we
+    might get a PEP nickname update, or fetch their vCard for some other
+    reason (getting an avatar, ContactInfo, &c &c). In those cases, we would
+    like to have any better alias obtained passively to replace the JID
+    fallback. This is only ever passive: we still don't query for a better
+    alias if the roster says it's the JID. (Clever users can set the alias
+    to the empty string, which has the effect of forcing a refresh.)
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=27361
+
+commit 7a221f03f2a8796895bd48febe1b04168d1b5a1a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-20 17:00:56 +0100
+
+    servicetest: Stringify events more nicely
+
+commit e619592d8bfbba0d0679f918f514fdfc08b829cb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-20 16:51:08 +0100
+
+    gabbletest: make stanza events subclasses of Event
+    
+    This looks neater to me.
+
+commit a85a67c99ab9085eafc8afe17437253a082e0e08
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-20 16:13:49 +0100
+
+    Ignore empty name='' attributes on the roster.
+    
+    Previously, if a roster item had an empty name='' attribute, Gabble
+    would be content to show this to the user, and never try PEP or their
+    vCard for a better nickname.
+    
+    The empty alias is never useful.
+
+commit 6ba62283b7052ff49cc223b65d4ac06937ec1043
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-20 16:09:50 +0100
+
+    rostertest: support name='' attrs in roster pushes
+
+commit 7ac26b27921b9217066c68c2a3333ff616c69a31
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-20 13:26:58 +0100
+
+    test-save-alias-to-roster: use contact list fetching helper
+
+commit c033c160dfd91a9253aaaac7804922067116cb4e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-20 13:17:55 +0100
+
+    test-save-alias-to-roster: expect AddMembers to return
+    
+    This is an ancient FIXME. I think it's safe to say that we depend on a
+    new enough tp-glib.
+
+commit 0b6f5f529ac72a479956663175cb6205c41ea394
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-16 18:02:03 +0100
+
+    Bump nano-version to 0.13.1.1
+
 commit 17e3e817f5faa349f08b8b541c1ecd65f83234a4
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2011-06-16 17:46:27 +0100
