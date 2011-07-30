@@ -1,3 +1,382 @@
+commit 4a16e1cb80ad124726f7e517b0d141bf5b921788
+Merge: 5f5db5c faf9011
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jul 27 14:29:18 2011 +0100
+
+    Merge branch 'gabble-0.12'
+    
+    Conflicts:
+    	wocky/wocky-muc.c
+
+commit faf9011d6d9ee075deaee3ff4ea77a73c17561cd
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Jul 26 11:01:11 2011 +0100
+
+    s/WockyTestSTreamReadMode/WockyTestStreamReadMode/
+
+ tests/wocky-test-stream.c |    4 ++--
+ tests/wocky-test-stream.h |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 4518b2c17508ff427aa6d4f253e660b0da98a2b0
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Jul 26 10:31:22 2011 +0100
+
+    Rename the tls test from /openssl to /tls to avoid confusion
+
+ tests/wocky-tls-test.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 2dfc0356903962e457b185135f0122ac18f99254
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Jul 26 10:28:39 2011 +0100
+
+    Make the tls test send a big chunk of data
+    
+    To make sure we stress some more codepaths, send more data then what
+    will fit in an SSL Record (16k in gnutls it seems). Randomly generate
+    the data to make sure it doesn't compress well enough such that what
+    needs to be sent out is actually small enough
+
+ tests/wocky-tls-test.c |   58 ++++++++++++++++++++++++++++++++++++++---------
+ 1 files changed, 47 insertions(+), 11 deletions(-)
+
+commit 1051de8fc4fdb26ed08f7029a1ff9a571775708c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Jul 26 10:05:41 2011 +0100
+
+    Add an incomplete write mode to the test-stream
+    
+    To stress the various bit of code a bit more, make writes by default
+    never succeed completely. Only write half the buffer that is given to
+    us as this causes some more code-paths to be tested.
+    
+    Unfortunately some tests seem to be too sensitive to this. So switch
+    them back to the old write mode.
+
+ tests/wocky-porter-test.c |   10 +++++++++-
+ tests/wocky-test-stream.c |   18 +++++++++++++++---
+ tests/wocky-test-stream.h |   10 ++++++++++
+ 3 files changed, 34 insertions(+), 4 deletions(-)
+
+commit 502a365c34c9b684bb586e0761c0ce762fcd5d2b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Jul 26 10:40:17 2011 +0100
+
+    Always write out all data gnutls requested
+    
+    Because of a bug in the gnutls backend our outgoing stream would get
+    stalled if we couldn't write enough data as _try_operation doesn't
+    properly check what caused GNUTLS_E_AGAIN.
+    
+    Unfortunately if we fix that, we trigger bugs in GnuTLS (now fixed in
+    gnutls git), which break the invariants of the push function. To keep
+    compatibility with older gnutls, simply make our backend always try to
+    write out all data gnutls asked us for. Doing so guarantees that
+    GNUTLS_E_AGAIN will never be caused by a partial write.
+
+ wocky/wocky-tls.c |   41 +++++++++++++++++++++++++++++++++++++----
+ 1 files changed, 37 insertions(+), 4 deletions(-)
+
+commit 5f5db5c78ee12adc08e36d3bede1b10615838715
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jul 8 14:43:28 2011 +0100
+
+    Connector tests: always check return when expecting failure
+    
+    Previously, when we were expecting a specific error code to be returned,
+    we would not check that the connector had returned NULL rather than a
+    WockyXmppConnection.
+    
+    This had the side-effect that, when these cases failed, the test would
+    segfault (because 'error' was NULL) rather than producing a meaningful
+    assertion failure.
+
+ tests/wocky-connector-test.c |   29 +++++++++++++++--------------
+ 1 files changed, 15 insertions(+), 14 deletions(-)
+
+commit 511c0b934912a5591ed16346bd0dd35f76edf601
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jul 8 14:29:44 2011 +0100
+
+    configure: set HAVE_LIBSASL2=no if we don't have it
+    
+    This fixes the configure summary. Previously it would say (for
+    instance):
+    
+        Features:
+            TLS Backend..........: openssl
+            SASL2 Tests..........:
+            gtk-doc documentation: no
+            libiphb integration..: no
+    
+    With this change, it reads:
+    
+        Features:
+            TLS Backend..........: openssl
+            SASL2 Tests..........: no
+            gtk-doc documentation: no
+            libiphb integration..: no
+
+ configure.ac |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 6386d79ceae96fd26de83de8f3747e628005ca77
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jul 8 14:24:52 2011 +0100
+
+    Fix GnuTLS build with --disable-debug
+    
+    Sorry, I must have missed this while juggling unneeded patches.
+
+ wocky/wocky-tls.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit b3cbfa07168c8721c7874e0e76b62b5443f280cc
+Merge: 35b2171 8245688
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Jul 8 14:10:01 2011 +0100
+
+    Merge branch 'debug-stubs'
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=39046
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 824568824e078ce57df6841aeb54ca90a7865667
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jul 7 16:50:20 2011 +0100
+
+    Replace stub DEBUG macros with no-op static inline functions
+    
+    Previously, if --disable-debug was passed to configure, DEBUG (and
+    DEBUG_STANZA and DEBUG_NODE_TREE) were defined to expand to
+    'do { } while (0)'. This meant that the arguments passed to them were
+    not actually present in the pre-processed C source, which often
+    triggered warnings about assigning to variables and never reading from
+    them.
+    
+    Instead, we define them to be variadic static inline functions. The
+    compiler should optimize this away, but since we do not use
+    -Wunused-arguments the call should still count as reading from the
+    variable, and thus set-but-unused warnings will not be triggered. This
+    means we don't have to mess around wrapping code to initialize variables
+    only used in debug messages with #ifdef ENABLE_DEBUG any more. It's true
+    that, if the compiler is insufficiently smart, this might cause a small
+    amount of unnecessary work to be done at runtime—for instance,
+    ping_iq_cb retrieves the from='' attribute of the stanza it's replying
+    to—but none of these are likely to be too expensive (compared to the
+    cost of constantly calling wocky_debug(), which is the real reason that
+    --disable-debug exists).
+    
+    I am proud of this trick.
+
+ wocky/wocky-debug.h       |   28 +++++++++++++++++++---------
+ wocky/wocky-ping.c        |    2 --
+ wocky/wocky-xmpp-reader.c |    2 --
+ 3 files changed, 19 insertions(+), 13 deletions(-)
+
+commit 87388e9a381bac19d9ebcd900d1382f4ea37b13a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jul 7 16:29:56 2011 +0100
+
+    TLS: use GEnum for WockyTLSVerificationLevel names
+    
+    This both simplifies the code, and squashes a set-but-unused warning
+    when building with --disable-debug.
+
+ wocky/wocky-openssl.c |   11 +++--------
+ wocky/wocky-tls.c     |   10 ++++------
+ 2 files changed, 7 insertions(+), 14 deletions(-)
+
+commit 4c0dacf431b9e3da2296b9a1d3918f03734b7c96
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jul 7 15:41:48 2011 +0100
+
+    GnuTLS: remove a massive row of asterisks
+    
+    This function defines a static lookup table mapping GnuTLS certificate
+    status enum members to Wocky's equivalent. It is prefixed by a comment
+    containing English prose, and is followed by a comment containing a row
+    of seventy-one asterisks.
+    
+    This patch removes seventy-three asterisks, two forward slashes, four
+    spaces and a newline.
+
+ wocky/wocky-tls.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 35b217123b9cde48ba7a3e963c8c172fb0c91591
+Merge: c5b4ef6 bdcaaaa
+Author: Marco Barisione <marco@barisione.org>
+Date:   Thu Jul 7 14:17:00 2011 +0100
+
+    Merge branch 'extra-certificate-identities'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit bdcaaaa767974d1a0ea80f6c068616e80938b7da
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Jun 28 15:34:33 2011 +0100
+
+    openssl: check the certificate name against the extra identities too
+
+ wocky/wocky-openssl.c |   39 ++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 38 insertions(+), 1 deletions(-)
+
+commit 34dd84db74d67b9072620afe14c82a7da12b6086
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Jun 28 15:34:03 2011 +0100
+
+    tls: check the certificate name against the extra identities too
+
+ wocky/wocky-tls.c |   62 +++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 58 insertions(+), 4 deletions(-)
+
+commit 31d6355ec34bda6862c90a9b355dfc63339f34ad
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Jul 5 17:30:56 2011 +0100
+
+    tls: rename the variable for the number of peers for clarity
+
+ wocky/wocky-tls.c |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
+
+commit e2cbe9608be709a4c7a6b9be2edcd46622ec440f
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Jun 28 15:33:34 2011 +0100
+
+    tls: rearrange wocky_tls_session_verify_peer() to reduce code duplication
+
+ wocky/wocky-tls.c |   26 ++++++++++++--------------
+ 1 files changed, 12 insertions(+), 14 deletions(-)
+
+commit c6a14a4806128310cdfaaf406f241efa2175dcf2
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Jun 28 15:33:12 2011 +0100
+
+    tls: style fix; add missing braces around a long if block
+
+ wocky/wocky-tls.c |   90 +++++++++++++++++++++++++++--------------------------
+ 1 files changed, 46 insertions(+), 44 deletions(-)
+
+commit ecfb927b8685729fdcb8faa2fba48874c307276b
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Jun 28 15:32:42 2011 +0100
+
+    Add an extra_identify argument to the TLS verification functions
+    
+    We need to be able to pass extra host names that we consider valid to
+    the code that verifies TLS certificates.
+    This is useful, for instance, when using Google apps. Rather than
+    providing a certificate for the JID’s domain part, the server provides a
+    certificate for talk.google.com; if the user has explicitly configured a
+    ‘Google Talk’ account, it's reasonable to accept certificates for this
+    domain.
+
+ wocky/wocky-connector.c     |    4 ++--
+ wocky/wocky-openssl.c       |    1 +
+ wocky/wocky-tls-connector.c |    6 +++++-
+ wocky/wocky-tls-connector.h |    1 +
+ wocky/wocky-tls-handler.c   |   26 ++++++++++++++++++--------
+ wocky/wocky-tls-handler.h   |    2 ++
+ wocky/wocky-tls.c           |    1 +
+ wocky/wocky-tls.h           |    1 +
+ 8 files changed, 31 insertions(+), 11 deletions(-)
+
+commit c5b4ef67402decceb4ab70537292cdb3bc75ccff
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 2 11:43:16 2011 +0100
+
+    OpenSSL: squash GCC 4.6 -Wunused-but-set-variable warnings
+    
+    Ironically these variables were added to squash warnings from static
+    analysis …
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=37848>
+
+ wocky/wocky-openssl.c |   11 ++++-------
+ 1 files changed, 4 insertions(+), 7 deletions(-)
+
+commit 97f469e3b33c3d8c5ec4505096fce06539a421d7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Jul 7 08:12:58 2011 +0100
+
+    meta-porter: deal with bad addresses on incoming connections
+    
+    Someone was running "nmap localhost" (get out more) and Salut was
+    asserting because g_socket_connection_get_remote_address was returning
+    NULL but we weren't dealing with it. Let's deal with it properly.
+    
+    Fixes: fd.o#39018
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-meta-porter.c |   17 ++++++++++++++---
+ 1 files changed, 14 insertions(+), 3 deletions(-)
+
+commit 262c7b199e4b02285be38505727e64c3796e4b79
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 9 16:56:17 2011 +0100
+
+    Connector: clarify debug in host fallback path.
+
+ wocky/wocky-connector.c |   14 ++++++++------
+ 1 files changed, 8 insertions(+), 6 deletions(-)
+
+commit 1260c3dd450241307043b2c4c66addf38bdb4e48
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 9 16:52:09 2011 +0100
+
+    Connector: make XMPP version='' debug message NULL-safe
+    
+    This is safe on Linux, but will inevitably slip through unnoticed on a
+    hypothetical Win32 port and crash for some poor user.
+
+ wocky/wocky-connector.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 243c846e0abc10884e484ee6c0de95147ad28bf3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 9 16:49:24 2011 +0100
+
+    Connector: clarify legacy auth selection
+    
+    I think this is clearer than a goto.
+
+ wocky/wocky-connector.c |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
+
+commit 1704ac6716e2b983f3c53bc609bdce6f35a17739
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Jun 9 16:36:17 2011 +0100
+
+    Legacy auth: document jabberd 1.4 workaround
+    
+    While debugging a completely unrelated issue, I was pretty surprised to
+    see that the username was included in the initial get. Some git
+    archaeology turned up the reason.
+    
+    So let's document this in the code and in the regression test.
+
+ tests/wocky-test-connector-server.c |   12 +++++++++---
+ wocky/wocky-jabber-auth.c           |    5 +++++
+ 2 files changed, 14 insertions(+), 3 deletions(-)
+
+commit 955e09193a3935ea496545b507a9ce667b2693fe
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Jun 1 13:43:41 2011 +0100
+
+    MUC: allow own presence to be passed to other handlers
+    
+    This is, roughly speaking, a backport of 9064ddf.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=32017>
+
+ wocky/wocky-muc.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
 commit 9064ddfd7afd83c892f65be8365dec242dcce880
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   Wed Jun 1 13:43:41 2011 +0100
