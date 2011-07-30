@@ -71,6 +71,8 @@
                          GNUTLS_VERIFY_DISABLE_CA_SIGN          )
 
 #include "wocky-debug.h"
+#include "wocky-tls-enumtypes.h"
+#include "wocky-utils.h"
 
 #include <gnutls/gnutls.h>
 #include <string.h>
@@ -157,8 +159,8 @@ typedef struct
 {
   WockyTLSOpState state;
 
-  gpointer buffer;
-  gsize requested;
+  guint8 *buffer;
+  gssize requested;
   gssize result;
   GError *error;
 } WockyTLSOp;
@@ -253,7 +255,6 @@ wocky_tls_cert_error_quark (void)
   return quark;
 }
 
-#ifdef ENABLE_DEBUG
 static const gchar *hdesc_to_string (long desc)
 {
 #define HDESC(x) case GNUTLS_HANDSHAKE_##x: return #x; break;
@@ -273,7 +274,6 @@ static const gchar *hdesc_to_string (long desc)
     }
   return "Unknown State";
 }
-#endif
 
 static const gchar *error_to_string (long error)
 {
@@ -621,11 +621,12 @@ GPtrArray *
 wocky_tls_session_get_peers_certificate (WockyTLSSession *session,
     WockyTLSCertType *type)
 {
-  guint idx, cls;
+  guint idx;
+  guint n_peers;
   const gnutls_datum_t *peers = NULL;
   GPtrArray *certificates;
 
-  peers = gnutls_certificate_get_peers (session->session, &cls);
+  peers = gnutls_certificate_get_peers (session->session, &n_peers);
 
   if (peers == NULL)
     return NULL;
@@ -633,7 +634,7 @@ wocky_tls_session_get_peers_certificate (WockyTLSSession *session,
   certificates =
     g_ptr_array_new_with_free_func ((GDestroyNotify) g_array_unref);
 
-  for (idx = 0; idx < cls; idx++)
+  for (idx = 0; idx < n_peers; idx++)
     {
       GArray *cert = g_array_sized_new (TRUE, TRUE, sizeof (guchar),
           peers[idx].size);
@@ -663,14 +664,13 @@ wocky_tls_session_get_peers_certificate (WockyTLSSession *session,
 int
 wocky_tls_session_verify_peer (WockyTLSSession    *session,
                                const gchar        *peername,
+                               GStrv               extra_identities,
                                WockyTLSVerificationLevel level,
                                WockyTLSCertStatus *status)
 {
   int rval = -1;
-  guint cls = -1;
   guint _stat = 0;
   gboolean peer_name_ok = TRUE;
-  const gchar *check_level;
   gnutls_certificate_verify_flags check;
 
   /* list gnutls cert error conditions in descending order of noteworthiness *
@@ -689,7 +689,6 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
       { GNUTLS_CERT_INVALID,            WOCKY_TLS_CERT_INVALID             },
       { ~((long) 0),                    WOCKY_TLS_CERT_UNKNOWN_ERROR       },
       { 0,                              WOCKY_TLS_CERT_OK                  } };
-  /* *********************************************************************** */
 
   g_assert (status != NULL);
   *status = WOCKY_TLS_CERT_OK;
@@ -697,25 +696,22 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
   switch (level)
     {
     case WOCKY_TLS_VERIFY_STRICT:
-      check_level = "WOCKY_TLS_VERIFY_STRICT";
       check = VERIFY_STRICT;
       break;
     case WOCKY_TLS_VERIFY_NORMAL:
-      check_level = "WOCKY_TLS_VERIFY_NORMAL";
       check = VERIFY_NORMAL;
       break;
     case WOCKY_TLS_VERIFY_LENIENT:
-      check_level = "WOCKY_TLS_VERIFY_LENIENT";
       check = VERIFY_LENIENT;
       break;
     default:
       g_warn_if_reached ();
-      check_level = "Unknown strictness level";
       check = VERIFY_STRICT;
       break;
     }
 
-  DEBUG ("setting gnutls verify flags level to: %s", check_level);
+  DEBUG ("setting gnutls verify flags level to: %s",
+      wocky_enum_to_nick (WOCKY_TYPE_TLS_VERIFICATION_LEVEL, level));
   gnutls_certificate_set_verify_flags (session->gnutls_cert_cred, check);
   rval = gnutls_certificate_verify_peers2 (session->session, &_stat);
 
@@ -745,51 +741,106 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
 
   /* if we get this far, we have a structurally valid certificate *
    * signed by _someone_: check the hostname matches the peername */
-  if (peername != NULL)
-    switch (gnutls_certificate_type_get (session->session))
-      {
-        gnutls_x509_crt_t x509;
-        gnutls_openpgp_crt_t opgp;
-      case GNUTLS_CRT_X509:
-        DEBUG ("checking X509 cert");
-        if ((rval = gnutls_x509_crt_init (&x509)) == GNUTLS_E_SUCCESS)
-          { /* we know these ops must succeed, or verify_peers2 would have *
-             * failed before we got here: We just need to duplicate a bit  *
-             * of what it does:                                            */
-            const gnutls_datum_t *peers =
-              gnutls_certificate_get_peers (session->session, &cls);
+  if (peername != NULL || extra_identities != NULL)
+    {
+      const gnutls_datum_t *peers;
+      guint n_peers;
+      gnutls_x509_crt_t x509;
+      gnutls_openpgp_crt_t opgp;
 
-            gnutls_x509_crt_import (x509, &peers[0], GNUTLS_X509_FMT_DER);
-            rval = gnutls_x509_crt_check_hostname (x509, peername);
-            DEBUG ("gnutls_x509_crt_check_hostname: %s -> %d", peername, rval);
-            rval = (rval == 0) ? -1 : GNUTLS_E_SUCCESS;
-            peer_name_ok = (rval == GNUTLS_E_SUCCESS);
+      /* we know these ops must succeed, or verify_peers2 would have *
+       * failed before we got here: We just need to duplicate a bit  *
+       * of what it does:                                            */
+      peers = gnutls_certificate_get_peers (session->session, &n_peers);
 
-            gnutls_x509_crt_deinit (x509);
-          }
-        break;
-      case GNUTLS_CRT_OPENPGP:
-        DEBUG ("checking PGP cert");
-        if ((rval = gnutls_openpgp_crt_init (&opgp)) == GNUTLS_E_SUCCESS)
-          {
-            const gnutls_datum_t *peers =
-              gnutls_certificate_get_peers (session->session, &cls);
+      switch (gnutls_certificate_type_get (session->session))
+        {
+        case GNUTLS_CRT_X509:
+          DEBUG ("checking X509 cert");
+          if ((rval = gnutls_x509_crt_init (&x509)) == GNUTLS_E_SUCCESS)
+            {
+              gnutls_x509_crt_import (x509, &peers[0], GNUTLS_X509_FMT_DER);
 
-            gnutls_openpgp_crt_import (opgp, &peers[0], GNUTLS_OPENPGP_FMT_RAW);
-            rval = gnutls_openpgp_crt_check_hostname (opgp, peername);
-            DEBUG ("gnutls_openpgp_crt_check_hostname: %s -> %d",peername,rval);
-            rval = (rval == 0) ? -1 : GNUTLS_E_SUCCESS;
-            peer_name_ok = (rval == GNUTLS_E_SUCCESS);
+              if (peername != NULL)
+                {
+                  rval = gnutls_x509_crt_check_hostname (x509, peername);
+                  DEBUG ("gnutls_x509_crt_check_hostname: %s -> %d",
+                      peername, rval);
+                }
+              else
+                {
+                  rval = 0;
+                }
 
-            gnutls_openpgp_crt_deinit (opgp);
-          }
-        break;
-      default:
-        /* theoretically, this can't happen if ...verify_peers2 is working: */
-        DEBUG ("unknown cert type!");
-        rval = GNUTLS_E_INVALID_REQUEST;
-        peer_name_ok = FALSE;
-      }
+              if (rval == 0 && extra_identities != NULL)
+                {
+                  gint i;
+
+                  for (i = 0; extra_identities[i] != NULL; i++)
+                    {
+                      rval = gnutls_x509_crt_check_hostname (x509,
+                          extra_identities[i]);
+                      DEBUG ("gnutls_x509_crt_check_hostname: %s -> %d",
+                          extra_identities[i], rval);
+
+                      if (rval != 0)
+                        break;
+                    }
+                }
+
+              rval = (rval == 0) ? -1 : GNUTLS_E_SUCCESS;
+
+              gnutls_x509_crt_deinit (x509);
+            }
+          break;
+        case GNUTLS_CRT_OPENPGP:
+          DEBUG ("checking PGP cert");
+          if ((rval = gnutls_openpgp_crt_init (&opgp)) == GNUTLS_E_SUCCESS)
+            {
+              gnutls_openpgp_crt_import (opgp, &peers[0], GNUTLS_OPENPGP_FMT_RAW);
+              rval = gnutls_openpgp_crt_check_hostname (opgp, peername);
+              DEBUG ("gnutls_openpgp_crt_check_hostname: %s -> %d", peername, rval);
+
+              if (peername != NULL)
+                {
+                  rval = gnutls_openpgp_crt_check_hostname (opgp, peername);
+                  DEBUG ("gnutls_openpgp_crt_check_hostname: %s -> %d",
+                      peername, rval);
+                }
+              else
+                {
+                  rval = 0;
+                }
+
+              if (rval == 0 && extra_identities != NULL)
+                {
+                  gint i;
+
+                  for (i = 0; extra_identities[i] != NULL; i++)
+                    {
+                      rval = gnutls_openpgp_crt_check_hostname (opgp,
+                          extra_identities[i]);
+                      DEBUG ("gnutls_openpgp_crt_check_hostname: %s -> %d",
+                          extra_identities[i], rval);
+
+                      if (rval != 0)
+                        break;
+                    }
+                }
+
+              rval = (rval == 0) ? -1 : GNUTLS_E_SUCCESS;
+
+              gnutls_openpgp_crt_deinit (opgp);
+            }
+          break;
+        default:
+          /* theoretically, this can't happen if ...verify_peers2 is working: */
+          DEBUG ("unknown cert type!");
+          rval = GNUTLS_E_INVALID_REQUEST;
+        }
+
+      peer_name_ok = (rval == GNUTLS_E_SUCCESS);
+    }
 
   DEBUG ("peer_name_ok: %d", peer_name_ok );
 
@@ -1117,12 +1168,44 @@ wocky_tls_session_write_ready (GObject      *object,
                                gpointer      user_data)
 {
   WockyTLSSession *session = WOCKY_TLS_SESSION (user_data);
+  gssize ret;
 
   g_assert (session->write_op.state == WOCKY_TLS_OP_STATE_ACTIVE);
 
-  session->write_op.result =
-    g_output_stream_write_finish (G_OUTPUT_STREAM (object), result,
+  ret = g_output_stream_write_finish (G_OUTPUT_STREAM (object), result,
                                   &session->write_op.error);
+  if (ret > 0)
+    {
+      session->write_op.result += ret;
+
+      if (session->write_op.result < session->write_op.requested)
+        {
+          GOutputStream *stream;
+          WockyTLSJob *active_job;
+
+          stream = g_io_stream_get_output_stream (session->stream);
+
+          if (session->handshake_job.job.active)
+              active_job = &session->handshake_job.job;
+          else
+              active_job = &session->write_job.job;
+
+          g_output_stream_write_async (stream,
+            session->write_op.buffer + session->write_op.result,
+            session->write_op.requested - session->write_op.result,
+            active_job->io_priority,
+            active_job->cancellable,
+            wocky_tls_session_write_ready,
+            session);
+          return;
+        }
+    }
+  else
+    {
+      /* Error or EOF, we're done */
+      session->write_op.result = ret;
+    }
+
   session->write_op.state = WOCKY_TLS_OP_STATE_DONE;
 
   /* don't recurse if the async handler is already running */
@@ -1160,6 +1243,7 @@ wocky_tls_session_push_func (gpointer    user_data,
           session->write_op.buffer = g_memdup (buffer, count);
           session->write_op.requested = count;
           session->write_op.error = NULL;
+          session->write_op.result = 0;
 
           g_output_stream_write_async (stream,
                                        session->write_op.buffer,

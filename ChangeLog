@@ -1,3 +1,393 @@
+commit 7f64afa396c7e639e7920a60d46b980a12d5c2ee
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-27 16:01:51 +0100
+
+    Version 0.13.3
+
+commit b099c2a269804857cf41a393cca22f8b82704ec6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-27 15:58:16 +0100
+
+    NEWS for 0.13.3
+
+commit b5ec55b7056634a679ce277f3575f09214d5372a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-27 15:42:41 +0100
+
+    Update Wocky submodule to fix fd.o#36077
+
+commit a0ad5e286229d90b79942bf32e29e2874d278a31
+Merge: 2b4881b cbe0592
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-27 15:40:16 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+    
+    Conflicts:
+    	lib/ext/wocky
+
+commit cbe0592fbfbd2706f3c306da860b88e61e33a82e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-27 15:20:01 +0100
+
+    bump nano-version
+
+commit ecf29e6a17441829bd369bd2d25245c8dcb7aa73
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-27 15:07:59 +0100
+
+    Version 0.12.4
+
+commit 3ad658923c085f7ecad5cca06ab0de77fa7eadf4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-27 14:49:52 +0100
+
+    Update Wocky submodule to fix fd.o#36077
+    
+    No other changes are included: this is the gabble-0.12 branch of Wocky.
+
+commit 2b4881bb7df570c4840dc4cfdea8ee3ca9176c92
+Merge: 4080a24 05faadf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-13 17:13:09 +0100
+
+    Merge branch 'encryption'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=38719>
+
+commit 4080a244d604207bac505073295b7ed1f1556538
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-11 17:30:04 +0100
+
+    test-debug: use ProxyWrapper
+    
+    Obsessive? Moi?
+
+commit 133c168d3a2838293c2d63b7796a6a942e67ea39
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-11 17:29:35 +0100
+
+    ProxyWrapper: add a sensible ‘no other interfaces’ default
+
+commit 818528a2f36a74c0a493fe77daa9f12f35de9285
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-11 17:20:45 +0100
+
+    Test Debug object's absence with --disable-debug
+    
+    38a6178 changed test-debug.py to verify that the Debug object is present
+    but non-functional when --disable-debug is passed to configure. Gabble
+    actually doesn't have a Debug object at all in that situation, which I
+    think is reasonable—so this now tests that calling GetMessages fails.
+    The test doesn't make any particular assertions about the error. Right
+    now it happens to be 'org.freedesktop.DBus.Error.UnknownMethod' but it
+    really ought to be some kind of ‘unknown object’ method. So.
+
+commit feed269a8d964c61fa6b271591ed2311e6fba75e
+Merge: ebb6963 1e3b981
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-11 16:19:15 +0100
+
+    Merge branch 'debug-stubs'
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=39046
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 1e3b9812fce185efb830b5aec5f5912472e49cd4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-08 14:13:15 +0100
+
+    Update Wocky for corresponding --disable-debug fixes
+
+commit 99ee60ef205efa3d6b77134bd2003d373477f9cb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-08 10:46:36 +0100
+
+    Define a static inline no-op DEBUG with --disable-debug
+
+commit ebb6963dc788faa9683f2b976b1db19187819351
+Merge: 38a6178 74e4699
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-07-07 14:23:16 +0100
+
+    Merge branch 'extra-certificate-identities'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=38749>
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 74e46998689e8049faa9eb87eca0886ab1f72481
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-06-28 15:39:33 +0100
+
+    server-tls-channel.py: test that gabble verify hostnames
+    
+    Gabble should accept certificates for hostnames if they match the
+    hostname in the JID or one of the hostnames in the
+    extra-certificate-identities parameter.
+
+commit 2672b6c7e03a303aed2649f925dac486ab9fb469
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-06-28 15:39:07 +0100
+
+    Move the extra domains to trust from the TLS channel to the manager
+
+commit ed99546dc9ee402f42727702305b3125a73724af
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-06-28 15:38:29 +0100
+
+    TLSManager: check the connection before the non-interactive verification
+
+commit 86726ddce8ad38cfca1a753d3b7b8940bfe5f82b
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-06-28 15:37:45 +0100
+
+    ServerTLSChannel: make reference_identities a GStrv and not a GPtrArray
+    
+    In this case the GPtrArray doesn't give us any advantage and doesn't
+    make clear that the content is a NULL terminated array of strings.
+
+commit a6c42b97d4e1984451c919048cc04df72b4c454d
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-06-28 15:36:53 +0100
+
+    Add an extra_identify argument to the TLS verification functions
+    
+    Update the Wocky snaphost and adapt the TLS manager to the changes.
+    
+    Now the TLS verification functions have an extra argument for the
+    additional hostnames that we have to consider valid.
+    This is useful, for instance, when using Google apps. Rather than
+    providing a certificate for the JID’s domain part, the server provides a
+    certificate for talk.google.com; if the user has explicitly configured a
+    ‘Google Talk’ account, it's reasonable to accept certificates for this
+    domain.
+
+commit 38a6178a7529e3b1bf1ab8439185541e01c18dd5
+Author: David Laban <david.laban@collabora.co.uk>
+Date:   2011-05-31 16:10:16 -0400
+
+    test-debug.py: actually check that no debugging happens
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit f7cd57841f39ca7d007623745ea2c33acaa97c88
+Author: Vincent Penquerc'h <vincent.penquerch@collabora.co.uk>
+Date:   2011-05-23 12:29:52 +0300
+
+    Fix tp-yell includes being read from /usr/include instead of the submodule
+    
+    Since tp-yell gets installed in ${PREFIX}/telepathy-1.0, adding
+    include paths for some other telepathy library (such as tp-glib)
+    would automatically make tp-yell headers discoverable.
+    
+    Fixed by moving the tp-yell submodule paths before the ones for
+    any telepathy library, so these will be found first.
+    
+    This fixes the build if you have a version of tp-yell installed
+    which does not have a symbol that tp-gabble needs.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=37492
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit c356abc2de2b33cb250b143bb5a8b28068971f4d
+Author: Vincent Penquerc'h <vincent.penquerch@collabora.co.uk>
+Date:   2011-05-23 12:29:52 +0300
+
+    Fix tp-yell includes being read from /usr/include instead of the submodule
+    
+    Since tp-yell gets installed in ${PREFIX}/telepathy-1.0, adding
+    include paths for some other telepathy library (such as tp-glib)
+    would automatically make tp-yell headers discoverable.
+    
+    Fixed by moving the tp-yell submodule paths before the ones for
+    any telepathy library, so these will be found first.
+    
+    This fixes the build if you have a version of tp-yell installed
+    which does not have a symbol that tp-gabble needs.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=37492
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 5c06d57058f169401449039b7148470ca1784699
+Author: Thomas Flueeli <tflueeli@gmail.com>
+Date:   2011-02-02 22:59:56 +0100
+
+    gibber: fix TCP connection establishment on Windows
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=31621
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 9086cd4c9be315aa91a6284ffecb65178c89c8c1
+Author: Thomas Flueeli <tflueeli@gmail.com>
+Date:   2011-02-02 21:02:54 +0100
+
+    gibber: add workaround for GLib bug on Windows
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=31621
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 04763e4bc8ed32c208c75209b66221ab46290005
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-07-06 18:40:13 +0100
+
+    Set the DBus_Property flag on DecloakAutomatically
+    
+    Without this, MC won't update the property on running connections.
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 51ddcba7fde8c2f9db5cd01930652318093c0032
+Merge: f54614c 0acb80d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-28 14:00:59 +0100
+
+    Merge branch 'more-alias-and-vcard-tweaks'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=11321>
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 05faadffcce2573f788c979b9d85bf78721f84c4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-28 13:49:21 +0100
+
+    Fix Make dependencies for write-mgr-file
+    
+    All the parameter information lives in protocol.c these days.
+
+commit 0acb80d4c7669d26fe543e515473ad3f7dfbe11d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-28 10:59:20 +0100
+
+    Correctly clear our own alias when asked to.
+    
+    Previously, Gabble would include an empty <NICKNAME/> node in your
+    vCard, which kind of offends my inner purist: it should just leave it
+    out.
+    
+    En passant, this should also fix clearing the name='' attribute on the
+    roster for yourself (if you're on your own roster) but this is untested.
+
+commit 0f30bcdcaab39a2ebcaafb42272056d79f126c11
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-28 10:57:41 +0100
+
+    gabbletest: fix expect_and_handle_[sg]et_vcard
+    
+    I wrote these, and they've *always* been broken:
+    
+    • _get_ would include two <vCard/> elements in the reply: the first
+      (from the query) would always be empty.
+    • _set_ tries to update the global 'current_vcard' variable, but because
+      it wasn't declared 'global' it did not update it.
+    
+    Astonishingly all the tests pass...
+
+commit 4080addd6c2fa879b69e1e9b4567ccac0cf15697
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-28 10:30:24 +0100
+
+    test-set-alias: clean up vCard check.
+    
+    This makes the test more thorough: it actually checks the structure of
+    the vCard…
+
+commit 22382935be99e027da46303107926a15cd8f3017
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-28 10:19:12 +0100
+
+    Test setting our own alias via PEP
+    
+    Astonishingly, this was untested...
+
+commit 17d99f5e7ed7b4837d5367950a99773fb61bf646
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-28 10:11:08 +0100
+
+    Aliasing: handle SetAlias({contact: ''}) better
+    
+    Previously, if the user set a contact's alias to '', Gabble would change
+    its alias on your roster to the empty string… this is not really ideal.
+    
+    This patch makes Gabble switch to using a cached remote alias for the
+    contact, if any; if there is none, it simply removes the name=''
+    attribute from the roster entirely, and tries to make a request for a
+    better nickname.
+
+commit abd99988770e2fdbd8bd811c8e08662fa21e7d0d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-28 09:57:20 +0100
+
+    Aliasing: split out cached remote alias lookup
+    
+    There are no code changes in this patch: it simply moves the middle
+    section of _gabble_connection_get_cached_alias(), which deals with
+    looking for cached aliases that the contact specified for themself (on
+    PEP, in their vCard, in their MUC JID, etc.) into a separate function.
+    
+    It also adds a docstring to _gabble_connection_get_cached_alias().
+
+commit 928ef53affeb52d6ed380078d1acabd7f1b4dfec
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-22 00:27:42 +0100
+
+    test-save-alias-to-roster: ack and echo roster pushes
+    
+    I was adding some more stuff to this test and realised that it's
+    technically misbehaving as a server: the server MUST (of course) ack the
+    roster update the client says, but it also MUST send roster pushes to
+    all connected resources, event to the resource who made the change.
+    Gabble relies on this, and only respects changes to the roster when the
+    server pushes them to it. (I think this is fine, it means there's only
+    one code path.)
+    
+    This test happened not to ever update a roster item more than once, so
+    not acking the pushes didn't matter so much. It also never depended on
+    reading back stuff that it added to the roster. But I'm about to add
+    a section which will.
+
+commit e4450664ff14d65b76f869aeb0aeb7cc9fe51438
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-22 00:26:25 +0100
+
+    Aliasing: remove a hateful g_hash_table_foreach
+
+commit 7bea4d961ec7361455258ed01750df28a7207c26
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-22 12:34:42 +0100
+
+    ContactInfo: don't claim PHOTO is unknown
+    
+    Previously this code would log “unknown vCard node in XML: PHOTO” for
+    every vCard that flew past. This is misleading: PHOTO is perfectly
+    well-known, it's just handled by a different bit of code. So this patch
+    adds the notion of an ignored field, which the ContactInfo code knows
+    about but does nothing with.
+    
+    I didn't add any of the other fields mentioned in the comment at the end
+    of the field table: they're not handled anywhere, so it may arguably be
+    worth logging something about these.
+
+commit 0f00b08488ef0459fdb6d8f85d55b049d4dc0245
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-20 12:51:40 +0100
+
+    Enable require-encryption by default
+    
+    This seems like a reasonable thing to do in 2011.
+
+commit f54614c40756f382d1a608054f1b711ff6390d5c
+Merge: 7d58d83 11ddfc2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-24 20:12:12 +0100
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 7d58d83eee6624c66001582d1f56caadedaf82ab
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-24 20:11:30 +0100
+
+    Bump version to 0.13.2.1
+
 commit ea425adba81a2681af4c4ed7184972deae378331
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2011-06-24 19:57:18 +0100
@@ -55,6 +445,16 @@ Date:   2011-06-24 18:42:23 +0100
     
     See also:
     http://people.gnome.org/~walters/docs/build-api.txt
+
+commit 11ddfc2e24bbb2fc5297c714dbea88c377a1911e
+Merge: cf9ed52 1ff589c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-24 15:48:44 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+    
+    Conflicts:
+    	src/presence-cache.c
 
 commit 1ff589c1e89cf9bb90f59a961c23f2ffa9c3dff0
 Merge: cdff268 f7cdb73

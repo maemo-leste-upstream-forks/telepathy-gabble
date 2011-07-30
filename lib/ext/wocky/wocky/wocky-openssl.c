@@ -62,6 +62,7 @@
 #define DEBUG_ASYNC_DETAIL_LEVEL 6
 
 #include "wocky-debug.h"
+#include "wocky-tls-enumtypes.h"
 #include "wocky-utils.h"
 
 #include <openssl/ssl.h>
@@ -685,7 +686,6 @@ wocky_tls_session_handshake (WockyTLSSession   *session,
 
       if (want_write)
         {
-          int ignored;
           gchar *wbuf;
           GOutputStream *out = g_io_stream_get_output_stream (session->stream);
           long wsize = BIO_get_mem_data (session->wbio, &wbuf);
@@ -694,7 +694,7 @@ wocky_tls_session_handshake (WockyTLSSession   *session,
           if (wsize > 0)
             sent = g_output_stream_write (out, wbuf, wsize, NULL, error);
           DEBUG ("sent %" G_GSSIZE_FORMAT " cipherbytes", sent);
-          ignored = BIO_reset (session->wbio);
+          (void) BIO_reset (session->wbio);
         }
 
       if (want_read)
@@ -948,6 +948,43 @@ check_peer_name (const char *target, X509 *cert)
   return rval;
 }
 
+static gboolean
+check_peer_names (const char *peer_name,
+    GStrv extra_identities,
+    X509 *cert)
+{
+  gboolean tried = FALSE;
+
+  if (peer_name != NULL)
+    {
+      if (check_peer_name (peer_name, cert))
+        return TRUE;
+
+      tried = TRUE;
+    }
+
+  if (extra_identities != NULL)
+    {
+      gint i;
+
+      for (i = 0; extra_identities[i] != NULL; i++)
+        {
+          if (wocky_strdiff (extra_identities[i], peer_name))
+            {
+              if (check_peer_name (extra_identities[i], cert))
+                return TRUE;
+
+              tried = TRUE;
+            }
+        }
+    }
+
+  /* If no peer names were passed it means we didn't want to check the
+   * certificate against anything.
+   * If some attempts were made then it means the check failed. */
+  return !tried;
+}
+
 GPtrArray *
 wocky_tls_session_get_peers_certificate (WockyTLSSession *session,
     WockyTLSCertType *type)
@@ -997,11 +1034,11 @@ wocky_tls_session_get_peers_certificate (WockyTLSSession *session,
 int
 wocky_tls_session_verify_peer (WockyTLSSession    *session,
                                const gchar        *peername,
+                               GStrv               extra_identities,
                                WockyTLSVerificationLevel level,
                                WockyTLSCertStatus *status)
 {
   int rval = -1;
-  const gchar *check_level;
   X509 *cert;
   gboolean lenient = (level == WOCKY_TLS_VERIFY_LENIENT);
 
@@ -1012,21 +1049,16 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
   switch (level)
     {
     case WOCKY_TLS_VERIFY_STRICT:
-      check_level = "WOCKY_TLS_VERIFY_STRICT";
-      break;
     case WOCKY_TLS_VERIFY_NORMAL:
-      check_level = "WOCKY_TLS_VERIFY_NORMAL";
-      break;
     case WOCKY_TLS_VERIFY_LENIENT:
-      check_level = "WOCKY_TLS_VERIFY_LENIENT";
       break;
     default:
       g_warn_if_reached ();
-      check_level = "Unknown strictness level";
       level = WOCKY_TLS_VERIFY_STRICT;
     }
 
-  DEBUG ("setting ssl verify flags level to: %s", check_level);
+  DEBUG ("setting ssl verify flags level to: %s",
+      wocky_enum_to_nick (WOCKY_TYPE_TLS_VERIFICATION_LEVEL, level));
   cert = SSL_get_peer_certificate (session->ssl);
   rval = SSL_get_verify_result (session->ssl);
   DEBUG ("X509 cert: %p; verified: %d", cert, rval);
@@ -1048,7 +1080,7 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
           rval = X509_V_ERR_CERT_UNTRUSTED;
         }
     }
-  else if (peername != NULL && !check_peer_name (peername, cert))
+  else if (!check_peer_names (peername, extra_identities, cert))
     {
       /* Irrespective of whether the certificate is valid, if it's for the
        * wrong host that's arguably a more useful error condition to report.
@@ -1516,8 +1548,6 @@ wocky_tls_session_write_ready (GObject      *object,
   WockyTLSSession *session = WOCKY_TLS_SESSION (user_data);
   gint buffered = BIO_pending (session->wbio);
   gssize written;
-  /* memory BIO ops generally can't fail: suppress compiler/coverity warnings */
-  gint ignore_warning;
 
   if (tls_debug_level >= DEBUG_ASYNC_DETAIL_LEVEL)
     DEBUG ("");
@@ -1528,7 +1558,7 @@ wocky_tls_session_write_ready (GObject      *object,
   if (written == buffered)
     {
       DEBUG ("%d bytes written, clearing write BIO", buffered);
-      ignore_warning = BIO_reset (session->wbio);
+      (void) BIO_reset (session->wbio);
       wocky_tls_session_try_operation (session, WOCKY_TLS_OP_WRITE);
     }
   else
@@ -1542,8 +1572,8 @@ wocky_tls_session_write_ready (GObject      *object,
         {
           gchar *pending = g_memdup (buffer + written, psize);
 
-          ignore_warning = BIO_reset (session->wbio);
-          ignore_warning = BIO_write (session->wbio, pending, psize);
+          (void) BIO_reset (session->wbio);
+          (void) BIO_write (session->wbio, pending, psize);
           g_free (pending);
         }
 
