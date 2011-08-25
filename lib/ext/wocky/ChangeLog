@@ -1,3 +1,150 @@
+commit c6850584919e4f2f1ab2644c67e6a2ee024d61a9
+Merge: 5ba6fef 0396dd2
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Aug 5 15:19:53 2011 +0100
+
+    Merge branch 'gabble-0.12'
+
+commit 0396dd2a97f3dcf3709ed3fe0582262df04bd95e
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   Wed Jul 20 22:10:14 2011 +0530
+
+    Use GQueue instead of GList* for queueable_stanza_pattern
+
+ wocky/wocky-c2s-porter.c |   17 ++++++-----------
+ 1 files changed, 6 insertions(+), 11 deletions(-)
+
+commit 051a35f63b42d6d5ef274b12a606ec30821ab1b7
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   Wed Jul 20 20:38:52 2011 +0530
+
+    Avoid filtering all PEP messages
+    
+    This patch filters only a fixed set of PEP messages, with
+    +notify
+
+ wocky/wocky-c2s-porter.c |   36 +++++++++++++++++++++++++-----------
+ 1 files changed, 25 insertions(+), 11 deletions(-)
+
+commit 5ba6fef79f37d1dd1f112db12e539fc8e74c23e3
+Merge: 73d9ace e1c92e2
+Author: Marco Barisione <marco@barisione.org>
+Date:   Wed Aug 3 14:28:26 2011 +0100
+
+    Merge branch 'whitespace-ping'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=39543>
+
+commit e1c92e217e7e2ada88333047f18fd1150b1b2299
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Aug 1 13:28:06 2011 +0100
+
+    ping: send whitespace pings instead of XMPP ones
+    
+    Whitespace pings can save power on cellular connections. The code to
+    reply to XMPP pings is left untouched as other clients or the server
+    could ping us.
+
+ tests/wocky-ping-test.c |   34 ++++++++++++++++++++--------------
+ wocky/wocky-ping.c      |   23 +++++++++--------------
+ 2 files changed, 29 insertions(+), 28 deletions(-)
+
+commit dc03988d9d55d02a941c2c89fdaa4324f1b3f18c
+Author: Marco Barisione <marco@barisione.org>
+Date:   Tue Aug 2 14:36:06 2011 +0100
+
+    wocky-test-stream: allow to get notified directly whenever data is read
+    
+    The callback passed to wocky_test_stream_set_direct_read_callback() is
+    called whenever data is read by-passing all the other layers on top.
+
+ tests/wocky-test-stream.c |   16 ++++++++++++++++
+ tests/wocky-test-stream.h |    6 ++++++
+ 2 files changed, 22 insertions(+), 0 deletions(-)
+
+commit 461cc42da79bbc77d24a13577deed477440b3493
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Aug 1 13:10:15 2011 +0100
+
+    c2s-porter: add send_whitespace_ping_(async|finish) methods
+
+ wocky/wocky-c2s-porter.c |  143 +++++++++++++++++++++++++++++++++++++++++++---
+ wocky/wocky-c2s-porter.h |   11 ++++
+ 2 files changed, 145 insertions(+), 9 deletions(-)
+
+commit 4bbb2d9ad5293dc717c06c3999d5576969051793
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Aug 1 13:17:18 2011 +0100
+
+    c2s-porter: share the code to terminate the pending operations
+
+ wocky/wocky-c2s-porter.c |   42 +++++++++++++++++++++---------------------
+ 1 files changed, 21 insertions(+), 21 deletions(-)
+
+commit 8fa37b29cc4399ac69c33c4ae4f196e38fa68892
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Aug 1 13:01:58 2011 +0100
+
+    xmpp-connection: add send_whitespace_ping_(async|finish) methods
+
+ wocky/wocky-xmpp-connection.c |   93 +++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-xmpp-connection.h |   10 ++++
+ 2 files changed, 103 insertions(+), 0 deletions(-)
+
+commit e18970ce5108903b412fd95f94c38bd3e987e480
+Author: Marco Barisione <marco@barisione.org>
+Date:   Fri Jul 29 14:32:56 2011 +0100
+
+    ping: make the "porter" property a WockyC2SPorter
+    
+    Keepalives don't make sense on meta porters.
+
+ tests/wocky-ping-test.c |    6 ++++--
+ wocky/wocky-ping.c      |   19 +++++++++++--------
+ wocky/wocky-ping.h      |    4 ++--
+ 3 files changed, 17 insertions(+), 12 deletions(-)
+
+commit 73d9acef993e4bc1ca4709815fef390eb324eb58
+Merge: 4a16e1c f46210d
+Author: Marco Barisione <marco@barisione.org>
+Date:   Wed Aug 3 14:25:49 2011 +0100
+
+    Merge branch 'stream-ciphers'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=39544>
+
+commit f46210d0fb3a7333b61ba3d02b6760d398be7b49
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Aug 1 17:03:02 2011 +0100
+
+    openssl: prefer stream ciphers when --enable-stream-ciphers is used
+
+ wocky/wocky-openssl.c |   28 +++++++++++++++++++++++-----
+ 1 files changed, 23 insertions(+), 5 deletions(-)
+
+commit 3f091f2ff4e97a533142b88f8b8844c53e579ea4
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Aug 1 16:59:22 2011 +0100
+
+    tls: prefer stream ciphers when --enable-stream-ciphers is used
+    
+    In case this option is used gnutls 2.12.0 is needed.
+
+ configure.ac      |    7 +++++++
+ wocky/wocky-tls.c |   27 +++++++++++++++++++++++----
+ 2 files changed, 30 insertions(+), 4 deletions(-)
+
+commit e71f2054f4e6a593b9296ba761fcf6d94c8f980c
+Author: Marco Barisione <marco@barisione.org>
+Date:   Mon Aug 1 16:56:31 2011 +0100
+
+    configure: add an --enable-prefer-stream-ciphers option
+
+ configure.ac |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
 commit 4a16e1cb80ad124726f7e517b0d141bf5b921788
 Merge: 5f5db5c faf9011
 Author: Will Thompson <will.thompson@collabora.co.uk>

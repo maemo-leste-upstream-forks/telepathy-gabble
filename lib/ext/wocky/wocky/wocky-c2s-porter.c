@@ -80,6 +80,7 @@ struct _WockyC2SPorterPrivate
   /* Queue of (sending_queue_elem *) */
   GQueue *sending_queue;
   GCancellable *receive_cancellable;
+  gboolean sending_whitespace_ping;
 
   GSimpleAsyncResult *close_result;
   gboolean waiting_to_close;
@@ -102,7 +103,7 @@ struct _WockyC2SPorterPrivate
   /* Queue of (owned WockyStanza *) */
   GQueue *unimportant_queue;
   /* List of (owned WockyStanza *) */
-  GList *queueable_stanza_patterns;
+  GQueue queueable_stanza_patterns;
 
   WockyXmppConnection *connection;
 };
@@ -340,7 +341,6 @@ wocky_c2s_porter_init (WockyC2SPorter *self)
   priv->handlers = NULL;
   priv->power_saving_mode = FALSE;
   priv->unimportant_queue = g_queue_new ();
-  priv->queueable_stanza_patterns = NULL;
 
   priv->iq_reply_handlers = g_hash_table_new_full (g_str_hash, g_str_equal,
       NULL, (GDestroyNotify) stanza_iq_handler_free);
@@ -574,8 +574,8 @@ wocky_c2s_porter_finalize (GObject *object)
 
   g_queue_free (priv->unimportant_queue);
 
-  g_list_foreach (priv->queueable_stanza_patterns, (GFunc) g_object_unref, NULL);
-  g_list_free (priv->queueable_stanza_patterns);
+  g_queue_foreach (&priv->queueable_stanza_patterns, (GFunc) g_object_unref, NULL);
+  g_queue_clear (&priv->queueable_stanza_patterns);
 
   g_free (priv->full_jid);
   g_free (priv->bare_jid);
@@ -630,35 +630,65 @@ send_head_stanza (WockyC2SPorter *self)
 }
 
 static void
+terminate_sending_operations (WockyC2SPorter *self,
+    GError *error)
+{
+  WockyC2SPorterPrivate *priv = self->priv;
+  sending_queue_elem *elem;
+
+  g_return_if_fail (error != NULL);
+
+  while ((elem = g_queue_pop_head (priv->sending_queue)))
+    {
+      g_simple_async_result_set_from_error (elem->result, error);
+      g_simple_async_result_complete (elem->result);
+      sending_queue_elem_free (elem);
+    }
+}
+
+static gboolean
+sending_in_progress (WockyC2SPorter *self)
+{
+  WockyC2SPorterPrivate *priv = self->priv;
+
+  return g_queue_get_length (priv->sending_queue) > 0 ||
+    priv->sending_whitespace_ping;
+}
+
+static void
+close_if_waiting (WockyC2SPorter *self)
+{
+  WockyC2SPorterPrivate *priv = self->priv;
+
+  if (priv->waiting_to_close && !sending_in_progress (self))
+    {
+      /* Nothing to send left and we are waiting to close the connection. */
+      DEBUG ("Queue has been flushed. Closing the connection.");
+      send_close (self);
+    }
+}
+
+static void
 send_stanza_cb (GObject *source,
     GAsyncResult *res,
     gpointer user_data)
 {
   WockyC2SPorter *self = WOCKY_C2S_PORTER (user_data);
   WockyC2SPorterPrivate *priv = self->priv;
-  sending_queue_elem *elem;
   GError *error = NULL;
-
-  elem = g_queue_pop_head (priv->sending_queue);
 
   if (!wocky_xmpp_connection_send_stanza_finish (
         WOCKY_XMPP_CONNECTION (source), res, &error))
     {
       /* Sending failed. Cancel this sending operation and all the others
        * pending ones as we won't be able to send any more stanza. */
-
-      while (elem != NULL)
-        {
-          g_simple_async_result_set_from_error (elem->result, error);
-          g_simple_async_result_complete (elem->result);
-          sending_queue_elem_free (elem);
-          elem = g_queue_pop_head (priv->sending_queue);
-        }
-
+      terminate_sending_operations (self, error);
       g_error_free (error);
     }
   else
     {
+      sending_queue_elem *elem = g_queue_pop_head (priv->sending_queue);
+
       if (elem == NULL)
         /* The elem could have been removed from the queue if its sending
          * operation has already been completed (for example by forcing to
@@ -676,13 +706,7 @@ send_stanza_cb (GObject *source,
         }
     }
 
-  if (priv->waiting_to_close &&
-      g_queue_get_length (priv->sending_queue) == 0)
-    {
-      /* Queue is empty and we are waiting to close the connection. */
-      DEBUG ("Queue has been flushed. Closing the connection.");
-      send_close (self);
-    }
+  close_if_waiting (self);
 
   g_object_unref (self);
 }
@@ -726,7 +750,8 @@ wocky_c2s_porter_send_async (WockyPorter *porter,
       user_data);
   g_queue_push_tail (priv->sending_queue, elem);
 
-  if (g_queue_get_length (priv->sending_queue) == 1)
+  if (g_queue_get_length (priv->sending_queue) == 1 &&
+      !priv->sending_whitespace_ping)
     {
       send_head_stanza (self);
     }
@@ -1009,21 +1034,31 @@ static void
 build_queueable_stanza_patterns (WockyC2SPorter *self)
 {
   WockyC2SPorterPrivate *priv = self->priv;
-  WockyStanza *pattern;
+  gchar **node_name = NULL;
+  gchar *node_names [] = {
+      "http://jabber.org/protocol/geoloc",
+      "http://jabber.org/protocol/nick",
+      "http://laptop.org/xmpp/buddy-properties",
+      "http://laptop.org/xmpp/activities",
+      "http://laptop.org/xmpp/current-activity",
+      "http://laptop.org/xmpp/activity-properties",
+      NULL};
 
-  if (priv->queueable_stanza_patterns != NULL)
-    return;
+  for (node_name = node_names; *node_name != NULL ; node_name++)
+    {
+      WockyStanza *pattern = wocky_stanza_build (
+          WOCKY_STANZA_TYPE_MESSAGE,
+          WOCKY_STANZA_SUB_TYPE_NONE, NULL, NULL,
+          '(', "event",
+            ':', WOCKY_XMPP_NS_PUBSUB_EVENT,
+            '(', "items",
+            '@', "node", *node_name,
+            ')',
+          ')',
+          NULL);
 
-  /* all PEP updates are queueable */
-  pattern = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
-      WOCKY_STANZA_SUB_TYPE_NONE, NULL, NULL,
-      '(', "event",
-        ':', WOCKY_XMPP_NS_PUBSUB_EVENT,
-      ')',
-      NULL);
-
-  priv->queueable_stanza_patterns = g_list_prepend (
-      priv->queueable_stanza_patterns, pattern);
+      g_queue_push_tail (&priv->queueable_stanza_patterns, pattern);
+    }
 }
 
 static gboolean
@@ -1048,11 +1083,11 @@ is_stanza_important (WockyC2SPorter *self,
         }
     }
 
-  if (priv->queueable_stanza_patterns == NULL)
+  if (priv->queueable_stanza_patterns.length == 0)
     build_queueable_stanza_patterns (self);
 
   /* check whether stanza matches any of the queueable patterns */
-  for (l = priv->queueable_stanza_patterns; l != NULL; l = l->next)
+  for (l = priv->queueable_stanza_patterns.head; l != NULL; l = l->next)
     {
       if (wocky_node_is_superset (node, wocky_stanza_get_top_node (
           WOCKY_STANZA (l->data))))
@@ -1426,7 +1461,7 @@ wocky_c2s_porter_close_async (WockyPorter *porter,
 
   g_signal_emit_by_name (self, "closing");
 
-  if (g_queue_get_length (priv->sending_queue) > 0)
+  if (sending_in_progress (self))
     {
       DEBUG ("Sending queue is not empty. Flushing it before "
           "closing the connection.");
@@ -1895,7 +1930,6 @@ wocky_c2s_porter_force_close_async (WockyPorter *porter,
 {
   WockyC2SPorter *self = WOCKY_C2S_PORTER (porter);
   WockyC2SPorterPrivate *priv = self->priv;
-  sending_queue_elem *elem;
   GError err = { WOCKY_PORTER_ERROR, WOCKY_PORTER_ERROR_FORCIBLY_CLOSED,
       "Porter was closed forcibly" };
 
@@ -1956,14 +1990,7 @@ wocky_c2s_porter_force_close_async (WockyPorter *porter,
   g_object_unref (self);
 
   /* Terminate all the pending sending operations */
-  elem = g_queue_pop_head (priv->sending_queue);
-  while (elem != NULL)
-    {
-      g_simple_async_result_set_from_error (elem->result, &err);
-      g_simple_async_result_complete_in_idle (elem->result);
-      sending_queue_elem_free (elem);
-      elem = g_queue_pop_head (priv->sending_queue);
-    }
+  terminate_sending_operations (self, &err);
 
   /* Terminate all the pending send IQ operations */
   abort_pending_iqs (self, &err);
@@ -2012,6 +2039,113 @@ wocky_c2s_porter_force_close_finish (
     G_OBJECT (self), wocky_c2s_porter_force_close_async), FALSE);
 
   return TRUE;
+}
+
+static void
+send_whitespace_ping_cb (GObject *source,
+    GAsyncResult *res,
+    gpointer user_data)
+{
+  GSimpleAsyncResult *res_out = user_data;
+  WockyC2SPorter *self = WOCKY_C2S_PORTER (
+      g_async_result_get_source_object (G_ASYNC_RESULT (res_out)));
+  WockyC2SPorterPrivate *priv = self->priv;
+  GError *error = NULL;
+
+  priv->sending_whitespace_ping = FALSE;
+
+  if (!wocky_xmpp_connection_send_whitespace_ping_finish (
+        WOCKY_XMPP_CONNECTION (source), res, &error))
+    {
+      g_simple_async_result_set_from_error (res_out, error);
+      g_simple_async_result_complete (res_out);
+
+      /* Sending the ping failed; there is no point in trying to send
+       * anything else at this point. */
+      terminate_sending_operations (self, error);
+
+      g_error_free (error);
+    }
+  else
+    {
+      g_simple_async_result_complete (res_out);
+
+      /* Somebody could have tried sending a stanza while we were sending
+       * the ping */
+      if (g_queue_get_length (priv->sending_queue) > 0)
+        send_head_stanza (self);
+    }
+
+  close_if_waiting (self);
+
+  g_object_unref (self);
+  g_object_unref (res_out);
+}
+
+/**
+ * wocky_c2s_porter_send_whitespace_ping_async:
+ * @self: a #WockyC2SPorter
+ * @cancellable: optional GCancellable object, NULL to ignore.
+ * @callback: callback to call when the request is satisfied.
+ * @user_data: the data to pass to callback function.
+ *
+ * Request asynchronous sending of a whitespace ping. When the operation is
+ * finished @callback will be called. You can then call
+ * wocky_c2s_porter_send_whitespace_ping_finish() to get the result of the
+ * operation.
+ * No pings are sent if there are already other stanzas or pings being sent
+ * when this function is called; it would be useless.
+ */
+void
+wocky_c2s_porter_send_whitespace_ping_async (WockyC2SPorter *self,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
+{
+  WockyC2SPorterPrivate *priv = self->priv;
+  GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self),
+      callback, user_data, wocky_c2s_porter_send_whitespace_ping_async);
+
+  if (priv->close_result != NULL || priv->force_close_result != NULL)
+    {
+      g_simple_async_result_set_error (result, WOCKY_PORTER_ERROR,
+          WOCKY_PORTER_ERROR_CLOSING, "Porter is closing");
+      g_simple_async_result_complete_in_idle (result);
+    }
+  else if (sending_in_progress (self))
+    {
+      g_simple_async_result_complete_in_idle (result);
+    }
+  else
+    {
+      priv->sending_whitespace_ping = TRUE;
+
+      wocky_xmpp_connection_send_whitespace_ping_async (priv->connection,
+          cancellable, send_whitespace_ping_cb, g_object_ref (result));
+
+      g_signal_emit_by_name (self, "sending");
+    }
+
+  g_object_unref (result);
+}
+
+/**
+ * wocky_c2s_porter_send_whitespace_ping_finish:
+ * @self: a #WockyC2SPorter
+ * @result: a GAsyncResult.
+ * @error: a GError location to store the error occuring, or NULL to ignore.
+ *
+ * Finishes sending a whitespace ping.
+ *
+ * Returns: TRUE if the ping was succesfully sent, FALSE on error.
+ */
+gboolean
+wocky_c2s_porter_send_whitespace_ping_finish (WockyC2SPorter *self,
+    GAsyncResult *result,
+    GError **error)
+{
+  wocky_implement_finish_void (self,
+      wocky_c2s_porter_send_whitespace_ping_async);
 }
 
 static const gchar *

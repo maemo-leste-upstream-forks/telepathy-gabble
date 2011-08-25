@@ -651,6 +651,8 @@ SQLITE_CFLAGS
 LIBXML2_LIBS
 LIBXML2_CFLAGS
 GLIB_GENMARSHAL
+GNUTLS_FOR_STREAM_CIPHERS_LIBS
+GNUTLS_FOR_STREAM_CIPHERS_CFLAGS
 USING_OPENSSL_FALSE
 USING_OPENSSL_TRUE
 TLS_LIBS
@@ -798,6 +800,7 @@ enable_coding_style_checks
 enable_debug
 with_installed_headers
 with_tls
+enable_prefer_stream_ciphers
 enable_coverage
 with_html_dir
 enable_gtk_doc
@@ -822,6 +825,8 @@ GLIB_CFLAGS
 GLIB_LIBS
 TLS_CFLAGS
 TLS_LIBS
+GNUTLS_FOR_STREAM_CIPHERS_CFLAGS
+GNUTLS_FOR_STREAM_CIPHERS_LIBS
 LIBXML2_CFLAGS
 LIBXML2_LIBS
 SQLITE_CFLAGS
@@ -1462,6 +1467,9 @@ Optional Features:
   --disable-coding-style-checks
                           do not check coding style using grep
   --disable-debug         compile without debug code
+  --enable-prefer-stream-ciphers
+                          prefer stream ciphers over block ciphers to save
+                          bandwidth (at the possible expense of security)
   --enable-coverage       compile with coverage profiling instrumentation (gcc
                           only)
   --enable-gtk-doc        use gtk-doc to build documentation [[default=no]]
@@ -1502,6 +1510,12 @@ Some influential environment variables:
   GLIB_LIBS   linker flags for GLIB, overriding pkg-config
   TLS_CFLAGS  C compiler flags for TLS, overriding pkg-config
   TLS_LIBS    linker flags for TLS, overriding pkg-config
+  GNUTLS_FOR_STREAM_CIPHERS_CFLAGS
+              C compiler flags for GNUTLS_FOR_STREAM_CIPHERS, overriding
+              pkg-config
+  GNUTLS_FOR_STREAM_CIPHERS_LIBS
+              linker flags for GNUTLS_FOR_STREAM_CIPHERS, overriding
+              pkg-config
   LIBXML2_CFLAGS
               C compiler flags for LIBXML2, overriding pkg-config
   LIBXML2_LIBS
@@ -13897,6 +13911,96 @@ else
 fi
 
 
+# Check whether --enable-prefer-stream-ciphers was given.
+if test "${enable_prefer_stream_ciphers+set}" = set; then :
+  enableval=$enable_prefer_stream_ciphers; prefer_stream_ciphers=$enableval
+else
+  prefer_stream_ciphers=no
+fi
+
+
+if test x$prefer_stream_ciphers = xyes; then
+
+$as_echo "#define ENABLE_PREFER_STREAM_CIPHERS /**/" >>confdefs.h
+
+  if test $with_tls = gnutls; then
+    # The *-ALL priority strings require gnutls 2.12.0.
+    # We do this check here and not earlier to avoid accidentally falling
+    # back to openssl because of the use of --enable-prefer-stream-ciphers.
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GNUTLS_FOR_STREAM_CIPHERS" >&5
+$as_echo_n "checking for GNUTLS_FOR_STREAM_CIPHERS... " >&6; }
+
+if test -n "$GNUTLS_FOR_STREAM_CIPHERS_CFLAGS"; then
+    pkg_cv_GNUTLS_FOR_STREAM_CIPHERS_CFLAGS="$GNUTLS_FOR_STREAM_CIPHERS_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gnutls >= 2.12.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gnutls >= 2.12.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GNUTLS_FOR_STREAM_CIPHERS_CFLAGS=`$PKG_CONFIG --cflags "gnutls >= 2.12.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$GNUTLS_FOR_STREAM_CIPHERS_LIBS"; then
+    pkg_cv_GNUTLS_FOR_STREAM_CIPHERS_LIBS="$GNUTLS_FOR_STREAM_CIPHERS_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gnutls >= 2.12.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gnutls >= 2.12.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GNUTLS_FOR_STREAM_CIPHERS_LIBS=`$PKG_CONFIG --libs "gnutls >= 2.12.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        GNUTLS_FOR_STREAM_CIPHERS_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gnutls >= 2.12.0" 2>&1`
+        else
+	        GNUTLS_FOR_STREAM_CIPHERS_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gnutls >= 2.12.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$GNUTLS_FOR_STREAM_CIPHERS_PKG_ERRORS" >&5
+
+	as_fn_error $? "gnutls 2.12.0 is needed to use --enable-prefer-stream-cihpers" "$LINENO" 5
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	as_fn_error $? "gnutls 2.12.0 is needed to use --enable-prefer-stream-cihpers" "$LINENO" 5
+else
+	GNUTLS_FOR_STREAM_CIPHERS_CFLAGS=$pkg_cv_GNUTLS_FOR_STREAM_CIPHERS_CFLAGS
+	GNUTLS_FOR_STREAM_CIPHERS_LIBS=$pkg_cv_GNUTLS_FOR_STREAM_CIPHERS_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+fi
+  fi
+fi
+
 GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
 
 
@@ -17164,6 +17268,7 @@ Configure summary:
 
     Features:
         TLS Backend..........: ${with_tls}
+        Prefer stream ciphers: ${prefer_stream_ciphers}
         SASL2 Tests..........: ${HAVE_LIBSASL2}
         gtk-doc documentation: ${enable_gtk_doc}
         libiphb integration..: ${have_iphb}
