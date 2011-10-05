@@ -56,8 +56,7 @@ libgibber_la_LIBADD =
 am__objects_1 = gibber-debug.lo gibber-transport.lo \
 	gibber-fd-transport.lo gibber-tcp-transport.lo \
 	gibber-unix-transport.lo gibber-linklocal-transport.lo \
-	gibber-listener.lo gibber-linklocal-transport.lo \
-	gibber-sockets.lo gibber-util.lo
+	gibber-listener.lo gibber-sockets.lo gibber-util.lo
 am__objects_2 = gibber-signals-marshal.lo
 am_libgibber_la_OBJECTS = $(am__objects_1) $(am__objects_2)
 libgibber_la_OBJECTS = $(am_libgibber_la_OBJECTS)
@@ -266,8 +265,6 @@ OUR_SOURCES = \
   gibber-linklocal-transport.h    \
   gibber-listener.c               \
   gibber-listener.h               \
-  gibber-linklocal-transport.c    \
-  gibber-linklocal-transport.h    \
   gibber-sockets.c                \
   gibber-sockets.h                \
   gibber-sockets-unix.h           \
@@ -282,7 +279,7 @@ check_c_sources = \
     $(OUR_SOURCES)
 
 CLEANFILES = $(BUILT_SOURCES)
-AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ -fno-strict-aliasing
+AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ @GMODULE_CFLAGS@ -fno-strict-aliasing
 AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am

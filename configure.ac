@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [13])
-m4_define([gabble_micro_version], [5])
+m4_define([gabble_micro_version], [6])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -201,6 +201,7 @@ AM_CONDITIONAL([ENABLE_GTK_DOC], [test "x$enable_gtk_doc" = xyes])
 
 dnl Check for Glib
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.24, gobject-2.0 >= 2.24, gthread-2.0 >= 2.24])
+PKG_CHECK_MODULES(GMODULE, [gmodule-2.0 >= 2.24])
 
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
@@ -325,10 +326,23 @@ PKG_CHECK_MODULES(TP_YELL, telepathy-yell)
 AC_SUBST(TP_YELL_CFLAGS)
 AC_SUBST(TP_YELL_LIBS)
 
-dnl Check for libsoup
-PKG_CHECK_MODULES(SOUP, libsoup-2.4)
+AC_ARG_ENABLE(google-relay,
+  AC_HELP_STRING([--disable-google-relay],
+                 [disable Google Jingle relay support]),
+    [enable_google_relay=$enableval], [enable_google_relay=yes])
+
+if test x$enable_google_relay = xyes; then
+  AC_DEFINE(ENABLE_GOOGLE_RELAY, [], [Enable Google Jingle relay support])
+
+  dnl Check for libsoup
+  PKG_CHECK_MODULES(SOUP, libsoup-2.4)
+else
+  SOUP_CFLAGS=
+  SOUP_LIBS=
+fi
 AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(SOUP_LIBS)
+AM_CONDITIONAL([ENABLE_GOOGLE_RELAY], [test "x$enable_google_relay" = xyes])
 
 dnl Check for libnice
 PKG_CHECK_MODULES(NICE, nice >= 0.0.11)
@@ -356,3 +370,28 @@ AC_OUTPUT( Makefile \
            gabble/telepathy-gabble-uninstalled.pc \
            gabble/telepathy-gabble.pc
 )
+
+if test false != "$TEST_PYTHON"; then
+  tests_enabled=yes
+else
+  tests_enabled=no
+fi
+
+echo "
+Configure summary:
+
+        Compiler....................:  ${CC}
+        Compiler Flags..............:  ${CFLAGS} ${ERROR_CFLAGS}
+        Prefix......................:  ${prefix}
+        Coding style checks.........:  ${ENABLE_CODING_STYLE_CHECKS}
+        Enable debug................:  ${enable_debug}
+        Python tests................:  ${tests_enabled}
+
+    Features:
+
+        Client type.................:  \"${CLIENT_TYPE}\"
+        Plugin support..............:  ${enable_plugins}
+        Plugin headers installed....:  ${enable_plugin_api}
+        Channel.Type.Call support...:  ${enable_channel_type_call}
+        Google relay support........:  ${enable_google_relay}
+"

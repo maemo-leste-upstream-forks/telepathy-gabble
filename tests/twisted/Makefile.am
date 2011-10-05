@@ -27,6 +27,7 @@ TWISTED_TESTS = \
 	muc/chat-states.py \
 	muc/kicked.py \
 	muc/name-conflict.py \
+	muc/password.py \
 	muc/presence-before-closing.py \
 	muc/renamed.py \
 	muc/room.py \
@@ -63,6 +64,7 @@ TWISTED_TESTS = \
 	roster/ensure.py \
 	roster/groups.py \
 	roster/groups-12791.py \
+	roster/initial-aliases.py \
 	roster/push-from-contact.py \
 	roster/push-without-id.py \
 	roster/removed-from-rp-subscribe.py \
@@ -300,6 +302,12 @@ else
 CHANNEL_TYPE_CALL_ENABLED_PYBOOL = False
 endif
 
+if ENABLE_GOOGLE_RELAY
+GOOGLE_RELAY_ENABLED_PYBOOL = True
+else
+GOOGLE_RELAY_ENABLED_PYBOOL = False
+endif
+
 config.py: Makefile
 	$(AM_V_GEN) { \
 		echo "PACKAGE_STRING = \"$(PACKAGE_STRING)\""; \
@@ -307,6 +315,7 @@ config.py: Makefile
 		echo "DEBUGGING = $(DEBUGGING_PYBOOL)"; \
 		echo "PLUGINS_ENABLED = $(PLUGINS_ENABLED_PYBOOL)"; \
 		echo "CHANNEL_TYPE_CALL_ENABLED = $(CHANNEL_TYPE_CALL_ENABLED_PYBOOL)"; \
+		echo "GOOGLE_RELAY_ENABLED = $(GOOGLE_RELAY_ENABLED_PYBOOL)"; \
 	} > $@
 
 BUILT_SOURCES = config.py

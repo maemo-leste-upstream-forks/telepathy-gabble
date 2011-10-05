@@ -261,14 +261,15 @@ TWISTED_TESTS = caps_helper.py servicetest.py avatar-requirements.py \
 	caps/tube-caps.py client-types.py cm/protocol.py gateways.py \
 	last-activity.py muc/avatars.py muc/banned.py \
 	muc/conference.py muc/chat-states.py muc/kicked.py \
-	muc/name-conflict.py muc/presence-before-closing.py \
-	muc/renamed.py muc/room.py muc/roomlist.py muc/scrollback.py \
-	muc/send-error.py muc/subject.py muc/test-ensure.py \
-	muc/test-muc-alias.py muc/test-muc-invitation.py \
-	muc/test-muc-ownership.py muc/test-muc-properties.py \
-	muc/test-muc.py olpc/current-activity.py \
-	olpc/olpc-muc-invitation.py olpc/olpc-muc-prop-change.py \
-	olpc/test-olpc-bundle.py olpc/test-olpc-set-props-preload.py \
+	muc/name-conflict.py muc/password.py \
+	muc/presence-before-closing.py muc/renamed.py muc/room.py \
+	muc/roomlist.py muc/scrollback.py muc/send-error.py \
+	muc/subject.py muc/test-ensure.py muc/test-muc-alias.py \
+	muc/test-muc-invitation.py muc/test-muc-ownership.py \
+	muc/test-muc-properties.py muc/test-muc.py \
+	olpc/current-activity.py olpc/olpc-muc-invitation.py \
+	olpc/olpc-muc-prop-change.py olpc/test-olpc-bundle.py \
+	olpc/test-olpc-set-props-preload.py \
 	olpc/change-notifications.py pep-support.py \
 	plugin-channel-managers.py power-save.py presence/decloak.py \
 	presence/initial-contact-presence.py \
@@ -277,8 +278,9 @@ TWISTED_TESTS = caps_helper.py servicetest.py avatar-requirements.py \
 	presence/plugins.py presence/set-idempotence.py \
 	presence/shared-status.py roster/authorize.py \
 	roster/edit-before-roster.py roster/ensure.py roster/groups.py \
-	roster/groups-12791.py roster/push-from-contact.py \
-	roster/push-without-id.py roster/removed-from-rp-subscribe.py \
+	roster/groups-12791.py roster/initial-aliases.py \
+	roster/push-from-contact.py roster/push-without-id.py \
+	roster/removed-from-rp-subscribe.py \
 	roster/request-group-before-roster.py \
 	roster/request-group-after-roster.py \
 	roster/test-google-roster.py roster/test-roster.py \
@@ -435,6 +437,8 @@ CHECK_TWISTED_SLEEP = 0
 @ENABLE_PLUGINS_TRUE@PLUGINS_ENABLED_PYBOOL = True
 @ENABLE_CHANNEL_TYPE_CALL_FALSE@CHANNEL_TYPE_CALL_ENABLED_PYBOOL = False
 @ENABLE_CHANNEL_TYPE_CALL_TRUE@CHANNEL_TYPE_CALL_ENABLED_PYBOOL = True
+@ENABLE_GOOGLE_RELAY_FALSE@GOOGLE_RELAY_ENABLED_PYBOOL = False
+@ENABLE_GOOGLE_RELAY_TRUE@GOOGLE_RELAY_ENABLED_PYBOOL = True
 BUILT_SOURCES = config.py $(service_files) $(conf_files) \
 	tools/exec-with-log.sh
 EXTRA_DIST = $(TWISTED_TESTS) bytestream.py connect/torture.py \
@@ -900,6 +904,7 @@ config.py: Makefile
 		echo "DEBUGGING = $(DEBUGGING_PYBOOL)"; \
 		echo "PLUGINS_ENABLED = $(PLUGINS_ENABLED_PYBOOL)"; \
 		echo "CHANNEL_TYPE_CALL_ENABLED = $(CHANNEL_TYPE_CALL_ENABLED_PYBOOL)"; \
+		echo "GOOGLE_RELAY_ENABLED = $(GOOGLE_RELAY_ENABLED_PYBOOL)"; \
 	} > $@
 check-coding-style:
 	@fail=0; \

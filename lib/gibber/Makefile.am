@@ -20,8 +20,6 @@ OUR_SOURCES =                     \
   gibber-linklocal-transport.h    \
   gibber-listener.c               \
   gibber-listener.h               \
-  gibber-linklocal-transport.c    \
-  gibber-linklocal-transport.h    \
   gibber-sockets.c                \
   gibber-sockets.h                \
   gibber-sockets-unix.h           \
@@ -63,6 +61,6 @@ gibber-signals-marshal.list: $(OUR_SOURCES) Makefile.am
 	} > $@
 
 
-AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ -fno-strict-aliasing
+AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ @GMODULE_CFLAGS@ -fno-strict-aliasing
 
 AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@

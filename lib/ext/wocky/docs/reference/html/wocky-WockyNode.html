@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-namespaces.html" title="wocky-namespaces">
 <link rel="next" href="WockyNodeTree.html" title="WockyNodeTree">
-<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.17.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -40,65 +40,13 @@
 <pre class="synopsis">
 #include &lt;wocky/wocky-node.h&gt;
 
-enum                <a class="link" href="wocky-WockyNode.html#WockyNodeBuildTag" title="enum WockyNodeBuildTag">WockyNodeBuildTag</a>;
 struct              <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode">WockyNode</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a class="link" href="wocky-WockyNode.html#wocky-node-each-attr-func" title="wocky_node_each_attr_func ()">*wocky_node_each_attr_func</a>)        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pref</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a class="link" href="wocky-WockyNode.html#wocky-node-each-child-func" title="wocky_node_each_child_func ()">*wocky_node_each_child_func</a>)       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-each-attribute" title="wocky_node_each_attribute ()">wocky_node_each_attribute</a>           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#wocky-node-each-attr-func" title="wocky_node_each_attr_func ()"><span class="type">wocky_node_each_attr_func</span></a> func</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-each-child" title="wocky_node_each_child ()">wocky_node_each_child</a>               (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#wocky-node-each-child-func" title="wocky_node_each_child_func ()"><span class="type">wocky_node_each_child_func</span></a> func</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-get-attribute" title="wocky_node_get_attribute ()">wocky_node_get_attribute</a>            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-get-attribute-ns" title="wocky_node_get_attribute_ns ()">wocky_node_get_attribute_ns</a>         (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-attribute" title="wocky_node_set_attribute ()">wocky_node_set_attribute</a>            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-attributes" title="wocky_node_set_attributes ()">wocky_node_set_attributes</a>           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+enum                <a class="link" href="wocky-WockyNode.html#WockyNodeBuildTag" title="enum WockyNodeBuildTag">WockyNodeBuildTag</a>;
+                    <a class="link" href="wocky-WockyNode.html#WockyNodeIter" title="WockyNodeIter">WockyNodeIter</a>;
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-add-build" title="wocky_node_add_build ()">wocky_node_add_build</a>                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code>...</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-attribute-ns" title="wocky_node_set_attribute_ns ()">wocky_node_set_attribute_ns</a>         (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-attribute-n" title="wocky_node_set_attribute_n ()">wocky_node_set_attribute_n</a>          (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> value_size</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-attribute-n-ns" title="wocky_node_set_attribute_n_ns ()">wocky_node_set_attribute_n_ns</a>       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> value_size</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-attribute-ns-get-prefix-from-urn" title="wocky_node_attribute_ns_get_prefix_from_urn ()">wocky_node_attribute_ns_get_prefix_from_urn</a>
-                                                        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *urn</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-attribute-ns-get-prefix-from-quark" title="wocky_node_attribute_ns_get_prefix_from_quark ()">wocky_node_attribute_ns_get_prefix_from_quark</a>
-                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-attribute-ns-set-prefix" title="wocky_node_attribute_ns_set_prefix ()">wocky_node_attribute_ns_set_prefix</a>  (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *prefix</code></em>);
-<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyNode.html#wocky-node-get-child" title="wocky_node_get_child ()">wocky_node_get_child</a>                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
-<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyNode.html#wocky-node-get-child-ns" title="wocky_node_get_child_ns ()">wocky_node_get_child_ns</a>             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
-<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyNode.html#wocky-node-get-first-child" title="wocky_node_get_first_child ()">wocky_node_get_first_child</a>          (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
-<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyNode.html#wocky-node-get-first-child-ns" title="wocky_node_get_first_child_ns ()">wocky_node_get_first_child_ns</a>       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-get-content-from-child" title="wocky_node_get_content_from_child ()">wocky_node_get_content_from_child</a>   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-get-content-from-child-ns" title="wocky_node_get_content_from_child_ns ()">wocky_node_get_content_from_child_ns</a>
-                                                        (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-add-build-va" title="wocky_node_add_build_va ()">wocky_node_add_build_va</a>             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><span class="type">va_list</span> va</code></em>);
 <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyNode.html#wocky-node-add-child" title="wocky_node_add_child ()">wocky_node_add_child</a>                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
 <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyNode.html#wocky-node-add-child-ns" title="wocky_node_add_child_ns ()">wocky_node_add_child_ns</a>             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
@@ -120,49 +68,101 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *content</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-get-ns" title="wocky_node_get_ns ()">wocky_node_get_ns</a>                   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyNode.html#wocky-node-has-ns" title="wocky_node_has_ns ()">wocky_node_has_ns</a>                   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyNode.html#wocky-node-has-ns-q" title="wocky_node_has_ns_q ()">wocky_node_has_ns_q</a>                 (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-get-language" title="wocky_node_get_language ()">wocky_node_get_language</a>             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-language" title="wocky_node_set_language ()">wocky_node_set_language</a>             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-language-n" title="wocky_node_set_language_n ()">wocky_node_set_language_n</a>           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> lang_size</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-content" title="wocky_node_set_content ()">wocky_node_set_content</a>              (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *content</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-add-node-tree" title="wocky_node_add_node_tree ()">wocky_node_add_node_tree</a>            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *tree</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-append-content" title="wocky_node_append_content ()">wocky_node_append_content</a>           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *content</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-append-content-n" title="wocky_node_append_content_n ()">wocky_node_append_content_n</a>         (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *content</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> size</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="wocky-WockyNode.html#wocky-node-to-string" title="wocky_node_to_string ()">wocky_node_to_string</a>                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
-<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyNode.html#wocky-node-new" title="wocky_node_new ()">wocky_node_new</a>                      (<em class="parameter"><code>const <span class="type">char</span> *name</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-free" title="wocky_node_free ()">wocky_node_free</a>                     (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-attribute-ns-get-prefix-from-quark" title="wocky_node_attribute_ns_get_prefix_from_quark ()">wocky_node_attribute_ns_get_prefix_from_quark</a>
+                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-attribute-ns-get-prefix-from-urn" title="wocky_node_attribute_ns_get_prefix_from_urn ()">wocky_node_attribute_ns_get_prefix_from_urn</a>
+                                                        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *urn</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-attribute-ns-set-prefix" title="wocky_node_attribute_ns_set_prefix ()">wocky_node_attribute_ns_set_prefix</a>  (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *prefix</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-deinit" title="wocky_node_deinit ()">wocky_node_deinit</a>                   (<em class="parameter"><code><span class="type">void</span></code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a class="link" href="wocky-WockyNode.html#wocky-node-each-attr-func" title="wocky_node_each_attr_func ()">*wocky_node_each_attr_func</a>)        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pref</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-each-attribute" title="wocky_node_each_attribute ()">wocky_node_each_attribute</a>           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#wocky-node-each-attr-func" title="wocky_node_each_attr_func ()"><span class="type">wocky_node_each_attr_func</span></a> func</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-each-child" title="wocky_node_each_child ()">wocky_node_each_child</a>               (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#wocky-node-each-child-func" title="wocky_node_each_child_func ()"><span class="type">wocky_node_each_child_func</span></a> func</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a class="link" href="wocky-WockyNode.html#wocky-node-each-child-func" title="wocky_node_each_child_func ()">*wocky_node_each_child_func</a>)       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyNode.html#wocky-node-equal" title="wocky_node_equal ()">wocky_node_equal</a>                    (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node0</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node1</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-free" title="wocky_node_free ()">wocky_node_free</a>                     (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-get-attribute" title="wocky_node_get_attribute ()">wocky_node_get_attribute</a>            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-get-attribute-ns" title="wocky_node_get_attribute_ns ()">wocky_node_get_attribute_ns</a>         (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
+<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyNode.html#wocky-node-get-child" title="wocky_node_get_child ()">wocky_node_get_child</a>                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
+<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyNode.html#wocky-node-get-child-ns" title="wocky_node_get_child_ns ()">wocky_node_get_child_ns</a>             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-get-content-from-child" title="wocky_node_get_content_from_child ()">wocky_node_get_content_from_child</a>   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-get-content-from-child-ns" title="wocky_node_get_content_from_child_ns ()">wocky_node_get_content_from_child_ns</a>
+                                                        (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
+<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyNode.html#wocky-node-get-first-child" title="wocky_node_get_first_child ()">wocky_node_get_first_child</a>          (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
+<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyNode.html#wocky-node-get-first-child-ns" title="wocky_node_get_first_child_ns ()">wocky_node_get_first_child_ns</a>       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-get-language" title="wocky_node_get_language ()">wocky_node_get_language</a>             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyNode.html#wocky-node-get-ns" title="wocky_node_get_ns ()">wocky_node_get_ns</a>                   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyNode.html#wocky-node-has-ns" title="wocky_node_has_ns ()">wocky_node_has_ns</a>                   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyNode.html#wocky-node-has-ns-q" title="wocky_node_has_ns_q ()">wocky_node_has_ns_q</a>                 (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-init" title="wocky_node_init ()">wocky_node_init</a>                     (<em class="parameter"><code><span class="type">void</span></code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyNode.html#wocky-node-is-superset" title="wocky_node_is_superset ()">wocky_node_is_superset</a>              (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *subset</code></em>);
-                    <a class="link" href="wocky-WockyNode.html#WockyNodeIter" title="WockyNodeIter">WockyNodeIter</a>;
 <span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-iter-init" title="wocky_node_iter_init ()">wocky_node_iter_init</a>                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNodeIter" title="WockyNodeIter"><span class="type">WockyNodeIter</span></a> *iter</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyNode.html#wocky-node-iter-next" title="wocky_node_iter_next ()">wocky_node_iter_next</a>                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNodeIter" title="WockyNodeIter"><span class="type">WockyNodeIter</span></a> *iter</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **next</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-add-build" title="wocky_node_add_build ()">wocky_node_add_build</a>                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>...</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-add-build-va" title="wocky_node_add_build_va ()">wocky_node_add_build_va</a>             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><span class="type">va_list</span> va</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-add-node-tree" title="wocky_node_add_node_tree ()">wocky_node_add_node_tree</a>            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *tree</code></em>);
+<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyNode.html#wocky-node-new" title="wocky_node_new ()">wocky_node_new</a>                      (<em class="parameter"><code>const <span class="type">char</span> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-prepend-node-tree" title="wocky_node_prepend_node_tree ()">wocky_node_prepend_node_tree</a>        (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *tree</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-init" title="wocky_node_init ()">wocky_node_init</a>                     (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-deinit" title="wocky_node_deinit ()">wocky_node_deinit</a>                   (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-attribute" title="wocky_node_set_attribute ()">wocky_node_set_attribute</a>            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-attribute-n" title="wocky_node_set_attribute_n ()">wocky_node_set_attribute_n</a>          (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> value_size</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-attribute-n-ns" title="wocky_node_set_attribute_n_ns ()">wocky_node_set_attribute_n_ns</a>       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> value_size</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-attribute-ns" title="wocky_node_set_attribute_ns ()">wocky_node_set_attribute_ns</a>         (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-attributes" title="wocky_node_set_attributes ()">wocky_node_set_attributes</a>           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-content" title="wocky_node_set_content ()">wocky_node_set_content</a>              (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *content</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-language" title="wocky_node_set_language ()">wocky_node_set_language</a>             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyNode.html#wocky-node-set-language-n" title="wocky_node_set_language_n ()">wocky_node_set_language_n</a>           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> lang_size</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="wocky-WockyNode.html#wocky-node-to-string" title="wocky_node_to_string ()">wocky_node_to_string</a>                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -175,6 +175,32 @@ It also offers methods to lookup children of a node.
 </div>
 <div class="refsect1">
 <a name="wocky-WockyNode.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyNode"></a><h3>struct WockyNode</h3>
+<pre class="programlisting">struct WockyNode {
+  gchar *name;
+  gchar *content;
+};
+</pre>
+<p>
+A single <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> structure that relates to an element in an XMPP
+stanza.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyNode.name"></a>name</code></em>;</span></p></td>
+<td>name of the node</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyNode.content"></a>content</code></em>;</span></p></td>
+<td>content of the node</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
 <div class="refsect2">
 <a name="WockyNodeBuildTag"></a><h3>enum WockyNodeBuildTag</h3>
 <pre class="programlisting">typedef enum
@@ -235,630 +261,72 @@ Tags for building a stanza using <a class="link" href="wocky-WockyStanza.html#wo
 </div>
 <hr>
 <div class="refsect2">
-<a name="WockyNode"></a><h3>struct WockyNode</h3>
-<pre class="programlisting">struct WockyNode {
-  gchar *name;
-  gchar *content;
-};
+<a name="WockyNodeIter"></a><h3>WockyNodeIter</h3>
+<pre class="programlisting">typedef struct {
+} WockyNodeIter;
 </pre>
 <p>
-A single <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> structure that relates to an element in an XMPP
-stanza.
+Iterate over a node's children. See <a class="link" href="wocky-WockyNode.html#wocky-node-iter-init" title="wocky_node_iter_init ()"><code class="function">wocky_node_iter_init()</code></a> for more
+details.
 </p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyNode.name"></a>name</code></em>;</span></p></td>
-<td>name of the node</td>
-</tr>
-<tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyNode.content"></a>content</code></em>;</span></p></td>
-<td>content of the node</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-node-each-attr-func"></a><h3>wocky_node_each_attr_func ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*wocky_node_each_attr_func)        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pref</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
-<p>
-Specifies the type of functions passed to <a class="link" href="wocky-WockyNode.html#wocky-node-each-attribute" title="wocky_node_each_attribute ()"><code class="function">wocky_node_each_attribute()</code></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>the attribute's key</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td>the attribute's value</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>pref</code></em> :</span></p></td>
-<td>the attribute's prefix</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>the attribute's namespace</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data passed to <a class="link" href="wocky-WockyNode.html#wocky-node-each-attribute" title="wocky_node_each_attribute ()"><code class="function">wocky_node_each_attribute()</code></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> to stop further attributes from being examined.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-each-child-func"></a><h3>wocky_node_each_child_func ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*wocky_node_each_child_func)       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
-<p>
-Specifies the type of functions passed to <a class="link" href="wocky-WockyNode.html#wocky-node-each-child" title="wocky_node_each_child ()"><code class="function">wocky_node_each_child()</code></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data passed to <a class="link" href="wocky-WockyNode.html#wocky-node-each-child" title="wocky_node_each_child ()"><code class="function">wocky_node_each_child()</code></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> to stop further children from being examined.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-each-attribute"></a><h3>wocky_node_each_attribute ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_each_attribute           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#wocky-node-each-attr-func" title="wocky_node_each_attr_func ()"><span class="type">wocky_node_each_attr_func</span></a> func</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
-<p>
-Calls a function for each attribute of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
-<td>the function to be called on each node's attribute</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data to pass to the function</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-each-child"></a><h3>wocky_node_each_child ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_each_child               (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#wocky-node-each-child-func" title="wocky_node_each_child_func ()"><span class="type">wocky_node_each_child_func</span></a> func</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
-<p>
-Calls a function for each child of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
-<td>the function to be called on each node's child</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data to pass to the function</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-get-attribute"></a><h3>wocky_node_get_attribute ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_get_attribute            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>);</pre>
-<p>
-Returns the value of an attribute in a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>the attribute name</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the value of the attribute <em class="parameter"><code>key</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em> doesn't
-have such attribute.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-get-attribute-ns"></a><h3>wocky_node_get_attribute_ns ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_get_attribute_ns         (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
-<p>
-Returns the value of an attribute in a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, limiting the search
-within a specific namespace. If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent
-to <a class="link" href="wocky-WockyNode.html#wocky-node-get-attribute" title="wocky_node_get_attribute ()"><code class="function">wocky_node_get_attribute()</code></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>the attribute name</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>the namespace to search within, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the value of the attribute <em class="parameter"><code>key</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em> doesn't
-have such attribute in <em class="parameter"><code>ns</code></em>.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-set-attribute"></a><h3>wocky_node_set_attribute ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_attribute            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>);</pre>
-<p>
-Sets an attribute in a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> to a specific value.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>the attribute name to set</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td>the value to set</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-set-attributes"></a><h3>wocky_node_set_attributes ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_attributes           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+<a name="wocky-node-add-build"></a><h3>wocky_node_add_build ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_add_build                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code>...</code></em>);</pre>
 <p>
-Sets attributes in a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> to specific values.
+Add a node subtree to an existing parent node.
+</p>
+<div class="example">
+<a name="idp14679920"></a><p class="title"><b>Example 1. </b></p>
+<div class="example-contents">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="wocky-WockyNode.html#wocky-node-add-build">wocky_node_add_build</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">node</span><span class="symbol">,</span>
+<span class="normal">   </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"body"</span><span class="symbol">,</span>
+<span class="normal">       </span><span class="string">'$'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"Telepathy rocks!"</span><span class="symbol">,</span>
+<span class="normal">   </span><span class="string">')'</span><span class="symbol">,</span>
+<span class="normal">  <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+<p><br class="example-break">
+</p>
+<p>
+The above examples adds the following subtree under the given node:
+</p>
+<pre class="programlisting">
+&lt;body&gt;
+   Telepathy rocks!
+&lt;/body&gt;
+</pre>
+<p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
-<tbody>
-<tr>
+<tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>the attribute name to set</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
-<td>pairs of keys and values, terminated by <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
-</tr>
-</tbody>
+<td>The node under which to add a new subtree</td>
+</tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-node-set-attribute-ns"></a><h3>wocky_node_set_attribute_ns ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_attribute_ns         (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
+<a name="wocky-node-add-build-va"></a><h3>wocky_node_add_build_va ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_add_build_va             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><span class="type">va_list</span> va</code></em>);</pre>
 <p>
-Sets an attribute in a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, within a specific namespace.
-If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent to
-<a class="link" href="wocky-WockyNode.html#wocky-node-set-attribute" title="wocky_node_set_attribute ()"><code class="function">wocky_node_set_attribute()</code></a>.
 </p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>the attribute name to set</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td>the value to set</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>a namespace, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-set-attribute-n"></a><h3>wocky_node_set_attribute_n ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_attribute_n          (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> value_size</code></em>);</pre>
-<p>
-Sets a new attribute to a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, with the supplied values.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>the attribute to set</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td>the value to set</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>value_size</code></em> :</span></p></td>
-<td>the number of bytes of <em class="parameter"><code>value</code></em> to set as a value</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-set-attribute-n-ns"></a><h3>wocky_node_set_attribute_n_ns ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_attribute_n_ns       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> value_size</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
-<p>
-Sets a new attribute to a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, with the supplied values.
-If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent to
-<a class="link" href="wocky-WockyNode.html#wocky-node-set-attribute-n" title="wocky_node_set_attribute_n ()"><code class="function">wocky_node_set_attribute_n()</code></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td>the attribute to set</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td>the value to set</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>value_size</code></em> :</span></p></td>
-<td>the number of bytes of <em class="parameter"><code>value</code></em> to set as a value</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>a namespace, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-attribute-ns-get-prefix-from-urn"></a><h3>wocky_node_attribute_ns_get_prefix_from_urn ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_attribute_ns_get_prefix_from_urn
-                                                        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *urn</code></em>);</pre>
-<p>
-Gets the prefix of the namespace identified by the URN.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>urn</code></em> :</span></p></td>
-<td>a string containing an URN</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a string containing the prefix of the namespace <em class="parameter"><code>urn</code></em>.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-attribute-ns-get-prefix-from-quark"></a><h3>wocky_node_attribute_ns_get_prefix_from_quark ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_attribute_ns_get_prefix_from_quark
-                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>);</pre>
-<p>
-Gets the prefix of the namespace identified by the quark.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>a quark corresponding to an XML namespace URN</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a string containing the prefix of the namespace <em class="parameter"><code>ns</code></em>.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-attribute-ns-set-prefix"></a><h3>wocky_node_attribute_ns_set_prefix ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_attribute_ns_set_prefix  (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *prefix</code></em>);</pre>
-<p>
-Sets a desired prefix for a namespace.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>prefix</code></em> :</span></p></td>
-<td>a string containing the desired prefix</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-get-child"></a><h3>wocky_node_get_child ()</h3>
-<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_node_get_child                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
-<p>
-Gets a child of a node, searching by name.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>the name of the child to get</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-get-child-ns"></a><h3>wocky_node_get_child_ns ()</h3>
-<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_node_get_child_ns             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
-<p>
-Gets the child of a node, searching by name and limiting the search
-to the specified namespace.
-If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent to <a class="link" href="wocky-WockyNode.html#wocky-node-get-child" title="wocky_node_get_child ()"><code class="function">wocky_node_get_child()</code></a>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>the name of the child to get</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>the namespace of the child to get, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-get-first-child"></a><h3>wocky_node_get_first_child ()</h3>
-<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_node_get_first_child          (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
-<p>
-Convenience function to return the first child of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em> has no children.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-get-first-child-ns"></a><h3>wocky_node_get_first_child_ns ()</h3>
-<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_node_get_first_child_ns       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
-<p>
-Returns the first child of <em class="parameter"><code>node</code></em> whose namespace is <em class="parameter"><code>ns</code></em>, saving you the
-bother of faffing around with a <a class="link" href="wocky-WockyNode.html#WockyNodeIter" title="WockyNodeIter"><span class="type">WockyNodeIter</span></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>the namespace of the child node you seek.</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the first child of <em class="parameter"><code>node</code></em> whose namespace is <em class="parameter"><code>ns</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none
-is found.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-get-content-from-child"></a><h3>wocky_node_get_content_from_child ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_get_content_from_child   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
-<p>
-Retrieves the content from a child of a node, if it exists.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>the name of the child whose content to retrieve</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the content of the child of <em class="parameter"><code>node</code></em> named <em class="parameter"><code>name</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em>
-has no such child.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-get-content-from-child-ns"></a><h3>wocky_node_get_content_from_child_ns ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_get_content_from_child_ns
-                                                        (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
-<p>
-Retrieves the content from a child of a node, if it exists.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>the name of the child whose content to retrieve</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>the namespace of the child whose content to retrieve</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the content of the child of <em class="parameter"><code>node</code></em> named <em class="parameter"><code>name</code></em> in <em class="parameter"><code>ns</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if
-<em class="parameter"><code>node</code></em> has no such child.</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 <hr>
 <div class="refsect2">
@@ -1072,134 +540,22 @@ If the namespace is 0, this is equivalent to
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-node-get-ns"></a><h3>wocky_node_get_ns ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_get_ns                   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
+<a name="wocky-node-add-node-tree"></a><h3>wocky_node_add_node_tree ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_add_node_tree            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *tree</code></em>);</pre>
 <p>
-Gets the namespace of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+Copies the nodes from <em class="parameter"><code>tree</code></em>, and appends them to <em class="parameter"><code>node</code></em>'s children.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
+<td>A node</td>
 </tr>
 <tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a string containing the namespace of the node.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-has-ns"></a><h3>wocky_node_has_ns ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_node_has_ns                   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-has-ns-q"></a><h3>wocky_node_has_ns_q ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_node_has_ns_q                 (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>);</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-get-language"></a><h3>wocky_node_get_language ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_get_language             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
-<p>
-Gets the language of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a string containing the language of the node.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-set-language"></a><h3>wocky_node_set_language ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_language             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>);</pre>
-<p>
-Sets the language of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>lang</code></em> :</span></p></td>
-<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>-terminated string containing the language</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-set-language-n"></a><h3>wocky_node_set_language_n ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_language_n           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> lang_size</code></em>);</pre>
-<p>
-Sets the language of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>lang</code></em> :</span></p></td>
-<td>a language</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>lang_size</code></em> :</span></p></td>
-<td>the length of <em class="parameter"><code>lang</code></em>, in bytes.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-set-content"></a><h3>wocky_node_set_content ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_content              (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *content</code></em>);</pre>
-<p>
-Sets the content of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>content</code></em> :</span></p></td>
-<td>the content to set to the node</td>
+<td><p><span class="term"><em class="parameter"><code>tree</code></em> :</span></p></td>
+<td>The node tree to add</td>
 </tr>
 </tbody>
 </table></div>
@@ -1258,10 +614,130 @@ Appends a specified number of content bytes to the content of a
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-node-to-string"></a><h3>wocky_node_to_string ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_node_to_string                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
+<a name="wocky-node-attribute-ns-get-prefix-from-quark"></a><h3>wocky_node_attribute_ns_get_prefix_from_quark ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_attribute_ns_get_prefix_from_quark
+                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>);</pre>
 <p>
-Obtains a string representation of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
+Gets the prefix of the namespace identified by the quark.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td>a quark corresponding to an XML namespace URN</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a string containing the prefix of the namespace <em class="parameter"><code>ns</code></em>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-attribute-ns-get-prefix-from-urn"></a><h3>wocky_node_attribute_ns_get_prefix_from_urn ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_attribute_ns_get_prefix_from_urn
+                                                        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *urn</code></em>);</pre>
+<p>
+Gets the prefix of the namespace identified by the URN.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>urn</code></em> :</span></p></td>
+<td>a string containing an URN</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a string containing the prefix of the namespace <em class="parameter"><code>urn</code></em>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-attribute-ns-set-prefix"></a><h3>wocky_node_attribute_ns_set_prefix ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_attribute_ns_set_prefix  (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *prefix</code></em>);</pre>
+<p>
+Sets a desired prefix for a namespace.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>prefix</code></em> :</span></p></td>
+<td>a string containing the desired prefix</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-deinit"></a><h3>wocky_node_deinit ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_deinit                   (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Releases all the resources used by the <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> caches.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-each-attr-func"></a><h3>wocky_node_each_attr_func ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*wocky_node_each_attr_func)        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pref</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+<p>
+Specifies the type of functions passed to <a class="link" href="wocky-WockyNode.html#wocky-node-each-attribute" title="wocky_node_each_attribute ()"><code class="function">wocky_node_each_attribute()</code></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
+<td>the attribute's key</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>the attribute's value</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pref</code></em> :</span></p></td>
+<td>the attribute's prefix</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td>the attribute's namespace</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data passed to <a class="link" href="wocky-WockyNode.html#wocky-node-each-attribute" title="wocky_node_each_attribute ()"><code class="function">wocky_node_each_attribute()</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> to stop further attributes from being examined.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-each-attribute"></a><h3>wocky_node_each_attribute ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_each_attribute           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#wocky-node-each-attr-func" title="wocky_node_each_attr_func ()"><span class="type">wocky_node_each_attr_func</span></a> func</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+<p>
+Calls a function for each attribute of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1272,54 +748,71 @@ Obtains a string representation of a <a class="link" href="wocky-WockyNode.html#
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a newly allocated string containing a serialization of
-the node.</td>
+<td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
+<td>the function to be called on each node's attribute</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data to pass to the function</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-node-new"></a><h3>wocky_node_new ()</h3>
-<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_node_new                      (<em class="parameter"><code>const <span class="type">char</span> *name</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
+<a name="wocky-node-each-child"></a><h3>wocky_node_each_child ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_each_child               (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#wocky-node-each-child-func" title="wocky_node_each_child_func ()"><span class="type">wocky_node_each_child_func</span></a> func</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
-Convenience function which creates a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> and sets its
-name to <em class="parameter"><code>name</code></em>.
+Calls a function for each child of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>the node's name (may not be NULL)</td>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>the nodes namespace (may not be NULL)</td>
+<td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
+<td>the function to be called on each node's child</td>
 </tr>
 <tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a newly allocated <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.</td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data to pass to the function</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-node-free"></a><h3>wocky_node_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_free                     (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
+<a name="wocky-node-each-child-func"></a><h3>wocky_node_each_child_func ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*wocky_node_each_child_func)       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
-Convenience function that frees the passed in <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> and
-all of its children.
+Specifies the type of functions passed to <a class="link" href="wocky-WockyNode.html#wocky-node-each-child" title="wocky_node_each_child ()"><code class="function">wocky_node_each_child()</code></a>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
-<tbody><tr>
+<tbody>
+<tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.</td>
-</tr></tbody>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data passed to <a class="link" href="wocky-WockyNode.html#wocky-node-each-child" title="wocky_node_each_child ()"><code class="function">wocky_node_each_child()</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> to stop further children from being examined.</td>
+</tr>
+</tbody>
 </table></div>
 </div>
 <hr>
@@ -1353,6 +846,330 @@ Compares two <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct
 </div>
 <hr>
 <div class="refsect2">
+<a name="wocky-node-free"></a><h3>wocky_node_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_free                     (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
+<p>
+Convenience function that frees the passed in <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> and
+all of its children.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-get-attribute"></a><h3>wocky_node_get_attribute ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_get_attribute            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>);</pre>
+<p>
+Returns the value of an attribute in a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
+<td>the attribute name</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the value of the attribute <em class="parameter"><code>key</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em> doesn't
+have such attribute.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-get-attribute-ns"></a><h3>wocky_node_get_attribute_ns ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_get_attribute_ns         (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
+<p>
+Returns the value of an attribute in a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, limiting the search
+within a specific namespace. If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent
+to <a class="link" href="wocky-WockyNode.html#wocky-node-get-attribute" title="wocky_node_get_attribute ()"><code class="function">wocky_node_get_attribute()</code></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
+<td>the attribute name</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td>the namespace to search within, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the value of the attribute <em class="parameter"><code>key</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em> doesn't
+have such attribute in <em class="parameter"><code>ns</code></em>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-get-child"></a><h3>wocky_node_get_child ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_node_get_child                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
+<p>
+Gets a child of a node, searching by name.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
+<td>the name of the child to get</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-get-child-ns"></a><h3>wocky_node_get_child_ns ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_node_get_child_ns             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
+<p>
+Gets the child of a node, searching by name and limiting the search
+to the specified namespace.
+If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent to <a class="link" href="wocky-WockyNode.html#wocky-node-get-child" title="wocky_node_get_child ()"><code class="function">wocky_node_get_child()</code></a>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
+<td>the name of the child to get</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td>the namespace of the child to get, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-get-content-from-child"></a><h3>wocky_node_get_content_from_child ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_get_content_from_child   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
+<p>
+Retrieves the content from a child of a node, if it exists.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
+<td>the name of the child whose content to retrieve</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the content of the child of <em class="parameter"><code>node</code></em> named <em class="parameter"><code>name</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em>
+has no such child.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-get-content-from-child-ns"></a><h3>wocky_node_get_content_from_child_ns ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_get_content_from_child_ns
+                                                        (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
+<p>
+Retrieves the content from a child of a node, if it exists.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
+<td>the name of the child whose content to retrieve</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td>the namespace of the child whose content to retrieve</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the content of the child of <em class="parameter"><code>node</code></em> named <em class="parameter"><code>name</code></em> in <em class="parameter"><code>ns</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if
+<em class="parameter"><code>node</code></em> has no such child.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-get-first-child"></a><h3>wocky_node_get_first_child ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_node_get_first_child          (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
+<p>
+Convenience function to return the first child of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em> has no children.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-get-first-child-ns"></a><h3>wocky_node_get_first_child_ns ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_node_get_first_child_ns       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
+<p>
+Returns the first child of <em class="parameter"><code>node</code></em> whose namespace is <em class="parameter"><code>ns</code></em>, saving you the
+bother of faffing around with a <a class="link" href="wocky-WockyNode.html#WockyNodeIter" title="WockyNodeIter"><span class="type">WockyNodeIter</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td>the namespace of the child node you seek.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the first child of <em class="parameter"><code>node</code></em> whose namespace is <em class="parameter"><code>ns</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none
+is found.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-get-language"></a><h3>wocky_node_get_language ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_get_language             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
+<p>
+Gets the language of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a string containing the language of the node.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-get-ns"></a><h3>wocky_node_get_ns ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_node_get_ns                   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
+<p>
+Gets the namespace of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a string containing the namespace of the node.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-has-ns"></a><h3>wocky_node_has_ns ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_node_has_ns                   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-has-ns-q"></a><h3>wocky_node_has_ns_q ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_node_has_ns_q                 (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>);</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-init"></a><h3>wocky_node_init ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_init                     (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Initializes the caches used by <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
+This should be always called before using <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> structs.
+</p>
+</div>
+<hr>
+<div class="refsect2">
 <a name="wocky-node-is-superset"></a><h3>wocky_node_is_superset ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_node_is_superset              (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *subset</code></em>);</pre>
@@ -1374,17 +1191,6 @@ Compares two <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct
 </tr>
 </tbody>
 </table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="WockyNodeIter"></a><h3>WockyNodeIter</h3>
-<pre class="programlisting">typedef struct {
-} WockyNodeIter;
-</pre>
-<p>
-Iterate over a node's children. See <a class="link" href="wocky-WockyNode.html#wocky-node-iter-init" title="wocky_node_iter_init ()"><code class="function">wocky_node_iter_init()</code></a> for more
-details.
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1411,16 +1217,16 @@ Initializes an iterator that can be used to iterate over the children of
 8
 9
 10</pre></td>
-        <td class="listing_code"><pre class="programlisting">WockyNodeIter iter<span class="gtkdoc opt">;</span>
-WockyNode <span class="gtkdoc opt">*</span>child<span class="gtkdoc opt">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="usertype">WockyNodeIter</span><span class="normal"> iter</span><span class="symbol">;</span>
+<span class="usertype">WockyNode</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">child</span><span class="symbol">;</span>
 
-<span class="function"><a href="wocky-WockyNode.html#wocky-node-iter-init">wocky_node_iter_init</a></span> <span class="gtkdoc opt">(&amp;</span>iter<span class="gtkdoc opt">,</span> <span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-get-top-node">wocky_stanza_get_top_node</a></span> <span class="gtkdoc opt">(</span>stanza<span class="gtkdoc opt">),</span>
-   <span class="string">&quot;payload-type&quot;</span><span class="gtkdoc opt">,</span>
-   WOCKY_XMPP_NS_JINGLE_RTP<span class="gtkdoc opt">);</span>
-<span class="keyword">while</span> <span class="gtkdoc opt">(</span><span class="function"><a href="wocky-WockyNode.html#wocky-node-iter-next">wocky_node_iter_next</a></span> <span class="gtkdoc opt">(</span>iter<span class="gtkdoc opt">, &amp;</span>child<span class="gtkdoc opt">))</span>
-  <span class="gtkdoc opt">{</span>
-    <span class="comment">/* do something with the child */</span>
-  <span class="gtkdoc opt">}</span></pre></td>
+<span class="function"><a href="wocky-WockyNode.html#wocky-node-iter-init">wocky_node_iter_init</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">iter</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-get-top-node">wocky_stanza_get_top_node</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">stanza</span><span class="symbol">),</span>
+<span class="normal">   </span><span class="string">"payload-type"</span><span class="symbol">,</span>
+<span class="normal">   <a href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-JINGLE-RTP:CAPS">WOCKY_XMPP_NS_JINGLE_RTP</a></span><span class="symbol">);</span>
+<span class="keyword">while</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="wocky-WockyNode.html#wocky-node-iter-next">wocky_node_iter_next</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">iter</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">child</span><span class="symbol">))</span>
+<span class="normal">  </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="comment">/* do something with the child */</span>
+<span class="normal">  </span><span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1482,88 +1288,27 @@ returned next is not set and the iterator becomes invalid
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-node-add-build"></a><h3>wocky_node_add_build ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_add_build                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>...</code></em>);</pre>
+<a name="wocky-node-new"></a><h3>wocky_node_new ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_node_new                      (<em class="parameter"><code>const <span class="type">char</span> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
 <p>
-Add a node subtree to an existing parent node.
-</p>
-<div class="example">
-<a name="idp17446768"></a><p class="title"><b>Example 1. </b></p>
-<div class="example-contents">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1
-2
-3
-4
-5</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="wocky-WockyNode.html#wocky-node-add-build">wocky_node_add_build</a></span> <span class="gtkdoc opt">(</span>node<span class="gtkdoc opt">,</span>
-   <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;body&quot;</span><span class="gtkdoc opt">,</span>
-       <span class="string">'$'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;Telepathy rocks!&quot;</span><span class="gtkdoc opt">,</span>
-   <span class="string">')'</span><span class="gtkdoc opt">,</span>
-  NULL<span class="gtkdoc opt">);</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-</div>
-<p><br class="example-break">
-</p>
-<p>
-The above examples adds the following subtree under the given node:
-</p>
-<pre class="programlisting">
-&lt;body&gt;
-   Telepathy rocks!
-&lt;/body&gt;
-</pre>
-<p>
+Convenience function which creates a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> and sets its
+name to <em class="parameter"><code>name</code></em>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>The node under which to add a new subtree</td>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
+<td>the node's name (may not be NULL)</td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
-<td>the description of the stanza to build,
-terminated with <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-add-build-va"></a><h3>wocky_node_add_build_va ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_add_build_va             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><span class="type">va_list</span> va</code></em>);</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-node-add-node-tree"></a><h3>wocky_node_add_node_tree ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_add_node_tree            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *tree</code></em>);</pre>
-<p>
-Copies the nodes from <em class="parameter"><code>tree</code></em>, and appends them to <em class="parameter"><code>node</code></em>'s children.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>A node</td>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td>the nodes namespace (may not be NULL)</td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>tree</code></em> :</span></p></td>
-<td>The node tree to add</td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a newly allocated <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.</td>
 </tr>
 </tbody>
 </table></div>
@@ -1593,25 +1338,267 @@ before any existing children.
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-node-init"></a><h3>wocky_node_init ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_init                     (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<a name="wocky-node-set-attribute"></a><h3>wocky_node_set_attribute ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_attribute            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>);</pre>
 <p>
-Initializes the caches used by <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
-This should be always called before using <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> structs.
+Sets an attribute in a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> to a specific value.
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
+<td>the attribute name to set</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>the value to set</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-node-deinit"></a><h3>wocky_node_deinit ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_deinit                   (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<a name="wocky-node-set-attribute-n"></a><h3>wocky_node_set_attribute_n ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_attribute_n          (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> value_size</code></em>);</pre>
 <p>
-Releases all the resources used by the <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> caches.
+Sets a new attribute to a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, with the supplied values.
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
+<td>the attribute to set</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>the value to set</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value_size</code></em> :</span></p></td>
+<td>the number of bytes of <em class="parameter"><code>value</code></em> to set as a value</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-set-attribute-n-ns"></a><h3>wocky_node_set_attribute_n_ns ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_attribute_n_ns       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> value_size</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
+<p>
+Sets a new attribute to a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, with the supplied values.
+If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent to
+<a class="link" href="wocky-WockyNode.html#wocky-node-set-attribute-n" title="wocky_node_set_attribute_n ()"><code class="function">wocky_node_set_attribute_n()</code></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
+<td>the attribute to set</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>the value to set</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value_size</code></em> :</span></p></td>
+<td>the number of bytes of <em class="parameter"><code>value</code></em> to set as a value</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td>a namespace, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-set-attribute-ns"></a><h3>wocky_node_set_attribute_ns ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_attribute_ns         (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
+<p>
+Sets an attribute in a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, within a specific namespace.
+If the namespace is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, this is equivalent to
+<a class="link" href="wocky-WockyNode.html#wocky-node-set-attribute" title="wocky_node_set_attribute ()"><code class="function">wocky_node_set_attribute()</code></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
+<td>the attribute name to set</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>the value to set</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
+<td>a namespace, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-set-attributes"></a><h3>wocky_node_set_attributes ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_attributes           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);</pre>
+<p>
+Sets attributes in a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> to specific values.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
+<td>the attribute name to set</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-set-content"></a><h3>wocky_node_set_content ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_content              (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *content</code></em>);</pre>
+<p>
+Sets the content of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>content</code></em> :</span></p></td>
+<td>the content to set to the node</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-set-language"></a><h3>wocky_node_set_language ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_language             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>);</pre>
+<p>
+Sets the language of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>lang</code></em> :</span></p></td>
+<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>-terminated string containing the language</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-set-language-n"></a><h3>wocky_node_set_language_n ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_set_language_n           (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> lang_size</code></em>);</pre>
+<p>
+Sets the language of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>lang</code></em> :</span></p></td>
+<td>a language</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>lang_size</code></em> :</span></p></td>
+<td>the length of <em class="parameter"><code>lang</code></em>, in bytes.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-node-to-string"></a><h3>wocky_node_to_string ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_node_to_string                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
+<p>
+Obtains a string representation of a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a newly allocated string containing a serialization of
+the node.</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17</div>
+          Generated by GTK-Doc V1.17.1</div>
 </body>
 </html>
