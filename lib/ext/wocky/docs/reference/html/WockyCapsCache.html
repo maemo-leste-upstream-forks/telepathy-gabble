@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-WockyC2SPorter.html" title="WockyC2SPorter">
 <link rel="next" href="wocky-wocky-connector-enumtypes.html" title="wocky-connector-enumtypes">
-<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.17.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -43,15 +43,14 @@
 <a name="WockyCapsCache.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">struct              <a class="link" href="WockyCapsCache.html#WockyCapsCache-struct" title="struct WockyCapsCache">WockyCapsCache</a>;
 struct              <a class="link" href="WockyCapsCache.html#WockyCapsCacheClass" title="struct WockyCapsCacheClass">WockyCapsCacheClass</a>;
-<a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     <a class="link" href="WockyCapsCache.html#wocky-caps-cache-lookup" title="wocky_caps_cache_lookup ()">wocky_caps_cache_lookup</a>             (<em class="parameter"><code><a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>);
+<a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="returnvalue">WockyCapsCache</span></a> *    <a class="link" href="WockyCapsCache.html#wocky-caps-cache-dup-shared" title="wocky_caps_cache_dup_shared ()">wocky_caps_cache_dup_shared</a>         (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyCapsCache.html#wocky-caps-cache-free-shared" title="wocky_caps_cache_free_shared ()">wocky_caps_cache_free_shared</a>        (<em class="parameter"><code><span class="type">void</span></code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyCapsCache.html#wocky-caps-cache-insert" title="wocky_caps_cache_insert ()">wocky_caps_cache_insert</a>             (<em class="parameter"><code><a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a> *self</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *query_node</code></em>);
+<a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     <a class="link" href="WockyCapsCache.html#wocky-caps-cache-lookup" title="wocky_caps_cache_lookup ()">wocky_caps_cache_lookup</a>             (<em class="parameter"><code><a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>);
 <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="returnvalue">WockyCapsCache</span></a> *    <a class="link" href="WockyCapsCache.html#wocky-caps-cache-new" title="wocky_caps_cache_new ()">wocky_caps_cache_new</a>                (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>);
-<a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="returnvalue">WockyCapsCache</span></a> *    <a class="link" href="WockyCapsCache.html#wocky-caps-cache-dup-shared" title="wocky_caps_cache_dup_shared ()">wocky_caps_cache_dup_shared</a>         (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyCapsCache.html#wocky-caps-cache-free-shared" title="wocky_caps_cache_free_shared ()">wocky_caps_cache_free_shared</a>        (<em class="parameter"><code><span class="type">void</span></code></em>);
-                    <a class="link" href="WockyCapsCache.html#WockyCapsCachePrivate" title="WockyCapsCachePrivate">WockyCapsCachePrivate</a>;
 </pre>
 </div>
 <div class="refsect1">
@@ -93,32 +92,35 @@ The class of a <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-caps-cache-lookup"></a><h3>wocky_caps_cache_lookup ()</h3>
-<pre class="programlisting"><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     wocky_caps_cache_lookup             (<em class="parameter"><code><a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>);</pre>
+<a name="wocky-caps-cache-dup-shared"></a><h3>wocky_caps_cache_dup_shared ()</h3>
+<pre class="programlisting"><a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="returnvalue">WockyCapsCache</span></a> *    wocky_caps_cache_dup_shared         (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
-Look up <em class="parameter"><code>node</code></em> in the caps cache <em class="parameter"><code>self</code></em>. The caller is responsible
-for unreffing the returned <a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a>.
+Returns a new or existing <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a> object.
+</p>
+<p>
+The returned <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a> is cached; the same <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a>
+object will be returned by this function repeatedly in the same
+process. At the end of the process, the caller should call
+<a class="link" href="WockyCapsCache.html#wocky-caps-cache-free-shared" title="wocky_caps_cache_free_shared ()"><code class="function">wocky_caps_cache_free_shared()</code></a> to shared the shared <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a>
+object.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
-<td>a <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>the node to look up in the cache</td>
-</tr>
-<tr>
+<tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a <a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> if <em class="parameter"><code>node</code></em> was found in the cache, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-if a match was not found</td>
-</tr>
-</tbody>
+<td>a new, or cached, <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a>.</td>
+</tr></tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-caps-cache-free-shared"></a><h3>wocky_caps_cache_free_shared ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_caps_cache_free_shared        (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Free the shared <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a> instance which was created by
+calling <a class="link" href="WockyCapsCache.html#wocky-caps-cache-dup-shared" title="wocky_caps_cache_dup_shared ()"><code class="function">wocky_caps_cache_dup_shared()</code></a>, or do nothing if said
+function was not called.
+</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -153,6 +155,35 @@ with the same <em class="parameter"><code>node</code></em> value will return <em
 </div>
 <hr>
 <div class="refsect2">
+<a name="wocky-caps-cache-lookup"></a><h3>wocky_caps_cache_lookup ()</h3>
+<pre class="programlisting"><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     wocky_caps_cache_lookup             (<em class="parameter"><code><a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>);</pre>
+<p>
+Look up <em class="parameter"><code>node</code></em> in the caps cache <em class="parameter"><code>self</code></em>. The caller is responsible
+for unreffing the returned <a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>the node to look up in the cache</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> if <em class="parameter"><code>node</code></em> was found in the cache, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+if a match was not found</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
 <a name="wocky-caps-cache-new"></a><h3>wocky_caps_cache_new ()</h3>
 <pre class="programlisting"><a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="returnvalue">WockyCapsCache</span></a> *    wocky_caps_cache_new                (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>);</pre>
 <p>
@@ -172,45 +203,6 @@ Convenience function to create a new <a class="link" href="WockyCapsCache.html" 
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="wocky-caps-cache-dup-shared"></a><h3>wocky_caps_cache_dup_shared ()</h3>
-<pre class="programlisting"><a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="returnvalue">WockyCapsCache</span></a> *    wocky_caps_cache_dup_shared         (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-Returns a new or existing <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a> object.
-</p>
-<p>
-The returned <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a> is cached; the same <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a>
-object will be returned by this function repeatedly in the same
-process. At the end of the process, the caller should call
-<a class="link" href="WockyCapsCache.html#wocky-caps-cache-free-shared" title="wocky_caps_cache_free_shared ()"><code class="function">wocky_caps_cache_free_shared()</code></a> to shared the shared <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a>
-object.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a new, or cached, <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a>.</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-caps-cache-free-shared"></a><h3>wocky_caps_cache_free_shared ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_caps_cache_free_shared        (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-Free the shared <a class="link" href="WockyCapsCache.html" title="WockyCapsCache"><span class="type">WockyCapsCache</span></a> instance which was created by
-calling <a class="link" href="WockyCapsCache.html#wocky-caps-cache-dup-shared" title="wocky_caps_cache_dup_shared ()"><code class="function">wocky_caps_cache_dup_shared()</code></a>, or do nothing if said
-function was not called.
-</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="WockyCapsCachePrivate"></a><h3>WockyCapsCachePrivate</h3>
-<pre class="programlisting">typedef struct _WockyCapsCachePrivate WockyCapsCachePrivate;</pre>
-<p>
-</p>
-</div>
 </div>
 <div class="refsect1">
 <a name="WockyCapsCache.property-details"></a><h2>Property Details</h2>
@@ -227,6 +219,6 @@ The path on disk to the SQLite database where this
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17</div>
+          Generated by GTK-Doc V1.17.1</div>
 </body>
 </html>

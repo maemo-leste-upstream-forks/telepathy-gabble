@@ -1,3 +1,402 @@
+commit 30315eacd21cd322d0b7adaf743fa57b373f6417
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-28 18:26:55 +0100
+
+    Version 0.13.6
+
+commit ca01a7df1a6d7efa06021dba1594ca27380a9129
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-28 18:20:46 +0100
+
+    More NEWS for 0.13.6
+
+commit 7fb0ccab3ce97fabcb2009faaa50f5c3e7d04019
+Merge: 6211097 c3b6d21
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-28 18:10:41 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+    
+    Conflicts:
+    	NEWS
+    	configure.ac
+
+commit c3b6d2101aa5257a6f1ec927f3b0f3b3911cd2a6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-28 17:53:39 +0100
+
+    nano-version bump! 0.12.7.1
+
+commit 8acd2b0e95fa4b732e1b82eacbc85f0fddf05fee
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-28 17:29:32 +0100
+
+    Version 0.12.7
+
+commit c48f3da4949aac74b2c455983ca982166ff031db
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-28 17:29:23 +0100
+
+    NEWS for 0.12.7
+
+commit 6d7811ac1c1e0b7b98431d567626bff1f4161d3b
+Author: Jussi Kukkonen <jku@linux.intel.com>
+Date:   2011-09-01 23:48:35 +0300
+
+    mail notification: ensure google notification setting is correct
+    
+    Google XMPP server has an (extension) setting that can be used to
+    enable mail notifications, see
+    https://code.google.com/apis/talk/jep_extensions/usersettings.html
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=40565
+
+commit 5e27d123f8a24509a619010cf2dedbbd632bbf0b
+Author: Jussi Kukkonen <jku@linux.intel.com>
+Date:   2011-09-01 23:45:54 +0300
+
+    mail notification: recognize "google:setting" namespace
+
+commit 6211097e8b2df75b79313746b6f7c4e081921eb5
+Merge: 060acfb c4bfa12
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-26 16:38:48 +0100
+
+    Merge branch 'soup-is-optional'
+    
+    Conflicts:
+    	tests/twisted/jingle/google-relay.py
+
+commit c4bfa12099858594001c15a2b1750977aaef814d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-26 15:26:21 +0100
+
+    tests: when built without soup, don't test google relay
+
+commit 060acfb55bdafcafff595eff6e2ed3ae24877c04
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 13:47:21 +0100
+
+    Rename test-initial-aliases to match Makefile
+
+commit c84617178fd951ece907cec4eb5c1da44c2123bb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-20 15:58:37 +0100
+
+    Call: handle google relay reply after channel dies
+    
+    Previously, if the Google relay server replied to our HTTP request after
+    the Call channel had already gone away, we'd crash.
+    
+    Fixes: <http://bugs.freedesktop.org/show_bug.cgi?id=39768>
+
+commit e7cc7f9b9b41923ab57b284776911f82102d06b3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-20 15:58:37 +0100
+
+    Call: test google relay reply after channel dies
+    
+    It's kind of funny: the bug fixed by the previous commit repeatedly
+    surfaced for StreamedMedia channels in a variety of situations (you
+    closed the channel, you removed yourself from Members, you disconnected
+    the connection), and hence there's a lovingly-written exhaustive set of
+    test cases for those scenarios for incoming and outgoing channels. But
+    of course they weren't run for Call channels…
+    
+    This patch only makes the bare minimum number of changes to the test to
+    at least slightly exercise the Call code. It's not as exhaustive as it
+    is for StreamedMedia, and works almost by accident, but hey...
+
+commit 06d98c31504139136336160aac4b1f094a8ccc88
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-20 15:58:37 +0100
+
+    Call: handle google relay reply after channel dies
+    
+    Previously, if the Google relay server replied to our HTTP request after
+    the Call channel had already gone away, we'd crash.
+    
+    Fixes: <http://bugs.freedesktop.org/show_bug.cgi?id=39768>
+
+commit f1ece52985d24d734462f96e8a33db8ced771fdb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-20 15:50:28 +0100
+
+    jingle/google-relay: use functools.partial
+
+commit 114a25a2cb9a1f57560cca30bddfeaeaeec0e3b6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-20 15:21:50 +0100
+
+    Roster: rename updates_nicknames to updated_nicknames
+    
+    This is a typo!
+
+commit b070c914d5f59f2f5b7a5cd1ad476b9c4729eaaf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-20 15:19:17 +0100
+
+    Roster: don't emit nicknames-update with no nicknames.
+    
+    This was triggering an assertion failure in one of the signal handlers,
+    which asserts that the array is non-empty.
+    
+    Reviewed-by: Marco Barisione <marco@barisione.org>
+
+commit 2413a026e53c42fa0973b0a861587dff12c1e65e
+Author: Derek Foreman <derek.foreman@collabora.co.uk>
+Date:   2011-05-16 12:19:44 -0400
+
+    Remove duplicates from source file lists
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit acaf2d4c7f54ecad880450987f716aface11d741
+Author: Derek Foreman <derek.foreman@collabora.co.uk>
+Date:   2011-05-16 12:17:50 -0400
+
+    Check for presence of gmodule
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 3967b4ccf908c70be173c1b27617ebdc19fd6c48
+Merge: bc40410 40b5b45
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-09-20 12:44:00 +0100
+
+    Merge branch 'grouped-alias-updates'
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=40943
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 40b5b45203098ce308a51b6c88c4ab31d40e047d
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-09-16 18:57:56 +0100
+
+    roster: emit a single signal for all the aliases updated at the same time
+
+commit d4cfda9cd64923c81d87b8f875b5f20658023a17
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-09-16 16:39:02 +0100
+
+    conn-aliasing: add a plural version of the nickname-update signal handler
+
+commit bc40410024314a700ef70702502f868630e02e8b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-15 16:05:03 +0100
+
+    with-session-bus: import --also-for-system from Salut
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit e829ba1c802f8b06bf678772046833d0a1c6fd0b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-12 18:03:27 +0100
+
+    with-session-bus.sh: retain newline when forking dbus-monitor
+
+commit d63ca76093a79a630a69fc2d49384004f3f5fe33
+Author: Jussi Kukkonen <jku@linux.intel.com>
+Date:   2011-09-01 23:48:35 +0300
+
+    mail notification: ensure google notification setting is correct
+    
+    Google XMPP server has an (extension) setting that can be used to
+    enable mail notifications, see
+    https://code.google.com/apis/talk/jep_extensions/usersettings.html
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=40565
+
+commit dc7ba1b82823a8e637f1bf3e8257ff44132f44b1
+Author: Jussi Kukkonen <jku@linux.intel.com>
+Date:   2011-09-01 23:45:54 +0300
+
+    mail notification: recognize "google:setting" namespace
+
+commit 9b3b88ab8a7fdeeeb98faae23e6b53b1051e3415
+Merge: 9b3e977 97175d8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-05 18:53:26 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+
+commit 97175d86d43f0d9ebe7fa3f3f0ed96e825ae8094
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-08-03 08:32:16 +0100
+
+    MUC: add password test
+    
+    I left this out of 2d7c9db :(
+
+commit 9b3e977b7b08c6cfa055183f1914ab1b1b891c4b
+Merge: e3d4b85 6c102c0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-05 18:49:55 +0100
+
+    Merge branch 'CAPS-LOCK'
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=40390
+
+commit 6c102c09557e2988386751ffb1ee7186f0747578
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-08-26 11:00:49 +0100
+
+    Connection: assume all handles have ContactCaps
+    
+    Previously, some places in Gabble which called
+    gabble_connection_get_handle_contact_capabilities() did not assume that
+    it never returns NULL. But (due to the implicit text caps for everyone)
+    it is guaranteed always to return a non-NULL array of capabilities, so
+    we can simplify the places that call it.
+
+commit 00de9b2849013d7bc011ef34d3a3cb5a2730a83c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-08-26 10:56:49 +0100
+
+    CapsChannelManager: correct English in a comment
+
+commit 29d365c626445bd3f0c30d9cd6a1103cc87c3d96
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-08-26 10:55:20 +0100
+
+    Connection: simplify getting ContactCaps without presence
+    
+    If we don't have presence for a contact, we do not have any capabilities
+    for them. But we always want to ensure that all contacts are capable of
+    IM. So, currently there is a special-case in the caps-gathering code: if
+    we have no presence, we only call _get_contact_capabilities on the IM
+    factory: its implementation of this virtual method, unlike all others,
+    doesn't care if it's passed a NULL set of caps. Otherwise, if we do have
+    a set of capabilities, we call gabble_connection_build_contact_caps(),
+    which is essentially a foreach over all channel managers, including the
+    IM factory.
+    
+    I think it's neater to avoid the special case, and treat "no presence"
+    as equivalent (for capabilities purposes) to "presence with no caps".
+
+commit e3d4b85839b465e160b91ac7b581dabd1097fc6e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-03 11:23:33 +0100
+
+    Remove support for legacy Presence.
+    
+    This was Olli's idea. He claims that building the old-school signals
+    causes measurable CPU usage on accounts with lots of contacts (think:
+    Facebook). It certainly causes D-Bus spam.
+    
+    Neither Telepathy-GLib nor TelepathyQt4 use this old interface. Empathy
+    doesn't, either. I think this should be safe.
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=40598
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b16296db19ecbca6cfaf8d669c8997dbedb8e5fc
+Merge: 8569bab 2d7c9db
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-05 18:39:02 +0100
+
+    Merge branch 'telepathy-gabble-0.12'
+
+commit 2d7c9db4766394d39ff3b3fc42cf7e928e4f4751
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-08-03 08:32:16 +0100
+
+    MUC: don't forget password when handling nick conflicts
+    
+    WockyMuc has a property, :password, representing the current password
+    being used to join the MUC. GabbleMuc previously had a private variable,
+    'password', which was used for this. In the port to WockyMuc, setting
+    the private variable was removed, but it was still used when
+    re-attempting to join after a nick conflict.
+    
+    (I think the password should be a parameter to a hypothetical
+    wocky_muc_join_async() which does all the nick conflict crap for you.
+    Having this as state that kicks around on the WockyMuc for ever is
+    bizarre—once you're in the room, you usually don't use the password,
+    unless you're the owner, in which case you can retrieve the current
+    password *which may be different*!)
+    
+    This patch expunges the zombie private variable, and ensures
+    WockyMuc:password is only set when the user provides a password, not at
+    every join attempt. It adds a test for this case, and some of the basic
+    functionality of Password (which subsumes some incidental testing of the
+    Password interface in muc/presence-before-closing: the only test that
+    touched Password at all!).
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=39790
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 3968fd5da0e56006fde7bf6832e605ef8f544572
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-09-02 11:24:30 +0100
+
+    Stable Gabble was accidentally using the master branch of wocky
+
+commit 28b64163e8bbca02de308612f6653ed291e2b1df
+Author: Mikhail Zabaluev <mikhail.zabaluev@nokia.com>
+Date:   2011-09-01 13:22:42 +0300
+
+    Don't allow the stub for GabbleGoogleRelayResolver to be empty
+    
+    g_slice_alloc() behavior for zero-sized blocks is undocumented and
+    leads to obscure code paths taken.
+
+commit 39fc20df8c978ebf072998cc1077a48ec6b41593
+Author: Mikhail Zabaluev <mikhail.zabaluev@nokia.com>
+Date:   2011-09-01 11:32:08 +0300
+
+    Ignore the relay info in Jingle stanza if Google relay support is disabled
+
+commit d2b3153f84e1f010b02ce4b084f3711ab95060e8
+Author: Mikhail Zabaluev <mikhail.zabaluev@nokia.com>
+Date:   2011-08-31 16:14:09 +0300
+
+    Make Google proxy support optional
+    
+    The intent is to make optional the dependency on libsoup (fd.o #40537).
+
+commit 60b5bc0cf55ee60b0c66384e544a9f35d3b3688d
+Author: Mikhail Zabaluev <mikhail.zabaluev@nokia.com>
+Date:   2011-08-31 13:56:10 +0300
+
+    Isolated the Google relay resolution code in a separate source file
+
+commit 8569bab0c49f88e397aebc9fcf2d045a21b5be75
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-08-29 17:46:58 -0400
+
+    Announce the camera-v1 caps bundle so that the Google UIs put a little camera for us
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=40471
+
+commit 81176c13d19530ac37401e7b9e597ebfbd2a2904
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-07-19 21:01:10 +0300
+
+    presence-cache.c: Add Android presence cache bundle
+    
+    Let's add another "well-known" bundle
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=36996
+
+commit 78015e5dc12c37d6a99b417d8e1abea9e975e607
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2010-02-05 13:41:29 +0000
+
+    Add a summary of options to the end of configure
+
+commit 068445479b27c036e01e6e2f7134f7cfd2f48d6f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-08-17 16:25:07 +0100
+
+    nano version bump
+
+commit 6c86d9bc863af7504bfafeb1212360cfd0f2b70d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-08-17 16:22:35 +0100
+
+    bump nano-version to 0.13.5.1
+
 commit 6f7803086bdce403b2b32e83d16a083bce9d0ee9
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2011-08-17 16:18:11 +0100

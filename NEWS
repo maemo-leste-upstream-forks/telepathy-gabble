@@ -1,3 +1,42 @@
+telepathy-gabble 0.13.6 (2011-09-28)
+====================================
+
+The “grab yourself a bottle” release.
+
+Enhancements:
+
+• Video-capable Android phones are now considered to be video-capable by
+  Gabble. (fd.o#36996, Olivier Crête)
+
+• Gabble now informs Google UIs that we have a camera connected if we
+  have any video-capable user interfaces. While this is not strictly
+  accurate, it's an improvement: they now show a little camera icon for
+  us. (fd.o#40471, Olivier Crête)
+
+• Google proxy support—and hence the libsoup dependency—is now optional.
+  (fd.o#40537, Mikhail Zabaluev)
+
+• Gabble no longer support the legacy Presence API. This reduces D-Bus
+  traffic, particularly during login. (fd.o#40598, Will Thompson)
+
+• Gabble now signals all aliases from the roster in a single
+  AliasesChanged signal. This *dramatically* reduces D-Bus traffic
+  during login on services like Facebook. (fd.o#40943, Marco Barisione)
+
+Fixes:
+
+• Joining a password-protected chat room where someone else already has
+  the nickname you wanted to use—a pretty obscure scenario—now works
+  again. (fd.o#39790, Will Thompson)
+
+• Closing a Call channel immediately after it is created—specifically,
+  before the Google relay server has had a chance to reply—no longer
+  crashes Gabble. (fd.o#39768, Will Thompson)
+
+• The Google Talk setting controlling the sending of mail notifications
+  is now explicitly enabled if a client is interested in mail
+  notifications. (fd.o#40565, Jussi Kukkonen)
+
 telepathy-gabble 0.13.5 (2011-08-17)
 ====================================
 

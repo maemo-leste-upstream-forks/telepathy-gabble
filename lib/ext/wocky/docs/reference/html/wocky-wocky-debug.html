@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-WockyDataForm.html" title="WockyDataForm">
 <link rel="next" href="wocky-wocky.html" title="wocky">
-<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.17.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -37,34 +37,34 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="wocky-wocky-debug.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">enum                <a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags">WockyDebugFlags</a>;
-#define             <a class="link" href="wocky-wocky-debug.html#DEBUG-XMPP:CAPS" title="DEBUG_XMPP">DEBUG_XMPP</a>
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug-set-flags-from-env" title="wocky_debug_set_flags_from_env ()">wocky_debug_set_flags_from_env</a>      (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug-set-flags" title="wocky_debug_set_flags ()">wocky_debug_set_flags</a>               (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flags</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-wocky-debug.html#wocky-debug-flag-is-set" title="wocky_debug_flag_is_set ()">wocky_debug_flag_is_set</a>             (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug-valist" title="wocky_debug_valist ()">wocky_debug_valist</a>                  (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
-                                                         <em class="parameter"><code><span class="type">va_list</span> args</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug" title="wocky_debug ()">wocky_debug</a>                         (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
-                                                         <em class="parameter"><code>...</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug-stanza" title="wocky_debug_stanza ()">wocky_debug_stanza</a>                  (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
-                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
-                                                         <em class="parameter"><code>...</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug-node-tree" title="wocky_debug_node_tree ()">wocky_debug_node_tree</a>               (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *tree</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
-                                                         <em class="parameter"><code>...</code></em>);
-#define             <a class="link" href="wocky-wocky-debug.html#DEBUG:CAPS" title="DEBUG()">DEBUG</a>                               (format,
+<pre class="synopsis">#define             <a class="link" href="wocky-wocky-debug.html#DEBUG:CAPS" title="DEBUG()">DEBUG</a>                               (format,
+                                                         ...)
+#define             <a class="link" href="wocky-wocky-debug.html#DEBUGGING:CAPS" title="DEBUGGING">DEBUGGING</a>
+#define             <a class="link" href="wocky-wocky-debug.html#DEBUG-NODE-TREE:CAPS" title="DEBUG_NODE_TREE()">DEBUG_NODE_TREE</a>                     (tree,
+                                                         format,
                                                          ...)
 #define             <a class="link" href="wocky-wocky-debug.html#DEBUG-STANZA:CAPS" title="DEBUG_STANZA()">DEBUG_STANZA</a>                        (stanza,
                                                          format,
                                                          ...)
-#define             <a class="link" href="wocky-wocky-debug.html#DEBUG-NODE-TREE:CAPS" title="DEBUG_NODE_TREE()">DEBUG_NODE_TREE</a>                     (tree,
-                                                         format,
-                                                         ...)
-#define             <a class="link" href="wocky-wocky-debug.html#DEBUGGING:CAPS" title="DEBUGGING">DEBUGGING</a>
+#define             <a class="link" href="wocky-wocky-debug.html#DEBUG-XMPP:CAPS" title="DEBUG_XMPP">DEBUG_XMPP</a>
+enum                <a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags">WockyDebugFlags</a>;
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug" title="wocky_debug ()">wocky_debug</a>                         (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-wocky-debug.html#wocky-debug-flag-is-set" title="wocky_debug_flag_is_set ()">wocky_debug_flag_is_set</a>             (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug-node-tree" title="wocky_debug_node_tree ()">wocky_debug_node_tree</a>               (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *tree</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug-set-flags" title="wocky_debug_set_flags ()">wocky_debug_set_flags</a>               (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flags</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug-set-flags-from-env" title="wocky_debug_set_flags_from_env ()">wocky_debug_set_flags_from_env</a>      (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug-stanza" title="wocky_debug_stanza ()">wocky_debug_stanza</a>                  (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-debug.html#wocky-debug-valist" title="wocky_debug_valist ()">wocky_debug_valist</a>                  (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
+                                                         <em class="parameter"><code><span class="type">va_list</span> args</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -74,6 +74,43 @@
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-debug.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="DEBUG:CAPS"></a><h3>DEBUG()</h3>
+<pre class="programlisting">#define             DEBUG(format, ...)</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DEBUGGING:CAPS"></a><h3>DEBUGGING</h3>
+<pre class="programlisting">#define DEBUGGING wocky_debug_flag_is_set(DEBUG_FLAG)
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DEBUG-NODE-TREE:CAPS"></a><h3>DEBUG_NODE_TREE()</h3>
+<pre class="programlisting">#define             DEBUG_NODE_TREE(tree, format, ...)</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DEBUG-STANZA:CAPS"></a><h3>DEBUG_STANZA()</h3>
+<pre class="programlisting">#define             DEBUG_STANZA(stanza, format, ...)</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="DEBUG-XMPP:CAPS"></a><h3>DEBUG_XMPP</h3>
+<pre class="programlisting">#define DEBUG_XMPP (DEBUG_XMPP_READER | DEBUG_XMPP_WRITER)
+</pre>
+<p>
+</p>
+</div>
+<hr>
 <div class="refsect2">
 <a name="WockyDebugFlags"></a><h3>enum WockyDebugFlags</h3>
 <pre class="programlisting">typedef enum
@@ -107,44 +144,6 @@
 </div>
 <hr>
 <div class="refsect2">
-<a name="DEBUG-XMPP:CAPS"></a><h3>DEBUG_XMPP</h3>
-<pre class="programlisting">#define DEBUG_XMPP (DEBUG_XMPP_READER | DEBUG_XMPP_WRITER)
-</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-debug-set-flags-from-env"></a><h3>wocky_debug_set_flags_from_env ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_set_flags_from_env      (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-debug-set-flags"></a><h3>wocky_debug_set_flags ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_set_flags               (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flags</code></em>);</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-debug-flag-is-set"></a><h3>wocky_debug_flag_is_set ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_debug_flag_is_set             (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>);</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-debug-valist"></a><h3>wocky_debug_valist ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_valist                  (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
-                                                         <em class="parameter"><code><span class="type">va_list</span> args</code></em>);</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2">
 <a name="wocky-debug"></a><h3>wocky_debug ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug                         (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
@@ -154,11 +153,8 @@
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-debug-stanza"></a><h3>wocky_debug_stanza ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_stanza                  (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
-                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
-                                                         <em class="parameter"><code>...</code></em>);</pre>
+<a name="wocky-debug-flag-is-set"></a><h3>wocky_debug_flag_is_set ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_debug_flag_is_set             (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>);</pre>
 <p>
 </p>
 </div>
@@ -174,30 +170,34 @@
 </div>
 <hr>
 <div class="refsect2">
-<a name="DEBUG:CAPS"></a><h3>DEBUG()</h3>
-<pre class="programlisting">#define             DEBUG(format, ...)</pre>
+<a name="wocky-debug-set-flags"></a><h3>wocky_debug_set_flags ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_set_flags               (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flags</code></em>);</pre>
 <p>
 </p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="DEBUG-STANZA:CAPS"></a><h3>DEBUG_STANZA()</h3>
-<pre class="programlisting">#define             DEBUG_STANZA(stanza, format, ...)</pre>
+<a name="wocky-debug-set-flags-from-env"></a><h3>wocky_debug_set_flags_from_env ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_set_flags_from_env      (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 </p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="DEBUG-NODE-TREE:CAPS"></a><h3>DEBUG_NODE_TREE()</h3>
-<pre class="programlisting">#define             DEBUG_NODE_TREE(tree, format, ...)</pre>
+<a name="wocky-debug-stanza"></a><h3>wocky_debug_stanza ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_stanza                  (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);</pre>
 <p>
 </p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="DEBUGGING:CAPS"></a><h3>DEBUGGING</h3>
-<pre class="programlisting">#define DEBUGGING wocky_debug_flag_is_set(DEBUG_FLAG)
-</pre>
+<a name="wocky-debug-valist"></a><h3>wocky_debug_valist ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_valist                  (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
+                                                         <em class="parameter"><code><span class="type">va_list</span> args</code></em>);</pre>
 <p>
 </p>
 </div>
@@ -205,6 +205,6 @@
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17</div>
+          Generated by GTK-Doc V1.17.1</div>
 </body>
 </html>
