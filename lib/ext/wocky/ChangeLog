@@ -1,3 +1,114 @@
+commit 8b8603bb3bf0258b05ef8ed9051d9922d80c6753
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   Sat Oct 1 13:42:31 2011 +0200
+
+    Add wocky_auth_registry_supports_one_of()
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+ wocky/wocky-auth-registry.c |  147 +++++++++++++++++++++++++++++--------------
+ wocky/wocky-auth-registry.h |    5 ++
+ 2 files changed, 105 insertions(+), 47 deletions(-)
+
+commit 069d5d347be1f97e4408cf8e59017911a50de2d3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Sep 30 16:41:24 2011 +0100
+
+    NodeTree: fix _new example
+    
+    It was legal before, but the tree it built made no sense!
+
+ wocky/wocky-node-tree.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 28da3d1e5e94635a9ac7a0e886ed20dae87d8556
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Sep 7 14:57:28 2011 +0100
+
+    pubsub-helpers: add node name as attribute on items node
+    
+    Previously I had erroneously done this:
+    
+      ...
+        <items xmlns="the:node:name">
+          ...
+    
+    Where actually, it should be:
+    
+      ...
+        <items node="the:node:name">
+          ...
+    
+    Bad me.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-pubsub-helpers.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit cac7727c18341e977c12e42e5dcea4a86c4b90a4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Sep 5 18:10:27 2011 +0100
+
+    C2SPorter: clear up English properly.
+    
+    I feel threatened.
+
+ wocky/wocky-c2s-porter.c |   14 ++++++++------
+ 1 files changed, 8 insertions(+), 6 deletions(-)
+
+commit 3d05bdac0d8bf77f310ecb6558121cd50bed7fbb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Sep 5 18:06:55 2011 +0100
+
+    C2SPorter: correctly conjugate the verb "to threaten"
+
+ wocky/wocky-c2s-porter.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 6d5932dcfc171de0b9169449c965d89e94cd797e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Thu Sep 1 09:30:23 2011 +0100
+
+    Connector: change misleading “Bad SRV record” message
+    
+    Failing to connect to the server specified by an SRV record doesn't mean
+    the record is wrong: it could well be that the server is broken.
+    
+    Reviewed-by: Danielle Madeley <danielle.madeley@collabora.co.uk>
+
+ wocky/wocky-connector.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit d37c814b0ac7a38f3820a6e0d273e0b50303c373
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Aug 31 10:33:33 2011 +0100
+
+    connector-test: use !=, not |=
+    
+    Thanks, clang!
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-connector-test.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 891dfc761b465f5c195917b60d9fbcede54ee6d8
+Author: Marco Barisione <marco@barisione.org>
+Date:   Wed Aug 17 13:25:03 2011 +0100
+
+    sasl-digest-md5: the response needs both the realm and server
+    
+    Some of the fields in the response wocky sends to the server require
+    the realm (like the "realm" field) while others require the server name
+    (like the "digest-uri" field). Usually this bug is not noticeable as the
+    realm and the server name are the same.
+    
+    Reviewed-by: Vivek Dasmohapatra <vivek@collabora.co.uk>
+
+ wocky/wocky-sasl-digest-md5.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
 commit c6850584919e4f2f1ab2644c67e6a2ee024d61a9
 Merge: 5ba6fef 0396dd2
 Author: Marco Barisione <marco@barisione.org>

@@ -31,6 +31,7 @@ TWISTED_TESTS = \
 	muc/presence-before-closing.py \
 	muc/renamed.py \
 	muc/room.py \
+	muc/room-config.py \
 	muc/roomlist.py \
 	muc/scrollback.py \
 	muc/send-error.py \
@@ -39,7 +40,6 @@ TWISTED_TESTS = \
 	muc/test-muc-alias.py \
 	muc/test-muc-invitation.py \
 	muc/test-muc-ownership.py \
-	muc/test-muc-properties.py \
 	muc/test-muc.py \
 	olpc/current-activity.py \
 	olpc/olpc-muc-invitation.py \
@@ -98,6 +98,7 @@ TWISTED_TESTS = \
 	text/test-text.py \
 	tls/server-tls-channel.py \
 	version.py \
+	dataforms.py \
 	$(NULL)
 
 TWISTED_TUBE_TESTS = \
