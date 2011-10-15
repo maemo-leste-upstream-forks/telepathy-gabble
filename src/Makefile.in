@@ -84,11 +84,12 @@ am_libgabble_convenience_la_OBJECTS = auth-manager.lo base64.lo \
 	muc-channel.lo muc-factory.lo olpc-activity.lo \
 	plugin-loader.lo plugin.lo presence.lo presence-cache.lo \
 	protocol.lo private-tubes-factory.lo request-pipeline.lo \
-	roster.lo roomlist-channel.lo roomlist-manager.lo \
-	search-channel.lo search-manager.lo server-sasl-channel.lo \
-	server-tls-channel.lo server-tls-manager.lo sidecar.lo \
-	tls-certificate.lo tube-iface.lo tubes-channel.lo tube-dbus.lo \
-	tube-stream.lo util.lo vcard-manager.lo
+	roster.lo room-config.lo roomlist-channel.lo \
+	roomlist-manager.lo search-channel.lo search-manager.lo \
+	server-sasl-channel.lo server-tls-channel.lo \
+	server-tls-manager.lo sidecar.lo tls-certificate.lo \
+	tube-iface.lo tubes-channel.lo tube-dbus.lo tube-stream.lo \
+	util.lo vcard-manager.lo
 am__objects_1 = gabble-signals-marshal.lo gabble-enumtypes.lo
 nodist_libgabble_convenience_la_OBJECTS = $(am__objects_1)
 libgabble_convenience_la_OBJECTS =  \
@@ -334,12 +335,12 @@ libgabble_convenience_la_SOURCES = \
     call-stream.h \
     call-stream.c \
     $(top_srcdir)/gabble/capabilities-set.h \
-    capabilities.h \
+    $(top_srcdir)/gabble/capabilities.h \
     capabilities.c \
     $(top_srcdir)/gabble/caps-hash.h \
     caps-hash.h \
     caps-hash.c \
-    caps-channel-manager.h \
+    $(top_srcdir)/gabble/caps-channel-manager.h \
     caps-channel-manager.c \
     conn-aliasing.h \
     conn-aliasing.c \
@@ -442,6 +443,8 @@ libgabble_convenience_la_SOURCES = \
     request-pipeline.c \
     roster.h \
     roster.c \
+    room-config.h \
+    room-config.c \
     roomlist-channel.h \
     roomlist-channel.c \
     roomlist-manager.h \
@@ -478,6 +481,7 @@ libgabble_convenience_la_SOURCES = \
 enumtype_sources = \
     $(top_srcdir)/src/connection.h \
     $(top_srcdir)/src/jingle-factory.h \
+    $(top_srcdir)/src/room-config.h \
     $(top_srcdir)/src/presence.h
 
 libgabble_convenience_la_LIBADD = \
@@ -695,6 +699,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/private-tubes-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/protocol.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/request-pipeline.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/room-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roomlist-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roomlist-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/roster.Plo@am__quote@

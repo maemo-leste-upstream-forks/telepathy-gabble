@@ -44,6 +44,7 @@
 #define             <a class="link" href="WockyAuthRegistry.html#WOCKY-AUTH-MECH-JABBER-PASSWORD:CAPS" title="WOCKY_AUTH_MECH_JABBER_PASSWORD">WOCKY_AUTH_MECH_JABBER_PASSWORD</a>
 #define             <a class="link" href="WockyAuthRegistry.html#WOCKY-AUTH-MECH-SASL-DIGEST-MD5:CAPS" title="WOCKY_AUTH_MECH_SASL_DIGEST_MD5">WOCKY_AUTH_MECH_SASL_DIGEST_MD5</a>
 #define             <a class="link" href="WockyAuthRegistry.html#WOCKY-AUTH-MECH-SASL-PLAIN:CAPS" title="WOCKY_AUTH_MECH_SASL_PLAIN">WOCKY_AUTH_MECH_SASL_PLAIN</a>
+#define             <a class="link" href="WockyAuthRegistry.html#WOCKY-AUTH-MECH-SASL-SCRAM-SHA-1:CAPS" title="WOCKY_AUTH_MECH_SASL_SCRAM_SHA_1">WOCKY_AUTH_MECH_SASL_SCRAM_SHA_1</a>
 enum                <a class="link" href="WockyAuthRegistry.html#WockyAuthError-enum" title="enum WockyAuthError">WockyAuthError</a>;
 struct              <a class="link" href="WockyAuthRegistry.html#WockyAuthRegistry-struct" title="struct WockyAuthRegistry">WockyAuthRegistry</a>;
 <span class="returnvalue">void</span>                (<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryChallengeAsyncFunc" title="WockyAuthRegistryChallengeAsyncFunc ()">*WockyAuthRegistryChallengeAsyncFunc</a>)
@@ -127,6 +128,9 @@ struct              <a class="link" href="WockyAuthRegistry.html#WockyAuthRegist
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-success-finish" title="wocky_auth_registry_success_finish ()">wocky_auth_registry_success_finish</a>  (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-supports-one-of" title="wocky_auth_registry_supports_one_of ()">wocky_auth_registry_supports_one_of</a> (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="type">GSList</span></a> *mechanisms</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> allow_plain</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -181,6 +185,14 @@ struct              <a class="link" href="WockyAuthRegistry.html#WockyAuthRegist
 <div class="refsect2">
 <a name="WOCKY-AUTH-MECH-SASL-PLAIN:CAPS"></a><h3>WOCKY_AUTH_MECH_SASL_PLAIN</h3>
 <pre class="programlisting">#define WOCKY_AUTH_MECH_SASL_PLAIN "PLAIN"
+</pre>
+<p>
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WOCKY-AUTH-MECH-SASL-SCRAM-SHA-1:CAPS"></a><h3>WOCKY_AUTH_MECH_SASL_SCRAM_SHA_1</h3>
+<pre class="programlisting">#define WOCKY_AUTH_MECH_SASL_SCRAM_SHA_1 "SCRAM-SHA-1"
 </pre>
 <p>
 </p>
@@ -773,6 +785,41 @@ and returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 </p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-auth-registry-supports-one-of"></a><h3>wocky_auth_registry_supports_one_of ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_auth_registry_supports_one_of (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="type">GSList</span></a> *mechanisms</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> allow_plain</code></em>);</pre>
+<p>
+Checks whether at least one of <em class="parameter"><code>mechanisms</code></em> is supported by Wocky. At present,
+Wocky itself only implements password-based authentication mechanisms.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mechanisms</code></em> :</span></p></td>
+<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="type">GSList</span></a> of gchar* of auth mechanisms</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>allow_plain</code></em> :</span></p></td>
+<td>Whether auth in plain text is allowed</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if one of the <em class="parameter"><code>mechanisms</code></em> is supported by wocky,
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 </div>
