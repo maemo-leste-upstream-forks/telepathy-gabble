@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-xmpp-error-enumtypes.html" title="wocky-xmpp-error-enumtypes">
 <link rel="next" href="wocky-wocky-xmpp-reader-enumtypes.html" title="wocky-xmpp-reader-enumtypes">
-<meta name="generator" content="GTK-Doc V1.17.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -95,8 +95,6 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-xmpp-error.description"></a><h2>Description</h2>
-<p>
-</p>
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-xmpp-error.details"></a><h2>Details</h2>
@@ -104,24 +102,18 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <a name="WOCKY-JINGLE-ERROR:CAPS"></a><h3>WOCKY_JINGLE_ERROR</h3>
 <pre class="programlisting">#define WOCKY_JINGLE_ERROR (wocky_jingle_error_quark ())
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="WOCKY-SI-ERROR:CAPS"></a><h3>WOCKY_SI_ERROR</h3>
 <pre class="programlisting">#define WOCKY_SI_ERROR (wocky_si_error_quark ())
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="WOCKY-XMPP-ERROR:CAPS"></a><h3>WOCKY_XMPP_ERROR</h3>
 <pre class="programlisting">#define WOCKY_XMPP_ERROR (wocky_xmpp_error_quark ())
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -245,9 +237,6 @@ SI specific errors.
     WOCKY_XMPP_ERROR_FEATURE_NOT_IMPLEMENTED, /* 501 */
 
     WOCKY_XMPP_ERROR_SERVICE_UNAVAILABLE,     /* 502, 503, 510 */
-
-    /*&lt; private &gt;*/
-    NUM_WOCKY_XMPP_ERRORS /*&lt; skip &gt;*/ /* don't want this in the GEnum */
 } WockyXmppError;
 </pre>
 <p>
@@ -472,8 +461,7 @@ default error type for <em class="parameter"><code>specializes</code></em> shoul
 <hr>
 <div class="refsect2">
 <a name="WockyXmppErrorType-enum"></a><h3>enum WockyXmppErrorType</h3>
-<pre class="programlisting">typedef enum
-{
+<pre class="programlisting">typedef enum {
   WOCKY_XMPP_ERROR_TYPE_CANCEL,
   WOCKY_XMPP_ERROR_TYPE_CONTINUE,
   WOCKY_XMPP_ERROR_TYPE_MODIFY,
@@ -731,30 +719,22 @@ Stream-level error conditions as described in RFC 3920 §4.7.3.
 <div class="refsect2">
 <a name="wocky-jingle-error-quark"></a><h3>wocky_jingle_error_quark ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_jingle_error_quark            (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-si-error-quark"></a><h3>wocky_si_error_quark ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_si_error_quark                (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-stanza-error-to-node"></a><h3>wocky_stanza_error_to_node ()</h3>
 <pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_stanza_error_to_node          (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *parent_node</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-xmpp-error-deinit"></a><h3>wocky_xmpp_error_deinit ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_deinit             (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -829,15 +809,11 @@ application-specific error, if one is found</td>
 <div class="refsect2">
 <a name="wocky-xmpp-error-init"></a><h3>wocky_xmpp_error_init ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_init               (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-xmpp-error-quark"></a><h3>wocky_xmpp_error_quark ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_xmpp_error_quark              (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -942,6 +918,6 @@ Get the error quark used for stream errors
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17.1</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

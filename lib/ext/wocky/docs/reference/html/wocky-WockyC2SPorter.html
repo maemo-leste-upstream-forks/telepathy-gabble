@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="WockyBareContact.html" title="WockyBareContact">
 <link rel="next" href="WockyCapsCache.html" title="WockyCapsCache">
-<meta name="generator" content="GTK-Doc V1.17.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -111,8 +111,16 @@ mode is disabled.
 </p>
 <p>
 Queueable stanzas are:
- - <span style="color: red">&lt;presence&gt;&lt;/presence&gt;</span> and <span style="color: red">&lt;presence&gt;&lt;/presence&gt;</span>
- - all PEP updates
+</p>
+<p>
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<code class="code">&lt;presence/&gt;</code> and
+     <code class="code">&lt;presence type="unavailable"/&gt;</code>;</li>
+<li class="listitem">PEP updates for a hardcoded list of namespaces.</li>
+</ul></div>
+<p>
 </p>
 <p>
 Whenever stanza is handled, all previously queued stanzas
@@ -198,12 +206,12 @@ For example, to register a handler for roster pushes, call:
 4
 5
 6</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">id </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="wocky-WockyC2SPorter.html#wocky-c2s-porter-register-handler-from-server">wocky_c2s_porter_register_handler_from_server</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">porter</span><span class="symbol">,</span>
-<span class="normal">  <a href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-MESSAGE:CAPS">WOCKY_STANZA_TYPE_MESSAGE</a></span><span class="symbol">,</span><span class="normal"> <a href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-SET:CAPS">WOCKY_STANZA_SUB_TYPE_SET</a></span><span class="symbol">,</span>
-<span class="normal">  <a href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</a></span><span class="symbol">,</span><span class="normal"> roster_push_received_cb</span><span class="symbol">,</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span>
-<span class="normal">  </span><span class="string">'('</span><span class="symbol">,</span>
-<span class="normal">    </span><span class="string">"query"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">':'</span><span class="symbol">,</span><span class="normal"> <a href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-ROSTER:CAPS">WOCKY_XMPP_NS_ROSTER</a></span><span class="symbol">,</span>
-<span class="normal">  </span><span class="string">')'</span><span class="symbol">,</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function"><a href="wocky-WockyC2SPorter.html#wocky-c2s-porter-register-handler-from-server">wocky_c2s_porter_register_handler_from_server</a></span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
+  WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_SET<span class="gtkdoc opt">,</span>
+  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL<span class="gtkdoc opt">,</span> roster_push_received_cb<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span>
+  <span class="string">'('</span><span class="gtkdoc opt">,</span>
+    <span class="string">&quot;query&quot;</span><span class="gtkdoc opt">,</span> <span class="string">':'</span><span class="gtkdoc opt">,</span> WOCKY_XMPP_NS_ROSTER<span class="gtkdoc opt">,</span>
+  <span class="string">')'</span><span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -244,6 +252,12 @@ stop further processing.</td>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>Passed to <em class="parameter"><code>callback</code></em>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>Varargs</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build" title="wocky_stanza_build ()"><code class="function">wocky_stanza_build()</code></a> specification. The handler
+will match a stanza only if the stanza received is a superset of the one
+passed to this function, as per <a class="link" href="wocky-WockyNode.html#wocky-node-is-superset" title="wocky_node_is_superset ()"><code class="function">wocky_node_is_superset()</code></a>.</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
@@ -454,6 +468,6 @@ Finishes sending a whitespace ping.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17.1</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

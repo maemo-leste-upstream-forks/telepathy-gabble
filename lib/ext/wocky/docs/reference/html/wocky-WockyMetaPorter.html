@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-jabber-auth-password.html" title="wocky-jabber-auth-password">
 <link rel="next" href="wocky-wocky-muc-enumtypes.html" title="wocky-muc-enumtypes">
-<meta name="generator" content="GTK-Doc V1.17.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -43,7 +43,7 @@ enum                <a class="link" href="wocky-WockyMetaPorter.html#WockyMetaPo
 <a href="http://library.gnome.org/devel/gio/unstable/GSocketConnection.html"><span class="returnvalue">GSocketConnection</span></a> * <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-borrow-connection" title="wocky_meta_porter_borrow_connection ()">wocky_meta_porter_borrow_connection</a> (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
                                                          <em class="parameter"><code><span class="type">WockyLLContact</span> *contact</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-error-quark" title="wocky_meta_porter_error_quark ()">wocky_meta_porter_error_quark</a>       (<em class="parameter"><code><span class="type">void</span></code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint16"><span class="returnvalue">guint16</span></a>             <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-get-port" title="wocky_meta_porter_get_port ()">wocky_meta_porter_get_port</a>          (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>);
+<span class="returnvalue">guint16</span>             <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-get-port" title="wocky_meta_porter_get_port ()">wocky_meta_porter_get_port</a>          (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-hold" title="wocky_meta_porter_hold ()">wocky_meta_porter_hold</a>              (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *contact</code></em>);
 <span class="returnvalue">WockyPorter</span> *       <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-new" title="wocky_meta_porter_new ()">wocky_meta_porter_new</a>               (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
@@ -64,8 +64,6 @@ enum                <a class="link" href="wocky-WockyMetaPorter.html#WockyMetaPo
 </div>
 <div class="refsect1">
 <a name="wocky-WockyMetaPorter.description"></a><h2>Description</h2>
-<p>
-</p>
 </div>
 <div class="refsect1">
 <a name="wocky-WockyMetaPorter.details"></a><h2>Details</h2>
@@ -73,8 +71,6 @@ enum                <a class="link" href="wocky-WockyMetaPorter.html#WockyMetaPo
 <a name="WOCKY-META-PORTER-ERROR:CAPS"></a><h3>WOCKY_META_PORTER_ERROR</h3>
 <pre class="programlisting">#define WOCKY_META_PORTER_ERROR (wocky_meta_porter_error_quark ())
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -83,20 +79,15 @@ enum                <a class="link" href="wocky-WockyMetaPorter.html#WockyMetaPo
   GObjectClass parent_class;
 };
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="WockyMetaPorterError"></a><h3>enum WockyMetaPorterError</h3>
-<pre class="programlisting">typedef enum
-{
+<pre class="programlisting">typedef enum {
   WOCKY_META_PORTER_ERROR_NO_CONTACT_ADDRESS,
   WOCKY_META_PORTER_ERROR_FAILED_TO_CLOSE,
 } WockyMetaPorterError;
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -138,13 +129,11 @@ close spontaneously unless <a class="link" href="wocky-WockyMetaPorter.html#wock
 <div class="refsect2">
 <a name="wocky-meta-porter-error-quark"></a><h3>wocky_meta_porter_error_quark ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_meta_porter_error_quark       (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-meta-porter-get-port"></a><h3>wocky_meta_porter_get_port ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint16"><span class="returnvalue">guint16</span></a>             wocky_meta_porter_get_port          (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">guint16</span>             wocky_meta_porter_get_port          (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>);</pre>
 <p>
 Returns the port <em class="parameter"><code>porter</code></em> is listening in on for new incoming XMPP
 connections, or 0 if it has not been started yet with
@@ -369,6 +358,6 @@ started.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17.1</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>
