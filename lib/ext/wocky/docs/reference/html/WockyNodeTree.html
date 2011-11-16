@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-WockyNode.html" title="WockyNode">
 <link rel="next" href="wocky-WockyPepService.html" title="WockyPepService">
-<meta name="generator" content="GTK-Doc V1.17.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -50,8 +50,6 @@
 </div>
 <div class="refsect1">
 <a name="WockyNodeTree.description"></a><h2>Description</h2>
-<p>
-</p>
 </div>
 <div class="refsect1">
 <a name="WockyNodeTree.details"></a><h2>Details</h2>
@@ -68,8 +66,6 @@ The class of a <a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><
 <div class="refsect2">
 <a name="wocky-node-tree-get-top-node"></a><h3>wocky_node_tree_get_top_node ()</h3>
 <pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_node_tree_get_top_node        (<em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *self</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -84,7 +80,7 @@ Example:
 <p>
 </p>
 <div class="example">
-<a name="idp4004032"></a><p class="title"><b>Example 2. </b></p>
+<a name="idp10015280"></a><p class="title"><b>Example 2. </b></p>
 <div class="example-contents">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -94,11 +90,11 @@ Example:
 3
 4
 5</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="WockyNodeTree.html#wocky-node-tree-new">wocky_node_tree_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"html"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"http://www.w3.org/1999/xhtml"</span><span class="symbol">,</span>
-<span class="normal">   </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"body"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">'@'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"textcolor"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"red"</span><span class="symbol">,</span>
-<span class="normal">      </span><span class="string">'$'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"Wocky wooo"</span><span class="symbol">,</span>
-<span class="normal">   </span><span class="string">')'</span><span class="symbol">,</span>
-<span class="normal">  <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="WockyNodeTree.html#wocky-node-tree-new">wocky_node_tree_new</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;html&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;http://www.w3.org/1999/xhtml&quot;</span><span class="gtkdoc opt">,</span>
+   <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;body&quot;</span><span class="gtkdoc opt">,</span> <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;textcolor&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;red&quot;</span><span class="gtkdoc opt">,</span>
+      <span class="string">'$'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;Wocky wooo&quot;</span><span class="gtkdoc opt">,</span>
+   <span class="string">')'</span><span class="gtkdoc opt">,</span>
+  NULL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -117,6 +113,12 @@ Example:
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
 <td>The namespace of the toplevel node</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>Varargs</code></em> :</span></p></td>
+<td>the description of the node tree to build,
+terminated with <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
@@ -152,13 +154,11 @@ Build a new WockyNodeTree that contains a copy of the given node.
 <pre class="programlisting"><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="returnvalue">WockyNodeTree</span></a> *     wocky_node_tree_new_va              (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
                                                          <em class="parameter"><code>const <span class="type">char</span> *ns</code></em>,
                                                          <em class="parameter"><code><span class="type">va_list</span> va</code></em>);</pre>
-<p>
-</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17.1</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

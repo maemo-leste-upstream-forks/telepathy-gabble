@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="WockySession.html" title="WockySession">
 <link rel="next" href="wocky-WockyTLSConnector.html" title="WockyTLSConnector">
-<meta name="generator" content="GTK-Doc V1.17.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -89,8 +89,6 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 </div>
 <div class="refsect1">
 <a name="wocky-WockyStanza.description"></a><h2>Description</h2>
-<p>
-</p>
 </div>
 <div class="refsect1">
 <a name="wocky-WockyStanza.details"></a><h2>Details</h2>
@@ -106,8 +104,7 @@ The class of a <span class="type">WockyStanza</span>.
 <hr>
 <div class="refsect2">
 <a name="WockyStanzaSubType"></a><h3>enum WockyStanzaSubType</h3>
-<pre class="programlisting">typedef enum
-{
+<pre class="programlisting">typedef enum {
   WOCKY_STANZA_SUB_TYPE_NONE,
   WOCKY_STANZA_SUB_TYPE_AVAILABLE,
   WOCKY_STANZA_SUB_TYPE_NORMAL,
@@ -125,8 +122,6 @@ The class of a <span class="type">WockyStanza</span>.
   WOCKY_STANZA_SUB_TYPE_RESULT,
   WOCKY_STANZA_SUB_TYPE_ERROR,
   WOCKY_STANZA_SUB_TYPE_UNKNOWN,
-  /*&lt; private &gt;*/
-  NUM_WOCKY_STANZA_SUB_TYPE
 } WockyStanzaSubType;
 </pre>
 <p>
@@ -226,8 +221,7 @@ XMPP stanza sub types.
 <hr>
 <div class="refsect2">
 <a name="WockyStanzaType"></a><h3>enum WockyStanzaType</h3>
-<pre class="programlisting">typedef enum
-{
+<pre class="programlisting">typedef enum {
   WOCKY_STANZA_TYPE_NONE,
   WOCKY_STANZA_TYPE_MESSAGE,
   WOCKY_STANZA_TYPE_PRESENCE,
@@ -241,8 +235,6 @@ XMPP stanza sub types.
   WOCKY_STANZA_TYPE_FAILURE,
   WOCKY_STANZA_TYPE_STREAM_ERROR,
   WOCKY_STANZA_TYPE_UNKNOWN,
-  /*&lt; private &gt;*/
-  NUM_WOCKY_STANZA_TYPE
 } WockyStanzaType;
 </pre>
 <p>
@@ -345,7 +337,7 @@ Example:
 <p>
 </p>
 <div class="example">
-<a name="idp2411488"></a><p class="title"><b>Example 3. </b></p>
+<a name="idp2411536"></a><p class="title"><b>Example 3. </b></p>
 <div class="example-contents">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -371,21 +363,21 @@ Example:
 19
 20
 21</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build">wocky_stanza_build</a></span><span class="normal"> </span><span class="symbol">(</span>
-<span class="normal">   <a href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-MESSAGE:CAPS">WOCKY_STANZA_TYPE_MESSAGE</a></span><span class="symbol">,</span><span class="normal"> <a href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-NONE:CAPS">WOCKY_STANZA_SUB_TYPE_NONE</a></span><span class="symbol">,</span>
-<span class="normal">   </span><span class="string">"alice@collabora.co.uk"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"bob@collabora.co.uk"</span><span class="symbol">,</span>
-<span class="normal">   <a href="wocky-WockyNode.html#WOCKY-NODE-START:CAPS">WOCKY_NODE_START</a></span><span class="symbol">,</span><span class="normal"> </span><span class="string">"html"</span><span class="symbol">,</span>
-<span class="normal">     <a href="wocky-WockyNode.html#WOCKY-NODE-XMLNS:CAPS">WOCKY_NODE_XMLNS</a></span><span class="symbol">,</span><span class="normal"> </span><span class="string">"http://www.w3.org/1999/xhtml"</span><span class="symbol">,</span>
-<span class="normal">     WOCKY_NODE</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"body"</span><span class="symbol">,</span>
-<span class="normal">       <a href="wocky-WockyNode.html#WOCKY-NODE-ATTRIBUTE:CAPS">WOCKY_NODE_ATTRIBUTE</a></span><span class="symbol">,</span><span class="normal"> </span><span class="string">"textcolor"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"red"</span><span class="symbol">,</span>
-<span class="normal">       <a href="wocky-WockyNode.html#WOCKY-NODE-TEXT:CAPS">WOCKY_NODE_TEXT</a></span><span class="symbol">,</span><span class="normal"> </span><span class="string">"Telepathy rocks!"</span><span class="symbol">,</span>
-<span class="normal">     <a href="wocky-WockyNode.html#WOCKY-NODE-END:CAPS">WOCKY_NODE_END</a></span><span class="symbol">,</span>
-<span class="normal">   <a href="wocky-WockyNode.html#WOCKY-NODE-END:CAPS">WOCKY_NODE_END</a></span><span class="symbol">,</span>
-<span class="normal">  <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build">wocky_stanza_build</a></span> <span class="gtkdoc opt">(</span>
+   WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span>
+   <span class="string">&quot;alice&#64;collabora.co.uk&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;bob&#64;collabora.co.uk&quot;</span><span class="gtkdoc opt">,</span>
+   WOCKY_NODE_START<span class="gtkdoc opt">,</span> <span class="string">&quot;html&quot;</span><span class="gtkdoc opt">,</span>
+     WOCKY_NODE_XMLNS<span class="gtkdoc opt">,</span> <span class="string">&quot;http://www.w3.org/1999/xhtml&quot;</span><span class="gtkdoc opt">,</span>
+     WOCKY_NODE<span class="gtkdoc opt">,</span> <span class="string">&quot;body&quot;</span><span class="gtkdoc opt">,</span>
+       WOCKY_NODE_ATTRIBUTE<span class="gtkdoc opt">,</span> <span class="string">&quot;textcolor&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;red&quot;</span><span class="gtkdoc opt">,</span>
+       WOCKY_NODE_TEXT<span class="gtkdoc opt">,</span> <span class="string">&quot;Telepathy rocks!&quot;</span><span class="gtkdoc opt">,</span>
+     WOCKY_NODE_END<span class="gtkdoc opt">,</span>
+   WOCKY_NODE_END<span class="gtkdoc opt">,</span>
+  NULL<span class="gtkdoc opt">);</span>
 
 <span class="comment">/* produces</span>
-<span class="comment">&lt;message from='</span><span class="url"><a href="alice@collabora.co.uk">alice@collabora.co.uk</a></span><span class="comment">' to='</span><span class="url"><a href="bob@collabora.co.uk">bob@collabora.co.uk</a></span><span class="comment">'&gt;</span>
-<span class="comment">  &lt;html xmlns='</span><span class="url"><a href="http://www.w3.org/1999/xhtml">http://www.w3.org/1999/xhtml</a></span><span class="comment">'&gt;</span>
+<span class="comment">&lt;message from='alice&#64;collabora.co.uk' to='bob&#64;collabora.co.uk'&gt;</span>
+<span class="comment">  &lt;html xmlns='http://www.w3.org/1999/xhtml'&gt;</span>
 <span class="comment">    &lt;body textcolor='red'&gt;</span>
 <span class="comment">      Telepathy rocks!</span>
 <span class="comment">    &lt;/body&gt;</span>
@@ -408,7 +400,7 @@ above stanza could be written as:
 <p>
 </p>
 <div class="example">
-<a name="idp19803872"></a><p class="title"><b>Example 4. </b></p>
+<a name="idp19934352"></a><p class="title"><b>Example 4. </b></p>
 <div class="example-contents">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -422,15 +414,15 @@ above stanza could be written as:
 7
 8
 9</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build">wocky_stanza_build</a></span><span class="normal"> </span><span class="symbol">(</span>
-<span class="normal">   <a href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-MESSAGE:CAPS">WOCKY_STANZA_TYPE_MESSAGE</a></span><span class="symbol">,</span><span class="normal"> <a href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-NONE:CAPS">WOCKY_STANZA_SUB_TYPE_NONE</a></span><span class="symbol">,</span>
-<span class="normal">   </span><span class="string">"alice@collabora.co.uk"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"bob@collabora.co.uk"</span><span class="symbol">,</span>
-<span class="normal">   </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"html"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">':'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"http://www.w3.org/1999/xhtml"</span><span class="symbol">,</span>
-<span class="normal">     </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"body"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">'@'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"textcolor"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"red"</span><span class="symbol">,</span>
-<span class="normal">       </span><span class="string">'$'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"Telepathy rocks!"</span><span class="symbol">,</span>
-<span class="normal">     </span><span class="string">')'</span><span class="symbol">,</span>
-<span class="normal">   </span><span class="string">')'</span>
-<span class="normal">  <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build">wocky_stanza_build</a></span> <span class="gtkdoc opt">(</span>
+   WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span>
+   <span class="string">&quot;alice&#64;collabora.co.uk&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;bob&#64;collabora.co.uk&quot;</span><span class="gtkdoc opt">,</span>
+   <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;html&quot;</span><span class="gtkdoc opt">,</span> <span class="string">':'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;http://www.w3.org/1999/xhtml&quot;</span><span class="gtkdoc opt">,</span>
+     <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;body&quot;</span><span class="gtkdoc opt">,</span> <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;textcolor&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;red&quot;</span><span class="gtkdoc opt">,</span>
+       <span class="string">'$'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;Telepathy rocks!&quot;</span><span class="gtkdoc opt">,</span>
+     <span class="string">')'</span><span class="gtkdoc opt">,</span>
+   <span class="string">')'</span>
+  NULL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -459,6 +451,12 @@ above stanza could be written as:
 <tr>
 <td><p><span class="term"><em class="parameter"><code>to</code></em> :</span></p></td>
 <td>The target's JID, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to leave it unspecified.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>Varargs</code></em> :</span></p></td>
+<td>the description of the stanza to build,
+terminated with <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
@@ -498,14 +496,14 @@ example:
 6
 7
 8</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="usertype">WockyStanza</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">reply </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build-iq-error">wocky_stanza_build_iq_error</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">iq</span><span class="symbol">,</span>
-<span class="normal">   </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"error"</span><span class="symbol">,</span>
-<span class="normal">     </span><span class="string">'@'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"type"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"cancel"</span><span class="symbol">,</span>
-<span class="normal">     </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"feature-not-implemented"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">':'</span><span class="symbol">,</span><span class="normal"> <a href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-STANZAS:CAPS">WOCKY_XMPP_NS_STANZAS</a></span><span class="symbol">,</span><span class="normal"> </span><span class="string">')'</span><span class="symbol">,</span>
-<span class="normal">     </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"unsupported"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">':'</span><span class="symbol">,</span><span class="normal"> <a href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB-ERRORS:CAPS">WOCKY_XMPP_NS_PUBSUB_ERRORS</a></span><span class="symbol">,</span>
-<span class="normal">       </span><span class="string">'@'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"feature"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"subscribe"</span><span class="symbol">,</span>
-<span class="normal">     </span><span class="string">')'</span><span class="symbol">,</span>
-<span class="normal">   </span><span class="string">')'</span><span class="symbol">,</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">WockyStanza <span class="gtkdoc opt">*</span>reply <span class="gtkdoc opt">=</span> <span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build-iq-error">wocky_stanza_build_iq_error</a></span> <span class="gtkdoc opt">(</span>iq<span class="gtkdoc opt">,</span>
+   <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;error&quot;</span><span class="gtkdoc opt">,</span>
+     <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;type&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;cancel&quot;</span><span class="gtkdoc opt">,</span>
+     <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;feature-not-implemented&quot;</span><span class="gtkdoc opt">,</span> <span class="string">':'</span><span class="gtkdoc opt">,</span> WOCKY_XMPP_NS_STANZAS<span class="gtkdoc opt">,</span> <span class="string">')'</span><span class="gtkdoc opt">,</span>
+     <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;unsupported&quot;</span><span class="gtkdoc opt">,</span> <span class="string">':'</span><span class="gtkdoc opt">,</span> WOCKY_XMPP_NS_PUBSUB_ERRORS<span class="gtkdoc opt">,</span>
+       <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;feature&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;subscribe&quot;</span><span class="gtkdoc opt">,</span>
+     <span class="string">')'</span><span class="gtkdoc opt">,</span>
+   <span class="string">')'</span><span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -523,6 +521,10 @@ example:
 </td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>Varargs</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build" title="wocky_stanza_build ()"><code class="function">wocky_stanza_build()</code></a> specification</td>
+</tr>
+<tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>an error reply for <em class="parameter"><code>iq</code></em>
 </td>
@@ -535,24 +537,18 @@ example:
 <a name="wocky-stanza-build-iq-error-va"></a><h3>wocky_stanza_build_iq_error_va ()</h3>
 <pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_build_iq_error_va      (<em class="parameter"><code><span class="type">WockyStanza</span> *iq</code></em>,
                                                          <em class="parameter"><code><span class="type">va_list</span> ap</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-stanza-build-iq-result"></a><h3>wocky_stanza_build_iq_result ()</h3>
 <pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_build_iq_result        (<em class="parameter"><code><span class="type">WockyStanza</span> *iq</code></em>,
                                                          <em class="parameter"><code>...</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-stanza-build-iq-result-va"></a><h3>wocky_stanza_build_iq_result_va ()</h3>
 <pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_build_iq_result_va     (<em class="parameter"><code><span class="type">WockyStanza</span> *iq</code></em>,
                                                          <em class="parameter"><code><span class="type">va_list</span> ap</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -562,8 +558,6 @@ example:
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *to</code></em>,
                                                          <em class="parameter"><code>...</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -573,15 +567,11 @@ example:
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *to</code></em>,
                                                          <em class="parameter"><code><span class="type">va_list</span> ap</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-stanza-copy"></a><h3>wocky_stanza_copy ()</h3>
 <pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_copy                   (<em class="parameter"><code><span class="type">WockyStanza</span> *old</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -688,8 +678,6 @@ error.</td>
 <div class="refsect2">
 <a name="wocky-stanza-get-from-contact"></a><h3>wocky_stanza_get_from_contact ()</h3>
 <pre class="programlisting"><a class="link" href="WockyContact.html" title="WockyContact"><span class="returnvalue">WockyContact</span></a> *      wocky_stanza_get_from_contact       (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -716,8 +704,6 @@ error.</td>
 <div class="refsect2">
 <a name="wocky-stanza-get-to-contact"></a><h3>wocky_stanza_get_to_contact ()</h3>
 <pre class="programlisting"><a class="link" href="WockyContact.html" title="WockyContact"><span class="returnvalue">WockyContact</span></a> *      wocky_stanza_get_to_contact         (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -743,37 +729,29 @@ error.</td>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_stanza_get_type_info          (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> *type</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> *sub_type</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-stanza-new"></a><h3>wocky_stanza_new ()</h3>
 <pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_new                    (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-stanza-set-from-contact"></a><h3>wocky_stanza_set_from_contact ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_stanza_set_from_contact       (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *contact</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-stanza-set-to-contact"></a><h3>wocky_stanza_set_to_contact ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_stanza_set_to_contact         (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *contact</code></em>);</pre>
-<p>
-</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17.1</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

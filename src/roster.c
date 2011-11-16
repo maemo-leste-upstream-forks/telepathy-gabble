@@ -22,8 +22,6 @@
 #include "config.h"
 #include "roster.h"
 
-#define DBUS_API_SUBJECT_TO_CHANGE
-
 #include <string.h>
 
 #include <dbus/dbus-glib.h>
@@ -1247,12 +1245,17 @@ process_roster (
         case GABBLE_ROSTER_SUBSCRIPTION_FROM:
         case GABBLE_ROSTER_SUBSCRIPTION_BOTH:
           if (google_roster &&
-              /* Don't hide contacts from stored if they're remote pending.
-               * This works around Google Talk flickering ask="subscribe"
-               * when you try to subscribe to someone; see
-               * test-google-roster.py.
+              /* Don't hide contacts from stored if they're pending.
+               * This works around two Google Talk issues:
+               * - When you try to subscribe to someone, you get a flickering
+               *   ask="subscribe";
+               * - When somebody tries to subscribe to you, you get a presence
+               *   with type="subscribe" followed by a roster update with
+               *   subscribe="none".
+               * See test-google-roster.py for more details.
                */
               item->subscribe != TP_SUBSCRIPTION_STATE_ASK &&
+              item->publish != TP_SUBSCRIPTION_STATE_ASK &&
               !_google_roster_item_should_keep (jid, item))
             {
               tp_handle_set_remove (changed, handle);
@@ -1377,6 +1380,16 @@ got_roster_iq (GabbleRoster *roster,
       return FALSE;
     }
 
+  if (sub_type == WOCKY_STANZA_SUB_TYPE_RESULT && priv->received)
+    {
+      /* <https://bugs.freedesktop.org/show_bug.cgi?id=42186>: some super-buggy
+       * XMPP server running on vk.com sends its reply to our roster query twice.
+       */
+      DEBUG ("The server sent replied to our roster query more than once! "
+          "Ignoring this reply");
+      return FALSE;
+    }
+
   process_roster (roster, query_node);
 
   if (sub_type == WOCKY_STANZA_SUB_TYPE_RESULT)
@@ -1398,11 +1411,29 @@ got_roster_iq (GabbleRoster *roster,
         {
           GabbleRosterItem *item = v;
           TpHandle contact = GPOINTER_TO_UINT (k);
+          GabblePresence *presence = gabble_presence_cache_get (
+              priv->conn->presence_cache, contact);
 
           if (item->subscribe == TP_SUBSCRIPTION_STATE_YES &&
-              gabble_presence_cache_get (roster->priv->conn->presence_cache,
-                  contact) == NULL)
-            g_array_append_val (members, contact);
+              (presence == NULL || presence->status == GABBLE_PRESENCE_UNKNOWN))
+            {
+              /* The contact might be in the presence cache with UNKNOWN
+               * presence if we've received a message from them before the
+               * roster arrived: an item is forcibly added to stash the
+               * nickname which might have been included in the <message/> in
+               * the presence cache. (This seems like a rather illogical place
+               * to stash such nicknames—if anything, they should live in
+               * GabbleImFactory—but there we go.)
+               *
+               * So if this is the case, we flip their status to OFFLINE. We
+               * don't use gabble_presence_update() because we want to signal
+               * all the unknown→offline transitions together.
+               */
+              if (presence != NULL)
+                presence->status = GABBLE_PRESENCE_OFFLINE;
+
+              g_array_append_val (members, contact);
+            }
 
           if (item->unsent_edits != NULL)
             edited_items = g_slist_prepend (edited_items, item);
@@ -1728,6 +1759,8 @@ roster_received_cb (GObject *source_object,
             result, &response, &error))
         {
           got_roster_iq (self, response);
+
+          g_object_unref (response);
         }
       else
         {

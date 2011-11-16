@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-WockyPing.html" title="WockyPing">
 <link rel="next" href="wocky-wocky-pubsub-helpers.html" title="wocky-pubsub-helpers">
-<meta name="generator" content="GTK-Doc V1.17.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -149,8 +149,6 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 </div>
 <div class="refsect1">
 <a name="wocky-WockyPorter.description"></a><h2>Description</h2>
-<p>
-</p>
 </div>
 <div class="refsect1">
 <a name="wocky-WockyPorter.details"></a><h2>Details</h2>
@@ -167,24 +165,18 @@ Get access to the error quark of the xmpp porter.
 <a name="WOCKY-PORTER-HANDLER-PRIORITY-MAX:CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_MAX</h3>
 <pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_MAX G_MAXUINT
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="WOCKY-PORTER-HANDLER-PRIORITY-MIN:CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_MIN</h3>
 <pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_MIN 0
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</h3>
 <pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_NORMAL (guint) (G_MAXUINT / 2)
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -467,6 +459,11 @@ calling <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build-iq-resul
 <a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-SET:CAPS"><span class="type">WOCKY_STANZA_SUB_TYPE_SET</span></a> or <a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-GET:CAPS"><span class="type">WOCKY_STANZA_SUB_TYPE_GET</span></a>
 </td>
 </tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>Varargs</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build" title="wocky_stanza_build ()"><code class="function">wocky_stanza_build()</code></a> specification; pass <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to include no
+body in the reply.</td>
+</tr>
 </tbody>
 </table></div>
 </div>
@@ -738,14 +735,14 @@ to one Jingle session:
 6
 7
 8</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">id </span><span class="symbol">=</span><span class="normal"> </span><span class="function">wocky_porter_register_handler</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">porter</span><span class="symbol">,</span>
-<span class="normal">  <a href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-IQ:CAPS">WOCKY_STANZA_TYPE_IQ</a></span><span class="symbol">,</span><span class="normal"> <a href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-NONE:CAPS">WOCKY_STANZA_SUB_TYPE_NONE</a></span><span class="symbol">,</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span>
-<span class="normal">  <a href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</a></span><span class="symbol">,</span><span class="normal"> jingle_cb</span><span class="symbol">,</span>
-<span class="normal">  </span><span class="string">"juliet@example.com/Balcony"</span><span class="symbol">,</span>
-<span class="normal">  </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"jingle"</span><span class="symbol">,</span>
-<span class="normal">    </span><span class="string">':'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"urn:xmpp:jingle:1"</span><span class="symbol">,</span>
-<span class="normal">    </span><span class="string">'@'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"sid"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"my_sid"</span><span class="symbol">,</span>
-<span class="normal">  </span><span class="string">')'</span><span class="symbol">,</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function">wocky_porter_register_handler</span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
+  WOCKY_STANZA_TYPE_IQ<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span>
+  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL<span class="gtkdoc opt">,</span> jingle_cb<span class="gtkdoc opt">,</span>
+  <span class="string">&quot;juliet&#64;example.com/Balcony&quot;</span><span class="gtkdoc opt">,</span>
+  <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;jingle&quot;</span><span class="gtkdoc opt">,</span>
+    <span class="string">':'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;urn:xmpp:jingle:1&quot;</span><span class="gtkdoc opt">,</span>
+    <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;sid&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;my_sid&quot;</span><span class="gtkdoc opt">,</span>
+  <span class="string">')'</span><span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -799,6 +796,12 @@ stop further processing.</td>
 <td>Passed to <em class="parameter"><code>callback</code></em>.</td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>Varargs</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build" title="wocky_stanza_build ()"><code class="function">wocky_stanza_build()</code></a> specification. The handler
+will match a stanza only if the stanza received is a superset of the one
+passed to this function, as per <a class="link" href="wocky-WockyNode.html#wocky-node-is-superset" title="wocky_node_is_superset ()"><code class="function">wocky_node_is_superset()</code></a>.</td>
+</tr>
+<tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>a non-zero ID for use with <a class="link" href="wocky-WockyPorter.html#wocky-porter-unregister-handler" title="wocky_porter_unregister_handler ()"><code class="function">wocky_porter_unregister_handler()</code></a>.</td>
 </tr>
@@ -834,10 +837,10 @@ from anyone, call:
 2
 3
 4</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">id </span><span class="symbol">=</span><span class="normal"> </span><span class="function">wocky_porter_register_handler</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">porter</span><span class="symbol">,</span>
-<span class="normal">  <a href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-MESSAGE:CAPS">WOCKY_STANZA_TYPE_MESSAGE</a></span><span class="symbol">,</span><span class="normal"> <a href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-NONE:CAPS">WOCKY_STANZA_SUB_TYPE_NONE</a></span><span class="symbol">,</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span>
-<span class="normal">  <a href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</a></span><span class="symbol">,</span><span class="normal"> message_received_cb</span><span class="symbol">,</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span>
-<span class="normal">  <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function">wocky_porter_register_handler</span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
+  WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span>
+  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL<span class="gtkdoc opt">,</span> message_received_cb<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span>
+  NULL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -866,17 +869,17 @@ notifications for contacts' geolocation information:
 9
 10
 11</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">id </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="wocky-WockyPorter.html#wocky-porter-register-handler-from-anyone">wocky_porter_register_handler_from_anyone</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">porter</span><span class="symbol">,</span>
-<span class="normal">   <a href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-MESSAGE:CAPS">WOCKY_STANZA_TYPE_MESSAGE</a></span><span class="symbol">,</span><span class="normal"> <a href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-NONE:CAPS">WOCKY_STANZA_SUB_TYPE_NONE</a></span><span class="symbol">,</span>
-<span class="normal">   <a href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MAX:CAPS">WOCKY_PORTER_HANDLER_PRIORITY_MAX</a></span><span class="symbol">,</span>
-<span class="normal">   msg_event_cb</span><span class="symbol">,</span><span class="normal"> self</span><span class="symbol">,</span>
-<span class="normal">   </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"event"</span><span class="symbol">,</span>
-<span class="normal">     </span><span class="string">':'</span><span class="symbol">,</span><span class="normal"> <a href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB-EVENT:CAPS">WOCKY_XMPP_NS_PUBSUB_EVENT</a></span><span class="symbol">,</span>
-<span class="normal">     </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"items"</span><span class="symbol">,</span>
-<span class="normal">       </span><span class="string">'@'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"node"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"http://jabber.org/protocol/geoloc"</span><span class="symbol">,</span>
-<span class="normal">     </span><span class="string">')'</span><span class="symbol">,</span>
-<span class="normal">   </span><span class="string">')'</span><span class="symbol">,</span>
-<span class="normal">   <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function"><a href="wocky-WockyPorter.html#wocky-porter-register-handler-from-anyone">wocky_porter_register_handler_from_anyone</a></span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
+   WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span>
+   WOCKY_PORTER_HANDLER_PRIORITY_MAX<span class="gtkdoc opt">,</span>
+   msg_event_cb<span class="gtkdoc opt">,</span> self<span class="gtkdoc opt">,</span>
+   <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;event&quot;</span><span class="gtkdoc opt">,</span>
+     <span class="string">':'</span><span class="gtkdoc opt">,</span> WOCKY_XMPP_NS_PUBSUB_EVENT<span class="gtkdoc opt">,</span>
+     <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;items&quot;</span><span class="gtkdoc opt">,</span>
+       <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;node&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;http://jabber.org/protocol/geoloc&quot;</span><span class="gtkdoc opt">,</span>
+     <span class="string">')'</span><span class="gtkdoc opt">,</span>
+   <span class="string">')'</span><span class="gtkdoc opt">,</span>
+   NULL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -917,6 +920,12 @@ stop further processing.</td>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>Passed to <em class="parameter"><code>callback</code></em>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>Varargs</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build" title="wocky_stanza_build ()"><code class="function">wocky_stanza_build()</code></a> specification. The handler
+will match a stanza only if the stanza received is a superset of the one
+passed to this function, as per <a class="link" href="wocky-WockyNode.html#wocky-node-is-superset" title="wocky_node_is_superset ()"><code class="function">wocky_node_is_superset()</code></a>.</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
@@ -1486,6 +1495,6 @@ receiving stanzas anymore.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17.1</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

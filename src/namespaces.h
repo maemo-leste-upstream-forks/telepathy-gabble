@@ -123,4 +123,15 @@
 #define NS_TEMPPRES "urn:xmpp:temppres:0"
 #define NS_GOOGLE_SHARED_STATUS "google:shared-status"
 
+/* This is used by the extension Facebook uses to push you messages you send
+ * using other devices (or the website).
+ *
+ * http://www.youtube.com/watch?v=rSnXE2791yg is not the song I was looking
+ * for, but it's not bad.
+ */
+#define NS_FACEBOOK_MESSAGES "http://www.facebook.com/xmpp/messages"
+
+#define NS_TP_FT_METADATA_SERVICE "http://telepathy.freedesktop.org/xmpp/file-transfer-service"
+#define NS_TP_FT_METADATA       "http://telepathy.freedesktop.org/xmpp/file-transfer-metadata"
+
 #endif /* __GABBLE_NAMESPACES__H__ */

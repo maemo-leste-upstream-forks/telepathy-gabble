@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-WockyDataForm.html" title="WockyDataForm">
 <link rel="next" href="wocky-wocky.html" title="wocky">
-<meta name="generator" content="GTK-Doc V1.17.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -69,78 +69,41 @@ enum                <a class="link" href="wocky-wocky-debug.html#WockyDebugFlags
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-debug.description"></a><h2>Description</h2>
-<p>
-</p>
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-debug.details"></a><h2>Details</h2>
 <div class="refsect2">
 <a name="DEBUG:CAPS"></a><h3>DEBUG()</h3>
 <pre class="programlisting">#define             DEBUG(format, ...)</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="DEBUGGING:CAPS"></a><h3>DEBUGGING</h3>
 <pre class="programlisting">#define DEBUGGING wocky_debug_flag_is_set(DEBUG_FLAG)
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="DEBUG-NODE-TREE:CAPS"></a><h3>DEBUG_NODE_TREE()</h3>
 <pre class="programlisting">#define             DEBUG_NODE_TREE(tree, format, ...)</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="DEBUG-STANZA:CAPS"></a><h3>DEBUG_STANZA()</h3>
 <pre class="programlisting">#define             DEBUG_STANZA(stanza, format, ...)</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="DEBUG-XMPP:CAPS"></a><h3>DEBUG_XMPP</h3>
 <pre class="programlisting">#define DEBUG_XMPP (DEBUG_XMPP_READER | DEBUG_XMPP_WRITER)
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="WockyDebugFlags"></a><h3>enum WockyDebugFlags</h3>
-<pre class="programlisting">typedef enum
-{
-  /*&lt; private &gt; */
-  DEBUG_TRANSPORT         = 1 &lt;&lt; 0,
-  DEBUG_NET               = 1 &lt;&lt; 1,
-  DEBUG_XMPP_READER       = 1 &lt;&lt; 2,
-  DEBUG_XMPP_WRITER       = 1 &lt;&lt; 3,
-  DEBUG_AUTH              = 1 &lt;&lt; 4,
-  DEBUG_SSL               = 1 &lt;&lt; 5,
-  DEBUG_RMULTICAST        = 1 &lt;&lt; 6,
-  DEBUG_RMULTICAST_SENDER = 1 &lt;&lt; 7,
-  DEBUG_MUC_CONNECTION    = 1 &lt;&lt; 8,
-  DEBUG_BYTESTREAM        = 1 &lt;&lt; 9,
-  DEBUG_FILE_TRANSFER     = 1 &lt;&lt; 10,
-  DEBUG_PORTER            = 1 &lt;&lt; 11,
-  DEBUG_CONNECTOR         = 1 &lt;&lt; 12,
-  DEBUG_ROSTER            = 1 &lt;&lt; 13,
-  DEBUG_TLS               = 1 &lt;&lt; 14,
-  DEBUG_PUBSUB            = 1 &lt;&lt; 15,
-  DEBUG_DATA_FORM         = 1 &lt;&lt; 16,
-  DEBUG_PING              = 1 &lt;&lt; 17,
-  DEBUG_HEARTBEAT         = 1 &lt;&lt; 18,
-  DEBUG_PRESENCE          = 1 &lt;&lt; 19,
-  DEBUG_CONNECTION_FACTORY= 1 &lt;&lt; 20,
+<pre class="programlisting">typedef enum {
 } WockyDebugFlags;
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -148,15 +111,11 @@ enum                <a class="link" href="wocky-wocky-debug.html#WockyDebugFlags
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug                         (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
                                                          <em class="parameter"><code>...</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-debug-flag-is-set"></a><h3>wocky_debug_flag_is_set ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_debug_flag_is_set             (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -165,22 +124,16 @@ enum                <a class="link" href="wocky-wocky-debug.html#WockyDebugFlags
                                                          <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *tree</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
                                                          <em class="parameter"><code>...</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-debug-set-flags"></a><h3>wocky_debug_set_flags ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_set_flags               (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flags</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-debug-set-flags-from-env"></a><h3>wocky_debug_set_flags_from_env ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_set_flags_from_env      (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -189,8 +142,6 @@ enum                <a class="link" href="wocky-wocky-debug.html#WockyDebugFlags
                                                          <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
                                                          <em class="parameter"><code>...</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -198,13 +149,11 @@ enum                <a class="link" href="wocky-wocky-debug.html#WockyDebugFlags
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_debug_valist                  (<em class="parameter"><code><a class="link" href="wocky-wocky-debug.html#WockyDebugFlags" title="enum WockyDebugFlags"><span class="type">WockyDebugFlags</span></a> flag</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
                                                          <em class="parameter"><code><span class="type">va_list</span> args</code></em>);</pre>
-<p>
-</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17.1</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

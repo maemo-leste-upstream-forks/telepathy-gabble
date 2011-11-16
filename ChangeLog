@@ -1,3 +1,984 @@
+commit 241356cdbd74bca44e8c0c9c583a2d1f4daf903a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 10:07:32 +0000
+
+    version 0.15.0
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 65c8b8f3edb446e3a0411a7401d9e3947ba858db
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 11:24:10 +0000
+
+    jingle outgoing test: add MembersChangedDetailed flag to base flags
+    
+    telepathy-glib ≥ 0.16.2 always sets the Members_Changed_Detailed flag
+    in the group mixin, so now that we depend on tp-glib ≥ 0.17.1 we
+    should expect that too.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 9f8e0db4ba039eb78d055a0c04bb8fb283c89751
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 10:01:14 +0000
+
+    NEWS: further updates about Wocky
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 1e61c2ef8d352294f369eebe3493f135c7dca16c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 09:48:34 +0000
+
+    NEWS: update
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 65628acf0d363f0868d643cffcb01b950d6dcf5f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 08:44:02 +0000
+
+    file transfer helper: use crazier stock metadata in file transfer tests
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 78af31f043327c194ed4db4c2db2d8b04d57f07f
+Merge: f903c62 80ffa6e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 08:07:09 +0000
+
+    Merge branch 'ft-metadata'
+    
+    Conflicts:
+    	src/namespaces.h
+    	tests/twisted/Makefile.am
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f903c62e4de60610638931cc14ed3118de2d37c6
+Merge: 9309cb4 566c0f7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-15 15:34:41 +0000
+
+    Merge branch 'telepathy-gabble-0.14'
+
+commit 566c0f72fe54d44752c3704537e42c3e3640488c
+Merge: ebcb135 7524ce7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-15 15:34:27 +0000
+
+    Merge branch 'telepathy-gabble-0.12' into telepathy-gabble-0.14
+
+commit 7524ce77ef3989418d2e8b0a2af47e472c7c982d
+Merge: 9cf653e 6cb2b5d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-15 15:34:11 +0000
+
+    Merge branch 'local-pending-flicker2' into telepathy-gabble-0.12
+
+commit 6cb2b5d0f9e4a164537e3861f787e603d02bb8e4
+Author: Cosimo Alfarano <cosimo.alfarano@collabora.com>
+Date:   2011-11-02 13:24:09 +0000
+
+    add case for "cancel subscription" to test_local_pending
+
+commit 31c2cd55912c72c82cba28202f220a80c8b4faca
+Author: Cosimo Alfarano <cosimo.alfarano@collabora.com>
+Date:   2011-11-02 13:20:15 +0000
+
+    expect MembersChanged AND ContactsChanged on sub-request
+    
+    We should explicitly expect the relevant state transition on the publish
+    channel; and when forbidding events, we just forbid them from occurring
+    on the publish channel.
+    
+    (fix by Will Thompson, thanks Will)
+
+commit 284779859a67e2dfceb4d9930df81e452d5a4b3a
+Author: Cosimo Alfarano <cosimo.alfarano@collabora.com>
+Date:   2011-11-02 11:39:46 +0000
+
+    fix comment: Alice is just requesting subscription
+
+commit 273654bfb07e5ff593b162dd455f739f697b71b8
+Author: Cosimo Alfarano <cosimo.alfarano@collabora.com>
+Date:   2011-11-02 11:39:21 +0000
+
+    Remove useless symbol in test_local_pending
+
+commit 8fcf944c1afbcd98a5cbf582e33d88d877a6980f
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-08-31 17:31:24 +0100
+
+    Roster: don't hide local pending contacts from stored
+
+commit 9309cb456645ff7643ebe36c50e3b447641b6c6b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-15 12:13:46 +0000
+
+    Fully expunge HANDLE_LEAK_DEBUG_CFLAGS
+    
+    Sorry, internet.
+
+commit 36a50290e5d9324cf55ed7a53cb9c221d7386d95
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-15 11:34:42 +0000
+
+    configure: remove --enable-handle-leak-debug.
+    
+    There's no such thing as a handle leak any more, so this is vestigial.
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5b3105a5a357cdd1f1d098fcc3e2c26a40e5b93f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-15 10:12:55 +0000
+
+    wocky: update snapshot for sasl fix again
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 30ff2ae153dfa5b45072df344d129d909429a63e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-15 09:16:56 +0000
+
+    wocky: update snapshot to fix sasl build failure
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 80ffa6e731f2ecb5c31bbaec1083d13e6757d912
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-15 09:16:05 +0000
+
+    ft metadata: use tp-glib generated code rather than using the draft interface
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 13835c53f6e7b0cf1d576ca8ae031282494ed473
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-15 09:15:36 +0000
+
+    configure: up the tp-glib dependency
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 275667c68ed51ffd4dc988c5916a11e85401f4ac
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-11 11:11:14 +0000
+
+    metadata test: test for odd metadata with a key but no values
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 631d3beed4585d9c2b1530ab4c9657907234c9fe
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-11 11:10:51 +0000
+
+    caps-helper: deal with no value nodes in data forms
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 798edc37548cbcea3c4c16edbe65aa62f3ba3ff4
+Merge: 585f946 ebcb135
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-10 17:09:40 +0000
+
+    Merge branch 'telepathy-gabble-0.14'
+    
+    Conflicts:
+    	NEWS
+    	configure.ac
+
+commit ebcb1350c3b316f8fe510caacacf0b2a59b95458
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-10 16:40:09 +0000
+
+    conn-olpc: handle activities with NULL ids.
+    
+    Other places in the code seem to handle GabbleOlpcActivity.id being
+    NULL; and <https://bugs.freedesktop.org/show_bug.cgi?id=32050> is a
+    crash on this strcmp. There are no logs, and the first argument to
+    strcmp is not on record, so this suggests to me that this might be the
+    cause!
+
+commit 5677e158d6518e53bc06c131e3b2c8b9c779a74a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-11-09 17:46:04 +0000
+
+    Remove double definition
+    
+    gabbletestsdir is defined in configure.ac
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=42679
+
+commit c5afb4dc7f6ea3a55ca35bbd04e16ce87e57cacc
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-09 19:34:03 +0000
+
+    metadata: update to new draft
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit a1f943c809232021db6d831f0e9869bb0584dcfc
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-09 18:07:37 +0000
+
+    extensions: update FT.Metadata draft
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 585f9467b8916b5d3ebc0e06c00019b916099672
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-11-09 17:46:04 +0000
+
+    Remove double definition
+    
+    gabbletestsdir is defined in configure.ac
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=42679
+
+commit dd7cbb323b1ed31f34f2babff8d066f7e88bc3c9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-09 17:33:55 +0000
+
+    namespaces: update metadata namespaces
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit bdf5c1535079d7f69e8b0d50def2bf0acd2a7d1a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-09 08:20:31 +0000
+
+    connection: fix typo when indexing pointer array using wrong counter
+    
+    D'oh!
+    
+    Fixes: fd.o#42706
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b4b5aa0be69a171615801c13626f5221e8b1cb6c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-09 08:20:31 +0000
+
+    connection: fix typo when indexing pointer array using wrong counter
+    
+    D'oh!
+    
+    Fixes: fd.o#42706
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit e5d6c92c9ff74fdba49d751ed1f7b5d87bf17336
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-07 20:34:38 +0000
+
+    lay the foundations for 0.15.x
+
+commit ed197893f4e303276480649330b9c362c60f6442
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-07 20:34:04 +0000
+
+    Nano-version bump to 0.14.0.1
+
+commit 2c134e18d24d1daebba6963f73c1bff9b960b46c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-07 19:59:19 +0000
+
+    Version 0.14.0
+
+commit 152c12a2e393e6c135a975df847f55990fc8d0f5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-07 19:58:40 +0000
+
+    Hey, let's call this 0.14.0
+
+commit 0f86ad63a641a780b0e812725f7a7bd24d57a467
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-07 19:20:28 +0000
+
+    NEWS for 0.13.8
+
+commit df3882d34528ccb320835fafbad74034a589dc64
+Merge: 6ef3ca9 6895340
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-07 17:46:04 +0000
+
+    Merge branch 'facebook-own-message'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 6895340badaff9f97683230848ae8e0f9f6f99d8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-04 08:58:45 +0000
+
+    ImFactory: handle Facebook's own-message extension
+    
+    Facebook's XMPP server sends us IQs containing messages which we send to
+    contacts, whether on this connection or via another connection (such as
+    the web interface). We can expose these as Delivery_Status_Accepted
+    delivery reports, allowing UIs to log them and show them up or whatever.
+    This could help keep things coherent if the user hops between chatting
+    in the browser and/or Empathy, say.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=41417
+
+commit 6ef3ca940f0b4a4ae1aedb2c03ddc794fe659582
+Author: Danielle Madeley <danielle@madeley.id.au>
+Date:   2011-11-07 22:18:17 +1100
+
+    Use commit ids that actually exist for Wocky
+    
+    What happened here was that git-bz was rewriting my commit ids when I
+    submitted the patch to bugzilla for review, but my Gabble was still pointing
+    to the original commit I had made. SURPRISE!
+
+commit e61dc0318e7a7c00c268105599ea3eada2c1491b
+Author: Danielle Madeley <danielle@madeley.id.au>
+Date:   2011-11-07 21:45:02 +1100
+
+    Return the appropriate value in the case of an unknown timestamp
+    
+    This updates Gabble for the latest spec.
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=42652
+
+commit 465b3aef2330ae73c2f643eeec4676da657c2222
+Merge: ed09e89 a04b9e5
+Author: Danielle Madeley <danielle@madeley.id.au>
+Date:   2011-11-07 20:54:44 +1100
+
+    Merge branch 'wocky-muc-gdatetime'
+
+commit 4312e1f6789227e658ee55349b91b0980128ab51
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-04 16:21:04 +0000
+
+    IMChannel: reindent receiving/delivery report code
+    
+    This patch just gets rid of the funky formatting mentioned in an earlier
+    patch; there are no code changes.
+
+commit 574d1468432bd066dfe7a50fed8c2bbae5d71975
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-04 12:22:09 +0000
+
+    IMChannel: split incoming message and report handling
+    
+    As a nice side effect, the new _gabble_im_channel_report_delivery()
+    function can do successful delivery reports if send_error ==
+    GABBLE_TEXT_CHANNEL_SEND_NO_ERROR. This will become useful
+    momentarily...
+    
+    The funky formatting is to make clearer that this patch is mostly moving
+    code around unmodified; a subsequent patch will clean it up.
+
+commit 46da670d5c0fa51b92a168d454d23e9b119e349a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-04 12:11:42 +0000
+
+    im_channel_receive: split out building basic message
+    
+    This is about the only part of this function which is shared between the
+    delivery report code path and the normal message code path.
+
+commit deb5a15cb02344891f5871cd5f8dcf8faa464d4a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-11 17:01:13 +0100
+
+    ImFactory: refactor creating unrequested channels
+    
+    We'll need similar logic for handling incoming facebook:own-message
+    notifications.
+
+commit 214c0b08245fc264985e4504309abb7b7e82f68c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-03 23:50:24 +0000
+
+    exec-with-log.sh.in: set WOCKY_DEBUG.
+    
+    I'm delighted that 3a1fe026 made us compatible with hypothetical shells,
+    but it also reduced the amount of debug output in gabble-testing.log.
+
+commit b34a0207287a3976e1b880c5b958b9215c5930ad
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-03 23:27:24 +0000
+
+    im_channel_receive: remove redundant 'sender' parameter
+    
+    If we're passing an incoming message to a 1-1 IM channel, we don't need
+    to tell the channel who sent the message: it knows perfectly well. In
+    fact, we were telling it twice: once in handle form (which is
+    redundant), and once in full JID form (which is more useful: it lets the
+    channel update its resource binding).
+
+commit 9b81a8da064954b714474208d2fb4e7d5cb2d6b4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-11 15:54:47 +0100
+
+    ImFactory new_im_channel: remove redundant typecheck
+    
+    By the time we get this far we can be sure that the factory really is a
+    factory.
+
+commit 54104dac1cbfa6a13e8aba199a2043eb061e9a87
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-11 15:53:26 +0100
+
+    ImFactory: remove GET_PRIV anti-idiom
+
+commit 34b600adcb8894615fc2b40400ce6e740230f7c2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-11 15:50:24 +0100
+
+    IMChannel: implement get_object_path_suffix
+    
+    I think this is simpler than the factory passing the path in. Though
+    it's actually longer, which offends me on some level.
+
+commit b3d5848804b8128b0962f4860efcd758e19d7fc3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-11 15:42:42 +0100
+
+    ImFactory: simplify new_im_channel's arguments
+    
+    We can infer from @request_token whether the channel was requested
+    locally or is being created in response to a incoming event; hence, we
+    don't need a separate @initiator argument.
+
+commit 7a9200ca2a426f4f794a4fd43291bcd511a9420f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-11 15:34:57 +0100
+
+    ImFactory: document new_im_channel more usefully
+
+commit 33cd9527f7c0d1f4a2b72e8cfadc417b69590336
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-04 01:15:32 +0100
+
+    Remove unneeded im_channel_closed_cb prototype
+
+commit eb0dc2a0694451453c40c0e75da3ba9093837339
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-04 00:24:40 +0100
+
+    Document _gabble_im_channel_receive usefully
+
+commit 933af070afdc7a3a1df333c318743e0ba115f3a5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-04 00:20:14 +0100
+
+    Remove redundant CHECK_STR_EMPTY macro
+
+commit 2941264d571f3bd23739f7bbdbb350c53355398b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-04 00:08:02 +0100
+
+    IMFactory: use constructed, not constructor
+
+commit aa4b8472a09fafd5bc8046c01f2163d6d7e4495c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-04 00:05:22 +0100
+
+    Remove obsolete DBUS_API_SUBJECT_TO_CHANGE defines
+
+commit d3607abee80d237ea1d00aca55e14eadc7ff5bb4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-30 12:16:16 +0100
+
+    muc-factory: use a dispatch table for handling requests
+
+commit 517cce66448836d6f3de0eef34b9c36d7a4a2bf9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-30 11:45:40 +0100
+
+    muc-factory: use fully-qualified property constants
+
+commit 45b54e41a49f60b4e0c620546492a91e0c1b1b4c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-27 12:09:52 +0100
+
+    MucFactory: remove stupid priv anti-idiom
+
+commit 616ccbaf5f8b04e1ab1f74f0441490731c1044eb
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 17:09:39 +0000
+
+    ft-client-caps test: change client name
+    
+    I've no idea why but if caps/tube-caps.py is run before this test (it
+    has the same idea and design as this test was copied from it) then
+    this one fails due to the same client name?! Another day...
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit ed09e896b3c249568192e92b5195462e626918fb
+Merge: 08da102 f5f7cc6
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-10-31 14:05:12 -0200
+
+    Merge branch 'memory-leaks'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit f5f7cc6b3407af00eb594aca4c2ffc797f987846
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-10-31 13:55:18 -0200
+
+    roster: Do not leak the roster stanza.
+
+commit 1d61ece67ffac336e4beb430cb1da6e2b4f971cb
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-10-31 13:54:40 -0200
+
+    connection: Remove unnecessary extra copy of caps when updating capabilities.
+
+commit cb97cf5832904d9ce05c93318f43d8b83fb5aa37
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-10-31 13:48:15 -0200
+
+    conn-presence: Properly free priv member.
+
+commit 107d1867af1cd827cf41cc202b0f91bace124f20
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 14:51:35 +0000
+
+    ft-client-caps test: clarify caps dict building
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 8ecdc16893fc2208233252dd5054b88925392601
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 14:30:39 +0000
+
+    ft-client-caps: remove duplication by using caps_helper.presence_and_disco
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c5ea43c6c5bac3cc29695df4f2c2889775eb94a4
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 13:45:25 +0000
+
+    ft-manager: use nicer tp_g_value_slice_new_* functions
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 70d83e788df4acd2218447696e5517b27b416530
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 13:43:51 +0000
+
+    ft-manager: clarify argument name
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 534678998700786a5bc5c6e66e863fc64e353ee6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 13:43:01 +0000
+
+    twisted tests: use conn.Requests isntead of making a dbus.Interface
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5cdf63160451cb2142eb1915eb369d9c248bd80b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 13:40:31 +0000
+
+    ft-channel: simplify adding fields to dataform
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 56086a17c480737973cc28e6c82b7b98d8eb9f6e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 13:29:07 +0000
+
+    namespaces: change FT metadata namespace
+    
+    "and… im: is not a URI scheme. http://telepathy.im/..."
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 7560587e9a14e13b1cb6f1ce2b0c5451bfc67c65
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 13:01:21 +0000
+
+    ft-manager: deal with bad ServiceName fields
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 08da102662f74cf084e4d2bdfc86f2b15e33ca66
+Merge: f9529b7 9cf653e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-31 09:38:35 +0000
+
+    Merge branch 'telepathy-gabble-0.12'
+
+commit 9cf653e93ba9beb8ff2df73627cd2b1f5bedf6bc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-28 18:34:25 +0100
+
+    roster: ignore multiple replies to roster query.
+    
+    The XMPP server running on vk.com is buggy, and replies to our roster
+    query twice. Gabble just blindly assumed that any <iq type='result'>
+    with a roster in it was the singular reply to our singular query. This
+    is a pretty reasonable assumption but this buggy server violates it, and
+    Gabble calls tp_base_contact_list_set_list_received() more than once,
+    which triggers a critical in that function.
+    
+    A more invasive fix would use wocky_porter_send_iq_async() rather than
+    scraping all the roster IQs out of everything using the LM API, but I
+    wanted to quickly fix a bug on a Friday afternoon.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=42186>
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit abbfb9b9fd90cb9f279449a9b43e3bff66167d87
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-28 18:54:57 +0100
+
+    ft metadata test: fix subclass of file receiving test
+    
+    Oops, this was subclassing the wrong FT helper test class. No other
+    changes necessary (like a boss).
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 735bea1282b3299030869d41920d7dbaabaaddce
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-27 17:23:57 +0100
+
+    capabilities: only add metadata cap when we have normal FT caps
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f9529b7d27b0cc9edc9b7c39573c533963d87079
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-10-21 15:20:03 +0100
+
+    Update .gitignore with installed tests
+
+commit f4b4768caabf44f0c2955e97bf8c8af592ff23b1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-10-12 18:45:34 +0100
+
+    Install the test plugin for the installed tests
+
+commit 49925bb583375e19b2d0fa0aeda7902f79fca370
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-09-29 16:55:06 -0400
+
+    tests: add --enable-installed-tests
+    
+    This configure option makes it possible to install the twisted tests in
+    ${libdir}/telepathy-gabble-tests and run them without the sources.
+    
+    The dbus configuration is duplicated in tests/twisted/servicedir/ for the
+    installed tests and tests/twisted/servicedir-uninstalled/ for the uninstalled
+    tests.
+
+commit 3a1fe026d8a43f9bad8c6820c73310245929fb4c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-10-21 15:36:18 +0100
+
+    exec-with-log.sh.in: POSIX shells, avoid "export var=foo"
+
+commit eec2603bd4f8644cc165ce5c8ce42d21c4c73f66
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-10-21 15:11:03 +0100
+
+    Use autoconf's $(MKDIR_P)
+
+commit fa01616db7028029832cb6da6fa898dac0605a82
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-10-21 14:19:01 +0100
+
+    tests/twisted/Makefile.am: Move additional tests in the main list
+
+commit b1d83dcd017bac58e00461ed5cc2b1c967d426fe
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-10-21 13:54:06 +0100
+
+    tests/twisted/Makefile.am: order lists in alphabetic order
+
+commit ade61fe2442ee0787c253b9aff7848216427a71f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 18:55:45 +0100
+
+    ft tests: add tests for FT service name caps
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 3107077eaafd32548273e79363fa3dce4ddc3d25
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 18:26:25 +0100
+
+    ft-manager: advertise file transfer services with capabilities
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit d92500bcd3911dbddad5fff2d40cfbc674663b41
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-10-26 16:19:58 +0200
+
+    actually implement ContactBlocking interface
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=42281
+
+commit a8f305d39ee09748ac258ce577dd9738278f9561
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-10-26 15:50:31 +0200
+
+    Advertise ContactBlocking if supported
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=42281
+
+commit 16060fa8422c7ba530461732821064c3576136c8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 13:10:15 +0100
+
+    ft-channel: fail to create channel if the contact doesn't have the right caps
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit bd6cb214613a95dc5870ac256fd95349576f5fce
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 11:50:34 +0100
+
+    ft-manager: only advertise Metadata support for those who support it
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 583cb3ae5b8538fa24a882462a453d5865587352
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 11:48:11 +0100
+
+    capabilities: advertise support for the TP FT metadata extension
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 08599349b9681f588826393b4c8c2debe228a50b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 11:05:58 +0100
+
+    metadata test: ensure we get an error with a bad Metadata property
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b4f1e9b52846826faf4b843cf4c3bdd00f75150c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 09:09:40 +0100
+
+    metadata test: test receiving an offer with no dataforms
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 82e7b8a0f7461665e58381e7690e3c0f2ebeacc0
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 09:09:33 +0100
+
+    ft-helper: test parsing incoming offer metadata
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit fcf41a7e505a2d38cba5a40e82150bb03eb8d9a1
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 09:08:00 +0100
+
+    caps-helper: split out function to add data forms to a node
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 396e49c5492c8142cfc3fc45054eee0bbba36e23
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 08:48:31 +0100
+
+    file-transfer tests: add simple Metadata test
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 52e76fbe1a5348eccdda726133e2705a1f78f44d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 08:46:54 +0100
+
+    ft-channel: include metadata in file transfer offer
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c2f0b06cb87a62ca9e15bb9bfa870a9854e0117e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 08:44:40 +0100
+
+    caps-helper: allow extract_data_forms to be called with no x nodes
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b9f1bc49edd64959ff0ea57f216672d3067b1118
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 08:35:16 +0100
+
+    caps-helper: move data form parsing code into its own function
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 2933e974314887c283276c904832c69d470849b5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 08:33:00 +0100
+
+    ft-manager: disallow FORM_TYPE keys in Metadata property
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 30899a8616c660cc0852af003a4ad40609a5b52d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 08:30:25 +0100
+
+    ft-channel: make Metadata props immutable and test them
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 7a1da4c951c3bda7793f4511e3b470e7226d8108
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 21:13:09 +0100
+
+    namespaces: define NSs for Metadata dataforms
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5472db8eb4a59c6261a36ddcea407489d488c3eb
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 21:05:04 +0100
+
+    ft-manager: get Metadata props from SI file transfer offer
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 64c9d82af61b25ab06bd74607acf0f336c6c463a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 21:04:33 +0100
+
+    ft-manager: set Metadata props from channel request
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit ab38d52b84ddd80f356a3d804eeae0aeb99b1520
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 21:03:03 +0100
+
+    ft-channel: set Metadata props on construction
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 50e3c855268d9e43f0a2853cc71757f5e88b1ab3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 21:00:28 +0100
+
+    ft-manager: add Metadata props to Allowed_Properties
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit a5fd662a8f3a70eccef1a3d943f060513d2658f3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 20:58:42 +0100
+
+    ft-channel: implement Metadata properties
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit d903da03658e26e574ed6d8ffdd58cc20023857b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 20:57:16 +0100
+
+    extensions: add FileTransfer.Metadata draft
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit e1973c15669a6043cd474cb48b89baafc4bb0d45
+Merge: bf1c8dd 3cdbae8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-24 11:15:41 +0100
+
+    Merge branch '41743-show-contacts-as-offline-even-after-a-really-early-message'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 3cdbae82cb09dd8218e1c783b7bad1f84b84498e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-13 11:33:08 +0100
+
+    Fix offline contacts showing up as unknown, not offline
+    
+    Due to a weird interaction between the presence cache, IM channels, and
+    scraping nicknames out of <message/>s, receiving a message from an
+    offline contact before the roster is received would cause their status
+    to erroneously show up as unknown, not offline.
+    
+    This fix is a bit of a hack, but it is much smaller than refactoring to
+    make the IM channel store the alias (which would allow us to expunge
+    keep_unavailable).
+    
+    This regressed as a side-effect of e0cda61.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=41743>
+
+commit 3b79e21684aa31b568aeb3969d034e772ac9e610
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-14 12:00:50 +0100
+
+    Test grabbing <nick/> from <message/>
+    
+    If a contact is not on your roster, you typically have no idea what
+    their nickname is: no roster, no PEP, no vCard (assuming the server
+    doesn't let random people fetch your vCard). In this situation, contacts
+    who message you out of the blue can include <nick/> in the message
+    itself.
+    
+    This is implemented in a kind of dodgy way in Gabble at the moment: the
+    IM channel forcibly retains an entry for the contact in the presence
+    cache, and then the presence cache stashes the nickname as if it came
+    from presence… It was also previously untested, so I thought it worth
+    adding a test before I even thought about fixing how it's implemented.
+
+commit a04b9e505e6a5baec65fbb52522f1b52656ca72e
+Author: Danielle Madeley <danielle@madeley.id.au>
+Date:   2011-10-18 13:47:55 +1100
+
+    [muc-channel] WockyMuc now signals timestamps as GDateTime instead of time_t
+    
+    Fixes assumptions in the code where timestamp was assumed to be gint64.
+
+commit bf1c8dd299d02ad433af2c31c879601d712e8d3b
+Author: Danielle Madeley <danielle@madeley.id.au>
+Date:   2011-10-17 23:04:00 +1100
+
+    [muc-channel] timestamp is a time_t not a gint64
+    
+    Cast to the correct type so that Gabble compiles correctly on 32-bit.
+    
+    I propose fixing this properly by using either gint64 or GDateTime in Wocky,
+    but not tonight.
+
+commit 009bec00c4d83f401179fd7fb442158875238a34
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-12 17:46:33 +0100
+
+    Update Wocky snapshot for glib/gtypes.h fix.
+
+commit fca53f10536c4e758c24227c956296534ce2a4a3
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2011-10-12 12:33:33 -0400
+
+    test-resolver: don't include glib/types.h directly
+    
+    Use the glib.h header instead.
+
+commit f065fb6165f18441b00cbfc263acd50c3eb05b38
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-12 16:20:54 +0100
+
+    nano version bump to 0.13.8.1
+    
+     •_________________________•
+
 commit 9f1ddd0ae7edf1686dedb7c12d373c99b7444221
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2011-10-12 15:55:33 +0100

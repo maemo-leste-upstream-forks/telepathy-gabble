@@ -1,3 +1,188 @@
+commit a0e74a1cd04ab5e35922536f047664a5ce69c114
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Nov 15 10:04:54 2011 +0000
+
+    sasl test: fix build failure on older libsasl2s
+    
+    A second try.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-test-sasl-auth-server.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 7216cb27349d336dfdedf571fd0923324bce2ead
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Tue Nov 15 09:10:13 2011 +0000
+
+    sasl test: define sasl_callback_ft if not already done so
+    
+    We could have upped the dependency on libsasl2 but given this is just
+    a test I thought it wasn't worth the bother of having to make sure
+    everyone had the newer library version and blah blah blah, so I just
+    did this.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-test-sasl-auth-server.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit c4e19a478599d12824dddcba83de907fa8adf310
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   Tue Oct 25 16:44:36 2011 +0200
+
+    Accept from="server.com" as stanzas coming from server
+    
+    Some servers does not set the full/bare jid.
+    
+    Fixes fdo#39057
+
+ tests/wocky-porter-test.c |   80 ++++++++++++++++++++++++++++++++++++++++++--
+ wocky/wocky-c2s-porter.c  |   14 ++++---
+ 2 files changed, 84 insertions(+), 10 deletions(-)
+
+commit ac0030bef952d974c9a6c64f73f2710add65a5fa
+Merge: 1db5b28 1ee6695
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   Mon Nov 7 21:54:06 2011 +1100
+
+    Merge branch 'trivia'
+
+commit 1ee66951f5cf501d139477fcff940306446520d3
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   Mon Nov 7 21:43:11 2011 +1100
+
+    wocky-muc: return NULL if a timestamp can't be determined
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=42652
+
+ wocky/wocky-muc.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 1db5b28824c279308adb8c110dd69c9915a6726f
+Merge: f0b6203 1f29491
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   Mon Nov 7 20:52:24 2011 +1100
+
+    Merge branch 'wocky-muc-gdatetime'
+
+commit f0b6203d4d50055a73680ad606f47c29f8a80525
+Merge: db8b2b0 4d5b82b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Wed Nov 2 09:19:57 2011 +0000
+
+    Merge branch 'caps-forms'
+
+commit db8b2b02c0f8e6f1f33c96a0559d2c006c765b98
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Nov 1 09:25:22 2011 +0100
+
+    tests: Fix compilation error with libsasl2
+    
+    wocky-test-sasl-auth-server.c: In function ‘test_sasl_auth_server_new’:
+    wocky-test-sasl-auth-server.c:932:17: error: expected ‘)’ before ‘proc’
+    wocky-test-sasl-auth-server.c:932:22: error: expected ‘)’ before ‘(’ token
+    wocky-test-sasl-auth-server.c:932:30: error: expected ‘}’ before ‘test_sasl_server_auth_log’
+    wocky-test-sasl-auth-server.c:933:5: error: initialization from incompatible pointer type [-Werror]
+    wocky-test-sasl-auth-server.c:933:5: error: (near initialization for ‘callbacks[1].proc’) [-Werror]
+    wocky-test-sasl-auth-server.c: At top level: wocky-test-sasl-auth-server.c:886:1: error: ‘test_sasl_server_auth_log’
+      defined but not used [-Werror=unused-function]
+
+ tests/wocky-test-sasl-auth-server.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 1f2949120297e4ac2b3abbbe916a8f9b34f702ce
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   Mon Oct 17 22:39:00 2011 +1100
+
+    [muc] Port time_t to GDateTime
+
+ wocky/wocky-muc.c |   22 ++++++++++++++--------
+ 1 files changed, 14 insertions(+), 8 deletions(-)
+
+commit 4d5b82ba40d0481aed58ec8c19c8fc605da03379
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Oct 13 15:11:20 2011 +0100
+
+    caps-hash-test: update tests for new hashing behaviour
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ tests/wocky-caps-hash-test.c |   32 ++++++++++++++++++++++++++------
+ 1 files changed, 26 insertions(+), 6 deletions(-)
+
+commit 8426f1ecd75fb086b803dffd58e7ef7a2a2b0600
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Oct 13 14:50:46 2011 +0100
+
+    caps-hash: ignore data forms with non-hidden FORM_TYPE fields
+    
+    Related to: fd.o#41719
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 2b9d9a1371af12ee95235a8cbad36747372abcdd
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   Thu Oct 13 14:49:28 2011 +0100
+
+    caps-hash: don't bail on hashing if there's no FORM_TYPE
+    
+    Fixes: fd.o#41719
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-caps-hash.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 3c43751dc90e4cdb08f57f48e2a8e6adf715ed8e
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   Wed Oct 12 17:45:49 2011 +0100
+
+    test-resolver: don't include glib/types.h directly
+    
+    Use the glib.h header instead.
+
+ tests/test-resolver.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6cc87601d31cbe365d3d51a8c91bfbca4cbd14f6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Oct 12 16:06:21 2011 +0100
+
+    C2SPorter: correct _enable_power_saving docs
+    
+    <presence/> was being interpreted as a docbook tag; and the second
+    bullet is no longer true: only PEP updates in particular known
+    namespaces are considered unimportant.
+
+ wocky/wocky-c2s-porter.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+commit 400035360b8f6463c362ea35f4b4580cb52e9e77
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Oct 12 16:08:49 2011 +0100
+
+    gtk-doc: Fix out-of-tree builds with 1.17
+
+ configure.ac               |    2 +-
+ docs/reference/Makefile.am |   12 ++++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 4f0c186180cf64f56072c30bca05a4272b06d2cf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Oct 12 16:06:42 2011 +0100
+
+    gtk-doc: use no-tmpl flavour.
+    
+    This stops gtk-doc even generating the legacy .tmpl files, for a
+    marginally faster (and less crufty) documentation build process.
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 8b8603bb3bf0258b05ef8ed9051d9922d80c6753
 Author: Xavier Claessens <xclaesse@gmail.com>
 Date:   Sat Oct 1 13:42:31 2011 +0200
@@ -134,8 +319,8 @@ Date:   Wed Jul 20 20:38:52 2011 +0530
     This patch filters only a fixed set of PEP messages, with
     +notify
 
- wocky/wocky-c2s-porter.c |   36 +++++++++++++++++++++++++-----------
- 1 files changed, 25 insertions(+), 11 deletions(-)
+ wocky/wocky-c2s-porter.c |   34 ++++++++++++++++++++++++----------
+ 1 files changed, 24 insertions(+), 10 deletions(-)
 
 commit 5ba6fef79f37d1dd1f112db12e539fc8e74c23e3
 Merge: 73d9ace e1c92e2
@@ -733,8 +918,8 @@ Date:   Tue May 31 16:56:18 2011 +0100
 
     MUC: use a node iterator when parsing status codes
 
- wocky/wocky-muc.c |   66 ++++++++++++++++++++++++++++-------------------------
- 1 files changed, 35 insertions(+), 31 deletions(-)
+ wocky/wocky-muc.c |   56 ++++++++++++++++++++++++++++------------------------
+ 1 files changed, 30 insertions(+), 26 deletions(-)
 
 commit 0a764d2151bdda2d6d5314122110faf0fd2f4dc8
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -3700,8 +3885,8 @@ Date:   Tue Mar 1 08:25:21 2011 +0000
     
     Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
- wocky/wocky-porter.c |  182 +++++++++++++++++++++++++-------------------------
- 1 files changed, 91 insertions(+), 91 deletions(-)
+ wocky/wocky-porter.c |  198 +++++++++++++++++++++++++-------------------------
+ 1 files changed, 99 insertions(+), 99 deletions(-)
 
 commit 39b1a9431f4d96f8b8daa836ac6fbf848005b787
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
@@ -8510,8 +8695,8 @@ Date:   Wed Mar 31 13:43:52 2010 +0100
     Generalize event propagation from PubsubService to Node
 
  wocky/wocky-pubsub-node-protected.h |    3 +
- wocky/wocky-pubsub-service.c        |  131 ++++++++++++++++------------------
- 2 files changed, 65 insertions(+), 69 deletions(-)
+ wocky/wocky-pubsub-service.c        |  129 ++++++++++++++++------------------
+ 2 files changed, 64 insertions(+), 68 deletions(-)
 
 commit 2a5f4f613af27951bd5f5833583e28a8ce1ec99d
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -8628,8 +8813,8 @@ Date:   Tue Apr 6 15:14:11 2010 +0100
 
     docs: adapt to WockyDataForm being singular
 
- docs/reference/wocky-sections.txt |   54 ++++++++++++++++++++-----------------
- 1 files changed, 29 insertions(+), 25 deletions(-)
+ docs/reference/wocky-sections.txt |   60 +++++++++++++++++++-----------------
+ 1 files changed, 32 insertions(+), 28 deletions(-)
 
 commit 16e729516b8f2a12e552a858005a70646497ee06
 Author: Simon McVittie <smcv@debian.org>
@@ -17173,10 +17358,10 @@ Date:   Mon Aug 10 20:38:48 2009 +0100
 
     XEP 0077 Registration/Cancellation tests.
 
- tests/wocky-connector-test.c        |  357 ++++++++++++++++++++++++++++++++--
+ tests/wocky-connector-test.c        |  353 +++++++++++++++++++++++++++++++++--
  tests/wocky-test-connector-server.c |  265 +++++++++++++++++++++++++-
  tests/wocky-test-connector-server.h |   19 ++
- 3 files changed, 610 insertions(+), 31 deletions(-)
+ 3 files changed, 608 insertions(+), 29 deletions(-)
 
 commit c7645384313de5b6778a031c0d393d0bf2cc5ba6
 Author: Vivek Dasmohapatra <vivek@collabora.co.uk>

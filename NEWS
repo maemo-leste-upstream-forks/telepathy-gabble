@@ -1,3 +1,84 @@
+telepathy-gabble 0.15.0 (2011-11-16)
+====================================
+
+This is the start of a new development branch that will lead to 0.16
+in roughly six months.
+
+Dependencies:
+
+• telepathy-glib 0.17.1 is now required.
+
+Enhancements:
+
+• fd.o#42288: the Chan.I.FileTransfer.Metadata interface has been
+  implemented. (jonny)
+
+• Updated Wocky:
+  · The SASL auth server test now builds with new and old versions of
+    libsasl2.
+
+Bug fixes:
+
+• fd.o#42706: fix a typo when indexing a pointer array by using the
+  wrong counter! (jonny)
+
+• fd.o#32050: fix a crasher when using OLPC activities. (wjt)
+
+• Wocky:
+  · fd.o#41719: don't bail on hashing caps if there's no
+    FORM_TYPE. (jonny)
+  · fdo#39057: Accept from="server.com" as stanzas coming from
+    server. (xclaesse)
+
+telepathy-gabble 0.14.0 (2011-11-07)
+====================================
+
+The “Ironically, downforeveryoneorjustme.com is down.” release. This is
+the start of a glorious new stable series of Gabble!
+
+Major changes since 0.12.x which might disrupt your life:
+
+• Gabble implements the new Room, Subject and RoomConfig interfaces, and
+  no longer supports the old, crummy Telepathy.Properties interface.
+
+• Gabble no longer supports the legacy Presence interace.
+
+• require-encryption is now enabled by default.
+
+• The plugin API has been extended; plugins for 0.12.x may need updating
+  to compile and run with 0.14.x.
+
+Enhancements since 0.13.7:
+
+• It's now possible to install Gabble's test suite. (albanc)
+
+• fd.o#41417: when connected to Facebook, text channels now produce
+  'accepted' delivery reports when the user sends a message to a contact
+  using another device. (wjt)
+
+Fixes since 0.13.7:
+
+• Compile against unstable GLib, where including glib/gtypes.h directly
+  (instead of glib.h) is forbidden. (cosimoc)
+
+• Correct type mismatches for timestamps in muc-channel.c, which lead to
+  Gabble not compiling correctly on 32-bit. (danni)
+
+• fd.o#41743: Offline contacts to whom we have a presence subscription
+  and also a channel open at the time the roster arrives are now
+  correctly shown as offline, rather than unknown. (wjt)
+
+• fd.o#42281: Actually implement the ContactBlocking interface.
+  (cassidy)
+
+• fd.o#42186: Gabble no longer crashes if the server replies to its
+  roster query IQ twice (as vk.com's XMPP server does). (wjt)
+
+• Various memory leak fixes. (andrunko)
+
+• Gabble now returns MAXINT64 for the subject timestamp when it is
+  unknown, as per the latest spec. (danni)
+
 telepathy-gabble 0.13.7 (2011-10-12)
 ====================================
 
