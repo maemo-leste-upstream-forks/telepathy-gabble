@@ -118,14 +118,16 @@ wocky_porter_default_init (WockyPorterInterface *iface)
       /**
        * WockyPorter::sending:
        * @porter: the object on which the signal is emitted
+       * @stanza: the #WockyStanza being sent, or %NULL if @porter is just
+       *    sending whitespace
        *
        * The ::sending signal is emitted whenever #WockyPorter sends data
        * on the XMPP connection.
        */
       g_signal_new ("sending", iface_type,
           G_SIGNAL_RUN_LAST, 0, NULL, NULL,
-          g_cclosure_marshal_VOID__VOID,
-          G_TYPE_NONE, 0);
+          g_cclosure_marshal_VOID__OBJECT,
+          G_TYPE_NONE, 1, WOCKY_TYPE_STANZA);
 
       g_once_init_leave (&initialization_value, 1);
     }
@@ -352,15 +354,27 @@ wocky_porter_register_handler_from_va (WockyPorter *self,
   g_return_val_if_fail (WOCKY_IS_PORTER (self), 0);
   g_return_val_if_fail (from != NULL, 0);
 
-  stanza = wocky_stanza_build_va (type, WOCKY_STANZA_SUB_TYPE_NONE,
-      NULL, NULL, ap);
-  g_assert (stanza != NULL);
+  if (type == WOCKY_STANZA_TYPE_NONE)
+    {
+      stanza = NULL;
+      g_return_val_if_fail (
+          (va_arg (ap, WockyNodeBuildTag) == 0) &&
+          "Pattern-matching is not supported when matching stanzas "
+          "of any type", 0);
+    }
+  else
+    {
+      stanza = wocky_stanza_build_va (type, WOCKY_STANZA_SUB_TYPE_NONE,
+          NULL, NULL, ap);
+      g_assert (stanza != NULL);
+    }
 
   ret = wocky_porter_register_handler_from_by_stanza (self, type, sub_type,
       from,
       priority, callback, user_data, stanza);
 
-  g_object_unref (stanza);
+  if (stanza != NULL)
+    g_object_unref (stanza);
 
   return ret;
 }
@@ -405,7 +419,11 @@ wocky_porter_register_handler_from_by_stanza (WockyPorter *self,
 
   g_return_val_if_fail (WOCKY_IS_PORTER (self), 0);
   g_return_val_if_fail (from != NULL, 0);
-  g_return_val_if_fail (WOCKY_IS_STANZA (stanza), 0);
+
+  if (type == WOCKY_STANZA_TYPE_NONE)
+    g_return_val_if_fail (stanza == NULL, 0);
+  else
+    g_return_val_if_fail (WOCKY_IS_STANZA (stanza), 0);
 
   iface = WOCKY_PORTER_GET_INTERFACE (self);
 
@@ -532,14 +550,26 @@ wocky_porter_register_handler_from_anyone_va (
 
   g_return_val_if_fail (WOCKY_IS_PORTER (self), 0);
 
-  stanza = wocky_stanza_build_va (type, WOCKY_STANZA_SUB_TYPE_NONE,
-      NULL, NULL, ap);
-  g_assert (stanza != NULL);
+  if (type == WOCKY_STANZA_TYPE_NONE)
+    {
+      stanza = NULL;
+      g_return_val_if_fail (
+          (va_arg (ap, WockyNodeBuildTag) == 0) &&
+          "Pattern-matching is not supported when matching stanzas "
+          "of any type", 0);
+    }
+  else
+    {
+      stanza = wocky_stanza_build_va (type, WOCKY_STANZA_SUB_TYPE_NONE,
+          NULL, NULL, ap);
+      g_assert (stanza != NULL);
+    }
 
-  ret = wocky_porter_register_handler_from_anyone_by_stanza (self, type, sub_type,
-      priority, callback, user_data, stanza);
+  ret = wocky_porter_register_handler_from_anyone_by_stanza (self, type,
+      sub_type, priority, callback, user_data, stanza);
 
-  g_object_unref (stanza);
+  if (stanza != NULL)
+    g_object_unref (stanza);
 
   return ret;
 }
@@ -582,7 +612,11 @@ wocky_porter_register_handler_from_anyone_by_stanza (
   WockyPorterInterface *iface;
 
   g_return_val_if_fail (WOCKY_IS_PORTER (self), 0);
-  g_return_val_if_fail (WOCKY_IS_STANZA (stanza), 0);
+
+  if (type == WOCKY_STANZA_TYPE_NONE)
+    g_return_val_if_fail (stanza == NULL, 0);
+  else
+    g_return_val_if_fail (WOCKY_IS_STANZA (stanza), 0);
 
   iface = WOCKY_PORTER_GET_INTERFACE (self);
 

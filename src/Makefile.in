@@ -62,13 +62,14 @@ libgabble_convenience_la_DEPENDENCIES =  \
 	$(top_builddir)/lib/loudmouth/libloudmouth.la \
 	$(top_builddir)/lib/ext/telepathy-yell/telepathy-yell/libtelepathy-yell.la \
 	$(am__DEPENDENCIES_1)
-am_libgabble_convenience_la_OBJECTS = auth-manager.lo base64.lo \
-	base-call-channel.lo bytestream-factory.lo bytestream-ibb.lo \
-	bytestream-iface.lo bytestream-muc.lo bytestream-multiple.lo \
-	bytestream-socks5.lo call-content.lo call-channel.lo \
-	call-muc-channel.lo call-member.lo call-member-content.lo \
-	call-stream.lo capabilities.lo caps-hash.lo \
-	caps-channel-manager.lo conn-aliasing.lo conn-avatars.lo \
+am_libgabble_convenience_la_OBJECTS = addressing-util.lo \
+	auth-manager.lo base64.lo base-call-channel.lo \
+	bytestream-factory.lo bytestream-ibb.lo bytestream-iface.lo \
+	bytestream-muc.lo bytestream-multiple.lo bytestream-socks5.lo \
+	call-content.lo call-channel.lo call-muc-channel.lo \
+	call-member.lo call-member-content.lo call-stream.lo \
+	capabilities.lo caps-hash.lo caps-channel-manager.lo \
+	conn-addressing.lo conn-aliasing.lo conn-avatars.lo \
 	conn-client-types.lo conn-contact-info.lo conn-location.lo \
 	conn-olpc.lo conn-power-saving.lo conn-presence.lo \
 	conn-sidecars.lo conn-util.lo conn-mail-notif.lo connection.lo \
@@ -304,6 +305,8 @@ BUILT_SOURCES = \
 CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = 
 libgabble_convenience_la_SOURCES = \
+    addressing-util.h \
+    addressing-util.c \
     auth-manager.h \
     auth-manager.c \
     base64.h \
@@ -342,6 +345,8 @@ libgabble_convenience_la_SOURCES = \
     caps-hash.c \
     $(top_srcdir)/gabble/caps-channel-manager.h \
     caps-channel-manager.c \
+    conn-addressing.h \
+    conn-addressing.c \
     conn-aliasing.h \
     conn-aliasing.c \
     conn-avatars.h \
@@ -630,6 +635,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/addressing-util.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/auth-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base-call-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base64.Plo@am__quote@
@@ -648,6 +654,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/capabilities.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/caps-channel-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/caps-hash.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-addressing.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-aliasing.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-avatars.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conn-client-types.Plo@am__quote@
@@ -1016,6 +1023,17 @@ gabble-enumtypes.c: $(enumtype_sources) Makefile.in
 	--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 	--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
 	$(enumtype_sources) > $@
+
+Android.mk: Makefile.am $(BUILT_SOURCES)
+	androgenizer -:PROJECT telepathy-gabble -:SHARED telepathy-gabble -:TAGS eng debug \
+	 -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	 -:SOURCES $(libgabble_convenience_la_SOURCES) \
+	  $(nodist_libgabble_convenience_la_SOURCES) main.c \
+	 -:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CFLAGS) -DBUILD_AS_ANDROID_SERVICE \
+	  -:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) $(telepathy_gabble_LDFLAGS) \
+	  -:LDFLAGS $(telepathy_gabble_LDADD) $(libgabble_convenience_la_LIBADD) \
+	> $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

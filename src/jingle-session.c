@@ -218,10 +218,10 @@ gabble_jingle_session_dispose (GObject *object)
   g_assert ((priv->state == JINGLE_STATE_PENDING_CREATED) ||
       (priv->state == JINGLE_STATE_ENDED));
 
-  g_hash_table_destroy (priv->initiator_contents);
+  g_hash_table_unref (priv->initiator_contents);
   priv->initiator_contents = NULL;
 
-  g_hash_table_destroy (priv->responder_contents);
+  g_hash_table_unref (priv->responder_contents);
   priv->responder_contents = NULL;
 
   tp_handle_unref (contact_repo, sess->peer);
@@ -368,7 +368,7 @@ gabble_jingle_session_constructed (GObject *object)
     {
       /* The peer jid isn't exactly what is in the contact repo so it will have
        * a resource */
-      if (gabble_decode_jid (priv->peer_jid, NULL, NULL,
+      if (wocky_decode_jid (priv->peer_jid, NULL, NULL,
           &priv->peer_resource))
         {
           /* fake for gcc */;

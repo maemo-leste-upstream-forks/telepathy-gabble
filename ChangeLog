@@ -1,3 +1,790 @@
+commit bf29681bd6ac87c63b1ce6624d1efc58957af920
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-22 10:59:49 +0000
+
+    version 0.15.3
+
+commit 3e7bb6cedcca537126422799a33a11d95bc8808a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-22 10:43:24 +0000
+
+    NEWS: add reference to fd.o#43891
+
+commit 845816e8c451bd18412b4c616ce549863689714a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-22 10:33:05 +0000
+
+    Update wocky to fix wocky_data_form_set_type()
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43891
+
+commit ead4381be6e3ab46d454458d54c86fc98c4fe61d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-12-21 09:28:06 +0000
+
+    start on version 0.15.3
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit ac5b2184c9b89f527d8ce4ee83484fde084f8499
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-12-21 09:15:53 +0000
+
+    version 0.15.2
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 109ae37c08613b9d1b240ab325f993d466a9be55
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   2011-12-20 15:09:27 +0100
+
+    Update wocky commit to fix build warnings
+
+commit 09cae896ad821071e7d1fcfc69503deeefb57534
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-16 16:02:01 +0000
+
+    Compute the caps verification string correctly with dataforms in plugins
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43889
+
+commit a17ea171acb4847ada48782a8b57feff78aee123
+Author: Alvaro Soliverez <alvaro.soliverez@collabora.co.uk>
+Date:   2011-12-14 17:00:11 -0300
+
+    Added missing build flag
+
+commit 2348d1d320bd99560427875de45351691c018274
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   2011-12-14 12:33:48 +0100
+
+    Fix the build with glib 2.32 deprecated symbols
+
+commit e61ea6b4baa4080e072f69699bc876c762797b5d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-07 13:19:22 +0000
+
+    Add gabble_connection_add_sidecar_own_caps_full() with dataforms
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43588
+
+commit a7740569c39532c1e508ff707ddecadbcd5acd0b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2011-11-29 12:58:32 +0100
+
+    Update wocky snapshot to fix issues with non-character data
+
+commit 956da5d8d2df4aad54e44315ae9df4b54a3ec0fc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 16:48:18 +0000
+
+    Rhythm is a dancer.
+
+commit f7555112d4d9fb17709befd5068a4fdac7365886
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 16:17:58 +0000
+
+    Version 0.15.1
+
+commit 4284793d64274349ced1d4c0ceb6f69cb136425d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 16:14:49 +0000
+
+    NEWS for 0.15.1
+
+commit 7d6e1fa81492520fcd020fe6a1ab4b0a8a1e85ef
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 15:32:29 +0000
+
+    Knock .DRAFT off Conn.I.Addressing.
+    
+    I've taken the executive decision to turn it into a version number, so
+    that we don't force ourselves to break compatibility if we decide the
+    interface is perfect.
+
+commit 05e7ea30f2588a098ad52c1969ca3f25795e7dba
+Merge: f467b8c 9e4bd73
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 15:25:21 +0000
+
+    Merge remote-tracking branch 'andrunko/fb-addressing'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=41789>
+
+commit f467b8cd4dffca20516be46d6da58f0bb4868df3
+Merge: 6a0ed9a 7fa869b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 15:15:58 +0000
+
+    Merge remote-tracking branch 'andrunko/conn-addressing'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=30296>
+
+commit 6a0ed9a2f9c49d21060dd0053c8b71864ee59e10
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 14:22:23 +0000
+
+    extensions: add Make rules for *-gtk-doc.h
+    
+    3c830e9 fixed `make clean` but in the process it broke building from
+    nothing… since these are now included in
+    nodist_libgabble_extensions_la_SOURCES, we need to tell Make how to
+    build them.
+
+commit 210aeb46df44531b1b3c348b5b75e743afe2503c
+Merge: b775d24 43cbe47
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 14:06:42 +0000
+
+    Merge remote-tracking branch 'andrunko/protocol-addressing'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=32692>
+
+commit b775d249a13db7a31a0306572f670f6b76b3c804
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 13:58:29 +0000
+
+    configure: depend on tp-glib 0.17.2
+    
+    This is needed to support Protocol.Interface.Addressing, coming right
+    up…
+
+commit 6554c595fe1fd7684ac8efb2505b589601660c3b
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-11-22 17:26:17 +0000
+
+    Fix missing capabilities.h and caps-channel-manager.h
+    
+    The problem was introduced by this commit:
+    
+    |commit 587da15932d178ad289e81b039dcabb4e90984c5
+    |Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+    |Date:   Thu Sep 1 14:19:52 2011 +0100
+    |
+    |    gabble: add capabilities.h and caps-channel-manager.h as public API
+    |
+    |    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c6e76ac44acd46e8d5a1c9f2cc950548d7a30ead
+Author: Alvaro Soliverez <alvaro.soliverez@collabora.co.uk>
+Date:   2011-11-15 13:05:47 -0300
+
+    Support building on Android
+    
+    This patch makes it possible to use installed versions of Wocky and
+    Yell, rather than submodules; adds a missing explicit dependency on gio;
+    and adds Androgenizer build targets.
+    
+    Modified from an original patch by Derek Foreman.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=42446
+
+commit 9e4bd7355548bc64aeda0c997dbd14e66522193b
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 14:36:38 -0200
+
+    addressing-util: Properly check if "x-facebook-id" vcard address is a number.
+
+commit f3d2d2e95ed23e080e5bd4ec935491916efd7bbf
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 13:10:03 -0200
+
+    addressing-util: Refactor gabble_parse_vcard_address and make "x-facebook-id" parsing expect a number, not a JID.
+    
+    Refactor gabble_parse_vcard_address in gabble_normalize_vcard_address, gabble_vcard_address_to_jid and gabble_jid_to_vcard_address
+    and and make "x-facebook-id" parsing expect a number, not a JID.
+
+commit a3c018452d6e4bf48c6eeb16bfd55b35b70c3aad
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 21:31:18 -0200
+
+    Expand tests for Conn.I.Addressing to test normalization of vCard addresses with 'x-facebook-id' field.fb-addressing.
+
+commit fdf0b93faa48797b739a4d6275baad0f1069f0ce
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-10 21:33:21 -0200
+
+    Expand tests for Protocol.I.Addressing to test normalization of vCard addresses with 'x-facebook-id' field.
+
+commit 3f4ce2c1a14aba3c5f0c922e527ff9e648311207
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 20:32:45 -0200
+
+    protocol: Add support for normalizing vCard addresses with 'x-facebook-id' field.
+
+commit 7fa869b1f319ab42c75d61fdd3b22859f3bb1dfb
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-21 13:25:27 -0200
+
+    Update Conn.I.Addressing from tp-spec.
+
+commit aa5280ce5e76c65b310379d73671f4bce826a286
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-21 13:11:07 -0200
+
+    addressing-util: Rename gabble_normalize_uri to gabble_normalize_contact_uri.
+
+commit b203be272d60153eef7d00b5edab30a4f0021759
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 13:39:22 -0200
+
+    addressing-util: Replace gabble_decode_jid with wocky_decode_jid.
+
+commit 25c3d3469e587467008d0f7942125ff9a421a6d9
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 13:34:56 -0200
+
+    addressing-util: Remove redundant checks when calling g_uri_escape_string.
+
+commit 4192c92ae505489050da9f89fcbb756d83f66bb3
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 12:00:23 -0200
+
+    twisted/addressing.py: Expand tests for normalizing URIs.
+
+commit 2d661e26a114dcf91e0461a814072be4c095e0f4
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 11:40:05 -0200
+
+    addressing-util: Use gabble_parse_xmpp_uri on gabble_uri_to_jid.
+
+commit 9f53dc66c3a9b29ba987e5bb1d9a33ad34567beb
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 11:39:46 -0200
+
+    addressing-util: Add gabble_parse_xmpp_uri helper method.
+
+commit 909d5428e4187ffe276587e726a790e7b1653636
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 11:10:19 -0200
+
+    addressing-util: Refactor gabble_jid_to_uri and gabble_normalize_uri.
+
+commit dad62245979ea66a63c4e2ad8ad99386c0007e07
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 10:42:07 -0200
+
+    conn-addressing: Remove unnecessary cast.
+
+commit 26594e8d47c0af050128d9133892f676cde96e55
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 10:41:33 -0200
+
+    Update docs for Conn.I.Addressing.
+
+commit ef5685459b4815aac89d3e0ed4202e277e127705
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 20:36:26 -0200
+
+    protocol: Use gabble_get_addressable_uri_schemes/vcard_fields.
+
+commit 687adff7ab22e0f2dc5f81b895726372acc28a98
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 21:30:49 -0200
+
+    addressing-util: Make gabble_uri/vcard_address_for_handle generic.
+
+commit 2e33ef47c7fc2c2630c084b590610f5bf086fdab
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 21:27:39 -0200
+
+    addressing-util: Use vcard address as the identifier for tp_handle_inspect in gabble_ensure_handle_from_vcard_address.
+    
+    We need to parse the vcard address to make sure the field/address is supported, but we cannot use
+    the return of it as the identifier to tp_handle_ensure, as the return may be invalid
+    (depending on the vcard field).
+
+commit ab6aef86574495c699756f13f7fe3e8e33b48c97
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 20:08:28 -0200
+
+    addressing-util: Split gabble_parse_uri in gabble_normalize_uri, gabble_jid_to_uri and gabble_uri_to_jid.
+    
+    Also properly escape URIs.
+
+commit 846339c2ad4fe280a1f89ca60ff4bfcd59ed7063
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 17:44:35 -0200
+
+    conn-addressing: Use g_str_hash/equal and dup/free the key for the requested hash on conn_addressing_get_contacts_by_uri/vcard_field.
+
+commit 1393bc432a2a271e94d528df15b9166c9fa9a8b7
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 17:41:42 -0200
+
+    Update docs for Conn.I.Addressing.
+
+commit 774995d3b527ced96f236ac7937d8861c9403c03
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 17:37:08 -0200
+
+    Fix typo in Conn.I.Addressing.
+
+commit f84a9c17a256a17ad0118a9a932cc90650399143
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 17:16:56 -0200
+
+    Split requested contacts into a separate argument in Conn.I.Addressing.
+    
+    Remove the contact attributes ".../requested-*" and return the satisfied requested addresses on
+    GetContactsByURI/VCardField.
+
+commit a1c71d47685d266be24f3a6deebddb5d184c781d
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:27:18 -0200
+
+    protocol: Use g_error_matches to properly match for errors and don't crash if error is NULL.
+
+commit bee30c01c77fcd76fe046bf962d1568f16149980
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:23:49 -0200
+
+    conn-addressing: Use g_error_matches to properly match for errors.
+
+commit 158fbf5c3987b90f27345cd54ba3885790caddd3
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:19:31 -0200
+
+    conn-addressing: Add comments for g_hash_table_get_keys usage.
+
+commit cd210ac5a6d04fb46d532e1421b11cc9baa34197
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:18:25 -0200
+
+    conn-addressing: Rename variables starting with "in_".
+
+commit 4137aba89752ae3b773c44fa59e238376a2561dc
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:14:47 -0200
+
+    conn-addressing: Reorder includes.
+
+commit 36be157b1edb9776a320d377588b2ec8fd1cce56
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:11:50 -0200
+
+    conn-addressing: No need to include debug.h and define a debug flag as we don't use them.
+
+commit 2a1708b475e527bd2d8662d30777c910d08c5df1
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:08:42 -0200
+
+    addressing-util: Refactor gabble_vcard_address_for_handle.
+
+commit 082f79dbf29e3a11d641b6339000e2bcf639f2c9
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:01:22 -0200
+
+    addressing-util: Refactor gabble_vcard_addresses_for_handle.
+
+commit 24f94aad9af73af03486f0612e4f99a723b30e3e
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 12:32:51 -0200
+
+    addressing-util: Refactor gabble_parse_vcard_address.
+
+commit 218ae8f0dc091444b34df18f9e79797a9bfdcc37
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:06:59 -0200
+
+    addressing-util: Refactor gabble_uri_for_handle.
+
+commit 44184e6acbcd8cd6cd6baa39811833d39c90e600
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 12:52:44 -0200
+
+    addressing-util: Refactor gabble_uris_for_handle.
+
+commit 5e74e1d55948636645b654f267398253d329ffdc
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 12:24:00 -0200
+
+    addressing-util: Refactor gabble_parse_uri.
+
+commit 3210556571ef281f2afe6586c35474be0906681b
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 16:33:30 -0200
+
+    addressing-util: Put includes in alphabetical order.
+
+commit 78af6ffac2fccf1f26ad7c38b369e9c493f726f1
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 16:31:38 -0200
+
+    addressing-util: No need to include debug.h and define a debug flag as we don't use them.
+
+commit d977ec1feaf34a19979309ca1a8e2e1808aa3ece
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 16:32:22 -0200
+
+    addressing-util: No need to include config.h in the header file.
+
+commit c07bb73548709f427c4b47b5a0d93c77806d631e
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-11 01:30:05 -0200
+
+    addressing-util: Fix some coding style issues.
+
+commit dda584a302134223185a36d589e48d8d2a1ec07d
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-11 01:00:34 -0200
+
+    addressing-util: Do not fill output uri if input uri cannot be parsed in gabble_parse_uri.
+
+commit 33394ec5a4f1acfc3f6235626d98e0267e27fa53
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-11 00:53:31 -0200
+
+    twisted/addressing.py: Re-enable Protocol.I.Addressing test.
+
+commit f4a87f5d3584d19993206992f768638a0209bdea
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-22 10:32:09 -0700
+
+    Synced with latest tp_contacts_mixin_get_contact_attributes.
+
+commit b4cc4692ee10fa84f92922bfabb22153232187a5
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-21 13:07:32 -0700
+
+    More centralizing.
+
+commit c1610996707159f8c09ed0077df169eadd253d59
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-21 12:07:35 -0700
+
+    Added addressing-utils.[ch] to aide in addressing consistency.
+
+commit 3c86293fa5dc2b24447eeaddc5cd8b7a1e3cf9da
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-20 11:54:33 -0700
+
+    Added Conn.I.Addressing tests.
+
+commit d7618fe18e64c05625d95531c3c918a1c238a5da
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-20 00:05:06 -0700
+
+    Implemented getters in Conn.I.Addressing.
+
+commit 2524367ba1531d27a1c201651119a44aba0a999a
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-20 00:04:40 -0700
+
+    Factored out URI parsing.
+
+commit f1b72e248195b25f629bb2042135066c34b482a4
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-19 16:20:18 -0700
+
+    Started work on connection addressing iface.
+
+commit 4c0aa45e6a69de77cc9e685edac9213ba34192dd
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-19 09:19:42 -0700
+
+    Added Conn.I.Addressing as an extension.
+
+commit 43cbe4770f28bc52115bec727edc07a6c9142841
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-21 13:05:55 -0200
+
+    protocol: Update to latest changes in Proto.I.Addressing.
+
+commit a9608bc48432be0e18441b931c60d6438acc40e9
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 15:05:14 -0200
+
+    twisted/constants.py: Re-use PROTOCOL definition when defining PROTOCOL_IFACE_ADDRESSING.
+
+commit 9c745c78daa57bb374fdcb536ead75ba3d50c9aa
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 15:04:34 -0200
+
+    write-mgr-file: Use one property per line when calling g_object_get, to emphasize the paired arguments.
+
+commit b7504155ef6656ee155439fef7b35b3e6226dcfb
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 14:57:45 -0200
+
+    protocol: Reorder logic of checking for uri schemes in addressing_normalize_uri.
+
+commit be3b8aa3f9b6d8aa5e933d7ee44475ab4356c5c3
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 14:56:09 -0200
+
+    protocol: Reorder logic of checking for vcard fields in addressing_normalize_vcard_address.
+
+commit c02c3f6d08d890627ed19b8513cc3609e4ed8303
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 14:53:38 -0200
+
+    Remove debug area for protocol as it's not being used.
+
+commit f498451348f9053ff3e4b01a854862d00ba57a80
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 14:49:52 -0200
+
+    protocol: Updated with latest changes in tp-glib to support Protocol.I.Addressing.
+
+commit 6cdcedb7faca3d2fa43e01d32d9ae7bade2a0a5b
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-10 21:34:37 -0200
+
+    write-mgr-file: Make it comply with ISO C90.
+
+commit fb792b824efcc0960db7143ff69bf79ee76ac278
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2011-01-03 16:24:43 -0800
+
+    Use new addressing GInterface API. Fix review nitpicks.
+
+commit bd20b6a9c8b4ba138a77112efd698af126965afc
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-27 15:56:53 -0800
+
+    Update manager file writer for new addressing features.
+
+commit 83095016b23bc2096dd7fcd567bde3ac56017ac4
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-27 15:56:06 -0800
+
+    Added tests for Protocol.Interface.Addressing.
+
+commit fb0b624a751807821dcaa91196457dc0be70406c
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-15 15:56:54 -0700
+
+    Added Addressing support to protocol.
+
+commit 3c830e93b65121c2a6450c97b68922b49d85fde3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-21 14:19:35 +0000
+
+    extensions: add generated -gtk-doc.h files to Makefile
+    
+    The updated code generator added in f9332611 puts gtk-doc comments into
+    separate source files. Since these weren't mentioned in
+    extensions/Makefile.am, `make distcheck` failed, protesting about “files
+    left in build directory after distclean”.
+
+commit 357aef5d882f461a05037255f3f0dee844d18d6f
+Merge: cbe05e9 ac3ed72
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-21 13:14:04 +0000
+
+    Merge branch 'xmpp-console'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=xmpp-console>
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit ac3ed729bed7d8c4fb62a11ade54f54b6139c0d0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-21 10:49:00 +0000
+
+    console plugin: add a FIXME re. client dying
+
+commit f28d2d99353e91c925986f8ee7abde562384f884
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-18 11:00:46 +0000
+
+    console UI: turn off monitoring when we quit
+
+commit 936059fedae244ec4ea9cf40d500f9b761639bfb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-18 11:00:21 +0000
+
+    console UI: allow passing account identifiers
+
+commit 77f77a88c3a28a68cdbd5656912580cf2e235338
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-17 23:50:33 +0000
+
+    console UI: fix handling errors from SendIQ
+
+commit 2622e65507e83956a2dd0b7f349135771ec8f335
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-17 17:42:43 +0000
+
+    console UI: add a page for sending arbitrary stanzas
+
+commit 5bcba4d971ebf48ba827067ff4b1c5d28c36295f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-17 23:49:50 +0000
+
+    console UI: factor out spinner wrapper notebook thing
+
+commit ff861b9904b4d200c33107fd39178585310918d0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-17 11:07:32 +0000
+
+    console plugin: add SendStanza method
+
+commit 0212d45fcddd528cf3f3b66c930b0b57e0788d6e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 10:23:42 +0000
+
+    console UI: add stanza monitor pane
+
+commit 9391ee87e77315f3405722846d6b2bec14736497
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 09:38:46 +0000
+
+    console UI: split out UI helpers
+    
+    The traffic monitor window will need to show nicely-formatted stanzas,
+    and it will also need a grid with the same spacing.
+
+commit bd8c210005270e42b09feb08abf521bd64a1237d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 09:29:12 +0000
+
+    console UI: pack IQ page into a notebook.
+
+commit ace82cb0e39516c6df7b055b5a2219c45578c746
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 09:19:29 +0000
+
+    console UI: refactor IQ interface into a class
+    
+    This just pulls out the entire Gtk.Grid containing the UI for sending an
+    IQ into its own subclass of Gtk.Grid, paving the way for another page in
+    the UI for watching the stanzas fly past.
+
+commit 54dc3ce758b1f47f2a46590297765c5baf5dbd77
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 09:18:38 +0000
+
+    Add a smoke test for the XMPP console
+
+commit 1a6f7fff8022d9f4bf17ded58771c3c7a8582049
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 09:09:39 +0000
+
+    console plugin: implement received/sent signals
+    
+    Ideally the SpewStanzas property would become False when the client
+    which asked for it falls off the bus. Later...
+
+commit 27afc946f679d649d57026ffd7d81bbaae00b4a2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 09:08:18 +0000
+
+    Add Sending/Receiving signals to Console API
+
+commit f9332611f8c19a0bf96a7c822c7e03da796813f7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-11 19:45:25 +0000
+
+    tools: update to respect EmitsChangedSignal
+
+commit 20901a521f66d1106e69ca967c2a60af10b3c486
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-11 19:27:50 +0000
+
+    Update Wocky snapshot
+    
+    This new snapshot allows Gabble (specifically, our plugin) to register
+    match-all stanza handlers, and also adds the stanza currently being sent
+    as an argument to the WockyPorter::sending signal.
+
+commit 9f3e22edb1b13ff37b124a5fe3a5e9a1522dbebb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 18:07:09 +0100
+
+    xmpp-console: add some better error reporting
+
+commit f59235111739cde7b746de4b93d9090f039dc494
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 17:38:54 +0100
+
+    xmpp-console: Readd a crucial feature from 0.12.5.
+
+commit 4fd5fd804b45b3b1c8f8de5a71210099663d688c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 16:49:39 +0100
+
+    xmpp-console: show a spinner while waiting for a reply
+
+commit c63263f038c938839e5a3ec5e4809955b877a381
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 16:28:13 +0100
+
+    xmpp-console: add radio buttons for get vs. set
+
+commit 00e1ca483ad07ddcd2a059130e3e186ae12fbd63
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 16:17:12 +0100
+
+    xmpp-console: split up entry-adding function
+    
+    I'd like to use a combobox or something for the get/set selection.
+
+commit 880edbed11b23262afed535ce51dc3e36ebf3698
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 10:43:59 +0100
+
+    Add XMPP console UI
+    
+    It is only installed if the plugin is installed.
+
+commit 59fbf7d5e24859595d230f6249c30370f09a6281
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 10:43:50 +0100
+
+    test plugin: include version number
+
+commit 98ab5aa93c9574187bf47ff7bad10f7a1fe2b935
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-22 14:33:52 +0100
+
+    Add an XMPP console sidecar
+    
+    It currently only supports sending an arbitrary IQ and getting the
+    reply. Obviously this is for developer use only.
+
+commit cbe05e97476160fab38ba491717f4d5a42c17887
+Merge: 7c77196 2f1c385
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 14:46:33 -0200
+
+    Merge branch 'trivia'
+
+commit 2f1c3854ed8860caeb8410d4a9c0882124641e10
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 14:18:18 -0200
+
+    Remove gabble_decode_jid in favour of wocky_decode_jid.
+
+commit 7c77196d24c77a31bb51928ee3875f1161b9fd08
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   2011-11-16 15:21:04 +0100
+
+    Add coding style check for g_hash_table_destroy and g_array_free usage
+
+commit 769a97c2ed9e6cbfda656a65483f6142423adc36
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   2011-11-16 14:39:30 +0100
+
+    Use _unref instead of _free _destroy when possible.unref
+    
+    Replace g_(ptr_)array_free (foo, TRUE) and g_hash_table_destroy
+    with respectively g_(ptr_)array_unref (foo) and g_hash_table_unref.
+    
+    I used this command to generate this patch:
+    for f in `find -name "*.c"`; do sed -i $f -re 's/g_ptr_array_free \(([^ ,]+), TRUE\)/g_ptr_array_unref \(\1\)/'; done
+    
+    See Danielle's blog for explanation of possible bug _free can do:
+    http://blogs.gnome.org/danni/2011/11/16/mistakes-with-g_value_set_boxed/
+
+commit dfccd984ac6c694a689c1f224efb4f4e2b27e01c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 11:37:13 +0000
+
+    bump nano-version
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit 241356cdbd74bca44e8c0c9c583a2d1f4daf903a
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   2011-11-16 10:07:32 +0000

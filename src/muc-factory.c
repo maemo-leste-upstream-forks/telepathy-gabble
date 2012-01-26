@@ -25,6 +25,7 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <loudmouth/loudmouth.h>
+#include <wocky/wocky-utils.h>
 #include <telepathy-glib/channel-manager.h>
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/interfaces.h>
@@ -161,7 +162,7 @@ gabble_muc_factory_dispose (GObject *object)
 
   g_hash_table_foreach (priv->disco_requests, cancel_disco_request,
       priv->conn->disco);
-  g_hash_table_destroy (priv->disco_requests);
+  g_hash_table_unref (priv->disco_requests);
 
   if (G_OBJECT_CLASS (gabble_muc_factory_parent_class)->dispose)
     G_OBJECT_CLASS (gabble_muc_factory_parent_class)->dispose (object);
@@ -335,7 +336,7 @@ muc_ready_cb (GabbleMucChannel *text_chan,
 
       tp_channel_manager_emit_new_channels (fac, channels);
 
-      g_hash_table_destroy (channels);
+      g_hash_table_unref (channels);
     }
 
   g_hash_table_remove (priv->tubes_needed_for_tube, tubes_chan);
@@ -504,7 +505,7 @@ new_muc_channel (GabbleMucFactory *fac,
   g_hash_table_insert (priv->text_channels, GUINT_TO_POINTER (handle), chan);
 
   g_free (object_path);
-  g_ptr_array_free (initial_channels_array, TRUE);
+  g_ptr_array_unref (initial_channels_array);
   g_array_unref (initial_handles);
 
   if (_gabble_muc_channel_is_ready (chan))
@@ -892,9 +893,9 @@ gabble_muc_factory_close_all (GabbleMucFactory *self)
     g_hash_table_foreach_steal (priv->queued_requests,
         cancel_queued_requests, self);
 
-  tp_clear_pointer (&priv->queued_requests, g_hash_table_destroy);
-  tp_clear_pointer (&priv->text_needed_for_tubes, g_hash_table_destroy);
-  tp_clear_pointer (&priv->tubes_needed_for_tube, g_hash_table_destroy);
+  tp_clear_pointer (&priv->queued_requests, g_hash_table_unref);
+  tp_clear_pointer (&priv->text_needed_for_tubes, g_hash_table_unref);
+  tp_clear_pointer (&priv->tubes_needed_for_tube, g_hash_table_unref);
 
   /* Use a temporary variable because we don't want
    * muc_channel_closed_cb or tubes_channel_closed_cb to remove the channel
@@ -911,7 +912,7 @@ gabble_muc_factory_close_all (GabbleMucFactory *self)
       while (g_hash_table_iter_next (&iter, NULL, &chan))
         gabble_muc_channel_teardown (GABBLE_MUC_CHANNEL (chan));
 
-      g_hash_table_destroy (tmp);
+      g_hash_table_unref (tmp);
     }
 
   if (priv->message_cb != NULL)
@@ -1171,7 +1172,7 @@ gabble_muc_factory_type_foreach_channel_class (GType type,
       gabble_media_factory_call_channel_allowed_properties (),
       user_data);
 
-  g_hash_table_destroy (table);
+  g_hash_table_unref (table);
 }
 
 /* return TRUE if the text_channel associated is ready */
@@ -1418,7 +1419,7 @@ handle_text_channel_request (GabbleMucFactory *self,
       gboolean ok;
 
       /* JIDs that are handles must already be valid. */
-      ok = gabble_decode_jid (target_id, &target_room, NULL, NULL);
+      ok = wocky_decode_jid (target_id, &target_room, NULL, NULL);
       g_assert (ok);
 
       ok = !tp_strdiff (target_room, room_name);
@@ -1445,7 +1446,7 @@ handle_text_channel_request (GabbleMucFactory *self,
       gboolean ok = TRUE;
 
       /* JIDs that are handles must already be valid. */
-      ok = gabble_decode_jid (target_id, NULL, &target_server, NULL);
+      ok = wocky_decode_jid (target_id, NULL, &target_server, NULL);
       g_assert (ok);
 
       if (target_server != NULL)
@@ -1535,8 +1536,8 @@ out:
   if (room != 0)
     tp_handle_unref (room_handles, room);
 
-  g_hash_table_destroy (final_channels);
-  g_array_free (final_handles, TRUE);
+  g_hash_table_unref (final_channels);
+  g_array_unref (final_handles);
   g_free (final_ids);
 
   tp_handle_set_destroy (handles);
@@ -1656,7 +1657,7 @@ handle_tube_channel_request (GabbleMucFactory *self,
       g_hash_table_insert (channels, new_channel, request_tokens);
       tp_channel_manager_emit_new_channels (self, channels);
 
-      g_hash_table_destroy (channels);
+      g_hash_table_unref (channels);
       g_slist_free (request_tokens);
     }
   else

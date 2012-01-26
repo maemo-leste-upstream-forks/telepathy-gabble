@@ -1,3 +1,58 @@
+telepathy-gabble 0.15.3 (2011-12-22)
+====================================
+
+Fixes:
+
+• fd.o#43891: Update wocky snapshot to fix wocky_data_form_set_type() (Alban)
+
+telepathy-gabble 0.15.2 (2011-12-21)
+====================================
+
+Enhancements:
+
+• fd.o#43588, fd.o#43889: Add public
+  gabble_connection_add_sidecar_own_caps_full() function which
+  includes data forms. (Alban)
+
+Fixes:
+
+• fd.o#42462: Update wocky snapshot to fix gabble getting kicked from D-Bus
+  when non-character utf-8 is used by remote clients (Sjoerd)
+
+• Fix the build when using GLib 2.32. (Xavier)
+
+telepathy-gabble 0.15.1 (2011-11-24)
+====================================
+
+The “goodbye desolate railyard” release.
+
+Dependencies:
+
+• telepathy-glib 0.17.2 is now required.
+
+Enhancements:
+
+• fd.o#38568: Ladies and gentlemen, prepare your angle brackets: Gabble
+  now ships with an XMPP console interface! You can send IQs and get
+  their replies, send arbitrary stanzas, or monitor all incoming and
+  outgoing stanzas, all with beautiful GtkSourceView syntax
+  highlighting. UI love and caring welcome. Anyone want to make a
+  version of the Telepathy “heads” icon with stanzas in place of the
+  thought balloons? (wjt)
+
+• fd.o#32692, fd.o#30296, fd.o#41789: Gabble now implements the
+  freshly-undrafted Protocol.Interface.Addressing and the still-unstable
+  Connection.Interface.Addressing1, and uses them to expose Facebook
+  contacts' integer IDs. (andrunko, eeejay)
+
+• fd.o#42446: Gabble can now be built on Android, using Androgenizer.
+  (Derek Foreman, Alvaro Soliverez)
+
+Fixes:
+
+• capabilities.h and caps-channel-manager.h are no longer erroneously
+  omitted. (albanc)
+
 telepathy-gabble 0.15.0 (2011-11-16)
 ====================================
 

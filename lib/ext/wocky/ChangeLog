@@ -1,3 +1,271 @@
+commit 8a1a8d94d40d731a8045d4fb2a67a65484a7983c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Fri Dec 16 16:15:09 2011 +0000
+
+    wocky_data_form_set_type: add default value and raw content
+    
+    They are needed for wocky_caps_hash_compute_from_lists().
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43891
+
+ wocky/wocky-data-form.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 9e38356210772956d1d05e5eed2e485df962ceee
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   Wed Dec 14 15:33:03 2011 +0100
+
+    Use G_GINT64_FORMAT instead of %li
+
+ wocky/wocky-heartbeat-source.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 244dd4e32315ba79d2ff340e7a87a4be3b9dd5e8
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   Wed Dec 14 12:28:36 2011 +0100
+
+    Add tests/wocky-dummy-xmpp-server.c to build system and fix it
+    
+    Code that we don't build won't build.
+
+ .gitignore                      |    1 +
+ tests/Makefile.am               |   13 +++++++++++++
+ tests/wocky-dummy-xmpp-server.c |   15 ++++++++++-----
+ 3 files changed, 24 insertions(+), 5 deletions(-)
+
+commit 85556079abd82cc6d86a395e5b3e9e35da1482a8
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   Wed Dec 14 10:51:58 2011 +0100
+
+    Fix build warnings with glib 2.32
+
+ tests/wocky-http-proxy-test.c |    4 ++++
+ tests/wocky-sasl-utils-test.c |    4 ++++
+ tests/wocky-test-helper.c     |    3 +++
+ 3 files changed, 11 insertions(+), 0 deletions(-)
+
+commit d1ebf26eb23a307d8e45f7b49770481151c0ab26
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   Mon Nov 7 13:00:31 2011 +0100
+
+    g_source_get_current_time() is replaced by g_source_get_time()
+
+ configure.ac                   |    2 +-
+ wocky/wocky-heartbeat-source.c |   52 +++++++++++++++++-----------------------
+ 2 files changed, 23 insertions(+), 31 deletions(-)
+
+commit 194c14c2b244eeec197261b1063e75d6f21e996c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Dec 7 18:19:14 2011 +0000
+
+    test: dataforms: add a test for bug fdo#43584
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43584
+
+ tests/wocky-data-form-test.c |   47 ++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 47 insertions(+), 0 deletions(-)
+
+commit b0a398bc4f75bf86e4e4df171df79b52e9fd3503
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Dec 7 16:50:02 2011 +0000
+
+    dataforms: fix crash in add_field_to_node_using_default()
+    
+    field->raw_value_contents was not initialized when the field was not coming
+    from a WockyNode. It leads to a segfault in add_field_to_node_using_default().
+    
+    The following code was triggering the crash:
+    
+      form = g_object_new (WOCKY_TYPE_DATA_FORM, NULL);
+      wocky_data_form_set_string (form, "field", "value", TRUE);
+      wocky_data_form_add_to_node (form, ...);
+    
+    This patch initializes field->raw_value_contents when the WockyNode is created
+    through data_form_set_value().
+    
+    The unit tests are updated to check this.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43584
+
+ wocky/wocky-data-form.c |   31 +++++++++++++++++++++++++++++++
+ 1 files changed, 31 insertions(+), 0 deletions(-)
+
+commit 1cb38f6d3ceba586e3a98be285f172fc8448becd
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   Wed Dec 7 16:49:40 2011 +0000
+
+    wocky_data_form_set_string: fix documentation
+
+ wocky/wocky-data-form.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 509688872eb7df6c38e1efcebc4a7eea032cfcac
+Merge: 1628149 9905ee7
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Tue Nov 29 12:51:54 2011 +0100
+
+    Merge branch 'invalid-character-test'
+
+commit 9905ee72891d4e16898f70d37a5bf4da65b438ec
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 28 11:16:15 2011 +0100
+
+    Add a test for filtering non-character unicode codepoints
+
+ tests/wocky-xmpp-reader-test.c |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
+
+commit f4900b0325ef211a0cef27620f436daeb6ecf6d3
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   Mon Nov 28 10:47:11 2011 +0100
+
+    Ensure all data in a WockyNode is validated according to the rules in g_utf8_validate
+    
+    In some cases valid utf-8, but for non-character codepoints gets send
+    through xmpp. Other parts of the system can get confused by those (e.g.
+    D-Bus doesn't allow them in strings). So we need to ensure that they get
+    filtered out as soon as possible.
+    
+    There are two obvious places to do this, either in the XmppReader or
+    the Nodes. Doing it in the nodes has the advantage of ensuring
+    consistency for all data going into the Node, not just what was read
+    from xmpp directly. Furthermore the Node api calls already copy the
+    strings internally, which is a good place place to do the conversions if
+    needed.
+
+ wocky/wocky-node.c |  112 +++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 files changed, 102 insertions(+), 10 deletions(-)
+
+commit 16281498c3613e237b4096ee99789f80d02076c8
+Author: Alvaro Soliverez <alvaro.soliverez@collabora.co.uk>
+Date:   Fri Nov 11 15:20:06 2011 -0300
+
+    Support building under Android, modified from an original patch by Derek Foreman
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=42509
+
+ .gitignore        |    1 +
+ Android.mk        |   32 ++++++++++++++++++++++++++++++++
+ wocky/Makefile.am |    9 ++++++++-
+ 3 files changed, 41 insertions(+), 1 deletions(-)
+
+commit bcce213e495424684e2cda11f6e5559032e481b4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Nov 18 13:47:51 2011 +0000
+
+    Use wocky_node_matches() in a couple of places
+
+ wocky/wocky-connector.c     |    3 +--
+ wocky/wocky-data-form.c     |    3 +--
+ wocky/wocky-tls-connector.c |    3 +--
+ 3 files changed, 3 insertions(+), 6 deletions(-)
+
+commit ac6bfbe70f5ac35d0b998854d3d5ae17ee55be78
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Fri Nov 18 12:40:47 2011 +0000
+
+    Add wocky_node_matches{,_q}
+    
+    This makes it easier to verify that a node has the name and namespace
+    you expect.
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+ wocky/wocky-node.c |   49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-node.h |   10 ++++++++++
+ 2 files changed, 59 insertions(+), 0 deletions(-)
+
+commit 79008a4927792ddda8720d70d09948951e1b8423
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Nov 16 09:05:59 2011 +0000
+
+    meta-porter: emit ::sending when a child porter does
+
+ wocky/wocky-meta-porter.c |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
+
+commit e34be9ed3748699425ee4c4565c6a01a65f4d6d5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Nov 16 08:59:33 2011 +0000
+
+    Porter: add stanza being sent to ::sending
+    
+    This is useful in writing an XMPP console for Gabble.
+
+ wocky/wocky-c2s-porter.c |    4 ++--
+ wocky/wocky-porter.c     |    6 ++++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+commit 502b3aa449dc9a2bfafd68eedf46531f31071432
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Mon Jun 27 19:47:08 2011 +0100
+
+    Porter: support matching STANZA_TYPE_NONE
+    
+    For really specialised cases, like an XML console in Gabble, you want to
+    be able to match stanzas of any type. The docs claim you can do this,
+    but they lie.
+    
+    I could be convinced that the correct way to do this is to add a fourth
+    method, wocky_porter_register_handler_for_any_stanza (), and that the
+    server/anyone/from variants are unnecessary. Thoughts?
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=38577
+
+ tests/wocky-porter-test.c |  100 +++++++++++++++++++++++++++++++++++++++++++++
+ wocky/wocky-c2s-porter.c  |   43 +++++++++++++++-----
+ wocky/wocky-meta-porter.c |    7 ++-
+ wocky/wocky-porter.c      |   56 ++++++++++++++++++++-----
+ 4 files changed, 182 insertions(+), 24 deletions(-)
+
+commit fb661a1c9edfd362cb367535c477650f50c50889
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   Wed Nov 16 16:27:37 2011 +0100
+
+    Also replace g_byte_array_free with g_byte_array_unref
+
+ tests/wocky-sasl-utils-test.c |    2 +-
+ wocky/wocky-sasl-scram.c      |   16 ++++++++--------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+commit 97c206797c9bb0f1893f845c01f28c301b92200e
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   Wed Nov 16 15:55:42 2011 +0100
+
+    Use _unref instead of _free _destroy when possible.unref
+    
+    Replace g_(ptr_)array_free (foo, TRUE) and g_hash_table_destroy
+    with respectively g_(ptr_)array_unref (foo) and g_hash_table_unref.
+    
+    I used this command to generate this patch:
+    for f in `find -name "*.c"`; do sed -i $f -re 's/g_ptr_array_free \(([^ ,]+), TRUE\)/g_ptr_array_unref \(\1\)/'; done
+    
+    See Danielle's blog for explanation of possible bug _free can do:
+    http://blogs.gnome.org/danni/2011/11/16/mistakes-with-g_value_set_boxed/
+
+ tests/wocky-roster-test.c     |    2 +-
+ tests/wocky-test-stream.c     |    4 ++--
+ wocky/wocky-bare-contact.c    |    4 ++--
+ wocky/wocky-c2s-porter.c      |    4 ++--
+ wocky/wocky-caps-hash.c       |   12 ++++++------
+ wocky/wocky-contact-factory.c |    6 +++---
+ wocky/wocky-disco-identity.c  |    2 +-
+ wocky/wocky-loopback-stream.c |    4 ++--
+ wocky/wocky-meta-porter.c     |    6 +++---
+ wocky/wocky-pubsub-service.c  |    2 +-
+ wocky/wocky-roster.c          |    8 ++++----
+ wocky/wocky-sasl-digest-md5.c |    4 ++--
+ 12 files changed, 29 insertions(+), 29 deletions(-)
+
+commit c216947c02b161eb4ab11ec8ae1b2e9b99a703ed
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   Wed Nov 16 15:55:32 2011 +0100
+
+    Add coding style check for g_hash_table_destroy and g_array_free usage
+
+ tools/check-c-style.sh |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
 commit a0e74a1cd04ab5e35922536f047664a5ce69c114
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   Tue Nov 15 10:04:54 2011 +0000

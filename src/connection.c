@@ -33,6 +33,7 @@
 #include <wocky/wocky-disco-identity.h>
 #include <wocky/wocky-tls-handler.h>
 #include <wocky/wocky-ping.h>
+#include <wocky/wocky-utils.h>
 #include <wocky/wocky-xmpp-error.h>
 #include <wocky/wocky-data-form.h>
 #include <telepathy-glib/channel-manager.h>
@@ -85,6 +86,7 @@
 #include "util.h"
 #include "vcard-manager.h"
 #include "conn-util.h"
+#include "conn-addressing.h"
 
 static guint disco_reply_timeout = 5;
 
@@ -139,6 +141,8 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
       conn_client_types_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_POWER_SAVING,
       conn_power_saving_iface_init);
+    G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_CONNECTION_INTERFACE_ADDRESSING,
+      conn_addressing_iface_init);
     )
 
 /* properties */
@@ -370,7 +374,7 @@ _gabble_connection_create_channel_managers (TpBaseConnection *conn)
   g_object_unref (loader);
 
   g_ptr_array_foreach (tmp, add_to_array, channel_managers);
-  g_ptr_array_free (tmp, TRUE);
+  g_ptr_array_unref (tmp);
 
   return channel_managers;
 }
@@ -419,6 +423,7 @@ gabble_connection_constructor (GType type,
   conn_sidecars_init (self);
   conn_mail_notif_init (self);
   conn_client_types_init (self);
+  conn_addressing_init (self);
 
   tp_contacts_mixin_add_contact_attributes_iface (G_OBJECT (self),
       TP_IFACE_CONNECTION_INTERFACE_CAPABILITIES,
@@ -579,7 +584,11 @@ gabble_connection_get_property (GObject    *object,
       g_value_set_string (value, priv->resource);
       break;
     case PROP_PRIORITY:
+#if GLIB_CHECK_VERSION (2, 31, 0)
+      g_value_set_schar (value, priv->priority);
+#else
       g_value_set_char (value, priv->priority);
+#endif
       break;
     case PROP_HTTPS_PROXY_SERVER:
       g_value_set_string (value, priv->https_proxy_server);
@@ -701,7 +710,11 @@ gabble_connection_set_property (GObject      *object,
         }
       break;
     case PROP_PRIORITY:
+#if GLIB_CHECK_VERSION (2, 31, 0)
+      priv->priority = g_value_get_schar (value);
+#else
       priv->priority = g_value_get_char (value);
+#endif
       break;
     case PROP_HTTPS_PROXY_SERVER:
       g_free (priv->https_proxy_server);
@@ -837,6 +850,7 @@ static const gchar *implemented_interfaces[] = {
     GABBLE_IFACE_CONNECTION_INTERFACE_GABBLE_DECLOAK,
     GABBLE_IFACE_CONNECTION_FUTURE,
     TP_IFACE_CONNECTION_INTERFACE_CLIENT_TYPES,
+    GABBLE_IFACE_CONNECTION_INTERFACE_ADDRESSING,
     NULL
 };
 static const gchar **interfaces_always_present = implemented_interfaces + 3;
@@ -1209,8 +1223,8 @@ gabble_connection_dispose (GObject *object)
 
   conn_olpc_activity_properties_dispose (self);
 
-  g_hash_table_destroy (self->avatar_requests);
-  g_hash_table_destroy (self->vcard_requests);
+  g_hash_table_unref (self->avatar_requests);
+  g_hash_table_unref (self->vcard_requests);
 
   conn_presence_dispose (self);
 
@@ -1223,14 +1237,14 @@ gabble_connection_dispose (GObject *object)
   priv->porter = NULL;
   tp_clear_pointer (&self->lmconn, lm_connection_unref);
 
-  g_hash_table_destroy (priv->client_caps);
+  g_hash_table_unref (priv->client_caps);
   gabble_capability_set_free (priv->all_caps);
   gabble_capability_set_free (priv->notify_caps);
   gabble_capability_set_free (priv->legacy_caps);
   gabble_capability_set_free (priv->sidecar_caps);
   gabble_capability_set_free (priv->bonus_caps);
 
-  g_hash_table_destroy (priv->client_data_forms);
+  g_hash_table_unref (priv->client_data_forms);
 
   if (priv->disconnect_timer != 0)
     {
@@ -1313,7 +1327,7 @@ _gabble_connection_set_properties_from_account (GabbleConnection *conn,
   username = server = resource = NULL;
   result = TRUE;
 
-  if (!gabble_decode_jid (account, &username, &server, &resource))
+  if (!wocky_decode_jid (account, &username, &server, &resource))
     {
       g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
           "unable to extract JID from account name");
@@ -3072,7 +3086,7 @@ _emit_capabilities_changed (GabbleConnection *conn,
       g_boxed_free (TP_STRUCT_TYPE_CAPABILITY_CHANGE,
           g_ptr_array_index (caps_arr, i));
     }
-  g_ptr_array_free (caps_arr, TRUE);
+  g_ptr_array_unref (caps_arr);
 
   /* o.f.T.C.ContactCapabilities */
   caps_arr = gabble_connection_build_contact_caps (conn, handle, new_set);
@@ -3084,7 +3098,7 @@ _emit_capabilities_changed (GabbleConnection *conn,
   tp_svc_connection_interface_contact_capabilities_emit_contact_capabilities_changed (
       conn, hash);
 
-  g_hash_table_destroy (hash);
+  g_hash_table_unref (hash);
 }
 
 static const GabbleCapabilitySet *
@@ -3253,7 +3267,7 @@ gabble_connection_advertise_capabilities (TpSvcConnectionInterfaceCapabilities *
       context, ret);
 
   g_ptr_array_foreach (ret, (GFunc) g_value_array_free, NULL);
-  g_ptr_array_free (ret, TRUE);
+  g_ptr_array_unref (ret);
 }
 
 static const gchar *
@@ -3621,7 +3635,7 @@ conn_capabilities_fill_contact_attributes (GObject *obj,
     }
 
     if (array != NULL)
-      g_ptr_array_free (array, TRUE);
+      g_ptr_array_unref (array);
 }
 
 static void
@@ -3690,7 +3704,7 @@ gabble_connection_get_capabilities (TpSvcConnectionInterfaceCapabilities *iface,
       g_value_array_free (g_ptr_array_index (ret, i));
     }
 
-  g_ptr_array_free (ret, TRUE);
+  g_ptr_array_unref (ret);
 }
 
 /**
@@ -3738,7 +3752,7 @@ gabble_connection_get_contact_capabilities (
   tp_svc_connection_interface_contact_capabilities_return_from_get_contact_capabilities
       (context, ret);
 
-  g_hash_table_destroy (ret);
+  g_hash_table_unref (ret);
 }
 
 
@@ -3902,9 +3916,10 @@ gabble_connection_update_sidecar_capabilities (GabbleConnection *self,
 
 /* identities is actually a WockyDiscoIdentityArray */
 gchar *
-gabble_connection_add_sidecar_own_caps (GabbleConnection *self,
+gabble_connection_add_sidecar_own_caps_full (GabbleConnection *self,
     const GabbleCapabilitySet *cap_set,
-    const GPtrArray *identities)
+    const GPtrArray *identities,
+    GPtrArray *data_forms)
 {
   GPtrArray *identities_copy = ((identities == NULL) ?
       wocky_disco_identity_array_new () :
@@ -3917,14 +3932,23 @@ gabble_connection_add_sidecar_own_caps (GabbleConnection *self,
         wocky_disco_identity_new ("client", CLIENT_TYPE,
             NULL, PACKAGE_STRING));
 
-  ver = gabble_caps_hash_compute (cap_set, identities_copy);
+  ver = gabble_caps_hash_compute_full (cap_set, identities_copy, data_forms);
 
   gabble_presence_cache_add_own_caps (self->presence_cache, ver,
-      cap_set, identities_copy, NULL);
+      cap_set, identities_copy, data_forms);
 
   wocky_disco_identity_array_free (identities_copy);
 
   return ver;
+}
+
+gchar *
+gabble_connection_add_sidecar_own_caps (GabbleConnection *self,
+    const GabbleCapabilitySet *cap_set,
+    const GPtrArray *identities)
+{
+  return gabble_connection_add_sidecar_own_caps_full (self, cap_set,
+      identities, NULL);
 }
 
 const gchar *

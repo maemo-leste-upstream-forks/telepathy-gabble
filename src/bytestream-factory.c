@@ -26,6 +26,7 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <loudmouth/loudmouth.h>
+#include <wocky/wocky-utils.h>
 #include <telepathy-glib/interfaces.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_BYTESTREAM
@@ -679,16 +680,16 @@ gabble_bytestream_factory_dispose (GObject *object)
       priv->iq_socks5_cb, LM_MESSAGE_TYPE_IQ);
   lm_message_handler_unref (priv->iq_socks5_cb);
 
-  g_hash_table_destroy (priv->ibb_bytestreams);
+  g_hash_table_unref (priv->ibb_bytestreams);
   priv->ibb_bytestreams = NULL;
 
-  g_hash_table_destroy (priv->muc_bytestreams);
+  g_hash_table_unref (priv->muc_bytestreams);
   priv->muc_bytestreams = NULL;
 
-  g_hash_table_destroy (priv->socks5_bytestreams);
+  g_hash_table_unref (priv->socks5_bytestreams);
   priv->socks5_bytestreams = NULL;
 
-  g_hash_table_destroy (priv->multiple_bytestreams);
+  g_hash_table_unref (priv->multiple_bytestreams);
   priv->multiple_bytestreams = NULL;
 
   proxies = g_slist_concat (priv->socks5_proxies,
@@ -1149,7 +1150,7 @@ bytestream_factory_iq_si_cb (LmMessageHandler *handler,
     {
       /* jid is not a muc jid so we need contact's resource */
 
-      if (!gabble_decode_jid (from, NULL, NULL, &peer_resource))
+      if (!wocky_decode_jid (from, NULL, NULL, &peer_resource))
         {
           DEBUG ("Got an SI IQ response from a bad JID. Ignoring.");
           goto out;
@@ -2078,7 +2079,7 @@ streaminit_reply_cb (GabbleConnection *conn,
     {
       /* jid is not a muc jid so we need contact's resource */
 
-      if (!gabble_decode_jid (from, NULL, NULL, &peer_resource))
+      if (!wocky_decode_jid (from, NULL, NULL, &peer_resource))
         {
           DEBUG ("Got an SI request with a bad JID");
           goto END;

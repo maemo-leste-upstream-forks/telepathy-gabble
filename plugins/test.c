@@ -1,4 +1,5 @@
 #include "test.h"
+#include "config.h"
 
 #include <stdio.h>
 
@@ -161,6 +162,7 @@ plugin_iface_init (
   GabblePluginInterface *iface = g_iface;
 
   iface->name = "Sidecar test plugin";
+  iface->version = PACKAGE_VERSION;
   iface->sidecar_interfaces = sidecar_interfaces;
   iface->create_sidecar = test_plugin_create_sidecar;
   iface->create_channel_managers = test_plugin_create_channel_managers;
@@ -595,7 +597,7 @@ test_channel_manager_type_foreach_channel_class (GType type,
 
   func (type, table, chock_a_block_full_of_strings, user_data);
 
-  g_hash_table_destroy (table);
+  g_hash_table_unref (table);
 }
 
 static void

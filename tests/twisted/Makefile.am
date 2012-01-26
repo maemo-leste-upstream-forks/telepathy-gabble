@@ -1,4 +1,5 @@
 TWISTED_TESTS = \
+	addressing.py \
 	avatar-requirements.py \
 	caps/advertise-contact-caps.py \
 	caps/advertise-legacy.py \
@@ -27,6 +28,7 @@ TWISTED_TESTS = \
 	connect/test-nonblocking-tls.py \
 	connect/test-success.py \
 	connect/test-twice.py \
+	console.py \
 	dataforms.py \
 	gateways.py \
 	last-activity.py \

@@ -615,6 +615,16 @@ loudmouth-signals-marshal.list: $(OUR_SOURCES) Makefile.am
 	glib-genmarshal --body --prefix=_$(subst -,_,$*)_signals_marshal $< ; \
 	} > $@
 
+Android.mk: Makefile.am $(BUILT_SOURCES)
+	androgenizer -:PROJECT telepathy-gabble -:STATIC loudmouth -:TAGS eng debug \
+	 -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	 -:SOURCES $(libloudmouth_la_SOURCES) \
+	 -:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CFLAGS) \
+	 -:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) \
+	 -:LDFLAGS $(libloudmouth_la_LIBADD) \
+	> $@
+
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
