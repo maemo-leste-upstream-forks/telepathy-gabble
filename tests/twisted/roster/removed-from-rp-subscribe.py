@@ -13,8 +13,6 @@ import ns
 jid = 'marco@barisione.lit'
 
 def test(q, bus, conn, stream, remove, local, modern):
-    conn.Connect()
-
     # Gabble asks for the roster; the server sends back an empty roster.
     event = q.expect('stream-iq', query_ns=ns.ROSTER)
     event.stanza['type'] = 'result'
@@ -98,7 +96,7 @@ def test(q, bus, conn, stream, remove, local, modern):
             if modern:
                 call_async(q, conn.ContactList, 'RemoveContacts', [h])
             else:
-                stored.Group.RemoveMembers([h], '')
+                call_async(q, stored.Group, 'RemoveMembers', [h], '')
 
             event = q.expect('stream-iq', iq_type='set', query_ns=ns.ROSTER)
             item = event.query.firstChildElement()
@@ -138,6 +136,8 @@ def test(q, bus, conn, stream, remove, local, modern):
         if local and modern:
             acknowledge_iq(stream, event.stanza)
             q.expect('dbus-return', method='RemoveContacts')
+            # FIXME: when we depend on a new enough tp-glib we can expect
+            # RemoveMembers to return here in the local case, too
     else:
         # ...rescinds the subscription request...
         if local:

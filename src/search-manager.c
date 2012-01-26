@@ -25,9 +25,11 @@
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/interfaces.h>
 
+#include <wocky/wocky-utils.h>
+
 #define DEBUG_FLAG GABBLE_DEBUG_SEARCH
 
-#include "caps-channel-manager.h"
+#include "gabble/caps-channel-manager.h"
 #include "connection.h"
 #include "debug.h"
 #include "disco.h"
@@ -228,7 +230,7 @@ gabble_search_manager_finalize (GObject *object)
 
   /* close_all removed all the channels from the hash table */
   g_assert_cmpuint (g_hash_table_size (priv->channels), ==, 0);
-  g_hash_table_destroy (priv->channels);
+  g_hash_table_unref (priv->channels);
 
   if (G_OBJECT_CLASS (gabble_search_manager_parent_class)->finalize)
     G_OBJECT_CLASS (gabble_search_manager_parent_class)->finalize (object);
@@ -339,7 +341,7 @@ gabble_search_manager_type_foreach_channel_class (GType type,
 
   func (type, table, search_channel_allowed_properties, user_data);
 
-  g_hash_table_destroy (table);
+  g_hash_table_unref (table);
 }
 
 static void
@@ -479,6 +481,19 @@ gabble_search_manager_create_channel (TpChannelManager *manager,
 
   server = tp_asv_get_string (request_properties,
       TP_IFACE_CHANNEL_TYPE_CONTACT_SEARCH ".Server");
+
+  if (tp_str_empty (server))
+    {
+      /* Treat an empty server as equivalent to omitting the server entirely. */
+      server = NULL;
+    }
+  else if (!wocky_decode_jid (server, NULL, NULL, NULL))
+    {
+      /* On the other hand, if the JID's invalid, blow up. */
+      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+          "Specified server '%s' is not a valid JID", server);
+      goto error;
+    }
 
   if (server == NULL)
     {

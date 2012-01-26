@@ -301,7 +301,6 @@ struct _WockyConnectorPrivate
 static char *
 state_message (WockyConnectorPrivate *priv, const char *str)
 {
-  GString *msg = g_string_new ("");
   const char *state = NULL;
 
   if (priv->authed)
@@ -318,8 +317,7 @@ state_message (WockyConnectorPrivate *priv, const char *str)
   else
     state = "Connecting... ";
 
-  g_string_printf (msg, "%s: %s", state, str);
-  return g_string_free (msg, FALSE);
+  return g_strdup_printf ("%s: %s", state, str);
 }
 
 static void
@@ -875,20 +873,22 @@ tcp_srv_connected (GObject *source,
       else
         g_clear_error (&error);
 
-      DEBUG ("Falling back to HOST connection");
-
       priv->state = WCON_TCP_CONNECTING;
-
       /* decode a hostname from the JID here: Don't check for an explicit *
        * connect host supplied by the user as we shouldn't even try a SRV *
        * connection in that case, and should therefore never get here     */
       wocky_decode_jid (priv->jid, &node, &host, NULL);
 
       if ((host != NULL) && (*host != '\0'))
-        connect_to_host_async (connector, host, port);
+        {
+          DEBUG ("Falling back to HOST connection to %s", host);
+          connect_to_host_async (connector, host, port);
+        }
       else
-        abort_connect_code (self, WOCKY_CONNECTOR_ERROR_BAD_JID,
-            "JID contains no domain: %s", priv->jid);
+        {
+          abort_connect_code (self, WOCKY_CONNECTOR_ERROR_BAD_JID,
+              "JID contains no domain: %s", priv->jid);
+        }
 
       g_free (node);
       g_free (host);
@@ -923,11 +923,12 @@ tcp_host_connected (GObject *source,
           DEBUG ("we previously hit a GIOError when connecting using SRV; "
               "reporting that error");
           abort_connect_error (connector, &priv->srv_connect_error,
-              "Bad SRV record");
+              "couldn't connect to server specified by SRV record");
         }
       else
         {
-          abort_connect_error (connector, &error, "connection failed");
+          abort_connect_error (connector, &error,
+              "couldn't connect to server");
         }
 
       g_error_free (error);
@@ -1034,7 +1035,7 @@ maybe_old_ssl (WockyConnector *self)
 
       DEBUG ("Beginning SSL handshake");
       wocky_tls_connector_secure_async (tls_connector,
-          priv->conn, TRUE, get_peername (self),
+          priv->conn, TRUE, get_peername (self), NULL,
           priv->cancellable, tls_connector_secure_cb, self);
 
       g_object_unref (tls_connector);
@@ -1107,7 +1108,8 @@ xmpp_init_recv_cb (GObject *source,
   priv->session_id = g_strdup (id);
 
   debug = state_message (priv, "");
-  DEBUG ("%s: received XMPP v%s stream open from server", debug, version);
+  DEBUG ("%s: received XMPP version=%s stream open from server", debug,
+      version != NULL ? version : "(unspecified)");
   g_free (debug);
 
   ver = (version != NULL) ? atof (version) : -1;
@@ -1119,12 +1121,13 @@ xmpp_init_recv_cb (GObject *source,
             "Server not XMPP 1.0 Compliant");
       else
         jabber_request_auth (self);
-      goto out;
     }
-
-  DEBUG ("waiting for feature stanza from server");
-  wocky_xmpp_connection_recv_stanza_async (priv->conn, priv->cancellable,
-      xmpp_features_cb, data);
+  else
+    {
+      DEBUG ("waiting for feature stanza from server");
+      wocky_xmpp_connection_recv_stanza_async (priv->conn, priv->cancellable,
+          xmpp_features_cb, data);
+    }
 
  out:
   g_free (version);
@@ -1180,8 +1183,7 @@ xmpp_features_cb (GObject *source,
   DEBUG ("received feature stanza from server");
   node = wocky_stanza_get_top_node (stanza);
 
-  if (wocky_strdiff (node->name, "features") ||
-      wocky_strdiff (wocky_node_get_ns (node), WOCKY_XMPP_NS_STREAM))
+  if (!wocky_node_matches (node, "features", WOCKY_XMPP_NS_STREAM))
     {
       char *msg = state_message (priv, "Malformed or missing feature stanza");
       abort_connect_code (data, WOCKY_CONNECTOR_ERROR_BAD_FEATURES, msg);
@@ -1225,7 +1227,7 @@ xmpp_features_cb (GObject *source,
 
       tls_connector = wocky_tls_connector_new (priv->tls_handler);
       wocky_tls_connector_secure_async (tls_connector,
-          priv->conn, FALSE, get_peername (self), priv->cancellable,
+          priv->conn, FALSE, get_peername (self), NULL, priv->cancellable,
           tls_connector_secure_cb, self);
 
       g_object_unref (tls_connector);
@@ -2148,8 +2150,8 @@ connector_propagate_jid_and_sid (WockyConnector *self,
  * wocky_connector_connect_finish:
  * @self: a #WockyConnector instance.
  * @res: a #GAsyncResult (from your wocky_connector_connect_async() callback).
- * @jid: (%NULL to ignore): the user JID from the server is stored here.
- * @sid: (%NULL to ignore): the Session ID is stored here.
+ * @jid: (%NULL to ignore) the user JID from the server is stored here.
+ * @sid: (%NULL to ignore) the Session ID is stored here.
  * @error: (%NULL to ignore) the #GError (if any) is sored here.
  *
  * Called by the callback passed to wocky_connector_connect_async().
@@ -2330,6 +2332,7 @@ connector_connect_async (WockyConnector *self,
 /**
  * wocky_connector_connect_async:
  * @self: a #WockyConnector instance.
+ * @cancellable: an #GCancellable, or %NULL
  * @cb: a #GAsyncReadyCallback to call when the operation completes.
  * @user_data: a #gpointer to pass to the callback.
  *
@@ -2350,6 +2353,7 @@ wocky_connector_connect_async (WockyConnector *self,
 /**
  * wocky_connector_unregister_async:
  * @self: a #WockyConnector instance.
+ * @cancellable: an #GCancellable, or %NULL
  * @cb: a #GAsyncReadyCallback to call when the operation completes.
  * @user_data: a #gpointer to pass to the callback @cb.
  *
@@ -2373,6 +2377,7 @@ wocky_connector_unregister_async (WockyConnector *self,
 /**
  * wocky_connector_register_async:
  * @self: a #WockyConnector instance.
+ * @cancellable: an #GCancellable, or %NULL
  * @cb: a #GAsyncReadyCallback to call when the operation completes.
  * @user_data: a #gpointer to pass to the callback @cb.
  *
@@ -2398,6 +2403,8 @@ wocky_connector_register_async (WockyConnector *self,
  * @jid: a JID (user AT domain).
  * @pass: the password.
  * @resource: the resource (sans '/'), or NULL to autogenerate one.
+ * @auth_registry: a #WockyAuthRegistry, or %NULL
+ * @tls_handler: a #WockyTLSHandler, or %NULL
  *
  * Connect to the account/server specified by @self.
  * To set other #WockyConnector properties, use g_object_new() instead.

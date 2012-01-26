@@ -502,8 +502,7 @@ start_stream_initiation (GabbleTubeStream *self,
           return FALSE;
         }
 
-      resource = gabble_presence_pick_resource_by_caps (presence,
-          DEVICE_AGNOSTIC,
+      resource = gabble_presence_pick_resource_by_caps (presence, 0,
           gabble_capability_set_predicate_has, NS_TUBES);
       if (resource == NULL)
         {
@@ -1038,7 +1037,7 @@ tube_stream_open (GabbleTubeStream *self,
       priv->address = tp_g_value_slice_new (DBUS_TYPE_G_UCHAR_ARRAY);
       g_value_set_boxed (priv->address, array);
 
-      g_array_free (array, TRUE);
+      g_array_unref (array);
 
       ret = gibber_listener_listen_socket (priv->local_listener, path, FALSE,
           error);
@@ -1210,9 +1209,9 @@ gabble_tube_stream_dispose (GObject *object)
       g_string_free (path, TRUE);
     }
 
-  tp_clear_pointer (&priv->transport_to_bytestream, g_hash_table_destroy);
-  tp_clear_pointer (&priv->bytestream_to_transport, g_hash_table_destroy);
-  tp_clear_pointer (&priv->transport_to_id, g_hash_table_destroy);
+  tp_clear_pointer (&priv->transport_to_bytestream, g_hash_table_unref);
+  tp_clear_pointer (&priv->bytestream_to_transport, g_hash_table_unref);
+  tp_clear_pointer (&priv->transport_to_id, g_hash_table_unref);
 
   tp_handle_unref (contact_repo, priv->initiator);
 
@@ -1237,7 +1236,7 @@ gabble_tube_stream_finalize (GObject *object)
 
   g_free (priv->object_path);
   g_free (priv->service);
-  g_hash_table_destroy (priv->parameters);
+  g_hash_table_unref (priv->parameters);
 
   if (priv->address != NULL)
     {
@@ -1449,7 +1448,7 @@ gabble_tube_stream_set_property (GObject *object,
         break;
       case PROP_PARAMETERS:
         if (priv->parameters != NULL)
-          g_hash_table_destroy (priv->parameters);
+          g_hash_table_unref (priv->parameters);
         priv->parameters = g_value_dup_boxed (value);
         break;
       case PROP_ADDRESS_TYPE:
@@ -1716,7 +1715,7 @@ gabble_tube_stream_class_init (GabbleTubeStreamClass *gabble_tube_stream_class)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
                   0,
                   NULL, NULL,
-                  gabble_marshal_VOID__VOID,
+                  g_cclosure_marshal_VOID__VOID,
                   G_TYPE_NONE, 0);
 
   signals[NEW_CONNECTION] =
@@ -1725,7 +1724,7 @@ gabble_tube_stream_class_init (GabbleTubeStreamClass *gabble_tube_stream_class)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
                   0,
                   NULL, NULL,
-                  gabble_marshal_VOID__UINT,
+                  g_cclosure_marshal_VOID__UINT,
                   G_TYPE_NONE, 1, G_TYPE_UINT);
 
   signals[CLOSED] =
@@ -1734,7 +1733,7 @@ gabble_tube_stream_class_init (GabbleTubeStreamClass *gabble_tube_stream_class)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
                   0,
                   NULL, NULL,
-                  gabble_marshal_VOID__VOID,
+                  g_cclosure_marshal_VOID__VOID,
                   G_TYPE_NONE, 0);
 
   signals[OFFERED] =
@@ -1743,7 +1742,7 @@ gabble_tube_stream_class_init (GabbleTubeStreamClass *gabble_tube_stream_class)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
                   0,
                   NULL, NULL,
-                  gabble_marshal_VOID__VOID,
+                  g_cclosure_marshal_VOID__VOID,
                   G_TYPE_NONE, 0);
 
   gabble_tube_stream_class->dbus_props_class.interfaces = prop_interfaces;
@@ -2252,8 +2251,7 @@ send_tube_offer (GabbleTubeStream *self,
       return FALSE;
     }
 
-  resource = gabble_presence_pick_resource_by_caps (presence,
-      DEVICE_AGNOSTIC,
+  resource = gabble_presence_pick_resource_by_caps (presence, 0,
       gabble_capability_set_predicate_has, NS_TUBES);
   if (resource == NULL)
     {
@@ -2331,7 +2329,7 @@ static void
 destroy_socket_control_list (gpointer data)
 {
   GArray *tab = data;
-  g_array_free (tab, TRUE);
+  g_array_unref (tab);
 }
 
 /**

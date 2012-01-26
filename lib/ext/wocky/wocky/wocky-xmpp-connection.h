@@ -28,6 +28,12 @@
 G_BEGIN_DECLS
 
 typedef struct _WockyXmppConnection WockyXmppConnection;
+
+/**
+ * WockyXmppConnectionClass:
+ *
+ * The class of a #WockyXmppConnection.
+ */
 typedef struct _WockyXmppConnectionClass WockyXmppConnectionClass;
 typedef struct _WockyXmppConnectionPrivate WockyXmppConnectionPrivate;
 
@@ -64,10 +70,12 @@ GQuark wocky_xmpp_connection_error_quark (void);
 #define WOCKY_XMPP_CONNECTION_ERROR (wocky_xmpp_connection_error_quark ())
 
 struct _WockyXmppConnectionClass {
+    /*<private>*/
     GObjectClass parent_class;
 };
 
 struct _WockyXmppConnection {
+    /*<private>*/
     GObject parent;
 
     WockyXmppConnectionPrivate *priv;
@@ -161,6 +169,16 @@ void wocky_xmpp_connection_force_close_async (WockyXmppConnection *connection,
     gpointer user_data);
 
 gboolean wocky_xmpp_connection_force_close_finish (
+    WockyXmppConnection *connection,
+    GAsyncResult *result,
+    GError **error);
+
+void wocky_xmpp_connection_send_whitespace_ping_async (WockyXmppConnection *connection,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+gboolean wocky_xmpp_connection_send_whitespace_ping_finish (
     WockyXmppConnection *connection,
     GAsyncResult *result,
     GError **error);

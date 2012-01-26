@@ -62,6 +62,7 @@
 #define DEBUG_ASYNC_DETAIL_LEVEL 6
 
 #include "wocky-debug.h"
+#include "wocky-tls-enumtypes.h"
 #include "wocky-utils.h"
 
 #include <openssl/ssl.h>
@@ -71,6 +72,26 @@
 #include <string.h>
 #include <errno.h>
 #include <sys/types.h>
+
+/* SSL_CTX_set_cipher_list() allows to restrict/alter the list of supported
+ * ciphers; see ciphers(1) for documentation on the format.
+ * Usually the normal ciphers are ok, but on mobile phones we prefer RC4 as
+ * it decreases the size of packets. The bandwidth difference is tiny, but
+ * the difference in power consumption between small and very small packets
+ * can be significant on 3G. */
+#ifdef ENABLE_PREFER_STREAM_CIPHERS
+
+#define CIPHER_LIST \
+  "RC4-SHA:" \
+  "RC4-MD5:" \
+  "ECDHE-RSA-RC4-SHA:" \
+  "ECDHE-ECDSA-RC4-SHA:" \
+  "ECDH-RSA-RC4-SHA:" \
+  "ECDH-ECDSA-RC4-SHA:" \
+  "PSK-RC4-SHA:" \
+  "ALL" /* fall-back to all the other algorithms */
+
+#endif
 
 enum
 {
@@ -139,7 +160,7 @@ typedef GObjectClass WockyTLSSessionClass;
 typedef GInputStreamClass WockyTLSInputStreamClass;
 typedef GOutputStreamClass WockyTLSOutputStreamClass;
 
-struct OPAQUE_TYPE__WockyTLSSession
+struct _WockyTLSSession
 {
   GObject parent;
 
@@ -182,7 +203,7 @@ typedef struct
   WockyTLSSession *session;
 } WockyTLSOutputStream;
 
-struct OPAQUE_TYPE__WockyTLSConnection
+struct _WockyTLSConnection
 {
   GIOStream parent;
 
@@ -626,6 +647,7 @@ wocky_tls_job_start (WockyTLSJob             *job,
                      gpointer             source_tag)
 {
   g_assert (job->active == FALSE);
+  g_assert (job->cancellable == NULL);
 
   /* this is always a circular reference, so it will keep the
    * session alive for as long as the job is running.
@@ -684,7 +706,6 @@ wocky_tls_session_handshake (WockyTLSSession   *session,
 
       if (want_write)
         {
-          int ignored;
           gchar *wbuf;
           GOutputStream *out = g_io_stream_get_output_stream (session->stream);
           long wsize = BIO_get_mem_data (session->wbio, &wbuf);
@@ -693,7 +714,7 @@ wocky_tls_session_handshake (WockyTLSSession   *session,
           if (wsize > 0)
             sent = g_output_stream_write (out, wbuf, wsize, NULL, error);
           DEBUG ("sent %" G_GSSIZE_FORMAT " cipherbytes", sent);
-          ignored = BIO_reset (session->wbio);
+          (void) BIO_reset (session->wbio);
         }
 
       if (want_read)
@@ -873,7 +894,8 @@ check_peer_name (const char *target, X509 *cert)
       if (len > 0)
         {
           char *cname = g_new0 (gchar, len + 1);
-          X509_NAME_get_text_by_NID (subject, nid[i], cname, len);
+          X509_NAME_get_text_by_NID (subject, nid[i], cname, len + 1);
+          DEBUG ("got cname '%s' from x509 name, nid #%u", cname, i);
           rval = compare_wildcarded_hostname (target, cname);
           g_free (cname);
         }
@@ -898,7 +920,10 @@ check_peer_name (const char *target, X509 *cert)
         if (ni != NID_subject_alt_name)
           continue;
 
-        if ((convert = X509V3_EXT_get (ext)) == NULL)
+        /* OpenSSL >= 1.0 returns a const here, but we need to be also   *
+         * compatible with older versions that return a non-const value, *
+         * hence the cast                                                */
+        if ((convert = (X509V3_EXT_METHOD *) X509V3_EXT_get (ext)) == NULL)
           continue;
 
         p = ext->value->data;
@@ -912,6 +937,8 @@ check_peer_name (const char *target, X509 *cert)
         if (convert->i2s != NULL)
           {
             value = convert->i2s (convert, ext_str);
+            DEBUG ("got cname '%s' from subject_alt_name, which is a string",
+                value);
             rval = compare_wildcarded_hostname (target, value);
             OPENSSL_free (value);
           }
@@ -923,7 +950,11 @@ check_peer_name (const char *target, X509 *cert)
               {
                 CONF_VALUE *v = sk_CONF_VALUE_value(nval, j);
                 if (!wocky_strdiff (v->name, "DNS"))
-                  rval = compare_wildcarded_hostname (target, v->value);
+                  {
+                    DEBUG ("Got cname '%s' from subject_alt_name, which is a "
+                        "multi-value stack with a 'DNS' entry", v->value);
+                    rval = compare_wildcarded_hostname (target, v->value);
+                  }
               }
             sk_CONF_VALUE_pop_free(nval, X509V3_conf_free);
           }
@@ -935,6 +966,43 @@ check_peer_name (const char *target, X509 *cert)
       }
 
   return rval;
+}
+
+static gboolean
+check_peer_names (const char *peer_name,
+    GStrv extra_identities,
+    X509 *cert)
+{
+  gboolean tried = FALSE;
+
+  if (peer_name != NULL)
+    {
+      if (check_peer_name (peer_name, cert))
+        return TRUE;
+
+      tried = TRUE;
+    }
+
+  if (extra_identities != NULL)
+    {
+      gint i;
+
+      for (i = 0; extra_identities[i] != NULL; i++)
+        {
+          if (wocky_strdiff (extra_identities[i], peer_name))
+            {
+              if (check_peer_name (extra_identities[i], cert))
+                return TRUE;
+
+              tried = TRUE;
+            }
+        }
+    }
+
+  /* If no peer names were passed it means we didn't want to check the
+   * certificate against anything.
+   * If some attempts were made then it means the check failed. */
+  return !tried;
 }
 
 GPtrArray *
@@ -986,11 +1054,11 @@ wocky_tls_session_get_peers_certificate (WockyTLSSession *session,
 int
 wocky_tls_session_verify_peer (WockyTLSSession    *session,
                                const gchar        *peername,
+                               GStrv               extra_identities,
                                WockyTLSVerificationLevel level,
                                WockyTLSCertStatus *status)
 {
   int rval = -1;
-  const gchar *check_level;
   X509 *cert;
   gboolean lenient = (level == WOCKY_TLS_VERIFY_LENIENT);
 
@@ -1001,21 +1069,16 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
   switch (level)
     {
     case WOCKY_TLS_VERIFY_STRICT:
-      check_level = "WOCKY_TLS_VERIFY_STRICT";
-      break;
     case WOCKY_TLS_VERIFY_NORMAL:
-      check_level = "WOCKY_TLS_VERIFY_NORMAL";
-      break;
     case WOCKY_TLS_VERIFY_LENIENT:
-      check_level = "WOCKY_TLS_VERIFY_LENIENT";
       break;
     default:
       g_warn_if_reached ();
-      check_level = "Unknown strictness level";
       level = WOCKY_TLS_VERIFY_STRICT;
     }
 
-  DEBUG ("setting ssl verify flags level to: %s", check_level);
+  DEBUG ("setting ssl verify flags level to: %s",
+      wocky_enum_to_nick (WOCKY_TYPE_TLS_VERIFICATION_LEVEL, level));
   cert = SSL_get_peer_certificate (session->ssl);
   rval = SSL_get_verify_result (session->ssl);
   DEBUG ("X509 cert: %p; verified: %d", cert, rval);
@@ -1037,7 +1100,7 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
           rval = X509_V_ERR_CERT_UNTRUSTED;
         }
     }
-  else if (peername != NULL && !check_peer_name (peername, cert))
+  else if (!check_peer_names (peername, extra_identities, cert))
     {
       /* Irrespective of whether the certificate is valid, if it's for the
        * wrong host that's arguably a more useful error condition to report.
@@ -1095,6 +1158,9 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
            * terminal condition: in NORMAL or LENIENT we can live with it */
           if (level == WOCKY_TLS_VERIFY_STRICT)
             *status = WOCKY_TLS_CERT_INSECURE;
+          else
+            DEBUG ("ignoring UNABLE_TO_GET_CRL: we're not in strict mode");
+
           break;
         default:
           *status = WOCKY_TLS_CERT_UNKNOWN_ERROR;
@@ -1107,8 +1173,10 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
           case WOCKY_TLS_CERT_INTERNAL_ERROR:
           case WOCKY_TLS_CERT_REVOKED:
           case WOCKY_TLS_CERT_MAYBE_DOS:
+            DEBUG ("this error matters, even though we're in lenient mode");
             break;
           default:
+            DEBUG ("ignoring errors: we're in lenient mode");
             rval = X509_V_OK;
             *status = WOCKY_TLS_CERT_OK;
           }
@@ -1500,8 +1568,6 @@ wocky_tls_session_write_ready (GObject      *object,
   WockyTLSSession *session = WOCKY_TLS_SESSION (user_data);
   gint buffered = BIO_pending (session->wbio);
   gssize written;
-  /* memory BIO ops generally can't fail: suppress compiler/coverity warnings */
-  gint ignore_warning;
 
   if (tls_debug_level >= DEBUG_ASYNC_DETAIL_LEVEL)
     DEBUG ("");
@@ -1512,7 +1578,7 @@ wocky_tls_session_write_ready (GObject      *object,
   if (written == buffered)
     {
       DEBUG ("%d bytes written, clearing write BIO", buffered);
-      ignore_warning = BIO_reset (session->wbio);
+      (void) BIO_reset (session->wbio);
       wocky_tls_session_try_operation (session, WOCKY_TLS_OP_WRITE);
     }
   else
@@ -1526,8 +1592,8 @@ wocky_tls_session_write_ready (GObject      *object,
         {
           gchar *pending = g_memdup (buffer + written, psize);
 
-          ignore_warning = BIO_reset (session->wbio);
-          ignore_warning = BIO_write (session->wbio, pending, psize);
+          (void) BIO_reset (session->wbio);
+          (void) BIO_write (session->wbio, pending, psize);
           g_free (pending);
         }
 
@@ -1665,12 +1731,15 @@ wocky_tls_session_constructed (GObject *object)
   if (session->server)
     {
       DEBUG ("I'm a server; using TLSv1_server_method");
-      session->method = TLSv1_server_method ();
+      /* OpenSSL >= 1.0 returns a const here, but we need to be also   *
+       * compatible with older versions that return a non-const value, *
+       * hence the cast                                                */
+      session->method = (SSL_METHOD *) TLSv1_server_method ();
     }
   else
     {
       DEBUG ("I'm a client; using TLSv1_client_method");
-      session->method = TLSv1_client_method ();
+      session->method = (SSL_METHOD *) TLSv1_client_method ();
     }
 
   session->ctx = SSL_CTX_new (session->method);
@@ -1702,11 +1771,9 @@ wocky_tls_session_constructed (GObject *object)
   X509_STORE_set_flags (SSL_CTX_get_cert_store (session->ctx),
                         X509_V_FLAG_CRL_CHECK|X509_V_FLAG_CRL_CHECK_ALL);
 
-  /* If you want to restrict/alter the list of supported ciphers, do so *
-   * with this function: (CIPHER_LIST is a ':' separated list of names) *
-   * in which elements can be negated with a ! prefix                   *
-   * eg "all:!some-crypto-we-hate"                                      *
-   * SSL_CTX_set_cipher_list (session->ctx, CIPHER_LIST);               */
+#ifdef CIPHER_LIST
+  SSL_CTX_set_cipher_list (session->ctx, CIPHER_LIST);
+#endif
 
   if (session->server)
     {

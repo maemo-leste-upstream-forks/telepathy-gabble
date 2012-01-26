@@ -1,10 +1,13 @@
+# vim: set fileencoding=utf-8 : Python sucks!
 """
 Utility functions for tests that need to interact with MUCs.
 """
 
 import dbus
 
-from servicetest import call_async, wrap_channel, EventPattern
+from twisted.words.xish import domish, xpath
+
+from servicetest import call_async, wrap_channel, EventPattern, assertLength
 from gabbletest import make_muc_presence, request_muc_handle
 
 import constants as cs
@@ -22,13 +25,13 @@ def echo_muc_presence (q, stream, stanza, affiliation, role):
 
     stream.send (stanza)
 
-def join_muc(q, bus, conn, stream, muc, request=None,
-        also_capture=[], role='participant'):
+def try_to_join_muc(q, bus, conn, stream, muc, request=None):
     """
-    Joins 'muc', returning the muc's handle, a proxy object for the channel,
-    its path and its immutable properties just after the CreateChannel event
-    has fired. The room contains one other member.
+    Ask Gabble to join a MUC, and expect it to send <presence/>
+
+    Returns: the stream-presence Event object.
     """
+
     if request is None:
         request = {
             cs.CHANNEL_TYPE: cs.CHANNEL_TYPE_TEXT,
@@ -36,26 +39,42 @@ def join_muc(q, bus, conn, stream, muc, request=None,
             cs.TARGET_ID: muc,
         }
 
-    muc_handle = request_muc_handle(q, conn, stream, muc)
-
-    requests = dbus.Interface(conn, cs.CONN_IFACE_REQUESTS)
-    call_async(q, requests, 'CreateChannel',
+    call_async(q, conn.Requests, 'CreateChannel',
         dbus.Dictionary(request, signature='sv'))
 
-    q.expect('stream-presence', to='%s/test' % muc)
+    join_event = q.expect('stream-presence', to='%s/test' % muc)
+    # XEP-0045 §7.1.2 sez:
+    #   “MUC clients SHOULD signal their ability to speak the MUC protocol by
+    #   including in the initial presence stanza an empty <x/> element
+    #   qualified by the 'http://jabber.org/protocol/muc' namespace.”
+    x_muc_nodes = xpath.queryForNodes('/presence/x[@xmlns="%s"]' % ns.MUC,
+        join_event.stanza)
+    assertLength(1, x_muc_nodes)
+
+    return join_event
+
+def join_muc(q, bus, conn, stream, muc, request=None,
+        also_capture=[], role='participant', affiliation='none'):
+    """
+    Joins 'muc', returning the muc's handle, a proxy object for the channel,
+    its path and its immutable properties just after the CreateChannel event
+    has fired. The room contains one other member.
+    """
+    muc_handle = request_muc_handle(q, conn, stream, muc)
+    try_to_join_muc(q, bus, conn, stream, muc, request=request)
 
     # Send presence for other member of room.
     stream.send(make_muc_presence('owner', 'moderator', muc, 'bob'))
 
     # Send presence for own membership of room.
-    stream.send(make_muc_presence('none', role, muc, 'test'))
+    stream.send(make_muc_presence(affiliation, role, muc, 'test'))
 
     captured = q.expect_many(
             EventPattern('dbus-return', method='CreateChannel'),
             *also_capture)
     path, props = captured[0].value
     chan = wrap_channel(bus.get_object(conn.bus_name, path), 'Text',
-        ['Messages'])
+        ['Messages', 'Subject.DRAFT', 'RoomConfig1'])
 
     return (muc_handle, chan, path, props) + tuple(captured[1:])
 

@@ -27,23 +27,44 @@
 
 G_BEGIN_DECLS
 
+/**
+ * WockyNodeBuildTag:
+ * @WOCKY_NODE_START: Start of a node
+ * @WOCKY_NODE_TEXT: Text content of a node
+ * @WOCKY_NODE_END: End of a node
+ * @WOCKY_NODE_ATTRIBUTE: A node attribute
+ * @WOCKY_NODE_XMLNS: A node XML namespace
+ * @WOCKY_NODE_ASSIGN_TO: a #WockyNode to assign
+ *
+ * Tags for building a stanza using wocky_stanza_build() or
+ * wocky_node_add_build().
+ */
 typedef enum
 {
   WOCKY_NODE_START = '(',
   WOCKY_NODE_TEXT = '$',
-  WOCKY_NODE_END = ')',
+  WOCKY_NODE_END = 41, /* this is actually ')', but gtk-doc is broken: bgo#644291 */
   WOCKY_NODE_ATTRIBUTE = '@',
   WOCKY_NODE_XMLNS = ':',
-  WOCKY_NODE_ASSIGN_TO = '*'
+  WOCKY_NODE_ASSIGN_TO = '*',
+  WOCKY_NODE_LANGUAGE = '#'
 } WockyNodeBuildTag;
 
 typedef struct _WockyNode WockyNode;
 
+/**
+ * WockyNode:
+ * @name: name of the node
+ * @content: content of the node
+ *
+ * A single #WockyNode structure that relates to an element in an XMPP
+ * stanza.
+ */
 struct _WockyNode {
   gchar *name;
   gchar *content;
 
-  /* Private */
+  /*< private >*/
   gchar *language;
   GQuark ns;
   GSList *attributes;
@@ -91,6 +112,9 @@ const gchar *wocky_node_get_attribute_ns (WockyNode *node,
 
 void  wocky_node_set_attribute (WockyNode *node, const gchar *key,
     const gchar *value);
+
+void  wocky_node_set_attributes (WockyNode *node, const gchar *key,
+    ...);
 
 void  wocky_node_set_attribute_ns (WockyNode *node,
     const gchar *key, const gchar *value, const gchar *ns);
@@ -152,6 +176,16 @@ const gchar *wocky_node_get_ns (WockyNode *node);
 gboolean wocky_node_has_ns (WockyNode *node, const gchar *ns);
 gboolean wocky_node_has_ns_q (WockyNode *node, GQuark ns);
 
+/* Matching element name and namespace */
+gboolean wocky_node_matches_q (
+    WockyNode *node,
+    const gchar *name,
+    GQuark ns);
+gboolean wocky_node_matches (
+    WockyNode *node,
+    const gchar *name,
+    const gchar *ns);
+
 /* Setting/Getting language */
 const gchar *wocky_node_get_language (WockyNode *node);
 void wocky_node_set_language (WockyNode *node, const gchar *lang);
@@ -184,8 +218,14 @@ gboolean wocky_node_equal (WockyNode *node0,
 gboolean wocky_node_is_superset (WockyNode *node,
     WockyNode *subset);
 
-/* Iterate over a nodes children */
+/**
+ * WockyNodeIter:
+ *
+ * Iterate over a node's children. See wocky_node_iter_init() for more
+ * details.
+ */
 typedef struct {
+  /*<private>*/
   GSList *pending;
   const gchar *name;
   GQuark ns;
@@ -207,6 +247,9 @@ void wocky_node_add_build_va (WockyNode *node,
     va_list va);
 
 void wocky_node_add_node_tree (WockyNode *node, WockyNodeTree *tree);
+void wocky_node_prepend_node_tree (
+    WockyNode *node,
+    WockyNodeTree *tree);
 
 void wocky_node_init (void);
 void wocky_node_deinit (void);

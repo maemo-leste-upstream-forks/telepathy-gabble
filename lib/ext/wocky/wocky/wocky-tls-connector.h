@@ -29,14 +29,22 @@
 G_BEGIN_DECLS
 
 typedef struct _WockyTLSConnector WockyTLSConnector;
+
+/**
+ * WockyTLSConnectorClass:
+ *
+ * The class of a #WockyTLSConnector.
+ */
 typedef struct _WockyTLSConnectorClass WockyTLSConnectorClass;
 typedef struct _WockyTLSConnectorPrivate WockyTLSConnectorPrivate;
 
 struct _WockyTLSConnectorClass {
+  /*<private>*/
   GObjectClass parent_class;
 };
 
 struct _WockyTLSConnector {
+  /*<private>*/
   GObject parent;
   WockyTLSConnectorPrivate *priv;
 };
@@ -65,6 +73,7 @@ void wocky_tls_connector_secure_async (WockyTLSConnector *self,
     WockyXmppConnection *connection,
     gboolean old_style_ssl,
     const gchar *peername,
+    GStrv extra_identities,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data);

@@ -8,8 +8,8 @@ AC_PREREQ([2.59])
 #   set gabble_nano_version to 0.
 
 m4_define([gabble_major_version], [0])
-m4_define([gabble_minor_version], [11])
-m4_define([gabble_micro_version], [0])
+m4_define([gabble_minor_version], [15])
+m4_define([gabble_micro_version], [3])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -36,6 +36,7 @@ AC_PROG_CC
 AC_PROG_CC_STDC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
+AC_PROG_MKDIR_P
 
 AC_CHECK_HEADERS_ONCE([
     arpa/inet.h
@@ -95,18 +96,42 @@ TP_COMPILER_WARNINGS([ERROR_CFLAGS], [test "x$official_release" = xno],
    unused-parameter])
 AC_SUBST([ERROR_CFLAGS])
 
+# -----------------------------------------------------------
+# Make CA certificates path configurable
+# Stolen from GIO's TLS
+# -----------------------------------------------------------
+AC_MSG_CHECKING([location of system Certificate Authority list])
 AC_ARG_WITH(ca-certificates,
-    AC_HELP_STRING([--with-ca-certificates],[path to CA certificates @<:@default=/etc/ssl/certs/ca-certificates.crt@:>@]),
-    ca_certificates_path="$withval", ca_certificates_path="/etc/ssl/certs/ca-certificates.crt")
-AC_DEFINE_UNQUOTED(CA_CERTIFICATES_PATH, ["${ca_certificates_path}"], [Path to CA certificates])
+            [AC_HELP_STRING([--with-ca-certificates=@<:@path@:>@],
+                            [path to system Certificate Authority list])])
+if test "$with_ca_certificates" = "no"; then
+    AC_MSG_RESULT([disabled])
+else
+    if test -z "$with_ca_certificates"; then
+        for f in /etc/pki/tls/certs/ca-bundle.crt \
+                 /etc/ssl/certs/ca-certificates.crt; do
+            if test -f "$f"; then
+                with_ca_certificates="$f"
+            fi
+        done
+        if test -z "$with_ca_certificates"; then
+            AC_MSG_ERROR([could not find. Use --with-ca-certificates=path to set, or --without-ca-certificates to disable])
+        fi
+    fi
+
+    AC_MSG_RESULT($with_ca_certificates)
+    AC_DEFINE_UNQUOTED([GTLS_SYSTEM_CA_CERTIFICATES], ["$with_ca_certificates"], [path to system Certificate Authority list])
+fi
+
+if test -n "$with_ca_certificates"; then
+    if ! test -f "$with_ca_certificates"; then
+        AC_MSG_WARN([Specified certificate authority file '$with_ca_certificates' does not exist])
+    fi
+fi
 
 AC_ARG_ENABLE(debug,
   AC_HELP_STRING([--disable-debug],[compile without debug code]),
     enable_debug=$enableval, enable_debug=yes )
-
-AC_ARG_ENABLE(handle-leak-debug,
-  AC_HELP_STRING([--enable-handle-leak-debug],[compile with -rdynamic so telepathy-glib handle leak debugging code will work]),
-    enable_handle_leak_debug=$enableval, enable_handle_leak_debug=no )
 
 ifelse(gabble_nano_version, 0,
     [ # Gabble is version x.y.z - disable coding style checks by default
@@ -127,14 +152,21 @@ if test x$enable_debug = xyes; then
 fi
 AM_CONDITIONAL([ENABLE_DEBUG], [test "x$enable_debug" = xyes])
 
-if test x$enable_handle_leak_debug = xyes; then
-  AC_DEFINE(ENABLE_HANDLE_LEAK_DEBUG, [], [Enable handle leak debug code])
-  HANDLE_LEAK_DEBUG_CFLAGS="-rdynamic"
-fi
-
-AC_SUBST(HANDLE_LEAK_DEBUG_CFLAGS)
-
 AC_SUBST([ENABLE_CODING_STYLE_CHECKS])
+
+AC_ARG_ENABLE([installed-tests],
+  AC_HELP_STRING([--enable-installed-tests],
+    [make tests installable]),
+    [installed_tests=$enableval], [installed_tests=no])
+
+if test x$installed_tests = xyes; then
+  AC_DEFINE(ENABLE_INSTALLED_TESTS, [],
+      [Make tests installable])
+fi
+AM_CONDITIONAL([ENABLE_INSTALLED_TESTS], [test "x$installed_tests" = xyes])
+
+gabbletestsdir=${libdir}/telepathy-gabble-tests
+AC_SUBST(gabbletestsdir)
 
 AC_ARG_ENABLE([is-a-phone],
   AC_HELP_STRING([--enable-is-a-phone],
@@ -153,11 +185,32 @@ fi
 
 AC_SUBST(CLIENT_TYPE)
 
+# whether to assert when g_critical() is used
+AC_ARG_ENABLE([fatal-criticals],
+  AC_HELP_STRING([--disable-fatal-criticals],
+    [do not assert because of critical warnings]),
+    [fatal_criticals=$enableval], [fatal_criticals=yes])
+
+if test x$fatal_criticals = xyes; then
+  AC_DEFINE(ENABLE_FATAL_CRITICALS, [],
+      [Critical warnings will result in an assertion])
+fi
+AM_CONDITIONAL([ENABLE_FATAL_CRITICALS], [test "x$fatal_criticals" = xyes])
+
+dnl dummy check for gtk-doc
+AC_ARG_ENABLE(gtk-doc,
+  AC_HELP_STRING([--enable-gtk-doc],[doesn't actually do anything]),
+  enable_gtk_doc=yes, enable_gtk_doc=no)
+AM_CONDITIONAL([ENABLE_GTK_DOC], [test "x$enable_gtk_doc" = xyes])
+
 dnl Check for Glib
-PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.24, gobject-2.0 >= 2.24, gthread-2.0 >= 2.24])
+PKG_CHECK_MODULES(GLIB,
+    [glib-2.0 >= 2.24, gobject-2.0 >= 2.24, gthread-2.0 >= 2.24, gio-2.0])
+PKG_CHECK_MODULES(GMODULE, [gmodule-2.0 >= 2.24])
 
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
+
 
 GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
@@ -206,15 +259,10 @@ PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.82])
 AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)
 
-PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.13.4])
+PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.17.2])
 
 AC_SUBST(TP_GLIB_CFLAGS)
 AC_SUBST(TP_GLIB_LIBS)
-
-PKG_CHECK_MODULES(SQLITE, [sqlite3])
-
-AC_SUBST(SQLITE_CFLAGS)
-AC_SUBST(SQLITE_LIBS)
 
 dnl Check for code generation tools
 XSLTPROC=
@@ -242,6 +290,8 @@ AM_CONDITIONAL([WANT_TWISTED_TESTS], test false != "$TEST_PYTHON")
 # separate Wocky installation won't clash with them. This is a bit of a hack.
 # AX_CONFIG_DIR doesn't make it very easy to pass extra arguments to the
 # submodule's configure.
+#
+# Also do this for telepathy-yell.
 prev_ac_configure_args=$ac_configure_args
 ac_configure_args="$ac_configure_args --with-installed-headers=${wocky_install_headers_dir}"
 
@@ -257,36 +307,63 @@ else
   ac_configure_args+=" --disable-Werror"
 fi
 
+dnl wocky
 prev_top_build_prefix=$ac_top_build_prefix
 AX_CONFIG_DIR([lib/ext/wocky])
 ac_top_build_prefix=$prev_top_build_prefix
 
+dnl tp-yell
+prev_top_build_prefix=$ac_top_build_prefix
+AX_CONFIG_DIR([lib/ext/telepathy-yell])
+ac_top_build_prefix=$prev_top_build_prefix
+
 ac_configure_args=$prev_ac_configure_args
+
+dnl Check if Android build
+AC_ARG_ENABLE(submodules,
+              AS_HELP_STRING([--disable-submodules],[Use system versions of Wocky and Telepathy-Yell, rather than submodules]),
+              build_submodules=$enableval, build_submodules=yes )
 
 dnl Check for Wocky
 # re-enable once Wocky has been released as a lib
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:"$ac_top_build_prefix"lib/ext/wocky/wocky
+if test x$build_submodules = xyes; then
+    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:"$ac_top_build_prefix"lib/ext/wocky/wocky
+fi
+
 PKG_CHECK_MODULES(WOCKY, wocky >= 0.0.0)
 AC_SUBST(WOCKY_CFLAGS)
 AC_SUBST(WOCKY_LIBS)
 
-dnl Check for libsoup
-PKG_CHECK_MODULES(SOUP, libsoup-2.4)
+dnl Check for tp-yell
+if test x$build_submodules = xyes; then
+    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:"$ac_top_build_prefix"lib/ext/telepathy-yell/telepathy-yell
+fi
+PKG_CHECK_MODULES(TP_YELL, telepathy-yell)
+AC_SUBST(TP_YELL_CFLAGS)
+AC_SUBST(TP_YELL_LIBS)
+
+AC_ARG_ENABLE(google-relay,
+  AC_HELP_STRING([--disable-google-relay],
+                 [disable Google Jingle relay support]),
+    [enable_google_relay=$enableval], [enable_google_relay=yes])
+
+if test x$enable_google_relay = xyes; then
+  AC_DEFINE(ENABLE_GOOGLE_RELAY, [], [Enable Google Jingle relay support])
+
+  dnl Check for libsoup
+  PKG_CHECK_MODULES(SOUP, libsoup-2.4)
+else
+  SOUP_CFLAGS=
+  SOUP_LIBS=
+fi
 AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(SOUP_LIBS)
+AM_CONDITIONAL([ENABLE_GOOGLE_RELAY], [test "x$enable_google_relay" = xyes])
 
 dnl Check for libnice
 PKG_CHECK_MODULES(NICE, nice >= 0.0.11)
 AC_SUBST(NICE_CFLAGS)
 AC_SUBST(NICE_LIBS)
-
-dnl Check for MCE, a Maemo service used by Gabble to determine when the device
-dnl is idle.
-PKG_CHECK_MODULES([MCE], mce >= 1.5, [HAVE_MCE=yes], [HAVE_MCE=no])
-AM_CONDITIONAL([HAVE_MCE], [test x"$HAVE_MCE" = xyes])
-if test x"$HAVE_MCE" = xyes; then
-  AC_DEFINE([HAVE_MCE], [1], [Define if mce is available])
-fi
 
 AC_CHECK_FUNCS(getifaddrs memset select strndup setresuid setreuid strerror)
 
@@ -300,7 +377,6 @@ AC_OUTPUT( Makefile \
            tools/Makefile \
            tests/suppressions/Makefile \
            tests/twisted/Makefile \
-           tests/twisted/tools/Makefile \
            lib/Makefile \
            lib/ext/Makefile \
            lib/gibber/Makefile \
@@ -310,3 +386,29 @@ AC_OUTPUT( Makefile \
            gabble/telepathy-gabble-uninstalled.pc \
            gabble/telepathy-gabble.pc
 )
+
+if test false != "$TEST_PYTHON"; then
+  tests_enabled=yes
+else
+  tests_enabled=no
+fi
+
+echo "
+Configure summary:
+
+        Compiler....................:  ${CC}
+        Compiler Flags..............:  ${CFLAGS} ${ERROR_CFLAGS}
+        Prefix......................:  ${prefix}
+        Coding style checks.........:  ${ENABLE_CODING_STYLE_CHECKS}
+        Enable debug................:  ${enable_debug}
+        Python tests................:  ${tests_enabled}
+        Install unit tests..........:  ${installed_tests}
+
+    Features:
+
+        Client type.................:  \"${CLIENT_TYPE}\"
+        Plugin support..............:  ${enable_plugins}
+        Plugin headers installed....:  ${enable_plugin_api}
+        Channel.Type.Call support...:  ${enable_channel_type_call}
+        Google relay support........:  ${enable_google_relay}
+"

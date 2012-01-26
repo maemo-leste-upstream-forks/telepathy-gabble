@@ -21,6 +21,7 @@
 #include "config.h"
 #include "presence-cache.h"
 #include "vcard-manager.h"
+#include "gabble-enumtypes.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -36,13 +37,17 @@
 #include <dbus/dbus-glib.h>
 #include <telepathy-glib/channel-manager.h>
 #include <telepathy-glib/intset.h>
+#include <wocky/wocky-caps-cache.h>
+#include <wocky/wocky-caps-hash.h>
+#include <wocky/wocky-disco-identity.h>
+#include <wocky/wocky-utils.h>
+#include <wocky/wocky-namespaces.h>
+#include <wocky/wocky-data-form.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_PRESENCE
 
-#include "capabilities.h"
-#include "caps-cache.h"
-#include "caps-channel-manager.h"
-#include "caps-hash.h"
+#include "gabble/capabilities.h"
+#include "gabble/caps-channel-manager.h"
 #include "conn-presence.h"
 #include "debug.h"
 #include "disco.h"
@@ -79,6 +84,7 @@ enum
   CAPABILITIES_DISCOVERED,
   LOCATION_UPDATED,
   UNSURE_PERIOD_ENDED,
+  CLIENT_TYPES_UPDATED,
   LAST_SIGNAL
 };
 
@@ -227,6 +233,7 @@ capability_info_get (GabblePresenceCache *cache, const gchar *node)
     {
       info = g_slice_new0 (GabbleCapabilityInfo);
       info->cap_set = NULL;
+      info->client_types = 0;
       info->guys = tp_intset_new ();
       g_hash_table_insert (priv->capabilities, g_strdup (node), info);
     }
@@ -243,12 +250,29 @@ capability_info_free (GabbleCapabilityInfo *info)
       info->cap_set = NULL;
     }
 
-  gabble_disco_identity_array_free (info->identities);
+  wocky_disco_identity_array_free (info->identities);
   info->identities = NULL;
+
+  if (info->data_forms != NULL)
+    g_ptr_array_unref (info->data_forms);
+  info->data_forms = NULL;
 
   tp_intset_destroy (info->guys);
 
   g_slice_free (GabbleCapabilityInfo, info);
+}
+
+static void
+replace_data_forms (GabbleCapabilityInfo *info,
+    GPtrArray *data_forms)
+{
+  if (data_forms == info->data_forms)
+    return;
+
+  tp_clear_pointer (&info->data_forms, g_ptr_array_unref);
+
+  if (data_forms != NULL)
+    info->data_forms = g_ptr_array_ref (data_forms);
 }
 
 static guint
@@ -256,7 +280,9 @@ capability_info_recvd (GabblePresenceCache *cache,
     const gchar *node,
     TpHandle handle,
     GabbleCapabilitySet *cap_set,
-    guint trust_inc)
+    guint trust_inc,
+    guint client_types,
+    GPtrArray *data_forms)
 {
   GabbleCapabilityInfo *info = capability_info_get (cache, node);
 
@@ -284,6 +310,10 @@ capability_info_recvd (GabblePresenceCache *cache,
       tp_intset_add (info->guys, handle);
       info->trust += trust_inc;
     }
+
+  info->client_types = client_types;
+
+  replace_data_forms (info, data_forms);
 
   return info->trust;
 }
@@ -417,6 +447,14 @@ gabble_presence_cache_class_init (GabblePresenceCacheClass *klass)
     NULL, NULL,
     g_cclosure_marshal_VOID__VOID, G_TYPE_NONE,
     0);
+
+  signals[CLIENT_TYPES_UPDATED] = g_signal_new (
+    "client-types-updated",
+    G_TYPE_FROM_CLASS (klass),
+    G_SIGNAL_RUN_LAST,
+    0,
+    NULL, NULL,
+    g_cclosure_marshal_VOID__UINT, G_TYPE_NONE, 1, TP_TYPE_HANDLE);
 }
 
 static gboolean
@@ -449,7 +487,7 @@ gabble_presence_cache_init (GabblePresenceCache *cache)
       decloak_context_free);
 
   priv->location = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL,
-      (GDestroyNotify) g_hash_table_destroy);
+      (GDestroyNotify) g_hash_table_unref);
 }
 
 static void gabble_presence_cache_add_bundle_caps (GabblePresenceCache *cache,
@@ -462,7 +500,9 @@ gabble_presence_cache_add_bundles (GabblePresenceCache *cache)
   gabble_presence_cache_add_bundle_caps (cache, \
       "http://www.google.com/xmpp/client/caps#" cap, features); \
   gabble_presence_cache_add_bundle_caps (cache, \
-      "http://talk.google.com/xmpp/client/caps#" cap, features);
+      "http://talk.google.com/xmpp/client/caps#" cap, features); \
+  gabble_presence_cache_add_bundle_caps (cache, \
+      "http://www.android.com/gtalk/client/caps#" cap, features);
 
   /* Cache various bundle from the Google Talk clients as trusted.  Some old
    * versions of Google Talk do not reply correctly to discovery requests.
@@ -545,7 +585,7 @@ gabble_presence_cache_dispose (GObject *object)
       priv->unsure_id = 0;
     }
 
-  tp_clear_pointer (&priv->decloak_requests, g_hash_table_destroy);
+  tp_clear_pointer (&priv->decloak_requests, g_hash_table_unref);
   tp_clear_pointer (&priv->decloak_handles, tp_handle_set_destroy);
 
   g_assert (priv->lm_message_cb == NULL);
@@ -553,11 +593,11 @@ gabble_presence_cache_dispose (GObject *object)
 
   g_signal_handler_disconnect (priv->conn, priv->status_changed_cb);
 
-  tp_clear_pointer (&priv->presence, g_hash_table_destroy);
-  tp_clear_pointer (&priv->capabilities, g_hash_table_destroy);
-  tp_clear_pointer (&priv->disco_pending, g_hash_table_destroy);
+  tp_clear_pointer (&priv->presence, g_hash_table_unref);
+  tp_clear_pointer (&priv->capabilities, g_hash_table_unref);
+  tp_clear_pointer (&priv->disco_pending, g_hash_table_unref);
   tp_clear_pointer (&priv->presence_handles, tp_handle_set_destroy);
-  tp_clear_pointer (&priv->location, g_hash_table_destroy);
+  tp_clear_pointer (&priv->location, g_hash_table_unref);
 
   if (G_OBJECT_CLASS (gabble_presence_cache_parent_class)->dispose)
     G_OBJECT_CLASS (gabble_presence_cache_parent_class)->dispose (object);
@@ -791,6 +831,12 @@ self_avatar_resolve_conflict (GabblePresenceCache *cache)
   GabblePresence *presence = priv->conn->self_presence;
   GError *error = NULL;
 
+  if (base_conn->status != TP_CONNECTION_STATUS_CONNECTED)
+    {
+      DEBUG ("no longer connected");
+      return;
+    }
+
   /* We don't want recursive image resetting
    *
    * FIXME: There is a race here: if the other resource sends us first the
@@ -902,7 +948,7 @@ _grab_avatar_sha1 (GabblePresenceCache *cache,
               "<NULL>" : presence->avatar_sha1);
           self_avatar_resolve_conflict (cache);
         }
-      else
+      else if (base_conn->status == TP_CONNECTION_STATUS_CONNECTED)
         {
           g_free (presence->avatar_sha1);
           presence->avatar_sha1 = g_strdup (sha1);
@@ -987,7 +1033,8 @@ _parse_node (GabblePresence *presence,
       DEBUG ("Client is Google Web Client");
 
       gabble_capability_set_add (cap_set, QUIRK_GOOGLE_WEBMAIL_CLIENT);
-      gabble_presence_set_capabilities (presence, resource, cap_set, serial);
+      gabble_capability_set_add (cap_set, QUIRK_OMITS_CONTENT_CREATORS);
+      gabble_presence_set_capabilities (presence, resource, cap_set, NULL, serial);
       gabble_capability_set_free (cap_set);
     }
 }
@@ -1116,6 +1163,8 @@ static void
 set_caps_for (DiscoWaiter *waiter,
     GabblePresenceCache *cache,
     GabbleCapabilitySet *cap_set,
+    guint client_types,
+    GPtrArray *data_forms,
     TpHandle responder_handle,
     const gchar *responder_jid)
 {
@@ -1132,13 +1181,14 @@ set_caps_for (DiscoWaiter *waiter,
       waiter->handle, responder_handle, responder_jid);
 
   gabble_presence_set_capabilities (presence, waiter->resource, cap_set,
-      waiter->serial);
-
+      data_forms, waiter->serial);
   new_cap_set = gabble_presence_peek_caps (presence);
-
   emit_capabilities_update (cache, waiter->handle, old_cap_set, new_cap_set);
-
   gabble_capability_set_free (old_cap_set);
+
+  if (gabble_presence_update_client_types (presence, waiter->resource,
+        client_types))
+    g_signal_emit (cache, signals[CLIENT_TYPES_UPDATED], 0, waiter->handle);
 }
 
 static void
@@ -1148,31 +1198,24 @@ emit_capabilities_discovered (GabblePresenceCache *cache,
   g_signal_emit (cache, signals[CAPABILITIES_DISCOVERED], 0, handle);
 }
 
-static GPtrArray *
+static guint
 client_types_from_message (TpHandle handle,
     LmMessageNode *lm_node,
     const gchar *resource)
 {
   WockyNode *identity, *query_result = (WockyNode *) lm_node;
   WockyNodeIter iter;
-  GPtrArray *array;
-
-  array = g_ptr_array_new_with_free_func (g_free);
+  guint client_types = 0;
 
   /* Find all identity nodes in the result. */
-  wocky_node_iter_init (&iter, query_result,
-      "identity", NS_DISCO_INFO);
+  wocky_node_iter_init (&iter, query_result, "identity", NS_DISCO_INFO);
   while (wocky_node_iter_next (&iter, &identity))
     {
-      const gchar *category, *type;
+      const gchar *category = wocky_node_get_attribute (identity, "category");
+      const gchar *type = wocky_node_get_attribute (identity, "type");
+      guint value;
 
-      category = wocky_node_get_attribute (identity, "category");
-      if (category == NULL)
-        continue;
-
-      /* Now get the client type */
-      type = wocky_node_get_attribute (identity, "type");
-      if (type == NULL)
+      if (category == NULL || type == NULL)
         continue;
 
       /* So, turns out if you disco a specific resource of a gtalk
@@ -1186,25 +1229,43 @@ client_types_from_message (TpHandle handle,
       they're phones. */
 
       if (!tp_strdiff (category, "account")
-          && g_str_has_prefix (resource, "android")
+          && (resource != NULL && g_str_has_prefix (resource, "android"))
           && !tp_strdiff (type, "registered"))
         {
-          type = "phone";
+          client_types |= GABBLE_CLIENT_TYPE_PHONE;
         }
-
-      DEBUG ("Got type for %u: %s", handle, type);
-
-      g_ptr_array_add (array, g_strdup (type));
+      else if (!tp_strdiff (category, "client") &&
+          gabble_flag_from_nick (GABBLE_TYPE_CLIENT_TYPE, type, &value))
+        {
+          DEBUG ("Got type for %u: %s (%u)", handle, type, value);
+          client_types |= value;
+        }
     }
 
-  if (array->len == 0)
+  return client_types;
+}
+
+static GPtrArray *
+data_forms_from_message (WockyNode *node)
+{
+  GPtrArray *out = g_ptr_array_new_with_free_func (g_object_unref);
+
+  WockyNodeIter iter;
+  WockyNode *x_node = NULL;
+
+  wocky_node_iter_init (&iter, node, "x", WOCKY_XMPP_NS_DATA);
+  while (wocky_node_iter_next (&iter, &x_node))
     {
-      DEBUG ("How very odd, we didn't get any client types");
-      g_ptr_array_unref (array);
-      return NULL;
-    }
+      WockyDataForm *form  = wocky_data_form_new_from_node (x_node, NULL);
 
-  return array;
+      /* we've already parsed the reply to check the hash matches, so
+       * we can already guarantee these data forms will be parsed
+       * fine */
+      if (G_LIKELY (form != NULL))
+        g_ptr_array_add (out, form);
+   }
+
+  return out;
 }
 
 static void
@@ -1216,7 +1277,7 @@ _signal_presences_updated (GabblePresenceCache *cache,
   handles = g_array_sized_new (FALSE, FALSE, sizeof (TpHandle), 1);
   g_array_append_val (handles, handle);
   g_signal_emit (cache, signals[PRESENCES_UPDATED], 0, handles);
-  g_array_free (handles, TRUE);
+  g_array_unref (handles);
 }
 
 static void
@@ -1241,8 +1302,8 @@ _caps_disco_cb (GabbleDisco *disco,
   gchar *resource;
   gboolean jid_is_valid;
   gpointer key;
-  GabblePresence *presence;
-  GPtrArray *client_types;
+  guint client_types = 0;
+  GPtrArray *data_forms = NULL;
 
   cache = GABBLE_PRESENCE_CACHE (user_data);
   priv = cache->priv;
@@ -1276,7 +1337,7 @@ _caps_disco_cb (GabbleDisco *disco,
     }
 
   /* If tp_handle_ensure () was happy with the jid, it's valid. */
-  jid_is_valid = gabble_decode_jid (jid, NULL, NULL, &resource);
+  jid_is_valid = wocky_decode_jid (jid, NULL, NULL, &resource);
   g_assert (jid_is_valid);
   waiter_self = find_matching_waiter (waiters, handle, resource);
   g_free (resource);
@@ -1287,24 +1348,11 @@ _caps_disco_cb (GabbleDisco *disco,
       goto OUT;
     }
 
-  /* Sort out client types */
-  presence = gabble_presence_cache_get (cache, handle);
+  /* Now onto caps */
+  cap_set = gabble_capability_set_new_from_stanza (query_result);
   client_types = client_types_from_message (handle, query_result,
       waiter_self->resource);
-
-  if (waiter_self->resource != NULL)
-    gabble_presence_update_client_types (presence, waiter_self->resource,
-        client_types);
-
-  if (client_types != NULL)
-    {
-      g_ptr_array_unref (client_types);
-      _signal_presences_updated (cache, handle);
-    }
-
-  /* Now onto caps */
-
-  cap_set = gabble_capability_set_new_from_stanza (query_result);
+  data_forms = data_forms_from_message (query_result);
 
   /* Only 'sha-1' is mandatory to implement by XEP-0115. If the remote contact
    * uses another hash algorithm, don't check the hash and fallback to the old
@@ -1315,12 +1363,18 @@ _caps_disco_cb (GabbleDisco *disco,
     {
       gchar *computed_hash;
 
-      computed_hash = caps_hash_compute_from_lm_node (query_result);
+      computed_hash = wocky_caps_hash_compute_from_node (query_result);
 
-      if (g_str_equal (waiter_self->ver, computed_hash))
+      if (computed_hash == NULL)
+        {
+          DEBUG ("Unable to compute caps hash for '%s'.", jid);
+          trust = 0;
+          bad_hash = TRUE;
+        }
+      else if (g_str_equal (waiter_self->ver, computed_hash))
         {
           trust = capability_info_recvd (cache, node, handle, cap_set,
-              CAPABILITY_BUNDLE_ENOUGH_TRUST);
+              CAPABILITY_BUNDLE_ENOUGH_TRUST, client_types, data_forms);
         }
       else
         {
@@ -1335,7 +1389,8 @@ _caps_disco_cb (GabbleDisco *disco,
     }
   else
     {
-      trust = capability_info_recvd (cache, node, handle, cap_set, 1);
+      trust = capability_info_recvd (cache, node, handle, cap_set, 1,
+          client_types, data_forms);
     }
 
   /* Remove the node from the hash table without freeing the key or list of
@@ -1355,7 +1410,7 @@ _caps_disco_cb (GabbleDisco *disco,
   if (trust >= CAPABILITY_BUNDLE_ENOUGH_TRUST)
     {
       WockyNodeTree *query_node = wocky_node_tree_new_from_node (query_result);
-      GabbleCapsCache *caps_cache = gabble_caps_cache_dup_shared ();
+      WockyCapsCache *caps_cache = wocky_caps_cache_dup_shared ();
 
       if (DEBUGGING)
         {
@@ -1366,7 +1421,7 @@ _caps_disco_cb (GabbleDisco *disco,
         }
 
       /* Update external cache. */
-      gabble_caps_cache_insert (caps_cache, node, query_node);
+      wocky_caps_cache_insert (caps_cache, node, query_node);
       g_object_unref (caps_cache);
       g_object_unref (query_node);
 
@@ -1375,7 +1430,8 @@ _caps_disco_cb (GabbleDisco *disco,
         {
           DiscoWaiter *waiter = (DiscoWaiter *) i->data;
 
-          set_caps_for (waiter, cache, cap_set, handle, jid);
+          set_caps_for (waiter, cache, cap_set, client_types,
+              data_forms, handle, jid);
           emit_capabilities_discovered (cache, waiter->handle);
         }
 
@@ -1403,7 +1459,8 @@ _caps_disco_cb (GabbleDisco *disco,
               g_free (tmp);
             }
 
-          set_caps_for (waiter_self, cache, cap_set, handle, jid);
+          set_caps_for (waiter_self, cache, cap_set, client_types,
+              data_forms, handle, jid);
         }
 
       waiters = g_slist_remove (waiters, waiter_self);
@@ -1429,6 +1486,7 @@ _caps_disco_cb (GabbleDisco *disco,
     }
 
   gabble_capability_set_free (cap_set);
+  g_ptr_array_unref (data_forms);
 
 OUT:
   if (handle)
@@ -1450,15 +1508,15 @@ _process_caps_uri (GabblePresenceCache *cache,
   GabbleCapabilitySet *cached_caps = NULL;
   GabblePresenceCachePrivate *priv;
   TpHandleRepoIface *contact_repo;
-  GabbleCapsCache *caps_cache;
+  WockyCapsCache *caps_cache;
 
   priv = cache->priv;
   contact_repo = tp_base_connection_get_handles (
       (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_CONTACT);
   info = capability_info_get (cache, uri);
 
-  caps_cache = gabble_caps_cache_dup_shared ();
-  cached_query_reply = gabble_caps_cache_lookup (caps_cache, uri);
+  caps_cache = wocky_caps_cache_dup_shared ();
+  cached_query_reply = wocky_caps_cache_lookup (caps_cache, uri);
 
   if (cached_query_reply != NULL)
     {
@@ -1492,26 +1550,25 @@ _process_caps_uri (GabblePresenceCache *cache,
 
       if (presence)
         {
+          guint types;
+
           gabble_presence_set_capabilities (
-              presence, resource, cap_set, serial);
+              presence, resource, cap_set, info->data_forms, serial);
 
           /* We can only get this information from actual disco replies,
            * so we depend on having this information from the caps cache. */
           if (cached_query_reply != NULL)
             {
               WockyNode *query = wocky_node_tree_get_top_node (cached_query_reply);
-              GPtrArray *types = client_types_from_message (handle, query, resource);
-
-              if (resource != NULL)
-                gabble_presence_update_client_types (presence, resource, types);
-
-              if (types != NULL)
-                {
-                  g_ptr_array_unref (types);
-
-                  _signal_presences_updated (cache, handle);
-                }
+              types = client_types_from_message (handle, query, resource);
             }
+          else
+            {
+              types = info->client_types;
+            }
+
+          if (gabble_presence_update_client_types (presence, resource, types))
+            g_signal_emit (cache, signals[CLIENT_TYPES_UPDATED], 0, handle);
         }
       else
         DEBUG ("presence not found");
@@ -1791,6 +1848,16 @@ gabble_presence_parse_presence_message (GabblePresenceCache *cache,
   return ret;
 }
 
+/* FIXME: this scrapes nicknames out of <messages>, and relies on im-channel.c
+ * setting keep_unavailable back to FALSE to make nicknames random peers send
+ * us disappear once we close the accompanying messages. As a side effect, it
+ * makes specifying <nick> in MUC messages work, which is questionable
+ * behaviour. See vcard/test-alias-message.py.
+ *
+ * It would be cleaner to make the IM channel stash the nickname if we want it
+ * to go away when the channel closes, rather than relying on this
+ * spooky-action-at-a-distance.
+ */
 static LmHandlerResult
 _parse_message_message (GabblePresenceCache *cache,
                         TpHandle handle,
@@ -1923,7 +1990,8 @@ gabble_presence_cache_maybe_remove (
   if (NULL == presence)
     return;
 
-  if (presence->status == GABBLE_PRESENCE_OFFLINE &&
+  if ((presence->status == GABBLE_PRESENCE_OFFLINE ||
+       presence->status == GABBLE_PRESENCE_UNKNOWN) &&
       presence->status_message == NULL &&
       !presence->keep_unavailable)
     {
@@ -1957,23 +2025,32 @@ gabble_presence_cache_do_update (
     const gchar *resource,
     GabblePresenceId presence_id,
     const gchar *status_message,
-    gint8 priority)
+    gint8 priority,
+    gboolean *update_client_types)
 {
   GabblePresenceCachePrivate *priv = cache->priv;
-  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
-      (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_CONTACT);
-  const gchar *jid;
   GabblePresence *presence;
   GabbleCapabilitySet *old_cap_set;
   const GabbleCapabilitySet *new_cap_set;
   gboolean ret = FALSE;
 
-  jid = tp_handle_inspect (contact_repo, handle);
-  DEBUG ("%s (%d) resource %s prio %d presence %d message \"%s\"",
-      jid, handle,
-      resource == NULL ? "<null>" : resource,
-      priority, presence_id,
-      status_message == NULL ? "<null>" : status_message);
+  if (DEBUGGING)
+    {
+      TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
+          (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_CONTACT);
+      const gchar *jid = tp_handle_inspect (contact_repo, handle);
+      const gchar *presence_name = wocky_enum_to_nick (
+          GABBLE_TYPE_PRESENCE_ID, presence_id);
+
+      if (presence_name == NULL)
+        presence_name = "plugin-specific, not an element of GabblePresenceId";
+
+      DEBUG ("%s (%d) resource %s prio %d presence %d (%s) message \"%s\"",
+          jid, handle,
+          resource == NULL ? "<null>" : resource,
+          priority, presence_id, presence_name,
+          status_message == NULL ? "<null>" : status_message);
+    }
 
   presence = gabble_presence_cache_get (cache, handle);
 
@@ -1983,7 +2060,8 @@ gabble_presence_cache_do_update (
   old_cap_set = gabble_presence_dup_caps (presence);
 
   ret = gabble_presence_update (presence, resource, presence_id,
-      status_message, priority);
+      status_message, priority, update_client_types,
+      time (NULL));
 
   new_cap_set = gabble_presence_peek_caps (presence);
 
@@ -2003,11 +2081,16 @@ gabble_presence_cache_update (
     const gchar *status_message,
     gint8 priority)
 {
+  gboolean update_client_types = FALSE;
+
   if (gabble_presence_cache_do_update (cache, handle, resource, presence_id,
-      status_message, priority))
+          status_message, priority, &update_client_types))
     {
       _signal_presences_updated (cache, handle);
     }
+
+  if (update_client_types)
+    g_signal_emit (cache, signals[CLIENT_TYPES_UPDATED], 0, handle);
 
   gabble_presence_cache_maybe_remove (cache, handle);
 }
@@ -2034,7 +2117,7 @@ gabble_presence_cache_update_many (
       handle = g_array_index (contact_handles, TpHandle, i);
 
       if (gabble_presence_cache_do_update (cache, handle, resource,
-          presence_id, status_message, priority))
+          presence_id, status_message, priority, NULL))
         {
           g_array_append_val (updated, handle);
         }
@@ -2043,7 +2126,7 @@ gabble_presence_cache_update_many (
   if (updated->len > 0)
     g_signal_emit (cache, signals[PRESENCES_UPDATED], 0, updated);
 
-  g_array_free (updated, TRUE);
+  g_array_unref (updated);
 
   for (i = 0 ; i < contact_handles->len ; i++)
     {
@@ -2079,7 +2162,8 @@ gabble_presence_cache_add_own_caps (
     GabblePresenceCache *cache,
     const gchar *ver,
     const GabbleCapabilitySet *cap_set,
-    const GPtrArray *identities)
+    const GPtrArray *identities,
+    GPtrArray *data_forms)
 {
   gchar *uri = g_strdup_printf ("%s#%s", NS_GABBLE_CAPS, ver);
   GabbleCapabilityInfo *info = capability_info_get (cache, uri);
@@ -2103,12 +2187,18 @@ gabble_presence_cache_add_own_caps (
       gabble_capability_set_update (info->cap_set, cap_set);
     }
 
-  gabble_disco_identity_array_free (info->identities);
-  info->identities = gabble_disco_identity_array_copy (identities);
+  wocky_disco_identity_array_free (info->identities);
+
+  info->identities = NULL;
+
+  if (identities != NULL)
+    info->identities = wocky_disco_identity_array_copy (identities);
 
   info->complete = TRUE;
   info->trust = CAPABILITY_BUNDLE_ENOUGH_TRUST;
   tp_intset_add (info->guys, cache->priv->conn->parent.self_handle);
+
+  replace_data_forms (info, data_forms);
 
   /* FIXME: we should satisfy any waiters for this node now. fd.o bug #24619. */
 
@@ -2204,8 +2294,8 @@ gabble_presence_cache_contacts_added_to_olpc_view (GabblePresenceCache *self,
       g_signal_emit (self, signals[PRESENCES_UPDATED], 0, changed);
     }
 
-  g_array_free (tmp, TRUE);
-  g_array_free (changed, TRUE);
+  g_array_unref (tmp);
+  g_array_unref (changed);
 }
 
 void
@@ -2245,8 +2335,8 @@ gabble_presence_cache_contacts_removed_from_olpc_view (
       g_signal_emit (self, signals[PRESENCES_UPDATED], 0, changed);
     }
 
-  g_array_free (tmp, TRUE);
-  g_array_free (changed, TRUE);
+  g_array_unref (tmp);
+  g_array_unref (changed);
 }
 
 static gboolean
@@ -2448,23 +2538,44 @@ gabble_presence_cache_disco_in_progress (GabblePresenceCache *cache,
     const gchar *resource)
 {
   GabblePresenceCachePrivate *priv = cache->priv;
-  GList *l, *waiters;
-  gboolean out = FALSE;
+  GList *l, *waiter_list;
+  gboolean in_progress = FALSE;
 
-  waiters = g_hash_table_get_values (priv->disco_pending);
+  waiter_list = g_hash_table_get_values (priv->disco_pending);
 
-  for (l = waiters; l != NULL; l = l->next)
+  for (l = waiter_list; !in_progress && l != NULL; l = l->next)
     {
-      DiscoWaiter *w = l->data;
+      GList *j;
 
-      if (w != NULL && w->handle == handle && !tp_strdiff (w->resource, resource))
+      for (j = l->data; !in_progress && j != NULL; j = j->next)
         {
-          out = TRUE;
-          break;
+          DiscoWaiter *w = j->data;
+
+          if (w != NULL &&
+              w->handle == handle &&
+              !tp_strdiff (w->resource, resource))
+            in_progress = TRUE;
         }
     }
 
-  g_list_free (waiters);
+  g_list_free (waiter_list);
 
-  return out;
+  return in_progress;
+}
+
+TpHandle
+gabble_presence_cache_get_handle (GabblePresenceCache *cache,
+    GabblePresence *presence)
+{
+  GHashTableIter iter;
+  gpointer key, val;
+
+  g_hash_table_iter_init (&iter, cache->priv->presence);
+  while (g_hash_table_iter_next (&iter, &key, &val))
+    {
+      if (presence == val)
+        return GPOINTER_TO_UINT (key);
+    }
+
+  return 0;
 }

@@ -14,6 +14,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -33,8 +34,10 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+noinst_PROGRAMS = $(am__EXEEXT_4)
 @HAVE_LIBSASL2_TRUE@am__append_1 = wocky-test-sasl-auth
-@HAVE_GIO_PROXY_TRUE@am__append_2 = wocky-http-proxy-test
+@HAVE_LIBSASL2_TRUE@am__append_2 = wocky-dummy-xmpp-server
+@HAVE_GIO_PROXY_TRUE@am__append_3 = wocky-http-proxy-test
 check_PROGRAMS = $(am__EXEEXT_3)
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/tools/check-coding-style.mk
@@ -59,9 +62,9 @@ CONFIG_CLEAN_VPATH_FILES =
 am__EXEEXT_3 = wocky-xmpp-reader-test$(EXEEXT) \
 	wocky-xmpp-readwrite-test$(EXEEXT) \
 	wocky-xmpp-connection-test$(EXEEXT) wocky-porter-test$(EXEEXT) \
-	wocky-xmpp-node-test$(EXEEXT) wocky-node-tree-test$(EXEEXT) \
-	wocky-stanza-test$(EXEEXT) wocky-roster-test$(EXEEXT) \
-	wocky-bare-contact-test$(EXEEXT) \
+	wocky-loopback-test$(EXEEXT) wocky-xmpp-node-test$(EXEEXT) \
+	wocky-node-tree-test$(EXEEXT) wocky-stanza-test$(EXEEXT) \
+	wocky-roster-test$(EXEEXT) wocky-bare-contact-test$(EXEEXT) \
 	wocky-resource-contact-test$(EXEEXT) \
 	wocky-contact-factory-test$(EXEEXT) \
 	wocky-session-test$(EXEEXT) wocky-pep-service-test$(EXEEXT) \
@@ -70,7 +73,10 @@ am__EXEEXT_3 = wocky-xmpp-reader-test$(EXEEXT) \
 	wocky-pubsub-node-test$(EXEEXT) wocky-connector-test$(EXEEXT) \
 	wocky-ping-test$(EXEEXT) wocky-jid-validation-test$(EXEEXT) \
 	wocky-sasl-utils-test$(EXEEXT) wocky-utils-test$(EXEEXT) \
-	wocky-scram-sha1-test$(EXEEXT) $(am__EXEEXT_1) $(am__EXEEXT_2)
+	wocky-scram-sha1-test$(EXEEXT) wocky-caps-hash-test$(EXEEXT) \
+	$(am__EXEEXT_1) $(am__EXEEXT_2)
+@HAVE_LIBSASL2_TRUE@am__EXEEXT_4 = wocky-dummy-xmpp-server$(EXEEXT)
+PROGRAMS = $(noinst_PROGRAMS)
 am_wocky_bare_contact_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-bare-contact-test.$(OBJEXT)
 wocky_bare_contact_test_OBJECTS =  \
@@ -79,6 +85,10 @@ wocky_bare_contact_test_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
+am_wocky_caps_hash_test_OBJECTS = wocky-caps-hash-test.$(OBJEXT) \
+	wocky-test-helper.$(OBJEXT) wocky-test-stream.$(OBJEXT)
+wocky_caps_hash_test_OBJECTS = $(am_wocky_caps_hash_test_OBJECTS)
+wocky_caps_hash_test_LDADD = $(LDADD)
 am_wocky_connector_test_OBJECTS =  \
 	wocky_connector_test-wocky-connector-test.$(OBJEXT) \
 	wocky_connector_test-wocky-test-sasl-auth-server.$(OBJEXT) \
@@ -101,6 +111,16 @@ am_wocky_data_form_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-data-form-test.$(OBJEXT)
 wocky_data_form_test_OBJECTS = $(am_wocky_data_form_test_OBJECTS)
 wocky_data_form_test_LDADD = $(LDADD)
+am_wocky_dummy_xmpp_server_OBJECTS =  \
+	wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.$(OBJEXT) \
+	wocky_dummy_xmpp_server-wocky-test-connector-server.$(OBJEXT) \
+	wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.$(OBJEXT)
+wocky_dummy_xmpp_server_OBJECTS =  \
+	$(am_wocky_dummy_xmpp_server_OBJECTS)
+wocky_dummy_xmpp_server_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_wocky_http_proxy_test_OBJECTS = wocky-http-proxy-test.$(OBJEXT) \
 	wocky-test-helper.$(OBJEXT) wocky-test-stream.$(OBJEXT)
 wocky_http_proxy_test_OBJECTS = $(am_wocky_http_proxy_test_OBJECTS)
@@ -111,6 +131,10 @@ am_wocky_jid_validation_test_OBJECTS =  \
 wocky_jid_validation_test_OBJECTS =  \
 	$(am_wocky_jid_validation_test_OBJECTS)
 wocky_jid_validation_test_LDADD = $(LDADD)
+am_wocky_loopback_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
+	wocky-test-stream.$(OBJEXT) wocky-loopback-test.$(OBJEXT)
+wocky_loopback_test_OBJECTS = $(am_wocky_loopback_test_OBJECTS)
+wocky_loopback_test_LDADD = $(LDADD)
 am_wocky_node_tree_test_OBJECTS = wocky-test-helper.$(OBJEXT) \
 	wocky-test-stream.$(OBJEXT) wocky-node-tree-test.$(OBJEXT)
 wocky_node_tree_test_OBJECTS = $(am_wocky_node_tree_test_OBJECTS)
@@ -236,12 +260,14 @@ AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(wocky_bare_contact_test_SOURCES) \
+	$(wocky_caps_hash_test_SOURCES) \
 	$(wocky_connector_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
 	$(wocky_data_form_test_SOURCES) \
+	$(wocky_dummy_xmpp_server_SOURCES) \
 	$(wocky_http_proxy_test_SOURCES) \
 	$(wocky_jid_validation_test_SOURCES) \
-	$(wocky_node_tree_test_SOURCES) \
+	$(wocky_loopback_test_SOURCES) $(wocky_node_tree_test_SOURCES) \
 	$(wocky_pep_service_test_SOURCES) $(wocky_ping_test_SOURCES) \
 	$(wocky_porter_test_SOURCES) $(wocky_pubsub_node_test_SOURCES) \
 	$(wocky_pubsub_service_test_SOURCES) \
@@ -255,12 +281,14 @@ SOURCES = $(wocky_bare_contact_test_SOURCES) \
 	$(wocky_xmpp_reader_test_SOURCES) \
 	$(wocky_xmpp_readwrite_test_SOURCES)
 DIST_SOURCES = $(wocky_bare_contact_test_SOURCES) \
+	$(wocky_caps_hash_test_SOURCES) \
 	$(wocky_connector_test_SOURCES) \
 	$(wocky_contact_factory_test_SOURCES) \
 	$(wocky_data_form_test_SOURCES) \
+	$(wocky_dummy_xmpp_server_SOURCES) \
 	$(wocky_http_proxy_test_SOURCES) \
 	$(wocky_jid_validation_test_SOURCES) \
-	$(wocky_node_tree_test_SOURCES) \
+	$(wocky_loopback_test_SOURCES) $(wocky_node_tree_test_SOURCES) \
 	$(wocky_pep_service_test_SOURCES) $(wocky_ping_test_SOURCES) \
 	$(wocky_porter_test_SOURCES) $(wocky_pubsub_node_test_SOURCES) \
 	$(wocky_pubsub_service_test_SOURCES) \
@@ -296,6 +324,7 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -313,8 +342,12 @@ GCOV_LIBS = @GCOV_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
+GNUTLS_FOR_STREAM_CIPHERS_CFLAGS = @GNUTLS_FOR_STREAM_CIPHERS_CFLAGS@
+GNUTLS_FOR_STREAM_CIPHERS_LIBS = @GNUTLS_FOR_STREAM_CIPHERS_LIBS@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
+GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
+GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
 HEADER_DIR = @HEADER_DIR@
@@ -327,6 +360,8 @@ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LCOV_PATH = @LCOV_PATH@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LIBIPHB_CFLAGS = @LIBIPHB_CFLAGS@
+LIBIPHB_LIBS = @LIBIPHB_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBSASL2_CFLAGS = @LIBSASL2_CFLAGS@
@@ -338,6 +373,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MOSTLYCLEANFILES = @MOSTLYCLEANFILES@
 NM = @NM@
@@ -361,6 +397,8 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TLS_CFLAGS = @TLS_CFLAGS@
 TLS_LIBS = @TLS_LIBS@
@@ -370,6 +408,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -403,7 +442,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -463,15 +501,15 @@ TLSDEFS := -DTLS_CA_KEY_FILE='"$(CA_KEY)"'      \
 ############################################################################
 TEST_PROGS = wocky-xmpp-reader-test wocky-xmpp-readwrite-test \
 	wocky-xmpp-connection-test wocky-porter-test \
-	wocky-xmpp-node-test wocky-node-tree-test wocky-stanza-test \
-	wocky-roster-test wocky-bare-contact-test \
+	wocky-loopback-test wocky-xmpp-node-test wocky-node-tree-test \
+	wocky-stanza-test wocky-roster-test wocky-bare-contact-test \
 	wocky-resource-contact-test wocky-contact-factory-test \
 	wocky-session-test wocky-pep-service-test wocky-tls-test \
 	wocky-data-form-test wocky-pubsub-service-test \
 	wocky-pubsub-node-test wocky-connector-test wocky-ping-test \
 	wocky-jid-validation-test wocky-sasl-utils-test \
-	wocky-utils-test wocky-scram-sha1-test $(am__append_1) \
-	$(am__append_2)
+	wocky-utils-test wocky-scram-sha1-test wocky-caps-hash-test \
+	$(am__append_1) $(am__append_3)
 wocky_tls_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_tls_test_SOURCES = \
   wocky-tls-test.c        \
@@ -531,6 +569,12 @@ wocky_porter_test_SOURCES = \
   wocky-porter-test.c \
   wocky-test-helper.c wocky-test-helper.h \
   wocky-test-stream.c wocky-test-stream.h
+
+wocky_loopback_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_loopback_test_SOURCES = \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h \
+  wocky-loopback-test.c
 
 wocky_xmpp_node_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_xmpp_node_test_SOURCES = \
@@ -629,6 +673,18 @@ wocky_http_proxy_test_SOURCES = wocky-http-proxy-test.c \
   wocky-test-helper.c wocky-test-helper.h \
   wocky-test-stream.c wocky-test-stream.h
 
+wocky_dummy_xmpp_server_DEPENDENCIES = $(LIBWOCKY)
+wocky_dummy_xmpp_server_SOURCES = wocky-dummy-xmpp-server.c \
+   wocky-test-connector-server.c wocky-test-connector-server.h \
+   wocky-test-sasl-auth-server.c wocky-test-sasl-auth-server.h
+
+wocky_dummy_xmpp_server_LDADD = $(LDADD) @LIBSASL2_LIBS@
+wocky_dummy_xmpp_server_CFLAGS = $(AM_CFLAGS) @LIBSASL2_CFLAGS@ $(TLSDEFS)
+wocky_caps_hash_test_DEPENDENCIES = $(LIBWOCKY)
+wocky_caps_hash_test_SOURCES = wocky-caps-hash-test.c \
+  wocky-test-helper.c wocky-test-helper.h \
+  wocky-test-stream.c wocky-test-stream.h
+
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) @GLIB_CFLAGS@ \
   @LIBXML2_CFLAGS@ @TLS_CFLAGS@ @WOCKY_CFLAGS@
 
@@ -700,9 +756,21 @@ clean-checkPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+
+clean-noinstPROGRAMS:
+	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
 wocky-bare-contact-test$(EXEEXT): $(wocky_bare_contact_test_OBJECTS) $(wocky_bare_contact_test_DEPENDENCIES) 
 	@rm -f wocky-bare-contact-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_bare_contact_test_OBJECTS) $(wocky_bare_contact_test_LDADD) $(LIBS)
+wocky-caps-hash-test$(EXEEXT): $(wocky_caps_hash_test_OBJECTS) $(wocky_caps_hash_test_DEPENDENCIES) 
+	@rm -f wocky-caps-hash-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(wocky_caps_hash_test_OBJECTS) $(wocky_caps_hash_test_LDADD) $(LIBS)
 wocky-connector-test$(EXEEXT): $(wocky_connector_test_OBJECTS) $(wocky_connector_test_DEPENDENCIES) 
 	@rm -f wocky-connector-test$(EXEEXT)
 	$(AM_V_CCLD)$(wocky_connector_test_LINK) $(wocky_connector_test_OBJECTS) $(wocky_connector_test_LDADD) $(LIBS)
@@ -712,12 +780,18 @@ wocky-contact-factory-test$(EXEEXT): $(wocky_contact_factory_test_OBJECTS) $(woc
 wocky-data-form-test$(EXEEXT): $(wocky_data_form_test_OBJECTS) $(wocky_data_form_test_DEPENDENCIES) 
 	@rm -f wocky-data-form-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_data_form_test_OBJECTS) $(wocky_data_form_test_LDADD) $(LIBS)
+wocky-dummy-xmpp-server$(EXEEXT): $(wocky_dummy_xmpp_server_OBJECTS) $(wocky_dummy_xmpp_server_DEPENDENCIES) 
+	@rm -f wocky-dummy-xmpp-server$(EXEEXT)
+	$(AM_V_CCLD)$(wocky_dummy_xmpp_server_LINK) $(wocky_dummy_xmpp_server_OBJECTS) $(wocky_dummy_xmpp_server_LDADD) $(LIBS)
 wocky-http-proxy-test$(EXEEXT): $(wocky_http_proxy_test_OBJECTS) $(wocky_http_proxy_test_DEPENDENCIES) 
 	@rm -f wocky-http-proxy-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_http_proxy_test_OBJECTS) $(wocky_http_proxy_test_LDADD) $(LIBS)
 wocky-jid-validation-test$(EXEEXT): $(wocky_jid_validation_test_OBJECTS) $(wocky_jid_validation_test_DEPENDENCIES) 
 	@rm -f wocky-jid-validation-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_jid_validation_test_OBJECTS) $(wocky_jid_validation_test_LDADD) $(LIBS)
+wocky-loopback-test$(EXEEXT): $(wocky_loopback_test_OBJECTS) $(wocky_loopback_test_DEPENDENCIES) 
+	@rm -f wocky-loopback-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(wocky_loopback_test_OBJECTS) $(wocky_loopback_test_LDADD) $(LIBS)
 wocky-node-tree-test$(EXEEXT): $(wocky_node_tree_test_OBJECTS) $(wocky_node_tree_test_DEPENDENCIES) 
 	@rm -f wocky-node-tree-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_node_tree_test_OBJECTS) $(wocky_node_tree_test_LDADD) $(LIBS)
@@ -783,10 +857,12 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-bare-contact-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-caps-hash-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact-factory-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-http-proxy-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jid-validation-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-loopback-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-node-tree-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-pep-service-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-ping-test.Po@am__quote@
@@ -813,6 +889,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky_connector_test-wocky-test-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky_connector_test-wocky-test-sasl-auth-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky_connector_test-wocky-test-stream.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-connector-server.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky_test_sasl_auth-wocky-test-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky_test_sasl_auth-wocky-test-sasl-auth-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky_test_sasl_auth-wocky-test-sasl-auth.Po@am__quote@
@@ -941,6 +1020,54 @@ wocky_connector_test-test-resolver.obj: test-resolver.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-resolver.c' object='wocky_connector_test-test-resolver.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_connector_test_CFLAGS) $(CFLAGS) -c -o wocky_connector_test-test-resolver.obj `if test -f 'test-resolver.c'; then $(CYGPATH_W) 'test-resolver.c'; else $(CYGPATH_W) '$(srcdir)/test-resolver.c'; fi`
+
+wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.o: wocky-dummy-xmpp-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) -MT wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.o -MD -MP -MF $(DEPDIR)/wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.Tpo -c -o wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.o `test -f 'wocky-dummy-xmpp-server.c' || echo '$(srcdir)/'`wocky-dummy-xmpp-server.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.Tpo $(DEPDIR)/wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='wocky-dummy-xmpp-server.c' object='wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) -c -o wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.o `test -f 'wocky-dummy-xmpp-server.c' || echo '$(srcdir)/'`wocky-dummy-xmpp-server.c
+
+wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.obj: wocky-dummy-xmpp-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) -MT wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.obj -MD -MP -MF $(DEPDIR)/wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.Tpo -c -o wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.obj `if test -f 'wocky-dummy-xmpp-server.c'; then $(CYGPATH_W) 'wocky-dummy-xmpp-server.c'; else $(CYGPATH_W) '$(srcdir)/wocky-dummy-xmpp-server.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.Tpo $(DEPDIR)/wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='wocky-dummy-xmpp-server.c' object='wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) -c -o wocky_dummy_xmpp_server-wocky-dummy-xmpp-server.obj `if test -f 'wocky-dummy-xmpp-server.c'; then $(CYGPATH_W) 'wocky-dummy-xmpp-server.c'; else $(CYGPATH_W) '$(srcdir)/wocky-dummy-xmpp-server.c'; fi`
+
+wocky_dummy_xmpp_server-wocky-test-connector-server.o: wocky-test-connector-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) -MT wocky_dummy_xmpp_server-wocky-test-connector-server.o -MD -MP -MF $(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-connector-server.Tpo -c -o wocky_dummy_xmpp_server-wocky-test-connector-server.o `test -f 'wocky-test-connector-server.c' || echo '$(srcdir)/'`wocky-test-connector-server.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-connector-server.Tpo $(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-connector-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='wocky-test-connector-server.c' object='wocky_dummy_xmpp_server-wocky-test-connector-server.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) -c -o wocky_dummy_xmpp_server-wocky-test-connector-server.o `test -f 'wocky-test-connector-server.c' || echo '$(srcdir)/'`wocky-test-connector-server.c
+
+wocky_dummy_xmpp_server-wocky-test-connector-server.obj: wocky-test-connector-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) -MT wocky_dummy_xmpp_server-wocky-test-connector-server.obj -MD -MP -MF $(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-connector-server.Tpo -c -o wocky_dummy_xmpp_server-wocky-test-connector-server.obj `if test -f 'wocky-test-connector-server.c'; then $(CYGPATH_W) 'wocky-test-connector-server.c'; else $(CYGPATH_W) '$(srcdir)/wocky-test-connector-server.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-connector-server.Tpo $(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-connector-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='wocky-test-connector-server.c' object='wocky_dummy_xmpp_server-wocky-test-connector-server.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) -c -o wocky_dummy_xmpp_server-wocky-test-connector-server.obj `if test -f 'wocky-test-connector-server.c'; then $(CYGPATH_W) 'wocky-test-connector-server.c'; else $(CYGPATH_W) '$(srcdir)/wocky-test-connector-server.c'; fi`
+
+wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.o: wocky-test-sasl-auth-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) -MT wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.o -MD -MP -MF $(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.Tpo -c -o wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.o `test -f 'wocky-test-sasl-auth-server.c' || echo '$(srcdir)/'`wocky-test-sasl-auth-server.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.Tpo $(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='wocky-test-sasl-auth-server.c' object='wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) -c -o wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.o `test -f 'wocky-test-sasl-auth-server.c' || echo '$(srcdir)/'`wocky-test-sasl-auth-server.c
+
+wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.obj: wocky-test-sasl-auth-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) -MT wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.obj -MD -MP -MF $(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.Tpo -c -o wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.obj `if test -f 'wocky-test-sasl-auth-server.c'; then $(CYGPATH_W) 'wocky-test-sasl-auth-server.c'; else $(CYGPATH_W) '$(srcdir)/wocky-test-sasl-auth-server.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.Tpo $(DEPDIR)/wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='wocky-test-sasl-auth-server.c' object='wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dummy_xmpp_server_CFLAGS) $(CFLAGS) -c -o wocky_dummy_xmpp_server-wocky-test-sasl-auth-server.obj `if test -f 'wocky-test-sasl-auth-server.c'; then $(CYGPATH_W) 'wocky-test-sasl-auth-server.c'; else $(CYGPATH_W) '$(srcdir)/wocky-test-sasl-auth-server.c'; fi`
 
 wocky_test_sasl_auth-wocky-test-helper.o: wocky-test-helper.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_test_sasl_auth_CFLAGS) $(CFLAGS) -MT wocky_test_sasl_auth-wocky-test-helper.o -MD -MP -MF $(DEPDIR)/wocky_test_sasl_auth-wocky-test-helper.Tpo -c -o wocky_test_sasl_auth-wocky-test-helper.o `test -f 'wocky-test-helper.c' || echo '$(srcdir)/'`wocky-test-helper.c
@@ -1162,7 +1289,7 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-am
-all-am: Makefile
+all-am: Makefile $(PROGRAMS)
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -1194,7 +1321,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
-	mostlyclean-am
+	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -1265,15 +1392,15 @@ uninstall-am:
 .MAKE: check-am install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am check-local clean \
-	clean-checkPROGRAMS clean-generic clean-libtool ctags \
-	distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
+	clean-checkPROGRAMS clean-generic clean-libtool \
+	clean-noinstPROGRAMS ctags distclean distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am

@@ -38,6 +38,7 @@
 struct _WockyTLSConnectorPrivate {
   gboolean legacy_ssl;
   gchar *peername;
+  GStrv extra_identities;
 
   WockyTLSHandler *handler;
   WockyTLSSession *session;
@@ -107,6 +108,7 @@ wocky_tls_connector_finalize (GObject *object)
   WockyTLSConnector *self = WOCKY_TLS_CONNECTOR (object);
 
   g_free (self->priv->peername);
+  g_strfreev (self->priv->extra_identities);
 
   if (self->priv->session != NULL)
     {
@@ -141,6 +143,11 @@ wocky_tls_connector_class_init (WockyTLSConnectorClass *klass)
   oclass->set_property = wocky_tls_connector_set_property;
   oclass->finalize = wocky_tls_connector_finalize;
 
+  /**
+   * WockyTLSConnector:tls-handler:
+   *
+   * The #WockyTLSHandler object used for the TLS handshake.
+   */
   pspec = g_param_spec_object ("tls-handler",
       "TLS Handler", "Handler for the TLS handshake",
       WOCKY_TYPE_TLS_HANDLER,
@@ -328,7 +335,7 @@ session_handshake_cb (GObject *source,
 
   wocky_tls_handler_verify_async (self->priv->handler,
       self->priv->session, self->priv->peername,
-      tls_handler_verify_async_cb, self);
+      self->priv->extra_identities, tls_handler_verify_async_cb, self);
 }
 
 static void
@@ -365,8 +372,7 @@ starttls_recv_cb (GObject *source,
   DEBUG ("Received STARTTLS response");
   node = wocky_stanza_get_top_node (stanza);
 
-  if (wocky_strdiff (node->name, "proceed") ||
-      wocky_strdiff (wocky_node_get_ns (node), WOCKY_XMPP_NS_TLS))
+  if (!wocky_node_matches (node, "proceed", WOCKY_XMPP_NS_TLS))
     {
       report_error_in_idle (self, WOCKY_CONNECTOR_ERROR_TLS_REFUSED,
           "%s", "STARTTLS refused by the server");
@@ -453,6 +459,7 @@ wocky_tls_connector_secure_async (WockyTLSConnector *self,
     WockyXmppConnection *connection,
     gboolean old_style_ssl,
     const gchar *peername,
+    GStrv extra_identities,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data)
@@ -460,6 +467,7 @@ wocky_tls_connector_secure_async (WockyTLSConnector *self,
   GSimpleAsyncResult *async_result;
 
   g_assert (self->priv->secure_result == NULL);
+  g_assert (self->priv->cancellable == NULL);
 
   async_result = g_simple_async_result_new (G_OBJECT (self),
       callback, user_data, wocky_tls_connector_secure_async);
@@ -471,6 +479,7 @@ wocky_tls_connector_secure_async (WockyTLSConnector *self,
   self->priv->secure_result = async_result;
   self->priv->legacy_ssl = old_style_ssl;
   self->priv->peername = g_strdup (peername);
+  self->priv->extra_identities = g_strdupv (extra_identities);
 
   if (old_style_ssl)
     do_handshake (self);

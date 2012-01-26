@@ -23,8 +23,8 @@ def test(q, bus, conns, streams):
              args=[cs.CONN_STATUS_CONNECTING, cs.CSR_REQUESTED],
              path=conn1.object.object_path)
     q.expect('stream-authenticated')
-    q.expect('dbus-signal', signal='PresenceUpdate',
-             args=[{1L: (0L, {u'available': {}})}],
+    q.expect('dbus-signal', signal='PresencesChanged',
+             args=[{1L: (cs.PRESENCE_AVAILABLE, 'available', '')}],
              path=conn1.object.object_path)
     q.expect('dbus-signal', signal='StatusChanged',
              args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED],
@@ -47,8 +47,8 @@ def test(q, bus, conns, streams):
              args=[cs.CONN_STATUS_CONNECTING, cs.CSR_REQUESTED],
              path=conn2.object.object_path)
     q.expect('stream-authenticated')
-    q.expect('dbus-signal', signal='PresenceUpdate',
-             args=[{1L: (0L, {u'available': {}})}],
+    q.expect('dbus-signal', signal='PresencesChanged',
+             args=[{1L: (cs.PRESENCE_AVAILABLE, 'available', '')}],
              path=conn2.object.object_path)
     q.expect('dbus-signal', signal='StatusChanged',
              args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED],
@@ -66,4 +66,4 @@ def test(q, bus, conns, streams):
     assertLength(0, pairs)      # i.e. we popped and checked all of them
 
 if __name__ == '__main__':
-    exec_test(test, num_instances=2)
+    exec_test(test, num_instances=2, do_connect=False)

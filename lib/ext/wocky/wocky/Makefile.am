@@ -49,14 +49,24 @@ handwritten_headers = \
   wocky-auth-handler.h \
   wocky-auth-registry.h \
   wocky-bare-contact.h \
+  wocky-c2s-porter.h \
+  wocky-caps-cache.h \
+  wocky-ll-connection-factory.h \
+  wocky-caps-hash.h \
   wocky-connector.h \
   wocky-contact.h \
   wocky-contact-factory.h \
   wocky-data-form.h \
   wocky-debug.h \
+  wocky-disco-identity.h \
+  wocky-heartbeat-source.h \
   wocky-jabber-auth.h \
   wocky-jabber-auth-digest.h \
   wocky-jabber-auth-password.h \
+  wocky-ll-connector.h \
+  wocky-ll-contact.h \
+  wocky-loopback-stream.h \
+  wocky-meta-porter.h \
   wocky-muc.h \
   wocky-namespaces.h \
   wocky-node.h \
@@ -84,6 +94,7 @@ handwritten_headers = \
   wocky-tls-connector.h \
   wocky-types.h \
   wocky-utils.h \
+  wocky-xep-0115-capabilities.h \
   wocky-xmpp-connection.h \
   wocky-xmpp-error.h \
   wocky-xmpp-reader.h \
@@ -94,14 +105,24 @@ handwritten_sources = \
   wocky-auth-handler.c \
   wocky-auth-registry.c \
   wocky-bare-contact.c \
+  wocky-c2s-porter.c \
+  wocky-caps-cache.c \
+  wocky-ll-connection-factory.c \
+  wocky-caps-hash.c \
   wocky-connector.c \
   wocky-contact.c \
   wocky-contact-factory.c \
   wocky-data-form.c \
   wocky-debug.c \
+  wocky-disco-identity.c \
+  wocky-heartbeat-source.c \
   wocky-jabber-auth.c \
   wocky-jabber-auth-digest.c \
   wocky-jabber-auth-password.c \
+  wocky-ll-connector.c \
+  wocky-ll-contact.c \
+  wocky-loopback-stream.c \
+  wocky-meta-porter.c \
   wocky-muc.c \
   wocky-node.c \
   wocky-node-tree.c \
@@ -123,6 +144,7 @@ handwritten_sources = \
   wocky-utils.c \
   wocky-tls-handler.c \
   wocky-tls-connector.c \
+  wocky-xep-0115-capabilities.c \
   wocky-xmpp-connection.c \
   wocky-xmpp-error.c \
   wocky-xmpp-reader.c \
@@ -186,17 +208,18 @@ wocky-signals-marshal.list: $(handwritten_sources) Makefile.am
 
 
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) \
-            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ \
+            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @SQLITE_CFLAGS@ @TLS_CFLAGS@ \
+            @LIBIPHB_CFLAGS@ \
             -DG_LOG_DOMAIN=\"wocky\"
 
-AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
+AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @SQLITE_LIBS@ @TLS_LIBS@ @LIBIPHB_LIBS@
 
 # rules for making the glib enum objects
 # The shell variable $long is something like WOCKY_XMPP_ERROR for
 # wocky-xmpp-error-enumtypes.h, and $short is WOCKY.
 $(filter %-enumtypes.h,$(built_headers)): %-enumtypes.h: %.h Makefile.in
 	$(AM_V_GEN)set -e; \
-	long=`echo $* | tr [:lower:]- [:upper:]_`; \
+	long=`echo $(notdir $*) | tr [:lower:]- [:upper:]_`; \
 	short=$${long%%_*}; \
 	guard="__$${long}_ENUM_TYPES_H__"; \
 	glib-mkenums \
@@ -215,4 +238,11 @@ $(filter %-enumtypes.c,$(built_sources)): %-enumtypes.c: %.h Makefile.in
 	--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
 	$< > $@
 
-
+Android.mk: Makefile.am $(built_sources) $(built_headers)
+	androgenizer -:PROJECT wocky -:SHARED wocky -:TAGS eng debug \
+	 -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	 -:SOURCES $(handwritten_sources) $(built_sources) \
+	 -:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CFLAGS) \
+	 -:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) \
+	 -:LDFLAGS $(AM_LDFLAGS) $(GCRYPT_LIBS) \
+	> $@

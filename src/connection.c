@@ -22,18 +22,20 @@
 #include "connection.h"
 #include "gabble.h"
 
+#include <stdio.h>
 #include <string.h>
-
-#define DBUS_API_SUBJECT_TO_CHANGE
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <glib-object.h>
 #include <loudmouth/loudmouth.h>
 #include <wocky/wocky-connector.h>
+#include <wocky/wocky-disco-identity.h>
 #include <wocky/wocky-tls-handler.h>
 #include <wocky/wocky-ping.h>
+#include <wocky/wocky-utils.h>
 #include <wocky/wocky-xmpp-error.h>
+#include <wocky/wocky-data-form.h>
 #include <telepathy-glib/channel-manager.h>
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/enums.h>
@@ -48,8 +50,8 @@
 #define DEBUG_FLAG GABBLE_DEBUG_CONNECTION
 
 #include "bytestream-factory.h"
-#include "capabilities.h"
-#include "caps-channel-manager.h"
+#include "gabble/capabilities.h"
+#include "gabble/caps-channel-manager.h"
 #include "caps-hash.h"
 #include "auth-manager.h"
 #include "conn-aliasing.h"
@@ -61,7 +63,7 @@
 #include "conn-sidecars.h"
 #include "conn-mail-notif.h"
 #include "conn-olpc.h"
-#include "conn-slacker.h"
+#include "conn-power-saving.h"
 #include "debug.h"
 #include "disco.h"
 #include "media-channel.h"
@@ -79,10 +81,12 @@
 #include "search-manager.h"
 #include "server-tls-channel.h"
 #include "server-tls-manager.h"
+#include "plugin-loader.h"
 #include "private-tubes-factory.h"
 #include "util.h"
 #include "vcard-manager.h"
 #include "conn-util.h"
+#include "conn-addressing.h"
 
 static guint disco_reply_timeout = 5;
 
@@ -114,10 +118,10 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
       tp_base_contact_list_mixin_list_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CONTACT_GROUPS,
       tp_base_contact_list_mixin_groups_iface_init);
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CONTACT_BLOCKING,
+      tp_base_contact_list_mixin_blocking_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_SIMPLE_PRESENCE,
       tp_presence_mixin_simple_presence_iface_init);
-    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_PRESENCE,
-      conn_presence_iface_init);
     G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_CONNECTION_INTERFACE_GABBLE_DECLOAK,
       conn_decloak_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_LOCATION,
@@ -135,12 +139,17 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
       conn_mail_notif_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CLIENT_TYPES,
       conn_client_types_iface_init);
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_POWER_SAVING,
+      conn_power_saving_iface_init);
+    G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_CONNECTION_INTERFACE_ADDRESSING,
+      conn_addressing_iface_init);
     )
 
 /* properties */
 enum
 {
     PROP_CONNECT_SERVER = 1,
+    PROP_EXPLICIT_SERVER,
     PROP_PORT,
     PROP_OLD_SSL,
     PROP_REQUIRE_ENCRYPTION,
@@ -164,6 +173,8 @@ enum
     PROP_KEEPALIVE_INTERVAL,
     PROP_DECLOAK_AUTOMATICALLY,
     PROP_FALLBACK_SERVERS,
+    PROP_EXTRA_CERTIFICATE_IDENTITIES,
+    PROP_POWER_SAVING,
 
     LAST_PROPERTY
 };
@@ -178,11 +189,9 @@ struct _GabbleConnectionPrivate
 
   GCancellable *cancellable;
 
-  LmMessageHandler *iq_disco_cb;
-  LmMessageHandler *iq_unknown_cb;
-
   /* connection properties */
   gchar *connect_server;
+  gchar *explicit_server;
   guint port;
   gboolean old_ssl;
   gboolean require_encryption;
@@ -214,6 +223,10 @@ struct _GabbleConnectionPrivate
   GStrv fallback_servers;
   guint fallback_server_index;
 
+  GStrv extra_certificate_identities;
+
+  gboolean power_saving;
+
   /* authentication properties */
   gchar *stream_server;
   gchar *username;
@@ -227,6 +240,10 @@ struct _GabbleConnectionPrivate
 
   /* serial number of current advertised caps */
   guint caps_serial;
+  /* Last activity time for XEP-0012 purposes, where "activity" is defined to
+   * mean "sending a message".
+   */
+  time_t last_activity_time;
 
   /* capabilities from various sources: */
   /* subscriptions on behalf of the Connection, like PEP "+notify"
@@ -246,11 +263,20 @@ struct _GabbleConnectionPrivate
   /* the union of the above */
   GabbleCapabilitySet *all_caps;
 
+  /* data forms provided via UpdateCapabilities()
+   * gchar * (client name) => GPtrArray<owned WockyDataForm> */
+  GHashTable *client_data_forms;
+
   /* auth manager */
   GabbleAuthManager *auth_manager;
 
   /* server TLS manager */
   GabbleServerTLSManager *server_tls_manager;
+
+  /* IM factory; we need this to add text caps for everyone (even
+   * offline contacts) which is done through the IM factory's
+   * GabbleCapsChannelManagerInterface->get_contact_caps function. */
+  GabbleImFactory *im_factory;
 
   /* stream id returned by the connector */
   gchar *stream_id;
@@ -267,6 +293,8 @@ struct _GabbleConnectionPrivate
   gboolean dispose_has_run;
 };
 
+static guint sig_id_porter_available = 0;
+
 static void connection_capabilities_update_cb (GabblePresenceCache *cache,
     TpHandle handle,
     const GabbleCapabilitySet *old_cap_set,
@@ -276,21 +304,30 @@ static void connection_capabilities_update_cb (GabblePresenceCache *cache,
 static gboolean gabble_connection_refresh_capabilities (GabbleConnection *self,
     GabbleCapabilitySet **old_out);
 
+static void
+add_to_array (gpointer data,
+    gpointer user_data)
+{
+  g_ptr_array_add (user_data, data);
+}
+
 static GPtrArray *
 _gabble_connection_create_channel_managers (TpBaseConnection *conn)
 {
   GabbleConnection *self = GABBLE_CONNECTION (conn);
   GPtrArray *channel_managers = g_ptr_array_sized_new (5);
+  GabblePluginLoader *loader;
+  GPtrArray *tmp;
 
   self->roster = gabble_roster_new (self);
-  g_signal_connect (self->roster, "nickname-update", G_CALLBACK
-      (gabble_conn_aliasing_nickname_updated), self);
+  g_signal_connect (self->roster, "nicknames-update", G_CALLBACK
+      (gabble_conn_aliasing_nicknames_updated), self);
   g_ptr_array_add (channel_managers, self->roster);
 
-  g_ptr_array_add (channel_managers,
-      g_object_new (GABBLE_TYPE_IM_FACTORY,
-        "connection", self,
-        NULL));
+  self->priv->im_factory = g_object_new (GABBLE_TYPE_IM_FACTORY,
+      "connection", self,
+      NULL);
+  g_ptr_array_add (channel_managers, self->priv->im_factory);
 
   g_ptr_array_add (channel_managers,
       g_object_new (GABBLE_TYPE_ROOMLIST_MANAGER,
@@ -330,6 +367,14 @@ _gabble_connection_create_channel_managers (TpBaseConnection *conn)
 
   self->ft_manager = gabble_ft_manager_new (self);
   g_ptr_array_add (channel_managers, self->ft_manager);
+
+  /* plugin channel managers */
+  loader = gabble_plugin_loader_dup ();
+  tmp = gabble_plugin_loader_create_channel_managers (loader, conn);
+  g_object_unref (loader);
+
+  g_ptr_array_foreach (tmp, add_to_array, channel_managers);
+  g_ptr_array_unref (tmp);
 
   return channel_managers;
 }
@@ -378,6 +423,7 @@ gabble_connection_constructor (GType type,
   conn_sidecars_init (self);
   conn_mail_notif_init (self);
   conn_client_types_init (self);
+  conn_addressing_init (self);
 
   tp_contacts_mixin_add_contact_attributes_iface (G_OBJECT (self),
       TP_IFACE_CONNECTION_INTERFACE_CAPABILITIES,
@@ -407,6 +453,9 @@ gabble_connection_constructor (GType type,
   priv->sidecar_caps = gabble_capability_set_new ();
   priv->client_caps = g_hash_table_new_full (g_str_hash, g_str_equal,
       g_free, (GDestroyNotify) gabble_capability_set_free);
+
+  priv->client_data_forms = g_hash_table_new_full (g_str_hash, g_str_equal,
+      g_free, (GDestroyNotify) g_ptr_array_unref);
 
   /* Historically, the optional Jingle transports were in our initial
    * presence, but could be removed by AdvertiseCapabilities(). Emulate
@@ -462,7 +511,7 @@ gabble_connection_constructed (GObject *object)
   self->self_presence = gabble_presence_new ();
   g_assert (priv->resource);
   gabble_presence_update (self->self_presence, priv->resource,
-      GABBLE_PRESENCE_AVAILABLE, NULL, priv->priority);
+      GABBLE_PRESENCE_AVAILABLE, NULL, priv->priority, NULL, time (NULL));
 }
 
 static void
@@ -485,6 +534,7 @@ gabble_connection_init (GabbleConnection *self)
   self->lmconn = lm_connection_new ();
 
   priv->caps_serial = 1;
+  priv->last_activity_time = time (NULL);
   priv->port = 5222;
 
   gabble_capabilities_init (self);
@@ -502,6 +552,9 @@ gabble_connection_get_property (GObject    *object,
   switch (property_id) {
     case PROP_CONNECT_SERVER:
       g_value_set_string (value, priv->connect_server);
+      break;
+    case PROP_EXPLICIT_SERVER:
+      g_value_set_string (value, priv->explicit_server);
       break;
     case PROP_STREAM_SERVER:
       g_value_set_string (value, priv->stream_server);
@@ -531,7 +584,11 @@ gabble_connection_get_property (GObject    *object,
       g_value_set_string (value, priv->resource);
       break;
     case PROP_PRIORITY:
+#if GLIB_CHECK_VERSION (2, 31, 0)
+      g_value_set_schar (value, priv->priority);
+#else
       g_value_set_char (value, priv->priority);
+#endif
       break;
     case PROP_HTTPS_PROXY_SERVER:
       g_value_set_string (value, priv->https_proxy_server);
@@ -575,6 +632,14 @@ gabble_connection_get_property (GObject    *object,
       g_value_set_boxed (value, priv->fallback_servers);
       break;
 
+    case PROP_EXTRA_CERTIFICATE_IDENTITIES:
+      g_value_set_boxed (value, priv->extra_certificate_identities);
+      break;
+
+    case PROP_POWER_SAVING:
+      g_value_set_boolean (value, priv->power_saving);
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -591,9 +656,11 @@ gabble_connection_set_property (GObject      *object,
   GabbleConnectionPrivate *priv = self->priv;
 
   switch (property_id) {
-    case PROP_CONNECT_SERVER:
-      g_free (priv->connect_server);
-      priv->connect_server = g_value_dup_string (value);
+    case PROP_EXPLICIT_SERVER:
+      g_free (priv->explicit_server);
+      priv->explicit_server = g_value_dup_string (value);
+      if (priv->connect_server == NULL)
+        priv->connect_server = g_value_dup_string (value);
       break;
     case PROP_PORT:
       priv->port = g_value_get_uint (value);
@@ -627,22 +694,27 @@ gabble_connection_set_property (GObject      *object,
         {
           gchar *old_resource = priv->resource;
           gchar *new_resource = g_value_dup_string (value);
+          time_t now = time (NULL);
 
           priv->resource = new_resource;
 
           /* Add self presence for new resource... */
           gabble_presence_update (self->self_presence, new_resource,
               self->self_presence->status, self->self_presence->status_message,
-              priv->priority);
+              priv->priority, NULL, now);
           /* ...and remove it for the old one. */
           gabble_presence_update (self->self_presence, old_resource,
-              GABBLE_PRESENCE_OFFLINE, NULL, 0);
+              GABBLE_PRESENCE_OFFLINE, NULL, 0, NULL, now);
 
           g_free (old_resource);
         }
       break;
     case PROP_PRIORITY:
+#if GLIB_CHECK_VERSION (2, 31, 0)
+      priv->priority = g_value_get_schar (value);
+#else
       priv->priority = g_value_get_char (value);
+#endif
       break;
     case PROP_HTTPS_PROXY_SERVER:
       g_free (priv->https_proxy_server);
@@ -699,6 +771,16 @@ gabble_connection_set_property (GObject      *object,
       priv->fallback_server_index = 0;
       break;
 
+    case PROP_EXTRA_CERTIFICATE_IDENTITIES:
+      if (priv->extra_certificate_identities != NULL)
+        g_strfreev (priv->extra_certificate_identities);
+      priv->extra_certificate_identities = g_value_dup_boxed (value);
+      break;
+
+    case PROP_POWER_SAVING:
+      priv->power_saving = g_value_get_boolean (value);
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -707,8 +789,6 @@ gabble_connection_set_property (GObject      *object,
 
 static void gabble_connection_dispose (GObject *object);
 static void gabble_connection_finalize (GObject *object);
-static void connect_callbacks (TpBaseConnection *base);
-static void disconnect_callbacks (TpBaseConnection *base);
 static void connection_shut_down (TpBaseConnection *base);
 static gboolean _gabble_connection_connect (TpBaseConnection *base,
     GError **error);
@@ -745,15 +825,6 @@ _gabble_connection_create_handle_repos (TpBaseConnection *conn,
           conn);
 }
 
-static void
-base_connected_cb (TpBaseConnection *base_conn)
-{
-  GabbleConnection *conn = GABBLE_CONNECTION (base_conn);
-
-  gabble_connection_connected_olpc (conn);
-  gabble_connection_slacker_start (conn);
-}
-
 #define TWICE(x) (x), (x)
 
 static const gchar *implemented_interfaces[] = {
@@ -763,6 +834,7 @@ static const gchar *implemented_interfaces[] = {
     GABBLE_IFACE_OLPC_BUDDY_INFO,
 
     /* always present interfaces */
+    TP_IFACE_CONNECTION_INTERFACE_POWER_SAVING,
     TP_IFACE_CONNECTION_INTERFACE_ALIASING,
     TP_IFACE_CONNECTION_INTERFACE_CAPABILITIES,
     TP_IFACE_CONNECTION_INTERFACE_SIMPLE_PRESENCE,
@@ -778,6 +850,7 @@ static const gchar *implemented_interfaces[] = {
     GABBLE_IFACE_CONNECTION_INTERFACE_GABBLE_DECLOAK,
     GABBLE_IFACE_CONNECTION_FUTURE,
     TP_IFACE_CONNECTION_INTERFACE_CLIENT_TYPES,
+    GABBLE_IFACE_CONNECTION_INTERFACE_ADDRESSING,
     NULL
 };
 static const gchar **interfaces_always_present = implemented_interfaces + 3;
@@ -817,6 +890,10 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
         { "MailAddress", NULL, NULL },
         { NULL }
   };
+  static TpDBusPropertiesMixinPropImpl power_saving_props[] = {
+        { "PowerSavingActive", "power-saving", NULL },
+        { NULL }
+  };
   static TpDBusPropertiesMixinIfaceImpl prop_interfaces[] = {
         /* 0 */ { TP_IFACE_CONNECTION_INTERFACE_LOCATION,
           conn_location_properties_getter,
@@ -843,6 +920,11 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
           NULL,
           mail_notif_props,
         },
+        { TP_IFACE_CONNECTION_INTERFACE_POWER_SAVING,
+          tp_dbus_properties_mixin_getter_gobject_properties,
+          NULL,
+          power_saving_props,
+        },
         { NULL }
   };
 
@@ -861,9 +943,6 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
   parent_class->create_channel_factories = NULL;
   parent_class->create_channel_managers =
     _gabble_connection_create_channel_managers;
-  parent_class->connecting = connect_callbacks;
-  parent_class->connected = base_connected_cb;
-  parent_class->disconnected = disconnect_callbacks;
   parent_class->shut_down = connection_shut_down;
   parent_class->start_connecting = _gabble_connection_connect;
   parent_class->interfaces_always_present = interfaces_always_present;
@@ -878,6 +957,20 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
       g_param_spec_string (
           "connect-server", "Hostname or IP of Jabber server",
           "The server used when establishing a connection.",
+          NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+  /*
+   * The explicit-server property can be used for verification of a
+   * server certificate. It's important that it comes from the user
+   * and is not the result of any other outside lookup, unlike the
+   * connect-server property.
+   */
+
+  g_object_class_install_property (object_class, PROP_EXPLICIT_SERVER,
+      g_param_spec_string (
+          "explicit-server", "Explicit Hostname or IP of Jabber server",
+          "Server explicitly specified by the user to connect to.",
           NULL,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -1052,6 +1145,35 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
         G_TYPE_STRV,
         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (object_class,
+      PROP_EXTRA_CERTIFICATE_IDENTITIES,
+      g_param_spec_boxed (
+        "extra-certificate-identities",
+        "Extra Certificate Reference Identities",
+        "Extra identities to check certificate against. These are present as a "
+        "result of a user choice or configuration.",
+        G_TYPE_STRV,
+        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (
+      object_class, PROP_POWER_SAVING,
+      g_param_spec_boolean (
+          "power-saving", "Power saving active?",
+          "Queue remote presence updates server-side for less network chatter",
+          FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  /**
+   * @self: a connection
+   * @porter: a porter
+   *
+   * Emitted when the WockyPorter becomes available.
+   */
+  sig_id_porter_available = g_signal_new ("porter-available",
+      G_OBJECT_CLASS_TYPE (gabble_connection_class),
+      G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED, 0, NULL, NULL,
+      g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, WOCKY_TYPE_PORTER);
+
   gabble_connection_class->properties_class.interfaces = prop_interfaces;
   tp_dbus_properties_mixin_class_init (object_class,
       G_STRUCT_OFFSET (GabbleConnectionClass, properties_class));
@@ -1101,15 +1223,12 @@ gabble_connection_dispose (GObject *object)
 
   conn_olpc_activity_properties_dispose (self);
 
-  g_hash_table_destroy (self->avatar_requests);
-  g_hash_table_destroy (self->vcard_requests);
+  g_hash_table_unref (self->avatar_requests);
+  g_hash_table_unref (self->vcard_requests);
 
   conn_presence_dispose (self);
 
   conn_mail_notif_dispose (self);
-
-  g_assert (priv->iq_disco_cb == NULL);
-  g_assert (priv->iq_unknown_cb == NULL);
 
   tp_clear_object (&priv->connector);
   tp_clear_object (&self->session);
@@ -1118,12 +1237,14 @@ gabble_connection_dispose (GObject *object)
   priv->porter = NULL;
   tp_clear_pointer (&self->lmconn, lm_connection_unref);
 
-  g_hash_table_destroy (priv->client_caps);
+  g_hash_table_unref (priv->client_caps);
   gabble_capability_set_free (priv->all_caps);
   gabble_capability_set_free (priv->notify_caps);
   gabble_capability_set_free (priv->legacy_caps);
   gabble_capability_set_free (priv->sidecar_caps);
   gabble_capability_set_free (priv->bonus_caps);
+
+  g_hash_table_unref (priv->client_data_forms);
 
   if (priv->disconnect_timer != 0)
     {
@@ -1155,6 +1276,7 @@ gabble_connection_finalize (GObject *object)
   DEBUG ("called with %p", object);
 
   g_free (priv->connect_server);
+  g_free (priv->explicit_server);
   g_free (priv->stream_server);
   g_free (priv->username);
   g_free (priv->password);
@@ -1166,6 +1288,7 @@ gabble_connection_finalize (GObject *object)
   g_free (priv->fallback_conference_server);
   g_strfreev (priv->fallback_socks5_proxies);
   g_strfreev (priv->fallback_servers);
+  g_strfreev (priv->extra_certificate_identities);
 
   g_free (priv->alias);
   g_free (priv->stream_id);
@@ -1195,19 +1318,16 @@ _gabble_connection_set_properties_from_account (GabbleConnection *conn,
                                                 const gchar      *account,
                                                 GError          **error)
 {
-  GabbleConnectionPrivate *priv;
   char *username, *server, *resource;
   gboolean result;
 
   g_assert (GABBLE_IS_CONNECTION (conn));
   g_assert (account != NULL);
 
-  priv = conn->priv;
-
   username = server = resource = NULL;
   result = TRUE;
 
-  if (!gabble_decode_jid (account, &username, &server, &resource))
+  if (!wocky_decode_jid (account, &username, &server, &resource))
     {
       g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
           "unable to extract JID from account name");
@@ -1247,12 +1367,12 @@ gabble_connection_get_full_jid (GabbleConnection *conn)
 }
 
 /**
- * gabble_connection_get_porter:
+ * gabble_connection_dup_porter:
  *
- * Returns: the #WockyPorter instance driving this connection.
+ * Returns: (transfer full): the #WockyPorter instance driving this connection.
  */
 
-WockyPorter *gabble_connection_get_porter (GabbleConnection *conn)
+WockyPorter *gabble_connection_dup_porter (GabbleConnection *conn)
 {
   GabbleConnectionPrivate *priv;
 
@@ -1266,6 +1386,14 @@ WockyPorter *gabble_connection_get_porter (GabbleConnection *conn)
   return NULL;
 }
 
+WockySession *
+gabble_connection_get_session (GabbleConnection *connection)
+{
+  g_return_val_if_fail (GABBLE_IS_CONNECTION (connection), NULL);
+
+  return connection->session;
+}
+
 /**
  * _gabble_connection_send
  *
@@ -1274,30 +1402,29 @@ WockyPorter *gabble_connection_get_porter (GabbleConnection *conn)
 gboolean
 _gabble_connection_send (GabbleConnection *conn, LmMessage *msg, GError **error)
 {
-  GError *lmerror = NULL;
-
   g_assert (GABBLE_IS_CONNECTION (conn));
 
-  if (conn->lmconn == NULL)
+  if (conn->lmconn == NULL || conn->priv->porter == NULL)
     {
       g_set_error_literal (error, TP_ERRORS, TP_ERROR_NETWORK_ERROR,
               "connection is disconnected");
       return FALSE;
     }
 
-  if (!lm_connection_send (conn->lmconn, msg, &lmerror))
-    {
-      DEBUG ("failed: %s", lmerror->message);
-
-      g_set_error (error, TP_ERRORS, TP_ERROR_NETWORK_ERROR,
-          "message send failed: %s", lmerror->message);
-
-      g_error_free (lmerror);
-
-      return FALSE;
-    }
-
+  wocky_porter_send (conn->priv->porter, msg);
   return TRUE;
+}
+
+void
+gabble_connection_update_last_use (GabbleConnection *conn)
+{
+  conn->priv->last_activity_time = time (NULL);
+}
+
+static gdouble
+gabble_connection_get_last_use (GabbleConnection *conn)
+{
+  return difftime (time (NULL), conn->priv->last_activity_time);
 }
 
 typedef struct {
@@ -1388,7 +1515,6 @@ _gabble_connection_send_with_reply (GabbleConnection *conn,
                                     gpointer user_data,
                                     GError **error)
 {
-  GabbleConnectionPrivate *priv;
   LmMessageHandler *handler;
   GabbleMsgHandlerData *handler_data;
   gboolean ret;
@@ -1402,8 +1528,6 @@ _gabble_connection_send_with_reply (GabbleConnection *conn,
               "connection is disconnected");
       return FALSE;
     }
-
-  priv = conn->priv;
 
   lm_message_ref (msg);
 
@@ -1444,10 +1568,10 @@ _gabble_connection_send_with_reply (GabbleConnection *conn,
   return ret;
 }
 
-static LmHandlerResult connection_iq_disco_cb (LmMessageHandler *,
-    LmConnection *, LmMessage *, gpointer);
-static LmHandlerResult connection_iq_unknown_cb (LmMessageHandler *,
-    LmConnection *, LmMessage *, gpointer);
+static void connect_iq_callbacks (GabbleConnection *conn);
+static gboolean iq_disco_cb (WockyPorter *, WockyStanza *, gpointer);
+static gboolean iq_version_cb (WockyPorter *, WockyStanza *, gpointer);
+static gboolean iq_unknown_cb (WockyPorter *, WockyStanza *, gpointer);
 static void connection_disco_cb (GabbleDisco *, GabbleDiscoRequest *,
     const gchar *, const gchar *, LmMessageNode *, GError *, gpointer);
 static void decrement_waiting_connected (GabbleConnection *connection);
@@ -1548,12 +1672,11 @@ connector_error_disconnect (GabbleConnection *self,
   GError *tp_error = NULL;
   TpBaseConnection *base = (TpBaseConnection *) self;
   TpConnectionStatusReason reason = TP_CONNECTION_STATUS_REASON_NETWORK_ERROR;
+  gchar *dbus_error = NULL;
+  GHashTable *details = NULL;
 
   if (error->domain == GABBLE_SERVER_TLS_ERROR)
     {
-      gchar *dbus_error = NULL;
-      GHashTable *details = NULL;
-
       gabble_server_tls_manager_get_rejection_details (
           self->priv->server_tls_manager, &dbus_error, &details, &reason);
 
@@ -1567,6 +1690,21 @@ connector_error_disconnect (GabbleConnection *self,
       tp_clear_pointer (&details, g_hash_table_unref);
       g_free (dbus_error);
 
+      return;
+    }
+
+  if (error->domain == WOCKY_AUTH_ERROR &&
+      gabble_auth_manager_get_failure_details (self->priv->auth_manager,
+        &dbus_error, &details, &reason))
+    {
+      DEBUG ("Interactive authentication error, reason %u, dbus error %s",
+          reason, dbus_error);
+
+      tp_base_connection_disconnect_with_dbus_error (base, dbus_error,
+          details, reason);
+
+      tp_clear_pointer (&details, g_hash_table_unref);
+      g_free (dbus_error);
       return;
     }
 
@@ -1671,11 +1809,13 @@ next_fallback_server (GabbleConnection *self,
       return FALSE;
     }
 
-  g_object_set (self,
-      "connect-server", g_network_address_get_hostname (addr),
-      "port", g_network_address_get_port (addr),
-      "old-ssl", old_ssl,
-      NULL);
+  g_free (priv->connect_server);
+  priv->connect_server = g_strdup (g_network_address_get_hostname (addr));
+  priv->port = g_network_address_get_port (addr);
+  priv->old_ssl = old_ssl;
+  g_object_notify (G_OBJECT (self), "connect-server");
+  g_object_notify (G_OBJECT (self), "port");
+  g_object_notify (G_OBJECT (self), "old-ssl");
 
   g_object_unref (addr);
 
@@ -1733,9 +1873,12 @@ connector_connected (GabbleConnection *self,
 
   DEBUG ("connected (jid: %s)", jid);
 
-  self->session = wocky_session_new (conn, jid);
+  self->session = wocky_session_new_with_connection (conn, jid);
   priv->porter = wocky_session_get_porter (self->session);
-  priv->pinger = wocky_ping_new (priv->porter, priv->keepalive_interval);
+
+  g_assert (WOCKY_IS_C2S_PORTER (priv->porter));
+  priv->pinger = wocky_ping_new (WOCKY_C2S_PORTER (priv->porter),
+      priv->keepalive_interval);
 
   g_signal_connect (priv->porter, "remote-closed",
       G_CALLBACK (remote_closed_cb), self);
@@ -1743,6 +1886,8 @@ connector_connected (GabbleConnection *self,
       G_CALLBACK (remote_error_cb), self);
 
   lm_connection_set_porter (self->lmconn, priv->porter);
+  g_signal_emit (self, sig_id_porter_available, 0, priv->porter);
+  connect_iq_callbacks (self);
 
   wocky_pep_service_start (self->pep_location, self->session);
   wocky_pep_service_start (self->pep_nick, self->session);
@@ -1876,44 +2021,69 @@ connector_register_cb (GObject *source,
   g_free (jid);
 }
 
-static void
-connect_callbacks (TpBaseConnection *base)
+static gboolean
+connection_iq_last_cb (
+    WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
 {
-  GabbleConnection *conn = GABBLE_CONNECTION (base);
-  GabbleConnectionPrivate *priv = conn->priv;
+  GabbleConnection *self = GABBLE_CONNECTION (user_data);
+  const gchar *from = wocky_stanza_get_from (stanza);
+  /* Aside from 21 being an appropriate number, 2 ^ 64 is 20 digits long. */
+  char seconds[21];
 
-  g_assert (priv->iq_disco_cb == NULL);
-  g_assert (priv->iq_unknown_cb == NULL);
+  /* Check if the peer, if any, is authorized to receive our presence. */
+  if (from != NULL)
+    {
+      TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
+          (TpBaseConnection *) self, TP_HANDLE_TYPE_CONTACT);
+      TpHandle handle = tp_handle_lookup (contact_repo, from, NULL, NULL);
 
-  priv->iq_disco_cb = lm_message_handler_new (connection_iq_disco_cb,
-                                              conn, NULL);
-  lm_connection_register_message_handler (conn->lmconn, priv->iq_disco_cb,
-                                          LM_MESSAGE_TYPE_IQ,
-                                          LM_HANDLER_PRIORITY_NORMAL);
+      /* If there's no handle for them, they're certainly not on the roster. */
+      if (handle == 0 ||
+          !gabble_roster_handle_gets_presence_from_us (self->roster, handle))
+        {
+          wocky_porter_send_iq_error (porter, stanza,
+              WOCKY_XMPP_ERROR_FORBIDDEN, NULL);
+          return TRUE;
+        }
+    }
 
-  priv->iq_unknown_cb = lm_message_handler_new (connection_iq_unknown_cb,
-                                            conn, NULL);
-  lm_connection_register_message_handler (conn->lmconn, priv->iq_unknown_cb,
-                                          LM_MESSAGE_TYPE_IQ,
-                                          LM_HANDLER_PRIORITY_LAST);
+  sprintf (seconds, "%.0f", gabble_connection_get_last_use (self));
+  wocky_porter_acknowledge_iq (porter, stanza,
+      '(', "query", ':', NS_LAST, '@', "seconds", seconds, ')',
+      NULL);
+  return TRUE;
 }
 
 static void
-disconnect_callbacks (TpBaseConnection *base)
+connect_iq_callbacks (GabbleConnection *conn)
 {
-  GabbleConnection *conn = GABBLE_CONNECTION (base);
   GabbleConnectionPrivate *priv = conn->priv;
 
-  g_assert (priv->iq_disco_cb != NULL);
-  g_assert (priv->iq_unknown_cb != NULL);
+  wocky_porter_register_handler_from_anyone (priv->porter,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+      iq_disco_cb, conn,
+      '(', "query", ':', NS_DISCO_INFO, ')', NULL);
 
-  lm_connection_unregister_message_handler (conn->lmconn, priv->iq_disco_cb,
-                                            LM_MESSAGE_TYPE_IQ);
-  tp_clear_pointer (&priv->iq_disco_cb, lm_message_handler_unref);
+  wocky_porter_register_handler_from_anyone (priv->porter,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+      iq_version_cb, conn,
+      '(', "query", ':', NS_VERSION, ')', NULL);
 
-  lm_connection_unregister_message_handler (conn->lmconn, priv->iq_unknown_cb,
-                                            LM_MESSAGE_TYPE_IQ);
-  tp_clear_pointer (&priv->iq_unknown_cb, lm_message_handler_unref);
+  wocky_porter_register_handler_from_anyone (priv->porter,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+      connection_iq_last_cb, conn,
+      '(', "query", ':', NS_LAST, ')', NULL);
+
+  /* FIXME: the porter should do this for us. */
+  wocky_porter_register_handler_from_anyone (priv->porter,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE,
+      WOCKY_PORTER_HANDLER_PRIORITY_MIN,
+      iq_unknown_cb, conn, NULL);
 }
 
 /**
@@ -1948,12 +2118,14 @@ _gabble_connection_connect (TpBaseConnection *base,
   jid = gabble_encode_jid (priv->username, priv->stream_server, NULL);
   tls_handler = WOCKY_TLS_HANDLER (priv->server_tls_manager);
   priv->connector = wocky_connector_new (jid, priv->password, priv->resource,
-      gabble_auth_manager_get_auth_registry (priv->auth_manager),
+      WOCKY_AUTH_REGISTRY (priv->auth_manager),
       tls_handler);
   g_free (jid);
 
+#ifdef GTLS_SYSTEM_CA_CERTIFICATES
   /* system certs */
-  wocky_tls_handler_add_ca (tls_handler, CA_CERTIFICATES_PATH);
+  wocky_tls_handler_add_ca (tls_handler, GTLS_SYSTEM_CA_CERTIFICATES);
+#endif
 
   /* user certs */
   user_certs_dir = g_build_filename (g_get_user_config_dir (),
@@ -2110,10 +2282,6 @@ connection_shut_down (TpBaseConnection *base)
   GabbleConnection *self = GABBLE_CONNECTION (base);
   GabbleConnectionPrivate *priv = self->priv;
 
-  /* Regardless of whether disconnection is already in progress, we still want
-   * to stop listening to the slacker and pinging the remote server.
-   */
-  gabble_connection_slacker_stop (self);
   tp_clear_object (&priv->pinger);
 
   if (priv->closing)
@@ -2167,7 +2335,8 @@ gabble_connection_fill_in_caps (GabbleConnection *self,
 
   /* Ensure this set of capabilities is in the cache. */
   gabble_presence_cache_add_own_caps (self->presence_cache, caps_hash,
-      gabble_presence_peek_caps (presence), NULL);
+      gabble_presence_peek_caps (presence), NULL,
+      gabble_presence_peek_data_forms (presence));
 
   /* XEP-0115 deprecates 'ext' feature bundles. But we still need
    * BUNDLE_VOICE_V1 it for backward-compatibility with Gabble 0.2 */
@@ -2184,8 +2353,10 @@ gabble_connection_fill_in_caps (GabbleConnection *self,
   if (voice_v1)
     g_string_append (ext, " " BUNDLE_VOICE_V1);
 
-  if (video_v1)
+  if (video_v1) {
     g_string_append (ext, " " BUNDLE_VIDEO_V1);
+    g_string_append (ext, " " BUNDLE_CAMERA_V1);
+  }
 
   lm_message_node_set_attribute (node, "ext", ext->str);
   g_string_free (ext, TRUE);
@@ -2263,9 +2434,12 @@ gabble_connection_refresh_capabilities (GabbleConnection *self,
   GHashTableIter iter;
   gpointer k, v;
   GabbleCapabilitySet *save_set;
+  GPtrArray *data_forms;
 
   save_set = self->priv->all_caps;
   self->priv->all_caps = gabble_capability_set_new ();
+
+  data_forms = g_ptr_array_new ();
 
   gabble_capability_set_update (self->priv->all_caps,
       gabble_capabilities_get_fixed_caps ());
@@ -2274,6 +2448,7 @@ gabble_connection_refresh_capabilities (GabbleConnection *self,
   gabble_capability_set_update (self->priv->all_caps, self->priv->sidecar_caps);
   gabble_capability_set_update (self->priv->all_caps, self->priv->bonus_caps);
 
+  /* first, normal caps */
   g_hash_table_iter_init (&iter, self->priv->client_caps);
 
   while (g_hash_table_iter_next (&iter, &k, &v))
@@ -2289,13 +2464,22 @@ gabble_connection_refresh_capabilities (GabbleConnection *self,
       gabble_capability_set_update (self->priv->all_caps, v);
     }
 
+  /* now data forms */
+  g_hash_table_iter_init (&iter, self->priv->client_data_forms);
+
+  /* just borrow the ref, data_forms doesn't have a free func */
+  while (g_hash_table_iter_next (&iter, &k, &v))
+    tp_g_ptr_array_extend (data_forms, v);
+
   if (self->self_presence != NULL)
     gabble_presence_set_capabilities (self->self_presence,
-        self->priv->resource, self->priv->all_caps, self->priv->caps_serial++);
+        self->priv->resource, self->priv->all_caps, data_forms,
+        self->priv->caps_serial++);
 
   if (gabble_capability_set_equals (self->priv->all_caps, save_set))
     {
       gabble_capability_set_free (save_set);
+      g_ptr_array_unref (data_forms);
       DEBUG ("nothing to do");
       return FALSE;
     }
@@ -2304,6 +2488,7 @@ gabble_connection_refresh_capabilities (GabbleConnection *self,
   if (base->status != TP_CONNECTION_STATUS_CONNECTED)
     {
       gabble_capability_set_free (save_set);
+      g_ptr_array_unref (data_forms);
       DEBUG ("not emitting self-presence stanza: not connected yet");
       return FALSE;
     }
@@ -2311,6 +2496,7 @@ gabble_connection_refresh_capabilities (GabbleConnection *self,
   if (!conn_presence_signal_own_presence (self, NULL, &error))
     {
       gabble_capability_set_free (save_set);
+      g_ptr_array_unref (data_forms);
       DEBUG ("error sending presence: %s", error->message);
       g_error_free (error);
       return FALSE;
@@ -2320,6 +2506,8 @@ gabble_connection_refresh_capabilities (GabbleConnection *self,
     gabble_capability_set_free (save_set);
   else
     *old_out = save_set;
+
+  g_ptr_array_unref (data_forms);
 
   return TRUE;
 }
@@ -2415,43 +2603,35 @@ add_identity_node (const GabbleDiscoIdentity *identity,
 }
 
 /**
- * connection_iq_disco_cb
+ * iq_disco_cb
  *
- * Called by loudmouth when we get an incoming <iq>. This handler handles
- * disco-related IQs.
+ * Called by Wocky when we get an incoming <iq> with a <query xmlns="disco#info">
+ * node. This handler handles disco-related IQs.
  */
-static LmHandlerResult
-connection_iq_disco_cb (LmMessageHandler *handler,
-                        LmConnection *connection,
-                        LmMessage *message,
-                        gpointer user_data)
+static gboolean
+iq_disco_cb (WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
 {
   GabbleConnection *self = GABBLE_CONNECTION (user_data);
-  LmMessage *result;
-  LmMessageNode *iq, *result_iq, *query, *result_query, *identity;
+  WockyStanza *result;
+  WockyNode *query, *result_query;
   const gchar *node, *suffix;
   const GabbleCapabilityInfo *info = NULL;
   const GabbleCapabilitySet *features = NULL;
   const GPtrArray *identities = NULL;
+  const GPtrArray *data_forms = NULL;
 
-  if (lm_message_get_sub_type (message) != LM_MESSAGE_SUB_TYPE_GET)
-    return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
-
-  iq = lm_message_get_node (message);
-  query = lm_message_node_get_child_with_namespace (iq, "query",
-      NS_DISCO_INFO);
-
-  if (!query)
-    return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
-
-  node = lm_message_node_get_attribute (query, "node");
+  /* query's existence is checked by WockyPorter before this function is called */
+  query = wocky_node_get_child (wocky_stanza_get_top_node (stanza), "query");
+  node = wocky_node_get_attribute (query, "node");
 
   if (node && (
       0 != strncmp (node, NS_GABBLE_CAPS "#", strlen (NS_GABBLE_CAPS) + 1) ||
       strlen (node) < strlen (NS_GABBLE_CAPS) + 2))
     {
-      NODE_DEBUG (iq, "got iq disco query with unexpected node attribute");
-      return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
+      STANZA_DEBUG (stanza, "got iq disco query with unexpected node attribute");
+      return FALSE;
     }
 
   if (node == NULL)
@@ -2459,35 +2639,36 @@ connection_iq_disco_cb (LmMessageHandler *handler,
   else
     suffix = node + strlen (NS_GABBLE_CAPS) + 1;
 
-  result = lm_iq_message_make_result (message);
+  result = wocky_stanza_build_iq_result (stanza,
+      '(', "query", ':', NS_DISCO_INFO, '*', &result_query, ')', NULL);
 
   /* If we get an IQ without an id='', there's not much we can do. */
   if (result == NULL)
-    return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
-
-  result_iq = lm_message_get_node (result);
-  result_query = lm_message_node_add_child (result_iq, "query", NULL);
-  lm_message_node_set_attribute (result_query, "xmlns", NS_DISCO_INFO);
+    return FALSE;
 
   if (node)
-    lm_message_node_set_attribute (result_query, "node", node);
-
-  DEBUG ("got disco request for node %s", node);
+    wocky_node_set_attribute (result_query, "node", node);
 
   if (node == NULL)
-    features = gabble_presence_peek_caps (self->self_presence);
-  /* If node is not NULL, it can be either a caps bundle as defined in the
-   * legacy XEP-0115 version 1.3 or an hash as defined in XEP-0115 version
-   * 1.5. Let's see if it's a verification string we've told the cache about.
-   */
+    {
+      features = gabble_presence_peek_caps (self->self_presence);
+      data_forms = gabble_presence_peek_data_forms (self->self_presence);
+    }
   else
-    info = gabble_presence_cache_peek_own_caps (self->presence_cache,
-        suffix);
+    {
+      /* If node is not NULL, it can be either a caps bundle as defined in the
+       * legacy XEP-0115 version 1.3 or an hash as defined in XEP-0115 version
+       * 1.5. Let's see if it's a verification string we've told the cache about.
+       */
+      info = gabble_presence_cache_peek_own_caps (self->presence_cache,
+          suffix);
+    }
 
   if (info)
     {
       features = info->cap_set;
       identities = info->identities;
+      data_forms = info->data_forms;
     }
 
   if (identities && identities->len != 0)
@@ -2497,14 +2678,15 @@ connection_iq_disco_cb (LmMessageHandler *handler,
     }
   else
     {
-      /* Every entity MUST have at least one identity (XEP-0030). Gabble publishs
+      /* Every entity MUST have at least one identity (XEP-0030). Gabble publishes
        * one identity. If you change the identity here, you also need to change
        * caps_hash_compute_from_self_presence(). */
-      identity = lm_message_node_add_child
-          (result_query, "identity", NULL);
-      lm_message_node_set_attribute (identity, "category", "client");
-      lm_message_node_set_attribute (identity, "name", PACKAGE_STRING);
-      lm_message_node_set_attribute (identity, "type", CLIENT_TYPE);
+      wocky_node_add_build (result_query,
+        '(', "identity",
+          '@', "category", "client",
+          '@', "name", PACKAGE_STRING,
+          '@', "type", CLIENT_TYPE,
+        ')', NULL);
     }
 
   if (features == NULL)
@@ -2525,9 +2707,21 @@ connection_iq_disco_cb (LmMessageHandler *handler,
         features = gabble_capabilities_get_bundle_video_v1 ();
     }
 
+  if (data_forms != NULL)
+    {
+      guint i;
+
+      for (i = 0; i < data_forms->len; i++)
+        {
+          WockyDataForm *form = g_ptr_array_index (data_forms, i);
+
+          wocky_data_form_add_to_node (form, result_query);
+        }
+    }
+
   if (features == NULL && tp_strdiff (suffix, BUNDLE_PMUC_V1))
     {
-      _gabble_connection_send_iq_error (self, message,
+      _gabble_connection_send_iq_error (self, stanza,
           XMPP_ERROR_ITEM_NOT_FOUND, NULL);
     }
   else
@@ -2539,50 +2733,64 @@ connection_iq_disco_cb (LmMessageHandler *handler,
               result_query);
         }
 
-      NODE_DEBUG (result_iq, "sending disco response");
-
-      if (!lm_connection_send (self->lmconn, result, NULL))
-        {
-          DEBUG ("sending disco response failed");
-        }
+      wocky_porter_send (self->priv->porter, result);
     }
 
-  lm_message_unref (result);
+  g_object_unref (result);
 
-  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+  return TRUE;
+}
+
+static gboolean
+iq_version_cb (WockyPorter *porter, WockyStanza *stanza, gpointer user_data)
+{
+  WockyStanza *result;
+
+  result = wocky_stanza_build_iq_result (stanza,
+      '(', "query", ':', NS_VERSION,
+        '(', "name", '$', PACKAGE_NAME, ')',
+        '(', "version", '$', PACKAGE_VERSION, ')',
+      ')', NULL);
+
+  if (result == NULL)
+    return FALSE;
+
+  wocky_porter_send (porter, result);
+
+  g_object_unref ((GObject *) result);
+
+  return TRUE;
 }
 
 /**
- * connection_iq_unknown_cb
+ * iq_unknown_cb
  *
- * Called by loudmouth when we get an incoming <iq>. This handler is
+ * Called by Wocky when we get an incoming <iq>. This handler is
  * at a lower priority than the others, and should reply with an error
  * about unsupported get/set attempts.
  */
-static LmHandlerResult
-connection_iq_unknown_cb (LmMessageHandler *handler,
-                          LmConnection *connection,
-                          LmMessage *message,
-                          gpointer user_data)
+static gboolean
+iq_unknown_cb (WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
 {
   GabbleConnection *conn = GABBLE_CONNECTION (user_data);
+  WockyStanzaSubType subtype;
 
-  g_assert (connection == conn->lmconn);
+  wocky_stanza_get_type_info (stanza, NULL, &subtype);
 
-  STANZA_DEBUG (message, "got unknown iq");
-
-  switch (lm_message_get_sub_type (message))
+  switch (subtype)
     {
-    case LM_MESSAGE_SUB_TYPE_GET:
-    case LM_MESSAGE_SUB_TYPE_SET:
-      _gabble_connection_send_iq_error (conn, message,
+    case WOCKY_STANZA_SUB_TYPE_GET:
+    case WOCKY_STANZA_SUB_TYPE_SET:
+      _gabble_connection_send_iq_error (conn, stanza,
           XMPP_ERROR_SERVICE_UNAVAILABLE, NULL);
-      break;
+      return TRUE;
     default:
       break;
     }
 
-  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+  return FALSE;
 }
 
 /**
@@ -2597,6 +2805,13 @@ set_status_to_connected (GabbleConnection *conn)
 {
   TpBaseConnection *base = (TpBaseConnection *) conn;
 
+  if (base->status == TP_CONNECTION_STATUS_DISCONNECTED)
+    {
+      /* We already failed to connect, but at the time an async thing was
+       * still pending, and now it has finished. Do nothing special. */
+      return;
+    }
+
   if (conn->features & GABBLE_CONNECTION_FEATURES_PEP)
     {
       const gchar *ifaces[] = { GABBLE_IFACE_OLPC_BUDDY_INFO,
@@ -2610,6 +2825,14 @@ set_status_to_connected (GabbleConnection *conn)
     {
        const gchar *ifaces[] =
          { TP_IFACE_CONNECTION_INTERFACE_MAIL_NOTIFICATION, NULL };
+
+      tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
+    }
+
+  if (tp_base_contact_list_can_block (gabble_connection_get_contact_list (conn)))
+    {
+      const gchar *ifaces[] =
+        { TP_IFACE_CONNECTION_INTERFACE_CONTACT_BLOCKING, NULL };
 
       tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
     }
@@ -2637,18 +2860,14 @@ connection_disco_cb (GabbleDisco *disco,
                      GError *disco_error,
                      gpointer user_data)
 {
-  GabbleConnection *conn = user_data;
+  GabbleConnection *conn = GABBLE_CONNECTION (user_data);
   TpBaseConnection *base = (TpBaseConnection *) conn;
-  GabbleConnectionPrivate *priv;
 
   if (base->status != TP_CONNECTION_STATUS_CONNECTING)
     {
       g_assert (base->status == TP_CONNECTION_STATUS_DISCONNECTED);
       return;
     }
-
-  g_assert (GABBLE_IS_CONNECTION (conn));
-  priv = conn->priv;
 
   if (disco_error)
     {
@@ -2703,6 +2922,10 @@ connection_disco_cb (GabbleDisco *disco,
                 conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_MAIL_NOTIFY;
               else if (0 == strcmp (var, NS_GOOGLE_SHARED_STATUS))
                 conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_SHARED_STATUS;
+              else if (0 == strcmp (var, NS_GOOGLE_QUEUE))
+                conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_QUEUE;
+              else if (0 == strcmp (var, NS_GOOGLE_SETTING))
+                conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_SETTING;
             }
         }
 
@@ -2788,11 +3011,11 @@ gabble_connection_build_contact_caps (
 
   while (tp_base_connection_channel_manager_iter_next (&iter, &manager))
     {
-      /* all channel managers must implement the capability interface */
-      g_assert (GABBLE_IS_CAPS_CHANNEL_MANAGER (manager));
-
-      gabble_caps_channel_manager_get_contact_capabilities (
-          GABBLE_CAPS_CHANNEL_MANAGER (manager), handle, caps, ret);
+      if (GABBLE_IS_CAPS_CHANNEL_MANAGER (manager))
+        {
+          gabble_caps_channel_manager_get_contact_capabilities (
+              GABBLE_CAPS_CHANNEL_MANAGER (manager), handle, caps, ret);
+        }
     }
 
   return ret;
@@ -2863,7 +3086,7 @@ _emit_capabilities_changed (GabbleConnection *conn,
       g_boxed_free (TP_STRUCT_TYPE_CAPABILITY_CHANGE,
           g_ptr_array_index (caps_arr, i));
     }
-  g_ptr_array_free (caps_arr, TRUE);
+  g_ptr_array_unref (caps_arr);
 
   /* o.f.T.C.ContactCapabilities */
   caps_arr = gabble_connection_build_contact_caps (conn, handle, new_set);
@@ -2875,14 +3098,24 @@ _emit_capabilities_changed (GabbleConnection *conn,
   tp_svc_connection_interface_contact_capabilities_emit_contact_capabilities_changed (
       conn, hash);
 
-  g_hash_table_destroy (hash);
+  g_hash_table_unref (hash);
 }
 
-/**
+static const GabbleCapabilitySet *
+empty_caps_set (void)
+{
+  static GabbleCapabilitySet *empty = NULL;
+
+  if (G_UNLIKELY (empty == NULL))
+    empty = gabble_capability_set_new ();
+
+  return empty;
+}
+
+/*
  * gabble_connection_get_handle_contact_capabilities:
  *
- * Returns: a set of channel classes representing @handle's capabilities, or
- *          %NULL if unknown.
+ * Returns: an array of channel classes representing @handle's capabilities
  */
 static GPtrArray *
 gabble_connection_get_handle_contact_capabilities (
@@ -2892,7 +3125,6 @@ gabble_connection_get_handle_contact_capabilities (
   TpBaseConnection *base_conn = TP_BASE_CONNECTION (self);
   GabblePresence *p;
   const GabbleCapabilitySet *caps;
-  GPtrArray *arr;
 
   if (handle == base_conn->self_handle)
     p = self->self_presence;
@@ -2900,14 +3132,11 @@ gabble_connection_get_handle_contact_capabilities (
     p = gabble_presence_cache_get (self->presence_cache, handle);
 
   if (p == NULL)
-    {
-      DEBUG ("don't know %u's presence; no caps for them.", handle);
-      return NULL;
-    }
+    caps = empty_caps_set ();
+  else
+    caps = gabble_presence_peek_caps (p);
 
-  caps = gabble_presence_peek_caps (p);
-  arr = gabble_connection_build_contact_caps (self, handle, caps);
-  return arr;
+  return gabble_connection_build_contact_caps (self, handle, caps);
 }
 
 static void
@@ -3038,7 +3267,112 @@ gabble_connection_advertise_capabilities (TpSvcConnectionInterfaceCapabilities *
       context, ret);
 
   g_ptr_array_foreach (ret, (GFunc) g_value_array_free, NULL);
-  g_ptr_array_free (ret, TRUE);
+  g_ptr_array_unref (ret);
+}
+
+static const gchar *
+get_form_type (WockyDataForm *form)
+{
+  WockyDataFormField *field;
+
+  field = g_hash_table_lookup (form->fields,
+      "FORM_TYPE");
+  g_assert (field != NULL);
+
+  return field->raw_value_contents[0];
+}
+
+static const gchar *
+check_form_is_unique (GabbleConnection *self,
+    const gchar *form_type)
+{
+  GHashTableIter iter;
+  gpointer key, value;
+
+  g_hash_table_iter_init (&iter, self->priv->client_data_forms);
+  while (g_hash_table_iter_next (&iter, &key, &value))
+    {
+      const gchar *manager = key;
+      GPtrArray *data_forms = value;
+      guint i;
+
+      if (data_forms == NULL || data_forms->len == 0)
+        continue;
+
+      for (i = 0; i < data_forms->len; i++)
+        {
+          WockyDataForm *form = g_ptr_array_index (data_forms, i);
+
+          if (!tp_strdiff (get_form_type (form), form_type))
+            return manager;
+        }
+    }
+
+  return NULL;
+}
+
+static gboolean
+check_data_form_in_list (GPtrArray *array,
+    const gchar *form_type)
+{
+  guint i;
+
+  for (i = 0; i < array->len; i++)
+    {
+      WockyDataForm *form = g_ptr_array_index (array, i);
+
+      if (!tp_strdiff (get_form_type (form), form_type))
+        return TRUE;
+    }
+
+  return FALSE;
+}
+
+static gboolean
+check_data_form_is_valid (GabbleConnection *self,
+    WockyDataForm *form,
+    GPtrArray *existing_forms)
+{
+  WockyDataFormField *field;
+  const gchar *form_type, *other_client;
+
+  /* We want rid of forms with no FORM_TYPE quickly. */
+  field = g_hash_table_lookup (form->fields, "FORM_TYPE");
+
+  if (field == NULL || tp_str_empty (field->raw_value_contents[0]))
+    {
+      WARNING ("data form with no FORM_TYPE field; ignoring");
+      return FALSE;
+    }
+
+  form_type = field->raw_value_contents[0];
+
+  /* We'll get warnings (potentially bad) if two clients cause a
+   * channel manager to create two data forms with the same FORM_TYPE,
+   * or if multiple channel managers create two data forms with the
+   * same FORM_TYPE, for the same client. This is probably not a
+   * problem in practice given hardly anyone uses data forms in entity
+   * capabilities anyway.  */
+
+  /* We don't want the same data form from another caps channel
+   * manager for this client either */
+  if (check_data_form_in_list (existing_forms, form_type))
+    {
+      WARNING ("duplicate data form '%s' from another channel "
+          "manager; ignoring", form_type);
+      return FALSE;
+    }
+
+  /* And lastly we don't want a form we're already advertising. */
+  other_client = check_form_is_unique (self, form_type);
+  if (other_client != NULL)
+    {
+      WARNING ("Data form '%s' already provided by client "
+          "%s; ignoring", form_type, other_client);
+      return FALSE;
+    }
+
+  return TRUE;
 }
 
 /**
@@ -3056,12 +3390,10 @@ gabble_connection_update_capabilities (
 {
   GabbleConnection *self = GABBLE_CONNECTION (iface);
   TpBaseConnection *base = (TpBaseConnection *) self;
-  GabbleCapabilitySet *old_caps;
+  GabbleCapabilitySet *old_caps = NULL;
   TpChannelManagerIter iter;
   TpChannelManager *manager;
   guint i;
-
-  old_caps = gabble_capability_set_copy (self->priv->all_caps);
 
   /* Now that someone has told us our *actual* capabilities, we can stop
    * advertising spurious caps in initial presence */
@@ -3071,11 +3403,11 @@ gabble_connection_update_capabilities (
 
   while (tp_base_connection_channel_manager_iter_next (&iter, &manager))
     {
-      /* all channel managers must implement the capability interface */
-      g_assert (GABBLE_IS_CAPS_CHANNEL_MANAGER (manager));
-
-      gabble_caps_channel_manager_reset_capabilities (
-          GABBLE_CAPS_CHANNEL_MANAGER (manager));
+      if (GABBLE_IS_CAPS_CHANNEL_MANAGER (manager))
+        {
+          gabble_caps_channel_manager_reset_capabilities (
+              GABBLE_CAPS_CHANNEL_MANAGER (manager));
+        }
     }
 
   DEBUG ("enter");
@@ -3087,10 +3419,12 @@ gabble_connection_update_capabilities (
       const GPtrArray *filters = g_value_get_boxed (va->values + 1);
       const gchar * const * cap_tokens = g_value_get_boxed (va->values + 2);
       GabbleCapabilitySet *cap_set;
+      GPtrArray *data_forms;
 
       g_hash_table_remove (self->priv->client_caps, client_name);
+      g_hash_table_remove (self->priv->client_data_forms, client_name);
 
-      if ((cap_tokens == NULL || cap_tokens[0] != NULL) &&
+      if ((cap_tokens == NULL || cap_tokens[0] == NULL) &&
           filters->len == 0)
         {
           /* no capabilities */
@@ -3099,25 +3433,39 @@ gabble_connection_update_capabilities (
         }
 
       cap_set = gabble_capability_set_new ();
+      data_forms = g_ptr_array_new_with_free_func (
+          (GDestroyNotify) g_object_unref);
 
       tp_base_connection_channel_manager_iter_init (&iter, base);
 
       while (tp_base_connection_channel_manager_iter_next (&iter, &manager))
         {
-          /* all channel managers must implement the capability interface */
-          g_assert (GABBLE_IS_CAPS_CHANNEL_MANAGER (manager));
+          if (GABBLE_IS_CAPS_CHANNEL_MANAGER (manager))
+            {
+              GPtrArray *forms = g_ptr_array_new_with_free_func (
+                  (GDestroyNotify) g_object_unref);
+              guint j;
 
-          gabble_caps_channel_manager_represent_client (
-              GABBLE_CAPS_CHANNEL_MANAGER (manager), client_name, filters,
-              cap_tokens, cap_set);
+              /* First, represent the client... */
+              gabble_caps_channel_manager_represent_client (
+                  GABBLE_CAPS_CHANNEL_MANAGER (manager), client_name, filters,
+                  cap_tokens, cap_set, forms);
+
+              /* Now check the forms... */
+              for (j = 0; j < forms->len; j++)
+                {
+                  WockyDataForm *form = g_ptr_array_index (forms, j);
+
+                  if (check_data_form_is_valid (self, form, data_forms))
+                    g_ptr_array_add (data_forms, g_object_ref (form));
+                }
+
+              g_ptr_array_unref (forms);
+            }
         }
 
-      if (gabble_capability_set_size (cap_set) == 0)
-        {
-          DEBUG ("client %s has no interesting capabilities", client_name);
-          gabble_capability_set_free (cap_set);
-        }
-      else
+      /* first deal with normal caps */
+      if (gabble_capability_set_size (cap_set) > 0)
         {
           if (DEBUGGING)
             {
@@ -3129,6 +3477,33 @@ gabble_connection_update_capabilities (
 
           g_hash_table_insert (self->priv->client_caps, g_strdup (client_name),
               cap_set);
+        }
+      else
+        {
+          DEBUG ("client %s has no interesting capabilities", client_name);
+          gabble_capability_set_free (cap_set);
+        }
+
+      /* now data forms */
+      if (data_forms->len > 0)
+        {
+          guint j;
+
+          /* now print out what forms we have here */
+          DEBUG ("client %s contributes %u data form%s:", client_name,
+              data_forms->len,
+              data_forms->len > 1 ? "s" : "");
+
+          for (j = 0; j < data_forms->len; j++)
+            DEBUG (" - %s", get_form_type (g_ptr_array_index (data_forms, j)));
+
+          g_hash_table_insert (self->priv->client_data_forms,
+              g_strdup (client_name), data_forms);
+        }
+      else
+        {
+          DEBUG ("client %s has no interesting data forms", client_name);
+          g_ptr_array_unref (data_forms);
         }
     }
 
@@ -3260,7 +3635,7 @@ conn_capabilities_fill_contact_attributes (GObject *obj,
     }
 
     if (array != NULL)
-      g_ptr_array_free (array, TRUE);
+      g_ptr_array_unref (array);
 }
 
 static void
@@ -3273,21 +3648,14 @@ conn_contact_capabilities_fill_contact_attributes (GObject *obj,
   for (i = 0; i < contacts->len; i++)
     {
       TpHandle handle = g_array_index (contacts, TpHandle, i);
-      GPtrArray *array;
+      GValue *val = tp_g_value_slice_new_take_boxed (
+          TP_ARRAY_TYPE_REQUESTABLE_CHANNEL_CLASS_LIST,
+          gabble_connection_get_handle_contact_capabilities (self, handle));
 
-      array = gabble_connection_get_handle_contact_capabilities (self, handle);
-
-      if (array != NULL)
-        {
-          GValue *val =  tp_g_value_slice_new (
-            TP_ARRAY_TYPE_REQUESTABLE_CHANNEL_CLASS_LIST);
-
-          g_value_take_boxed (val, array);
-          tp_contacts_mixin_set_contact_attribute (attributes_hash,
-              handle,
-              TP_IFACE_CONNECTION_INTERFACE_CONTACT_CAPABILITIES"/capabilities",
-              val);
-        }
+      tp_contacts_mixin_set_contact_attribute (attributes_hash,
+          handle,
+          TP_IFACE_CONNECTION_INTERFACE_CONTACT_CAPABILITIES"/capabilities",
+          val);
     }
 }
 
@@ -3336,7 +3704,7 @@ gabble_connection_get_capabilities (TpSvcConnectionInterfaceCapabilities *iface,
       g_value_array_free (g_ptr_array_index (ret, i));
     }
 
-  g_ptr_array_free (ret, TRUE);
+  g_ptr_array_unref (ret);
 }
 
 /**
@@ -3374,19 +3742,17 @@ gabble_connection_get_contact_capabilities (
 
   for (i = 0; i < handles->len; i++)
     {
-      GPtrArray *arr;
       TpHandle handle = g_array_index (handles, TpHandle, i);
+      GPtrArray *arr;
 
       arr = gabble_connection_get_handle_contact_capabilities (self, handle);
-
-      if (arr != NULL)
-        g_hash_table_insert (ret, GUINT_TO_POINTER (handle), arr);
+      g_hash_table_insert (ret, GUINT_TO_POINTER (handle), arr);
     }
 
   tp_svc_connection_interface_contact_capabilities_return_from_get_contact_capabilities
       (context, ret);
 
-  g_hash_table_destroy (ret);
+  g_hash_table_unref (ret);
 }
 
 
@@ -3460,7 +3826,7 @@ gabble_connection_send_presence (GabbleConnection *conn,
     lm_message_node_add_own_nick (
         wocky_stanza_get_top_node (message), conn);
 
-  if (!CHECK_STR_EMPTY(status))
+  if (!tp_str_empty (status))
     lm_message_node_add_child (
         wocky_stanza_get_top_node (message), "status", status);
 
@@ -3548,28 +3914,125 @@ gabble_connection_update_sidecar_capabilities (GabbleConnection *self,
     }
 }
 
+/* identities is actually a WockyDiscoIdentityArray */
 gchar *
-gabble_connection_add_sidecar_own_caps (GabbleConnection *self,
+gabble_connection_add_sidecar_own_caps_full (GabbleConnection *self,
     const GabbleCapabilitySet *cap_set,
-    const GPtrArray *identities)
+    const GPtrArray *identities,
+    GPtrArray *data_forms)
 {
   GPtrArray *identities_copy = ((identities == NULL) ?
-      gabble_disco_identity_array_new () :
-      gabble_disco_identity_array_copy (identities));
+      wocky_disco_identity_array_new () :
+      wocky_disco_identity_array_copy (identities));
   gchar *ver;
 
   /* XEP-0030 requires at least 1 identity. We don't need more. */
   if (identities_copy->len == 0)
     g_ptr_array_add (identities_copy,
-        gabble_disco_identity_new ("client", CLIENT_TYPE,
+        wocky_disco_identity_new ("client", CLIENT_TYPE,
             NULL, PACKAGE_STRING));
 
-  ver = gabble_caps_hash_compute (cap_set, identities_copy);
+  ver = gabble_caps_hash_compute_full (cap_set, identities_copy, data_forms);
 
   gabble_presence_cache_add_own_caps (self->presence_cache, ver,
-      cap_set, identities_copy);
+      cap_set, identities_copy, data_forms);
 
-  gabble_disco_identity_array_free (identities_copy);
+  wocky_disco_identity_array_free (identities_copy);
 
   return ver;
+}
+
+gchar *
+gabble_connection_add_sidecar_own_caps (GabbleConnection *self,
+    const GabbleCapabilitySet *cap_set,
+    const GPtrArray *identities)
+{
+  return gabble_connection_add_sidecar_own_caps_full (self, cap_set,
+      identities, NULL);
+}
+
+const gchar *
+gabble_connection_get_jid_for_caps (GabbleConnection *conn,
+    WockyXep0115Capabilities *caps)
+{
+  TpHandle handle;
+  TpBaseConnection *base;
+  TpHandleRepoIface *contact_handles;
+
+  g_return_val_if_fail (GABBLE_IS_CONNECTION (conn), NULL);
+  g_return_val_if_fail (GABBLE_IS_PRESENCE (caps), NULL);
+
+  base = (TpBaseConnection *) conn;
+
+  if ((GabblePresence *) caps == conn->self_presence)
+    {
+      handle = tp_base_connection_get_self_handle (base);
+    }
+  else
+    {
+      handle = gabble_presence_cache_get_handle (conn->presence_cache,
+          (GabblePresence *) caps);
+    }
+
+  contact_handles = tp_base_connection_get_handles (base,
+      TP_HANDLE_TYPE_CONTACT);
+
+  return tp_handle_inspect (contact_handles, handle);
+}
+
+const gchar *
+gabble_connection_pick_best_resource_for_caps (GabbleConnection *connection,
+    const gchar *jid,
+    GabbleCapabilitySetPredicate predicate,
+    gconstpointer user_data)
+{
+  TpBaseConnection *base;
+  TpHandleRepoIface *contact_handles;
+  TpHandle handle;
+  GabblePresence *presence;
+
+  g_return_val_if_fail (GABBLE_IS_CONNECTION (connection), NULL);
+  g_return_val_if_fail (!tp_str_empty (jid), NULL);
+
+  base = (TpBaseConnection *) connection;
+  contact_handles = tp_base_connection_get_handles (base,
+      TP_HANDLE_TYPE_CONTACT);
+
+  handle = tp_handle_ensure (contact_handles, jid,
+      NULL, NULL);
+
+  if (handle == 0)
+    return NULL;
+
+  presence = gabble_presence_cache_get (connection->presence_cache,
+      handle);
+
+  if (presence == NULL)
+    return NULL;
+
+  return gabble_presence_pick_resource_by_caps (presence, 0,
+      predicate, user_data);
+}
+
+TpBaseContactList *
+gabble_connection_get_contact_list (GabbleConnection *connection)
+{
+  g_return_val_if_fail (GABBLE_IS_CONNECTION (connection), NULL);
+
+  return (TpBaseContactList *) connection->roster;
+}
+
+WockyXep0115Capabilities *
+gabble_connection_get_caps (GabbleConnection *connection,
+    TpHandle handle)
+{
+  GabblePresence *presence;
+
+  g_return_val_if_fail (GABBLE_IS_CONNECTION (connection), NULL);
+  g_return_val_if_fail (handle > 0, NULL);
+
+  presence = gabble_presence_cache_get (connection->presence_cache,
+      handle);
+
+  return (WockyXep0115Capabilities *) presence;
 }

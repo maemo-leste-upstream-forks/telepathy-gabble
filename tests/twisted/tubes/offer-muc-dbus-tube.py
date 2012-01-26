@@ -7,14 +7,14 @@ from dbus.connection import Connection
 from dbus.lowlevel import SignalMessage
 
 from servicetest import call_async, EventPattern, assertContains, assertEquals
-from gabbletest import exec_test, acknowledge_iq, elem, make_muc_presence
+from gabbletest import exec_test, acknowledge_iq, elem, make_muc_presence, sync_stream
 import ns
 import constants as cs
 import tubetestutil as t
 
 from twisted.words.xish import xpath
 
-from mucutil import join_muc
+from mucutil import join_muc, echo_muc_presence
 from muctubeutil import get_muc_tubes_channel
 
 sample_parameters = dbus.Dictionary({
@@ -25,11 +25,6 @@ sample_parameters = dbus.Dictionary({
     }, signature='sv')
 
 def check_tube_in_presence(presence, dbus_tube_id, initiator):
-    x_nodes = xpath.queryForNodes('/presence/x[@xmlns="http://jabber.org/'
-            'protocol/muc"]', presence)
-    assert x_nodes is not None
-    assert len(x_nodes) == 1
-
     tubes_nodes = xpath.queryForNodes('/presence/tubes[@xmlns="%s"]'
         % ns.TUBES, presence)
     assert tubes_nodes is not None
@@ -87,14 +82,33 @@ def fire_signal_on_tube(q, tube, chatroom, dbus_stream_id, my_bus_name):
     # being in the message somewhere
     assert my_bus_name in binary
 
-def test(q, bus, conn, stream, access_control):
-    conn.Connect()
+    # Send another big signal which has to be split on 3 stanzas
+    signal = SignalMessage('/', 'foo.bar', 'baz')
+    signal.append('a' * 100000, signature='s')
+    tube.send_message(signal)
 
-    _, iq_event = q.expect_many(
-        EventPattern('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED]),
-        EventPattern('stream-iq', to=None, query_ns='vcard-temp',
-            query_name='vCard'))
+    def wait_for_data(q):
+        event = q.expect('stream-message', to=chatroom,
+            message_type='groupchat')
+
+        data_nodes = xpath.queryForNodes('/message/data[@xmlns="%s"]' % ns.MUC_BYTESTREAM,
+            event.stanza)
+        ibb_data = data_nodes[0]
+
+        return ibb_data['frag']
+
+    frag = wait_for_data(q)
+    assertEquals(frag, 'first')
+
+    frag = wait_for_data(q)
+    assertEquals(frag, 'middle')
+
+    frag = wait_for_data(q)
+    assertEquals(frag, 'last')
+
+def test(q, bus, conn, stream, access_control):
+    iq_event = q.expect('stream-iq', to=None, query_ns='vcard-temp',
+            query_name='vCard')
 
     acknowledge_iq(stream, iq_event.stanza)
 
@@ -378,10 +392,18 @@ def test(q, bus, conn, stream, access_control):
 
     # leave the room
     text_chan.Close()
+
+    # we must echo the MUC presence so the room will actually close
+    # and we should wait to make sure gabble has actually parsed our
+    # echo before trying to rejoin
+    event = q.expect('stream-presence', to='chat2@conf.localhost/test',
+                     presence_type='unavailable')
+    echo_muc_presence(q, stream, event.stanza, 'none', 'participant')
+    sync_stream(q, stream)
+
     q.expect_many(
         EventPattern('dbus-signal', signal='Closed'),
         EventPattern('dbus-signal', signal='ChannelClosed'),
-        EventPattern('stream-presence', presence_type='unavailable')
         )
 
     # rejoin the room

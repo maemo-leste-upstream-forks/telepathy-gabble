@@ -25,18 +25,27 @@
 
 #include "wocky-bare-contact.h"
 #include "wocky-resource-contact.h"
+#include "wocky-ll-contact.h"
 
 G_BEGIN_DECLS
 
 typedef struct _WockyContactFactory WockyContactFactory;
+
+/**
+ * WockyContactFactoryClass:
+ *
+ * The class of a #WockyContactFactory.
+ */
 typedef struct _WockyContactFactoryClass WockyContactFactoryClass;
 typedef struct _WockyContactFactoryPrivate WockyContactFactoryPrivate;
 
 struct _WockyContactFactoryClass {
+  /*<private>*/
   GObjectClass parent_class;
 };
 
 struct _WockyContactFactory {
+  /*<private>*/
   GObject parent;
   WockyContactFactoryPrivate *priv;
 };
@@ -76,6 +85,19 @@ WockyResourceContact * wocky_contact_factory_ensure_resource_contact (
 WockyResourceContact * wocky_contact_factory_lookup_resource_contact (
     WockyContactFactory *factory,
     const gchar *full_jid);
+
+WockyLLContact * wocky_contact_factory_ensure_ll_contact (
+    WockyContactFactory *factory,
+    const gchar *jid);
+
+WockyLLContact * wocky_contact_factory_lookup_ll_contact (
+    WockyContactFactory *factory,
+    const gchar *jid);
+
+void wocky_contact_factory_add_ll_contact (WockyContactFactory *factory,
+    WockyLLContact *contact);
+
+GList * wocky_contact_factory_get_ll_contacts (WockyContactFactory *factory);
 
 G_END_DECLS
 

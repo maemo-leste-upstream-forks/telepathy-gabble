@@ -15,6 +15,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -34,11 +35,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = test-base64$(EXEEXT) test-caps-hash$(EXEEXT) \
-	test-dtube-unique-names$(EXEEXT) \
-	test-gabble-idle-weak$(EXEEXT) test-handles$(EXEEXT) \
-	test-jid-decode$(EXEEXT) test-parse-message$(EXEEXT) \
-	test-presence$(EXEEXT) test-tp-error-from-wocky$(EXEEXT)
+@ENABLE_INSTALLED_TESTS_TRUE@gabbletests_PROGRAMS = $(am__EXEEXT_1)
+@ENABLE_INSTALLED_TESTS_FALSE@noinst_PROGRAMS = $(am__EXEEXT_1)
+TESTS = $(am__EXEEXT_1)
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/tools/check-coding-style.mk
 subdir = tests
@@ -56,7 +55,13 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-PROGRAMS = $(noinst_PROGRAMS)
+am__EXEEXT_1 = test-base64$(EXEEXT) test-dtube-unique-names$(EXEEXT) \
+	test-gabble-idle-weak$(EXEEXT) test-handles$(EXEEXT) \
+	test-jid-decode$(EXEEXT) test-parse-message$(EXEEXT) \
+	test-presence$(EXEEXT) test-tp-error-from-wocky$(EXEEXT)
+am__installdirs = "$(DESTDIR)$(gabbletestsdir)" \
+	"$(DESTDIR)$(gabbletestsdir)"
+PROGRAMS = $(gabbletests_PROGRAMS) $(noinst_PROGRAMS)
 test_base64_SOURCES = test-base64.c
 test_base64_OBJECTS = test-base64.$(OBJEXT)
 test_base64_LDADD = $(LDADD)
@@ -65,11 +70,6 @@ test_base64_DEPENDENCIES =  \
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
-test_caps_hash_SOURCES = test-caps-hash.c
-test_caps_hash_OBJECTS = test-caps-hash.$(OBJEXT)
-test_caps_hash_LDADD = $(LDADD)
-test_caps_hash_DEPENDENCIES =  \
-	$(top_builddir)/src/libgabble-convenience.la
 test_dtube_unique_names_SOURCES = test-dtube-unique-names.c
 test_dtube_unique_names_OBJECTS = test-dtube-unique-names.$(OBJEXT)
 test_dtube_unique_names_LDADD = $(LDADD)
@@ -132,14 +132,14 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = test-base64.c test-caps-hash.c test-dtube-unique-names.c \
+SOURCES = test-base64.c test-dtube-unique-names.c \
 	test-gabble-idle-weak.c test-handles.c test-jid-decode.c \
 	test-parse-message.c test-presence.c \
 	$(test_tp_error_from_wocky_SOURCES)
-DIST_SOURCES = test-base64.c test-caps-hash.c \
-	test-dtube-unique-names.c test-gabble-idle-weak.c \
-	test-handles.c test-jid-decode.c test-parse-message.c \
-	test-presence.c $(test_tp_error_from_wocky_SOURCES)
+DIST_SOURCES = test-base64.c test-dtube-unique-names.c \
+	test-gabble-idle-weak.c test-handles.c test-jid-decode.c \
+	test-parse-message.c test-presence.c \
+	$(test_tp_error_from_wocky_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -147,6 +147,28 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	install-pdf-recursive install-ps-recursive install-recursive \
 	installcheck-recursive installdirs-recursive pdf-recursive \
 	ps-recursive uninstall-recursive
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+DATA = $(gabbletests_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
@@ -156,7 +178,7 @@ ETAGS = etags
 CTAGS = ctags
 am__tty_colors = \
 red=; grn=; lgn=; blu=; std=
-DIST_SUBDIRS = twisted suppressions
+DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 am__relativize = \
   dir0=`pwd`; \
@@ -202,6 +224,7 @@ DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -219,7 +242,6 @@ GLIB_LIBS = @GLIB_LIBS@
 GMODULE_CFLAGS = @GMODULE_CFLAGS@
 GMODULE_LIBS = @GMODULE_LIBS@
 GREP = @GREP@
-HANDLE_LEAK_DEBUG_CFLAGS = @HANDLE_LEAK_DEBUG_CFLAGS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -234,8 +256,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MCE_CFLAGS = @MCE_CFLAGS@
-MCE_LIBS = @MCE_LIBS@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 NICE_CFLAGS = @NICE_CFLAGS@
 NICE_LIBS = @NICE_LIBS@
@@ -267,12 +288,12 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SOUP_CFLAGS = @SOUP_CFLAGS@
 SOUP_LIBS = @SOUP_LIBS@
-SQLITE_CFLAGS = @SQLITE_CFLAGS@
-SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TEST_PYTHON = @TEST_PYTHON@
 TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
 TP_GLIB_LIBS = @TP_GLIB_LIBS@
+TP_YELL_CFLAGS = @TP_YELL_CFLAGS@
+TP_YELL_LIBS = @TP_YELL_LIBS@
 VERSION = @VERSION@
 WOCKY_CFLAGS = @WOCKY_CFLAGS@
 WOCKY_LIBS = @WOCKY_LIBS@
@@ -281,6 +302,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -300,6 +322,7 @@ datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+gabbletestsdir = @gabbletestsdir@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -313,7 +336,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -333,25 +355,33 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@WANT_TWISTED_TESTS_TRUE@CHECKTWISTED = twisted
-SUBDIRS = $(CHECKTWISTED) suppressions
+SUBDIRS = twisted suppressions
+tests_list = \
+	test-base64 \
+	test-dtube-unique-names \
+	test-gabble-idle-weak \
+	test-handles \
+	test-jid-decode \
+	test-parse-message \
+	test-presence \
+	test-tp-error-from-wocky
+
+@ENABLE_INSTALLED_TESTS_TRUE@gabbletests_DATA = gabble-C-tests.list
 LDADD = $(top_builddir)/src/libgabble-convenience.la
 AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
-    @TP_GLIB_CFLAGS@ \
+    @TP_GLIB_CFLAGS@ @TP_YELL_CFLAGS@ \
     -I $(top_srcdir) -I $(top_builddir) \
     -I $(top_srcdir)/lib -I $(top_builddir)/lib
 
-TESTS = $(noinst_PROGRAMS)
 TESTS_ENVIRONMENT = \
   abs_top_builddir=@abs_top_builddir@ \
   G_DEBUG=fatal-warnings,fatal-criticals \
   sh $(top_srcdir)/tests/twisted/tools/with-session-bus.sh \
-    --config-file=$(top_builddir)/tests/twisted/tools/tmp-session-bus.conf --
+    --config-file=$(top_builddir)/tests/twisted/tools/servicedir-uninstalled/tmp-session-bus.conf --
 
 check_c_sources = \
 	$(dbus_test_sources) \
 	test-base64.c \
-	test-caps-hash.c \
 	test-dtube-unique-names.c \
 	test-presence.c \
 	test-jid-decode.c \
@@ -394,6 +424,49 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+install-gabbletestsPROGRAMS: $(gabbletests_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	test -z "$(gabbletestsdir)" || $(MKDIR_P) "$(DESTDIR)$(gabbletestsdir)"
+	@list='$(gabbletests_PROGRAMS)'; test -n "$(gabbletestsdir)" || list=; \
+	for p in $$list; do echo "$$p $$p"; done | \
+	sed 's/$(EXEEXT)$$//' | \
+	while read p p1; do if test -f $$p || test -f $$p1; \
+	  then echo "$$p"; echo "$$p"; else :; fi; \
+	done | \
+	sed -e 'p;s,.*/,,;n;h' -e 's|.*|.|' \
+	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
+	sed 'N;N;N;s,\n, ,g' | \
+	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
+	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
+	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
+	    else { print "f", $$3 "/" $$4, $$1; } } \
+	  END { for (d in files) print "f", d, files[d] }' | \
+	while read type dir files; do \
+	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
+	    test -z "$$files" || { \
+	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(gabbletestsdir)$$dir'"; \
+	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(gabbletestsdir)$$dir" || exit $$?; \
+	    } \
+	; done
+
+uninstall-gabbletestsPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(gabbletests_PROGRAMS)'; test -n "$(gabbletestsdir)" || list=; \
+	files=`for p in $$list; do echo "$$p"; done | \
+	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
+	      -e 's/$$/$(EXEEXT)/' `; \
+	test -n "$$list" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(gabbletestsdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(gabbletestsdir)" && rm -f $$files
+
+clean-gabbletestsPROGRAMS:
+	@list='$(gabbletests_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -406,9 +479,6 @@ clean-noinstPROGRAMS:
 test-base64$(EXEEXT): $(test_base64_OBJECTS) $(test_base64_DEPENDENCIES) 
 	@rm -f test-base64$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_base64_OBJECTS) $(test_base64_LDADD) $(LIBS)
-test-caps-hash$(EXEEXT): $(test_caps_hash_OBJECTS) $(test_caps_hash_DEPENDENCIES) 
-	@rm -f test-caps-hash$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(test_caps_hash_OBJECTS) $(test_caps_hash_LDADD) $(LIBS)
 test-dtube-unique-names$(EXEEXT): $(test_dtube_unique_names_OBJECTS) $(test_dtube_unique_names_DEPENDENCIES) 
 	@rm -f test-dtube-unique-names$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_dtube_unique_names_OBJECTS) $(test_dtube_unique_names_LDADD) $(LIBS)
@@ -438,7 +508,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-base64.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-caps-hash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-dtube-unique-names.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-gabble-idle-weak.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-handles.Po@am__quote@
@@ -476,6 +545,26 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-gabbletestsDATA: $(gabbletests_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(gabbletestsdir)" || $(MKDIR_P) "$(DESTDIR)$(gabbletestsdir)"
+	@list='$(gabbletests_DATA)'; test -n "$(gabbletestsdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(gabbletestsdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(gabbletestsdir)" || exit $$?; \
+	done
+
+uninstall-gabbletestsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(gabbletests_DATA)'; test -n "$(gabbletestsdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(gabbletestsdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(gabbletestsdir)" && rm -f $$files
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -765,9 +854,12 @@ distdir: $(DISTFILES)
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS check-local
 check: check-recursive
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(PROGRAMS) $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
+	for dir in "$(DESTDIR)$(gabbletestsdir)" "$(DESTDIR)$(gabbletestsdir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
@@ -795,8 +887,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
-	mostlyclean-am
+clean-am: clean-gabbletestsPROGRAMS clean-generic clean-libtool \
+	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -rf ./$(DEPDIR)
@@ -816,7 +908,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am:
+install-data-am: install-gabbletestsDATA install-gabbletestsPROGRAMS
 
 install-dvi: install-dvi-recursive
 
@@ -862,26 +954,32 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am:
+uninstall-am: uninstall-gabbletestsDATA uninstall-gabbletestsPROGRAMS
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) check-am \
 	ctags-recursive install-am install-strip tags-recursive
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
 	all all-am check check-TESTS check-am check-local clean \
-	clean-generic clean-libtool clean-noinstPROGRAMS ctags \
-	ctags-recursive distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs installdirs-am maintainer-clean \
+	clean-gabbletestsPROGRAMS clean-generic clean-libtool \
+	clean-noinstPROGRAMS ctags ctags-recursive distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am \
+	install-gabbletestsDATA install-gabbletestsPROGRAMS \
+	install-html install-html-am install-info install-info-am \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs installdirs-am maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-recursive uninstall uninstall-am
+	tags tags-recursive uninstall uninstall-am \
+	uninstall-gabbletestsDATA uninstall-gabbletestsPROGRAMS
 
+
+gabble-C-tests.list:
+	$(AM_V_GEN)echo $(tests_list) > $@
 
 check-valgrind: $(TESTS)
 	G_SLICE=always-malloc \

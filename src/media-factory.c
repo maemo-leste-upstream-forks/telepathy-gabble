@@ -20,8 +20,6 @@
 #include "config.h"
 #include "media-factory.h"
 
-#define DBUS_API_SUBJECT_TO_CHANGE
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -32,11 +30,11 @@
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/interfaces.h>
 
+#include <telepathy-yell/interfaces.h>
+
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
 
-#include "extensions/extensions.h"
-
-#include "caps-channel-manager.h"
+#include "gabble/caps-channel-manager.h"
 #include "connection.h"
 #include "debug.h"
 #include "jingle-factory.h"
@@ -368,7 +366,9 @@ new_call_channel (GabbleMediaFactory *self,
   GabbleJingleSession *sess,
   TpHandle peer,
   gboolean initial_audio,
+  const gchar *initial_audio_name,
   gboolean initial_video,
+  const gchar *initial_video_name,
   gpointer request_token)
 {
   GabbleCallChannel *channel;
@@ -392,9 +392,13 @@ new_call_channel (GabbleMediaFactory *self,
     "session", sess,
     "handle", peer,
     "initial-audio", initial_audio,
+    "initial-audio-name",
+        initial_audio_name != NULL ? initial_audio_name : "audio",
     "initial-video", initial_video,
+    "initial-video-name",
+        initial_video_name != NULL ? initial_video_name : "video",
     "requested", request_token != NULL,
-    "creator", initiator,
+    "initiator-handle", initiator,
     NULL);
 
   g_free (object_path);
@@ -428,8 +432,7 @@ gabble_media_factory_close_all (GabbleMediaFactory *fac)
 
   /* Close will cause the channel to be removed from the list indirectly..*/
   while (priv->call_channels != NULL)
-    gabble_base_call_channel_close (
-        GABBLE_BASE_CALL_CHANNEL (priv->call_channels->data));
+    tp_base_channel_close (TP_BASE_CHANNEL (priv->call_channels->data));
 
   if (priv->status_changed_id != 0)
     {
@@ -457,7 +460,10 @@ new_jingle_session_cb (GabbleJingleFactory *jf,
     }
   else if (self->priv->use_call_channels)
     {
-      new_call_channel (self, sess, sess->peer, FALSE, FALSE, NULL);
+      new_call_channel (self, sess, sess->peer,
+        FALSE, NULL,
+        FALSE, NULL,
+        NULL);
     }
   else
     {
@@ -585,32 +591,40 @@ static const gchar * const both_allowed_immutable[] = {
 static const gchar * const call_channel_allowed_properties[] = {
     TP_IFACE_CHANNEL ".TargetHandle",
     TP_IFACE_CHANNEL ".TargetID",
-    GABBLE_IFACE_CHANNEL_TYPE_CALL ".InitialAudio",
-    GABBLE_IFACE_CHANNEL_TYPE_CALL ".InitialVideo",
-    GABBLE_IFACE_CHANNEL_TYPE_CALL ".MutableContents",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialAudio",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialAudioName",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialVideo",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialVideoName",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".MutableContents",
     NULL
 };
 
 static const gchar * const call_audio_allowed[] = {
-    GABBLE_IFACE_CHANNEL_TYPE_CALL ".InitialAudio",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialAudio",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialAudioName",
     NULL
 };
 
 static const gchar * const call_video_allowed[] = {
-    GABBLE_IFACE_CHANNEL_TYPE_CALL ".InitialVideo",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialVideo",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialVideoName",
     NULL
 };
 
 static const gchar * const call_both_allowed[] = {
-    GABBLE_IFACE_CHANNEL_TYPE_CALL ".InitialAudio",
-    GABBLE_IFACE_CHANNEL_TYPE_CALL ".InitialVideo",
-    GABBLE_IFACE_CHANNEL_TYPE_CALL ".MutableContents",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialAudio",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialAudioName",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialVideo",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialVideoName",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".MutableContents",
     NULL
 };
 
 static const gchar * const call_both_allowed_immutable[] = {
-    GABBLE_IFACE_CHANNEL_TYPE_CALL ".InitialAudio",
-    GABBLE_IFACE_CHANNEL_TYPE_CALL ".InitialVideo",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialAudio",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialAudioName",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialVideo",
+    TPY_IFACE_CHANNEL_TYPE_CALL ".InitialVideoName",
     NULL
 };
 
@@ -651,7 +665,7 @@ gabble_media_factory_call_channel_class (void)
 
   tp_asv_set_static_string (table,
       TP_IFACE_CHANNEL ".ChannelType",
-      GABBLE_IFACE_CHANNEL_TYPE_CALL);
+      TPY_IFACE_CHANNEL_TYPE_CALL);
 
   return table;
 }
@@ -665,13 +679,13 @@ gabble_media_factory_type_foreach_channel_class (GType type,
 
   func (type, table, named_channel_allowed_properties, user_data);
 
-  g_hash_table_destroy (table);
+  g_hash_table_unref (table);
 
   table = gabble_media_factory_call_channel_class ();
 
   func (type, table, call_channel_allowed_properties, user_data);
 
-  g_hash_table_destroy (table);
+  g_hash_table_unref (table);
 }
 
 
@@ -832,11 +846,10 @@ gabble_media_factory_create_call (TpChannelManager *manager,
 {
   GabbleMediaFactory *self = GABBLE_MEDIA_FACTORY (manager);
   TpHandle target;
-  TpBaseConnection *conn;
   GError *error = NULL;
   gboolean initial_audio, initial_video;
+  const gchar *initial_audio_name, *initial_video_name;
 
-  conn = (TpBaseConnection *) self->priv->conn;
 
   DEBUG ("Creating a new call channel");
 
@@ -892,9 +905,9 @@ gabble_media_factory_create_call (TpChannelManager *manager,
     }
 
   initial_audio = tp_asv_get_boolean (request_properties,
-      GABBLE_IFACE_CHANNEL_TYPE_CALL ".InitialAudio", NULL);
+      TPY_IFACE_CHANNEL_TYPE_CALL ".InitialAudio", NULL);
   initial_video = tp_asv_get_boolean (request_properties,
-      GABBLE_IFACE_CHANNEL_TYPE_CALL ".InitialVideo", NULL);
+      TPY_IFACE_CHANNEL_TYPE_CALL ".InitialVideo", NULL);
 
   if (!initial_audio && !initial_video)
     {
@@ -908,7 +921,14 @@ gabble_media_factory_create_call (TpChannelManager *manager,
    * FIXME need to cope with disconnecting while channels are setting up
    */
 
-  new_call_channel (self, NULL, target, initial_audio, initial_video,
+  initial_audio_name = tp_asv_get_string (request_properties,
+    TPY_IFACE_CHANNEL_TYPE_CALL "InitialAudioName");
+  initial_video_name = tp_asv_get_string (request_properties,
+    TPY_IFACE_CHANNEL_TYPE_CALL "InitialVideoName");
+
+  new_call_channel (self, NULL, target,
+    initial_audio, initial_audio_name,
+    initial_video, initial_video_name,
     request_token);
 
   return TRUE;
@@ -937,7 +957,7 @@ gabble_media_factory_create_channel (TpChannelManager *manager,
 {
   if (!tp_strdiff (tp_asv_get_string (request_properties,
           TP_IFACE_CHANNEL ".ChannelType"),
-        GABBLE_IFACE_CHANNEL_TYPE_CALL))
+        TPY_IFACE_CHANNEL_TYPE_CALL))
     return gabble_media_factory_create_call (manager, request_token,
       request_properties, METHOD_CREATE);
   else
@@ -953,7 +973,7 @@ gabble_media_factory_ensure_channel (TpChannelManager *manager,
 {
   if (!tp_strdiff (tp_asv_get_string (request_properties,
           TP_IFACE_CHANNEL ".ChannelType"),
-        GABBLE_IFACE_CHANNEL_TYPE_CALL))
+        TPY_IFACE_CHANNEL_TYPE_CALL))
     return gabble_media_factory_create_call (manager, request_token,
         request_properties, METHOD_ENSURE);
   else
@@ -1006,6 +1026,8 @@ gabble_media_factory_add_caps (GabbleCapabilitySet *caps,
       gabble_capability_set_add (caps, NS_JINGLE_RTP);
       gabble_capability_set_add (caps, NS_JINGLE_RTP_AUDIO);
       gabble_capability_set_add (caps, NS_JINGLE_DESCRIPTION_AUDIO);
+      gabble_capability_set_add (caps, NS_JINGLE_RTP_HDREXT);
+      gabble_capability_set_add (caps, NS_JINGLE_RTCP_FB);
 
       /* voice-v1 implies that we interop with GTalk, i.e. we have gtalk-p2p
        * as well as audio */
@@ -1018,6 +1040,8 @@ gabble_media_factory_add_caps (GabbleCapabilitySet *caps,
       gabble_capability_set_add (caps, NS_JINGLE_RTP);
       gabble_capability_set_add (caps, NS_JINGLE_RTP_VIDEO);
       gabble_capability_set_add (caps, NS_JINGLE_DESCRIPTION_VIDEO);
+      gabble_capability_set_add (caps, NS_JINGLE_RTP_HDREXT);
+      gabble_capability_set_add (caps, NS_JINGLE_RTCP_FB);
 
       /* video-v1 implies that we interop with Google Video Chat, i.e. we have
        * gtalk-p2p and H.264 as well as video */
@@ -1182,7 +1206,8 @@ gabble_media_factory_represent_client (GabbleCapsChannelManager *manager,
     const gchar *client_name,
     const GPtrArray *filters,
     const gchar * const *cap_tokens,
-    GabbleCapabilitySet *cap_set)
+    GabbleCapabilitySet *cap_set,
+    GPtrArray *data_forms)
 {
   static GQuark q_gtalk_p2p = 0, q_ice_udp = 0, q_h264 = 0;
   static GQuark qc_gtalk_p2p = 0, qc_ice_udp = 0, qc_h264 = 0;
@@ -1196,15 +1221,15 @@ gabble_media_factory_represent_client (GabbleCapsChannelManager *manager,
       q_gtalk_p2p = g_quark_from_static_string (
           TP_IFACE_CHANNEL_INTERFACE_MEDIA_SIGNALLING "/gtalk-p2p");
       qc_gtalk_p2p = g_quark_from_static_string (
-          GABBLE_IFACE_CHANNEL_TYPE_CALL "/gtalk-p2p");
+          TPY_IFACE_CHANNEL_TYPE_CALL "/gtalk-p2p");
       q_ice_udp = g_quark_from_static_string (
           TP_IFACE_CHANNEL_INTERFACE_MEDIA_SIGNALLING "/ice-udp");
       qc_ice_udp = g_quark_from_static_string (
-          GABBLE_IFACE_CHANNEL_TYPE_CALL "/ice-udp");
+          TPY_IFACE_CHANNEL_TYPE_CALL "/ice-udp");
       q_h264 = g_quark_from_static_string (
           TP_IFACE_CHANNEL_INTERFACE_MEDIA_SIGNALLING "/video/h264");
       qc_h264 = g_quark_from_static_string (
-          GABBLE_IFACE_CHANNEL_TYPE_CALL "/video/h264");
+          TPY_IFACE_CHANNEL_TYPE_CALL "/video/h264");
     }
 
   if (cap_tokens != NULL)
@@ -1250,7 +1275,7 @@ gabble_media_factory_represent_client (GabbleCapsChannelManager *manager,
             TP_IFACE_CHANNEL_TYPE_STREAMED_MEDIA)
           && tp_strdiff (tp_asv_get_string (filter,
               TP_IFACE_CHANNEL ".ChannelType"),
-            GABBLE_IFACE_CHANNEL_TYPE_CALL))
+            TPY_IFACE_CHANNEL_TYPE_CALL))
         {
           /* not interesting to this channel manager */
           continue;
@@ -1261,7 +1286,7 @@ gabble_media_factory_represent_client (GabbleCapsChannelManager *manager,
        * incoming channels */
       if (!tp_strdiff (tp_asv_get_string (filter,
             TP_IFACE_CHANNEL ".ChannelType"),
-            GABBLE_IFACE_CHANNEL_TYPE_CALL))
+            TPY_IFACE_CHANNEL_TYPE_CALL))
         {
           GabbleMediaFactory *self = GABBLE_MEDIA_FACTORY (manager);
           self->priv->use_call_channels = TRUE;
@@ -1282,13 +1307,13 @@ gabble_media_factory_represent_client (GabbleCapsChannelManager *manager,
       if (tp_asv_get_boolean (filter,
             TP_IFACE_CHANNEL_TYPE_STREAMED_MEDIA ".InitialAudio", NULL)
           || tp_asv_get_boolean (filter,
-            GABBLE_IFACE_CHANNEL_TYPE_CALL ".InitialAudio", NULL))
+            TPY_IFACE_CHANNEL_TYPE_CALL ".InitialAudio", NULL))
         audio = TRUE;
 
       if (tp_asv_get_boolean (filter,
             TP_IFACE_CHANNEL_TYPE_STREAMED_MEDIA ".InitialVideo", NULL)
           || tp_asv_get_boolean (filter,
-            GABBLE_IFACE_CHANNEL_TYPE_CALL ".InitialVideo", NULL))
+            TPY_IFACE_CHANNEL_TYPE_CALL ".InitialVideo", NULL))
         video = TRUE;
 
       /* If we've picked up all the capabilities we're ever going to, then
@@ -1305,7 +1330,7 @@ static void
 caps_channel_manager_iface_init (gpointer g_iface,
                                  gpointer iface_data)
 {
-  GabbleCapsChannelManagerIface *iface = g_iface;
+  GabbleCapsChannelManagerInterface *iface = g_iface;
 
   iface->reset_caps = gabble_media_factory_reset_caps;
   iface->get_contact_caps = gabble_media_factory_get_contact_caps;

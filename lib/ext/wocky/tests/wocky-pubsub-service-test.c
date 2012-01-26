@@ -24,7 +24,7 @@ create_session (void)
 
   stream = g_object_new (WOCKY_TYPE_TEST_STREAM, NULL);
   connection = wocky_xmpp_connection_new (stream->stream0);
-  session = wocky_session_new (connection, "example.com");
+  session = wocky_session_new_with_connection (connection, "example.com");
 
   g_object_unref (connection);
   g_object_unref (stream);
@@ -157,8 +157,8 @@ get_default_node_configuration_test (WockyPorterHandlerFunc iq_cb,
 
   pubsub = wocky_pubsub_service_new (test->session_in, "pubsub.localhost");
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       iq_cb, test,
       '(', "pubsub",
@@ -198,12 +198,6 @@ test_get_default_node_configuration_insufficient_iq_cb (WockyPorter *porter,
   WockyStanza *reply;
 
   reply = wocky_stanza_build_iq_error (stanza,
-      '(', "pubsub",
-        ':', WOCKY_XMPP_NS_PUBSUB_OWNER,
-        '(', "configure",
-          '@', "node", "node1",
-        ')',
-      ')',
       '(', "error",
         '@', "type", "auth",
         '(', "forbidden",
@@ -309,8 +303,8 @@ create_node_test (WockyPorterHandlerFunc iq_cb,
 
   pubsub = wocky_pubsub_service_new (test->session_in, "pubsub.localhost");
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       iq_cb, test,
       '(', "pubsub",
@@ -348,13 +342,6 @@ test_create_node_unsupported_iq_cb (WockyPorter *porter,
   WockyStanza *reply;
 
   reply = wocky_stanza_build_iq_error (stanza,
-      '(', "pubsub",
-        ':', WOCKY_XMPP_NS_PUBSUB,
-        '(', "create",
-          '@', "node", "node1",
-        ')',
-        '(', "configure", ')',
-      ')',
       '(', "error",
         '@', "type", "cancel",
         '(', "feature-not-implemented",
@@ -622,8 +609,8 @@ test_create_node_config (void)
 
   pubsub = wocky_pubsub_service_new (test->session_in, "pubsub.localhost");
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       test_get_default_node_configuration_iq_cb, test,
       '(', "pubsub",
@@ -632,8 +619,8 @@ test_create_node_config (void)
       ')',
       NULL);
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       test_create_node_config_create_iq_cb, test,
       '(', "pubsub",
@@ -844,8 +831,8 @@ test_retrieve_subscriptions (gconstpointer mode_)
 
   pubsub = wocky_pubsub_service_new (test->session_in, "pubsub.localhost");
 
-  wocky_porter_register_handler (test->sched_out,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET, NULL,
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
       WOCKY_PORTER_HANDLER_PRIORITY_MAX,
       test_retrieve_subscriptions_iq_cb, &ctx,
         '(', "pubsub",

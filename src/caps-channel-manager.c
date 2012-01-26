@@ -21,7 +21,7 @@
  */
 
 #include "config.h"
-#include "caps-channel-manager.h"
+#include "gabble/caps-channel-manager.h"
 
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/channel-manager.h>
@@ -30,32 +30,14 @@
 #define DEBUG_FLAG GABBLE_DEBUG_PRESENCE
 #include "debug.h"
 
-GType
-gabble_caps_channel_manager_get_type (void)
+G_DEFINE_INTERFACE (GabbleCapsChannelManager, gabble_caps_channel_manager,
+    TP_TYPE_CHANNEL_MANAGER);
+
+/* stub function needed for the G_DEFINE_INTERFACE macro above */
+static void
+gabble_caps_channel_manager_default_init (
+    GabbleCapsChannelManagerInterface *interface)
 {
-  static GType type = 0;
-
-  if (G_UNLIKELY (type == 0))
-    {
-      static const GTypeInfo info = {
-        sizeof (GabbleCapsChannelManagerIface),
-        NULL,   /* base_init */
-        NULL,   /* base_finalize */
-        NULL,   /* class_init */
-        NULL,   /* class_finalize */
-        NULL,   /* class_data */
-        0,
-        0,      /* n_preallocs */
-        NULL    /* instance_init */
-      };
-
-      type = g_type_register_static (G_TYPE_INTERFACE,
-          "GabbleCapsChannelManager", &info, 0);
-
-      g_type_interface_add_prerequisite (type, TP_TYPE_CHANNEL_MANAGER);
-    }
-
-  return type;
 }
 
 /* Virtual-method wrappers */
@@ -63,7 +45,7 @@ void
 gabble_caps_channel_manager_reset_capabilities (
     GabbleCapsChannelManager *caps_manager)
 {
-  GabbleCapsChannelManagerIface *iface =
+  GabbleCapsChannelManagerInterface *iface =
     GABBLE_CAPS_CHANNEL_MANAGER_GET_INTERFACE (caps_manager);
   GabbleCapsChannelManagerResetCapsFunc method = iface->reset_caps;
 
@@ -81,7 +63,7 @@ gabble_caps_channel_manager_get_contact_capabilities (
     const GabbleCapabilitySet *caps,
     GPtrArray *arr)
 {
-  GabbleCapsChannelManagerIface *iface =
+  GabbleCapsChannelManagerInterface *iface =
     GABBLE_CAPS_CHANNEL_MANAGER_GET_INTERFACE (caps_manager);
   GabbleCapsChannelManagerGetContactCapsFunc method = iface->get_contact_caps;
 
@@ -89,7 +71,7 @@ gabble_caps_channel_manager_get_contact_capabilities (
     {
       method (caps_manager, handle, caps, arr);
     }
-  /* ... else assume there is not caps for this kind of channels */
+  /* ... else assume there are no caps for this kind of channel */
 }
 
 /**
@@ -100,6 +82,7 @@ gabble_caps_channel_manager_get_contact_capabilities (
  *  GHashTable with string keys and GValue values
  * @cap_tokens: the handler capability tokens supported by the client
  * @cap_set: a set into which to merge additional XMPP capabilities
+ * @data_forms: a #GPtrArray of #WockyDataForm objects
  *
  * Convert the capabilities of a Telepathy client into XMPP capabilities to be
  * advertised.
@@ -113,14 +96,15 @@ gabble_caps_channel_manager_represent_client (
     const gchar *client_name,
     const GPtrArray *filters,
     const gchar * const *cap_tokens,
-    GabbleCapabilitySet *cap_set)
+    GabbleCapabilitySet *cap_set,
+    GPtrArray *data_forms)
 {
-  GabbleCapsChannelManagerIface *iface =
+  GabbleCapsChannelManagerInterface *iface =
     GABBLE_CAPS_CHANNEL_MANAGER_GET_INTERFACE (caps_manager);
   GabbleCapsChannelManagerRepresentClientFunc method = iface->represent_client;
 
   if (method != NULL)
     {
-      method (caps_manager, client_name, filters, cap_tokens, cap_set);
+      method (caps_manager, client_name, filters, cap_tokens, cap_set, data_forms);
     }
 }

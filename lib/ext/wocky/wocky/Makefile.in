@@ -64,17 +64,22 @@ CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libwocky_la_LIBADD =
 am__libwocky_la_SOURCES_DIST = wocky.c wocky-auth-handler.c \
-	wocky-auth-registry.c wocky-bare-contact.c wocky-connector.c \
-	wocky-contact.c wocky-contact-factory.c wocky-data-form.c \
-	wocky-debug.c wocky-jabber-auth.c wocky-jabber-auth-digest.c \
-	wocky-jabber-auth-password.c wocky-muc.c wocky-node.c \
-	wocky-node-tree.c wocky-pep-service.c wocky-ping.c \
-	wocky-porter.c wocky-pubsub-helpers.c wocky-pubsub-node.c \
-	wocky-pubsub-service.c wocky-resource-contact.c wocky-roster.c \
-	wocky-sasl-auth.c wocky-sasl-digest-md5.c wocky-sasl-scram.c \
-	wocky-sasl-utils.c wocky-sasl-plain.c wocky-session.c \
-	wocky-stanza.c wocky-utils.c wocky-tls-handler.c \
-	wocky-tls-connector.c wocky-xmpp-connection.c \
+	wocky-auth-registry.c wocky-bare-contact.c wocky-c2s-porter.c \
+	wocky-caps-cache.c wocky-ll-connection-factory.c \
+	wocky-caps-hash.c wocky-connector.c wocky-contact.c \
+	wocky-contact-factory.c wocky-data-form.c wocky-debug.c \
+	wocky-disco-identity.c wocky-heartbeat-source.c \
+	wocky-jabber-auth.c wocky-jabber-auth-digest.c \
+	wocky-jabber-auth-password.c wocky-ll-connector.c \
+	wocky-ll-contact.c wocky-loopback-stream.c wocky-meta-porter.c \
+	wocky-muc.c wocky-node.c wocky-node-tree.c wocky-pep-service.c \
+	wocky-ping.c wocky-porter.c wocky-pubsub-helpers.c \
+	wocky-pubsub-node.c wocky-pubsub-service.c \
+	wocky-resource-contact.c wocky-roster.c wocky-sasl-auth.c \
+	wocky-sasl-digest-md5.c wocky-sasl-scram.c wocky-sasl-utils.c \
+	wocky-sasl-plain.c wocky-session.c wocky-stanza.c \
+	wocky-utils.c wocky-tls-handler.c wocky-tls-connector.c \
+	wocky-xep-0115-capabilities.c wocky-xmpp-connection.c \
 	wocky-xmpp-error.c wocky-xmpp-reader.c wocky-xmpp-writer.c \
 	wocky-openssl.c wocky-openssl-dh512.c wocky-openssl-dh1024.c \
 	wocky-openssl-dh2048.c wocky-openssl-dh4096.c wocky-tls.c \
@@ -85,19 +90,24 @@ am__libwocky_la_SOURCES_DIST = wocky.c wocky-auth-handler.c \
 	wocky-signals-marshal.c wocky-signals-marshal.list \
 	wocky-tls-enumtypes.c wocky-xmpp-error-enumtypes.c \
 	wocky-xmpp-reader-enumtypes.c wocky.h wocky-auth-handler.h \
-	wocky-auth-registry.h wocky-bare-contact.h wocky-connector.h \
-	wocky-contact.h wocky-contact-factory.h wocky-data-form.h \
-	wocky-debug.h wocky-jabber-auth.h wocky-jabber-auth-digest.h \
-	wocky-jabber-auth-password.h wocky-muc.h wocky-namespaces.h \
-	wocky-node.h wocky-node-private.h wocky-node-tree.h \
-	wocky-pep-service.h wocky-ping.h wocky-porter.h \
-	wocky-pubsub-helpers.h wocky-pubsub-node.h \
-	wocky-pubsub-node-protected.h wocky-pubsub-service.h \
-	wocky-pubsub-service-protected.h wocky-resource-contact.h \
-	wocky-roster.h wocky-sasl-auth.h wocky-sasl-utils.h \
-	wocky-sasl-digest-md5.h wocky-sasl-scram.h wocky-sasl-plain.h \
-	wocky-session.h wocky-stanza.h wocky-tls.h wocky-tls-handler.h \
-	wocky-tls-connector.h wocky-types.h wocky-utils.h \
+	wocky-auth-registry.h wocky-bare-contact.h wocky-c2s-porter.h \
+	wocky-caps-cache.h wocky-ll-connection-factory.h \
+	wocky-caps-hash.h wocky-connector.h wocky-contact.h \
+	wocky-contact-factory.h wocky-data-form.h wocky-debug.h \
+	wocky-disco-identity.h wocky-heartbeat-source.h \
+	wocky-jabber-auth.h wocky-jabber-auth-digest.h \
+	wocky-jabber-auth-password.h wocky-ll-connector.h \
+	wocky-ll-contact.h wocky-loopback-stream.h wocky-meta-porter.h \
+	wocky-muc.h wocky-namespaces.h wocky-node.h \
+	wocky-node-private.h wocky-node-tree.h wocky-pep-service.h \
+	wocky-ping.h wocky-porter.h wocky-pubsub-helpers.h \
+	wocky-pubsub-node.h wocky-pubsub-node-protected.h \
+	wocky-pubsub-service.h wocky-pubsub-service-protected.h \
+	wocky-resource-contact.h wocky-roster.h wocky-sasl-auth.h \
+	wocky-sasl-utils.h wocky-sasl-digest-md5.h wocky-sasl-scram.h \
+	wocky-sasl-plain.h wocky-session.h wocky-stanza.h wocky-tls.h \
+	wocky-tls-handler.h wocky-tls-connector.h wocky-types.h \
+	wocky-utils.h wocky-xep-0115-capabilities.h \
 	wocky-xmpp-connection.h wocky-xmpp-error.h wocky-xmpp-reader.h \
 	wocky-xmpp-writer.h wocky-auth-registry-enumtypes.h \
 	wocky-connector-enumtypes.h wocky-data-form-enumtypes.h \
@@ -114,17 +124,22 @@ am__objects_3 = wocky-tls.lo
 am__objects_5 = wocky-http-proxy.lo
 @HAVE_GIO_PROXY_TRUE@am__objects_6 = $(am__objects_5)
 am__objects_7 = wocky.lo wocky-auth-handler.lo wocky-auth-registry.lo \
-	wocky-bare-contact.lo wocky-connector.lo wocky-contact.lo \
-	wocky-contact-factory.lo wocky-data-form.lo wocky-debug.lo \
-	wocky-jabber-auth.lo wocky-jabber-auth-digest.lo \
-	wocky-jabber-auth-password.lo wocky-muc.lo wocky-node.lo \
-	wocky-node-tree.lo wocky-pep-service.lo wocky-ping.lo \
-	wocky-porter.lo wocky-pubsub-helpers.lo wocky-pubsub-node.lo \
-	wocky-pubsub-service.lo wocky-resource-contact.lo \
-	wocky-roster.lo wocky-sasl-auth.lo wocky-sasl-digest-md5.lo \
-	wocky-sasl-scram.lo wocky-sasl-utils.lo wocky-sasl-plain.lo \
-	wocky-session.lo wocky-stanza.lo wocky-utils.lo \
-	wocky-tls-handler.lo wocky-tls-connector.lo \
+	wocky-bare-contact.lo wocky-c2s-porter.lo wocky-caps-cache.lo \
+	wocky-ll-connection-factory.lo wocky-caps-hash.lo \
+	wocky-connector.lo wocky-contact.lo wocky-contact-factory.lo \
+	wocky-data-form.lo wocky-debug.lo wocky-disco-identity.lo \
+	wocky-heartbeat-source.lo wocky-jabber-auth.lo \
+	wocky-jabber-auth-digest.lo wocky-jabber-auth-password.lo \
+	wocky-ll-connector.lo wocky-ll-contact.lo \
+	wocky-loopback-stream.lo wocky-meta-porter.lo wocky-muc.lo \
+	wocky-node.lo wocky-node-tree.lo wocky-pep-service.lo \
+	wocky-ping.lo wocky-porter.lo wocky-pubsub-helpers.lo \
+	wocky-pubsub-node.lo wocky-pubsub-service.lo \
+	wocky-resource-contact.lo wocky-roster.lo wocky-sasl-auth.lo \
+	wocky-sasl-digest-md5.lo wocky-sasl-scram.lo \
+	wocky-sasl-utils.lo wocky-sasl-plain.lo wocky-session.lo \
+	wocky-stanza.lo wocky-utils.lo wocky-tls-handler.lo \
+	wocky-tls-connector.lo wocky-xep-0115-capabilities.lo \
 	wocky-xmpp-connection.lo wocky-xmpp-error.lo \
 	wocky-xmpp-reader.lo wocky-xmpp-writer.lo $(am__objects_2) \
 	$(am__objects_4) $(am__objects_6)
@@ -170,19 +185,24 @@ am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libwocky_la_SOURCES)
 DIST_SOURCES = $(am__libwocky_la_SOURCES_DIST)
 am__libwocky_la_HEADERS_DIST = wocky.h wocky-auth-handler.h \
-	wocky-auth-registry.h wocky-bare-contact.h wocky-connector.h \
-	wocky-contact.h wocky-contact-factory.h wocky-data-form.h \
-	wocky-debug.h wocky-jabber-auth.h wocky-jabber-auth-digest.h \
-	wocky-jabber-auth-password.h wocky-muc.h wocky-namespaces.h \
-	wocky-node.h wocky-node-private.h wocky-node-tree.h \
-	wocky-pep-service.h wocky-ping.h wocky-porter.h \
-	wocky-pubsub-helpers.h wocky-pubsub-node.h \
-	wocky-pubsub-node-protected.h wocky-pubsub-service.h \
-	wocky-pubsub-service-protected.h wocky-resource-contact.h \
-	wocky-roster.h wocky-sasl-auth.h wocky-sasl-utils.h \
-	wocky-sasl-digest-md5.h wocky-sasl-scram.h wocky-sasl-plain.h \
-	wocky-session.h wocky-stanza.h wocky-tls.h wocky-tls-handler.h \
-	wocky-tls-connector.h wocky-types.h wocky-utils.h \
+	wocky-auth-registry.h wocky-bare-contact.h wocky-c2s-porter.h \
+	wocky-caps-cache.h wocky-ll-connection-factory.h \
+	wocky-caps-hash.h wocky-connector.h wocky-contact.h \
+	wocky-contact-factory.h wocky-data-form.h wocky-debug.h \
+	wocky-disco-identity.h wocky-heartbeat-source.h \
+	wocky-jabber-auth.h wocky-jabber-auth-digest.h \
+	wocky-jabber-auth-password.h wocky-ll-connector.h \
+	wocky-ll-contact.h wocky-loopback-stream.h wocky-meta-porter.h \
+	wocky-muc.h wocky-namespaces.h wocky-node.h \
+	wocky-node-private.h wocky-node-tree.h wocky-pep-service.h \
+	wocky-ping.h wocky-porter.h wocky-pubsub-helpers.h \
+	wocky-pubsub-node.h wocky-pubsub-node-protected.h \
+	wocky-pubsub-service.h wocky-pubsub-service-protected.h \
+	wocky-resource-contact.h wocky-roster.h wocky-sasl-auth.h \
+	wocky-sasl-utils.h wocky-sasl-digest-md5.h wocky-sasl-scram.h \
+	wocky-sasl-plain.h wocky-session.h wocky-stanza.h wocky-tls.h \
+	wocky-tls-handler.h wocky-tls-connector.h wocky-types.h \
+	wocky-utils.h wocky-xep-0115-capabilities.h \
 	wocky-xmpp-connection.h wocky-xmpp-error.h wocky-xmpp-reader.h \
 	wocky-xmpp-writer.h wocky-auth-registry-enumtypes.h \
 	wocky-connector-enumtypes.h wocky-data-form-enumtypes.h \
@@ -236,6 +256,7 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -253,8 +274,12 @@ GCOV_LIBS = @GCOV_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
+GNUTLS_FOR_STREAM_CIPHERS_CFLAGS = @GNUTLS_FOR_STREAM_CIPHERS_CFLAGS@
+GNUTLS_FOR_STREAM_CIPHERS_LIBS = @GNUTLS_FOR_STREAM_CIPHERS_LIBS@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
+GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
+GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
 HEADER_DIR = @HEADER_DIR@
@@ -267,6 +292,8 @@ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LCOV_PATH = @LCOV_PATH@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LIBIPHB_CFLAGS = @LIBIPHB_CFLAGS@
+LIBIPHB_LIBS = @LIBIPHB_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBSASL2_CFLAGS = @LIBSASL2_CFLAGS@
@@ -278,6 +305,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MOSTLYCLEANFILES = @MOSTLYCLEANFILES@
 NM = @NM@
@@ -301,6 +329,8 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TLS_CFLAGS = @TLS_CFLAGS@
 TLS_LIBS = @TLS_LIBS@
@@ -310,6 +340,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -343,7 +374,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -404,14 +434,24 @@ handwritten_headers = \
   wocky-auth-handler.h \
   wocky-auth-registry.h \
   wocky-bare-contact.h \
+  wocky-c2s-porter.h \
+  wocky-caps-cache.h \
+  wocky-ll-connection-factory.h \
+  wocky-caps-hash.h \
   wocky-connector.h \
   wocky-contact.h \
   wocky-contact-factory.h \
   wocky-data-form.h \
   wocky-debug.h \
+  wocky-disco-identity.h \
+  wocky-heartbeat-source.h \
   wocky-jabber-auth.h \
   wocky-jabber-auth-digest.h \
   wocky-jabber-auth-password.h \
+  wocky-ll-connector.h \
+  wocky-ll-contact.h \
+  wocky-loopback-stream.h \
+  wocky-meta-porter.h \
   wocky-muc.h \
   wocky-namespaces.h \
   wocky-node.h \
@@ -439,23 +479,29 @@ handwritten_headers = \
   wocky-tls-connector.h \
   wocky-types.h \
   wocky-utils.h \
+  wocky-xep-0115-capabilities.h \
   wocky-xmpp-connection.h \
   wocky-xmpp-error.h \
   wocky-xmpp-reader.h \
   wocky-xmpp-writer.h
 
 handwritten_sources = wocky.c wocky-auth-handler.c \
-	wocky-auth-registry.c wocky-bare-contact.c wocky-connector.c \
-	wocky-contact.c wocky-contact-factory.c wocky-data-form.c \
-	wocky-debug.c wocky-jabber-auth.c wocky-jabber-auth-digest.c \
-	wocky-jabber-auth-password.c wocky-muc.c wocky-node.c \
-	wocky-node-tree.c wocky-pep-service.c wocky-ping.c \
-	wocky-porter.c wocky-pubsub-helpers.c wocky-pubsub-node.c \
-	wocky-pubsub-service.c wocky-resource-contact.c wocky-roster.c \
-	wocky-sasl-auth.c wocky-sasl-digest-md5.c wocky-sasl-scram.c \
-	wocky-sasl-utils.c wocky-sasl-plain.c wocky-session.c \
-	wocky-stanza.c wocky-utils.c wocky-tls-handler.c \
-	wocky-tls-connector.c wocky-xmpp-connection.c \
+	wocky-auth-registry.c wocky-bare-contact.c wocky-c2s-porter.c \
+	wocky-caps-cache.c wocky-ll-connection-factory.c \
+	wocky-caps-hash.c wocky-connector.c wocky-contact.c \
+	wocky-contact-factory.c wocky-data-form.c wocky-debug.c \
+	wocky-disco-identity.c wocky-heartbeat-source.c \
+	wocky-jabber-auth.c wocky-jabber-auth-digest.c \
+	wocky-jabber-auth-password.c wocky-ll-connector.c \
+	wocky-ll-contact.c wocky-loopback-stream.c wocky-meta-porter.c \
+	wocky-muc.c wocky-node.c wocky-node-tree.c wocky-pep-service.c \
+	wocky-ping.c wocky-porter.c wocky-pubsub-helpers.c \
+	wocky-pubsub-node.c wocky-pubsub-service.c \
+	wocky-resource-contact.c wocky-roster.c wocky-sasl-auth.c \
+	wocky-sasl-digest-md5.c wocky-sasl-scram.c wocky-sasl-utils.c \
+	wocky-sasl-plain.c wocky-session.c wocky-stanza.c \
+	wocky-utils.c wocky-tls-handler.c wocky-tls-connector.c \
+	wocky-xep-0115-capabilities.c wocky-xmpp-connection.c \
 	wocky-xmpp-error.c wocky-xmpp-reader.c wocky-xmpp-writer.c \
 	$(am__append_1) $(am__append_3) $(am__append_5)
 libwocky_la_SOURCES = $(handwritten_sources) $(built_sources) \
@@ -474,10 +520,11 @@ check_c_sources = \
 
 CLEANFILES = $(built_sources) $(built_headers)
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) \
-            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @TLS_CFLAGS@ \
+            @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @SQLITE_CFLAGS@ @TLS_CFLAGS@ \
+            @LIBIPHB_CFLAGS@ \
             -DG_LOG_DOMAIN=\"wocky\"
 
-AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @TLS_LIBS@
+AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @SQLITE_LIBS@ @TLS_LIBS@ @LIBIPHB_LIBS@
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -537,6 +584,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-auth-registry-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-auth-registry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-bare-contact.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-c2s-porter.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-caps-cache.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-caps-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-connector-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-connector.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-contact-factory.Plo@am__quote@
@@ -544,10 +594,17 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-data-form.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-debug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-disco-identity.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-heartbeat-source.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-http-proxy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jabber-auth-digest.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jabber-auth-password.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-jabber-auth.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-ll-connection-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-ll-connector.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-ll-contact.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-loopback-stream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-meta-porter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-muc-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-muc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-node-tree.Plo@am__quote@
@@ -580,6 +637,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-tls-handler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-tls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-utils.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xep-0115-capabilities.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xmpp-connection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xmpp-error-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky-xmpp-error.Plo@am__quote@
@@ -899,7 +957,7 @@ wocky-signals-marshal.list: $(handwritten_sources) Makefile.am
 # wocky-xmpp-error-enumtypes.h, and $short is WOCKY.
 $(filter %-enumtypes.h,$(built_headers)): %-enumtypes.h: %.h Makefile.in
 	$(AM_V_GEN)set -e; \
-	long=`echo $* | tr [:lower:]- [:upper:]_`; \
+	long=`echo $(notdir $*) | tr [:lower:]- [:upper:]_`; \
 	short=$${long%%_*}; \
 	guard="__$${long}_ENUM_TYPES_H__"; \
 	glib-mkenums \
@@ -917,6 +975,15 @@ $(filter %-enumtypes.c,$(built_sources)): %-enumtypes.c: %.h Makefile.in
 	--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 	--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
 	$< > $@
+
+Android.mk: Makefile.am $(built_sources) $(built_headers)
+	androgenizer -:PROJECT wocky -:SHARED wocky -:TAGS eng debug \
+	 -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	 -:SOURCES $(handwritten_sources) $(built_sources) \
+	 -:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CFLAGS) \
+	 -:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) \
+	 -:LDFLAGS $(AM_LDFLAGS) $(GCRYPT_LIBS) \
+	> $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

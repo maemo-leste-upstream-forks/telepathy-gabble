@@ -111,6 +111,7 @@ DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -128,7 +129,6 @@ GLIB_LIBS = @GLIB_LIBS@
 GMODULE_CFLAGS = @GMODULE_CFLAGS@
 GMODULE_LIBS = @GMODULE_LIBS@
 GREP = @GREP@
-HANDLE_LEAK_DEBUG_CFLAGS = @HANDLE_LEAK_DEBUG_CFLAGS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -143,8 +143,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MCE_CFLAGS = @MCE_CFLAGS@
-MCE_LIBS = @MCE_LIBS@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 NICE_CFLAGS = @NICE_CFLAGS@
 NICE_LIBS = @NICE_LIBS@
@@ -176,12 +175,12 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SOUP_CFLAGS = @SOUP_CFLAGS@
 SOUP_LIBS = @SOUP_LIBS@
-SQLITE_CFLAGS = @SQLITE_CFLAGS@
-SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TEST_PYTHON = @TEST_PYTHON@
 TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
 TP_GLIB_LIBS = @TP_GLIB_LIBS@
+TP_YELL_CFLAGS = @TP_YELL_CFLAGS@
+TP_YELL_LIBS = @TP_YELL_LIBS@
 VERSION = @VERSION@
 WOCKY_CFLAGS = @WOCKY_CFLAGS@
 WOCKY_LIBS = @WOCKY_LIBS@
@@ -190,6 +189,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -209,6 +209,7 @@ datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+gabbletestsdir = @gabbletestsdir@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -222,7 +223,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -245,24 +245,16 @@ top_srcdir = @top_srcdir@
 tools_dir = $(top_srcdir)/tools
 EXTRA_DIST = \
     all.xml \
-    Call_Content_Codec_Offer.xml \
-    Call_Content_Interface_Media.xml \
-    Call_Content.xml \
-    Call_Stream_Endpoint.xml \
-    Call_Stream_Interface_Media.xml \
-    Call_Stream.xml \
-    Channel_Bundle.xml \
-    Channel_Future.xml \
-    Channel_Type_Call.xml \
     Channel_Type_FileTransfer_Future.xml \
     Connection_Future.xml \
+    Connection_Interface_Addressing.xml \
     Connection_Interface_Gabble_Decloak.xml \
+    Gabble_Plugin_Console.xml \
     Gabble_Plugin_Gateways.xml \
     Gabble_Plugin_Test.xml \
     OLPC_Activity_Properties.xml \
     OLPC_Buddy_Info.xml \
-    Channel_Interface_Sasl_Authentication.xml \
-    Channel_Type_Server_Authentication.xml
+    $(NULL)
 
 noinst_LTLIBRARIES = libgabble-extensions.la
 libgabble_extensions_la_SOURCES = \
@@ -274,12 +266,17 @@ nodist_libgabble_extensions_la_SOURCES = \
     _gen/signals-marshal.h \
     _gen/signals-marshal.list \
     _gen/enums.h \
+    _gen/enums-gtk-doc.h \
     _gen/gtypes.h \
     _gen/gtypes-body.h \
+    _gen/gtypes-gtk-doc.h \
     _gen/interfaces.h \
     _gen/interfaces-body.h \
+    _gen/interfaces-gtk-doc.h \
     _gen/svc.h \
-    _gen/svc.c
+    _gen/svc.c \
+    _gen/svc-gtk-doc.h \
+    $(NULL)
 
 BUILT_SOURCES = \
     _gen/all.xml \
@@ -287,7 +284,7 @@ BUILT_SOURCES = \
     extensions.html
 
 CLEANFILES = $(BUILT_SOURCES)
-AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @TP_GLIB_CFLAGS@ @HANDLE_LEAK_DEBUG_CFLAGS@
+AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @TP_GLIB_CFLAGS@
 AM_LDFLAGS = @DBUS_LIBS@ @GLIB_LIBS@ @TP_GLIB_LIBS@
 
 # Generated stuff
@@ -609,7 +606,7 @@ extensions.html: _gen/all.xml $(tools_dir)/doc-generator.xsl Makefile.am
 		$(tools_dir)/doc-generator.xsl \
 		$< > $@
 
-_gen/svc.c _gen/svc.h: _gen/all.xml $(tools_dir)/glib-ginterface-gen.py \
+_gen/svc.c _gen/svc.h _gen/svc-gtk-doc.h: _gen/all.xml $(tools_dir)/glib-ginterface-gen.py \
 	Makefile.am
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-ginterface-gen.py \
 		--filename=_gen/svc --signal-marshal-prefix=_gabble_ext \
@@ -631,20 +628,31 @@ _gen/signals-marshal.c: _gen/signals-marshal.list Makefile.am
 	$(AM_V_GEN){ echo '#include "_gen/signals-marshal.h"' && \
 	$(GLIB_GENMARSHAL) --body --prefix=_gabble_ext_marshal $< ; } > $@
 
-_gen/enums.h: _gen/all.xml $(tools_dir)/c-constants-gen.py \
+_gen/enums.h _gen/enums-gtk-doc.h: _gen/all.xml $(tools_dir)/c-constants-gen.py \
 	Makefile.am
-	$(AM_V_GEN)$(PYTHON) $(tools_dir)/c-constants-gen.py Gabble $< > $@
+	$(AM_V_GEN)$(PYTHON) $(tools_dir)/c-constants-gen.py Gabble $< _gen/enums
 
-_gen/interfaces.h _gen/interfaces-body.h: _gen/all.xml \
+_gen/interfaces.h _gen/interfaces-body.h _gen/interfaces-gtk-doc.h: _gen/all.xml \
 	$(tools_dir)/glib-interfaces-gen.py \
 	Makefile.am
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-interfaces-gen.py \
 		Gabble _gen/interfaces-body.h _gen/interfaces.h $<
 
-_gen/gtypes.h _gen/gtypes-body.h: _gen/all.xml \
+_gen/gtypes.h _gen/gtypes-body.h _gen/gtypes-gtk-doc.h: _gen/all.xml \
 	$(tools_dir)/glib-gtypes-generator.py Makefile.am
 	$(AM_V_GEN)$(PYTHON) $(tools_dir)/glib-gtypes-generator.py \
 		$< _gen/gtypes Gabble
+
+Android.mk: Makefile.am $(BUILT_SOURCES)
+	androgenizer -:PROJECT telepathy-gabble -:STATIC gabble-extensions -:TAGS eng debug \
+	 -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	 -:SOURCES $(libgabble_extensions_la_SOURCES) \
+	  $(nodist_libgabble_extensions_la_SOURCES) \
+	 -:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CFLAGS) \
+	 -:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) \
+	 -:LDFLAGS $(libgabble_extensions_la_LIBADD) \
+	> $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

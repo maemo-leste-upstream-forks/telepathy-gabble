@@ -15,10 +15,6 @@ from servicetest import (
 import constants as cs
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     id = '1845a1a9-f7bc-4a2e-a885-633aadc81e1b'
 
     # <message type="chat"><body>hello</body</message>
@@ -88,10 +84,9 @@ def test(q, bus, conn, stream):
     # messages."
     assert 'message-type' not in header or header['message-type'] == 0, header
 
-    # This looks wrong, but is correct. We don't know if our contacts generate
-    # message id='' attributes which are unique enough for our requirements, so
-    # we should not use them as the message-token for incoming messages.
-    assertNotEquals(id, header['message-token'])
+    # We don't make any uniqueness guarantees about the tokens on incoming
+    # messages, so we use the id='' provided at the protocol level.
+    assertEquals(id, header['message-token'])
 
     assert body['content-type'] == 'text/plain', body
     assert body['content'] == 'hello', body
@@ -137,6 +132,8 @@ def test(q, bus, conn, stream):
     header = sent_message[0]
     assert header['message-type'] == 2, header # Notice
     assert header['message-token'] == sent_token, header
+    assertEquals(conn.GetSelfHandle(), header['message-sender'])
+    assertEquals('test@localhost', header['message-sender-id'])
     body = sent_message[1]
     assert body['content-type'] == 'text/plain', body
     assert body['content'] == u'what up', body

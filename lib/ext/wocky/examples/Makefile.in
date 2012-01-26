@@ -53,18 +53,22 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__EXEEXT_1 = wocky-connect$(EXEEXT) wocky-register$(EXEEXT) \
+am__EXEEXT_1 = wocky-send-message$(EXEEXT) \
+	wocky-receive-messages$(EXEEXT) wocky-register$(EXEEXT) \
 	wocky-unregister$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
-am_wocky_connect_OBJECTS = connect.$(OBJEXT)
-wocky_connect_OBJECTS = $(am_wocky_connect_OBJECTS)
-wocky_connect_LDADD = $(LDADD)
+am_wocky_receive_messages_OBJECTS = receive-messages.$(OBJEXT)
+wocky_receive_messages_OBJECTS = $(am_wocky_receive_messages_OBJECTS)
+wocky_receive_messages_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
 am_wocky_register_OBJECTS = register.$(OBJEXT)
 wocky_register_OBJECTS = $(am_wocky_register_OBJECTS)
 wocky_register_LDADD = $(LDADD)
+am_wocky_send_message_OBJECTS = send-message.$(OBJEXT)
+wocky_send_message_OBJECTS = $(am_wocky_send_message_OBJECTS)
+wocky_send_message_LDADD = $(LDADD)
 am_wocky_unregister_OBJECTS = unregister.$(OBJEXT)
 wocky_unregister_OBJECTS = $(am_wocky_unregister_OBJECTS)
 wocky_unregister_LDADD = $(LDADD)
@@ -94,9 +98,10 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(wocky_connect_SOURCES) $(wocky_register_SOURCES) \
-	$(wocky_unregister_SOURCES)
-DIST_SOURCES = $(wocky_connect_SOURCES) $(wocky_register_SOURCES) \
+SOURCES = $(wocky_receive_messages_SOURCES) $(wocky_register_SOURCES) \
+	$(wocky_send_message_SOURCES) $(wocky_unregister_SOURCES)
+DIST_SOURCES = $(wocky_receive_messages_SOURCES) \
+	$(wocky_register_SOURCES) $(wocky_send_message_SOURCES) \
 	$(wocky_unregister_SOURCES)
 ETAGS = etags
 CTAGS = ctags
@@ -121,6 +126,7 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -138,8 +144,12 @@ GCOV_LIBS = @GCOV_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
+GNUTLS_FOR_STREAM_CIPHERS_CFLAGS = @GNUTLS_FOR_STREAM_CIPHERS_CFLAGS@
+GNUTLS_FOR_STREAM_CIPHERS_LIBS = @GNUTLS_FOR_STREAM_CIPHERS_LIBS@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
+GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
+GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
 HEADER_DIR = @HEADER_DIR@
@@ -152,6 +162,8 @@ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LCOV_PATH = @LCOV_PATH@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LIBIPHB_CFLAGS = @LIBIPHB_CFLAGS@
+LIBIPHB_LIBS = @LIBIPHB_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBSASL2_CFLAGS = @LIBSASL2_CFLAGS@
@@ -163,6 +175,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MOSTLYCLEANFILES = @MOSTLYCLEANFILES@
 NM = @NM@
@@ -186,6 +199,8 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TLS_CFLAGS = @TLS_CFLAGS@
 TLS_LIBS = @TLS_LIBS@
@@ -195,6 +210,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -228,7 +244,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -244,10 +259,13 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXAMPLES = wocky-connect wocky-register wocky-unregister
+EXAMPLES = wocky-send-message wocky-receive-messages wocky-register \
+	wocky-unregister
 INCLUDES := -I$(top_builddir)/wocky
-wocky_connect_SOURCES = connect.c
-wocky_connect_DEPENDENCIES = $(top_builddir)/wocky/libwocky.la
+wocky_send_message_SOURCES = send-message.c
+wocky_send_message_DEPENDENCIES = $(top_builddir)/wocky/libwocky.la
+wocky_receive_messages_SOURCES = receive-messages.c
+wocky_receive_messages_DEPENDENCIES = $(top_builddir)/wocky/libwocky.la
 wocky_register_SOURCES = register.c
 wocky_register_DEPENDENCIES = $(top_builddir)/wocky/libwocky.la
 wocky_unregister_SOURCES = unregister.c
@@ -261,7 +279,8 @@ AM_CFLAGS = \
     $(ERROR_CFLAGS) \
     @GLIB_CFLAGS@
 
-check_c_sources = $(wocky_connect_SOURCES)    \
+check_c_sources = $(wocky_send_message_SOURCES)    \
+                  $(wocky_receive_messages_SOURCES) \
                   $(wocky_register_SOURCES)   \
                   $(wocky_unregister_SOURCES)
 
@@ -308,12 +327,15 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-wocky-connect$(EXEEXT): $(wocky_connect_OBJECTS) $(wocky_connect_DEPENDENCIES) 
-	@rm -f wocky-connect$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(wocky_connect_OBJECTS) $(wocky_connect_LDADD) $(LIBS)
+wocky-receive-messages$(EXEEXT): $(wocky_receive_messages_OBJECTS) $(wocky_receive_messages_DEPENDENCIES) 
+	@rm -f wocky-receive-messages$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(wocky_receive_messages_OBJECTS) $(wocky_receive_messages_LDADD) $(LIBS)
 wocky-register$(EXEEXT): $(wocky_register_OBJECTS) $(wocky_register_DEPENDENCIES) 
 	@rm -f wocky-register$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_register_OBJECTS) $(wocky_register_LDADD) $(LIBS)
+wocky-send-message$(EXEEXT): $(wocky_send_message_OBJECTS) $(wocky_send_message_DEPENDENCIES) 
+	@rm -f wocky-send-message$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(wocky_send_message_OBJECTS) $(wocky_send_message_LDADD) $(LIBS)
 wocky-unregister$(EXEEXT): $(wocky_unregister_OBJECTS) $(wocky_unregister_DEPENDENCIES) 
 	@rm -f wocky-unregister$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_unregister_OBJECTS) $(wocky_unregister_LDADD) $(LIBS)
@@ -324,8 +346,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connect.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/receive-messages.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/register.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/send-message.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unregister.Po@am__quote@
 
 .c.o:

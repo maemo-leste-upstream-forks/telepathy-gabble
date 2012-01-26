@@ -37,8 +37,8 @@
                                    WOCKY_TYPE_TLS_CONNECTION, \
                                    WockyTLSConnection))
 
-typedef struct OPAQUE_TYPE__WockyTLSConnection WockyTLSConnection;
-typedef struct OPAQUE_TYPE__WockyTLSSession WockyTLSSession;
+typedef struct _WockyTLSConnection WockyTLSConnection;
+typedef struct _WockyTLSSession WockyTLSSession;
 
 typedef enum
 {
@@ -82,6 +82,7 @@ GType wocky_tls_session_get_type (void);
 
 int wocky_tls_session_verify_peer (WockyTLSSession    *session,
                                           const gchar        *peername,
+                                          GStrv               extra_identities,
                                           WockyTLSVerificationLevel level,
                                           WockyTLSCertStatus *status);
 GPtrArray *wocky_tls_session_get_peers_certificate (WockyTLSSession *session,

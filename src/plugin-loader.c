@@ -108,7 +108,9 @@ static void
 gabble_plugin_loader_probe (GabblePluginLoader *self)
 {
   GError *error = NULL;
-  const gchar *directory_name = g_getenv ("GABBLE_PLUGIN_DIR");
+  const gchar *directory_names = g_getenv ("GABBLE_PLUGIN_DIR");
+  gchar **dir_array;
+  gchar **ptr;
   GDir *d;
   const gchar *file;
 
@@ -118,32 +120,39 @@ gabble_plugin_loader_probe (GabblePluginLoader *self)
       return;
     }
 
-  if (directory_name == NULL)
-    directory_name = PLUGIN_DIR;
+  if (directory_names == NULL)
+    directory_names = PLUGIN_DIR;
 
-  DEBUG ("probing %s", directory_name);
-  d = g_dir_open (directory_name, 0, &error);
+  dir_array = g_strsplit (directory_names, ":", 0);
 
-  if (d == NULL)
+  for (ptr = dir_array ; *ptr != NULL ; ptr++)
     {
-      DEBUG ("%s", error->message);
-      g_error_free (error);
-      return;
+      DEBUG ("probing %s", *ptr);
+      d = g_dir_open (*ptr, 0, &error);
+
+      if (d == NULL)
+        {
+          DEBUG ("%s", error->message);
+          g_error_free (error);
+          continue;
+        }
+
+      while ((file = g_dir_read_name (d)) != NULL)
+        {
+          gchar *path;
+
+          if (!g_str_has_suffix (file, G_MODULE_SUFFIX))
+            continue;
+
+          path = g_build_filename (*ptr, file, NULL);
+          plugin_loader_try_to_load (self, path);
+          g_free (path);
+        }
+
+      g_dir_close (d);
     }
 
-  while ((file = g_dir_read_name (d)) != NULL)
-    {
-      gchar *path;
-
-      if (!g_str_has_suffix (file, G_MODULE_SUFFIX))
-        continue;
-
-      path = g_build_filename (directory_name, file, NULL);
-      plugin_loader_try_to_load (self, path);
-      g_free (path);
-    }
-
-  g_dir_close (d);
+  g_strfreev (dir_array);
 }
 #endif
 
@@ -358,4 +367,36 @@ gabble_plugin_loader_presence_status_for_privacy_list (
     }
 
   return NULL;
+}
+
+static void
+copy_to_other_array (gpointer data,
+    gpointer user_data)
+{
+  g_ptr_array_add (user_data, data);
+}
+
+GPtrArray *
+gabble_plugin_loader_create_channel_managers (
+    GabblePluginLoader *self,
+    TpBaseConnection *connection)
+{
+  GPtrArray *out = g_ptr_array_new ();
+  guint i;
+
+  for (i = 0; i < self->priv->plugins->len; i++)
+    {
+      GabblePlugin *plugin = g_ptr_array_index (self->priv->plugins, i);
+      GPtrArray *managers;
+
+      managers = gabble_plugin_create_channel_managers (plugin, connection);
+
+      if (managers == NULL)
+        continue;
+
+      g_ptr_array_foreach (managers, copy_to_other_array, out);
+      g_ptr_array_unref (managers);
+    }
+
+  return out;
 }

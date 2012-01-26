@@ -22,7 +22,7 @@
 
 #include "config.h"
 #include "util.h"
-#include "gabble/disco-identity.h"
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,7 +34,7 @@
 #include <telepathy-glib/handle-repo-dynamic.h>
 #include <telepathy-glib/dbus.h>
 
-#include <extensions/extensions.h>
+#include <telepathy-yell/gtypes.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_JID
 
@@ -375,35 +375,6 @@ lm_message_build_with_sub_type (const gchar *to, LmMessageType type,
 }
 
 /**
- * gabble_decode_jid
- *
- * Parses a JID which may be one of the following forms:
- *
- *  domain
- *  domain/resource
- *  node@domain
- *  node@domain/resource
- *
- * If the JID is valid, returns TRUE and sets the caller's
- * node/domain/resource pointers if they are not NULL. The node and resource
- * pointers will be set to NULL if the respective part is not present in the
- * JID. The node and domain are lower-cased because the Jabber protocol treats
- * them case-insensitively.
- *
- * XXX: Do nodeprep/resourceprep and length checking.
- *
- * See RFC 3920 §3.
- */
-gboolean
-gabble_decode_jid (const gchar *jid,
-                   gchar **node,
-                   gchar **domain,
-                   gchar **resource)
-{
-  return wocky_decode_jid (jid, node, domain, resource);
-}
-
-/**
  * gabble_get_room_handle_from_jid:
  * @room_repo: The %TP_HANDLE_TYPE_ROOM handle repository
  * @jid: A JID
@@ -468,7 +439,7 @@ gabble_normalize_room (TpHandleRepoIface *repo,
       qualified_name = g_strdup (jid);
     }
 
-  if (!gabble_decode_jid (qualified_name, NULL, NULL, &resource))
+  if (!wocky_decode_jid (qualified_name, NULL, NULL, &resource))
     {
       INVALID_HANDLE (error, "room JID %s is invalid", qualified_name);
       return NULL;
@@ -551,7 +522,7 @@ gabble_normalize_contact (TpHandleRepoIface *repo,
   gchar *username = NULL, *server = NULL, *resource = NULL;
   gchar *ret = NULL;
 
-  if (!gabble_decode_jid (jid, &username, &server, &resource) || !username)
+  if (!wocky_decode_jid (jid, &username, &server, &resource) || !username)
     {
       INVALID_HANDLE (error,
           "JID %s is invalid or has no node part", jid);
@@ -1076,7 +1047,7 @@ jingle_pick_resource_or_bare_jid (GabblePresence *presence,
   if (gabble_presence_has_resources (presence))
     {
       ret = gabble_presence_pick_resource_by_caps (presence,
-          PREFER_PHONES,
+          GABBLE_CLIENT_TYPE_PHONE,
           gabble_capability_set_predicate_at_least, caps);
 
       if (resource != NULL)
@@ -1301,8 +1272,7 @@ gabble_call_candidates_to_array (GList *candidates)
           "Protocol", G_TYPE_UINT, cand->protocol,
           "Type", G_TYPE_UINT, cand->type,
           "Foundation", G_TYPE_STRING, cand->id,
-          "Priority", G_TYPE_UINT,
-            (guint) cand->preference * 65536,
+          "Priority", G_TYPE_UINT, cand->preference,
           "Username", G_TYPE_STRING, cand->username,
           "Password", G_TYPE_STRING, cand->password,
           NULL);
@@ -1311,7 +1281,7 @@ gabble_call_candidates_to_array (GList *candidates)
             G_TYPE_UINT, cand->component,
             G_TYPE_STRING, cand->address,
             G_TYPE_UINT, cand->port,
-            GABBLE_HASH_TYPE_CANDIDATE_INFO, info,
+            TPY_HASH_TYPE_CANDIDATE_INFO, info,
             G_TYPE_INVALID);
 
         g_ptr_array_add (arr, a);
@@ -1333,138 +1303,6 @@ gabble_peer_to_jid (GabbleConnection *conn,
     return g_strdup (target);
 
   return g_strdup_printf ("%s/%s", target, resource);
-}
-
-GabbleDiscoIdentity *
-gabble_disco_identity_new (const gchar *category,
-    const gchar *type,
-    const gchar *lang,
-    const gchar *name)
-{
-  GabbleDiscoIdentity *ret;
-
-  g_return_val_if_fail (category != NULL, NULL);
-  g_return_val_if_fail (type != NULL, NULL);
-
-  ret = g_slice_new (GabbleDiscoIdentity);
-  ret->category = g_strdup (category);
-  ret->type = g_strdup (type);
-  ret->lang = g_strdup (lang);
-  ret->name = g_strdup (name);
-  return ret;
-}
-
-GabbleDiscoIdentity *
-gabble_disco_identity_copy (const GabbleDiscoIdentity *source)
-{
-  g_return_val_if_fail (source != NULL, NULL);
-
-  return gabble_disco_identity_new (source->category, source->type,
-      source->lang, source->name);
-}
-
-const gchar *
-gabble_disco_identity_get_category (GabbleDiscoIdentity *identity)
-{
-  return identity->category;
-}
-
-const gchar *
-gabble_disco_identity_get_type (GabbleDiscoIdentity *identity)
-{
-  return identity->type;
-}
-
-const gchar *
-gabble_disco_identity_get_lang (GabbleDiscoIdentity *identity)
-{
-  return identity->lang;
-}
-
-const gchar *
-gabble_disco_identity_get_name (GabbleDiscoIdentity *identity)
-{
-  return identity->name;
-}
-
-void
-gabble_disco_identity_free (GabbleDiscoIdentity *identity)
-{
-  if (identity == NULL)
-    return;
-
-  g_free (identity->category);
-  g_free (identity->type);
-  g_free (identity->lang);
-  g_free (identity->name);
-  g_slice_free (GabbleDiscoIdentity, identity);
-}
-
-/**
- * gabble_disco_identity_array_new:
- *
- * Creates a new array of GabbleDiscoIdentity objects.
- *
- * Returns: A newly instantiated array.
- * See: gabble_disco_identity_array_free()
- */
-GPtrArray *
-gabble_disco_identity_array_new (void)
-{
-  return g_ptr_array_new_with_free_func (
-      (GDestroyNotify) gabble_disco_identity_free);
-}
-
-/**
- * gabble_disco_identity_array_copy():
- * @source: The source array to be copied.
- *
- * Copies an array of GabbleDiscoIdentity objects. The returned array contains
- * new copies of the contents of the source array.
- *
- * Returns: A newly instantiated array with new copies of the contents of the
- *          source array.
- * See: gabble_disco_identity_array_new()
- */
-GPtrArray *
-gabble_disco_identity_array_copy (const GPtrArray *source)
-{
-  GPtrArray *ret;
-  guint i;
-
-  if (!source)
-    return NULL;
-
-  ret = g_ptr_array_sized_new (source->len);
-  g_ptr_array_set_free_func (ret, (GDestroyNotify) gabble_disco_identity_free);
-  for (i = 0; i < source->len; ++i)
-    {
-      g_ptr_array_add (ret,
-         gabble_disco_identity_copy (g_ptr_array_index (source, i)));
-    }
-  return ret;
-}
-
-/**
- * gabble_disco_identity_array_free():
- * @arr: Array to be freed.
- *
- * Frees an array of GabbleDiscoIdentity objects created with
- * gabble_disco_identity_array_new() or returned by
- * gabble_disco_identity_array_copy().
- *
- * Note that if this method is called with an array created with
- * g_ptr_array_new, the caller should also free the array contents.
- *
- * See: gabble_disco_identity_array_new(), gabble_disco_identity_array_copy()
- */
-void
-gabble_disco_identity_array_free (GPtrArray *arr)
-{
-  if (!arr)
-    return;
-
-  g_ptr_array_free (arr, TRUE);
 }
 
 /* Like wocky_enum_from_nick, but for GFlagsValues instead. */

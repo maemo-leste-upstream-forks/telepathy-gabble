@@ -2,7 +2,7 @@
 Test basic outgoing call handling, using CreateChannel and all three variations
 of RequestChannel.
 """
-
+from functools import partial
 import dbus
 from twisted.words.xish import xpath
 
@@ -144,7 +144,7 @@ def worker(jp, q, bus, conn, stream, variant, peer):
             # but we should be allowed to add the peer.
             chan.Group.AddMembers([remote_handle], 'I love backwards compat')
 
-    base_flags = cs.GF_PROPERTIES | cs.GF_MESSAGE_REMOVE \
+    base_flags = cs.GF_MEMBERS_CHANGED_DETAILED | cs.GF_PROPERTIES | cs.GF_MESSAGE_REMOVE \
                | cs.GF_MESSAGE_REJECT | cs.GF_MESSAGE_RESCIND
 
     if variant == REQUEST_ANONYMOUS_AND_ADD or variant == REQUEST_ANONYMOUS:
@@ -284,11 +284,6 @@ def rccs(q, bus, conn, stream):
     Tests that the connection's RequestableChannelClasses for StreamedMedia are
     sane.
     """
-    conn.Connect()
-
-    q.expect('dbus-signal', signal='StatusChanged',
-        args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     rccs = conn.Properties.Get(cs.CONN_IFACE_REQUESTS,
         'RequestableChannelClasses')
 
@@ -326,6 +321,7 @@ def rccs(q, bus, conn, stream):
         expected_allowed = [
             cs.TARGET_ID, cs.TARGET_HANDLE,
             cs.CALL_INITIAL_VIDEO, cs.CALL_INITIAL_AUDIO,
+            cs.CALL_INITIAL_VIDEO_NAME, cs.CALL_INITIAL_AUDIO_NAME,
             cs.CALL_MUTABLE_CONTENTS
         ]
 
@@ -341,11 +337,7 @@ if __name__ == '__main__':
     test_all_dialects(request_anonymous)
     test_all_dialects(request_anonymous_and_add)
     test_all_dialects(request_nonymous)
-    test_all_dialects(lambda j, q, b, c, s:
-            create(j, q, b, c, s, peer='foo@gw.bar.com'))
-    test_all_dialects(lambda j, q, b, c, s:
-            request_anonymous(j, q, b, c, s, peer='foo@gw.bar.com'))
-    test_all_dialects(lambda j, q, b, c, s:
-            request_anonymous_and_add(j, q, b, c, s, peer='foo@gw.bar.com'))
-    test_all_dialects(lambda j, q, b, c, s:
-            request_nonymous(j, q, b, c, s, peer='foo@gw.bar.com'))
+    test_all_dialects(partial(create, peer='foo@gw.bar.com'))
+    test_all_dialects(partial(request_anonymous, peer='foo@gw.bar.com'))
+    test_all_dialects(partial(request_anonymous_and_add, peer='foo@gw.bar.com'))
+    test_all_dialects(partial(request_nonymous, peer='foo@gw.bar.com'))

@@ -303,7 +303,7 @@ _got_self_avatar_for_get_known_avatar_tokens (GObject *obj,
 
   tp_svc_connection_interface_avatars_return_from_get_known_avatar_tokens (
       context->invocation, context->ret);
-  g_hash_table_destroy (context->ret);
+  g_hash_table_unref (context->ret);
 
   g_slice_free (GetKnownAvatarTokensContext, context);
 }
@@ -403,7 +403,7 @@ gabble_connection_get_known_avatar_tokens (TpSvcConnectionInterfaceAvatars *ifac
   tp_svc_connection_interface_avatars_return_from_get_known_avatar_tokens (
       invocation, ret);
 
-  g_hash_table_destroy (ret);
+  g_hash_table_unref (ret);
 }
 
 
@@ -569,7 +569,7 @@ _request_avatar_cb (GabbleVCardManager *self,
   g_array_append_vals (arr, avatar->str, avatar->len);
   tp_svc_connection_interface_avatars_return_from_request_avatar (
       context, arr, mime_type);
-  g_array_free (arr, TRUE);
+  g_array_unref (arr);
 
 out:
   if (avatar != NULL)
@@ -640,7 +640,7 @@ emit_avatar_retrieved (TpSvcConnectionInterfaceAvatars *iface,
   g_array_append_vals (arr, avatar_str->str, avatar_str->len);
   tp_svc_connection_interface_avatars_emit_avatar_retrieved (iface, contact,
       sha1, arr, mime_type);
-  g_array_free (arr, TRUE);
+  g_array_unref (arr);
   g_free (sha1);
   g_string_free (avatar_str, TRUE);
 }
@@ -685,6 +685,8 @@ gabble_connection_request_avatars (TpSvcConnectionInterfaceAvatars *iface,
       tp_base_connection_get_handles (base, TP_HANDLE_TYPE_CONTACT);
   GError *error = NULL;
   guint i;
+
+  TP_BASE_CONNECTION_ERROR_IF_NOT_CONNECTED (base, context);
 
   if (!tp_handles_are_valid (contacts_repo, contacts, FALSE, &error))
     {
@@ -914,6 +916,8 @@ conn_avatars_fill_contact_attributes (GObject *obj,
 void
 conn_avatars_init (GabbleConnection *conn)
 {
+  g_assert (conn->vcard_manager != NULL);
+
   g_signal_connect (conn->vcard_manager, "got-self-initial-avatar", G_CALLBACK
       (connection_got_self_initial_avatar_cb), conn);
   g_signal_connect (conn->presence_cache, "avatar-update", G_CALLBACK

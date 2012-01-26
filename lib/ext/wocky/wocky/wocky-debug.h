@@ -14,6 +14,7 @@ G_BEGIN_DECLS
 
 typedef enum
 {
+  /*< private > */
   DEBUG_TRANSPORT         = 1 << 0,
   DEBUG_NET               = 1 << 1,
   DEBUG_XMPP_READER       = 1 << 2,
@@ -32,23 +33,26 @@ typedef enum
   DEBUG_PUBSUB            = 1 << 15,
   DEBUG_DATA_FORM         = 1 << 16,
   DEBUG_PING              = 1 << 17,
-} DebugFlags;
+  DEBUG_HEARTBEAT         = 1 << 18,
+  DEBUG_PRESENCE          = 1 << 19,
+  DEBUG_CONNECTION_FACTORY= 1 << 20,
+} WockyDebugFlags;
 
 #define DEBUG_XMPP (DEBUG_XMPP_READER | DEBUG_XMPP_WRITER)
 
 void wocky_debug_set_flags_from_env (void);
-void wocky_debug_set_flags (DebugFlags flags);
-gboolean wocky_debug_flag_is_set (DebugFlags flag);
+void wocky_debug_set_flags (WockyDebugFlags flags);
+gboolean wocky_debug_flag_is_set (WockyDebugFlags flag);
 
-void wocky_debug_valist (DebugFlags flag,
+void wocky_debug_valist (WockyDebugFlags flag,
     const gchar *format, va_list args);
 
-void wocky_debug (DebugFlags flag, const gchar *format, ...)
+void wocky_debug (WockyDebugFlags flag, const gchar *format, ...)
     G_GNUC_PRINTF (2, 3);
-void wocky_debug_stanza (DebugFlags flag, WockyStanza *stanza,
+void wocky_debug_stanza (WockyDebugFlags flag, WockyStanza *stanza,
     const gchar *format, ...)
     G_GNUC_PRINTF (3, 4);
-void wocky_debug_node_tree (DebugFlags flag, WockyNodeTree *tree,
+void wocky_debug_node_tree (WockyDebugFlags flag, WockyNodeTree *tree,
     const gchar *format, ...)
     G_GNUC_PRINTF (3, 4);
 
@@ -66,7 +70,7 @@ void wocky_debug_node_tree (DebugFlags flag, WockyNodeTree *tree,
   wocky_debug_node_tree (DEBUG_FLAG, tree, "%s: " format, G_STRFUNC,\
       ##__VA_ARGS__)
 
-#define DEBUGGING debug_flag_is_set(DEBUG_FLAG)
+#define DEBUGGING wocky_debug_flag_is_set(DEBUG_FLAG)
 
 #endif /* DEBUG_FLAG */
 
@@ -74,19 +78,29 @@ void wocky_debug_node_tree (DebugFlags flag, WockyNodeTree *tree,
 
 #ifdef DEBUG_FLAG
 
-#define DEBUG(format, ...) \
-  G_STMT_START { } G_STMT_END
+static inline void
+DEBUG (
+    const gchar *format,
+    ...)
+{
+  /* blah blah blah */
+}
 
-#define DEBUG_STANZA(stanza, format, ...) \
-  G_STMT_START { } G_STMT_END
+static inline void
+DEBUG_STANZA (WockyStanza *stanza,
+    const gchar *format,
+    ...)
+{
+}
 
-#define DEBUG_NODE_TREE(stanza, format, ...) \
-  G_STMT_START { } G_STMT_END
+static inline void
+DEBUG_NODE_TREE (WockyNodeTree *tree,
+    const gchar *format,
+    ...)
+{
+}
 
 #define DEBUGGING 0
-
-#define NODE_DEBUG(n, s) \
-  G_STMT_START { } G_STMT_END
 
 #endif /* DEBUG_FLAG */
 

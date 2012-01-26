@@ -14,12 +14,6 @@ from twisted.words.xish import domish
 def test(q, bus, conn, stream):
     jt = jingletest.JingleTest(stream, 'test@localhost', 'foo@bar.com/Foo')
 
-    # Connecting
-    conn.Connect()
-
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     self_handle = conn.GetSelfHandle()
 
     # We need remote end's presence for capabilities
@@ -50,7 +44,7 @@ def test(q, bus, conn, stream):
     el = domish.Element(('jabber:client', 'presence'))
     el['from'] = 'bob@example.com/Bar'
     stream.send(el.toXml())
-    q.expect('dbus-signal', signal='PresenceUpdate')
+    q.expect('dbus-signal', signal='PresencesChanged')
     # OK, now we can continue. End of hack
 
 

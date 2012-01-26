@@ -73,8 +73,6 @@ def test_invisible_on_connect_fail_no_list(q, bus, conn, stream):
 
     # Darn! At least we should have our presence set to DND.
     q.expect_many(
-        EventPattern('dbus-signal', signal='PresenceUpdate',
-                     args=[{1: (0, {'dnd': {}})}]),
         EventPattern('dbus-signal', signal='PresencesChanged',
                      interface=cs.CONN_IFACE_SIMPLE_PRESENCE,
                      args=[{1: (6, 'dnd', '')}]),
@@ -121,8 +119,6 @@ def test_invisible_on_connect_fail_invalid_list(q, bus, conn, stream):
     acknowledge_iq (stream, activate_list.stanza)
 
     q.expect_many(
-        EventPattern('dbus-signal', signal='PresenceUpdate',
-                     args=[{1: (0, {'hidden': {}})}]),
         EventPattern('dbus-signal', signal='PresencesChanged',
                      interface=cs.CONN_IFACE_SIMPLE_PRESENCE,
                      args=[{1: (5, 'hidden', '')}]),
@@ -162,8 +158,6 @@ def test_invisible_on_connect_fail(q, bus, conn, stream):
 
     # Darn! At least we should have our presence set to DND.
     q.expect_many(
-        EventPattern('dbus-signal', signal='PresenceUpdate',
-                     args=[{1: (0, {'dnd': {}})}]),
         EventPattern('dbus-signal', signal='PresencesChanged',
                      interface=cs.CONN_IFACE_SIMPLE_PRESENCE,
                      args=[{1: (6, 'dnd', '')}]),
@@ -238,8 +232,6 @@ def test_invisible(q, bus, conn, stream):
     # will block to all contacts:
     q.expect_many(
         EventPattern('stream-presence', to=None, presence_type=None),
-        EventPattern('dbus-signal', signal='PresenceUpdate',
-                     args=[{1: (0, {'hidden': {}})}]),
         EventPattern('dbus-signal', signal='PresencesChanged',
                      interface=cs.CONN_IFACE_SIMPLE_PRESENCE,
                      args=[{1: (5, 'hidden', '')}]))
@@ -265,8 +257,6 @@ def test_invisible(q, bus, conn, stream):
     # At this point, we also signal our presence change on D-Bus:
     q.expect_many(
         EventPattern('stream-presence', to=None, presence_type=None),
-        EventPattern('dbus-signal', signal='PresenceUpdate',
-                     args=[{1: (0, {'away': {'message': 'gone'}})}]),
         EventPattern('dbus-signal', signal='PresencesChanged',
                      interface=cs.CONN_IFACE_SIMPLE_PRESENCE,
                      args=[{1: (3, 'away', 'gone')}]))
@@ -320,12 +310,17 @@ def test_privacy_list_push_valid(q, bus, conn, stream):
     acknowledge_iq (stream, activate_list.stanza)
 
 if __name__ == '__main__':
-    exec_test(test_invisible, protocol=ManualPrivacyListStream)
-    exec_test(test_invisible_on_connect, protocol=ManualPrivacyListStream)
-    exec_test(test_create_invisible_list, protocol=ManualPrivacyListStream)
+    exec_test(test_invisible, protocol=ManualPrivacyListStream,
+              do_connect=False)
+    exec_test(test_invisible_on_connect, protocol=ManualPrivacyListStream,
+              do_connect=False)
+    exec_test(test_create_invisible_list, protocol=ManualPrivacyListStream,
+              do_connect=False)
     exec_test(test_invisible_on_connect_fail_no_list,
-              protocol=ManualPrivacyListStream)
+              protocol=ManualPrivacyListStream, do_connect=False)
     exec_test(test_invisible_on_connect_fail_invalid_list,
-              protocol=ManualPrivacyListStream)
-    exec_test(test_privacy_list_push_valid, protocol=ManualPrivacyListStream)
-    exec_test(test_privacy_list_push_conflict, protocol=ManualPrivacyListStream)
+              protocol=ManualPrivacyListStream, do_connect=False)
+    exec_test(test_privacy_list_push_valid, protocol=ManualPrivacyListStream,
+              do_connect=False)
+    exec_test(test_privacy_list_push_conflict, protocol=ManualPrivacyListStream,
+              do_connect=False)

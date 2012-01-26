@@ -38,6 +38,8 @@
 #include <telepathy-glib/svc-connection.h>
 #include <telepathy-glib/util.h>
 
+#include <wocky/wocky-c2s-porter.h>
+
 #define DEBUG_FLAG GABBLE_DEBUG_MAIL_NOTIF
 #include "connection.h"
 #include "debug.h"
@@ -70,6 +72,7 @@ struct _GabbleConnectionMailNotificationPrivate
   guint poll_timeout_id;
   guint poll_count;
   GList *inbox_url_requests; /* list of DBusGMethodInvocation */
+  gboolean should_set_google_settings;
 };
 
 
@@ -122,7 +125,7 @@ return_from_request_inbox_url (GabbleConnection *conn)
   if (error == NULL)
     {
       g_value_array_free (result);
-      g_ptr_array_free (empty_array, TRUE);
+      g_ptr_array_unref (empty_array);
     }
   else
     {
@@ -211,7 +214,7 @@ gabble_mail_notification_request_mail_url (
           context, result);
 
       g_value_array_free (result);
-      g_ptr_array_free (empty_array, TRUE);
+      g_ptr_array_unref (empty_array);
       g_free (url);
     }
   else
@@ -457,10 +460,28 @@ store_unread_mails (GabbleConnection *conn,
       conn, priv->unread_count, collector.mails_added,
       (const char **)mails_removed->pdata);
 
-  g_ptr_array_free (collector.mails_added, TRUE);
-  g_ptr_array_free (mails_removed, TRUE);
+  g_ptr_array_unref (collector.mails_added);
+  g_ptr_array_unref (mails_removed);
 }
 
+static void
+set_settings_cb (GObject *source_object,
+    GAsyncResult *res,
+    gpointer user_data)
+{
+  GError *error = NULL;
+  WockyPorter *porter = WOCKY_PORTER (source_object);
+  WockyStanza *reply = wocky_porter_send_iq_finish (porter, res, &error);
+
+  if (reply == NULL ||
+      wocky_stanza_extract_errors (reply, NULL, &error, NULL, NULL))
+    {
+      DEBUG ("Failed to set google user settings: %s", error->message);
+      g_error_free (error);
+    }
+
+  tp_clear_object (&reply);
+}
 
 static void
 query_unread_mails_cb (GObject *source_object,
@@ -577,6 +598,40 @@ new_mail_handler (WockyPorter *porter,
   return TRUE;
 }
 
+/* Make sure google knows we want mail notifications. According to
+ * Google clients should set 'mailnotifications' to true when needed
+ * but never to false, for compatibility reasons:
+ * https://code.google.com/apis/talk/jep_extensions/usersettings.html#3 */
+static void
+ensure_google_settings (GabbleConnection *self)
+{
+  TpBaseConnection *base_conn = TP_BASE_CONNECTION (self);
+  WockyStanza *query;
+  WockyPorter *porter;
+
+  if (!self->mail_priv->should_set_google_settings)
+    return;
+
+  if (base_conn->status != TP_CONNECTION_STATUS_CONNECTED)
+    return;
+
+  porter = wocky_session_get_porter (self->session);
+  query = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+                              WOCKY_STANZA_SUB_TYPE_SET, NULL, NULL,
+                              '@', "id", "user-setting-3",
+                              '(', "usersetting",
+                                ':', NS_GOOGLE_SETTING,
+                                '(', "mailnotifications",
+                                  '@', "value", "true",
+                                ')',
+                              ')',
+                              NULL);
+  wocky_porter_send_iq_async (porter, query, NULL,
+                              set_settings_cb, self);
+  self->mail_priv->should_set_google_settings = FALSE;
+
+  g_object_unref (query);
+}
 
 static void
 connection_status_changed (GabbleConnection *conn,
@@ -590,19 +645,24 @@ connection_status_changed (GabbleConnection *conn,
       DEBUG ("Connected, registering Google 'new-mail' notification");
 
       conn->mail_priv->new_mail_handler_id =
-        wocky_porter_register_handler (wocky_session_get_porter (conn->session),
+        wocky_c2s_porter_register_handler_from_server (
+            WOCKY_C2S_PORTER (wocky_session_get_porter (conn->session)),
             WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
-            NULL, WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+            WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
             new_mail_handler, conn,
             '(', "new-mail",
               ':', NS_GOOGLE_MAIL_NOTIFY,
             ')',
             NULL);
 
+      if (conn->features & GABBLE_CONNECTION_FEATURES_GOOGLE_SETTING)
+        conn->mail_priv->should_set_google_settings = TRUE;
+
       if (conn->mail_priv->interested)
         {
           DEBUG ("Someone is already interested in MailNotification");
           update_unread_mails (conn);
+          ensure_google_settings (conn);
         }
     }
 }
@@ -617,6 +677,7 @@ mail_clients_interested_cb (GabbleConnection *self,
   self->mail_priv->interested = TRUE;
 
   update_unread_mails (self);
+  ensure_google_settings (self);
 }
 
 /* called on transition from 1 to 0 interested clients */
@@ -638,10 +699,7 @@ mail_clients_uninterested_cb (GabbleConnection *self,
 void
 conn_mail_notif_init (GabbleConnection *conn)
 {
-  GabbleConnectionMailNotificationPrivate *priv;
-
-  conn->mail_priv = g_slice_new0(GabbleConnectionMailNotificationPrivate);
-  priv = conn->mail_priv;
+  conn->mail_priv = g_slice_new0 (GabbleConnectionMailNotificationPrivate);
 
   g_signal_connect (conn, "status-changed",
       G_CALLBACK (connection_status_changed), conn);
@@ -768,7 +826,7 @@ conn_mail_notif_properties_getter (GObject *object,
     {
       GPtrArray *mails = get_unread_mails (conn);
       g_value_set_boxed (value, mails);
-      g_ptr_array_free (mails, TRUE);
+      g_ptr_array_unref (mails);
     }
   else if (name == prop_quarks[PROP_MAIL_ADDRESS])
     {

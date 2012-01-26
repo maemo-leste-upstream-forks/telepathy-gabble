@@ -107,7 +107,7 @@ gabble_jingle_transport_iface_can_accept (GabbleJingleTransportIface *self)
   if (state != JINGLE_TRANSPORT_STATE_CONNECTED)
     return FALSE;
 
-  /* Only Raw UDP *needs* contents in order to accept. */
+  /* Only Raw UDP *needs* candidates in order to accept. */
   if (m != NULL)
     return m (self);
   else
@@ -225,7 +225,7 @@ gabble_jingle_transport_iface_get_type (void)
 JingleCandidate *
 jingle_candidate_new (JingleTransportProtocol protocol,
     JingleCandidateType type, const gchar *id, int component,
-    const gchar *address, int port, int generation, gdouble preference,
+    const gchar *address, int port, int generation, int preference,
     const gchar *username, const gchar *password, int network)
 {
   JingleCandidate *c = g_slice_new0 (JingleCandidate);

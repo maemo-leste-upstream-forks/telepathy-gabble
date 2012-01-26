@@ -28,11 +28,16 @@
 #include "wocky-namespaces.h"
 #include "wocky-debug.h"
 
+#include "wocky-node-private.h"
+
 G_DEFINE_TYPE(WockyStanza, wocky_stanza, WOCKY_TYPE_NODE_TREE)
 
 /* private structure */
 struct _WockyStanzaPrivate
 {
+  WockyContact *from_contact;
+  WockyContact *to_contact;
+
   gboolean dispose_has_run;
 };
 
@@ -122,6 +127,9 @@ wocky_stanza_init (WockyStanza *self)
 {
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, WOCKY_TYPE_STANZA,
       WockyStanzaPrivate);
+
+  self->priv->from_contact = NULL;
+  self->priv->to_contact = NULL;
 }
 
 static void wocky_stanza_dispose (GObject *object);
@@ -136,10 +144,9 @@ wocky_stanza_class_init (WockyStanzaClass *wocky_stanza_class)
 
   object_class->dispose = wocky_stanza_dispose;
   object_class->finalize = wocky_stanza_finalize;
-
 }
 
-void
+static void
 wocky_stanza_dispose (GObject *object)
 {
   WockyStanza *self = WOCKY_STANZA (object);
@@ -155,14 +162,29 @@ wocky_stanza_dispose (GObject *object)
     G_OBJECT_CLASS (wocky_stanza_parent_class)->dispose (object);
 }
 
-void
+static void
 wocky_stanza_finalize (GObject *object)
 {
+  WockyStanza *self = WOCKY_STANZA (object);
+
+  if (self->priv->from_contact != NULL)
+    {
+      g_object_unref (self->priv->from_contact);
+      self->priv->from_contact = NULL;
+    }
+
+  if (self->priv->to_contact != NULL)
+    {
+      g_object_unref (self->priv->to_contact);
+      self->priv->to_contact = NULL;
+    }
+
   G_OBJECT_CLASS (wocky_stanza_parent_class)->finalize (object);
 }
 
 WockyStanza *
-wocky_stanza_new (const gchar *name, const gchar *ns)
+wocky_stanza_new (const gchar *name,
+    const gchar *ns)
 {
   WockyStanza *result;
 
@@ -171,6 +193,18 @@ wocky_stanza_new (const gchar *name, const gchar *ns)
     NULL));
 
   return result;
+}
+
+WockyStanza *
+wocky_stanza_copy (WockyStanza *old)
+{
+  WockyNode *top;
+
+  top = _wocky_node_copy (wocky_stanza_get_top_node (old));
+
+  return g_object_new (WOCKY_TYPE_STANZA,
+      "top-node", top,
+      NULL);
 }
 
 static const gchar *
@@ -208,23 +242,32 @@ get_sub_type_name (WockyStanzaSubType sub_type)
 
 static gboolean
 check_sub_type (WockyStanzaType type,
-                WockyStanzaSubType sub_type)
+    WockyStanzaSubType sub_type)
 {
+  WockyStanzaType expected_type;
+
   g_return_val_if_fail (type > WOCKY_STANZA_TYPE_NONE &&
       type < NUM_WOCKY_STANZA_TYPE, FALSE);
   g_return_val_if_fail (sub_type < NUM_WOCKY_STANZA_SUB_TYPE, FALSE);
 
   g_assert (sub_type_names[sub_type].sub_type == sub_type);
-  g_return_val_if_fail (
-      sub_type_names[sub_type].type == WOCKY_STANZA_TYPE_NONE ||
-      sub_type_names[sub_type].type == type, FALSE);
+
+  expected_type = sub_type_names[sub_type].type;
+
+  if (expected_type != WOCKY_STANZA_TYPE_NONE && expected_type != type)
+    {
+      g_critical ("Stanza sub-type '%s' may only be used with stanzas of "
+        "type '%s', not of type '%s'", sub_type_names[sub_type].name,
+        type_names[expected_type].name, type_names[type].name);
+      g_return_val_if_reached (FALSE);
+    }
 
   return TRUE;
 }
 
 static WockyStanza *
 wocky_stanza_new_with_sub_type (WockyStanzaType type,
-                                      WockyStanzaSubType sub_type)
+    WockyStanzaSubType sub_type)
 {
   WockyStanza *stanza = NULL;
   const gchar *sub_type_name;
@@ -300,10 +343,10 @@ wocky_stanza_new_with_sub_type (WockyStanzaType type,
  */
 WockyStanza *
 wocky_stanza_build (WockyStanzaType type,
-                          WockyStanzaSubType sub_type,
-                          const gchar *from,
-                          const gchar *to,
-                          ...)
+    WockyStanzaSubType sub_type,
+    const gchar *from,
+    const gchar *to,
+    ...)
 
 {
   WockyStanza *stanza;
@@ -312,6 +355,32 @@ wocky_stanza_build (WockyStanzaType type,
   va_start (ap, to);
   stanza = wocky_stanza_build_va (type, sub_type, from, to, ap);
   va_end (ap);
+
+  return stanza;
+}
+
+WockyStanza *
+wocky_stanza_build_to_contact (WockyStanzaType type,
+    WockyStanzaSubType sub_type,
+    const gchar *from,
+    WockyContact *to,
+    ...)
+
+{
+  WockyStanza *stanza;
+  va_list ap;
+  gchar *to_jid = NULL;
+
+  if (to != NULL)
+    to_jid = wocky_contact_dup_jid (to);
+
+  va_start (ap, to);
+  stanza = wocky_stanza_build_va (type, sub_type, from, to_jid, ap);
+  va_end (ap);
+
+  g_free (to_jid);
+
+  stanza->priv->to_contact = g_object_ref (to);
 
   return stanza;
 }
@@ -389,8 +458,8 @@ get_sub_type_from_name (const gchar *name)
 
 void
 wocky_stanza_get_type_info (WockyStanza *stanza,
-                                  WockyStanzaType *type,
-                                  WockyStanzaSubType *sub_type)
+    WockyStanzaType *type,
+    WockyStanzaSubType *sub_type)
 {
   g_return_if_fail (stanza != NULL);
   g_assert (wocky_stanza_get_top_node (stanza) != NULL);
@@ -413,6 +482,7 @@ create_iq_reply (WockyStanza *iq,
   WockyNode *node;
   WockyStanzaSubType sub_type;
   const gchar *from, *to, *id;
+  WockyContact *contact;
 
   g_return_val_if_fail (iq != NULL, NULL);
 
@@ -425,12 +495,19 @@ create_iq_reply (WockyStanza *iq,
   from = wocky_node_get_attribute (node, "from");
   to = wocky_node_get_attribute (node, "to");
   id = wocky_node_get_attribute (node, "id");
-  g_return_val_if_fail (id != NULL, NULL);
+
+  if (id == NULL)
+    return NULL;
 
   reply = wocky_stanza_build_va (WOCKY_STANZA_TYPE_IQ,
       sub_type_reply, to, from, ap);
 
   wocky_node_set_attribute (wocky_stanza_get_top_node (reply), "id", id);
+
+  contact = wocky_stanza_get_from_contact (iq);
+  if (contact != NULL)
+    wocky_stanza_set_to_contact (reply, contact);
+
   return reply;
 }
 
@@ -449,17 +526,90 @@ wocky_stanza_build_iq_result (WockyStanza *iq,
 }
 
 WockyStanza *
+wocky_stanza_build_iq_result_va (
+    WockyStanza *iq,
+    va_list ap)
+{
+  return create_iq_reply (iq, WOCKY_STANZA_SUB_TYPE_RESULT, ap);
+}
+
+/**
+ * wocky_stanza_build_iq_error:
+ * @iq: a stanza of type #WOCKY_STANZA_TYPE_IQ and sub-type either
+ *      #WOCKY_STANZA_SUB_TYPE_SET or #WOCKY_STANZA_SUB_TYPE_GET
+ * @Varargs: a wocky_stanza_build() specification
+ *
+ * Builds an error reply to @iq containing the given body. This function also
+ * adds the child element of @iq to the reply, as recommended by <ulink
+ * url='http://xmpp.org/rfcs/rfc3920.html#stanzas-semantics-iq'>RFC3920 §9.2.3
+ * ‘IQ Semantics’</ulink>.
+ *
+ * No <code>&lt;error/&gt;</code> element is added to the reply. To add a
+ * standard stanza error, plus message, consider using
+ * wocky_stanza_error_to_node(). To add a more complicated error with an
+ * application-specific condition, specify it when calling this function. For
+ * example:
+ *
+ * |[
+ * WockyStanza *reply = wocky_stanza_build_iq_error (iq,
+ *    '(', "error",
+ *      '@', "type", "cancel",
+ *      '(', "feature-not-implemented", ':', WOCKY_XMPP_NS_STANZAS, ')',
+ *      '(', "unsupported", ':', WOCKY_XMPP_NS_PUBSUB_ERRORS,
+ *        '@', "feature", "subscribe",
+ *      ')',
+ *    ')', NULL);
+ * ]|
+ *
+ * Returns: an error reply for @iq
+ */
+WockyStanza *
 wocky_stanza_build_iq_error (WockyStanza *iq,
     ...)
 {
   WockyStanza *reply;
+  WockyNode *query;
   va_list ap;
 
   va_start (ap, iq);
   reply = create_iq_reply (iq, WOCKY_STANZA_SUB_TYPE_ERROR, ap);
   va_end (ap);
 
+  /* RFC3920 §9.2.3 dictates:
+   *    5. An IQ stanza of type "get" or "set" MUST contain one and only one
+   *       child element that specifies the semantics of the particular request
+   *       or response.
+   *    …
+   *    7. An IQ stanza of type "error" SHOULD include the child element
+   *       contained in the associated "get" or "set" and MUST include an
+   *       <error/> child; for details, see Stanza Errors.
+   *
+   * So here we take the first child out of the stanza we're replying to, and
+   * include it in the error reply. If @iq has more than one child, it
+   * was illegal, so we're within our rights to ignore everything after the
+   * first. If @iq has no children, it was also illegal, so there's no way we
+   * can comply with the SHOULD.
+   */
+  query = wocky_node_get_first_child (wocky_stanza_get_top_node (iq));
+
+  if (reply != NULL && query != NULL)
+    {
+      WockyNodeTree *query_tree = wocky_node_tree_new_from_node (query);
+
+      wocky_node_prepend_node_tree (wocky_stanza_get_top_node (reply),
+          query_tree);
+      g_object_unref (query_tree);
+    }
+
   return reply;
+}
+
+WockyStanza *
+wocky_stanza_build_iq_error_va (
+    WockyStanza *iq,
+    va_list ap)
+{
+  return create_iq_reply (iq, WOCKY_STANZA_SUB_TYPE_ERROR, ap);
 }
 
 /**
@@ -592,4 +742,50 @@ wocky_stanza_get_to (WockyStanza *self)
   g_return_val_if_fail (WOCKY_IS_STANZA (self), NULL);
 
   return wocky_node_get_attribute (wocky_stanza_get_top_node (self), "to");
+}
+
+WockyContact *
+wocky_stanza_get_to_contact (WockyStanza *self)
+{
+  g_return_val_if_fail (self != NULL, NULL);
+  g_return_val_if_fail (WOCKY_IS_STANZA (self), NULL);
+
+  return self->priv->to_contact;
+}
+
+WockyContact *
+wocky_stanza_get_from_contact (WockyStanza *self)
+{
+  g_return_val_if_fail (self != NULL, NULL);
+  g_return_val_if_fail (WOCKY_IS_STANZA (self), NULL);
+
+  return self->priv->from_contact;
+}
+
+void
+wocky_stanza_set_to_contact (WockyStanza *self,
+    WockyContact *contact)
+{
+  g_return_if_fail (self != NULL);
+  g_return_if_fail (WOCKY_IS_STANZA (self));
+  g_return_if_fail (WOCKY_IS_CONTACT (contact));
+
+  if (self->priv->to_contact != NULL)
+    g_object_unref (self->priv->to_contact);
+
+  self->priv->to_contact = g_object_ref (contact);
+}
+
+void
+wocky_stanza_set_from_contact (WockyStanza *self,
+    WockyContact *contact)
+{
+  g_return_if_fail (self != NULL);
+  g_return_if_fail (WOCKY_IS_STANZA (self));
+  g_return_if_fail (WOCKY_IS_CONTACT (contact));
+
+  if (self->priv->from_contact != NULL)
+    g_object_unref (self->priv->from_contact);
+
+  self->priv->from_contact = g_object_ref (contact);
 }

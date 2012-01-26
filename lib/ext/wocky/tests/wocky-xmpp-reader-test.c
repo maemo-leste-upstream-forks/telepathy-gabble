@@ -22,6 +22,12 @@
 "<stream:streamsss xmlns='jabber:client'                                   " \
 "  xmlns:stream='http://etherx.jabber.org/streams'>                        "
 
+#define HEADER_WITH_UNQUALIFIED_LANG \
+"<?xml version='1.0' encoding='UTF-8'?>                                    " \
+"<stream:stream xmlns='jabber:client'                                      " \
+"  xmlns:stream='http://etherx.jabber.org/streams'                         " \
+"  lang='fi'>                                                              "
+
 #define BROKEN_MESSAGE \
 "  <message to='juliet@example.com' from='romeo@example.net' xml:lang='en' " \
 "   id=\"0\">                                                              " \
@@ -68,6 +74,32 @@
 "   <leaf colour='green' />                                " \
 " </branch>                                                " \
 "</iq>                                                     "
+
+#define WHITESPACE_PADDED_BODY "  The Wench is Dead!  "
+
+#define MESSAGE_WITH_WHITESPACE_PADDED_BODY \
+"  <message to='morse@thamesvalley.police.uk' " \
+"           from='lewis@thamesvalley.police.uk'> " \
+"    <body>" WHITESPACE_PADDED_BODY "</body>" \
+"  </message>"
+
+
+#define WHITESPACE_ONLY_BODY "    "
+
+#define MESSAGE_WITH_WHITESPACE_ONLY_BODY \
+"  <message to='morse@thamesvalley.police.uk' " \
+"           from='lewis@thamesvalley.police.uk'> " \
+"    <body>" WHITESPACE_ONLY_BODY "</body>" \
+"  </message>"
+
+#define NON_CHARACTER_CODEPOINTS_REPLACEMENT "�🙈�"
+
+#define MESSAGE_WITH_NON_CHARACTER_CODEPOINTS \
+"  <message to='morse@thamesvalley.police.uk' " \
+"           from='lewis@thamesvalley.police.uk'> " \
+"    <body>\xef\xb7\xaf🙈\xef\xb7\xaf</body>" \
+"  </message>"
+
 
 
 static void
@@ -125,6 +157,24 @@ test_stream_open_error (void)
       WOCKY_XMPP_READER_ERROR_INVALID_STREAM_START);
 
   g_error_free (error);
+
+  g_object_unref (reader);
+}
+
+static void
+test_stream_open_unqualified_lang (void)
+{
+  WockyXmppReader *reader = wocky_xmpp_reader_new ();
+
+  g_assert (wocky_xmpp_reader_get_state (reader)
+    == WOCKY_XMPP_READER_STATE_INITIAL);
+
+  wocky_xmpp_reader_push (reader,
+    (guint8 *) HEADER_WITH_UNQUALIFIED_LANG,
+    strlen (HEADER_WITH_UNQUALIFIED_LANG));
+
+  g_assert (wocky_xmpp_reader_get_state (reader)
+    == WOCKY_XMPP_READER_STATE_OPENED);
 
   g_object_unref (reader);
 }
@@ -282,6 +332,53 @@ test_invalid_namespace (void)
   g_object_unref (reader);
 }
 
+/* Helper function for the whitespace body tests */
+static void
+test_body (
+    const gchar *xml,
+    const gchar *expected_body_text)
+{
+  WockyXmppReader *reader = wocky_xmpp_reader_new_no_stream ();
+  WockyStanza *stanza;
+  WockyNode *body;
+
+  wocky_xmpp_reader_push (reader, (guint8 *) xml, strlen (xml));
+
+  stanza = wocky_xmpp_reader_pop_stanza (reader);
+  g_assert (stanza != NULL);
+
+  body = wocky_node_get_child (wocky_stanza_get_top_node (stanza), "body");
+  g_assert (body != NULL);
+
+  g_assert (g_utf8_validate (body->content, -1, NULL));
+  g_assert_cmpstr (body->content, ==, expected_body_text);
+
+  g_object_unref (stanza);
+  g_object_unref (reader);
+}
+
+/* Test that whitespace around the text contents of a message isn't ignored */
+static void
+test_whitespace_padding (void)
+{
+  test_body (MESSAGE_WITH_WHITESPACE_PADDED_BODY, WHITESPACE_PADDED_BODY);
+}
+
+/* Test that a message body consisting entirely of whitespace isn't ignored */
+static void
+test_whitespace_only (void)
+{
+  test_body (MESSAGE_WITH_WHITESPACE_ONLY_BODY, WHITESPACE_ONLY_BODY);
+}
+
+/* Test that a message body consisting entirely of whitespace isn't ignored */
+static void
+test_non_character_codepoints (void)
+{
+  test_body (MESSAGE_WITH_NON_CHARACTER_CODEPOINTS,
+    NON_CHARACTER_CODEPOINTS_REPLACEMENT);
+}
+
 int
 main (int argc,
     char **argv)
@@ -292,11 +389,17 @@ main (int argc,
 
   g_test_add_func ("/xmpp-reader/stream-no-stanzas", test_stream_no_stanzas);
   g_test_add_func ("/xmpp-reader/stream-open-error", test_stream_open_error);
+  g_test_add_func ("/xmpp-reader/stream-open-unqualified-lang",
+      test_stream_open_unqualified_lang);
   g_test_add_func ("/xmpp-reader/parse-error", test_parse_error);
   g_test_add_func ("/xmpp-reader/no-stream-hunks", test_no_stream_hunks);
   g_test_add_func ("/xmpp-reader/no-stream-resetting", test_no_stream_reset);
   g_test_add_func ("/xmpp-reader/vcard-namespace", test_vcard_namespace);
   g_test_add_func ("/xmpp-reader/invalid-namespace", test_invalid_namespace);
+  g_test_add_func ("/xmpp-reader/whitespace-padding", test_whitespace_padding);
+  g_test_add_func ("/xmpp-reader/whitespace-only", test_whitespace_only);
+  g_test_add_func ("/xmpp-reader/utf-non-character-codepoints",
+    test_non_character_codepoints);
 
   result = g_test_run ();
   test_deinit ();

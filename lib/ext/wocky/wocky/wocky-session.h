@@ -30,15 +30,22 @@
 
 G_BEGIN_DECLS
 
+/**
+ * WockySessionClass:
+ *
+ * The class of a #WockySession.
+ */
 typedef struct _WockySessionClass WockySessionClass;
 typedef struct _WockySessionPrivate WockySessionPrivate;
 
 
 struct _WockySessionClass {
+  /*<private>*/
   GObjectClass parent_class;
 };
 
 struct _WockySession {
+  /*<private>*/
   GObject parent;
 
   WockySessionPrivate *priv;
@@ -62,7 +69,9 @@ GType wocky_session_get_type (void);
   (G_TYPE_INSTANCE_GET_CLASS ((obj), WOCKY_TYPE_SESSION, \
    WockySessionClass))
 
-WockySession * wocky_session_new (WockyXmppConnection *conn,
+WockySession * wocky_session_new_ll (const gchar *full_jid);
+
+WockySession * wocky_session_new_with_connection (WockyXmppConnection *conn,
     const gchar *full_jid);
 
 void wocky_session_start (WockySession *session);
@@ -70,6 +79,10 @@ void wocky_session_start (WockySession *session);
 WockyPorter * wocky_session_get_porter (WockySession *session);
 
 WockyContactFactory * wocky_session_get_contact_factory (WockySession *session);
+
+void wocky_session_set_jid (WockySession *session, const gchar *jid);
+
+const gchar *wocky_session_get_jid (WockySession *session);
 
 G_END_DECLS
 

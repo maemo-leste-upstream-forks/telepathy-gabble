@@ -169,7 +169,7 @@ wocky_pubsub_service_dispose (GObject *object)
           g_slice_free (EventTrampoline, t);
         }
 
-      g_ptr_array_free (priv->trampolines, TRUE);
+      g_ptr_array_unref (priv->trampolines);
       priv->trampolines = NULL;
 
       g_object_unref (priv->porter);
@@ -215,7 +215,7 @@ wocky_pubsub_service_constructed (GObject *object)
 
       t->mapping = m;
       t->self = self;
-      t->handler_id = wocky_porter_register_handler (priv->porter,
+      t->handler_id = wocky_porter_register_handler_from (priv->porter,
           WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
           priv->jid,
           WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
@@ -757,13 +757,13 @@ wocky_pubsub_service_retrieve_subscriptions_finish (
 {
   wocky_implement_finish_copy_pointer (self,
       wocky_pubsub_service_retrieve_subscriptions_async,
-      wocky_pubsub_subscription_list_copy, subscriptions)
+      wocky_pubsub_subscription_list_copy, subscriptions);
 }
 
 /**
  * wocky_pubsub_service_handle_create_node_reply:
  * @self: a pubsub service
- * @create_node: the &lt;create/&gt; tree from the reply to an attempt to
+ * @create_tree: the &lt;create/&gt; tree from the reply to an attempt to
  *               create a node, or %NULL if none was present in the reply.
  * @requested_name: the name we asked the server to use for the node, or %NULL
  *                  if we requested an instant node

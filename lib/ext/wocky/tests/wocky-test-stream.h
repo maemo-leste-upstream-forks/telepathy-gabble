@@ -78,10 +78,26 @@ typedef enum {
   WOCK_TEST_STREAM_READ_COMBINE,
   /* one read reads only data from one write */
   WOCK_TEST_STREAM_READ_EXACT,
-} WockyTestSTreamReadMode;
+} WockyTestStreamReadMode;
+
+typedef enum {
+  /* all writes are only half-done, default */
+  WOCKY_TEST_STREAM_WRITE_INCOMPLETE = 0,
+  /* Always succeed in writing everything */
+  WOCKY_TEST_STREAM_WRITE_COMPLETE = 1,
+} WockyTestStreamWriteMode;
 
 void wocky_test_stream_set_mode (GInputStream *stream,
-  WockyTestSTreamReadMode mode);
+  WockyTestStreamReadMode mode);
+
+void wocky_test_stream_set_write_mode (GOutputStream *stream,
+  WockyTestStreamWriteMode mode);
+
+typedef void (*WockyTestStreamDirectReadCb) (const gchar *buff, gsize len,
+  gpointer user_data);
+
+void wocky_test_stream_set_direct_read_callback (GInputStream *stream,
+  WockyTestStreamDirectReadCb cb, gpointer user_data);
 
 G_END_DECLS
 

@@ -507,6 +507,8 @@ gabble_jingle_content_parse_add (GabbleJingleContent *c,
   GabbleJingleTransportIface *trans = NULL;
   JingleDialect dialect = gabble_jingle_session_get_dialect (c->session);
 
+  priv->created_by_us = FALSE;
+
   desc_node = lm_message_node_get_child_any_ns (content_node, "description");
   trans_node = lm_message_node_get_child_any_ns (content_node, "transport");
   creator = lm_message_node_get_attribute (content_node, "creator");
@@ -549,6 +551,19 @@ gabble_jingle_content_parse_add (GabbleJingleContent *c,
     }
   else
     {
+      if (creator == NULL &&
+          gabble_jingle_session_peer_has_quirk (c->session,
+              QUIRK_GOOGLE_WEBMAIL_CLIENT))
+        {
+          if (gabble_jingle_content_creator_is_initiator (c))
+            creator = "initiator";
+          else
+            creator = "responder";
+
+          DEBUG ("Working around GMail omitting creator=''; assuming '%s'",
+              creator);
+        }
+
       if ((trans_node == NULL) || (creator == NULL) || (name == NULL))
         {
           SET_BAD_REQ ("missing required content attributes or elements");
@@ -577,7 +592,6 @@ gabble_jingle_content_parse_add (GabbleJingleContent *c,
       priv->transport_ns = g_strdup (ns);
     }
 
-  priv->created_by_us = FALSE;
   if (senders == NULL)
     priv->senders = get_default_senders (c);
   else
@@ -903,7 +917,8 @@ gabble_jingle_content_add_candidates (GabbleJingleContent *self, GList *li)
 {
   GabbleJingleContentPrivate *priv = self->priv;
 
-  DEBUG ("called");
+  DEBUG ("called content: %s created_by_us: %d", priv->name,
+      priv->created_by_us);
 
   if (li == NULL)
     return;
@@ -1083,6 +1098,8 @@ _gabble_jingle_content_set_media_ready (GabbleJingleContent *self)
 {
   GabbleJingleContentPrivate *priv = self->priv;
 
+  DEBUG ("media ready on content: %s created_by_us: %d", priv->name,
+      priv->created_by_us);
 
   priv->media_ready = TRUE;
 
@@ -1167,8 +1184,10 @@ _on_remove_reply (GObject *c_as_obj,
   g_signal_emit (c, signals[REMOVED], 0);
 }
 
-void
-gabble_jingle_content_remove (GabbleJingleContent *c, gboolean signal_peer)
+static void
+_content_remove (GabbleJingleContent *c,
+    gboolean signal_peer,
+    JingleReason reason)
 {
   GabbleJingleContentPrivate *priv = c->priv;
   LmMessage *msg;
@@ -1191,7 +1210,18 @@ gabble_jingle_content_remove (GabbleJingleContent *c, gboolean signal_peer)
       g_object_notify ((GObject *) c, "state");
 
       msg = gabble_jingle_session_new_message (c->session,
-          JINGLE_ACTION_CONTENT_REMOVE, &sess_node);
+          reason == JINGLE_REASON_UNKNOWN ?
+          JINGLE_ACTION_CONTENT_REMOVE : JINGLE_ACTION_CONTENT_REJECT,
+          &sess_node);
+
+      if (reason != JINGLE_REASON_UNKNOWN)
+        {
+          LmMessageNode *reason_node = lm_message_node_add_child (sess_node,
+              "reason", NULL);
+          lm_message_node_add_child (reason_node,
+              gabble_jingle_session_get_reason_name (reason), NULL);
+        }
+
       gabble_jingle_content_produce_node (c, sess_node, FALSE, FALSE, NULL);
       gabble_jingle_session_send (c->session, msg, _on_remove_reply,
           (GObject *) c);
@@ -1204,6 +1234,20 @@ gabble_jingle_content_remove (GabbleJingleContent *c, gboolean signal_peer)
        */
       g_signal_emit (c, signals[REMOVED], 0);
     }
+}
+
+void
+gabble_jingle_content_remove (GabbleJingleContent *c,
+    gboolean signal_peer)
+{
+  _content_remove (c, signal_peer, JINGLE_REASON_UNKNOWN);
+}
+
+void
+gabble_jingle_content_reject (GabbleJingleContent *c,
+    JingleReason reason)
+{
+  _content_remove (c, TRUE, reason);
 }
 
 gboolean
@@ -1324,4 +1368,32 @@ gabble_jingle_content_set_sending (GabbleJingleContent *self,
     gabble_jingle_content_remove (self, TRUE);
   else
     gabble_jingle_content_change_direction (self, senders);
+}
+
+JingleMediaType
+jingle_media_type_from_tp (TpMediaStreamType type)
+{
+  switch (type)
+    {
+      case TP_MEDIA_STREAM_TYPE_AUDIO:
+        return JINGLE_MEDIA_TYPE_AUDIO;
+      case TP_MEDIA_STREAM_TYPE_VIDEO:
+        return JINGLE_MEDIA_TYPE_VIDEO;
+      default:
+        g_return_val_if_reached (JINGLE_MEDIA_TYPE_NONE);
+    }
+}
+
+TpMediaStreamType
+jingle_media_type_to_tp (JingleMediaType type)
+{
+  switch (type)
+    {
+      case JINGLE_MEDIA_TYPE_AUDIO:
+        return TP_MEDIA_STREAM_TYPE_AUDIO;
+      case JINGLE_MEDIA_TYPE_VIDEO:
+        return TP_MEDIA_STREAM_TYPE_VIDEO;
+      default:
+        g_return_val_if_reached (TP_MEDIA_STREAM_TYPE_AUDIO);
+    }
 }

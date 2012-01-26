@@ -63,6 +63,98 @@ static NSPrefix default_attr_ns_prefixes[] =
 static GHashTable *user_ns_prefixes = NULL;
 static GHashTable *default_ns_prefixes = NULL;
 
+/* Do a strndup operation, but at the same time replace all characters that
+ * aren't valid according to g_utf8_validate by � */
+
+static gchar *
+strndup_make_valid (const gchar *str, gssize len)
+{
+  const gchar *remainder = str;
+  GString *result;
+  const gchar *endp;
+  gssize left = len;
+
+  /* Simplify things by always keeping track of the string lenght */
+  if (left < 0)
+    left = strlen (remainder);
+
+  result = g_string_sized_new (len);
+
+  while (!g_utf8_validate (remainder, left, &endp))
+    {
+      g_string_append_len (result, remainder, endp - remainder);
+      /* append U+FFFD REPLACEMENT CHARACTER */
+      g_string_append (result, "\357\277\275");
+
+      /* left, minus the valid part of the string */
+      left -= (endp - remainder);
+
+      remainder = g_utf8_find_next_char (endp, endp + left);
+      /* left, minus the skipped part, if there is no next utf8 character,
+       * nothing is left */
+      if (remainder == NULL)
+        left = 0;
+      else if (left > 0)
+        left -= (remainder - endp);
+    }
+  g_string_append_len (result, remainder, left);
+
+  return g_string_free (result, FALSE);
+}
+
+static gchar *
+strndup_validated (const gchar *str, gssize len)
+{
+  if (str == NULL)
+    return NULL;
+
+  /* Fast path, string happily validates, simple copy */
+  if (G_LIKELY (g_utf8_validate (str, len, NULL)))
+    {
+      if (len < 0)
+        return g_strdup (str);
+      else
+        return g_strndup (str, len);
+    }
+
+  /* slow path, string doesn't validate.. */
+  return strndup_make_valid (str, len);
+}
+
+static gchar *
+concat_validated (const gchar *s1, const gchar *s2, gssize s2_size)
+{
+  gchar *result;
+  gssize s1_size;
+  /* data to be freed after use if needed */
+  const gchar *to_free = NULL;
+
+  /* concatting to nothing, iotw, strndup :) */
+  if (s1 == NULL)
+    return strndup_validated (s2, s2_size);
+
+  s1_size = strlen (s1);
+  if (s2_size < 0)
+    s2_size = strlen (s2);
+
+  if (G_UNLIKELY (!g_utf8_validate (s2, s2_size, NULL)))
+    {
+      /* Make a validated copy we will free later on. Making a copy to just
+       * concat and then free isn't the most efficient way, but at this point
+       * we're out of the fast-path anyway */
+      to_free = s2 = strndup_make_valid (s2, s2_size);
+      s2_size = strlen (s2);
+    }
+
+  result = g_malloc0 (s1_size + s2_size + 1);
+  memcpy (result, s1, s1_size);
+  memcpy (result + s1_size, s2, s2_size);
+  g_free ((gchar *) to_free);
+
+  return result;
+}
+
+
 static WockyNode *
 new_node (const char *name, GQuark ns)
 {
@@ -73,7 +165,7 @@ new_node (const char *name, GQuark ns)
 
   result = g_slice_new0 (WockyNode);
 
-  result->name = g_strdup (name);
+  result->name = strndup_validated (name, -1);
   result->ns = ns;
 
   return result;
@@ -267,6 +359,36 @@ wocky_node_set_attribute (WockyNode *node,
 }
 
 /**
+ * wocky_node_set_attributes:
+ * @node: a #WockyNode
+ * @key: the attribute name to set
+ * @Varargs: pairs of keys and values, terminated by %NULL
+ *
+ * Sets attributes in a #WockyNode to specific values.
+ */
+void
+wocky_node_set_attributes (WockyNode *node,
+    const gchar *key,
+    ...)
+{
+  va_list args;
+
+  g_return_if_fail (key != NULL);
+
+  va_start (args, key);
+  while (key != NULL)
+    {
+      const gchar *value;
+      value = (const gchar *) va_arg (args, gchar *);
+
+      wocky_node_set_attribute (node, key, value);
+
+      key = (const gchar *) va_arg (args, gchar *);
+    }
+  va_end (args);
+}
+
+/**
  * wocky_node_set_attribute_ns:
  * @node: a #WockyNode
  * @key: the attribute name to set
@@ -292,7 +414,7 @@ ns_prefix_new (const gchar *urn,
 {
   NSPrefix *nsp = g_slice_new0 (NSPrefix);
   nsp->ns_urn = urn;
-  nsp->prefix = g_strdup (prefix);
+  nsp->prefix = strndup_validated (prefix, -1);
   nsp->ns = ns;
 
   return nsp;
@@ -484,8 +606,8 @@ wocky_node_set_attribute_n_ns (WockyNode *node, const gchar *key,
   GSList *link;
   Tuple search;
 
-  a->key = g_strdup (key);
-  a->value = g_strndup (value, value_size);
+  a->key = strndup_validated (key, -1);
+  a->value = strndup_validated (value, value_size);
   a->prefix = g_strdup (wocky_node_attribute_ns_get_prefix_from_urn (ns));
   a->ns = (ns != NULL) ? g_quark_from_string (ns) : 0;
 
@@ -585,13 +707,16 @@ wocky_node_get_child (WockyNode *node, const gchar *name)
  *
  * Convenience function to return the first child of a #WockyNode.
  *
- * Returns: a #WockyNode.
+ * Returns: a #WockyNode, or %NULL if @node has no children.
  */
 WockyNode *
 wocky_node_get_first_child (WockyNode *node)
 {
   g_return_val_if_fail (node != NULL, NULL);
-  g_return_val_if_fail (node->children != NULL, NULL);
+
+  if (node->children == NULL)
+    return NULL;
+
   return (WockyNode *) node->children->data;
 }
 
@@ -803,6 +928,55 @@ wocky_node_has_ns_q (WockyNode *node, GQuark ns)
 }
 
 /**
+ * wocky_node_matches_q:
+ * @node: a #WockyNode
+ * @name: the expected element name, which may not be %NULL
+ * @ns: the expected element namespace, which may not be 0
+ *
+ * Checks whether a node has a particular name and namespace.
+ *
+ * Returns: %TRUE if @node is named @name, in namespace @ns.
+ */
+gboolean
+wocky_node_matches_q (
+    WockyNode *node,
+    const gchar *name,
+    GQuark ns)
+{
+  g_return_val_if_fail (node != NULL, FALSE);
+  g_return_val_if_fail (name != NULL, FALSE);
+  g_return_val_if_fail (ns != 0, FALSE);
+
+  if (wocky_strdiff (node->name, name))
+    return FALSE;
+
+  return wocky_node_has_ns_q (node, ns);
+}
+
+/**
+ * wocky_node_matches:
+ * @node: a #WockyNode
+ * @name: the expected element name, which may not be %NULL
+ * @ns: the expected element namespace, which may not be %NULL
+ *
+ * Checks whether a node has a particular name and namespace.
+ *
+ * Returns: %TRUE if @node is named @name, in namespace @ns.
+ */
+gboolean
+wocky_node_matches (
+    WockyNode *node,
+    const gchar *name,
+    const gchar *ns)
+{
+  g_return_val_if_fail (node != NULL, FALSE);
+  g_return_val_if_fail (name != NULL, FALSE);
+  g_return_val_if_fail (ns != NULL, FALSE);
+
+  return wocky_node_matches_q (node, name, g_quark_try_string (ns));
+}
+
+/**
  * wocky_node_get_language:
  * @node: a #WockyNode
  *
@@ -830,7 +1004,7 @@ wocky_node_set_language_n (WockyNode *node, const gchar *lang,
     gsize lang_size)
 {
   g_free (node->language);
-  node->language = g_strndup (lang, lang_size);
+  node->language = strndup_validated (lang, lang_size);
 }
 
 /**
@@ -861,7 +1035,7 @@ void
 wocky_node_set_content (WockyNode *node, const gchar *content)
 {
   g_free (node->content);
-  node->content = g_strdup (content);
+  node->content = strndup_validated (content, -1);
 }
 
 /**
@@ -876,7 +1050,7 @@ wocky_node_append_content (WockyNode *node,
     const gchar *content)
 {
   gchar *t = node->content;
-  node->content = g_strconcat (t, content, NULL);
+  node->content = concat_validated (t, content, -1);
   g_free (t);
 }
 
@@ -893,9 +1067,9 @@ void
 wocky_node_append_content_n (WockyNode *node, const gchar *content,
     gsize size)
 {
-  gsize csize = node->content != NULL ? strlen (node->content) : 0;
-  node->content = g_realloc (node->content, csize + size + 1);
-  g_strlcpy (node->content + csize, content, size + 1);
+  gchar *t = node->content;
+  node->content = concat_validated (t, content, size);
+  g_free (t);
 }
 
 static gboolean
@@ -1222,6 +1396,7 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
 
             g_assert (key != NULL);
             g_assert (value != NULL);
+            g_assert (stack != NULL);
             wocky_node_set_attribute (stack->data, key, value);
           }
           break;
@@ -1232,6 +1407,7 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
             WockyNode *child;
 
             g_assert (name != NULL);
+            g_assert (stack != NULL);
             child = wocky_node_add_child (stack->data, name);
             stack = g_slist_prepend (stack, child);
           }
@@ -1241,6 +1417,7 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
           {
             gchar *txt = va_arg (ap, gchar *);
 
+            g_assert (stack != NULL);
             wocky_node_set_content (stack->data, txt);
           }
           break;
@@ -1250,7 +1427,17 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
             gchar *ns = va_arg (ap, gchar *);
 
             g_assert (ns != NULL);
+            g_assert (stack != NULL);
             ((WockyNode *) stack->data)->ns = g_quark_from_string (ns);
+          }
+          break;
+
+        case WOCKY_NODE_LANGUAGE:
+          {
+            gchar *lang = va_arg (ap, gchar *);
+
+            g_assert (lang != NULL);
+            wocky_node_set_language ((WockyNode *) stack->data, lang);
           }
           break;
 
@@ -1258,6 +1445,9 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
           {
             /* delete the top of the stack */
             stack = g_slist_delete_link (stack, stack);
+            /* If you put too many ')'s at the end of your build spec, we just
+             * warn; if you actually try to do anything else having fallen off
+             * the end, we'll assert in the relevant branch. */
             g_warn_if_fail (stack != NULL);
           }
           break;
@@ -1267,6 +1457,7 @@ wocky_node_add_build_va (WockyNode *node, va_list ap)
             WockyNode **dest = va_arg (ap, WockyNode **);
 
             g_assert (dest != NULL);
+            g_assert (stack != NULL);
             *dest = stack->data;
           }
           break;
@@ -1330,8 +1521,7 @@ _wocky_node_copy (WockyNode *node)
  * @node: A node
  * @tree: The node tree to add
  *
- * Copies the nodes from @tree adds them as a child of @node.
- *
+ * Copies the nodes from @tree, and appends them to @node's children.
  */
 void
 wocky_node_add_node_tree (WockyNode *node, WockyNodeTree *tree)
@@ -1343,6 +1533,28 @@ wocky_node_add_node_tree (WockyNode *node, WockyNodeTree *tree)
 
   copy = _wocky_node_copy (wocky_node_tree_get_top_node (tree));
   node->children = g_slist_append (node->children, copy);
+}
+
+/**
+ * wocky_node_prepend_node_tree:
+ * @node: a node
+ * @tree: the node tree to prepend to @node's children
+ *
+ * Copies the nodes from @tree, and inserts them as the first child of @node,
+ * before any existing children.
+ */
+void
+wocky_node_prepend_node_tree (
+    WockyNode *node,
+    WockyNodeTree *tree)
+{
+  WockyNode *copy;
+
+  g_return_if_fail (node != NULL);
+  g_return_if_fail (tree != NULL);
+
+  copy = _wocky_node_copy (wocky_node_tree_get_top_node (tree));
+  node->children = g_slist_prepend (node->children, copy);
 }
 
 /**

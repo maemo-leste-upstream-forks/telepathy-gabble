@@ -131,8 +131,9 @@ def test_inital_roster(q, bus, conn, stream):
 
 def test_flickering(q, bus, conn, stream, subscribe):
     """
-    Google's server is buggy, and subscription state transitions "flicker"
-    sometimes. Here, we test that Gabble is suppressing the flickers.
+    Google's server is buggy; when asking to subscribe to somebody, the
+    subscription state transitions "flicker" sometimes. Here, we test that
+    Gabble is suppressing the flickers.
     """
 
     self_handle = conn.GetSelfHandle()
@@ -140,13 +141,15 @@ def test_flickering(q, bus, conn, stream, subscribe):
     handle = conn.RequestHandles(cs.HT_CONTACT, ['bob@foo.com'])[0]
 
     # request subscription
-    subscribe.Group.AddMembers([handle], '')
+    call_async(q, subscribe.Group, 'AddMembers', [handle], "")
 
     event = q.expect('stream-iq', iq_type='set', query_ns=ns.ROSTER)
     item = event.query.firstChildElement()
     assertEquals(contact, item['jid'])
 
     acknowledge_iq(stream, event.stanza)
+    # FIXME: when we depend on a new enough tp-glib we could expect
+    # AddMembers to return at this point
 
     # send empty roster item
     iq = make_set_roster_iq(stream, 'test@localhost/Resource', contact,
@@ -262,6 +265,75 @@ def test_flickering(q, bus, conn, stream, subscribe):
     sync_dbus(bus, q, conn)
     q.unforbid_events(change_events)
 
+def test_local_pending(q, bus, conn, stream, subscribe):
+    """
+    When somebody asks to subscribe to us, Google sends the subscription
+    request and then a roster update saying there is no subscription.
+    This causes the contact to appear in local pending and then disappear.
+    Here, we test that Gabble is suppressing the flickers.
+    """
+
+    contact = 'alice@foo.com'
+    handle = conn.RequestHandles(cs.HT_CONTACT, [contact])[0]
+
+    # Alice asks to subscribes to us
+    presence = domish.Element(('jabber:client', 'presence'))
+    presence['from'] = contact
+    presence['type'] = 'subscribe'
+    stream.send(presence)
+
+    q.expect_many(
+        EventPattern('dbus-signal', signal='MembersChanged',
+            args=['', [], [], [handle], [], handle, cs.GC_REASON_NONE],
+            predicate=is_publish),
+        EventPattern('dbus-signal', signal='ContactsChanged',
+            args=[{handle: (cs.SUBSCRIPTION_STATE_NO,
+                cs.SUBSCRIPTION_STATE_ASK, '')}, []]),
+        )
+
+    # Now we send the spurious roster update with subscribe="none" and verify
+    # that nothing happens to her publish state in reaction to that
+    change_event = EventPattern('dbus-signal', signal='MembersChanged',
+        predicate=is_publish)
+    q.forbid_events([change_event])
+
+    iq = make_set_roster_iq(stream, 'test@localhost/Resource', contact,
+            "none", False)
+    stream.send(iq)
+
+    sync_stream(q, stream)
+    sync_dbus(bus, q, conn)
+    q.unforbid_events([change_event])
+
+    # Now we cancel alice's subscription request and verify that if the
+    # redundant IQ is sent again, it's safely handled
+    presence = domish.Element(('jabber:client', 'presence'))
+    presence['from'] = contact
+    presence['type'] = 'unsubscribe'
+    stream.send(presence)
+
+    q.expect_many(
+        EventPattern('dbus-signal', signal='MembersChanged',
+            args=['', [], [handle], [], [], handle, cs.GC_REASON_NONE],
+            predicate=is_publish),
+        EventPattern('dbus-signal', signal='ContactsChanged',
+            args=[{handle: (cs.SUBSCRIPTION_STATE_NO,
+                cs.SUBSCRIPTION_STATE_REMOVED_REMOTELY, '')}, []]),
+        )
+
+    # Now we send a roster roster update with subscribe="none" again (which
+    # doesn't change anything, it just confirms what we already knew) and
+    # verify that nothing happens to her publish state in reaction to that.
+    q.forbid_events([change_event])
+
+    iq = make_set_roster_iq(stream, 'test@localhost/Resource', contact,
+            "none", False)
+    stream.send(iq)
+
+    sync_stream(q, stream)
+    sync_dbus(bus, q, conn)
+    q.unforbid_events([change_event])
+
 # This event is forbidden in all of the deny tests!
 remove_events = [
     EventPattern('stream-iq', query_ns=ns.ROSTER,
@@ -281,7 +353,7 @@ def test_deny_simple(q, bus, conn, stream, stored, deny):
     handle = conn.RequestHandles(cs.HT_CONTACT, [contact])[0]
     assertContains(handle,
         stored.Properties.Get(cs.CHANNEL_IFACE_GROUP, "Members"))
-    stored.Group.RemoveMembers([handle], "")
+    call_async(q, stored.Group, 'RemoveMembers', [handle], "")
 
     q.forbid_events(remove_events)
 
@@ -290,6 +362,7 @@ def test_deny_simple(q, bus, conn, stream, stored, deny):
             presence_type='unsubscribe'),
         EventPattern('stream-presence', to=contact,
             presence_type='unsubscribed'),
+        EventPattern('dbus-return', method='RemoveMembers'),
         )
 
     # Our server sends roster pushes in response to our unsubscribe and
@@ -431,8 +504,8 @@ def test_deny_overlap_two(q, bus, conn, stream,
         ]
     q.forbid_events(patterns)
 
-    deny.Group.AddMembers([handle], '')
-    stored.Group.RemoveMembers([handle], '')
+    call_async(q, deny.Group, 'AddMembers', [handle], "")
+    call_async(q, stored.Group, 'RemoveMembers', [handle], "")
 
     # Make sure if the edits are sent prematurely, we've got them.
     sync_stream(q, stream)
@@ -471,7 +544,7 @@ def test_deny_unblock_remove(q, bus, conn, stream, stored, deny):
         stored.Properties.Get(cs.CHANNEL_IFACE_GROUP, "Members"))
 
     # Unblock them.
-    deny.Group.RemoveMembers([handle], '')
+    call_async(q, deny.Group, 'RemoveMembers', [handle], "")
 
     roster_event = q.expect('stream-iq', query_ns=ns.ROSTER)
     item = roster_event.query.firstChildElement()
@@ -481,7 +554,7 @@ def test_deny_unblock_remove(q, bus, conn, stream, stored, deny):
     # If we now remove them from stored, the edit shouldn't be sent until the
     # unblock event has had a reply.
     q.forbid_events(remove_events)
-    stored.Group.RemoveMembers([handle], '')
+    call_async(q, stored.Group, 'RemoveMembers', [handle], "")
 
     # Make sure if the remove is sent prematurely, we catch it.
     sync_stream(q, stream)
@@ -512,18 +585,27 @@ def test_deny_unblock_remove(q, bus, conn, stream, stored, deny):
         args=['', [], [handle], [], [], 0, cs.GC_REASON_NONE],
         predicate=is_stored)
 
+def test_contact_blocking(q, bus, conn, stream, stored, deny):
+    """test ContactBlocking API"""
+    assertContains(cs.CONN_IFACE_CONTACT_BLOCKING,
+        conn.Properties.Get(cs.CONN, "Interfaces"))
+
+    # 3 contacts are blocked
+    blocked = conn.RequestBlockedContacts(dbus_interface=cs.CONN_IFACE_CONTACT_BLOCKING)
+
+    assertLength(3, blocked)
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-
     publish, subscribe, stored, deny = test_inital_roster(q, bus, conn, stream)
 
     test_flickering(q, bus, conn, stream, subscribe)
+    test_local_pending(q, bus, conn, stream, subscribe)
     test_deny_simple(q, bus, conn, stream, stored, deny)
     test_deny_overlap_one(q, bus, conn, stream, subscribe, stored, deny)
     test_deny_overlap_two(q, bus, conn, stream,
         subscribe, publish, stored, deny)
     test_deny_unblock_remove(q, bus, conn, stream, stored, deny)
+    test_contact_blocking(q, bus, conn, stream, stored, deny)
 
 if __name__ == '__main__':
     exec_test(test, protocol=GoogleXmlStream)

@@ -45,10 +45,12 @@ def test_caps(q, conn, stream, contact, features, audio, video, google=False):
       cflags |= cs.MEDIA_CAP_AUDIO
       stream_expected_media_caps.append (cs.INITIAL_AUDIO)
       call_expected_media_caps.append (cs.CALL_INITIAL_AUDIO)
+      call_expected_media_caps.append (cs.CALL_INITIAL_AUDIO_NAME)
     if video:
       cflags |= cs.MEDIA_CAP_VIDEO
       stream_expected_media_caps.append (cs.INITIAL_VIDEO)
       call_expected_media_caps.append (cs.CALL_INITIAL_VIDEO)
+      call_expected_media_caps.append (cs.CALL_INITIAL_VIDEO_NAME)
 
     # If the contact can only do one of audio or video, or uses a Google
     # client, they'll have the ImmutableStreams cap.
@@ -90,10 +92,6 @@ def test_all_transports(q, conn, stream, contact, features, audio, video):
         contact += "a"
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     # Fully capable jingle clients with one transport each
     features = [ ns.JINGLE_RTP, ns.JINGLE_RTP_AUDIO, ns.JINGLE_RTP_VIDEO ]
     test_all_transports(q, conn, stream, "full@a", features, True, True)
@@ -171,10 +169,6 @@ def test_prefer_phones(q, bus, conn, stream, expect_disco):
         e = q.expect('stream-iq',
             predicate=jp.action_predicate('session-initiate'))
         assertEquals(expected_recipient, e.to)
-
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
 
     features = [ ns.JINGLE_RTP, ns.JINGLE_RTP_AUDIO, ns.JINGLE_RTP_VIDEO
                ] + all_transports

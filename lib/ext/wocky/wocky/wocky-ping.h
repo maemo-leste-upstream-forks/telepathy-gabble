@@ -24,21 +24,29 @@
 #include <glib-object.h>
 
 #include "wocky-types.h"
-#include "wocky-porter.h"
+#include "wocky-c2s-porter.h"
 
 G_BEGIN_DECLS
 
 typedef struct _WockyPing WockyPing;
+
+/**
+ * WockyPingClass:
+ *
+ * The class of a #WockyPing.
+ */
 typedef struct _WockyPingClass WockyPingClass;
 typedef struct _WockyPingPrivate WockyPingPrivate;
 
 GQuark wocky_ping_error_quark (void);
 
 struct _WockyPingClass {
+  /*<private>*/
   GObjectClass parent_class;
 };
 
 struct _WockyPing {
+  /*<private>*/
   GObject parent;
 
   WockyPingPrivate *priv;
@@ -62,7 +70,7 @@ GType wocky_ping_get_type (void);
   (G_TYPE_INSTANCE_GET_CLASS ((obj), WOCKY_TYPE_PING, \
    WockyPingClass))
 
-WockyPing * wocky_ping_new (WockyPorter *porter, guint interval);
+WockyPing * wocky_ping_new (WockyC2SPorter *porter, guint interval);
 
 G_END_DECLS
 

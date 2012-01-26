@@ -15,6 +15,8 @@
 
 @SET_MAKE@
 
+
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -35,8 +37,13 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 TESTS =
-noinst_PROGRAMS = telepathy-gabble-debug$(EXEEXT)
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+@ENABLE_INSTALLED_TESTS_TRUE@gabbledebug_PROGRAMS =  \
+@ENABLE_INSTALLED_TESTS_TRUE@	telepathy-gabble-debug$(EXEEXT)
+@ENABLE_INSTALLED_TESTS_FALSE@noinst_PROGRAMS =  \
+@ENABLE_INSTALLED_TESTS_FALSE@	telepathy-gabble-debug$(EXEEXT)
+DIST_COMMON = $(am__nobase_dist_twistedtests_DATA_DIST) \
+	$(am__nobase_dist_twistedtests_SCRIPTS_DIST) \
+	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/tools/check-coding-style.mk
 subdir = tests/twisted
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -53,7 +60,10 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-PROGRAMS = $(noinst_PROGRAMS)
+am__installdirs = "$(DESTDIR)$(gabbledebugdir)" \
+	"$(DESTDIR)$(twistedtestsdir)" "$(DESTDIR)$(twistedtestsdir)" \
+	"$(DESTDIR)$(twistedtestsdir)" "$(DESTDIR)$(twistedtestsdir)"
+PROGRAMS = $(gabbledebug_PROGRAMS) $(noinst_PROGRAMS)
 am_telepathy_gabble_debug_OBJECTS = main-debug.$(OBJEXT) \
 	test-resolver.$(OBJEXT)
 telepathy_gabble_debug_OBJECTS = $(am_telepathy_gabble_debug_OBJECTS)
@@ -68,6 +78,30 @@ telepathy_gabble_debug_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(telepathy_gabble_debug_LDFLAGS) \
 	$(LDFLAGS) -o $@
+am__nobase_dist_twistedtests_SCRIPTS_DIST = tools/with-session-bus.sh
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+SCRIPTS = $(nobase_dist_twistedtests_SCRIPTS) \
+	$(nobase_nodist_twistedtests_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -96,49 +130,152 @@ am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(telepathy_gabble_debug_SOURCES)
 DIST_SOURCES = $(telepathy_gabble_debug_SOURCES)
-RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
-	html-recursive info-recursive install-data-recursive \
-	install-dvi-recursive install-exec-recursive \
-	install-html-recursive install-info-recursive \
-	install-pdf-recursive install-ps-recursive install-recursive \
-	installcheck-recursive installdirs-recursive pdf-recursive \
-	ps-recursive uninstall-recursive
-RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
-  distclean-recursive maintainer-clean-recursive
-AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
-	$(RECURSIVE_CLEAN_TARGETS:-recursive=) tags TAGS ctags CTAGS \
-	distdir
+am__nobase_dist_twistedtests_DATA_DIST = addressing.py \
+	avatar-requirements.py caps/advertise-contact-caps.py \
+	caps/advertise-legacy.py caps/caps-cache.py \
+	caps/caps-persistent-cache.py caps/compat-bundles.py \
+	caps/disco-without-node.py caps/double-disco.py \
+	caps/from-bare-jid.py caps/hashed-caps.py caps_helper.py \
+	caps/initial-caps.py caps/jingle-caps.py caps/offline.py \
+	caps/receive-jingle.py caps/trust-thyself.py caps/tube-caps.py \
+	client-types.py cm/protocol.py \
+	connect/disco-error-from-bare-jid.py \
+	connect/disconnect-timeout.py connect/disco-no-reply.py \
+	connect/network-error.py connect/stream-closed.py \
+	connect/test-fail.py connect/test-nonblocking-tls.py \
+	connect/test-success.py connect/test-twice.py console.py \
+	dataforms.py gateways.py last-activity.py mail-notification.py \
+	muc/avatars.py muc/banned.py muc/chat-states.py \
+	muc/conference.py muc/kicked.py muc/name-conflict.py \
+	muc/password.py muc/presence-before-closing.py muc/renamed.py \
+	muc/room-config.py muc/roomlist.py muc/room.py \
+	muc/scrollback.py muc/send-error.py muc/subject.py \
+	muc/test-ensure.py muc/test-muc-alias.py \
+	muc/test-muc-invitation.py muc/test-muc-ownership.py \
+	muc/test-muc.py olpc/change-notifications.py \
+	olpc/current-activity.py olpc/olpc-muc-invitation.py \
+	olpc/olpc-muc-prop-change.py olpc/test-olpc-bundle.py \
+	olpc/test-olpc-set-props-preload.py pep-support.py \
+	plugin-channel-managers.py power-save.py presence/decloak.py \
+	presence/initial-contact-presence.py \
+	presence/initial-presence.py presence/invisible_xep_0126.py \
+	presence/invisible_xep_0186.py presence/plugins.py \
+	presence/presence.py presence/set-idempotence.py \
+	presence/shared-status.py pubsub.py roster/authorize.py \
+	roster/edit-before-roster.py roster/ensure.py \
+	roster/groups-12791.py roster/groups.py \
+	roster/initial-aliases.py roster/push-from-contact.py \
+	roster/push-without-id.py roster/removed-from-rp-subscribe.py \
+	roster/request-group-after-roster.py \
+	roster/request-group-before-roster.py \
+	roster/test-google-roster.py \
+	roster/test-roster-item-deletion.py roster/test-roster.py \
+	roster/test-roster-subscribe.py \
+	roster/test-save-alias-to-roster.py sasl/abort.py \
+	sasl/close.py sasl/complex.py sasl/jabber_auth.py \
+	sasl/plain.py sasl/telepathy-password.py \
+	search/ceci-nest-pas-un-serveur.py search/extended.py \
+	search/no-server-property.py search/unextended.py \
+	servicetest.py sidecar-own-caps.py sidecars.py test-debug.py \
+	test-fallback-socks5-proxy.py test-location.py \
+	test-register.py text/destroy.py text/ensure.py \
+	text/facebook-own-message.py text/initiate.py \
+	text/initiate-requestotron.py text/respawn.py \
+	text/send-error.py text/send-to-correct-resource.py \
+	text/test-chat-state.py text/test-text-delayed.py \
+	text/test-text-no-body.py text/test-text.py \
+	tls/server-tls-channel.py version.py \
+	file-transfer/test-caps-file-transfer.py \
+	file-transfer/test-ibb-too-early.py \
+	file-transfer/test-receive-file-and-close-socket-while-receiving.py \
+	file-transfer/test-receive-file-and-disconnect.py \
+	file-transfer/test-receive-file-and-sender-disconnect-while-pending.py \
+	file-transfer/test-receive-file-and-sender-disconnect-while-transfering.py \
+	file-transfer/test-receive-file-decline.py \
+	file-transfer/test-receive-file.py \
+	file-transfer/test-send-file-and-cancel-immediately.py \
+	file-transfer/test-send-file-declined.py \
+	file-transfer/test-send-file-provide-immediately.py \
+	file-transfer/test-send-file-send-before-accept.py \
+	file-transfer/test-send-file-to-unknown-contact.py \
+	file-transfer/test-send-file-wait-to-provide.py \
+	file-transfer/test-uri.py file-transfer/metadata.py \
+	file-transfer/ft-client-caps.py \
+	jingle-share/test-caps-file-transfer.py \
+	jingle-share/test-multift.py \
+	jingle-share/test-receive-file-and-close-socket-while-receiving.py \
+	jingle-share/test-receive-file-and-disconnect.py \
+	jingle-share/test-receive-file-and-sender-disconnect-while-pending.py \
+	jingle-share/test-receive-file-and-sender-disconnect-while-transfering.py \
+	jingle-share/test-receive-file-decline.py \
+	jingle-share/test-send-file-and-cancel-immediately.py \
+	jingle-share/test-send-file.py \
+	jingle-share/test-send-file-send-before-accept.py \
+	jingle-share/test-send-file-wait-to-provide.py \
+	tubes/accept-muc-dbus-tube.py tubes/accept-muc-stream-tube.py \
+	tubes/accept-private-dbus-tube.py \
+	tubes/accept-private-stream-tube.py \
+	tubes/check-create-tube-return.py \
+	tubes/close-muc-with-closed-tube.py \
+	tubes/crash-on-list-channels.py \
+	tubes/create-invalid-tube-channels.py tubes/ensure-si-tube.py \
+	tubes/muc-presence.py tubes/offer-muc-dbus-tube.py \
+	tubes/offer-muc-stream-tube.py tubes/offer-no-caps.py \
+	tubes/offer-private-dbus-tube.py \
+	tubes/offer-private-stream-tube.py \
+	tubes/request-invalid-dbus-tube.py \
+	tubes/test-get-available-tubes.py tubes/test-socks5-muc.py \
+	jingle/accept-extra-stream.py jingle/call-basics.py \
+	jingle/call-codecoffer.py jingle/call-dtmf.py \
+	jingle/call-muc-cancel.py jingle/call-muc.py \
+	jingle/call-muc-re-re-request.py jingle/call-state.py \
+	jingle/decloak-peer.py jingle/dtmf-no-audio.py jingle/dtmf.py \
+	jingle/google-relay.py jingle/hold-audio.py jingle/hold-av.py \
+	jingle/incoming-basics.py jingle/incoming-call-stream-error.py \
+	jingle/incoming-gmail-modern-jingle.py \
+	jingle/initial-audio-video.py jingle/misuse.py \
+	jingle/outgoing-basics.py jingle/outgoing-ensure.py \
+	jingle/outgoing-many-streams.py jingle/payload-types.py \
+	jingle/preload-caps-crash.py jingle/session-id-collision.py \
+	jingle/stream-errors-on-content-reject.py \
+	jingle/stream-errors-on-terminate.py \
+	jingle/stream-handler-error.py jingle/stun-server.py \
+	jingle/test-content-adding-removal.py \
+	jingle/test-content-complex.py jingle/test-description-info.py \
+	jingle/test-incoming-call-reject.py \
+	jingle/test-incoming-iceudp.py \
+	jingle/test-outgoing-call-rejected.py \
+	jingle/test-outgoing-iceudp.py \
+	jingle/test-wait-for-caps-incomplete.py \
+	jingle/test-wait-for-caps.py jingle/transport-info-parsing.py \
+	vcard/disconnect-during-pep.py vcard/get-contact-info.py \
+	vcard/item-not-found.py vcard/overlapping-sets.py \
+	vcard/redundant-set.py vcard/refresh-contact-info.py \
+	vcard/set-contact-info.py vcard/set-set-disconnect.py \
+	vcard/supported-fields.py vcard/test-alias-empty-vcard.py \
+	vcard/test-alias-message.py vcard/test-alias-pep.py \
+	vcard/test-alias.py vcard/test-avatar-async.py \
+	vcard/test-avatar-multiple-resources.py vcard/test-avatar.py \
+	vcard/test-avatar-retrieved.py vcard/test-avatar-tokens.py \
+	vcard/test-save-alias-to-vcard.py vcard/test-set-alias.py \
+	vcard/test-vcard-cache.py vcard/test-vcard-race.py \
+	vcard/update-get-failed.py vcard/update-rejected.py \
+	bytestream.py connect/torture.py constants.py \
+	file-transfer/file_transfer_helper.py gabbletest.py \
+	httptest.py jingle/callutils.py jingle/__init__.py \
+	jingle/jingletest2.py jingle/jingletest.py \
+	jingle-share/file_transfer_helper.py \
+	jingle-share/jingleshareutils.py mucutil.py ns.py olpc/util.py \
+	presence/invisible_helper.py rostertest.py sasl/saslutil.py \
+	search/search_helper.py test-helper.py tls-cert.pem \
+	tls-key.pem tubes/muctubeutil.py tubes/tubetestutil.py
+DATA = $(nobase_dist_twistedtests_DATA) \
+	$(nobase_nodist_twistedtests_DATA)
 ETAGS = etags
 CTAGS = ctags
 am__tty_colors = \
 red=; grn=; lgn=; blu=; std=
-DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-am__relativize = \
-  dir0=`pwd`; \
-  sed_first='s,^\([^/]*\)/.*$$,\1,'; \
-  sed_rest='s,^[^/]*/*,,'; \
-  sed_last='s,^.*/\([^/]*\)$$,\1,'; \
-  sed_butlast='s,/*[^/]*$$,,'; \
-  while test -n "$$dir1"; do \
-    first=`echo "$$dir1" | sed -e "$$sed_first"`; \
-    if test "$$first" != "."; then \
-      if test "$$first" = ".."; then \
-        dir2=`echo "$$dir0" | sed -e "$$sed_last"`/"$$dir2"; \
-        dir0=`echo "$$dir0" | sed -e "$$sed_butlast"`; \
-      else \
-        first2=`echo "$$dir2" | sed -e "$$sed_first"`; \
-        if test "$$first2" = "$$first"; then \
-          dir2=`echo "$$dir2" | sed -e "$$sed_rest"`; \
-        else \
-          dir2="../$$dir2"; \
-        fi; \
-        dir0="$$dir0"/"$$first"; \
-      fi; \
-    fi; \
-    dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
-  done; \
-  reldir="$$dir2"
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
@@ -158,6 +295,7 @@ DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -175,7 +313,6 @@ GLIB_LIBS = @GLIB_LIBS@
 GMODULE_CFLAGS = @GMODULE_CFLAGS@
 GMODULE_LIBS = @GMODULE_LIBS@
 GREP = @GREP@
-HANDLE_LEAK_DEBUG_CFLAGS = @HANDLE_LEAK_DEBUG_CFLAGS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -190,8 +327,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MCE_CFLAGS = @MCE_CFLAGS@
-MCE_LIBS = @MCE_LIBS@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 NICE_CFLAGS = @NICE_CFLAGS@
 NICE_LIBS = @NICE_LIBS@
@@ -223,12 +359,12 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SOUP_CFLAGS = @SOUP_CFLAGS@
 SOUP_LIBS = @SOUP_LIBS@
-SQLITE_CFLAGS = @SQLITE_CFLAGS@
-SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 TEST_PYTHON = @TEST_PYTHON@
 TP_GLIB_CFLAGS = @TP_GLIB_CFLAGS@
 TP_GLIB_LIBS = @TP_GLIB_LIBS@
+TP_YELL_CFLAGS = @TP_YELL_CFLAGS@
+TP_YELL_LIBS = @TP_YELL_LIBS@
 VERSION = @VERSION@
 WOCKY_CFLAGS = @WOCKY_CFLAGS@
 WOCKY_LIBS = @WOCKY_LIBS@
@@ -237,6 +373,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -256,6 +393,7 @@ datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+gabbletestsdir = @gabbletestsdir@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -269,7 +407,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -289,54 +426,62 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-TWISTED_TESTS = caps_helper.py servicetest.py avatar-requirements.py \
+TWISTED_TESTS = addressing.py avatar-requirements.py \
 	caps/advertise-contact-caps.py caps/advertise-legacy.py \
 	caps/caps-cache.py caps/caps-persistent-cache.py \
-	caps/compat-bundles.py caps/double-disco.py \
-	caps/disco-without-node.py caps/from-bare-jid.py \
-	caps/hashed-caps.py caps/initial-caps.py caps/jingle-caps.py \
-	caps/receive-jingle.py caps/trust-thyself.py caps/tube-caps.py \
-	client-types.py cm/protocol.py device-idleness.py gateways.py \
-	muc/conference.py muc/name-conflict.py muc/renamed.py \
-	muc/roomlist.py muc/scrollback.py muc/send-error.py \
-	muc/subject.py muc/test-ensure.py muc/test-muc-alias.py \
+	caps/compat-bundles.py caps/disco-without-node.py \
+	caps/double-disco.py caps/from-bare-jid.py caps/hashed-caps.py \
+	caps_helper.py caps/initial-caps.py caps/jingle-caps.py \
+	caps/offline.py caps/receive-jingle.py caps/trust-thyself.py \
+	caps/tube-caps.py client-types.py cm/protocol.py \
+	connect/disco-error-from-bare-jid.py \
+	connect/disconnect-timeout.py connect/disco-no-reply.py \
+	connect/network-error.py connect/stream-closed.py \
+	connect/test-fail.py connect/test-nonblocking-tls.py \
+	connect/test-success.py connect/test-twice.py console.py \
+	dataforms.py gateways.py last-activity.py mail-notification.py \
+	muc/avatars.py muc/banned.py muc/chat-states.py \
+	muc/conference.py muc/kicked.py muc/name-conflict.py \
+	muc/password.py muc/presence-before-closing.py muc/renamed.py \
+	muc/room-config.py muc/roomlist.py muc/room.py \
+	muc/scrollback.py muc/send-error.py muc/subject.py \
+	muc/test-ensure.py muc/test-muc-alias.py \
 	muc/test-muc-invitation.py muc/test-muc-ownership.py \
-	muc/test-muc-properties.py muc/test-muc.py \
+	muc/test-muc.py olpc/change-notifications.py \
 	olpc/current-activity.py olpc/olpc-muc-invitation.py \
 	olpc/olpc-muc-prop-change.py olpc/test-olpc-bundle.py \
-	olpc/test-olpc-set-props-preload.py \
-	olpc/change-notifications.py pep-support.py \
-	presence/decloak.py presence/initial-contact-presence.py \
+	olpc/test-olpc-set-props-preload.py pep-support.py \
+	plugin-channel-managers.py power-save.py presence/decloak.py \
+	presence/initial-contact-presence.py \
 	presence/initial-presence.py presence/invisible_xep_0126.py \
-	presence/invisible_xep_0186.py presence/presence.py \
-	presence/plugins.py presence/set-idempotence.py \
-	presence/shared-status.py roster/authorize.py \
-	roster/edit-before-roster.py roster/ensure.py roster/groups.py \
-	roster/groups-12791.py roster/removed-from-rp-subscribe.py \
-	roster/request-group-before-roster.py \
+	presence/invisible_xep_0186.py presence/plugins.py \
+	presence/presence.py presence/set-idempotence.py \
+	presence/shared-status.py pubsub.py roster/authorize.py \
+	roster/edit-before-roster.py roster/ensure.py \
+	roster/groups-12791.py roster/groups.py \
+	roster/initial-aliases.py roster/push-from-contact.py \
+	roster/push-without-id.py roster/removed-from-rp-subscribe.py \
 	roster/request-group-after-roster.py \
-	roster/test-google-roster.py roster/test-roster.py \
-	roster/test-roster-item-deletion.py \
+	roster/request-group-before-roster.py \
+	roster/test-google-roster.py \
+	roster/test-roster-item-deletion.py roster/test-roster.py \
 	roster/test-roster-subscribe.py \
 	roster/test-save-alias-to-roster.py sasl/abort.py \
-	sasl/jabber_auth.py sasl/plain.py sasl/complex.py \
+	sasl/close.py sasl/complex.py sasl/jabber_auth.py \
+	sasl/plain.py sasl/telepathy-password.py \
 	search/ceci-nest-pas-un-serveur.py search/extended.py \
 	search/no-server-property.py search/unextended.py \
-	text/initiate.py text/initiate-requestotron.py text/destroy.py \
-	text/ensure.py text/respawn.py text/send-error.py \
-	text/send-to-correct-resource.py text/test-chat-state.py \
-	text/test-text-delayed.py text/test-text-no-body.py \
-	text/test-text.py tls/server-tls-channel.py $(NULL) \
-	test-debug.py connect/disco-error-from-bare-jid.py \
-	connect/disco-no-reply.py connect/disconnect-timeout.py \
-	connect/test-fail.py connect/test-success.py \
-	connect/test-twice.py connect/test-nonblocking-tls.py \
-	connect/stream-closed.py connect/network-error.py \
-	test-fallback-socks5-proxy.py test-register.py \
-	test-location.py pubsub.py sidecar-own-caps.py sidecars.py \
-	mail-notification.py $(NULL) $(TWISTED_FT_TESTS) \
-	$(TWISTED_TUBE_TESTS) $(TWISTED_JINGLE_TESTS) \
-	$(TWISTED_VCARD_TESTS)
+	servicetest.py sidecar-own-caps.py sidecars.py test-debug.py \
+	test-fallback-socks5-proxy.py test-location.py \
+	test-register.py text/destroy.py text/ensure.py \
+	text/facebook-own-message.py text/initiate.py \
+	text/initiate-requestotron.py text/respawn.py \
+	text/send-error.py text/send-to-correct-resource.py \
+	text/test-chat-state.py text/test-text-delayed.py \
+	text/test-text-no-body.py text/test-text.py \
+	tls/server-tls-channel.py version.py $(NULL) \
+	$(TWISTED_FT_TESTS) $(TWISTED_TUBE_TESTS) \
+	$(TWISTED_JINGLE_TESTS) $(TWISTED_VCARD_TESTS)
 TWISTED_TUBE_TESTS = \
 	tubes/accept-muc-dbus-tube.py \
 	tubes/accept-muc-stream-tube.py \
@@ -359,6 +504,7 @@ TWISTED_TUBE_TESTS = \
 	$(NULL)
 
 TWISTED_VCARD_TESTS = \
+	vcard/disconnect-during-pep.py \
 	vcard/get-contact-info.py \
 	vcard/item-not-found.py \
 	vcard/overlapping-sets.py \
@@ -368,13 +514,14 @@ TWISTED_VCARD_TESTS = \
 	vcard/set-set-disconnect.py \
 	vcard/supported-fields.py \
 	vcard/test-alias-empty-vcard.py \
+	vcard/test-alias-message.py \
 	vcard/test-alias-pep.py \
 	vcard/test-alias.py \
 	vcard/test-avatar-async.py \
+	vcard/test-avatar-multiple-resources.py \
 	vcard/test-avatar.py \
 	vcard/test-avatar-retrieved.py \
 	vcard/test-avatar-tokens.py \
-	vcard/test-avatar-multiple-resources.py \
 	vcard/test-save-alias-to-vcard.py \
 	vcard/test-set-alias.py \
 	vcard/test-vcard-cache.py \
@@ -388,51 +535,44 @@ TWISTED_JINGLE_TESTS = \
 	jingle/call-basics.py \
 	jingle/call-codecoffer.py \
 	jingle/call-dtmf.py \
-	jingle/call-muc.py \
 	jingle/call-muc-cancel.py \
+	jingle/call-muc.py \
 	jingle/call-muc-re-re-request.py \
 	jingle/call-state.py \
 	jingle/decloak-peer.py \
-	jingle/dtmf.py \
 	jingle/dtmf-no-audio.py \
+	jingle/dtmf.py \
 	jingle/google-relay.py \
 	jingle/hold-audio.py \
 	jingle/hold-av.py \
 	jingle/incoming-basics.py \
 	jingle/incoming-call-stream-error.py \
+	jingle/incoming-gmail-modern-jingle.py \
 	jingle/initial-audio-video.py \
 	jingle/misuse.py \
-	jingle/stun-server.py \
 	jingle/outgoing-basics.py \
 	jingle/outgoing-ensure.py \
 	jingle/outgoing-many-streams.py \
 	jingle/payload-types.py \
 	jingle/preload-caps-crash.py \
 	jingle/session-id-collision.py \
+	jingle/stream-errors-on-content-reject.py \
+	jingle/stream-errors-on-terminate.py \
 	jingle/stream-handler-error.py \
+	jingle/stun-server.py \
 	jingle/test-content-adding-removal.py \
+	jingle/test-content-complex.py \
 	jingle/test-description-info.py \
 	jingle/test-incoming-call-reject.py \
 	jingle/test-incoming-iceudp.py \
 	jingle/test-outgoing-call-rejected.py \
 	jingle/test-outgoing-iceudp.py \
-	jingle/test-content-complex.py \
-	jingle/test-wait-for-caps.py \
 	jingle/test-wait-for-caps-incomplete.py \
+	jingle/test-wait-for-caps.py \
+	jingle/transport-info-parsing.py \
 	$(NULL)
 
 TWISTED_FT_TESTS = \
-	jingle-share/test-caps-file-transfer.py \
-	jingle-share/test-send-file.py \
-	jingle-share/test-send-file-send-before-accept.py \
-	jingle-share/test-receive-file-and-close-socket-while-receiving.py \
-	jingle-share/test-receive-file-and-disconnect.py \
-	jingle-share/test-receive-file-and-sender-disconnect-while-pending.py \
-	jingle-share/test-receive-file-and-sender-disconnect-while-transfering.py \
-	jingle-share/test-receive-file-decline.py \
-	jingle-share/test-send-file-and-cancel-immediately.py \
-	jingle-share/test-send-file-wait-to-provide.py \
-	jingle-share/test-multift.py \
 	file-transfer/test-caps-file-transfer.py \
 	file-transfer/test-ibb-too-early.py \
 	file-transfer/test-receive-file-and-close-socket-while-receiving.py \
@@ -444,10 +584,79 @@ TWISTED_FT_TESTS = \
 	file-transfer/test-send-file-and-cancel-immediately.py \
 	file-transfer/test-send-file-declined.py \
 	file-transfer/test-send-file-provide-immediately.py \
+	file-transfer/test-send-file-send-before-accept.py \
 	file-transfer/test-send-file-to-unknown-contact.py \
 	file-transfer/test-send-file-wait-to-provide.py \
-	file-transfer/test-send-file-send-before-accept.py \
+	file-transfer/test-uri.py \
+	file-transfer/metadata.py \
+	file-transfer/ft-client-caps.py \
+	jingle-share/test-caps-file-transfer.py \
+	jingle-share/test-multift.py \
+	jingle-share/test-receive-file-and-close-socket-while-receiving.py \
+	jingle-share/test-receive-file-and-disconnect.py \
+	jingle-share/test-receive-file-and-sender-disconnect-while-pending.py \
+	jingle-share/test-receive-file-and-sender-disconnect-while-transfering.py \
+	jingle-share/test-receive-file-decline.py \
+	jingle-share/test-send-file-and-cancel-immediately.py \
+	jingle-share/test-send-file.py \
+	jingle-share/test-send-file-send-before-accept.py \
+	jingle-share/test-send-file-wait-to-provide.py \
 	$(NULL)
+
+
+# other files used by the twisted tests, but are not tests and are not built
+# source
+TWISTED_OTHER_FILES = \
+	bytestream.py \
+	connect/torture.py \
+	constants.py \
+	file-transfer/file_transfer_helper.py \
+	gabbletest.py \
+	httptest.py \
+	jingle/callutils.py \
+	jingle/__init__.py \
+	jingle/jingletest2.py \
+	jingle/jingletest.py \
+	jingle-share/file_transfer_helper.py \
+	jingle-share/jingleshareutils.py \
+	mucutil.py \
+	ns.py \
+	olpc/util.py \
+	presence/invisible_helper.py \
+	rostertest.py \
+	sasl/saslutil.py \
+	search/search_helper.py \
+	test-helper.py \
+	tls-cert.pem \
+	tls-key.pem \
+	tubes/muctubeutil.py \
+	tubes/tubetestutil.py \
+	$(NULL)
+
+
+# Install files in each directory. They could be tests, pristine data files,
+# scripts or built source
+@ENABLE_INSTALLED_TESTS_TRUE@twistedtestsdir = @gabbletestsdir@/twisted
+@ENABLE_INSTALLED_TESTS_TRUE@nobase_nodist_twistedtests_SCRIPTS = \
+@ENABLE_INSTALLED_TESTS_TRUE@	run-test.sh \
+@ENABLE_INSTALLED_TESTS_TRUE@	tools/exec-with-log.sh \
+@ENABLE_INSTALLED_TESTS_TRUE@	tools/run-gabble.sh \
+@ENABLE_INSTALLED_TESTS_TRUE@	$(NULL)
+
+@ENABLE_INSTALLED_TESTS_TRUE@nobase_dist_twistedtests_SCRIPTS = \
+@ENABLE_INSTALLED_TESTS_TRUE@	tools/with-session-bus.sh \
+@ENABLE_INSTALLED_TESTS_TRUE@	$(NULL)
+
+@ENABLE_INSTALLED_TESTS_TRUE@nobase_dist_twistedtests_DATA = \
+@ENABLE_INSTALLED_TESTS_TRUE@	$(TWISTED_TESTS) \
+@ENABLE_INSTALLED_TESTS_TRUE@	$(TWISTED_OTHER_FILES) \
+@ENABLE_INSTALLED_TESTS_TRUE@	$(NULL)
+
+@ENABLE_INSTALLED_TESTS_TRUE@nobase_nodist_twistedtests_DATA = \
+@ENABLE_INSTALLED_TESTS_TRUE@	config.py \
+@ENABLE_INSTALLED_TESTS_TRUE@	gabble-twisted-tests.list \
+@ENABLE_INSTALLED_TESTS_TRUE@	$(installed_conf_files) \
+@ENABLE_INSTALLED_TESTS_TRUE@	$(service_files)
 
 TESTS_ENVIRONMENT = \
 	PYTHONPATH=@abs_top_srcdir@/tests/twisted:@abs_top_builddir@/tests/twisted \
@@ -462,34 +671,12 @@ CHECK_TWISTED_SLEEP = 0
 @ENABLE_PLUGINS_TRUE@PLUGINS_ENABLED_PYBOOL = True
 @ENABLE_CHANNEL_TYPE_CALL_FALSE@CHANNEL_TYPE_CALL_ENABLED_PYBOOL = False
 @ENABLE_CHANNEL_TYPE_CALL_TRUE@CHANNEL_TYPE_CALL_ENABLED_PYBOOL = True
-@HAVE_MCE_FALSE@HAVE_MCE_PYBOOL = False
-@HAVE_MCE_TRUE@HAVE_MCE_PYBOOL = True
-BUILT_SOURCES = config.py
-EXTRA_DIST = \
-	$(TWISTED_TESTS) \
-	bytestream.py \
-	constants.py \
-	gabbletest.py \
-	httptest.py \
-	rostertest.py \
-	jingle-share/file_transfer_helper.py \
-	jingle-share/jingleshareutils.py \
-	jingle/__init__.py \
-	jingle/callutils.py \
-	jingle/jingletest.py \
-	jingle/jingletest2.py \
-	mucutil.py \
-	ns.py \
-	olpc/util.py \
-	tubes/muctubeutil.py \
-	tubes/tubetestutil.py \
-	sasl/saslutil.py \
-	search/search_helper.py \
-	file-transfer/file_transfer_helper.py \
-	presence/invisible_helper.py \
-	tls-cert.pem \
-	tls-key.pem
-
+@ENABLE_GOOGLE_RELAY_FALSE@GOOGLE_RELAY_ENABLED_PYBOOL = False
+@ENABLE_GOOGLE_RELAY_TRUE@GOOGLE_RELAY_ENABLED_PYBOOL = True
+BUILT_SOURCES = config.py $(service_files) $(installed_conf_files) \
+	$(uninstalled_service_files) $(uninstalled_conf_files) \
+	run-test.sh tools/exec-with-log.sh tools/run-gabble.sh $(NULL)
+@ENABLE_INSTALLED_TESTS_TRUE@gabbledebugdir = @gabbletestsdir@/twisted
 telepathy_gabble_debug_SOURCES = \
     main-debug.c \
     test-resolver.c \
@@ -507,11 +694,33 @@ AM_CFLAGS = $(ERROR_CFLAGS) @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
     -I $(top_srcdir) -I $(top_builddir)
 
 ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@
-CLEANFILES = gabble-[1-9]*.log *.pyc */*.pyc config.py
+CLEANFILES = gabble-[1-9]*.log *.pyc */*.pyc config.py \
+	$(BUILT_SOURCES) tools/gabble-testing.log
 check_misc_sources = $(TESTS)
-SUBDIRS = tools
+
+# D-Bus service file for testing
+installed_service_in_files = tools/servicedir/gabble.service.in
+service_files = tools/servicedir/org.freedesktop.Telepathy.ConnectionManager.gabble.service
+uninstalled_service_in_files = tools/servicedir-uninstalled/gabble.service.in
+uninstalled_service_files = tools/servicedir-uninstalled/org.freedesktop.Telepathy.ConnectionManager.gabble.service
+
+# D-Bus config file for testing
+installed_conf_in_files = tools/servicedir/tmp-session-bus.conf.in
+installed_conf_files = $(installed_conf_in_files:.conf.in=.conf)
+uninstalled_conf_in_files = tools/servicedir-uninstalled/tmp-session-bus.conf.in
+uninstalled_conf_files = $(uninstalled_conf_in_files:.conf.in=.conf)
+EXTRA_DIST = \
+	$(installed_service_in_files) \
+	$(uninstalled_service_in_files) \
+	$(installed_conf_in_files) \
+	$(uninstalled_conf_in_files) \
+	tools/exec-with-log.sh.in \
+	tools/run-gabble.sh.in \
+	run-test.sh.in \
+	$(NULL)
+
 all: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
@@ -545,6 +754,49 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+install-gabbledebugPROGRAMS: $(gabbledebug_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	test -z "$(gabbledebugdir)" || $(MKDIR_P) "$(DESTDIR)$(gabbledebugdir)"
+	@list='$(gabbledebug_PROGRAMS)'; test -n "$(gabbledebugdir)" || list=; \
+	for p in $$list; do echo "$$p $$p"; done | \
+	sed 's/$(EXEEXT)$$//' | \
+	while read p p1; do if test -f $$p || test -f $$p1; \
+	  then echo "$$p"; echo "$$p"; else :; fi; \
+	done | \
+	sed -e 'p;s,.*/,,;n;h' -e 's|.*|.|' \
+	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
+	sed 'N;N;N;s,\n, ,g' | \
+	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
+	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
+	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
+	    else { print "f", $$3 "/" $$4, $$1; } } \
+	  END { for (d in files) print "f", d, files[d] }' | \
+	while read type dir files; do \
+	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
+	    test -z "$$files" || { \
+	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(gabbledebugdir)$$dir'"; \
+	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(gabbledebugdir)$$dir" || exit $$?; \
+	    } \
+	; done
+
+uninstall-gabbledebugPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(gabbledebug_PROGRAMS)'; test -n "$(gabbledebugdir)" || list=; \
+	files=`for p in $$list; do echo "$$p"; done | \
+	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
+	      -e 's/$$/$(EXEEXT)/' `; \
+	test -n "$$list" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(gabbledebugdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(gabbledebugdir)" && rm -f $$files
+
+clean-gabbledebugPROGRAMS:
+	@list='$(gabbledebug_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -557,6 +809,88 @@ clean-noinstPROGRAMS:
 telepathy-gabble-debug$(EXEEXT): $(telepathy_gabble_debug_OBJECTS) $(telepathy_gabble_debug_DEPENDENCIES) 
 	@rm -f telepathy-gabble-debug$(EXEEXT)
 	$(AM_V_CCLD)$(telepathy_gabble_debug_LINK) $(telepathy_gabble_debug_OBJECTS) $(telepathy_gabble_debug_LDADD) $(LIBS)
+install-nobase_dist_twistedtestsSCRIPTS: $(nobase_dist_twistedtests_SCRIPTS)
+	@$(NORMAL_INSTALL)
+	test -z "$(twistedtestsdir)" || $(MKDIR_P) "$(DESTDIR)$(twistedtestsdir)"
+	@list='$(nobase_dist_twistedtests_SCRIPTS)'; test -n "$(twistedtestsdir)" || list=; \
+	$(am__nobase_strip_setup); \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  if test -f "$$d$$p"; then echo "$$d$$p"; echo "$$p"; else :; fi; \
+	done | \
+	sed -e 'p;s,.*/,,;n' \
+	    -e "s|$$srcdirstrip/||" -e 'h;s|[^/]*$$||; s|^$$|.|' \
+	    -e 'p;x;s,.*/,,;$(transform)' | sed 'N;N;N;s,\n, ,g' | \
+	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1; } \
+	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
+	    if ($$2 == $$4) { files[d] = files[d] " " $$1; \
+	      if (++n[d] == $(am__install_max)) { \
+		print "f", d, files[d]; n[d] = 0; files[d] = "" } } \
+	    else { print "f", d "/" $$4, $$1 } } \
+	  END { for (d in files) print "f", d, files[d] }' | \
+	while read type dir files; do \
+	  case $$type in \
+	  d) echo " $(MKDIR_P) '$(DESTDIR)$(twistedtestsdir)/$$dir'"; \
+	     $(MKDIR_P) "$(DESTDIR)$(twistedtestsdir)/$$dir" || exit $$?;; \
+	  f) \
+	     if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
+	     test -z "$$files" || { \
+	       echo " $(INSTALL_SCRIPT) $$files '$(DESTDIR)$(twistedtestsdir)$$dir'"; \
+	       $(INSTALL_SCRIPT) $$files "$(DESTDIR)$(twistedtestsdir)$$dir" || exit $$?; \
+	     } \
+	  ;; esac \
+	; done
+
+uninstall-nobase_dist_twistedtestsSCRIPTS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nobase_dist_twistedtests_SCRIPTS)'; test -n "$(twistedtestsdir)" || exit 0; \
+	$(am__nobase_strip_setup); \
+	files=`$(am__nobase_strip) \
+	       -e 'h;s,.*/,,;$(transform);x;s|[^/]*$$||;G;s,\n,,'`; \
+	test -n "$$list" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(twistedtestsdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(twistedtestsdir)" && rm -f $$files
+install-nobase_nodist_twistedtestsSCRIPTS: $(nobase_nodist_twistedtests_SCRIPTS)
+	@$(NORMAL_INSTALL)
+	test -z "$(twistedtestsdir)" || $(MKDIR_P) "$(DESTDIR)$(twistedtestsdir)"
+	@list='$(nobase_nodist_twistedtests_SCRIPTS)'; test -n "$(twistedtestsdir)" || list=; \
+	$(am__nobase_strip_setup); \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  if test -f "$$d$$p"; then echo "$$d$$p"; echo "$$p"; else :; fi; \
+	done | \
+	sed -e 'p;s,.*/,,;n' \
+	    -e "s|$$srcdirstrip/||" -e 'h;s|[^/]*$$||; s|^$$|.|' \
+	    -e 'p;x;s,.*/,,;$(transform)' | sed 'N;N;N;s,\n, ,g' | \
+	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1; } \
+	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
+	    if ($$2 == $$4) { files[d] = files[d] " " $$1; \
+	      if (++n[d] == $(am__install_max)) { \
+		print "f", d, files[d]; n[d] = 0; files[d] = "" } } \
+	    else { print "f", d "/" $$4, $$1 } } \
+	  END { for (d in files) print "f", d, files[d] }' | \
+	while read type dir files; do \
+	  case $$type in \
+	  d) echo " $(MKDIR_P) '$(DESTDIR)$(twistedtestsdir)/$$dir'"; \
+	     $(MKDIR_P) "$(DESTDIR)$(twistedtestsdir)/$$dir" || exit $$?;; \
+	  f) \
+	     if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
+	     test -z "$$files" || { \
+	       echo " $(INSTALL_SCRIPT) $$files '$(DESTDIR)$(twistedtestsdir)$$dir'"; \
+	       $(INSTALL_SCRIPT) $$files "$(DESTDIR)$(twistedtestsdir)$$dir" || exit $$?; \
+	     } \
+	  ;; esac \
+	; done
+
+uninstall-nobase_nodist_twistedtestsSCRIPTS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nobase_nodist_twistedtests_SCRIPTS)'; test -n "$(twistedtestsdir)" || exit 0; \
+	$(am__nobase_strip_setup); \
+	files=`$(am__nobase_strip) \
+	       -e 'h;s,.*/,,;$(transform);x;s|[^/]*$$||;G;s,\n,,'`; \
+	test -n "$$list" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(twistedtestsdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(twistedtestsdir)" && rm -f $$files
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -596,76 +930,52 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-
-# This directory's subdirectories are mostly independent; you can cd
-# into them and run `make' without going through this Makefile.
-# To change the values of `make' variables: instead of editing Makefiles,
-# (1) if the variable is set in `config.status', edit `config.status'
-#     (which will cause the Makefiles to be regenerated when you run `make');
-# (2) otherwise, pass the desired values on the `make' command line.
-$(RECURSIVE_TARGETS):
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	dot_seen=no; \
-	target=`echo $@ | sed s/-recursive//`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    dot_seen=yes; \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	  || eval $$failcom; \
-	done; \
-	if test "$$dot_seen" = "no"; then \
-	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
-	fi; test -z "$$fail"
-
-$(RECURSIVE_CLEAN_TARGETS):
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	dot_seen=no; \
-	case "$@" in \
-	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
-	  *) list='$(SUBDIRS)' ;; \
-	esac; \
-	rev=''; for subdir in $$list; do \
-	  if test "$$subdir" = "."; then :; else \
-	    rev="$$subdir $$rev"; \
-	  fi; \
-	done; \
-	rev="$$rev ."; \
-	target=`echo $@ | sed s/-recursive//`; \
-	for subdir in $$rev; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	  || eval $$failcom; \
-	done && test -z "$$fail"
-tags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
+install-nobase_dist_twistedtestsDATA: $(nobase_dist_twistedtests_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(twistedtestsdir)" || $(MKDIR_P) "$(DESTDIR)$(twistedtestsdir)"
+	@list='$(nobase_dist_twistedtests_DATA)'; test -n "$(twistedtestsdir)" || list=; \
+	$(am__nobase_list) | while read dir files; do \
+	  xfiles=; for file in $$files; do \
+	    if test -f "$$file"; then xfiles="$$xfiles $$file"; \
+	    else xfiles="$$xfiles $(srcdir)/$$file"; fi; done; \
+	  test -z "$$xfiles" || { \
+	    test "x$$dir" = x. || { \
+	      echo "$(MKDIR_P) '$(DESTDIR)$(twistedtestsdir)/$$dir'"; \
+	      $(MKDIR_P) "$(DESTDIR)$(twistedtestsdir)/$$dir"; }; \
+	    echo " $(INSTALL_DATA) $$xfiles '$(DESTDIR)$(twistedtestsdir)/$$dir'"; \
+	    $(INSTALL_DATA) $$xfiles "$(DESTDIR)$(twistedtestsdir)/$$dir" || exit $$?; }; \
 	done
-ctags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) ctags); \
+
+uninstall-nobase_dist_twistedtestsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nobase_dist_twistedtests_DATA)'; test -n "$(twistedtestsdir)" || list=; \
+	$(am__nobase_strip_setup); files=`$(am__nobase_strip)`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(twistedtestsdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(twistedtestsdir)" && rm -f $$files
+install-nobase_nodist_twistedtestsDATA: $(nobase_nodist_twistedtests_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(twistedtestsdir)" || $(MKDIR_P) "$(DESTDIR)$(twistedtestsdir)"
+	@list='$(nobase_nodist_twistedtests_DATA)'; test -n "$(twistedtestsdir)" || list=; \
+	$(am__nobase_list) | while read dir files; do \
+	  xfiles=; for file in $$files; do \
+	    if test -f "$$file"; then xfiles="$$xfiles $$file"; \
+	    else xfiles="$$xfiles $(srcdir)/$$file"; fi; done; \
+	  test -z "$$xfiles" || { \
+	    test "x$$dir" = x. || { \
+	      echo "$(MKDIR_P) '$(DESTDIR)$(twistedtestsdir)/$$dir'"; \
+	      $(MKDIR_P) "$(DESTDIR)$(twistedtestsdir)/$$dir"; }; \
+	    echo " $(INSTALL_DATA) $$xfiles '$(DESTDIR)$(twistedtestsdir)/$$dir'"; \
+	    $(INSTALL_DATA) $$xfiles "$(DESTDIR)$(twistedtestsdir)/$$dir" || exit $$?; }; \
 	done
+
+uninstall-nobase_nodist_twistedtestsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nobase_nodist_twistedtests_DATA)'; test -n "$(twistedtestsdir)" || list=; \
+	$(am__nobase_strip_setup); files=`$(am__nobase_strip)`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(twistedtestsdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(twistedtestsdir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -677,23 +987,10 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	mkid -fID $$unique
 tags: TAGS
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	set x; \
 	here=`pwd`; \
-	if ($(ETAGS) --etags-include --version) >/dev/null 2>&1; then \
-	  include_option=--etags-include; \
-	  empty_fix=.; \
-	else \
-	  include_option=--include; \
-	  empty_fix=; \
-	fi; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test ! -f $$subdir/TAGS || \
-	      set "$$@" "$$include_option=$$here/$$subdir/TAGS"; \
-	  fi; \
-	done; \
 	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
@@ -712,7 +1009,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	  fi; \
 	fi
 ctags: CTAGS
-CTAGS: ctags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+CTAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
@@ -854,51 +1151,25 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test -d "$(distdir)/$$subdir" \
-	    || $(MKDIR_P) "$(distdir)/$$subdir" \
-	    || exit 1; \
-	  fi; \
-	done
-	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    dir1=$$subdir; dir2="$(distdir)/$$subdir"; \
-	    $(am__relativize); \
-	    new_distdir=$$reldir; \
-	    dir1=$$subdir; dir2="$(top_distdir)"; \
-	    $(am__relativize); \
-	    new_top_distdir=$$reldir; \
-	    echo " (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir="$$new_top_distdir" distdir="$$new_distdir" \\"; \
-	    echo "     am__remove_distdir=: am__skip_length_check=: am__skip_mode_fix=: distdir)"; \
-	    ($(am__cd) $$subdir && \
-	      $(MAKE) $(AM_MAKEFLAGS) \
-	        top_distdir="$$new_top_distdir" \
-	        distdir="$$new_distdir" \
-		am__remove_distdir=: \
-		am__skip_length_check=: \
-		am__skip_mode_fix=: \
-	        distdir) \
-	      || exit 1; \
-	  fi; \
-	done
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS check-local
 check: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) check-recursive
-all-am: Makefile $(PROGRAMS)
-installdirs: installdirs-recursive
-installdirs-am:
+	$(MAKE) $(AM_MAKEFLAGS) check-am
+all-am: Makefile $(PROGRAMS) $(SCRIPTS) $(DATA)
+installdirs:
+	for dir in "$(DESTDIR)$(gabbledebugdir)" "$(DESTDIR)$(twistedtestsdir)" "$(DESTDIR)$(twistedtestsdir)" "$(DESTDIR)$(twistedtestsdir)" "$(DESTDIR)$(twistedtestsdir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) install-recursive
-install-exec: install-exec-recursive
-install-data: install-data-recursive
-uninstall: uninstall-recursive
+	$(MAKE) $(AM_MAKEFLAGS) install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
-installcheck: installcheck-recursive
+installcheck: installcheck-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
 	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
@@ -917,125 +1188,144 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-clean: clean-recursive
+clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
-	mostlyclean-am
+clean-am: clean-gabbledebugPROGRAMS clean-generic clean-libtool \
+	clean-noinstPROGRAMS mostlyclean-am
 
-distclean: distclean-recursive
+distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
 
-dvi: dvi-recursive
+dvi: dvi-am
 
 dvi-am:
 
-html: html-recursive
+html: html-am
 
 html-am:
 
-info: info-recursive
+info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-gabbledebugPROGRAMS \
+	install-nobase_dist_twistedtestsDATA \
+	install-nobase_dist_twistedtestsSCRIPTS \
+	install-nobase_nodist_twistedtestsDATA \
+	install-nobase_nodist_twistedtestsSCRIPTS
 
-install-dvi: install-dvi-recursive
+install-dvi: install-dvi-am
 
 install-dvi-am:
 
 install-exec-am:
 
-install-html: install-html-recursive
+install-html: install-html-am
 
 install-html-am:
 
-install-info: install-info-recursive
+install-info: install-info-am
 
 install-info-am:
 
 install-man:
 
-install-pdf: install-pdf-recursive
+install-pdf: install-pdf-am
 
 install-pdf-am:
 
-install-ps: install-ps-recursive
+install-ps: install-ps-am
 
 install-ps-am:
 
 installcheck-am:
 
-maintainer-clean: maintainer-clean-recursive
+maintainer-clean: maintainer-clean-am
 	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
-mostlyclean: mostlyclean-recursive
+mostlyclean: mostlyclean-am
 
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-pdf: pdf-recursive
+pdf: pdf-am
 
 pdf-am:
 
-ps: ps-recursive
+ps: ps-am
 
 ps-am:
 
-uninstall-am:
+uninstall-am: uninstall-gabbledebugPROGRAMS \
+	uninstall-nobase_dist_twistedtestsDATA \
+	uninstall-nobase_dist_twistedtestsSCRIPTS \
+	uninstall-nobase_nodist_twistedtestsDATA \
+	uninstall-nobase_nodist_twistedtestsSCRIPTS
 
-.MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) all check \
-	check-am ctags-recursive install install-am install-strip \
-	tags-recursive
+.MAKE: all check check-am install install-am install-strip
 
-.PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
-	all all-am check check-TESTS check-am check-local clean \
-	clean-generic clean-libtool clean-noinstPROGRAMS ctags \
-	ctags-recursive distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs installdirs-am maintainer-clean \
+.PHONY: CTAGS GTAGS all all-am check check-TESTS check-am check-local \
+	clean clean-gabbledebugPROGRAMS clean-generic clean-libtool \
+	clean-noinstPROGRAMS ctags distclean distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-gabbledebugPROGRAMS \
+	install-html install-html-am install-info install-info-am \
+	install-man install-nobase_dist_twistedtestsDATA \
+	install-nobase_dist_twistedtestsSCRIPTS \
+	install-nobase_nodist_twistedtestsDATA \
+	install-nobase_nodist_twistedtestsSCRIPTS install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-recursive uninstall uninstall-am
+	tags uninstall uninstall-am uninstall-gabbledebugPROGRAMS \
+	uninstall-nobase_dist_twistedtestsDATA \
+	uninstall-nobase_dist_twistedtestsSCRIPTS \
+	uninstall-nobase_nodist_twistedtestsDATA \
+	uninstall-nobase_nodist_twistedtestsSCRIPTS
 
+@ENABLE_INSTALLED_TESTS_TRUE@	$(NULL)
 
 check-local: check-coding-style check-twisted
 
 check-twisted:
-	$(MAKE) -C tools
-	rm -f tools/core
-	rm -f tools/vgcore.*
-	rm -f tools/gabble-testing.log
-	rm -f tools/strace.log
-	if test -n "$$GABBLE_TEST_REFDBG"; then \
-	  sleep=6; \
-        else \
-	  sleep=$(CHECK_TWISTED_SLEEP); \
-	fi; \
-	failed=0; \
-	sh $(srcdir)/tools/with-session-bus.sh \
-		--sleep=$$sleep \
-		--config-file=tools/tmp-session-bus.conf \
-		-- $(MAKE) check-TESTS \
-		TESTS="$(TWISTED_TESTS)" \
-		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON) -u" || \
-		failed=1; \
-	if test -e tools/core; then\
-		echo -e "\033[0;31;1mCore dump exists: tools/core\033[0m";\
-		exit 1;\
-	fi; \
-	if test $$failed = 1; then\
-		exit 1;\
-	fi;
+@WANT_TWISTED_TESTS_TRUE@	rm -f tools/core
+@WANT_TWISTED_TESTS_TRUE@	rm -f tools/vgcore.*
+@WANT_TWISTED_TESTS_TRUE@	rm -f tools/gabble-testing.log
+@WANT_TWISTED_TESTS_TRUE@	rm -f tools/strace.log
+@WANT_TWISTED_TESTS_TRUE@	if test -n "$$GABBLE_TEST_REFDBG"; then \
+@WANT_TWISTED_TESTS_TRUE@	  sleep=6; \
+@WANT_TWISTED_TESTS_TRUE@        else \
+@WANT_TWISTED_TESTS_TRUE@	  sleep=$(CHECK_TWISTED_SLEEP); \
+@WANT_TWISTED_TESTS_TRUE@	fi; \
+@WANT_TWISTED_TESTS_TRUE@	failed=0; \
+@WANT_TWISTED_TESTS_TRUE@	sh $(srcdir)/tools/with-session-bus.sh \
+@WANT_TWISTED_TESTS_TRUE@		--sleep=$$sleep \
+@WANT_TWISTED_TESTS_TRUE@		--config-file=tools/servicedir-uninstalled/tmp-session-bus.conf \
+@WANT_TWISTED_TESTS_TRUE@		-- $(MAKE) check-TESTS \
+@WANT_TWISTED_TESTS_TRUE@		TESTS="$(TWISTED_TESTS)" \
+@WANT_TWISTED_TESTS_TRUE@		TESTS_ENVIRONMENT="$(TESTS_ENVIRONMENT) $(TEST_PYTHON) -u" || \
+@WANT_TWISTED_TESTS_TRUE@		failed=1; \
+@WANT_TWISTED_TESTS_TRUE@	if test -e tools/core; then\
+@WANT_TWISTED_TESTS_TRUE@		echo -e "\033[0;31;1mCore dump exists: tools/core\033[0m";\
+@WANT_TWISTED_TESTS_TRUE@		exit 1;\
+@WANT_TWISTED_TESTS_TRUE@	fi; \
+@WANT_TWISTED_TESTS_TRUE@	if test $$failed = 1; then\
+@WANT_TWISTED_TESTS_TRUE@		exit 1;\
+@WANT_TWISTED_TESTS_TRUE@	fi;
+@WANT_TWISTED_TESTS_FALSE@	@echo "Configured without Twisted test support. To enable them,"
+@WANT_TWISTED_TESTS_FALSE@	@echo "ensure that these Python modules are available:"
+@WANT_TWISTED_TESTS_FALSE@	@echo " • twisted.words.xish.domish"
+@WANT_TWISTED_TESTS_FALSE@	@echo " • twisted.words.protocols.jabber"
+@WANT_TWISTED_TESTS_FALSE@	@echo " • twisted.internet.reactor"
+@WANT_TWISTED_TESTS_FALSE@	@echo "and then re-run configure."
 
 config.py: Makefile
 	$(AM_V_GEN) { \
@@ -1044,7 +1334,7 @@ config.py: Makefile
 		echo "DEBUGGING = $(DEBUGGING_PYBOOL)"; \
 		echo "PLUGINS_ENABLED = $(PLUGINS_ENABLED_PYBOOL)"; \
 		echo "CHANNEL_TYPE_CALL_ENABLED = $(CHANNEL_TYPE_CALL_ENABLED_PYBOOL)"; \
-		echo "HAVE_MCE = $(HAVE_MCE_PYBOOL)"; \
+		echo "GOOGLE_RELAY_ENABLED = $(GOOGLE_RELAY_ENABLED_PYBOOL)"; \
 	} > $@
 check-coding-style:
 	@fail=0; \
@@ -1063,6 +1353,48 @@ check-coding-style:
 	else \
 		exit 0;\
 	fi
+
+# the following used to be in tools/
+
+gabble-twisted-tests.list:
+	$(AM_V_GEN)echo $(TWISTED_TESTS) > $@
+
+run-test.sh: run-test.sh.in
+	$(AM_V_GEN)sed -e "s|[@]gabbletestsdir[@]|@gabbletestsdir@|g" \
+		-e "s|[@]PYTHON[@]|$(PYTHON)|g" \
+		 $< > $@
+	@chmod +x $@
+
+tools/run-gabble.sh: tools/run-gabble.sh.in
+	@mkdir -p tools
+	$(AM_V_GEN)sed \
+		-e "s|[@]gabbletestsdir[@]|@gabbletestsdir@|g" \
+		-e "s|[@]libdir[@]|$(libdir)|g" \
+		$< > $@
+	@chmod +x $@
+
+tools/exec-with-log.sh: tools/exec-with-log.sh.in
+	$(MKDIR_P) tools
+	$(AM_V_GEN)sed -e "s|[@]abs_top_builddir[@]|@abs_top_builddir@|g" \
+		-e "s|[@]abs_top_srcdir[@]|@abs_top_srcdir@|g" $< > $@
+	@chmod +x $@
+
+# The wildcard % matches both config files!
+tools/%.conf: tools/%.conf.in
+	$(MKDIR_P) tools
+	$(AM_V_GEN)sed -e "s|[@]gabbletestsdir[@]|@gabbletestsdir@|g" \
+		-e "s|[@]abs_top_builddir[@]|@abs_top_builddir@|g" $< > $@
+
+# We don't use the full filename for the .in because > 99 character filenames
+# in tarballs are non-portable (and automake 1.8 doesn't let us build
+# non-archaic tarballs)
+tools/servicedir/org.freedesktop.Telepathy.ConnectionManager.%.service: tools/servicedir/%.service.in
+	$(MKDIR_P) tools/servicedir
+	$(AM_V_GEN)sed -e "s|[@]gabbletestsdir[@]|@gabbletestsdir@|g" $< > $@
+
+tools/servicedir-uninstalled/org.freedesktop.Telepathy.ConnectionManager.%.service: tools/servicedir-uninstalled/%.service.in
+	$(MKDIR_P) tools/servicedir-uninstalled
+	$(AM_V_GEN)sed -e "s|[@]abs_top_builddir[@]|@abs_top_builddir@|g" $< > $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

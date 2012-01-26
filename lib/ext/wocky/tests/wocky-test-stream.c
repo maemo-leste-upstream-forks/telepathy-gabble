@@ -52,6 +52,7 @@ typedef struct {
 typedef struct {
   GOutputStream parent;
   GAsyncQueue *queue;
+  WockyTestStreamWriteMode mode;
   GError *write_error /* no, this is not a coding style violation */;
   gboolean dispose_has_run;
 } WockyTestOutputStream;
@@ -72,7 +73,9 @@ typedef struct {
   gsize count;
   GError *read_error /* no, this is not a coding style violation */;
   gboolean dispose_has_run;
-  WockyTestSTreamReadMode mode;
+  WockyTestStreamReadMode mode;
+  WockyTestStreamDirectReadCb direct_read_cb;
+  gpointer direct_read_user_data;
   gboolean corked;
 } WockyTestInputStream;
 
@@ -286,7 +289,7 @@ wocky_test_input_stream_read (GInputStream *stream, void *buffer, gsize count,
 
     if (self->offset == self->out_array->len)
       {
-        g_array_free (self->out_array, TRUE);
+        g_array_unref (self->out_array);
         self->out_array = g_async_queue_try_pop (self->queue);
         self->offset = 0;
       }
@@ -296,6 +299,9 @@ wocky_test_input_stream_read (GInputStream *stream, void *buffer, gsize count,
       }
   } while (self->mode != WOCK_TEST_STREAM_READ_EXACT
     && written < count && self->out_array != NULL);
+
+  if (self->direct_read_cb != NULL)
+    self->direct_read_cb (buffer, written, self->direct_read_user_data);
 
   return written;
 }
@@ -429,7 +435,7 @@ wocky_test_input_stream_dispose (GObject *object)
   self->dispose_has_run = TRUE;
 
   if (self->out_array != NULL)
-    g_array_free (self->out_array, TRUE);
+    g_array_unref (self->out_array);
   self->out_array = NULL;
 
   if (self->queue != NULL)
@@ -473,6 +479,10 @@ wocky_test_output_stream_write (GOutputStream *stream, const void *buffer,
 {
   WockyTestOutputStream *self = WOCKY_TEST_OUTPUT_STREAM (stream);
   GArray *data;
+  gsize written = count;
+
+  if (self->mode == WOCKY_TEST_STREAM_WRITE_INCOMPLETE)
+    written = MAX (count/2, 1);
 
   if (self->write_error != NULL)
     {
@@ -481,14 +491,14 @@ wocky_test_output_stream_write (GOutputStream *stream, const void *buffer,
       return -1;
     }
 
-  data = g_array_sized_new (FALSE, FALSE, sizeof (guint8), count);
+  data = g_array_sized_new (FALSE, FALSE, sizeof (guint8), written);
 
-  g_array_insert_vals (data, 0, buffer, count);
+  g_array_insert_vals (data, 0, buffer, written);
 
   g_async_queue_push (self->queue, data);
   g_signal_emit (self, output_signals[OUTPUT_DATA_WRITTEN], 0);
 
-  return count;
+  return written;
 }
 
 static void
@@ -623,7 +633,7 @@ wocky_test_output_stream_set_write_error (GOutputStream *stream)
 
 void
 wocky_test_stream_set_mode (GInputStream *stream,
-  WockyTestSTreamReadMode mode)
+  WockyTestStreamReadMode mode)
 {
   WOCKY_TEST_INPUT_STREAM (stream)->mode = mode;
 }
@@ -638,4 +648,22 @@ wocky_test_stream_cork (GInputStream *stream,
   if (cork == FALSE)
     wocky_test_input_stream_try_read (tstream);
 
+}
+
+void
+wocky_test_stream_set_direct_read_callback (GInputStream *stream,
+  WockyTestStreamDirectReadCb cb,
+  gpointer user_data)
+{
+  WockyTestInputStream *tstream = WOCKY_TEST_INPUT_STREAM (stream);
+
+  tstream->direct_read_cb = cb;
+  tstream->direct_read_user_data = user_data;
+}
+
+void
+wocky_test_stream_set_write_mode (GOutputStream *stream,
+  WockyTestStreamWriteMode mode)
+{
+  WOCKY_TEST_OUTPUT_STREAM (stream)->mode = mode;
 }

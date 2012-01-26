@@ -27,6 +27,25 @@
 
 G_BEGIN_DECLS
 
+/**
+ * WockyDataFormFieldType:
+ * @WOCKY_DATA_FORM_FIELD_TYPE_UNSPECIFIED: Unspecified field type
+ * @WOCKY_DATA_FORM_FIELD_TYPE_BOOLEAN: Boolean field type
+ * @WOCKY_DATA_FORM_FIELD_TYPE_FIXED: Fixed description field type
+ * @WOCKY_DATA_FORM_FIELD_TYPE_HIDDEN: Hidden field type
+ * @WOCKY_DATA_FORM_FIELD_TYPE_JID_MULTI: A list of multiple JIDs
+ * @WOCKY_DATA_FORM_FIELD_TYPE_JID_SINGLE: A single JID
+ * @WOCKY_DATA_FORM_FIELD_TYPE_LIST_MULTI: Many options to choose one
+ *   or more from
+ * @WOCKY_DATA_FORM_FIELD_TYPE_LIST_SINGLE: Many options to choose one
+ *   from
+ * @WOCKY_DATA_FORM_FIELD_TYPE_TEXT_MULTI: Multiple lines of text
+ * @WOCKY_DATA_FORM_FIELD_TYPE_TEXT_PRIVATE: A single line of text
+ *   that should be obscured (by, say, asterisks)
+ * @WOCKY_DATA_FORM_FIELD_TYPE_TEXT_SINGLE: A single line of text
+ *
+ * Data form field types, as documented in XEP-0004 §3.3.
+ */
 /*< prefix=WOCKY_DATA_FORM_FIELD_TYPE >*/
 typedef enum
 {
@@ -43,13 +62,37 @@ typedef enum
   WOCKY_DATA_FORM_FIELD_TYPE_TEXT_SINGLE
 } WockyDataFormFieldType;
 
-typedef struct
+/**
+ * WockyDataFormFieldOption:
+ * @label: the option label
+ * @value: the option value
+ *
+ * A single data form field option.
+ */
+typedef struct _WockyDataFormFieldOption WockyDataFormFieldOption;
+struct _WockyDataFormFieldOption
 {
   gchar *label;
   gchar *value;
-} WockyDataFormFieldOption;
+};
 
-typedef struct
+/**
+ * WockyDataFormField:
+ * @type: the type of the field
+ * @var: the field name
+ * @label: the label of the field
+ * @desc: the description of the field
+ * @required: %TRUE if the field is required, otherwise %FALSE
+ * @default_value: the default of the field
+ * @value: the field value
+ * @options: a #GSList of #WockyDataFormFieldOption<!-- -->s if @type
+ *   if %WOCKY_DATA_FORM_FIELD_TYPE_LIST_MULTI or
+ *   %WOCKY_DATA_FORM_FIELD_TYPE_LIST_SINGLE
+ *
+ * Details about a single data form field in a #WockyDataForm.
+ */
+typedef struct _WockyDataFormField WockyDataFormField;
+struct _WockyDataFormField
 {
   WockyDataFormFieldType type;
   gchar *var;
@@ -57,16 +100,43 @@ typedef struct
   gchar *desc;
   gboolean required;
   GValue *default_value;
+  /* a GStrv of actual values so can be {"1", NULL} or {"false", NULL}
+   * for BOOLEAN or {"hi", "there", NULL} TEXT_MULTI, for example. */
+  gchar **raw_value_contents;
   GValue *value;
   /* for LIST_MULTI and LIST_SINGLE only.
    * List of (WockyDataFormFieldOption *)*/
   GSList *options;
-} WockyDataFormField;
+};
 
+/**
+ * WockyDataForm:
+ * @fields: a #GHashTable of strings to #WockyDataFormField<!-- -->s
+ * @fields_list: a list of #WockyDataFormField<!-- -->s in the order
+ *   they have been presented in the form
+ * @results: a list of #GSList<!-- -->s of #WockyDataFormField<!-- -->s
+ *   representing one or more sets of result.
+ *
+ * An object that represents an XMPP data form as described in
+ * XEP-0004.
+ */
 typedef struct _WockyDataForm WockyDataForm;
+
+/**
+ * WockyDataFormClass:
+ *
+ * The class of a #WockyDataForm.
+ */
 typedef struct _WockyDataFormClass WockyDataFormClass;
 typedef struct _WockyDataFormPrivate WockyDataFormPrivate;
 
+/**
+ * WockyDataFormError:
+ * @WOCKY_DATA_FORM_ERROR_NOT_FORM: Node is not a data form
+ * @WOCKY_DATA_FORM_ERROR_WRONG_TYPE: Data form is of the wrong type
+ *
+ * #WockyDataForm specific errors.
+ */
 typedef enum {
   WOCKY_DATA_FORM_ERROR_NOT_FORM,
   WOCKY_DATA_FORM_ERROR_WRONG_TYPE,
@@ -77,11 +147,15 @@ GQuark wocky_data_form_error_quark (void);
 #define WOCKY_DATA_FORM_ERROR (wocky_data_form_error_quark ())
 
 struct _WockyDataFormClass {
+  /*<private>*/
   GObjectClass parent_class;
 };
 
 struct _WockyDataForm {
+  /*<private>*/
   GObject parent;
+
+  /*<public>*/
 
   /* (gchar *) owned by the WockyDataFormField =>
    * borrowed (WockyDataFormField *) */
@@ -94,6 +168,7 @@ struct _WockyDataForm {
    * of results */
   GSList *results;
 
+  /*<private>*/
   WockyDataFormPrivate *priv;
 };
 
@@ -116,6 +191,9 @@ GType wocky_data_form_get_type (void);
    WockyDataFormClass))
 
 WockyDataForm * wocky_data_form_new_from_form (WockyNode *node,
+    GError **error);
+
+WockyDataForm * wocky_data_form_new_from_node (WockyNode *x,
     GError **error);
 
 gboolean wocky_data_form_set_type (WockyDataForm *self,
@@ -146,6 +224,11 @@ gboolean wocky_data_form_parse_result (WockyDataForm *self,
 const gchar *wocky_data_form_get_title (WockyDataForm *self);
 
 const gchar *wocky_data_form_get_instructions (WockyDataForm *self);
+
+gint wocky_data_form_field_cmp (const WockyDataFormField *left,
+    const WockyDataFormField *right);
+
+void wocky_data_form_add_to_node (WockyDataForm *self, WockyNode *node);
 
 G_END_DECLS
 

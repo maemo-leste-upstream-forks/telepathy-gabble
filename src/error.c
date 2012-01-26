@@ -555,9 +555,9 @@ map_wocky_xmpp_error (const GError *error,
 
     case WOCKY_XMPP_ERROR_BAD_REQUEST:
     case WOCKY_XMPP_ERROR_UNEXPECTED_REQUEST:
-      /* FIXME: internal problem in Gabble, probably */
+      /* probably an internal error in Gabble/Wocky */
       return set_conn_reason (conn_reason,
-          TP_CONNECTION_STATUS_REASON_NETWORK_ERROR, TP_ERROR_NOT_AVAILABLE);
+          TP_CONNECTION_STATUS_REASON_NETWORK_ERROR, TP_ERROR_CONFUSED);
 
     case WOCKY_XMPP_ERROR_JID_MALFORMED:
       return set_conn_reason (conn_reason,
@@ -605,10 +605,9 @@ map_wocky_xmpp_error (const GError *error,
           TP_ERROR_NOT_AVAILABLE);
 
     case WOCKY_XMPP_ERROR_INTERNAL_SERVER_ERROR:
-      /* FIXME: best we can do right now */
       return set_conn_reason (conn_reason,
           TP_CONNECTION_STATUS_REASON_NONE_SPECIFIED,
-          TP_ERROR_NOT_AVAILABLE);
+          TP_ERROR_SERVICE_CONFUSED);
 
     case WOCKY_XMPP_ERROR_RESOURCE_CONSTRAINT:
       /* FIXME: Telepathy's ServiceBusy means the server, but the remote
@@ -649,6 +648,26 @@ map_wocky_auth_error (const GError *error,
     case WOCKY_AUTH_ERROR_STREAM:
       return set_easy_conn_reason (conn_reason, NETWORK_ERROR);
 
+    case WOCKY_AUTH_ERROR_RESOURCE_CONFLICT:
+      return set_conn_reason (conn_reason,
+          TP_CONNECTION_STATUS_REASON_NAME_IN_USE,
+          TP_ERROR_ALREADY_CONNECTED);
+
+    case WOCKY_AUTH_ERROR_NOT_SUPPORTED:
+    case WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS:
+      return set_conn_reason (conn_reason,
+          TP_CONNECTION_STATUS_REASON_AUTHENTICATION_FAILED,
+          TP_ERROR_NOT_IMPLEMENTED);
+
+    case WOCKY_AUTH_ERROR_INVALID_REPLY:
+      return set_conn_reason (conn_reason,
+          TP_CONNECTION_STATUS_REASON_NONE_SPECIFIED,
+          TP_ERROR_SERVICE_CONFUSED);
+
+    case WOCKY_AUTH_ERROR_INIT_FAILED:
+    case WOCKY_AUTH_ERROR_NO_CREDENTIALS:
+    case WOCKY_AUTH_ERROR_NOT_AUTHORIZED:
+    case WOCKY_AUTH_ERROR_FAILURE:
     default:
       return set_easy_conn_reason (conn_reason, AUTHENTICATION_FAILED);
     }
@@ -766,6 +785,22 @@ map_wocky_tls_cert_error (const GError *error,
     }
 }
 
+static TpError
+map_connection_error (const GError *error)
+{
+  switch (error->code)
+    {
+      case WOCKY_XMPP_CONNECTION_ERROR_EOS:
+      case WOCKY_XMPP_CONNECTION_ERROR_CLOSED:
+        return TP_ERROR_CANCELLED;
+      case WOCKY_XMPP_CONNECTION_ERROR_NOT_OPEN:
+      case WOCKY_XMPP_CONNECTION_ERROR_IS_CLOSED:
+      case WOCKY_XMPP_CONNECTION_ERROR_IS_OPEN:
+      default:
+        return TP_ERROR_DISCONNECTED;
+    }
+}
+
 static const gchar *
 get_error_prefix (GEnumClass *klass,
     gint code,
@@ -861,6 +896,13 @@ gabble_set_tp_conn_error_from_wocky (const GError *wocky_error,
           map_wocky_tls_cert_error (wocky_error, conn_reason),
           "%s (#%d): %s", name, wocky_error->code, wocky_error->message);
       g_type_class_unref (klass);
+    }
+  else if (wocky_error->domain == WOCKY_XMPP_CONNECTION_ERROR)
+    {
+      /* FIXME: there's no GEnum for WockyXmppConnectionError. */
+      g_set_error_literal (error, TP_ERRORS,
+          map_connection_error (wocky_error),
+          wocky_error->message);
     }
   else
     {

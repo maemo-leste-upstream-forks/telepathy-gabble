@@ -7,8 +7,9 @@ dist-hook:
 	fi
 
 distcheck-hook:
-	@case @VERSION@ in \
-		*.*.*.*) ;; \
+	@test "z$(CHECK_FOR_UNRELEASED)" = z || \
+	case @VERSION@ in \
+		*.*.*.*|*+) ;; \
 		*) \
 			if grep -r UNRELEASED $(CHECK_FOR_UNRELEASED); \
 			then \
@@ -20,7 +21,7 @@ distcheck-hook:
 
 _is-release-check:
 	@case @VERSION@ in \
-		(*.*.*.*) \
+		(*.*.*.*|*+) \
 			echo "Hey! @VERSION@ is not a release!" >&2; \
 			exit 2; \
 			;; \
@@ -29,13 +30,22 @@ _is-release-check:
 		echo "Hey! Your tree is dirty! No release for you." >&2; \
 		exit 2; \
 	fi
+	@if ! git diff --cached --no-ext-diff --quiet --exit-code; then \
+		echo "Hey! You have changes staged! No release for you." >&2; \
+		exit 2; \
+	fi
+if ENABLE_GTK_DOC
+else
+	@echo "Hey! You need to pass --enable-gtk-doc to configure!"
+	@exit 2;
+endif
 
 %.tar.gz.asc: %.tar.gz
 	$(AM_V_GEN)gpg --detach-sign --armor $@
 
 @PACKAGE@-@VERSION@.tar.gz: _is-release-check check distcheck
 
-maintainer-prepare-release: _is-release-check check distcheck release-mail
+maintainer-prepare-release: _is-release-check all distcheck release-mail
 	git tag -s @PACKAGE@-@VERSION@ -m @PACKAGE@' '@VERSION@
 	gpg --detach-sign --armor @PACKAGE@-@VERSION@.tar.gz
 
@@ -59,6 +69,6 @@ maintainer-make-release: maintainer-prepare-release maintainer-upload-release
 	@echo "Now:"
 	@echo " • bump the nano-version;"
 	@echo " • push the branch and tags upstream; and"
-	@echo " • send release-mail to <telepathy@freedesktop.org>."
+	@echo " • send release-mail to <telepathy@lists.freedesktop.org>."
 
 ## vim:set ft=automake:

@@ -25,9 +25,6 @@ from twisted.internet import reactor, ssl
 
 import dbus
 
-NS_XMPP_SASL = 'urn:ietf:params:xml:ns:xmpp-sasl'
-NS_XMPP_BIND = 'urn:ietf:params:xml:ns:xmpp-bind'
-
 def make_result_iq(stream, iq, add_query_node=True):
     result = IQ(stream, "result")
     result["id"] = iq["id"]
@@ -65,7 +62,7 @@ def request_muc_handle(q, conn, stream, muc_jid):
     event = q.expect('dbus-return', method='RequestHandles')
     return event.value[0][0]
 
-def make_muc_presence(affiliation, role, muc_jid, alias, jid=None):
+def make_muc_presence(affiliation, role, muc_jid, alias, jid=None, photo=None):
     presence = domish.Element((None, 'presence'))
     presence['from'] = '%s/%s' % (muc_jid, alias)
     x = presence.addElement((ns.MUC_USER, 'x'))
@@ -74,6 +71,13 @@ def make_muc_presence(affiliation, role, muc_jid, alias, jid=None):
     item['role'] = role
     if jid is not None:
         item['jid'] = jid
+
+    if photo is not None:
+        presence.addChild(
+            elem(ns.VCARD_TEMP_UPDATE, 'x')(
+              elem('photo')(unicode(photo))
+            ))
+
     return presence
 
 def sync_stream(q, stream):
@@ -94,7 +98,11 @@ class GabbleAuthenticator(xmlstream.Authenticator):
         self.resource = resource
         self.bare_jid = None
         self.full_jid = None
+        self._event_func = lambda e: None
         xmlstream.Authenticator.__init__(self)
+
+    def set_event_func(self, event_func):
+        self._event_func = event_func
 
 class JabberAuthenticator(GabbleAuthenticator):
     "Trivial XML stream authenticator that accepts one username/digest pair."
@@ -115,6 +123,10 @@ class JabberAuthenticator(GabbleAuthenticator):
     EventDispatcher._oldAddObserver = EventDispatcher._addObserver
     EventDispatcher._addObserver = _addObserver
 
+    def __init__(self, username, password, resource=None, emit_events=False):
+        GabbleAuthenticator.__init__(self, username, password, resource)
+        self.emit_events = emit_events
+
     def streamStarted(self, root=None):
         if root:
             self.xmlstream.sid = '%x' % random.randint(1, sys.maxint)
@@ -124,6 +136,15 @@ class JabberAuthenticator(GabbleAuthenticator):
             "/iq/query[@xmlns='jabber:iq:auth']", self.initialIq)
 
     def initialIq(self, iq):
+        if self.emit_events:
+            self._event_func(Event('auth-initial-iq', authenticator=self,
+                iq=iq, id=iq["id"]))
+        else:
+            self.respondToInitialIq(iq)
+
+        self.xmlstream.addOnetimeObserver('/iq/query/username', self.secondIq)
+
+    def respondToInitialIq(self, iq):
         result = IQ(self.xmlstream, "result")
         result["id"] = iq["id"]
         query = result.addElement('query')
@@ -132,10 +153,16 @@ class JabberAuthenticator(GabbleAuthenticator):
         query.addElement('password')
         query.addElement('digest')
         query.addElement('resource')
-        self.xmlstream.addOnetimeObserver('/iq/query/username', self.secondIq)
         self.xmlstream.send(result)
 
     def secondIq(self, iq):
+        if self.emit_events:
+            self._event_func(Event('auth-second-iq', authenticator=self,
+                iq=iq, id=iq["id"]))
+        else:
+            self.respondToSecondIq(self, iq)
+
+    def respondToSecondIq(self, iq):
         username = xpath.queryForNodes('/iq/query/username', iq)
         assert map(str, username) == [self.username]
 
@@ -165,19 +192,26 @@ class XmppAuthenticator(GabbleAuthenticator):
         if root:
             self.xmlstream.sid = root.getAttribute('id')
 
+        if self.xmlstream.sid is None:
+            self.xmlstream.sid = '%x' % random.randint(1, sys.maxint)
+
         self.xmlstream.sendHeader()
 
     def streamIQ(self):
-        features = domish.Element((xmlstream.NS_STREAMS, 'features'))
-        bind = features.addElement((NS_XMPP_BIND, 'bind'))
+        features = elem(xmlstream.NS_STREAMS, 'features')(
+            elem(ns.NS_XMPP_BIND, 'bind'),
+            elem(ns.NS_XMPP_SESSION, 'session'),
+        )
         self.xmlstream.send(features)
 
         self.xmlstream.addOnetimeObserver(
-            "/iq/bind[@xmlns='%s']" % NS_XMPP_BIND, self.bindIq)
+            "/iq/bind[@xmlns='%s']" % ns.NS_XMPP_BIND, self.bindIq)
+        self.xmlstream.addOnetimeObserver(
+            "/iq/session[@xmlns='%s']" % ns.NS_XMPP_SESSION, self.sessionIq)
 
     def streamSASL(self):
         features = domish.Element((xmlstream.NS_STREAMS, 'features'))
-        mechanisms = features.addElement((NS_XMPP_SASL, 'mechanisms'))
+        mechanisms = features.addElement((ns.NS_XMPP_SASL, 'mechanisms'))
         mechanism = mechanisms.addElement('mechanism', content='PLAIN')
         self.xmlstream.send(features)
 
@@ -196,7 +230,7 @@ class XmppAuthenticator(GabbleAuthenticator):
         assert (base64.b64decode(str(auth)) ==
             '\x00%s\x00%s' % (self.username, self.password))
 
-        success = domish.Element((NS_XMPP_SASL, 'success'))
+        success = domish.Element((ns.NS_XMPP_SASL, 'success'))
         self.xmlstream.send(success)
         self.xmlstream.reset()
         self.authenticated = True
@@ -210,7 +244,7 @@ class XmppAuthenticator(GabbleAuthenticator):
 
         result = IQ(self.xmlstream, "result")
         result["id"] = iq["id"]
-        bind = result.addElement((NS_XMPP_BIND, 'bind'))
+        bind = result.addElement((ns.NS_XMPP_BIND, 'bind'))
         self.bare_jid = '%s@localhost' % self.username
         self.full_jid = '%s/%s' % (self.bare_jid, resource)
         jid = bind.addElement('jid', content=self.full_jid)
@@ -218,45 +252,47 @@ class XmppAuthenticator(GabbleAuthenticator):
 
         self.xmlstream.dispatch(self.xmlstream, xmlstream.STREAM_AUTHD_EVENT)
 
-def make_stream_event(type, stanza, stream):
-    event = servicetest.Event(type, stanza=stanza)
-    event.stream = stream
-    event.to = stanza.getAttribute("to")
-    return event
+    def sessionIq(self, iq):
+        self.xmlstream.send(make_result_iq(self.xmlstream, iq))
 
-def make_iq_event(stream, iq):
-    event = make_stream_event('stream-iq', iq, stream)
-    event.iq_type = iq.getAttribute("type")
-    event.iq_id = iq.getAttribute("id")
-    query = iq.firstChildElement()
+class StreamEvent(servicetest.Event):
+    def __init__(self, type_, stanza, stream):
+        servicetest.Event.__init__(self, type_, stanza=stanza)
+        self.stream = stream
+        self.to = stanza.getAttribute("to")
 
-    if query:
-        event.query = query
-        event.query_ns = query.uri
-        event.query_name = query.name
+class IQEvent(StreamEvent):
+    def __init__(self, stream, iq):
+        StreamEvent.__init__(self, 'stream-iq', iq, stream)
+        self.iq_type = iq.getAttribute("type")
+        self.iq_id = iq.getAttribute("id")
 
-        if query.getAttribute("node"):
-            event.query_node = query.getAttribute("node")
-    else:
-        event.query = None
+        query = iq.firstChildElement()
 
-    return event
+        if query:
+            self.query = query
+            self.query_ns = query.uri
+            self.query_name = query.name
 
-def make_presence_event(stream, stanza):
-    event = make_stream_event('stream-presence', stanza, stream)
-    event.presence_type = stanza.getAttribute('type')
+            if query.getAttribute("node"):
+                self.query_node = query.getAttribute("node")
+        else:
+            self.query = None
 
-    statuses = xpath.queryForNodes('/presence/status', stanza)
+class PresenceEvent(StreamEvent):
+    def __init__(self, stream, stanza):
+        StreamEvent.__init__(self, 'stream-presence', stanza, stream)
+        self.presence_type = stanza.getAttribute('type')
 
-    if statuses:
-        event.presence_status = str(statuses[0])
+        statuses = xpath.queryForNodes('/presence/status', stanza)
 
-    return event
+        if statuses:
+            self.presence_status = str(statuses[0])
 
-def make_message_event(stream, stanza):
-    event = make_stream_event('stream-message', stanza, stream)
-    event.message_type = stanza.getAttribute('type')
-    return event
+class MessageEvent(StreamEvent):
+    def __init__(self, stream, stanza):
+        StreamEvent.__init__(self, 'stream-message', stanza, stream)
+        self.message_type = stanza.getAttribute('type')
 
 class StreamFactory(twisted.internet.protocol.Factory):
     def __init__(self, streams, jids):
@@ -351,11 +387,11 @@ class BaseXmlStream(xmlstream.XmlStream):
         xmlstream.XmlStream.__init__(self, authenticator)
         self.event_func = event_func
         self.addObserver('//iq', lambda x: event_func(
-            make_iq_event(self, x)))
+            IQEvent(self, x)))
         self.addObserver('//message', lambda x: event_func(
-            make_message_event(self, x)))
+            MessageEvent(self, x)))
         self.addObserver('//presence', lambda x: event_func(
-            make_presence_event(self, x)))
+            PresenceEvent(self, x)))
         self.addObserver('//event/stream/authd', self._cb_authd)
         if self.handle_privacy_lists:
             self.addObserver("/iq/query[@xmlns='%s']" % ns.PRIVACY,
@@ -432,6 +468,7 @@ class GoogleXmlStream(BaseXmlStream):
     disco_features = [ns.GOOGLE_ROSTER,
                       ns.GOOGLE_JINGLE_INFO,
                       ns.GOOGLE_MAIL_NOTIFY,
+                      ns.GOOGLE_QUEUE,
                      ]
 
     def _cb_bare_jid_disco_iq(self, iq):
@@ -444,8 +481,8 @@ class GoogleXmlStream(BaseXmlStream):
 def make_connection(bus, event_func, params=None, suffix=''):
     # Gabble accepts a resource in 'account', but the value of 'resource'
     # overrides it if there is one.
-
-    account = 'test%s@localhost/%s' % (suffix, re.sub(r'.*/', '', sys.argv[0]))
+    test_name = re.sub('(.*tests/twisted/|\./)', '',  sys.argv[0])
+    account = 'test%s@localhost/%s' % (suffix, test_name)
 
     default_params = {
         'account': account,
@@ -454,6 +491,7 @@ def make_connection(bus, event_func, params=None, suffix=''):
         'server': 'localhost',
         'port': dbus.UInt32(4242),
         'fallback-socks5-proxies': dbus.Array([], signature='s'),
+        'require-encryption': False,
         }
 
     if params:
@@ -478,6 +516,8 @@ def make_stream(event_func, authenticator=None, protocol=None,
     if authenticator is None:
         authenticator = XmppAuthenticator('test%s' % suffix, 'pass', resource=resource)
 
+    authenticator.set_event_func(event_func)
+
     if protocol is None:
         protocol = XmppXmlStream
 
@@ -501,7 +541,8 @@ def disconnect_conn(q, conn, stream, expected_before=[], expected_after=[]):
     return before_events[:-2], after_events[:-1]
 
 def exec_test_deferred(fun, params, protocol=None, timeout=None,
-                        authenticator=None, num_instances=1):
+                        authenticator=None, num_instances=1,
+                        do_connect=True):
     # hack to ease debugging
     domish.Element.__repr__ = domish.Element.toXml
     colourer = None
@@ -546,7 +587,7 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
                                    resource=resource, suffix=suffix))
 
     factory = StreamFactory(streams, jids)
-    port = reactor.listenTCP(4242, factory)
+    port = reactor.listenTCP(4242, factory, interface='localhost')
 
     def signal_receiver(*args, **kw):
         if kw['path'] == '/org/freedesktop/DBus' and \
@@ -564,7 +605,7 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
                            signal=kw['member'], args=map(unwrap, args),
                            interface=kw['interface']))
 
-    bus.add_signal_receiver(
+    match_all_signals = bus.add_signal_receiver(
         signal_receiver,
         None,       # signal name
         None,       # interface
@@ -578,6 +619,17 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
     error = None
 
     try:
+        if do_connect:
+            for conn in conns:
+                conn.Connect()
+                queue.expect('dbus-signal', signal='StatusChanged',
+                    args=[cs.CONN_STATUS_CONNECTING, cs.CSR_REQUESTED])
+                queue.expect('stream-authenticated')
+                queue.expect('dbus-signal', signal='PresencesChanged',
+                    args=[{1L: (cs.PRESENCE_AVAILABLE, u'available', '')}])
+                queue.expect('dbus-signal', signal='StatusChanged',
+                    args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
+
         if len(conns) == 1:
             fun(queue, bus, conns[0], streams[0])
         else:
@@ -585,6 +637,7 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
     except Exception, e:
         traceback.print_exc()
         error = e
+        queue.verbose = False
 
     if colourer:
         sys.stdout = colourer.fh
@@ -605,6 +658,9 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
                 conn.Disconnect()
         except dbus.DBusException, e:
             pass
+        except Exception, e:
+            traceback.print_exc()
+            error = e
 
         try:
             conn.Disconnect()
@@ -616,6 +672,8 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
             traceback.print_exc()
             error = e
 
+    match_all_signals.remove()
+
     if error is None:
         d.addBoth((lambda *args: reactor.crash()))
     else:
@@ -624,9 +682,10 @@ def exec_test_deferred(fun, params, protocol=None, timeout=None,
 
 
 def exec_test(fun, params=None, protocol=None, timeout=None,
-              authenticator=None, num_instances=1):
+              authenticator=None, num_instances=1, do_connect=True):
     reactor.callWhenRunning(
-        exec_test_deferred, fun, params, protocol, timeout, authenticator, num_instances)
+        exec_test_deferred, fun, params, protocol, timeout, authenticator, num_instances,
+        do_connect)
     reactor.run()
 
 # Useful routines for server-side vCard handling
@@ -641,11 +700,12 @@ def expect_and_handle_get_vcard(q, stream):
     assert vcard.name == 'vCard', vcard.toXml()
 
     # Send back current vCard
-    result = make_result_iq(stream, iq)
+    result = make_result_iq(stream, iq, add_query_node=False)
     result.addChild(current_vcard)
     stream.send(result)
 
 def expect_and_handle_set_vcard(q, stream, check=None):
+    global current_vcard
     set_vcard_event = q.expect('stream-iq', query_ns=ns.VCARD_TEMP,
         query_name='vCard', iq_type='set')
     iq = set_vcard_event.stanza

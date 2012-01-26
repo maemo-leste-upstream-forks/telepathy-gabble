@@ -1,51 +1,40 @@
-
+# vim: set fileencoding=utf-8 : Python sucks!
 """
 Test MUC support.
 """
 
 import dbus
 
-from twisted.words.xish import domish
+from twisted.words.xish import domish, xpath
 
 from gabbletest import exec_test
-from servicetest import EventPattern, assertEquals, assertLength
+from servicetest import (
+    EventPattern, assertEquals, assertLength, assertContains,
+    assertDoesNotContain,
+    )
 import constants as cs
+import ns
 
 from mucutil import join_muc_and_check
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     room = 'chat@conf.localhost'
     room_handle, chan, test_handle, bob_handle = \
         join_muc_and_check(q, bus, conn, stream, room)
 
     # Exercise basic Channel Properties from spec 0.17.7
     channel_props = chan.Properties.GetAll(cs.CHANNEL)
-    assert channel_props.get('TargetHandle') == room_handle,\
-            (channel_props.get('TargetHandle'), room_handle)
-    assert channel_props.get('TargetHandleType') == cs.HT_ROOM,\
-            channel_props.get('TargetHandleType')
-    assert channel_props.get('ChannelType') == \
-            cs.CHANNEL_TYPE_TEXT,\
-            channel_props.get('ChannelType')
-    assert cs.CHANNEL_IFACE_GROUP in \
-            channel_props.get('Interfaces', ()), \
-            channel_props.get('Interfaces')
-    assert cs.CHANNEL_IFACE_PASSWORD in \
-            channel_props.get('Interfaces', ()), \
-            channel_props.get('Interfaces')
-    assert cs.TP_AWKWARD_PROPERTIES in \
-            channel_props.get('Interfaces', ()), \
-            channel_props.get('Interfaces')
-    assert cs.CHANNEL_IFACE_CHAT_STATE in \
-            channel_props.get('Interfaces', ()), \
-            channel_props.get('Interfaces')
-    assert cs.CHANNEL_IFACE_MESSAGES in \
-            channel_props.get('Interfaces', ()), \
-            channel_props.get('Interfaces')
+    assertEquals(room_handle, channel_props.get('TargetHandle'))
+    assertEquals(cs.HT_ROOM, channel_props.get('TargetHandleType'))
+    assertEquals(cs.CHANNEL_TYPE_TEXT, channel_props.get('ChannelType'))
+
+    interfaces = channel_props.get('Interfaces')
+    assertContains(cs.CHANNEL_IFACE_GROUP, interfaces)
+    assertContains(cs.CHANNEL_IFACE_PASSWORD, interfaces)
+    assertDoesNotContain(cs.TP_AWKWARD_PROPERTIES, interfaces)
+    assertContains(cs.CHANNEL_IFACE_CHAT_STATE, interfaces)
+    assertContains(cs.CHANNEL_IFACE_MESSAGES, interfaces)
+
     assert channel_props['TargetID'] == 'chat@conf.localhost', channel_props
     assert channel_props['Requested'] == True
     assert channel_props['InitiatorID'] == 'test@localhost'
@@ -120,7 +109,11 @@ def test(q, bus, conn, stream):
         }
     ]
 
-    sent_token = chan.Messages.SendMessage(greeting, dbus.UInt32(0))
+    # We ask for delivery reports (which MUCs provide) and read reports (which
+    # MUCs do not provide).
+    sent_token = chan.Messages.SendMessage(greeting,
+        cs.MSG_SENDING_FLAGS_REPORT_DELIVERY |
+        cs.MSG_SENDING_FLAGS_REPORT_READ)
 
     assert sent_token
 
@@ -130,13 +123,20 @@ def test(q, bus, conn, stream):
         EventPattern('dbus-signal', signal='MessageSent'),
         )
 
-    sent_message = message_sent.args[0]
+    sent_message, flags, token = message_sent.args
     assert len(sent_message) == 2, sent_message
     header = sent_message[0]
     assert header['message-type'] == 1, header # Action
+    assertEquals(test_handle, header['message-sender'])
+    assertEquals('chat@conf.localhost/test', header['message-sender-id'])
     body = sent_message[1]
     assert body['content-type'] == 'text/plain', body
     assert body['content'] == u'peers through a gap in the curtains', body
+
+    # Of the flags passed to SendMessage, Gabble should only report the
+    # DELIVERY flag, since the other is not supported.
+    assertEquals(cs.MSG_SENDING_FLAGS_REPORT_DELIVERY, flags)
+    assertEquals(sent_token, token)
 
     assert sent.args[1] == 1, sent.args # Action
     assert sent.args[2] == u'peers through a gap in the curtains', sent.args
@@ -208,13 +208,18 @@ def test(q, bus, conn, stream):
         EventPattern('dbus-signal', signal='MessageSent'),
         )
 
-    sent_message = message_sent.args[0]
+    sent_message, flags, _ = message_sent.args
     assert len(sent_message) == 2, sent_message
     header = sent_message[0]
     assert 'message-type' not in header, header # Normal
     body = sent_message[1]
     assert body['content-type'] == 'text/plain', body
     assert body['content'] == u'goodbye', body
+
+    # The caller didn't ask for delivery reports (how could they? they're using
+    # the old API), but the server's going to send us an echo anyway, so
+    # Gabble's within its rights to pretend that the caller asked.
+    assert flags in [0, cs.MSG_SENDING_FLAGS_REPORT_DELIVERY], flags
 
     assert sent.args[1] == 0, sent.args # Normal
     assert sent.args[2] == u'goodbye', sent.args
@@ -237,7 +242,7 @@ def test(q, bus, conn, stream):
 
 
     # test that presence changes are sent via the MUC
-    conn.Presence.SetStatus({'away':{'message':'hurrah'}})
+    conn.SimplePresence.SetPresence('away', 'hurrah')
 
     event = q.expect('stream-presence', to='chat@conf.localhost/test')
     elem = event.stanza
@@ -247,6 +252,17 @@ def test(q, bus, conn, stream):
     status = [e for e in elem.elements() if e.name == 'status'][0]
     assert status
     assert status.children[0] == u'hurrah'
+
+    # Check that there's no <x xmlns='.../muc'/> element in the <presence>
+    # stanza when we're just updating our presence, as opposed to joining the
+    # MUC in the first place. This is a regression test for
+    # <https://bugs.freedesktop.org/show_bug.cgi?id=29147>. XEP-0045 §7.4 shows
+    # that you do not need to include this element in presence updates; if we
+    # erroneously include it, some implementations take this to mean that we're
+    # trying to join the MUC again and helpfully send us all the scrollback
+    # again.
+    x_muc_nodes = xpath.queryForNodes('/presence/x[@xmlns="%s"]' % ns.MUC, elem)
+    assert x_muc_nodes is None, elem.toXml()
 
     # test that leaving the channel results in an unavailable message
     chan.Group.RemoveMembers([chan.Group.GetSelfHandle()], 'booo')

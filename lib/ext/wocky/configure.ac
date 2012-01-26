@@ -108,8 +108,8 @@ dnl Check endianness (Needed for the sha1 implementation)
 AC_C_BIGENDIAN
 
 dnl Check for Glib
-PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >=
-2.4, gio-2.0 >= 2.21])
+PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.28, gobject-2.0 >= 2.16, gthread-2.0 >=
+2.4, gio-2.0 >= 2.26])
 
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
@@ -147,11 +147,35 @@ AC_SUBST(TLS_CFLAGS)
 AC_SUBST(TLS_LIBS)
 AM_CONDITIONAL(USING_OPENSSL, test x$USING_OPENSSL = xyes)
 
+AC_ARG_ENABLE([prefer-stream-ciphers],
+  AC_HELP_STRING([--enable-prefer-stream-ciphers],
+    [prefer stream ciphers over block ciphers to save bandwidth (at the possible expense of security)]),
+    [prefer_stream_ciphers=$enableval], [prefer_stream_ciphers=no])
+
+if test x$prefer_stream_ciphers = xyes; then
+  AC_DEFINE(ENABLE_PREFER_STREAM_CIPHERS, [],
+      [Prefer stream ciphers over block ones to save bandwidth])
+  if test $with_tls = gnutls; then
+    # The *-ALL priority strings require gnutls 2.12.0.
+    # We do this check here and not earlier to avoid accidentally falling
+    # back to openssl because of the use of --enable-prefer-stream-ciphers.
+    PKG_CHECK_MODULES(GNUTLS_FOR_STREAM_CIPHERS, [gnutls >= 2.12.0],[],
+      AC_MSG_ERROR([gnutls 2.12.0 is needed to use --enable-prefer-stream-cihpers]))
+  fi
+fi
+
 GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
 
 dnl Check for libxml2
 PKG_CHECK_MODULES(LIBXML2, [libxml-2.0])
+AC_SUBST(LIBXML2_CFLAGS)
+AC_SUBST(LIBXML2_LIBS)
+
+dnl Check for sqlite
+PKG_CHECK_MODULES(SQLITE, [sqlite3])
+AC_SUBST(SQLITE_CFLAGS)
+AC_SUBST(SQLITE_LIBS)
 
 dnl check for libsasl2 (for sasl test)
 dnl must check for headers as well as library (no .pc so can't use pkg-config)
@@ -162,14 +186,21 @@ AC_CHECK_LIB(sasl2, sasl_server_new,
           HAVE_LIBSASL2=yes
           AC_DEFINE(HAVE_LIBSASL2, 1, [Define if libsasl2 is available]) ],
         [ AC_MSG_WARN(libsasl2 headers missing: skipping sasl tests)]) ],
-    [ AC_MSG_WARN(libsasl2 not found: skipping sasl tests) ])
+    [ AC_MSG_WARN(libsasl2 not found: skipping sasl tests)
+      HAVE_LIBSASL2=no
+    ])
 
 AC_SUBST(LIBSASL2_LIBS)
 AC_SUBST(LIBSASL2_CFLAGS)
 AM_CONDITIONAL(HAVE_LIBSASL2, test "x$HAVE_LIBSASL2" = "xyes")
 
-AC_SUBST(LIBXML2_CFLAGS)
-AC_SUBST(LIBXML2_LIBS)
+PKG_CHECK_MODULES(LIBIPHB, [libiphb >= 0.61.31],
+    [AC_DEFINE(HAVE_IPHB, 1, [libiphb is available])
+     have_iphb=yes
+    ],
+    [have_iphb=no])
+AC_SUBST(LIBIPHB_CFLAGS)
+AC_SUBST(LIBIPHB_LIBS)
 
 AC_ARG_ENABLE(coverage, AC_HELP_STRING([--enable-coverage],
       [compile with coverage profiling instrumentation (gcc only)]),
@@ -194,7 +225,7 @@ dnl To be used by tests and examples
 WOCKY_CFLAGS='-I${top_builddir} -I${top_srcdir}'
 AC_SUBST(WOCKY_CFLAGS)
 
-GTK_DOC_CHECK([1.10])
+GTK_DOC_CHECK([1.17],[--flavour no-tmpl])
 
 AC_OUTPUT( Makefile            \
            wocky/Makefile      \
@@ -218,6 +249,8 @@ Configure summary:
 
     Features:
         TLS Backend..........: ${with_tls}
+        Prefer stream ciphers: ${prefer_stream_ciphers}
         SASL2 Tests..........: ${HAVE_LIBSASL2}
         gtk-doc documentation: ${enable_gtk_doc}
+        libiphb integration..: ${have_iphb}
 "

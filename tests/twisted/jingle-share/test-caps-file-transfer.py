@@ -10,16 +10,12 @@ from caps_helper import compute_caps_hash, \
     text_fixed_properties, text_allowed_properties, \
     stream_tube_fixed_properties, stream_tube_allowed_properties, \
     dbus_tube_fixed_properties, dbus_tube_allowed_properties, \
-    ft_fixed_properties, ft_allowed_properties
+    ft_fixed_properties, ft_allowed_properties_with_metadata
 
 import ns
 from jingleshareutils import test_ft_caps_from_contact
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     client = 'http://telepathy.freedesktop.org/fake-client'
 
     test_ft_caps_from_contact(q, bus, conn, stream, 'bilbo1@foo.com/Foo',
@@ -33,7 +29,7 @@ generic_ft_caps = [(text_fixed_properties, text_allowed_properties),
                    (stream_tube_fixed_properties, \
                         stream_tube_allowed_properties),
                    (dbus_tube_fixed_properties, dbus_tube_allowed_properties),
-                   (ft_fixed_properties, ft_allowed_properties)]
+                   (ft_fixed_properties, ft_allowed_properties_with_metadata)]
 
 generic_caps = [(text_fixed_properties, text_allowed_properties),
                    (stream_tube_fixed_properties, \
@@ -60,14 +56,6 @@ def check_contact_caps(conn, handle, with_ft):
 
 
 def test2(q, bus, connections, streams):
-
-    for i, conn in enumerate(connections):
-        path = conn.object.object_path
-        conn.Connect()
-        q.expect('dbus-signal', signal='StatusChanged', path=path,
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-        q.expect ('stream-presence')
-
     conn1, conn2 = connections
     stream1, stream2 = streams
     conn1_handle = conn1.Properties.Get(cs.CONN, 'SelfHandle')

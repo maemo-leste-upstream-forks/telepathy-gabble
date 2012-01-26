@@ -24,7 +24,9 @@ import dbus
 
 from twisted.words.xish import xpath
 
-from gabbletest import exec_test, make_result_iq, make_presence, sync_stream
+from gabbletest import (
+    exec_test, make_result_iq, make_presence, sync_stream, elem,
+)
 from servicetest import sync_dbus, EventPattern, assertLength
 import constants as cs
 import ns
@@ -34,6 +36,10 @@ from caps_helper import (
 
 caps_changed_flag = False
 
+some_identities = [
+    'client/pc/fr/le gabble',
+    'client/pc/en/gabble',
+    ]
 jingle_av_features = [
     ns.JINGLE_015,
     ns.JINGLE_015_AUDIO,
@@ -53,13 +59,9 @@ def test_hash(q, bus, conn, stream, contact, contact_handle, client):
     presence = make_presence(contact, status='hello')
     stream.send(presence)
 
-    q.expect_many(
-        EventPattern('dbus-signal', signal='PresenceUpdate',
+    q.expect('dbus-signal', signal='PresencesChanged',
             args=[{contact_handle:
-                (0L, {u'available': {'message': 'hello'}})}]),
-        EventPattern('dbus-signal', signal='PresencesChanged',
-            args=[{contact_handle:
-                (2, u'available', 'hello')}]))
+                (2, u'available', 'hello')}])
 
     # no special capabilities
     basic_caps = [(contact_handle, cs.CHANNEL_TYPE_TEXT, 3, 0)]
@@ -158,7 +160,7 @@ def test_hash(q, bus, conn, stream, contact, contact_handle, client):
 
 
     # send correct presence
-    ver = compute_caps_hash([], jingle_av_features, fake_client_dataforms)
+    ver = compute_caps_hash(some_identities, jingle_av_features, fake_client_dataforms)
     caps = {
         'node': client,
         'ver':  ver,
@@ -180,7 +182,7 @@ def test_hash(q, bus, conn, stream, contact, contact_handle, client):
 
     # send good reply
     send_disco_reply(
-        stream, event.stanza, [], jingle_av_features, fake_client_dataforms)
+        stream, event.stanza, some_identities, jingle_av_features, fake_client_dataforms)
 
     # we can now do audio calls
     event = q.expect('dbus-signal', signal='CapabilitiesChanged',
@@ -195,24 +197,16 @@ def test_two_clients(q, bus, conn, stream, contact1, contact2,
     presence = make_presence(contact1, status='hello')
     stream.send(presence)
 
-    event = q.expect_many(
-        EventPattern('dbus-signal', signal='PresenceUpdate',
+    q.expect('dbus-signal', signal='PresencesChanged',
             args=[{contact_handle1:
-                (0L, {u'available': {'message': 'hello'}})}]),
-        EventPattern('dbus-signal', signal='PresencesChanged',
-            args=[{contact_handle1:
-                (2, u'available', 'hello')}]))
+                (2, u'available', 'hello')}])
 
     presence = make_presence(contact2, status='hello')
     stream.send(presence)
 
-    event = q.expect_many(
-        EventPattern('dbus-signal', signal='PresenceUpdate',
+    q.expect('dbus-signal', signal='PresencesChanged',
             args=[{contact_handle2:
-                (0L, {u'available': {'message': 'hello'}})}]),
-        EventPattern('dbus-signal', signal='PresencesChanged',
-            args=[{contact_handle2:
-                (2, u'available', 'hello')}]))
+                (2, u'available', 'hello')}])
 
     # no special capabilities
     basic_caps = [(contact_handle1, cs.CHANNEL_TYPE_TEXT, 3, 0)]
@@ -221,7 +215,7 @@ def test_two_clients(q, bus, conn, stream, contact1, contact2,
     assert conn.Capabilities.GetCapabilities([contact_handle2]) == basic_caps
 
     # send updated presence with Jingle caps info
-    ver = compute_caps_hash([], jingle_av_features, {})
+    ver = compute_caps_hash(some_identities, jingle_av_features, {})
     caps = {
         'node': client,
         'ver': ver,
@@ -244,7 +238,7 @@ def test_two_clients(q, bus, conn, stream, contact1, contact2,
     assert caps_changed_flag == False
 
     result = make_caps_disco_reply(
-        stream, event.stanza, [], jingle_av_features)
+        stream, event.stanza, some_identities, jingle_av_features)
 
     if broken_hash:
         # make the hash break!
@@ -267,7 +261,7 @@ def test_two_clients(q, bus, conn, stream, contact1, contact2,
         assert caps_changed_flag == False
 
         # send good reply
-        send_disco_reply(stream, event.stanza, [], jingle_av_features)
+        send_disco_reply(stream, event.stanza, some_identities, jingle_av_features)
 
     # we can now do audio calls with both contacts
     event = q.expect('dbus-signal', signal='CapabilitiesChanged',
@@ -286,11 +280,38 @@ def test_two_clients(q, bus, conn, stream, contact1, contact2,
     sync_dbus(bus, q, conn)
     assert caps_changed_flag == False
 
-def test(q, bus, conn, stream):
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
+def test_39464(q, bus, conn, stream):
+    """
+    Regression test for an issue where a form with no type='' attribute on the
+    <x/> node would crash Gabble.
+    """
+    client = 'fake:qutim'
+    hash = 'blahblah'
+    contact = 'bug-39464@example.com/foo'
+    caps = {
+        'node': client,
+        'ver': hash,
+        'hash': 'sha-1',
+        }
+    presence = make_presence(contact, status='hello', caps=caps)
+    stream.send(presence)
 
+    # Gabble looks up our capabilities
+    event = q.expect('stream-iq', to=contact, query_ns=ns.DISCO_INFO)
+
+    # Send a reply with a form without a type=''
+    result = make_result_iq(stream, event.stanza, add_query_node=False)
+    result.addChild(
+        elem(ns.DISCO_INFO, 'query', node='%s#%s' % (client, hash))(
+          # NB. no type='' attribute
+          elem(ns.X_DATA, 'x')
+        )
+      )
+    stream.send(result)
+    # We don't really care what Gabble does, as long as it doesn't crash.
+    sync_stream(q, stream)
+
+def test(q, bus, conn, stream):
     # be notified when the signal CapabilitiesChanged is fired
     conn_caps_iface = dbus.Interface(conn, cs.CONN_IFACE_CAPS)
     conn_caps_iface.connect_to_signal('CapabilitiesChanged', caps_changed_cb)
@@ -304,6 +325,8 @@ def test(q, bus, conn, stream):
     test_two_clients(q, bus, conn, stream, 'user3@example.com/Res',
             'user4@example.com/Res', 6L, 7L,
             'http://telepathy.freedesktop.org/fake-client4', 1)
+
+    test_39464(q, bus, conn, stream)
 
 if __name__ == '__main__':
     exec_test(test)

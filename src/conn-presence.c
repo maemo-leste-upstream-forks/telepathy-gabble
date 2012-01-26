@@ -30,6 +30,7 @@
 #include <telepathy-glib/util.h>
 #include <telepathy-glib/interfaces.h>
 
+#include <wocky/wocky-c2s-porter.h>
 #include <wocky/wocky-utils.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_CONNECTION
@@ -74,11 +75,17 @@ struct _GabbleConnectionPresencePrivate {
     /* Are all of the connected resources complying to version 2 */
     gboolean shared_status_compat;
 
+    /* Max length of status message */
+    gint max_status_message_length;
+
     /* Max statuses in a shared status list */
     gint max_shared_statuses;
 
     /* The shared status IQ handler */
     guint iq_shared_status_cb;
+
+    /* The previous presence when using shared status */
+    GabblePresenceId previous_shared_status;
 };
 
 static const TpPresenceStatusOptionalArgumentSpec gabble_status_arguments[] = {
@@ -90,7 +97,7 @@ static const TpPresenceStatusOptionalArgumentSpec gabble_status_arguments[] = {
 
 /* order must match PresenceId enum in connection.h */
 /* in increasing order of presence */
-static const TpPresenceStatusSpec base_statuses[] = {
+static const TpPresenceStatusSpec gabble_base_statuses[] = {
   { "offline", TP_CONNECTION_PRESENCE_TYPE_OFFLINE, FALSE,
     gabble_status_arguments, NULL, NULL },
   { "unknown", TP_CONNECTION_PRESENCE_TYPE_UNKNOWN, FALSE,
@@ -219,7 +226,7 @@ construct_contact_statuses_cb (GObject *obj,
         }
 
       contact_status = tp_presence_status_new (status, parameters);
-      g_hash_table_destroy (parameters);
+      g_hash_table_unref (parameters);
 
       g_hash_table_insert (contact_statuses, GUINT_TO_POINTER (handle),
           contact_status);
@@ -247,7 +254,7 @@ conn_presence_emit_presence_update (
   contact_statuses = construct_contact_statuses_cb ((GObject *) self,
       contact_handles, NULL);
   tp_presence_mixin_emit_presence_update ((GObject *) self, contact_statuses);
-  g_hash_table_destroy (contact_statuses);
+  g_hash_table_unref (contact_statuses);
 }
 
 
@@ -266,7 +273,7 @@ emit_presences_changed_for_self (GabbleConnection *self)
 
   g_array_insert_val (handles, 0, base->self_handle);
   conn_presence_emit_presence_update (self, handles);
-  g_array_free (handles, TRUE);
+  g_array_unref (handles);
 }
 
 static WockyStanza *
@@ -313,6 +320,12 @@ build_shared_status_stanza (GabbleConnection *self)
   return iq;
 }
 
+static gboolean
+is_presence_away (GabblePresenceId status)
+{
+  return status == GABBLE_PRESENCE_AWAY || status == GABBLE_PRESENCE_XA;
+}
+
 static void
 set_shared_status_cb (GObject *source_object,
     GAsyncResult *res,
@@ -320,18 +333,41 @@ set_shared_status_cb (GObject *source_object,
 {
   GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (user_data);
   GabbleConnection *self = GABBLE_CONNECTION (source_object);
+  GabbleConnectionPresencePrivate *priv = self->presence_priv;
+  GabblePresence *presence = self->self_presence;
   GError *error = NULL;
 
-  if (!conn_util_send_iq_finish (self, res, NULL, &error) ||
-      !conn_presence_signal_own_presence (self, NULL, &error))
+  if (!conn_util_send_iq_finish (self, res, NULL, &error))
     {
       g_simple_async_result_set_error (result,
           CONN_PRESENCE_ERROR, CONN_PRESENCE_ERROR_SET_SHARED_STATUS,
           "error setting Google shared status: %s", error->message);
     }
+  else
+    {
+      gabble_muc_factory_broadcast_presence (self->muc_factory);
 
-      g_simple_async_result_complete (result);
-      g_object_unref (result);
+      if (is_presence_away (priv->previous_shared_status))
+        {
+          /* To use away and xa we need to send a <presence/> to the server,
+           * but then GTalk also expects us to leave the status using
+           * <presence/> too. */
+          conn_presence_signal_own_presence (self, NULL, &error);
+        }
+      else if (priv->previous_shared_status == GABBLE_PRESENCE_HIDDEN &&
+          is_presence_away (presence->status))
+        {
+          /* We sent the shared status change to leave the invisibility, so
+           * now we can actually go to away / xa. */
+          conn_presence_signal_own_presence (self, NULL, &error);
+          emit_presences_changed_for_self (self);
+        }
+
+      priv->previous_shared_status = presence->status;
+    }
+
+  g_simple_async_result_complete (result);
+  g_object_unref (result);
 
   if (error != NULL)
     g_error_free (error);
@@ -345,7 +381,7 @@ insert_presence_to_shared_statuses (GabbleConnection *self)
   const gchar *show = presence->status == GABBLE_PRESENCE_DND ? "dnd" : "default";
   gchar **statuses = g_hash_table_lookup (priv->shared_statuses, show);
 
-  if (presence->status_message == NULL)
+  if (presence->status_message == NULL || is_presence_away (presence->status))
     return;
 
   if (statuses == NULL)
@@ -376,23 +412,52 @@ set_shared_status (GabbleConnection *self,
 {
   GabbleConnectionPresencePrivate *priv = self->presence_priv;
   GabblePresence *presence = self->self_presence;
-  WockyStanza *iq;
 
   g_object_ref (result);
 
-  DEBUG ("shared status invisibility is %savailable",
-      priv->shared_status_compat ? "" : "un");
+  /* Away is treated like idleness in GTalk; it's per connection and not
+   * global. To set the presence as away we use the traditional <presence/>,
+   * but, if we were invisible, we need to first leave invisibility. */
+  if (!is_presence_away (presence->status) ||
+      priv->previous_shared_status == GABBLE_PRESENCE_HIDDEN)
+    {
+      WockyStanza *iq;
 
-  if (presence->status == GABBLE_PRESENCE_HIDDEN && !priv->shared_status_compat)
-    presence->status = GABBLE_PRESENCE_DND;
+      DEBUG ("shared status invisibility is %savailable",
+          priv->shared_status_compat ? "" : "un");
 
-  insert_presence_to_shared_statuses (self);
+      if (presence->status == GABBLE_PRESENCE_HIDDEN && !priv->shared_status_compat)
+        presence->status = GABBLE_PRESENCE_DND;
 
-  iq = build_shared_status_stanza (self);
+      insert_presence_to_shared_statuses (self);
 
-  conn_util_send_iq_async (self, iq, NULL, set_shared_status_cb, result);
+      iq = build_shared_status_stanza (self);
 
-  g_object_unref (iq);
+      conn_util_send_iq_async (self, iq, NULL, set_shared_status_cb, result);
+
+      g_object_unref (iq);
+    }
+  else
+    {
+      gboolean retval;
+      GError *error = NULL;
+
+      DEBUG ("not updating shared status as it's not supported for away");
+
+      retval = conn_presence_signal_own_presence (self, NULL, &error);
+      if (!retval)
+        {
+          g_simple_async_result_set_from_error (result, error);
+          g_error_free (error);
+        }
+
+      emit_presences_changed_for_self (self);
+
+      priv->previous_shared_status = presence->status;
+
+      g_simple_async_result_complete_in_idle (result);
+      g_object_unref (result);
+    }
 }
 
 static void
@@ -756,7 +821,7 @@ store_shared_statuses (GabbleConnection *self,
         NULL);
 
   if (priv->shared_statuses != NULL)
-    g_hash_table_destroy (priv->shared_statuses);
+    g_hash_table_unref (priv->shared_statuses);
 
   priv->shared_statuses = g_hash_table_new_full (
       g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_strfreev);
@@ -799,8 +864,17 @@ store_shared_statuses (GabbleConnection *self,
         }
     }
 
+  /* - status-min-ver == 0 means that at least one resource doesn't support
+   *   Google shared status, so we fallback to "dnd".
+   * - status-min-ver == 1 means that all the resources support shared
+   *   status, but at least one doesn't support invisibility; we have to fall
+   *   fall back to "dnd".
+   * - status-miv-ver == 2 means that all the resources support shared status
+   *   with invisibility.
+   * - any other value means that the other resources will have to fall back
+   *   to version 2 for us. */
   priv->shared_status_compat =
-    g_strcmp0 (min_version, GOOGLE_SHARED_STATUS_VERSION) == 0;
+    (g_strcmp0 (min_version, "0") != 0 && g_strcmp0 (min_version, "1") != 0);
 
   if (invisible)
     {
@@ -819,12 +893,23 @@ store_shared_statuses (GabbleConnection *self,
         presence_id = GABBLE_PRESENCE_AVAILABLE;
     }
 
-  /* If we are connected, use the new shared status. If not, override with local */
-  if (base->status == TP_CONNECTION_STATUS_CONNECTED)
-    rv = gabble_presence_update (self->self_presence, resource, presence_id,
-        status_message, prio);
+  if (base->status != TP_CONNECTION_STATUS_CONNECTED)
+    {
+      /* Not connected, override with the local status. */
+      rv = TRUE;
+    }
+  else if (is_presence_away (self->self_presence->status))
+    {
+      /* Away presence is not overridden with remote presence because it's
+       * per connection. */
+      rv = FALSE;
+    }
   else
-    rv = TRUE;
+    {
+      /* Update with the remote presence */
+      rv = gabble_presence_update (self->self_presence, resource, presence_id,
+          status_message, prio, NULL, time (NULL));
+    }
 
   g_free (resource);
 
@@ -877,8 +962,7 @@ iq_privacy_list_push_cb (LmMessageHandler *handler,
 
   result = lm_iq_message_make_result (message);
 
-  if (!lm_connection_send (conn->lmconn, result, NULL))
-      DEBUG ("sending push privacy list response failed");
+  wocky_porter_send (wocky_session_get_porter (conn->session), result);
 
   list_name = lm_message_node_get_attribute (list_node, "name");
 
@@ -947,8 +1031,16 @@ get_shared_status_cb  (GObject *source_object,
 
       if (query_node != NULL)
         {
+          const gchar *max_status_message = wocky_node_get_attribute (query_node,
+              "status-max");
           const gchar *max_shared = wocky_node_get_attribute (query_node,
               "status-list-contents-max");
+
+          if (max_status_message != NULL)
+            priv->max_status_message_length = (gint) g_ascii_strtoll (
+                max_status_message, NULL, 10);
+          else
+            priv->max_status_message_length = 0; /* no limit */
 
           if (max_shared != NULL)
             priv->max_shared_statuses = (gint) g_ascii_strtoll (max_shared, NULL, 10);
@@ -991,6 +1083,10 @@ get_shared_status_async (GabbleConnection *self,
       NULL);
 
   conn_util_send_iq_async (self, iq, NULL, get_shared_status_cb, result);
+
+  /* We cannot use the chat status with GTalk's shared status. */
+  if (self->self_presence->status == GABBLE_PRESENCE_CHAT)
+    self->self_presence->status = GABBLE_PRESENCE_AVAILABLE;
 
   g_object_unref (iq);
 }
@@ -1353,6 +1449,38 @@ privacy_lists_loaded_cb (GObject *source_object,
 }
 
 static void
+shared_status_toggle_initial_presence_visibility_cb (GObject *source_object,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  GabbleConnection *self = GABBLE_CONNECTION (source_object);
+  GSimpleAsyncResult *external_result = G_SIMPLE_ASYNC_RESULT (user_data);
+  GError *error = NULL;
+
+  if (!toggle_presence_visibility_finish (self, result, &error))
+    {
+      g_simple_async_result_set_from_error (external_result, error);
+      g_clear_error (&error);
+    }
+  else if (self->self_presence->status != GABBLE_PRESENCE_AWAY &&
+      self->self_presence->status != GABBLE_PRESENCE_XA)
+    {
+      /* With shared status we send the normal <presence/> only with away and
+       * extended away, but for initial status we need to send <presence/> as
+       * it also contains the caps. */
+      if (!conn_presence_signal_own_presence (self, NULL, &error))
+        {
+          g_simple_async_result_set_from_error (external_result, error);
+          g_error_free (error);
+        }
+    }
+
+  g_simple_async_result_complete_in_idle (external_result);
+
+  g_object_unref (external_result);
+}
+
+static void
 shared_status_setup_cb (GObject *source_object,
     GAsyncResult *result,
     gpointer user_data)
@@ -1367,9 +1495,11 @@ shared_status_setup_cb (GObject *source_object,
 
       priv->invisibility_method = INVISIBILITY_METHOD_SHARED_STATUS;
 
-      priv->iq_shared_status_cb = wocky_porter_register_handler (porter,
-          WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET, NULL,
-          WOCKY_PORTER_HANDLER_PRIORITY_NORMAL, iq_shared_status_changed_cb, self,
+      priv->iq_shared_status_cb = wocky_c2s_porter_register_handler_from_server (
+          WOCKY_C2S_PORTER (porter),
+          WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
+          WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+          iq_shared_status_changed_cb, self,
           '(', "query",
             ':', NS_GOOGLE_SHARED_STATUS,
           ')', NULL);
@@ -1380,7 +1510,8 @@ shared_status_setup_cb (GObject *source_object,
       g_error_free (error);
     }
 
-  get_existing_privacy_lists_async (self, privacy_lists_loaded_cb, user_data);
+  toggle_presence_visibility_async (self,
+      shared_status_toggle_initial_presence_visibility_cb, user_data);
 }
 
 void
@@ -1405,7 +1536,43 @@ conn_presence_set_initial_presence_finish (GabbleConnection *self,
     GAsyncResult *result,
     GError **error)
 {
-  wocky_implement_finish_void (self, conn_presence_set_initial_presence_async)
+  wocky_implement_finish_void (self, conn_presence_set_initial_presence_async);
+}
+
+/**
+ * conn_presence_statuses:
+ *
+ * Used to retrieve the list of presence statuses supported by connections
+ * consisting of the basic statuses followed by any statuses defined by
+ * plugins.
+ *
+ * Returns: an array of #TpPresenceStatusSpec terminated by a 0 filled member
+ * The array is owned by te connection presence implementation and must not
+ * be altered or freed by anyone else.
+ **/
+const TpPresenceStatusSpec *
+conn_presence_statuses (void)
+{
+  if (gabble_statuses == NULL)
+    {
+      GabblePluginLoader *loader = gabble_plugin_loader_dup ();
+
+      gabble_statuses = gabble_plugin_loader_append_statuses (
+          loader, gabble_base_statuses);
+
+      g_object_unref (loader);
+    }
+
+  return gabble_statuses;
+}
+
+static guint
+get_maximum_status_message_length_cb (GObject *obj)
+{
+  GabbleConnection *conn = GABBLE_CONNECTION (obj);
+  GabbleConnectionPresencePrivate *priv = conn->presence_priv;
+
+  return priv->max_status_message_length;
 }
 
 /**
@@ -1535,7 +1702,7 @@ toggle_presence_visibility_finish (
     GAsyncResult *result,
     GError **error)
 {
-  wocky_implement_finish_void (self, toggle_presence_visibility_async)
+  wocky_implement_finish_void (self, toggle_presence_visibility_async);
 }
 
 static void
@@ -1598,6 +1765,7 @@ set_own_status_cb (GObject *obj,
   TpBaseConnection *base = (TpBaseConnection *) conn;
   GabblePresenceId i = GABBLE_PRESENCE_AVAILABLE;
   const gchar *message_str = NULL;
+  gchar *message_truncated = NULL;
   gchar *resource;
   gint8 prio;
   gboolean retval = TRUE;
@@ -1660,8 +1828,16 @@ set_own_status_cb (GObject *obj,
         }
     }
 
+  if (message_str && priv->max_status_message_length > 0 &&
+      priv->shared_statuses != NULL)
+    {
+      message_truncated = g_strndup (message_str,
+          priv->max_status_message_length);
+      message_str = message_truncated;
+    }
+
   if (gabble_presence_update (conn->self_presence, resource, i,
-          message_str, prio))
+          message_str, prio, NULL, time (NULL)))
     {
       if (base->status != TP_CONNECTION_STATUS_CONNECTED)
         {
@@ -1692,6 +1868,7 @@ set_own_status_cb (GObject *obj,
     }
 
 OUT:
+  g_free (message_truncated);
   g_free (resource);
 
   return retval;
@@ -1731,45 +1908,50 @@ status_available_cb (GObject *obj, guint status)
   TpConnectionPresenceType presence_type =
     gabble_statuses[status].presence_type;
 
+  if (base->status != TP_CONNECTION_STATUS_CONNECTED)
+    {
+      /* we just don't know yet */
+      return TRUE;
+    }
+
   /* This relies on the fact the first entries in the statuses table
-   * are from base_statuses. If index to the statuses table is outside
-   * the base_statuses table, the status is provided by a plugin. */
-  if (status >= G_N_ELEMENTS (base_statuses))
+   * are from gabble_base_statuses. If index to the statuses table is outside
+   * the gabble_base_statuses table, the status is provided by a plugin. */
+  if (status >= G_N_ELEMENTS (gabble_base_statuses))
     {
       /* At the moment, plugins can only implement statuses via privacy
        * lists, so any extra status should be backed by one. If it's not
        * (or if privacy lists are not supported by the server at all)
        * by the time we're connected, it's not available. */
-
-      if (base->status == TP_CONNECTION_STATUS_CONNECTED)
+      if (priv->privacy_statuses != NULL &&
+          g_hash_table_lookup (priv->privacy_statuses,
+              gabble_statuses[status].name))
         {
-          if (priv->privacy_statuses != NULL &&
-              g_hash_table_lookup (priv->privacy_statuses,
-                  gabble_statuses[status].name))
-            {
-              return TRUE;
-            }
-          else
-            {
-              return FALSE;
-            }
+          return TRUE;
         }
       else
         {
-          /* we just don't know yet */
-          return TRUE;
+          return FALSE;
         }
     }
 
-  /* If we've gone online and found that the server doesn't support invisible,
-   * reject it.
-   */
-  if (base->status == TP_CONNECTION_STATUS_CONNECTED &&
-      presence_type == TP_CONNECTION_PRESENCE_TYPE_HIDDEN &&
+  if (presence_type == TP_CONNECTION_PRESENCE_TYPE_HIDDEN &&
       priv->invisibility_method == INVISIBILITY_METHOD_NONE)
-    return FALSE;
+    {
+      /* If we've gone online and found that the server doesn't support
+       * invisible, reject it. */
+      return FALSE;
+    }
+  else if (status == GABBLE_PRESENCE_CHAT &&
+      priv->shared_statuses != NULL)
+    {
+      /* We cannot use the chat status with GTalk's shared status. */
+      return FALSE;
+    }
   else
-    return TRUE;
+    {
+      return TRUE;
+    }
 }
 
 GabblePresenceId
@@ -1777,7 +1959,6 @@ conn_presence_get_type (GabblePresence *presence)
 {
   return gabble_statuses[presence->status].presence_type;
 }
-
 
 /* We should update this when telepathy-glib supports setting
  * statuses at constructor time (see
@@ -1787,30 +1968,25 @@ conn_presence_get_type (GabblePresence *presence)
 void
 conn_presence_class_init (GabbleConnectionClass *klass)
 {
-  if (gabble_statuses == NULL)
-    {
-      GabblePluginLoader *loader = gabble_plugin_loader_dup ();
-
-      gabble_statuses = gabble_plugin_loader_append_statuses (
-          loader, base_statuses);
-
-      g_object_unref (loader);
-    }
+  TpPresenceMixinClass *mixin_cls;
 
   tp_presence_mixin_class_init ((GObjectClass *) klass,
       G_STRUCT_OFFSET (GabbleConnectionClass, presence_class),
       status_available_cb, construct_contact_statuses_cb,
-      set_own_status_cb, gabble_statuses);
+      set_own_status_cb, conn_presence_statuses ());
+  mixin_cls = TP_PRESENCE_MIXIN_CLASS (klass);
+  mixin_cls->get_maximum_status_message_length =
+      get_maximum_status_message_length_cb;
 
   tp_presence_mixin_simple_presence_init_dbus_properties (
     (GObjectClass *) klass);
 }
 
-
 void
 conn_presence_init (GabbleConnection *conn)
 {
   conn->presence_priv = g_slice_new0 (GabbleConnectionPresencePrivate);
+  conn->presence_priv->previous_shared_status = GABBLE_PRESENCE_UNKNOWN;
 
   g_signal_connect (conn->presence_cache, "presences-updated",
       G_CALLBACK (connection_presences_updated_cb), conn);
@@ -1855,22 +2031,17 @@ conn_presence_finalize (GabbleConnection *conn)
   g_free (priv->invisible_list_name);
 
   if (priv->privacy_statuses != NULL)
-      g_hash_table_destroy (priv->privacy_statuses);
+      g_hash_table_unref (priv->privacy_statuses);
 
   if (priv->shared_statuses != NULL)
-      g_hash_table_destroy (priv->shared_statuses);
+      g_hash_table_unref (priv->shared_statuses);
 
   if (priv->iq_list_push_cb != NULL)
     lm_message_handler_unref (priv->iq_list_push_cb);
 
+  g_slice_free (GabbleConnectionPresencePrivate, priv);
+
   tp_presence_mixin_finalize ((GObject *) conn);
-}
-
-
-void
-conn_presence_iface_init (gpointer g_iface, gpointer iface_data)
-{
-  tp_presence_mixin_iface_init (g_iface, iface_data);
 }
 
 static void

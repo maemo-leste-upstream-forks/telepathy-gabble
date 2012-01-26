@@ -26,8 +26,6 @@
 
 #include <string.h>
 
-#define DBUS_API_SUBJECT_TO_CHANGE
-
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <telepathy-glib/dbus.h>
@@ -138,7 +136,7 @@ gabble_disco_class_init (GabbleDiscoClass *gabble_disco_class)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
                   0,
                   NULL, NULL,
-                  gabble_marshal_VOID__POINTER,
+                  g_cclosure_marshal_VOID__POINTER,
                   G_TYPE_NONE, 1, G_TYPE_POINTER);
 
   signals[DONE] =
@@ -147,7 +145,7 @@ gabble_disco_class_init (GabbleDiscoClass *gabble_disco_class)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
                   0,
                   NULL, NULL,
-                  gabble_marshal_VOID__VOID,
+                  g_cclosure_marshal_VOID__VOID,
                   G_TYPE_NONE, 0);
 
 }
@@ -239,7 +237,7 @@ gabble_disco_dispose (GObject *object)
       g_free ((char *) item->name);
       g_free ((char *) item->category);
       g_free ((char *) item->type);
-      g_hash_table_destroy (item->features);
+      g_hash_table_unref (item->features);
       g_free (item);
     }
 
@@ -318,7 +316,7 @@ timeout_request (gpointer data)
 {
   GabbleDiscoRequest *request = (GabbleDiscoRequest *) data;
   GabbleDisco *disco;
-  GError *err /* doesn't need initializing */;
+  GError *err = NULL;
   g_return_val_if_fail (data != NULL, FALSE);
 
   err = g_error_new (GABBLE_DISCO_ERROR, GABBLE_DISCO_ERROR_TIMEOUT,
@@ -354,7 +352,7 @@ timeout_request (gpointer data)
 static void
 cancel_request (GabbleDiscoRequest *request)
 {
-  GError *err /* doesn't need initializing */;
+  GError *err = NULL;
 
   g_assert (request != NULL);
 
@@ -664,7 +662,7 @@ item_info_cb (GabbleDisco *disco,
   item.features = keys;
 
   pipeline->callback (pipeline, &item, pipeline->user_data);
-  g_hash_table_destroy (keys);
+  g_hash_table_unref (keys);
 
 done:
   gabble_disco_fill_pipeline (disco, pipeline);
@@ -849,8 +847,8 @@ gabble_disco_pipeline_destroy (gpointer self)
       gabble_disco_cancel_request (pipeline->disco, request);
     }
 
-  g_hash_table_destroy (pipeline->remaining_items);
-  g_ptr_array_free (pipeline->disco_pipeline, TRUE);
+  g_hash_table_unref (pipeline->remaining_items);
+  g_ptr_array_unref (pipeline->disco_pipeline);
   g_free (pipeline);
 }
 

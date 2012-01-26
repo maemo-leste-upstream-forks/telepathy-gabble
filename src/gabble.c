@@ -25,6 +25,8 @@
 # include <unistd.h>
 #endif
 
+#include <glib/gstdio.h>
+
 #include <telepathy-glib/debug.h>
 #include <telepathy-glib/debug-sender.h>
 #include <telepathy-glib/run.h>
@@ -107,13 +109,31 @@ log_handler (const gchar *log_domain,
 void
 gabble_init (void)
 {
+#if !GLIB_CHECK_VERSION (2, 31, 0)
   /* libsoup uses glib in multiple threads and don't have this, so we have to
    * enable it manually here */
   if (!g_thread_supported ())
     g_thread_init (NULL);
+#endif
 
   g_type_init ();
   wocky_init ();
+}
+
+static void
+try_to_delete_old_caps_cache (void)
+{
+  gchar *cache = g_build_path (G_DIR_SEPARATOR_S,
+      g_get_user_cache_dir (), "telepathy", "gabble", "caps-cache.db",
+      NULL);
+
+  if (g_file_test (cache, G_FILE_TEST_IS_REGULAR))
+    {
+      /* fire and forget */
+      g_unlink (cache);
+    }
+
+  g_free (cache);
 }
 
 int
@@ -122,8 +142,16 @@ gabble_main (int argc,
 {
   GabblePluginLoader *loader;
   int out;
+  GLogLevelFlags fatal_mask;
 
   tp_debug_divert_messages (g_getenv ("GABBLE_LOGFILE"));
+
+#ifdef ENABLE_FATAL_CRITICALS
+  /* make critical warnings fatal */
+  fatal_mask = g_log_set_always_fatal (G_LOG_FATAL_MASK);
+  fatal_mask |= G_LOG_LEVEL_CRITICAL;
+  g_log_set_always_fatal (fatal_mask);
+#endif
 
 #ifdef ENABLE_DEBUG
   gabble_debug_set_flags_from_env ();
@@ -145,6 +173,8 @@ gabble_main (int argc,
 #endif
 
   loader = gabble_plugin_loader_dup ();
+
+  try_to_delete_old_caps_cache ();
 
   out = tp_run_connection_manager ("telepathy-gabble", VERSION,
       construct_cm, argc, argv);

@@ -37,8 +37,6 @@
 
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
 
-#include "extensions/extensions.h"
-
 #include "connection.h"
 #include "debug.h"
 #include "jingle-content.h"
@@ -212,9 +210,7 @@ gabble_media_channel_init (GabbleMediaChannel *self)
 static void session_state_changed_cb (GabbleJingleSession *session,
     GParamSpec *arg1, GabbleMediaChannel *channel);
 static void session_terminated_cb (GabbleJingleSession *session,
-    gboolean local_terminator,
-    TpChannelGroupChangeReason reason,
-    const gchar *text,
+    gboolean local_terminator, JingleReason reason, const gchar *text,
     gpointer user_data);
 static void session_new_content_cb (GabbleJingleSession *session,
     GabbleJingleContent *c, gpointer user_data);
@@ -223,6 +219,9 @@ static void create_stream_from_content (GabbleMediaChannel *chan,
 static gboolean contact_is_media_capable (GabbleMediaChannel *chan, TpHandle peer,
     gboolean *wait, GError **error);
 static void stream_creation_data_cancel (gpointer p, gpointer unused);
+static void session_content_rejected_cb (GabbleJingleSession *session,
+    GabbleJingleContent *c, JingleReason reason, const gchar *message,
+    gpointer user_data);
 
 static void
 create_initial_streams (GabbleMediaChannel *chan)
@@ -288,6 +287,9 @@ _latch_to_session (GabbleMediaChannel *chan)
 
   g_signal_connect (priv->session, "terminated",
                     (GCallback) session_terminated_cb, chan);
+
+  g_signal_connect (priv->session, "content-rejected",
+                    (GCallback) session_content_rejected_cb, chan);
 
   gabble_media_channel_hold_latch_to_session (chan);
 
@@ -448,9 +450,7 @@ gabble_media_channel_constructor (GType type, guint n_props,
   /* If this is a Google session, let's set ImmutableStreams */
   if (priv->session != NULL)
     {
-      JingleDialect d = gabble_jingle_session_get_dialect (priv->session);
-
-      priv->immutable_streams = JINGLE_IS_GOOGLE_DIALECT (d);
+      priv->immutable_streams = !gabble_jingle_session_can_modify_contents (priv->session);
     }
   /* If there's no session yet, but we know who the peer will be, and we have
    * presence for them, we can set ImmutableStreams using the same algorithm as
@@ -978,7 +978,7 @@ gabble_media_channel_dispose (GObject *object)
     {
       g_ptr_array_foreach (priv->delayed_request_streams,
           (GFunc) destroy_request, NULL);
-      g_ptr_array_free (priv->delayed_request_streams, TRUE);
+      g_ptr_array_unref (priv->delayed_request_streams);
       priv->delayed_request_streams = NULL;
     }
 
@@ -995,7 +995,7 @@ gabble_media_channel_dispose (GObject *object)
    * removed when the call ended.
    */
   g_assert (priv->streams->len == 0);
-  g_ptr_array_free (priv->streams, TRUE);
+  g_ptr_array_unref (priv->streams);
   priv->streams = NULL;
 
   if (G_OBJECT_CLASS (gabble_media_channel_parent_class)->dispose)
@@ -1055,7 +1055,7 @@ gabble_media_channel_close (GabbleMediaChannel *self)
 
       if (priv->session != NULL)
         gabble_jingle_session_terminate (priv->session,
-            TP_CHANNEL_GROUP_CHANGE_REASON_NONE, NULL, NULL);
+            JINGLE_REASON_UNKNOWN, NULL, NULL);
 
       tp_svc_channel_emit_closed (self);
     }
@@ -1160,7 +1160,7 @@ gabble_media_channel_get_session_handlers (TpSvcChannelInterfaceMediaSignalling 
   tp_svc_channel_interface_media_signalling_return_from_get_session_handlers (
       context, ret);
   g_ptr_array_foreach (ret, (GFunc) g_value_array_free, NULL);
-  g_ptr_array_free (ret, TRUE);
+  g_ptr_array_unref (ret);
 }
 
 /**
@@ -1253,7 +1253,7 @@ gabble_media_channel_list_streams (TpSvcChannelTypeStreamedMedia *iface,
 
   tp_svc_channel_type_streamed_media_return_from_list_streams (context, ret);
   g_ptr_array_foreach (ret, (GFunc) g_value_array_free, NULL);
-  g_ptr_array_free (ret, TRUE);
+  g_ptr_array_unref (ret);
 }
 
 
@@ -1281,6 +1281,30 @@ _find_stream_by_id (GabbleMediaChannel *chan,
 
   g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
       "given stream id %u does not exist", stream_id);
+  return NULL;
+}
+
+static GabbleMediaStream *
+_find_stream_by_content (GabbleMediaChannel *chan,
+    GabbleJingleContent *content)
+{
+  GabbleMediaChannelPrivate *priv;
+  guint i;
+
+  g_assert (GABBLE_IS_MEDIA_CHANNEL (chan));
+
+  priv = chan->priv;
+
+  for (i = 0; i < priv->streams->len; i++)
+    {
+      GabbleMediaStream *stream = g_ptr_array_index (priv->streams, i);
+      GabbleJingleContent *c = GABBLE_JINGLE_CONTENT (
+          gabble_media_stream_get_content (stream));
+
+      if (content == c)
+        return stream;
+    }
+
   return NULL;
 }
 
@@ -1365,7 +1389,7 @@ gabble_media_channel_remove_streams (TpSvcChannelTypeStreamedMedia *iface,
     }
 
 OUT:
-  g_ptr_array_free (stream_objs, TRUE);
+  g_ptr_array_unref (stream_objs);
 
   if (error)
     {
@@ -1525,7 +1549,7 @@ pending_stream_request_maybe_satisfy (PendingStreamRequest *p,
 
               p->succeeded_cb (p->context, ret);
               g_ptr_array_foreach (ret, (GFunc) g_value_array_free, NULL);
-              g_ptr_array_free (ret, TRUE);
+              g_ptr_array_unref (ret);
               p->context = NULL;
               return TRUE;
             }
@@ -1773,7 +1797,7 @@ destroy_request (struct _delayed_request_streams_ctx *ctx,
       g_error_free (error);
     }
 
-  g_array_free (ctx->types, TRUE);
+  g_array_unref (ctx->types);
   g_slice_free (struct _delayed_request_streams_ctx, ctx);
 }
 
@@ -1871,7 +1895,7 @@ media_channel_request_streams (GabbleMediaChannel *self,
 
       DEBUG ("no streams to request");
       succeeded_cb (context, empty);
-      g_ptr_array_free (empty, TRUE);
+      g_ptr_array_unref (empty);
 
       return;
     }
@@ -1917,7 +1941,7 @@ media_channel_request_streams (GabbleMediaChannel *self,
       context);
   priv->pending_stream_requests = g_list_prepend (priv->pending_stream_requests,
       psr);
-  g_ptr_array_free (contents, TRUE);
+  g_ptr_array_unref (contents);
 
   /* signal acceptance */
   gabble_jingle_session_accept (priv->session);
@@ -2017,7 +2041,7 @@ gabble_media_channel_request_initial_streams (GabbleMediaChannel *chan,
   media_channel_request_streams (chan, priv->initial_peer, types,
       succeeded_cb, failed_cb, user_data);
 
-  g_array_free (types, TRUE);
+  g_array_unref (types);
 }
 
 static gboolean
@@ -2184,7 +2208,7 @@ static gboolean
 gabble_media_channel_remove_member (GObject *obj,
                                     TpHandle handle,
                                     const gchar *message,
-                                    guint reason,
+                                    TpChannelGroupChangeReason reason,
                                     GError **error)
 {
   GabbleMediaChannel *chan = GABBLE_MEDIA_CHANNEL (obj);
@@ -2206,15 +2230,34 @@ gabble_media_channel_remove_member (GObject *obj,
     }
   else
     {
-      /* Terminate can fail if the UI provides a reason that makes no sense,
-       * like Invited.
-       */
-      if (!gabble_jingle_session_terminate (priv->session, reason, message,
-              error))
+      JingleReason jingle_reason = JINGLE_REASON_UNKNOWN;
+
+      switch (reason)
         {
+        case TP_CHANNEL_GROUP_CHANGE_REASON_NONE:
+          jingle_reason = JINGLE_REASON_UNKNOWN;
+          break;
+        case TP_CHANNEL_GROUP_CHANGE_REASON_OFFLINE:
+          jingle_reason = JINGLE_REASON_GONE;
+          break;
+        case TP_CHANNEL_GROUP_CHANGE_REASON_BUSY:
+          jingle_reason = JINGLE_REASON_BUSY;
+          break;
+        case TP_CHANNEL_GROUP_CHANGE_REASON_ERROR:
+          jingle_reason = JINGLE_REASON_GENERAL_ERROR;
+          break;
+        case TP_CHANNEL_GROUP_CHANGE_REASON_NO_ANSWER:
+          jingle_reason = JINGLE_REASON_TIMEOUT;
+          break;
+        default:
+          g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+              "%u doesn't make sense as a reason to end a call", reason);
           g_object_unref (chan);
           return FALSE;
         }
+
+      gabble_jingle_session_terminate (priv->session, jingle_reason, message,
+          error);
     }
 
   /* Remove CanAdd if it was there for the deprecated anonymous channel
@@ -2239,10 +2282,91 @@ copy_stream_list (GabbleMediaChannel *channel)
   return gabble_g_ptr_array_copy (channel->priv->streams);
 }
 
+
+/* return TRUE when the jingle reason is reason enough to raise a
+ * StreamError */
+static gboolean
+extract_media_stream_error_from_jingle_reason (JingleReason jingle_reason,
+    TpMediaStreamError *stream_error)
+{
+  TpMediaStreamError _stream_error;
+
+  /* TODO: Make a better mapping with more distinction of possible errors */
+  switch (jingle_reason)
+    {
+    case JINGLE_REASON_CONNECTIVITY_ERROR:
+      _stream_error = TP_MEDIA_STREAM_ERROR_NETWORK_ERROR;
+      break;
+    case JINGLE_REASON_MEDIA_ERROR:
+      _stream_error = TP_MEDIA_STREAM_ERROR_MEDIA_ERROR;
+      break;
+    case JINGLE_REASON_FAILED_APPLICATION:
+      _stream_error = TP_MEDIA_STREAM_ERROR_CODEC_NEGOTIATION_FAILED;
+      break;
+    case JINGLE_REASON_GENERAL_ERROR:
+      _stream_error = TP_MEDIA_STREAM_ERROR_UNKNOWN;
+      break;
+    default:
+      {
+        if (stream_error != NULL)
+          *stream_error =  TP_MEDIA_STREAM_ERROR_UNKNOWN;
+
+        return FALSE;
+      }
+    }
+
+  if (stream_error != NULL)
+    *stream_error = _stream_error;
+
+  return TRUE;
+}
+
+static JingleReason
+media_stream_error_to_jingle_reason (TpMediaStreamError stream_error)
+{
+  switch (stream_error)
+    {
+    case TP_MEDIA_STREAM_ERROR_NETWORK_ERROR:
+      return JINGLE_REASON_CONNECTIVITY_ERROR;
+    case TP_MEDIA_STREAM_ERROR_MEDIA_ERROR:
+      return  JINGLE_REASON_MEDIA_ERROR;
+    case TP_MEDIA_STREAM_ERROR_CODEC_NEGOTIATION_FAILED:
+      return JINGLE_REASON_FAILED_APPLICATION;
+    default:
+      return JINGLE_REASON_GENERAL_ERROR;
+    }
+}
+
+static TpChannelGroupChangeReason
+jingle_reason_to_group_change_reason (JingleReason jingle_reason)
+{
+  switch (jingle_reason)
+    {
+    case JINGLE_REASON_BUSY:
+      return TP_CHANNEL_GROUP_CHANGE_REASON_BUSY;
+    case JINGLE_REASON_GONE:
+      return TP_CHANNEL_GROUP_CHANGE_REASON_OFFLINE;
+    case JINGLE_REASON_TIMEOUT:
+      return TP_CHANNEL_GROUP_CHANGE_REASON_NO_ANSWER;
+    case JINGLE_REASON_CONNECTIVITY_ERROR:
+    case JINGLE_REASON_FAILED_APPLICATION:
+    case JINGLE_REASON_FAILED_TRANSPORT:
+    case JINGLE_REASON_GENERAL_ERROR:
+    case JINGLE_REASON_MEDIA_ERROR:
+    case JINGLE_REASON_SECURITY_ERROR:
+    case JINGLE_REASON_INCOMPATIBLE_PARAMETERS:
+    case JINGLE_REASON_UNSUPPORTED_APPLICATIONS:
+    case JINGLE_REASON_UNSUPPORTED_TRANSPORTS:
+      return TP_CHANNEL_GROUP_CHANGE_REASON_ERROR;
+    default:
+      return TP_CHANNEL_GROUP_CHANGE_REASON_NONE;
+    }
+}
+
 static void
 session_terminated_cb (GabbleJingleSession *session,
                        gboolean local_terminator,
-                       TpChannelGroupChangeReason reason,
+                       JingleReason jingle_reason,
                        const gchar *text,
                        gpointer user_data)
 {
@@ -2273,7 +2397,8 @@ session_terminated_cb (GabbleJingleSession *session,
   tp_intset_add (set, peer);
 
   tp_group_mixin_change_members ((GObject *) channel,
-      text, NULL, set, NULL, NULL, terminator, reason);
+      text, NULL, set, NULL, NULL, terminator,
+      jingle_reason_to_group_change_reason (jingle_reason));
 
   tp_intset_destroy (set);
 
@@ -2289,13 +2414,33 @@ session_terminated_cb (GabbleJingleSession *session,
 
   {
     GPtrArray *tmp = copy_stream_list (channel);
+    guint i;
+    TpMediaStreamError stream_error = TP_MEDIA_STREAM_ERROR_UNKNOWN;
+    gboolean is_error = extract_media_stream_error_from_jingle_reason (
+        jingle_reason, &stream_error);
 
-    g_ptr_array_foreach (tmp, (GFunc) gabble_media_stream_close, NULL);
+    for (i = 0; i < tmp->len; i++)
+      {
+        GabbleMediaStream *stream = tmp->pdata[i];
+
+        if (is_error)
+          {
+            guint id;
+
+            DEBUG ("emitting stream error");
+
+            g_object_get (stream, "id", &id, NULL);
+            tp_svc_channel_type_streamed_media_emit_stream_error (channel, id,
+                stream_error, text);
+          }
+
+        gabble_media_stream_close (stream);
+      }
 
     /* All the streams should have closed. */
     g_assert (priv->streams->len == 0);
 
-    g_ptr_array_free (tmp, TRUE);
+    g_ptr_array_unref (tmp);
   }
 
   /* remove the session */
@@ -2430,8 +2575,13 @@ stream_error_cb (GabbleMediaStream *stream,
        * so we can dispose of the stream)
        */
       c = gabble_media_stream_get_content (stream);
-      gabble_jingle_session_remove_content (priv->session,
-          (GabbleJingleContent *) c);
+
+      if (errno == TP_MEDIA_STREAM_ERROR_CODEC_NEGOTIATION_FAILED)
+        gabble_jingle_content_reject ((GabbleJingleContent *) c,
+            JINGLE_REASON_FAILED_APPLICATION);
+      else
+        gabble_jingle_session_remove_content (priv->session,
+            (GabbleJingleContent *) c);
     }
   else
     {
@@ -2442,7 +2592,7 @@ stream_error_cb (GabbleMediaStream *stream,
        */
       DEBUG ("Terminating call in response to stream error");
       gabble_jingle_session_terminate (priv->session,
-          TP_CHANNEL_GROUP_CHANGE_REASON_ERROR, message, NULL);
+          media_stream_error_to_jingle_reason (errno), message, NULL);
     }
 
   g_list_free (contents);
@@ -2759,6 +2909,30 @@ create_stream_from_content (GabbleMediaChannel *self,
 }
 
 static void
+session_content_rejected_cb (GabbleJingleSession *session,
+    GabbleJingleContent *c, JingleReason reason, const gchar *message,
+    gpointer user_data)
+{
+  GabbleMediaChannel *chan = GABBLE_MEDIA_CHANNEL (user_data);
+  GabbleMediaStream *stream = _find_stream_by_content (chan, c);
+  TpMediaStreamError stream_error = TP_MEDIA_STREAM_ERROR_UNKNOWN;
+  guint id = 0;
+
+  DEBUG (" ");
+
+  g_return_if_fail (stream != NULL);
+
+  g_object_get (stream,
+      "id", &id,
+      NULL);
+
+  extract_media_stream_error_from_jingle_reason (reason, &stream_error);
+
+  tp_svc_channel_type_streamed_media_emit_stream_error (chan, id, stream_error,
+      message);
+}
+
+static void
 session_new_content_cb (GabbleJingleSession *session,
     GabbleJingleContent *c, gpointer user_data)
 {
@@ -2896,7 +3070,7 @@ gabble_media_channel_error (TpSvcMediaSessionHandler *iface,
       gabble_media_stream_error (stream, errno, message, NULL);
     }
 
-  g_ptr_array_free (tmp, TRUE);
+  g_ptr_array_unref (tmp);
 
   tp_svc_media_session_handler_return_from_error (context);
 }

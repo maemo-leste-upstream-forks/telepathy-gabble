@@ -6,12 +6,7 @@ import ns
 import constants as cs
 
 def test(q, bus, conn, stream, should_decloak=False):
-    conn.Connect()
-    _, event = q.expect_many(
-        EventPattern('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED]),
-        EventPattern('stream-iq', query_ns=ns.ROSTER),
-        )
+    event = q.expect('stream-iq', query_ns=ns.ROSTER)
 
     event.stanza['type'] = 'result'
     stream.send(event.stanza)
@@ -70,6 +65,7 @@ def worker(q, bus, conn, stream, should_decloak):
     q.unforbid_events(forbidden)
 
 if __name__ == '__main__':
-    exec_test(test)
+    exec_test(test,
+        params={cs.CONN_IFACE_GABBLE_DECLOAK + '.DecloakAutomatically': False})
     exec_test(lambda q, b, c, s: test(q, b, c, s, should_decloak=True),
         params={cs.CONN_IFACE_GABBLE_DECLOAK + '.DecloakAutomatically': True})

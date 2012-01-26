@@ -12,18 +12,11 @@ icaps_attr  = cs.CONN_IFACE_CAPS + "/caps"
 basic_caps = [(2, cs.CHANNEL_TYPE_TEXT, 3, 0)]
 
 def test(q, bus, conn, stream):
-    conn.Connect()
-    q.expect('dbus-signal', signal='StatusChanged',
-            args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
-
     presence = make_presence('bob@foo.com/Foo', status='hello')
     stream.send(presence)
 
-    q.expect_many(
-        EventPattern('dbus-signal', signal='PresenceUpdate',
-           args=[{2L: (0L, {u'available': {'message': 'hello'}})}]),
-        EventPattern('dbus-signal', signal='PresencesChanged',
-           args=[{2L: (2, u'available', 'hello')}]))
+    q.expect('dbus-signal', signal='PresencesChanged',
+           args=[{2L: (2, u'available', 'hello')}])
 
     # FIXME: throughout this test, Bob's handle is assumed to be 2.
 

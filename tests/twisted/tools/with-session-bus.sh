@@ -44,6 +44,10 @@ while test "z$1" != "z--"; do
     dbus_daemon_args="$dbus_daemon_args $1"
     shift
     ;;
+  --also-for-system)
+    with_system_bus=1
+    shift
+    ;;
   *)
     usage
     ;;
@@ -59,7 +63,9 @@ cleanup ()
 {
   pid=`head -n1 $me-$$.pid`
   if test -n "$pid" ; then
-    echo "Killing temporary bus daemon: $pid" >&2
+    if [ -n "$CHECK_TWISTED_VERBOSE" ] || [ -n "$VERBOSE_TESTS" ]; then
+      echo "Killing temporary bus daemon: $pid" >&2
+    fi
     kill -INT "$pid"
   fi
   rm -f $me-$$.address
@@ -69,17 +75,29 @@ cleanup ()
 trap cleanup INT HUP TERM
 dbus-daemon $dbus_daemon_args
 
-{ echo -n "Temporary bus daemon is "; cat $me-$$.address; } >&2
-{ echo -n "Temporary bus daemon PID is "; head -n1 $me-$$.pid; } >&2
+if [ -n "$CHECK_TWISTED_VERBOSE" ] || [ -n "$VERBOSE_TESTS" ]; then
+  { echo -n "Temporary bus daemon is "; cat $me-$$.address; } >&2
+  { echo -n "Temporary bus daemon PID is "; head -n1 $me-$$.pid; } >&2
+fi
 
 e=0
 DBUS_SESSION_BUS_ADDRESS="`cat $me-$$.address`"
 export DBUS_SESSION_BUS_ADDRESS
 
+if [ -n "$with_system_bus" ] ; then
+  DBUS_SYSTEM_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS"
+  export DBUS_SYSTEM_BUS_ADDRESS
+fi
+
 if [ -n "$WITH_SESSION_BUS_FORK_DBUS_MONITOR" ] ; then
-  echo -n "Forking dbus-monitor $WITH_SESSION_BUS_FORK_DBUS_MONITOR_OPT" >&2
+  echo "Forking dbus-monitor $WITH_SESSION_BUS_FORK_DBUS_MONITOR_OPT" >&2
   dbus-monitor $WITH_SESSION_BUS_FORK_DBUS_MONITOR_OPT \
         > $me-$$.dbus-monitor-logs 2>&1 &
+fi
+
+if [ -n "$GABBLE_TEST_BUSTLE" ]; then
+  echo "Forking bustle-dbus-monitor" >&2
+  bustle-dbus-monitor > tools/$me-$$.bustle-logs 2>&1 &
 fi
 
 "$@" || e=$?

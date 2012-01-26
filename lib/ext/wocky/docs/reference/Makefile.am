@@ -18,11 +18,11 @@ DOC_MODULE= wocky
 # The top-level SGML file. You can change this if you want to.
 DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 
-# The directory containing the source code. Relative to $(srcdir).
-# gtk-doc will search all .c & .h files beneath here for inline comments
-# documenting the functions and macros.
-# e.g. DOC_SOURCE_DIR=../../../gtk
-DOC_SOURCE_DIR=../../wocky
+# Directories containing the source code, relative to $(srcdir).
+# gtk-doc will search all .c and .h files beneath these paths
+# for inline comments documenting functions and macros.
+# e.g. DOC_SOURCE_DIR=../../../gtk ../../../gdk
+DOC_SOURCE_DIR=$(abs_top_srcdir)/wocky $(abs_top_builddir)/wocky
 
 # Extra options to pass to gtkdoc-scangobj. Not normally needed.
 SCANGOBJ_OPTIONS=
@@ -32,7 +32,7 @@ SCANGOBJ_OPTIONS=
 SCAN_OPTIONS=--rebuild-types --rebuild-sections
 
 # Extra options to supply to gtkdoc-mkdb.
-# e.g. MKDB_OPTIONS=--sgml-mode --output-format=xml
+# e.g. MKDB_OPTIONS=--xml-mode --output-format=xml
 MKDB_OPTIONS=--sgml-mode --output-format=xml
 
 # Extra options to supply to gtkdoc-mktmpl
@@ -83,8 +83,8 @@ expand_content_files=
 # signals and properties.
 # e.g. GTKDOC_CFLAGS=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
-GTKDOC_CFLAGS=-I$(top_srcdir) -I$(top_builddir) @GLIB_CFLAGS@
-GTKDOC_LIBS= @GLIB_LIBS@ $(top_builddir)/wocky/libwocky.la
+GTKDOC_CFLAGS=-I$(top_srcdir) -I$(top_builddir) @GLIB_CFLAGS@ @SQLITE_CFLAGS@
+GTKDOC_LIBS= @GLIB_LIBS@ @SQLITE_LIBS@ $(top_builddir)/wocky/libwocky.la
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

@@ -13,15 +13,9 @@ import constants as cs
 import ns
 
 def run_test(q, bus, conn, stream):
-    conn.Connect()
+    initial_presence = q.expect('stream-presence')
 
-    _, initial_presence = q.expect_many(
-            EventPattern('dbus-signal', signal='StatusChanged',
-                args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED]),
-            EventPattern('stream-presence'),
-            )
-
-    _, namespaces = disco_caps(q, stream, initial_presence)
+    _, namespaces, _ = disco_caps(q, stream, initial_presence)
 
     # For some reason, until we advertise any capabilities, these caps turn
     # up in our presence

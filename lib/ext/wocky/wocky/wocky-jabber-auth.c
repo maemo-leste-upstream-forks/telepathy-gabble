@@ -545,8 +545,6 @@ jabber_auth_fields (GObject *source,
     {
       WockyNode *node = NULL;
       WockyAuthError code;
-      gboolean passwd;
-      gboolean digest;
 
       case WOCKY_STANZA_SUB_TYPE_ERROR:
         wocky_stanza_extract_errors (fields, NULL, &error, NULL, NULL);
@@ -563,8 +561,6 @@ jabber_auth_fields (GObject *source,
         break;
 
       case WOCKY_STANZA_SUB_TYPE_RESULT:
-        passwd = FALSE;
-        digest = FALSE;
         node = wocky_stanza_get_top_node (fields);
         node = wocky_node_get_child_ns (node, "query",
             WOCKY_JABBER_NS_AUTH);
@@ -575,10 +571,10 @@ jabber_auth_fields (GObject *source,
             GSList *mechanisms = NULL;
 
             if (wocky_node_get_child (node, "password") != NULL)
-              mechanisms = g_slist_append (mechanisms, MECH_JABBER_PASSWORD);
+              mechanisms = g_slist_append (mechanisms, WOCKY_AUTH_MECH_JABBER_PASSWORD);
 
             if (wocky_node_get_child (node, "digest") != NULL)
-              mechanisms = g_slist_append (mechanisms, MECH_JABBER_DIGEST);
+              mechanisms = g_slist_append (mechanisms, WOCKY_AUTH_MECH_JABBER_DIGEST);
 
             wocky_auth_registry_start_auth_async (priv->auth_registry,
                 mechanisms, priv->allow_plain, priv->is_secure,
@@ -651,6 +647,11 @@ wocky_jabber_auth_authenticate_async (WockyJabberAuth *self,
       NULL, NULL,
       '@', "id", id,
       '(', "query", ':', WOCKY_JABBER_NS_AUTH,
+      /* This is a workaround for
+       * <https://bugs.freedesktop.org/show_bug.cgi?id=24013>: while
+       * <http://xmpp.org/extensions/xep-0078.html#usecases> doesn't require
+       * us to include a username, it seems to be required by jabberd 1.4.
+       */
       '(', "username",
       '$', priv->username,
       ')',

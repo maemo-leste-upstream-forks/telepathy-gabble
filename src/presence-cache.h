@@ -65,8 +65,14 @@ struct _GabbleCapabilityInfo
   /* array of GabbleDiscoIdentity or NULL */
   GPtrArray *identities;
 
+  /* array of WockyDataForm or NULL */
+  GPtrArray *data_forms;
+
   TpIntSet *guys;
   guint trust;
+
+  /* bitfield of GabbleClientType flags */
+  guint client_types;
 
   /* TRUE if this cache entry is one of our own, so between caps and
    * per_channel_manager_caps it holds the complete set of features for the
@@ -104,7 +110,8 @@ void gabble_presence_cache_maybe_remove (GabblePresenceCache *cache,
 void gabble_presence_cache_add_own_caps (GabblePresenceCache *cache,
     const gchar *ver,
     const GabbleCapabilitySet *cap_set,
-    const GPtrArray *identities);
+    const GPtrArray *identities,
+    GPtrArray *data_forms);
 const GabbleCapabilityInfo *gabble_presence_cache_peek_own_caps (
     GabblePresenceCache *cache,
     const gchar *ver);
@@ -136,6 +143,9 @@ GHashTable* gabble_presence_cache_get_location (GabblePresenceCache *cache,
 
 gboolean gabble_presence_cache_disco_in_progress (GabblePresenceCache *cache,
     TpHandle handle, const gchar *resource);
+
+TpHandle gabble_presence_cache_get_handle (GabblePresenceCache *cache,
+    GabblePresence *presence);
 
 G_END_DECLS
 

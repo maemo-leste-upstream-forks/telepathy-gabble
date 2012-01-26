@@ -28,6 +28,7 @@
 
 #include "wocky-ping.h"
 
+#include "wocky-heartbeat-source.h"
 #include "wocky-namespaces.h"
 #include "wocky-stanza.h"
 
@@ -46,19 +47,17 @@ enum
 /* private structure */
 struct _WockyPingPrivate
 {
-  WockyPorter *porter;
+  WockyC2SPorter *porter;
 
   guint ping_interval;
+  GSource *heartbeat;
 
-  gulong porter_sending_id;
   gulong ping_iq_cb;
-  gulong ping_timeout_id;
 
   gboolean dispose_has_run;
 };
 
-static void reset_ping_timeout (WockyPing *self);
-static void porter_sending_cb (WockyPorter *porter, WockyPing *self);
+static void send_ping (WockyPing *self);
 static gboolean ping_iq_cb (WockyPorter *porter, WockyStanza *stanza,
     gpointer data);
 
@@ -85,7 +84,12 @@ wocky_ping_set_property (GObject *object,
       break;
     case PROP_PING_INTERVAL:
       priv->ping_interval = g_value_get_uint (value);
-      reset_ping_timeout (self);
+      DEBUG ("updated ping interval to %u", priv->ping_interval);
+
+      if (priv->heartbeat != NULL)
+        wocky_heartbeat_source_update_interval (priv->heartbeat,
+            priv->ping_interval);
+
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -124,16 +128,18 @@ wocky_ping_constructed (GObject *object)
 
   g_assert (priv->porter != NULL);
 
-  priv->porter_sending_id = g_signal_connect (priv->porter, "sending",
-    G_CALLBACK (porter_sending_cb), self);
-  g_assert (priv->porter_sending_id != 0);
-
-  priv->ping_iq_cb = wocky_porter_register_handler (priv->porter,
-      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET, NULL,
+  priv->ping_iq_cb = wocky_porter_register_handler_from_anyone (
+      WOCKY_PORTER (priv->porter),
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
       WOCKY_PORTER_HANDLER_PRIORITY_NORMAL, ping_iq_cb, self,
       '(', "ping",
           ':', WOCKY_XMPP_NS_PING,
       ')', NULL);
+
+  priv->heartbeat = wocky_heartbeat_source_new (priv->ping_interval);
+  g_source_set_callback (priv->heartbeat, (GSourceFunc) send_ping, self,
+      NULL);
+  g_source_attach (priv->heartbeat, NULL);
 }
 
 static void
@@ -147,20 +153,19 @@ wocky_ping_dispose (GObject *object)
 
   priv->dispose_has_run = TRUE;
 
-  g_signal_handler_disconnect (priv->porter, priv->porter_sending_id);
-  priv->porter_sending_id = 0;
-
   if (priv->ping_iq_cb != 0)
     {
-      wocky_porter_unregister_handler (priv->porter, priv->ping_iq_cb);
+      wocky_porter_unregister_handler (WOCKY_PORTER (priv->porter),
+          priv->ping_iq_cb);
       priv->ping_iq_cb = 0;
     }
 
   g_object_unref (priv->porter);
   priv->porter = NULL;
 
-  priv->ping_interval = 0;
-  reset_ping_timeout (self);
+  g_source_destroy (self->priv->heartbeat);
+  g_source_unref (self->priv->heartbeat);
+  self->priv->heartbeat = NULL;
 
   if (G_OBJECT_CLASS (wocky_ping_parent_class)->dispose)
     G_OBJECT_CLASS (wocky_ping_parent_class)->dispose (object);
@@ -180,9 +185,9 @@ wocky_ping_class_init (WockyPingClass *wocky_ping_class)
   object_class->get_property = wocky_ping_get_property;
   object_class->dispose = wocky_ping_dispose;
 
-  spec = g_param_spec_object ("porter", "Wocky porter",
+  spec = g_param_spec_object ("porter", "Wocky C2S porter",
       "the wocky porter to set up keepalive pings on",
-      WOCKY_TYPE_PORTER,
+      WOCKY_TYPE_C2S_PORTER,
       G_PARAM_READWRITE |
       G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (object_class, PROP_PORTER, spec);
@@ -190,15 +195,15 @@ wocky_ping_class_init (WockyPingClass *wocky_ping_class)
   spec = g_param_spec_uint ("ping-interval", "Ping interval",
       "keepalive ping interval in seconds, or 0 to disable",
       0, G_MAXUINT, 0,
-      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (object_class, PROP_PING_INTERVAL, spec);
 
 }
 
 WockyPing *
-wocky_ping_new (WockyPorter *porter, guint interval)
+wocky_ping_new (WockyC2SPorter *porter, guint interval)
 {
-  g_return_val_if_fail (WOCKY_IS_PORTER (porter), NULL);
+  g_return_val_if_fail (WOCKY_IS_C2S_PORTER (porter), NULL);
 
   return g_object_new (WOCKY_TYPE_PING,
       "porter", porter,
@@ -207,75 +212,26 @@ wocky_ping_new (WockyPorter *porter, guint interval)
 }
 
 static void
-send_xmpp_ping (WockyPing *self)
+send_ping (WockyPing *self)
 {
-  WockyPingPrivate *priv = self->priv;
-  WockyStanza *iq;
+  g_return_if_fail (WOCKY_IS_PING (self));
 
-  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
-      WOCKY_STANZA_SUB_TYPE_GET, NULL, NULL,
-      '(', "ping",
-          ':', WOCKY_XMPP_NS_PING,
-      ')', NULL);
-
-  wocky_porter_send_iq_async (priv->porter, iq, NULL, NULL, NULL);
-  g_object_unref (iq);
-}
-
-static gboolean
-ping_timeout_cb (gpointer data)
-{
-  WockyPing *self = WOCKY_PING (data);
-  WockyPingPrivate *priv = self->priv;
-
-  DEBUG ("sending ping after %d seconds", priv->ping_interval);
-
-  /* Sending the ping stanza will call back to us to reset
-   * the timeout, so no need to keep this one running. */
-  priv->ping_timeout_id = 0;
-  send_xmpp_ping (self);
-  return FALSE;
-}
-
-static void
-porter_sending_cb (WockyPorter *porter, WockyPing *ping)
-{
-  g_assert (WOCKY_IS_PING (ping));
-
-  reset_ping_timeout (ping);
-}
-
-static void
-reset_ping_timeout (WockyPing *self)
-{
-  WockyPingPrivate *priv = self->priv;
-
-  if (priv->ping_timeout_id != 0)
-    {
-      g_source_remove (priv->ping_timeout_id);
-      priv->ping_timeout_id = 0;
-    }
-
-  if (priv->ping_interval > 0)
-    {
-      priv->ping_timeout_id = g_timeout_add_seconds (priv->ping_interval,
-        ping_timeout_cb, self);
-    }
+  /* We send a whitespace ping and not a XMPP one to save bandwidth.
+   * As much as it can sound a stupidly small gain, it can be useful when
+   * sending pings on an idle cellular connection; very small packets can
+   * be sent using a low power 3G channel. */
+  DEBUG ("pinging");
+  wocky_c2s_porter_send_whitespace_ping_async (self->priv->porter, NULL,
+      NULL, NULL);
 }
 
 static gboolean
 ping_iq_cb (WockyPorter *porter, WockyStanza *stanza, gpointer data)
 {
-  WockyStanza *reply;
+  const gchar *from = wocky_stanza_get_from (stanza);
 
-  DEBUG ("replying to ping request");
-
-  /* As a side-effect of sending pong, our keepalive timer will be
-   * reset, so we don't have to do it manually. */
-  reply = wocky_stanza_build_iq_result (stanza, NULL);
-  wocky_porter_send (porter, reply);
-  g_object_unref (reply);
-
+  DEBUG ("replying to ping from %s", from ? from : "<null>");
+  wocky_porter_acknowledge_iq (porter, stanza, NULL);
   return TRUE;
 }
 

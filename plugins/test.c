@@ -1,12 +1,17 @@
 #include "test.h"
+#include "config.h"
 
 #include <stdio.h>
 
 #include <telepathy-glib/telepathy-glib.h>
 
+#include <wocky/wocky-disco-identity.h>
+#include <wocky/wocky-data-form.h>
+
 #include "extensions/extensions.h"
 
 #include <gabble/plugin.h>
+#include <gabble/caps-channel-manager.h>
 
 #define DEBUG(msg, ...) \
   g_debug ("%s: " msg, G_STRFUNC, ##__VA_ARGS__)
@@ -122,6 +127,22 @@ test_plugin_create_sidecar (
   g_object_unref (result);
 }
 
+static GPtrArray *
+test_plugin_create_channel_managers (GabblePlugin *plugin,
+    TpBaseConnection *connection)
+{
+  GPtrArray *ret = g_ptr_array_new ();
+
+  DEBUG ("plugin %p on connection %p", plugin, connection);
+
+  g_ptr_array_add (ret,
+      g_object_new (TEST_TYPE_CHANNEL_MANAGER,
+          "connection", connection,
+          NULL));
+
+  return ret;
+}
+
 static TpPresenceStatusSpec test_presences[] = {
   { "testbusy", TP_CONNECTION_PRESENCE_TYPE_BUSY, TRUE, NULL, NULL, NULL },
   { "testaway", TP_CONNECTION_PRESENCE_TYPE_AWAY, FALSE, NULL, NULL, NULL },
@@ -141,8 +162,10 @@ plugin_iface_init (
   GabblePluginInterface *iface = g_iface;
 
   iface->name = "Sidecar test plugin";
+  iface->version = PACKAGE_VERSION;
   iface->sidecar_interfaces = sidecar_interfaces;
   iface->create_sidecar = test_plugin_create_sidecar;
+  iface->create_channel_managers = test_plugin_create_channel_managers;
 
   iface->presence_statuses = test_presences;
   iface->privacy_list_map = privacy_list_map;
@@ -302,7 +325,7 @@ test_sidecar_iq_set_property (
               const gchar *applications[] = { "com.example.test1",
                   "com.example.test2", NULL };
               GPtrArray *identities;
-              GabbleDiscoIdentity *identity;
+              WockyDiscoIdentity *identity;
               gchar *hash;
               guint i;
 
@@ -310,8 +333,8 @@ test_sidecar_iq_set_property (
               for (i = 0; applications[i] != NULL; i++)
                 gabble_capability_set_add (features, applications[i]);
 
-              identities = gabble_disco_identity_array_new ();
-              identity = gabble_disco_identity_new ("test", "app-list",
+              identities = wocky_disco_identity_array_new ();
+              identity = wocky_disco_identity_new ("test", "app-list",
                   NULL, "Test");
               g_ptr_array_add (identities, identity);
 
@@ -320,7 +343,7 @@ test_sidecar_iq_set_property (
                   features, identities);
 
               g_free (hash);
-              gabble_disco_identity_array_free (identities);
+              wocky_disco_identity_array_free (identities);
               gabble_capability_set_free (features);
             }
         }
@@ -459,4 +482,201 @@ async_initable_iface_init (
 
   iface->init_async = sidecar_iq_init_async;
   iface->init_finish = sidecar_iq_init_finish;
+}
+
+/***********************************
+ * TestChannelManager implementation *
+ ***********************************/
+static void channel_manager_iface_init (gpointer, gpointer);
+static void caps_channel_manager_iface_init (gpointer g_iface,
+    gpointer iface_data);
+
+G_DEFINE_TYPE_WITH_CODE (TestChannelManager, test_channel_manager,
+    G_TYPE_OBJECT,
+    G_IMPLEMENT_INTERFACE (TP_TYPE_CHANNEL_MANAGER,
+        channel_manager_iface_init)
+    G_IMPLEMENT_INTERFACE (GABBLE_TYPE_CAPS_CHANNEL_MANAGER,
+        caps_channel_manager_iface_init));
+
+static void
+test_channel_manager_init (TestChannelManager *self)
+{
+}
+
+static void
+test_channel_manager_set_property (
+    GObject *object,
+    guint property_id,
+    const GValue *value,
+    GParamSpec *pspec)
+{
+  TestChannelManager *self = TEST_CHANNEL_MANAGER (object);
+
+  switch (property_id)
+    {
+      case PROP_CONNECTION:
+        /* Not reffing this: the connection owns all channel managers, so it
+         * must outlive us. Taking a reference leads to a cycle.
+         */
+        self->connection = g_value_get_object (value);
+        break;
+      default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+    }
+}
+
+static void
+test_channel_manager_get_property (
+    GObject *object,
+    guint property_id,
+    GValue *value,
+    GParamSpec *pspec)
+{
+  TestChannelManager *self = TEST_CHANNEL_MANAGER (object);
+
+  switch (property_id)
+    {
+      case PROP_CONNECTION:
+        g_value_set_object (value, self->connection);
+        break;
+      default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+    }
+}
+
+static void
+test_channel_manager_porter_available_cb (GabbleConnection *connection,
+    WockyPorter *porter,
+    gpointer user_data)
+{
+  DEBUG ("now we have a porter: %p", porter);
+  /* so now we can call things like wocky_porter_register_handler_*
+   * and get some stanzas. */
+}
+
+static void
+test_channel_manager_constructed (GObject *object)
+{
+  TestChannelManager *self = TEST_CHANNEL_MANAGER (object);
+
+  if (G_OBJECT_CLASS (test_channel_manager_parent_class)->constructed != NULL)
+    G_OBJECT_CLASS (test_channel_manager_parent_class)->constructed (object);
+
+  tp_g_signal_connect_object (self->connection, "porter-available",
+      G_CALLBACK (test_channel_manager_porter_available_cb),
+      self, 0);
+}
+
+static void
+test_channel_manager_class_init (TestChannelManagerClass *klass)
+{
+  GObjectClass *oclass = G_OBJECT_CLASS (klass);
+
+  oclass->set_property = test_channel_manager_set_property;
+  oclass->get_property = test_channel_manager_get_property;
+  oclass->constructed = test_channel_manager_constructed;
+
+  g_object_class_install_property (oclass, PROP_CONNECTION,
+      g_param_spec_object ("connection", "Gabble Connection",
+          "Gabble connection",
+          GABBLE_TYPE_CONNECTION,
+          G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+}
+
+static void
+test_channel_manager_type_foreach_channel_class (GType type,
+    TpChannelManagerTypeChannelClassFunc func,
+    gpointer user_data)
+{
+  GHashTable *table = tp_asv_new (
+      TP_PROP_CHANNEL_CHANNEL_TYPE, G_TYPE_STRING, "com.jonnylamb.lolbags",
+      TP_PROP_CHANNEL_TARGET_HANDLE_TYPE, G_TYPE_UINT, TP_HANDLE_TYPE_NONE,
+      NULL);
+  const gchar * const chock_a_block_full_of_strings[] = {
+      "com.jonnylamb.omg", "com.jonnylamb.brokethebuild", NULL };
+
+  func (type, table, chock_a_block_full_of_strings, user_data);
+
+  g_hash_table_unref (table);
+}
+
+static void
+test_channel_manager_represent_client (
+    GabbleCapsChannelManager *manager,
+    const gchar *client_name,
+    const GPtrArray *filters,
+    const gchar * const *cap_tokens,
+    GabbleCapabilitySet *cap_set,
+    GPtrArray *data_forms)
+{
+  WockyStanza *stanza;
+  WockyDataForm *form;
+
+  if (tp_strdiff (client_name, "dataformtest"))
+    return;
+
+  stanza = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_NONE, NULL, "badger",
+      '(', "x",
+        ':', "jabber:x:data",
+        '@', "type", "result",
+        '(', "field",
+          '@', "var", "FORM_TYPE",
+          '@', "type", "hidden",
+          '(', "value", '$', "gabble:test:channel:manager:data:form", ')',
+        ')',
+        '(', "field",
+          '@', "var", "animal",
+          '(', "value", '$', "badger", ')',
+          '(', "value", '$', "snake", ')',
+          '(', "value", '$', "weasel", ')',
+        ')',
+        '(', "field",
+          '@', "var", "cheese",
+          '(', "value", '$', "omgnothorriblecheese", ')',
+        ')',
+        '(', "field",
+          '@', "var", "favourite_crane",
+          '(', "value", '$', "a tall one", ')',
+          '(', "value", '$', "a short one", ')',
+        ')',
+        '(', "field",
+          '@', "var", "running_out_of",
+          '(', "value", '$', "ideas", ')',
+          '(', "value", '$', "cake", ')',
+        ')',
+      ')',
+      NULL);
+
+  form = wocky_data_form_new_from_node (
+      wocky_node_get_first_child (wocky_stanza_get_top_node (stanza)),
+      NULL);
+
+  g_ptr_array_add (data_forms, form);
+
+  g_object_unref (stanza);
+}
+
+static void
+channel_manager_iface_init (gpointer g_iface,
+    gpointer iface_data)
+{
+  TpChannelManagerIface *iface = g_iface;
+
+  iface->type_foreach_channel_class = test_channel_manager_type_foreach_channel_class;
+
+  /* not requestable. */
+  iface->ensure_channel = NULL;
+  iface->create_channel = NULL;
+  iface->request_channel = NULL;
+  iface->foreach_channel_class = NULL;
+}
+
+static void
+caps_channel_manager_iface_init (gpointer g_iface,
+    gpointer iface_data)
+{
+  GabbleCapsChannelManagerInterface *iface = g_iface;
+
+  iface->represent_client = test_channel_manager_represent_client;
 }
