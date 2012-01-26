@@ -1,3 +1,557 @@
+commit 7693b5d8176a6af8c1ce937d228049363c40d09f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 13:14:07 +0000
+
+    jingle/outgoing-basics: disregard MembersChangedDetailed flag
+    
+    In 0.15, 65c8b8f makes this test always expect the
+    Members_Changed_Detailed flag to be present in the channel's group
+    flags. But 0.14 doesn't depend on a new enough telepathy-glib to be sure
+    of that; so here we just mask that flag.
+
+commit 266d8346b0b195a9c924cdd3ba1ba3295c9eb8ea
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 09:50:04 +0000
+
+    Version 0.14.1
+
+commit bb9ea185579d089ca87234a27e7ed971640a5da4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 09:49:55 +0000
+
+    NEWS for 0.14.1
+
+commit 4452a4c807b3fa6ad0b37342fc35d1f1049f101c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-11-22 17:26:17 +0000
+
+    Fix missing capabilities.h and caps-channel-manager.h
+    
+    The problem was introduced by this commit:
+    
+    |commit 587da15932d178ad289e81b039dcabb4e90984c5
+    |Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+    |Date:   Thu Sep 1 14:19:52 2011 +0100
+    |
+    |    gabble: add capabilities.h and caps-channel-manager.h as public API
+    |
+    |    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 566c0f72fe54d44752c3704537e42c3e3640488c
+Merge: ebcb135 7524ce7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-15 15:34:27 +0000
+
+    Merge branch 'telepathy-gabble-0.12' into telepathy-gabble-0.14
+
+commit 7524ce77ef3989418d2e8b0a2af47e472c7c982d
+Merge: 9cf653e 6cb2b5d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-15 15:34:11 +0000
+
+    Merge branch 'local-pending-flicker2' into telepathy-gabble-0.12
+
+commit 6cb2b5d0f9e4a164537e3861f787e603d02bb8e4
+Author: Cosimo Alfarano <cosimo.alfarano@collabora.com>
+Date:   2011-11-02 13:24:09 +0000
+
+    add case for "cancel subscription" to test_local_pending
+
+commit 31c2cd55912c72c82cba28202f220a80c8b4faca
+Author: Cosimo Alfarano <cosimo.alfarano@collabora.com>
+Date:   2011-11-02 13:20:15 +0000
+
+    expect MembersChanged AND ContactsChanged on sub-request
+    
+    We should explicitly expect the relevant state transition on the publish
+    channel; and when forbidding events, we just forbid them from occurring
+    on the publish channel.
+    
+    (fix by Will Thompson, thanks Will)
+
+commit 284779859a67e2dfceb4d9930df81e452d5a4b3a
+Author: Cosimo Alfarano <cosimo.alfarano@collabora.com>
+Date:   2011-11-02 11:39:46 +0000
+
+    fix comment: Alice is just requesting subscription
+
+commit 273654bfb07e5ff593b162dd455f739f697b71b8
+Author: Cosimo Alfarano <cosimo.alfarano@collabora.com>
+Date:   2011-11-02 11:39:21 +0000
+
+    Remove useless symbol in test_local_pending
+
+commit 8fcf944c1afbcd98a5cbf582e33d88d877a6980f
+Author: Marco Barisione <marco@barisione.org>
+Date:   2011-08-31 17:31:24 +0100
+
+    Roster: don't hide local pending contacts from stored
+
+commit ebcb1350c3b316f8fe510caacacf0b2a59b95458
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-10 16:40:09 +0000
+
+    conn-olpc: handle activities with NULL ids.
+    
+    Other places in the code seem to handle GabbleOlpcActivity.id being
+    NULL; and <https://bugs.freedesktop.org/show_bug.cgi?id=32050> is a
+    crash on this strcmp. There are no logs, and the first argument to
+    strcmp is not on record, so this suggests to me that this might be the
+    cause!
+
+commit 5677e158d6518e53bc06c131e3b2c8b9c779a74a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-11-09 17:46:04 +0000
+
+    Remove double definition
+    
+    gabbletestsdir is defined in configure.ac
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=42679
+
+commit bdf5c1535079d7f69e8b0d50def2bf0acd2a7d1a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-09 08:20:31 +0000
+
+    connection: fix typo when indexing pointer array using wrong counter
+    
+    D'oh!
+    
+    Fixes: fd.o#42706
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit ed197893f4e303276480649330b9c362c60f6442
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-07 20:34:04 +0000
+
+    Nano-version bump to 0.14.0.1
+
+commit 2c134e18d24d1daebba6963f73c1bff9b960b46c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-07 19:59:19 +0000
+
+    Version 0.14.0
+
+commit 152c12a2e393e6c135a975df847f55990fc8d0f5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-07 19:58:40 +0000
+
+    Hey, let's call this 0.14.0
+
+commit 0f86ad63a641a780b0e812725f7a7bd24d57a467
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-07 19:20:28 +0000
+
+    NEWS for 0.13.8
+
+commit df3882d34528ccb320835fafbad74034a589dc64
+Merge: 6ef3ca9 6895340
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-07 17:46:04 +0000
+
+    Merge branch 'facebook-own-message'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 6895340badaff9f97683230848ae8e0f9f6f99d8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-04 08:58:45 +0000
+
+    ImFactory: handle Facebook's own-message extension
+    
+    Facebook's XMPP server sends us IQs containing messages which we send to
+    contacts, whether on this connection or via another connection (such as
+    the web interface). We can expose these as Delivery_Status_Accepted
+    delivery reports, allowing UIs to log them and show them up or whatever.
+    This could help keep things coherent if the user hops between chatting
+    in the browser and/or Empathy, say.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=41417
+
+commit 6ef3ca940f0b4a4ae1aedb2c03ddc794fe659582
+Author: Danielle Madeley <danielle@madeley.id.au>
+Date:   2011-11-07 22:18:17 +1100
+
+    Use commit ids that actually exist for Wocky
+    
+    What happened here was that git-bz was rewriting my commit ids when I
+    submitted the patch to bugzilla for review, but my Gabble was still pointing
+    to the original commit I had made. SURPRISE!
+
+commit e61dc0318e7a7c00c268105599ea3eada2c1491b
+Author: Danielle Madeley <danielle@madeley.id.au>
+Date:   2011-11-07 21:45:02 +1100
+
+    Return the appropriate value in the case of an unknown timestamp
+    
+    This updates Gabble for the latest spec.
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=42652
+
+commit 465b3aef2330ae73c2f643eeec4676da657c2222
+Merge: ed09e89 a04b9e5
+Author: Danielle Madeley <danielle@madeley.id.au>
+Date:   2011-11-07 20:54:44 +1100
+
+    Merge branch 'wocky-muc-gdatetime'
+
+commit 4312e1f6789227e658ee55349b91b0980128ab51
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-04 16:21:04 +0000
+
+    IMChannel: reindent receiving/delivery report code
+    
+    This patch just gets rid of the funky formatting mentioned in an earlier
+    patch; there are no code changes.
+
+commit 574d1468432bd066dfe7a50fed8c2bbae5d71975
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-04 12:22:09 +0000
+
+    IMChannel: split incoming message and report handling
+    
+    As a nice side effect, the new _gabble_im_channel_report_delivery()
+    function can do successful delivery reports if send_error ==
+    GABBLE_TEXT_CHANNEL_SEND_NO_ERROR. This will become useful
+    momentarily...
+    
+    The funky formatting is to make clearer that this patch is mostly moving
+    code around unmodified; a subsequent patch will clean it up.
+
+commit 46da670d5c0fa51b92a168d454d23e9b119e349a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-04 12:11:42 +0000
+
+    im_channel_receive: split out building basic message
+    
+    This is about the only part of this function which is shared between the
+    delivery report code path and the normal message code path.
+
+commit deb5a15cb02344891f5871cd5f8dcf8faa464d4a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-11 17:01:13 +0100
+
+    ImFactory: refactor creating unrequested channels
+    
+    We'll need similar logic for handling incoming facebook:own-message
+    notifications.
+
+commit 214c0b08245fc264985e4504309abb7b7e82f68c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-03 23:50:24 +0000
+
+    exec-with-log.sh.in: set WOCKY_DEBUG.
+    
+    I'm delighted that 3a1fe026 made us compatible with hypothetical shells,
+    but it also reduced the amount of debug output in gabble-testing.log.
+
+commit b34a0207287a3976e1b880c5b958b9215c5930ad
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-03 23:27:24 +0000
+
+    im_channel_receive: remove redundant 'sender' parameter
+    
+    If we're passing an incoming message to a 1-1 IM channel, we don't need
+    to tell the channel who sent the message: it knows perfectly well. In
+    fact, we were telling it twice: once in handle form (which is
+    redundant), and once in full JID form (which is more useful: it lets the
+    channel update its resource binding).
+
+commit 9b81a8da064954b714474208d2fb4e7d5cb2d6b4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-11 15:54:47 +0100
+
+    ImFactory new_im_channel: remove redundant typecheck
+    
+    By the time we get this far we can be sure that the factory really is a
+    factory.
+
+commit 54104dac1cbfa6a13e8aba199a2043eb061e9a87
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-11 15:53:26 +0100
+
+    ImFactory: remove GET_PRIV anti-idiom
+
+commit 34b600adcb8894615fc2b40400ce6e740230f7c2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-11 15:50:24 +0100
+
+    IMChannel: implement get_object_path_suffix
+    
+    I think this is simpler than the factory passing the path in. Though
+    it's actually longer, which offends me on some level.
+
+commit b3d5848804b8128b0962f4860efcd758e19d7fc3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-11 15:42:42 +0100
+
+    ImFactory: simplify new_im_channel's arguments
+    
+    We can infer from @request_token whether the channel was requested
+    locally or is being created in response to a incoming event; hence, we
+    don't need a separate @initiator argument.
+
+commit 7a9200ca2a426f4f794a4fd43291bcd511a9420f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-11 15:34:57 +0100
+
+    ImFactory: document new_im_channel more usefully
+
+commit 33cd9527f7c0d1f4a2b72e8cfadc417b69590336
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-04 01:15:32 +0100
+
+    Remove unneeded im_channel_closed_cb prototype
+
+commit eb0dc2a0694451453c40c0e75da3ba9093837339
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-04 00:24:40 +0100
+
+    Document _gabble_im_channel_receive usefully
+
+commit 933af070afdc7a3a1df333c318743e0ba115f3a5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-04 00:20:14 +0100
+
+    Remove redundant CHECK_STR_EMPTY macro
+
+commit 2941264d571f3bd23739f7bbdbb350c53355398b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-04 00:08:02 +0100
+
+    IMFactory: use constructed, not constructor
+
+commit aa4b8472a09fafd5bc8046c01f2163d6d7e4495c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-04 00:05:22 +0100
+
+    Remove obsolete DBUS_API_SUBJECT_TO_CHANGE defines
+
+commit d3607abee80d237ea1d00aca55e14eadc7ff5bb4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-30 12:16:16 +0100
+
+    muc-factory: use a dispatch table for handling requests
+
+commit 517cce66448836d6f3de0eef34b9c36d7a4a2bf9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-30 11:45:40 +0100
+
+    muc-factory: use fully-qualified property constants
+
+commit 45b54e41a49f60b4e0c620546492a91e0c1b1b4c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-27 12:09:52 +0100
+
+    MucFactory: remove stupid priv anti-idiom
+
+commit ed09e896b3c249568192e92b5195462e626918fb
+Merge: 08da102 f5f7cc6
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-10-31 14:05:12 -0200
+
+    Merge branch 'memory-leaks'
+    
+    Reviewed-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit f5f7cc6b3407af00eb594aca4c2ffc797f987846
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-10-31 13:55:18 -0200
+
+    roster: Do not leak the roster stanza.
+
+commit 1d61ece67ffac336e4beb430cb1da6e2b4f971cb
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-10-31 13:54:40 -0200
+
+    connection: Remove unnecessary extra copy of caps when updating capabilities.
+
+commit cb97cf5832904d9ce05c93318f43d8b83fb5aa37
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-10-31 13:48:15 -0200
+
+    conn-presence: Properly free priv member.
+
+commit 08da102662f74cf084e4d2bdfc86f2b15e33ca66
+Merge: f9529b7 9cf653e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-31 09:38:35 +0000
+
+    Merge branch 'telepathy-gabble-0.12'
+
+commit 9cf653e93ba9beb8ff2df73627cd2b1f5bedf6bc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-28 18:34:25 +0100
+
+    roster: ignore multiple replies to roster query.
+    
+    The XMPP server running on vk.com is buggy, and replies to our roster
+    query twice. Gabble just blindly assumed that any <iq type='result'>
+    with a roster in it was the singular reply to our singular query. This
+    is a pretty reasonable assumption but this buggy server violates it, and
+    Gabble calls tp_base_contact_list_set_list_received() more than once,
+    which triggers a critical in that function.
+    
+    A more invasive fix would use wocky_porter_send_iq_async() rather than
+    scraping all the roster IQs out of everything using the LM API, but I
+    wanted to quickly fix a bug on a Friday afternoon.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=42186>
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f9529b7d27b0cc9edc9b7c39573c533963d87079
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-10-21 15:20:03 +0100
+
+    Update .gitignore with installed tests
+
+commit f4b4768caabf44f0c2955e97bf8c8af592ff23b1
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-10-12 18:45:34 +0100
+
+    Install the test plugin for the installed tests
+
+commit 49925bb583375e19b2d0fa0aeda7902f79fca370
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-09-29 16:55:06 -0400
+
+    tests: add --enable-installed-tests
+    
+    This configure option makes it possible to install the twisted tests in
+    ${libdir}/telepathy-gabble-tests and run them without the sources.
+    
+    The dbus configuration is duplicated in tests/twisted/servicedir/ for the
+    installed tests and tests/twisted/servicedir-uninstalled/ for the uninstalled
+    tests.
+
+commit 3a1fe026d8a43f9bad8c6820c73310245929fb4c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-10-21 15:36:18 +0100
+
+    exec-with-log.sh.in: POSIX shells, avoid "export var=foo"
+
+commit eec2603bd4f8644cc165ce5c8ce42d21c4c73f66
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-10-21 15:11:03 +0100
+
+    Use autoconf's $(MKDIR_P)
+
+commit fa01616db7028029832cb6da6fa898dac0605a82
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-10-21 14:19:01 +0100
+
+    tests/twisted/Makefile.am: Move additional tests in the main list
+
+commit b1d83dcd017bac58e00461ed5cc2b1c967d426fe
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-10-21 13:54:06 +0100
+
+    tests/twisted/Makefile.am: order lists in alphabetic order
+
+commit d92500bcd3911dbddad5fff2d40cfbc674663b41
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-10-26 16:19:58 +0200
+
+    actually implement ContactBlocking interface
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=42281
+
+commit a8f305d39ee09748ac258ce577dd9738278f9561
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-10-26 15:50:31 +0200
+
+    Advertise ContactBlocking if supported
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=42281
+
+commit e1973c15669a6043cd474cb48b89baafc4bb0d45
+Merge: bf1c8dd 3cdbae8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-24 11:15:41 +0100
+
+    Merge branch '41743-show-contacts-as-offline-even-after-a-really-early-message'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 3cdbae82cb09dd8218e1c783b7bad1f84b84498e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-13 11:33:08 +0100
+
+    Fix offline contacts showing up as unknown, not offline
+    
+    Due to a weird interaction between the presence cache, IM channels, and
+    scraping nicknames out of <message/>s, receiving a message from an
+    offline contact before the roster is received would cause their status
+    to erroneously show up as unknown, not offline.
+    
+    This fix is a bit of a hack, but it is much smaller than refactoring to
+    make the IM channel store the alias (which would allow us to expunge
+    keep_unavailable).
+    
+    This regressed as a side-effect of e0cda61.
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=41743>
+
+commit 3b79e21684aa31b568aeb3969d034e772ac9e610
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-14 12:00:50 +0100
+
+    Test grabbing <nick/> from <message/>
+    
+    If a contact is not on your roster, you typically have no idea what
+    their nickname is: no roster, no PEP, no vCard (assuming the server
+    doesn't let random people fetch your vCard). In this situation, contacts
+    who message you out of the blue can include <nick/> in the message
+    itself.
+    
+    This is implemented in a kind of dodgy way in Gabble at the moment: the
+    IM channel forcibly retains an entry for the contact in the presence
+    cache, and then the presence cache stashes the nickname as if it came
+    from presence… It was also previously untested, so I thought it worth
+    adding a test before I even thought about fixing how it's implemented.
+
+commit a04b9e505e6a5baec65fbb52522f1b52656ca72e
+Author: Danielle Madeley <danielle@madeley.id.au>
+Date:   2011-10-18 13:47:55 +1100
+
+    [muc-channel] WockyMuc now signals timestamps as GDateTime instead of time_t
+    
+    Fixes assumptions in the code where timestamp was assumed to be gint64.
+
+commit bf1c8dd299d02ad433af2c31c879601d712e8d3b
+Author: Danielle Madeley <danielle@madeley.id.au>
+Date:   2011-10-17 23:04:00 +1100
+
+    [muc-channel] timestamp is a time_t not a gint64
+    
+    Cast to the correct type so that Gabble compiles correctly on 32-bit.
+    
+    I propose fixing this properly by using either gint64 or GDateTime in Wocky,
+    but not tonight.
+
+commit 009bec00c4d83f401179fd7fb442158875238a34
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-12 17:46:33 +0100
+
+    Update Wocky snapshot for glib/gtypes.h fix.
+
+commit fca53f10536c4e758c24227c956296534ce2a4a3
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   2011-10-12 12:33:33 -0400
+
+    test-resolver: don't include glib/types.h directly
+    
+    Use the glib.h header instead.
+
+commit f065fb6165f18441b00cbfc263acd50c3eb05b38
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-10-12 16:20:54 +0100
+
+    nano version bump to 0.13.8.1
+    
+     •_________________________•
+
 commit 9f1ddd0ae7edf1686dedb7c12d373c99b7444221
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2011-10-12 15:55:33 +0100

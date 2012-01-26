@@ -25,8 +25,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DBUS_API_SUBJECT_TO_CHANGE
-
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <glib-object.h>
@@ -118,6 +116,8 @@ G_DEFINE_TYPE_WITH_CODE(GabbleConnection,
       tp_base_contact_list_mixin_list_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CONTACT_GROUPS,
       tp_base_contact_list_mixin_groups_iface_init);
+    G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_CONTACT_BLOCKING,
+      tp_base_contact_list_mixin_blocking_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CONNECTION_INTERFACE_SIMPLE_PRESENCE,
       tp_presence_mixin_simple_presence_iface_init);
     G_IMPLEMENT_INTERFACE (GABBLE_TYPE_SVC_CONNECTION_INTERFACE_GABBLE_DECLOAK,
@@ -2815,6 +2815,14 @@ set_status_to_connected (GabbleConnection *conn)
       tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
     }
 
+  if (tp_base_contact_list_can_block (gabble_connection_get_contact_list (conn)))
+    {
+      const gchar *ifaces[] =
+        { TP_IFACE_CONNECTION_INTERFACE_CONTACT_BLOCKING, NULL };
+
+      tp_base_connection_add_interfaces ((TpBaseConnection *) conn, ifaces);
+    }
+
   /* go go gadget on-line */
   tp_base_connection_change_status (base,
       TP_CONNECTION_STATUS_CONNECTED, TP_CONNECTION_STATUS_REASON_REQUESTED);
@@ -3368,12 +3376,10 @@ gabble_connection_update_capabilities (
 {
   GabbleConnection *self = GABBLE_CONNECTION (iface);
   TpBaseConnection *base = (TpBaseConnection *) self;
-  GabbleCapabilitySet *old_caps;
+  GabbleCapabilitySet *old_caps = NULL;
   TpChannelManagerIter iter;
   TpChannelManager *manager;
   guint i;
-
-  old_caps = gabble_capability_set_copy (self->priv->all_caps);
 
   /* Now that someone has told us our *actual* capabilities, we can stop
    * advertising spurious caps in initial presence */
@@ -3475,7 +3481,7 @@ gabble_connection_update_capabilities (
               data_forms->len > 1 ? "s" : "");
 
           for (j = 0; j < data_forms->len; j++)
-            DEBUG (" - %s", get_form_type (g_ptr_array_index (data_forms, i)));
+            DEBUG (" - %s", get_form_type (g_ptr_array_index (data_forms, j)));
 
           g_hash_table_insert (self->priv->client_data_forms,
               g_strdup (client_name), data_forms);
@@ -3806,7 +3812,7 @@ gabble_connection_send_presence (GabbleConnection *conn,
     lm_message_node_add_own_nick (
         wocky_stanza_get_top_node (message), conn);
 
-  if (!CHECK_STR_EMPTY(status))
+  if (!tp_str_empty (status))
     lm_message_node_add_child (
         wocky_stanza_get_top_node (message), "status", status);
 

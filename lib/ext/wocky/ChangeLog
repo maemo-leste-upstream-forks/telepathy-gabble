@@ -1,3 +1,69 @@
+commit 1ee66951f5cf501d139477fcff940306446520d3
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   Mon Nov 7 21:43:11 2011 +1100
+
+    wocky-muc: return NULL if a timestamp can't be determined
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=42652
+
+ wocky/wocky-muc.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 1f2949120297e4ac2b3abbbe916a8f9b34f702ce
+Author: Danielle Madeley <danielle.madeley@collabora.co.uk>
+Date:   Mon Oct 17 22:39:00 2011 +1100
+
+    [muc] Port time_t to GDateTime
+
+ wocky/wocky-muc.c |   22 ++++++++++++++--------
+ 1 files changed, 14 insertions(+), 8 deletions(-)
+
+commit 3c43751dc90e4cdb08f57f48e2a8e6adf715ed8e
+Author: Cosimo Cecchi <cosimoc@gnome.org>
+Date:   Wed Oct 12 17:45:49 2011 +0100
+
+    test-resolver: don't include glib/types.h directly
+    
+    Use the glib.h header instead.
+
+ tests/test-resolver.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6cc87601d31cbe365d3d51a8c91bfbca4cbd14f6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Oct 12 16:06:21 2011 +0100
+
+    C2SPorter: correct _enable_power_saving docs
+    
+    <presence/> was being interpreted as a docbook tag; and the second
+    bullet is no longer true: only PEP updates in particular known
+    namespaces are considered unimportant.
+
+ wocky/wocky-c2s-porter.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+commit 400035360b8f6463c362ea35f4b4580cb52e9e77
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Oct 12 16:08:49 2011 +0100
+
+    gtk-doc: Fix out-of-tree builds with 1.17
+
+ configure.ac               |    2 +-
+ docs/reference/Makefile.am |   12 ++++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 4f0c186180cf64f56072c30bca05a4272b06d2cf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   Wed Oct 12 16:06:42 2011 +0100
+
+    gtk-doc: use no-tmpl flavour.
+    
+    This stops gtk-doc even generating the legacy .tmpl files, for a
+    marginally faster (and less crufty) documentation build process.
+
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 8b8603bb3bf0258b05ef8ed9051d9922d80c6753
 Author: Xavier Claessens <xclaesse@gmail.com>
 Date:   Sat Oct 1 13:42:31 2011 +0200
