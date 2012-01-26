@@ -8,8 +8,8 @@ AC_PREREQ([2.59])
 #   set gabble_nano_version to 0.
 
 m4_define([gabble_major_version], [0])
-m4_define([gabble_minor_version], [13])
-m4_define([gabble_micro_version], [7])
+m4_define([gabble_minor_version], [14])
+m4_define([gabble_micro_version], [1])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -36,6 +36,7 @@ AC_PROG_CC
 AC_PROG_CC_STDC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
+AC_PROG_MKDIR_P
 
 AC_CHECK_HEADERS_ONCE([
     arpa/inet.h
@@ -163,6 +164,20 @@ fi
 AC_SUBST(HANDLE_LEAK_DEBUG_CFLAGS)
 
 AC_SUBST([ENABLE_CODING_STYLE_CHECKS])
+
+AC_ARG_ENABLE([installed-tests],
+  AC_HELP_STRING([--enable-installed-tests],
+    [make tests installable]),
+    [installed_tests=$enableval], [installed_tests=no])
+
+if test x$installed_tests = xyes; then
+  AC_DEFINE(ENABLE_INSTALLED_TESTS, [],
+      [Make tests installable])
+fi
+AM_CONDITIONAL([ENABLE_INSTALLED_TESTS], [test "x$installed_tests" = xyes])
+
+gabbletestsdir=${libdir}/telepathy-gabble-tests
+AC_SUBST(gabbletestsdir)
 
 AC_ARG_ENABLE([is-a-phone],
   AC_HELP_STRING([--enable-is-a-phone],
@@ -386,6 +401,7 @@ Configure summary:
         Coding style checks.........:  ${ENABLE_CODING_STYLE_CHECKS}
         Enable debug................:  ${enable_debug}
         Python tests................:  ${tests_enabled}
+        Install unit tests..........:  ${installed_tests}
 
     Features:
 

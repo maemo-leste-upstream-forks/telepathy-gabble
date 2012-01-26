@@ -74,15 +74,18 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(plugindir)"
-LTLIBRARIES = $(noinst_LTLIBRARIES) $(plugin_LTLIBRARIES)
+am__installdirs = "$(DESTDIR)$(plugindir)" \
+	"$(DESTDIR)$(testplugindir)"
+LTLIBRARIES = $(noinst_LTLIBRARIES) $(plugin_LTLIBRARIES) \
+	$(testplugin_LTLIBRARIES)
 gateways_la_LIBADD =
 am_gateways_la_OBJECTS = gateways.lo
 gateways_la_OBJECTS = $(am_gateways_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
-@ENABLE_PLUGINS_FALSE@am_gateways_la_rpath =
+@ENABLE_INSTALLED_TESTS_FALSE@@ENABLE_PLUGINS_FALSE@am_gateways_la_rpath =
+@ENABLE_INSTALLED_TESTS_TRUE@@ENABLE_PLUGINS_FALSE@am_gateways_la_rpath =
 @ENABLE_PLUGINS_TRUE@am_gateways_la_rpath = -rpath $(plugindir)
 test_la_LIBADD =
 am_test_la_OBJECTS = test.lo
@@ -90,6 +93,9 @@ test_la_OBJECTS = $(am_test_la_OBJECTS)
 test_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(test_la_LDFLAGS) $(LDFLAGS) -o $@
+@ENABLE_INSTALLED_TESTS_FALSE@am_test_la_rpath =
+@ENABLE_INSTALLED_TESTS_TRUE@am_test_la_rpath = -rpath \
+@ENABLE_INSTALLED_TESTS_TRUE@	$(testplugindir)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -239,6 +245,7 @@ datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+gabbletestsdir = @gabbletestsdir@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -275,19 +282,32 @@ plugindir = $(libdir)/telepathy/gabble-0
 installable_plugins = \
 	gateways.la
 
+test_only_plugins = \
+	test.la
+
+@ENABLE_INSTALLED_TESTS_FALSE@noinst_LTLIBRARIES =  \
+@ENABLE_INSTALLED_TESTS_FALSE@	$(test_only_plugins) $(NULL) \
+@ENABLE_INSTALLED_TESTS_FALSE@	$(am__append_1)
 
 # testing-only plugins
-noinst_LTLIBRARIES = test.la $(am__append_1)
+@ENABLE_INSTALLED_TESTS_TRUE@noinst_LTLIBRARIES = $(NULL) \
+@ENABLE_INSTALLED_TESTS_TRUE@	$(am__append_1)
+@ENABLE_INSTALLED_TESTS_TRUE@testplugindir = $(gabbletestsdir)/plugins
+@ENABLE_INSTALLED_TESTS_TRUE@testplugin_LTLIBRARIES = \
+@ENABLE_INSTALLED_TESTS_TRUE@	$(test_only_plugins) \
+@ENABLE_INSTALLED_TESTS_TRUE@	$(NULL)
+
+
+# because test.la is not installed, libtool will want to compile it as static
+# despite -shared (a convenience library), unless we also use -rpath
+@ENABLE_INSTALLED_TESTS_FALSE@test_la_LDFLAGS = $(AM_LDFLAGS) -rpath $(plugindir)
+@ENABLE_INSTALLED_TESTS_TRUE@test_la_LDFLAGS = $(AM_LDFLAGS)
 @ENABLE_PLUGINS_TRUE@plugin_LTLIBRARIES = $(installable_plugins)
 AM_LDFLAGS = -module -avoid-version -shared
 test_la_SOURCES = \
     test.c \
     test.h
 
-
-# because test.la is not installed, libtool will want to compile it as static
-# despite -shared (a convenience library), unless we also use -rpath
-test_la_LDFLAGS = $(AM_LDFLAGS) -rpath $(plugindir)
 gateways_la_SOURCES = \
 	gateways.c \
 	gateways.h
@@ -372,10 +392,41 @@ clean-pluginLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
+install-testpluginLTLIBRARIES: $(testplugin_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	test -z "$(testplugindir)" || $(MKDIR_P) "$(DESTDIR)$(testplugindir)"
+	@list='$(testplugin_LTLIBRARIES)'; test -n "$(testplugindir)" || list=; \
+	list2=; for p in $$list; do \
+	  if test -f $$p; then \
+	    list2="$$list2 $$p"; \
+	  else :; fi; \
+	done; \
+	test -z "$$list2" || { \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(testplugindir)'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(testplugindir)"; \
+	}
+
+uninstall-testpluginLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(testplugin_LTLIBRARIES)'; test -n "$(testplugindir)" || list=; \
+	for p in $$list; do \
+	  $(am__strip_dir) \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(testplugindir)/$$f'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(testplugindir)/$$f"; \
+	done
+
+clean-testpluginLTLIBRARIES:
+	-test -z "$(testplugin_LTLIBRARIES)" || rm -f $(testplugin_LTLIBRARIES)
+	@list='$(testplugin_LTLIBRARIES)'; for p in $$list; do \
+	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+	  test "$$dir" != "$$p" || dir=.; \
+	  echo "rm -f \"$${dir}/so_locations\""; \
+	  rm -f "$${dir}/so_locations"; \
+	done
 gateways.la: $(gateways_la_OBJECTS) $(gateways_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) $(am_gateways_la_rpath) $(gateways_la_OBJECTS) $(gateways_la_LIBADD) $(LIBS)
 test.la: $(test_la_OBJECTS) $(test_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(test_la_LINK)  $(test_la_OBJECTS) $(test_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(test_la_LINK) $(am_test_la_rpath) $(test_la_OBJECTS) $(test_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -502,7 +553,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES)
 installdirs:
-	for dir in "$(DESTDIR)$(plugindir)"; do \
+	for dir in "$(DESTDIR)$(plugindir)" "$(DESTDIR)$(testplugindir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -533,7 +584,8 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
-	clean-pluginLTLIBRARIES mostlyclean-am
+	clean-pluginLTLIBRARIES clean-testpluginLTLIBRARIES \
+	mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -553,7 +605,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-pluginLTLIBRARIES
+install-data-am: install-pluginLTLIBRARIES \
+	install-testpluginLTLIBRARIES
 
 install-dvi: install-dvi-am
 
@@ -599,24 +652,26 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-pluginLTLIBRARIES
+uninstall-am: uninstall-pluginLTLIBRARIES \
+	uninstall-testpluginLTLIBRARIES
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
 	clean-libtool clean-noinstLTLIBRARIES clean-pluginLTLIBRARIES \
-	ctags distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-pluginLTLIBRARIES install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-pluginLTLIBRARIES
+	clean-testpluginLTLIBRARIES ctags distclean distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-pluginLTLIBRARIES install-ps \
+	install-ps-am install-strip install-testpluginLTLIBRARIES \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-pluginLTLIBRARIES \
+	uninstall-testpluginLTLIBRARIES
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

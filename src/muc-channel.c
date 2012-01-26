@@ -296,7 +296,7 @@ static void handle_message (GObject *source,
     WockyStanza *stanza,
     WockyMucMsgType type,
     const gchar *xmpp_id,
-    time_t stamp,
+    GDateTime *datetime,
     WockyMucMember *who,
     const gchar *text,
     const gchar *subject,
@@ -307,7 +307,7 @@ static void handle_errmsg (GObject *source,
     WockyStanza *stanza,
     WockyMucMsgType type,
     const gchar *xmpp_id,
-    time_t stamp,
+    GDateTime *datetime,
     WockyMucMember *who,
     const gchar *text,
     WockyXmppError error,
@@ -318,10 +318,11 @@ static void handle_errmsg (GObject *source,
 
 static void _gabble_muc_channel_handle_subject (GabbleMucChannel *chan,
     TpHandleType handle_type,
-    TpHandle sender, time_t timestamp, const gchar *subject, LmMessage *msg);
+    TpHandle sender, GDateTime *datetime, const gchar *subject,
+    LmMessage *msg);
 static void _gabble_muc_channel_receive (GabbleMucChannel *chan,
     TpChannelTextMessageType msg_type, TpHandleType handle_type,
-    TpHandle sender, time_t timestamp, const gchar *id, const gchar *text,
+    TpHandle sender, GDateTime *datetime, const gchar *id, const gchar *text,
     LmMessage *msg, TpChannelTextSendError send_error,
     TpDeliveryStatus delivery_status);
 
@@ -454,7 +455,7 @@ gabble_muc_channel_constructed (GObject *obj)
 
   priv->subject = NULL;
   priv->subject_actor = NULL;
-  priv->subject_timestamp = 0;
+  priv->subject_timestamp = G_MAXINT64;
   /* fd.o#13157: The subject is currently assumed to be modifiable by everyone
    * in the room (role >= VISITOR). When that bug is fixed, it will be: */
   /* Modifiable via special <message/>s, if the user's role is high enough;
@@ -2343,7 +2344,7 @@ handle_message (GObject *source,
     WockyStanza *stanza,
     WockyMucMsgType type,
     const gchar *xmpp_id,
-    time_t stamp,
+    GDateTime *datetime,
     WockyMucMember *who,
     const gchar *text,
     const gchar *subject,
@@ -2395,7 +2396,7 @@ handle_message (GObject *source,
 
   if (text != NULL)
     _gabble_muc_channel_receive (gmuc,
-        msg_type, handle_type, from, stamp, xmpp_id, text, stanza,
+        msg_type, handle_type, from, datetime, xmpp_id, text, stanza,
         GABBLE_TEXT_CHANNEL_SEND_NO_ERROR, TP_DELIVERY_STATUS_DELIVERED);
 
   if (from_member && state != WOCKY_MUC_MSG_STATE_NONE)
@@ -2425,7 +2426,7 @@ handle_message (GObject *source,
 
   if (subject != NULL)
     _gabble_muc_channel_handle_subject (gmuc, handle_type, from,
-        stamp, subject, stanza);
+        datetime, subject, stanza);
 
   tp_handle_unref (repo, from);
 }
@@ -2435,7 +2436,7 @@ handle_errmsg (GObject *source,
     WockyStanza *stanza,
     WockyMucMsgType type,
     const gchar *xmpp_id,
-    time_t stamp,
+    GDateTime *datetime,
     WockyMucMember *who,
     const gchar *text,
     WockyXmppError error,
@@ -2484,7 +2485,7 @@ handle_errmsg (GObject *source,
 
   if (text != NULL)
     _gabble_muc_channel_receive (gmuc, TP_CHANNEL_TEXT_MESSAGE_TYPE_NOTICE,
-        handle_type, from, stamp, xmpp_id, text, stanza, tp_err, ds);
+        handle_type, from, datetime, xmpp_id, text, stanza, tp_err, ds);
 
   /* FIXME: this is stupid. WockyMuc gives us the subject for non-errors, but
    * doesn't bother for errors.
@@ -2500,7 +2501,7 @@ handle_errmsg (GObject *source,
       (priv->set_subject_stanza_id != NULL &&
        !tp_strdiff (xmpp_id, priv->set_subject_stanza_id)))
     _gabble_muc_channel_handle_subject (gmuc,
-        handle_type, from, stamp, subject, stanza);
+        handle_type, from, datetime, subject, stanza);
 
   tp_handle_unref (repo, from);
 }
@@ -2513,13 +2514,15 @@ void
 _gabble_muc_channel_handle_subject (GabbleMucChannel *chan,
                                     TpHandleType handle_type,
                                     TpHandle sender,
-                                    time_t timestamp,
+                                    GDateTime *datetime,
                                     const gchar *subject,
                                     LmMessage *msg)
 {
   GabbleMucChannelPrivate *priv;
   const gchar *actor;
   GError *error = NULL;
+  gint64 timestamp = datetime != NULL ?
+    g_date_time_to_unix (datetime) : G_MAXINT64;
 
   g_assert (GABBLE_IS_MUC_CHANNEL (chan));
 
@@ -2585,7 +2588,7 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
                              TpChannelTextMessageType msg_type,
                              TpHandleType sender_handle_type,
                              TpHandle sender,
-                             time_t timestamp,
+                             GDateTime *datetime,
                              const gchar *id,
                              const gchar *text,
                              LmMessage *msg,
@@ -2599,6 +2602,7 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
   gboolean is_echo;
   gboolean is_error;
   gchar *tmp;
+  gint64 timestamp = datetime != NULL ?  g_date_time_to_unix (datetime): 0;
 
   g_assert (GABBLE_IS_MUC_CHANNEL (chan));
 
