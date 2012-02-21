@@ -28,18 +28,17 @@
 
 #include "wocky-test-connector-server.h"
 
-#include <wocky/wocky-stanza.h>
-#include <wocky/wocky-xmpp-connection.h>
-
-#include <wocky/wocky-namespaces.h>
-#include <wocky/wocky-utils.h>
-
-#include <wocky/wocky-tls.h>
+#include <wocky/wocky.h>
 
 #define INITIAL_STREAM_ID "0-HAI"
 
-#define DEBUG_FLAG DEBUG_CONNECTOR
-#include <wocky/wocky-debug.h>
+/* We're being a bit naughty here by including wocky-debug.h, but we're
+ * internal *enough*.
+ */
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_CONNECTOR
+#define WOCKY_COMPILATION
+#include <wocky/wocky-debug-internal.h>
+#undef WOCKY_COMPILATION
 
 G_DEFINE_TYPE (TestConnectorServer, test_connector_server, G_TYPE_OBJECT);
 

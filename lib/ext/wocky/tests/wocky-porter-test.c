@@ -4,10 +4,7 @@
 
 #include <glib.h>
 
-#include <wocky/wocky-c2s-porter.h>
-#include <wocky/wocky-utils.h>
-#include <wocky/wocky-namespaces.h>
-#include <wocky/wocky-xmpp-error.h>
+#include <wocky/wocky.h>
 
 #include "wocky-test-stream.h"
 #include "wocky-test-helper.h"
@@ -1086,6 +1083,7 @@ test_handler_stanza (void)
       ')', NULL);
 
   wocky_porter_start (test->sched_out);
+  wocky_porter_start (test->sched_in);
 
   /* Send a not jingle IQ */
   iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
@@ -1175,7 +1173,7 @@ test_handler_stanza (void)
     ')', NULL);
   send_stanza (test, iq, TRUE);
 
-  test_close_porter (test);
+  test_close_both_porters (test);
   teardown_test (test);
 }
 
@@ -1999,6 +1997,69 @@ test_handler_filter (void)
   send_stanza (test, iq, TRUE);
 
   test_close_porter (test);
+  teardown_test (test);
+}
+
+static void
+unhandled_iq_reply_cb (
+    GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  WockyPorter *porter = WOCKY_PORTER (source);
+  test_data_t *test = user_data;
+  GError *error = NULL;
+  WockyStanza *reply = wocky_porter_send_iq_finish (porter, result, &error);
+  gboolean is_error;
+  WockyXmppErrorType type;
+  GError *core = NULL;
+  GError *specialized = NULL;
+  WockyNode *specialized_node;
+
+  g_assert_no_error (error);
+  g_assert (reply != NULL);
+
+  is_error = wocky_stanza_extract_errors (reply, &type, &core, &specialized,
+      &specialized_node);
+
+  /* The reply should have type='error'. */
+  g_assert (is_error);
+
+  g_assert_cmpuint (type, ==, WOCKY_XMPP_ERROR_TYPE_CANCEL);
+  g_assert_error (core, WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_SERVICE_UNAVAILABLE);
+
+  /* There should be no non-XMPP Core error condition. */
+  g_assert_no_error (specialized);
+  g_assert (specialized_node == NULL);
+
+  g_clear_error (&core);
+  g_object_unref (reply);
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+}
+
+static void
+test_unhandled_iq (void)
+{
+  test_data_t *test = setup_test ();
+  WockyStanza *iq = wocky_stanza_build (
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET, NULL, NULL,
+      '(', "framed-photograph",
+        ':', "http://kimjongillookingatthings.tumblr.com",
+      ')', NULL);
+
+  test_open_both_connections (test);
+  wocky_porter_start (test->sched_out);
+  wocky_porter_start (test->sched_in);
+
+  wocky_porter_send_iq_async (test->sched_out, iq, NULL,
+      unhandled_iq_reply_cb, test);
+
+  test->outstanding++;
+  test_wait_pending (test);
+
+  g_object_unref (iq);
+  test_close_both_porters (test);
   teardown_test (test);
 }
 
@@ -3494,6 +3555,7 @@ main (int argc, char **argv)
   g_test_add_func ("/xmpp-porter/error-while-sending-iq",
       test_error_while_sending_iq);
   g_test_add_func ("/xmpp-porter/handler-filter", test_handler_filter);
+  g_test_add_func ("/xmpp-porter/unhandled-iq", test_unhandled_iq);
   g_test_add_func ("/xmpp-porter/send-invalid-iq", test_send_invalid_iq);
   g_test_add_func ("/xmpp-porter/handler-filter-from",
       test_handler_filter_from);

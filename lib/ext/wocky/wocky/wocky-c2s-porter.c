@@ -49,8 +49,8 @@
 #include "wocky-namespaces.h"
 #include "wocky-contact-factory.h"
 
-#define DEBUG_FLAG DEBUG_PORTER
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_PORTER
+#include "wocky-debug-internal.h"
 
 static void wocky_porter_iface_init (gpointer g_iface, gpointer iface_data);
 
@@ -942,6 +942,7 @@ handle_stanza (WockyC2SPorter *self,
   WockyStanzaSubType sub_type;
   gchar *node = NULL, *domain = NULL, *resource = NULL;
   gboolean is_from_server;
+  gboolean handled = FALSE;
 
   wocky_stanza_get_type_info (stanza, &type, &sub_type);
 
@@ -968,7 +969,7 @@ handle_stanza (WockyC2SPorter *self,
       is_from_server = FALSE;
     }
 
-  for (l = priv->handlers; l != NULL; l = g_list_next (l))
+  for (l = priv->handlers; l != NULL && !handled; l = g_list_next (l))
     {
       StanzaHandler *handler = (StanzaHandler *) l->data;
 
@@ -1013,12 +1014,21 @@ handle_stanza (WockyC2SPorter *self,
               wocky_stanza_get_top_node (handler->match)))
         continue;
 
-      if (handler->callback (WOCKY_PORTER (self), stanza, handler->user_data))
-        goto out;
+      handled = handler->callback (WOCKY_PORTER (self), stanza,
+          handler->user_data);
     }
 
-  DEBUG ("Stanza not handled");
-out:
+  if (!handled)
+    {
+      DEBUG ("Stanza not handled");
+
+      if (type == WOCKY_STANZA_TYPE_IQ &&
+          (sub_type == WOCKY_STANZA_SUB_TYPE_GET ||
+           sub_type == WOCKY_STANZA_SUB_TYPE_SET))
+        wocky_porter_send_iq_error (WOCKY_PORTER (self), stanza,
+            WOCKY_XMPP_ERROR_SERVICE_UNAVAILABLE, NULL);
+    }
+
   g_free (node);
   g_free (domain);
   g_free (resource);
@@ -1700,7 +1710,7 @@ wocky_c2s_porter_register_handler_from_server_by_stanza (
  *  the stanza (Wocky will continue to the next handler, if any), or %TRUE to
  *  stop further processing.
  * @user_data: Passed to @callback.
- * @Varargs: a wocky_stanza_build() specification. The handler
+ * @...: a wocky_stanza_build() specification. The handler
  *  will match a stanza only if the stanza received is a superset of the one
  *  passed to this function, as per wocky_node_is_superset().
  *

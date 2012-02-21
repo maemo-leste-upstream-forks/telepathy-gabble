@@ -42,8 +42,8 @@
 #include "wocky-porter.h"
 #include "wocky-session.h"
 
-#define DEBUG_FLAG DEBUG_ROSTER
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_ROSTER
+#include "wocky-debug-internal.h"
 
 #define GOOGLE_ROSTER_VERSION "2"
 

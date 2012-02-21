@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <wocky/wocky-utils.h>
+#include <wocky/wocky.h>
 
 #include "connection.h"
 #include "util.h"
@@ -299,7 +299,7 @@ gabble_jid_to_vcard_address (const gchar *vcard_field,
       if (address[0] == '-' &&
           g_str_has_suffix (address, "@chat.facebook.com"))
         {
-          const gchar *at = index (address, '@');
+          const gchar *at = strchr (address, '@');
           const gchar *start_of_number = address + 1;
           const gchar *s;
 

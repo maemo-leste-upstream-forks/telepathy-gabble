@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>WockyPepService</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="WockyNodeTree.html" title="WockyNodeTree">
@@ -48,6 +48,7 @@ struct              <a class="link" href="wocky-WockyPepService.html#WockyPepSer
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
 <span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyPepService.html#wocky-pep-service-get-finish" title="wocky_pep_service_get_finish ()">wocky_pep_service_get_finish</a>        (<em class="parameter"><code><span class="type">WockyPepService</span> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **item</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
 <span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyPepService.html#wocky-pep-service-make-publish-stanza" title="wocky_pep_service_make_publish_stanza ()">wocky_pep_service_make_publish_stanza</a>
                                                         (<em class="parameter"><code><span class="type">WockyPepService</span> *self</code></em>,
@@ -124,6 +125,7 @@ function should call <a class="link" href="wocky-WockyPepService.html#wocky-pep-
 <a name="wocky-pep-service-get-finish"></a><h3>wocky_pep_service_get_finish ()</h3>
 <pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_pep_service_get_finish        (<em class="parameter"><code><span class="type">WockyPepService</span> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **item</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 Finishes an asynchronous operation to get the PEP node,
@@ -140,6 +142,12 @@ Finishes an asynchronous operation to get the PEP node,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
 <td>a <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>item</code></em> :</span></p></td>
+<td>on success, the first &lt;item&gt; element
+in the result, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>self</code></em> has no published items. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
 </td>
 </tr>
 <tr>

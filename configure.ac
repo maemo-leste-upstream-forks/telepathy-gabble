@@ -9,7 +9,7 @@ AC_PREREQ([2.59])
 
 m4_define([gabble_major_version], [0])
 m4_define([gabble_minor_version], [15])
-m4_define([gabble_micro_version], [3])
+m4_define([gabble_micro_version], [4])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -96,6 +96,25 @@ TP_COMPILER_WARNINGS([ERROR_CFLAGS], [test "x$official_release" = xno],
    unused-parameter])
 AC_SUBST([ERROR_CFLAGS])
 
+
+#------------------------------------------------------------
+# Detect Operating system based on $host
+#------------------------------------------------------------
+AC_MSG_CHECKING([operating system])
+
+case "$host" in
+  *-*-*mingw*|*-*-*cygwin*)
+    platform=win32
+    AC_MSG_RESULT($platform)
+    ;;
+  *)
+    platform=unix
+    AC_MSG_RESULT($platform)
+    ;;
+esac
+
+AM_CONDITIONAL([WINDOWS], [test "$platform" = "win32"])
+
 # -----------------------------------------------------------
 # Make CA certificates path configurable
 # Stolen from GIO's TLS
@@ -128,6 +147,10 @@ if test -n "$with_ca_certificates"; then
         AC_MSG_WARN([Specified certificate authority file '$with_ca_certificates' does not exist])
     fi
 fi
+
+# We are still using GValueArray which has been deprecated in GLib. Disable
+# GLib deprecation warnings as the only way to fix this is to switch to GDBus.
+AC_DEFINE(GLIB_DISABLE_DEPRECATION_WARNINGS, 1, [Build with GLib deprecated])
 
 AC_ARG_ENABLE(debug,
   AC_HELP_STRING([--disable-debug],[compile without debug code]),
@@ -259,7 +282,7 @@ PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.82])
 AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)
 
-PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.17.2])
+PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.17.5])
 
 AC_SUBST(TP_GLIB_CFLAGS)
 AC_SUBST(TP_GLIB_LIBS)
@@ -290,10 +313,17 @@ AM_CONDITIONAL([WANT_TWISTED_TESTS], test false != "$TEST_PYTHON")
 # separate Wocky installation won't clash with them. This is a bit of a hack.
 # AX_CONFIG_DIR doesn't make it very easy to pass extra arguments to the
 # submodule's configure.
-#
-# Also do this for telepathy-yell.
 prev_ac_configure_args=$ac_configure_args
 ac_configure_args="$ac_configure_args --with-installed-headers=${wocky_install_headers_dir}"
+
+# Code from the submodules will be linked in to the gabble-plugins.so shared library, so they need
+# to be compiled as position-independent code. Pass on any other flags we got as well.
+#
+# On some platforms -fPIC results in a "all code is position independent" warning though, so let's
+# try to compile with -Werror to find out if the current platform is one of these.
+sub_cflags="$CFLAGS"
+TP_COMPILER_FLAG([-fPIC -Werror], [sub_cflags+=" -fPIC"])
+ac_configure_args+=" CFLAGS=\"$sub_cflags\""
 
 if test "x$ENABLE_CODING_STYLE_CHECKS" = xyes ; then
   ac_configure_args+=" --enable-coding-style-checks"
@@ -312,16 +342,11 @@ prev_top_build_prefix=$ac_top_build_prefix
 AX_CONFIG_DIR([lib/ext/wocky])
 ac_top_build_prefix=$prev_top_build_prefix
 
-dnl tp-yell
-prev_top_build_prefix=$ac_top_build_prefix
-AX_CONFIG_DIR([lib/ext/telepathy-yell])
-ac_top_build_prefix=$prev_top_build_prefix
-
 ac_configure_args=$prev_ac_configure_args
 
 dnl Check if Android build
 AC_ARG_ENABLE(submodules,
-              AS_HELP_STRING([--disable-submodules],[Use system versions of Wocky and Telepathy-Yell, rather than submodules]),
+              AS_HELP_STRING([--disable-submodules],[Use system versions of Wocky, rather than submodules]),
               build_submodules=$enableval, build_submodules=yes )
 
 dnl Check for Wocky
@@ -333,14 +358,6 @@ fi
 PKG_CHECK_MODULES(WOCKY, wocky >= 0.0.0)
 AC_SUBST(WOCKY_CFLAGS)
 AC_SUBST(WOCKY_LIBS)
-
-dnl Check for tp-yell
-if test x$build_submodules = xyes; then
-    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:"$ac_top_build_prefix"lib/ext/telepathy-yell/telepathy-yell
-fi
-PKG_CHECK_MODULES(TP_YELL, telepathy-yell)
-AC_SUBST(TP_YELL_CFLAGS)
-AC_SUBST(TP_YELL_LIBS)
 
 AC_ARG_ENABLE(google-relay,
   AC_HELP_STRING([--disable-google-relay],
@@ -360,10 +377,23 @@ AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(SOUP_LIBS)
 AM_CONDITIONAL([ENABLE_GOOGLE_RELAY], [test "x$enable_google_relay" = xyes])
 
-dnl Check for libnice
-PKG_CHECK_MODULES(NICE, nice >= 0.0.11)
+AC_ARG_ENABLE(file-transfer,
+  AC_HELP_STRING([--disable-file-transfer],
+                 [disable file transfer support]),
+    [enable_ft=$enableval], [enable_ft=yes])
+
+if test x$enable_ft = xyes; then
+    AC_DEFINE(ENABLE_FILE_TRANSFER, [], [Enable file transfer])
+
+    dnl Check for libnice
+    PKG_CHECK_MODULES(NICE, nice >= 0.0.11)
+else
+    NICE_CFLAGS=
+    NICE_LIBS=
+fi
 AC_SUBST(NICE_CFLAGS)
 AC_SUBST(NICE_LIBS)
+AM_CONDITIONAL([ENABLE_FILE_TRANSFER], [test "x$enable_ft" = xyes])
 
 AC_CHECK_FUNCS(getifaddrs memset select strndup setresuid setreuid strerror)
 
@@ -380,7 +410,6 @@ AC_OUTPUT( Makefile \
            lib/Makefile \
            lib/ext/Makefile \
            lib/gibber/Makefile \
-           lib/loudmouth/Makefile \
            plugins/Makefile \
            gabble/Makefile \
            gabble/telepathy-gabble-uninstalled.pc \
@@ -411,4 +440,6 @@ Configure summary:
         Plugin headers installed....:  ${enable_plugin_api}
         Channel.Type.Call support...:  ${enable_channel_type_call}
         Google relay support........:  ${enable_google_relay}
+        File transfer support.......:  ${enable_ft}
+
 "

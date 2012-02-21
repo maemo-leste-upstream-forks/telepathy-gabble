@@ -21,12 +21,10 @@
 #include <string.h>
 #include <time.h>
 
-#define DEBUG_FLAG DEBUG_MUC_CONNECTION
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_MUC_CONNECTION
+#include "wocky-debug-internal.h"
 
 #include "wocky-muc.h"
-#include "wocky-muc-enumtypes.h"
-#include "wocky-xmpp-error-enumtypes.h"
 #include "wocky-namespaces.h"
 #include "wocky-utils.h"
 #include "wocky-signals-marshal.h"

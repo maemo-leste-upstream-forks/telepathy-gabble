@@ -19,7 +19,7 @@
 
 #include "wocky-pubsub-node.h"
 #include "wocky-pubsub-node-protected.h"
-#include "wocky-pubsub-node-enumtypes.h"
+#include "wocky-pubsub-node-internal.h"
 
 #include "wocky-namespaces.h"
 #include "wocky-porter.h"
@@ -28,8 +28,8 @@
 #include "wocky-signals-marshal.h"
 #include "wocky-utils.h"
 
-#define DEBUG_FLAG DEBUG_PUBSUB
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_PUBSUB
+#include "wocky-debug-internal.h"
 
 G_DEFINE_TYPE (WockyPubsubNode, wocky_pubsub_node, G_TYPE_OBJECT)
 
