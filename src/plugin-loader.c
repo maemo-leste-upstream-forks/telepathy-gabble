@@ -123,7 +123,11 @@ gabble_plugin_loader_probe (GabblePluginLoader *self)
   if (directory_names == NULL)
     directory_names = PLUGIN_DIR;
 
+#ifdef G_OS_WIN32
+  dir_array = g_strsplit (directory_names, ";", 0);
+#else
   dir_array = g_strsplit (directory_names, ":", 0);
+#endif
 
   for (ptr = dir_array ; *ptr != NULL ; ptr++)
     {
@@ -286,8 +290,10 @@ gabble_plugin_loader_create_sidecar (
           GSimpleAsyncResult *res = g_simple_async_result_new (G_OBJECT (self),
               callback, user_data, gabble_plugin_loader_create_sidecar);
 
-          gabble_plugin_create_sidecar (p, sidecar_interface, connection, session,
-              create_sidecar_cb, res);
+          GabblePluginConnection *gabble_conn =
+            GABBLE_PLUGIN_CONNECTION (connection);
+          gabble_plugin_create_sidecar_async (p, sidecar_interface,
+              gabble_conn, session, create_sidecar_cb, res);
           return;
         }
     }
@@ -379,7 +385,7 @@ copy_to_other_array (gpointer data,
 GPtrArray *
 gabble_plugin_loader_create_channel_managers (
     GabblePluginLoader *self,
-    TpBaseConnection *connection)
+    GabblePluginConnection *plugin_connection)
 {
   GPtrArray *out = g_ptr_array_new ();
   guint i;
@@ -389,7 +395,8 @@ gabble_plugin_loader_create_channel_managers (
       GabblePlugin *plugin = g_ptr_array_index (self->priv->plugins, i);
       GPtrArray *managers;
 
-      managers = gabble_plugin_create_channel_managers (plugin, connection);
+      managers = gabble_plugin_create_channel_managers (plugin,
+          plugin_connection);
 
       if (managers == NULL)
         continue;

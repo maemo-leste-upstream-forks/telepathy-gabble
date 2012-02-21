@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>WockyPorter</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-WockyPing.html" title="WockyPing">
@@ -149,8 +149,6 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 </div>
 <div class="refsect1">
 <a name="wocky-WockyPorter.description"></a><h2>Description</h2>
-<p>
-</p>
 </div>
 <div class="refsect1">
 <a name="wocky-WockyPorter.details"></a><h2>Details</h2>
@@ -167,24 +165,18 @@ Get access to the error quark of the xmpp porter.
 <a name="WOCKY-PORTER-HANDLER-PRIORITY-MAX:CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_MAX</h3>
 <pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_MAX G_MAXUINT
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="WOCKY-PORTER-HANDLER-PRIORITY-MIN:CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_MIN</h3>
 <pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_MIN 0
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</h3>
 <pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_NORMAL (guint) (G_MAXUINT / 2)
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -466,6 +458,11 @@ calling <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build-iq-resul
 <td>a stanza of type <a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-IQ:CAPS"><span class="type">WOCKY_STANZA_TYPE_IQ</span></a> and sub-type either
 <a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-SET:CAPS"><span class="type">WOCKY_STANZA_SUB_TYPE_SET</span></a> or <a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-GET:CAPS"><span class="type">WOCKY_STANZA_SUB_TYPE_GET</span></a>
 </td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build" title="wocky_stanza_build ()"><code class="function">wocky_stanza_build()</code></a> specification; pass <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to include no
+body in the reply.</td>
 </tr>
 </tbody>
 </table></div>
@@ -799,6 +796,12 @@ stop further processing.</td>
 <td>Passed to <em class="parameter"><code>callback</code></em>.</td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build" title="wocky_stanza_build ()"><code class="function">wocky_stanza_build()</code></a> specification. The handler
+will match a stanza only if the stanza received is a superset of the one
+passed to this function, as per <a class="link" href="wocky-WockyNode.html#wocky-node-is-superset" title="wocky_node_is_superset ()"><code class="function">wocky_node_is_superset()</code></a>.</td>
+</tr>
+<tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>a non-zero ID for use with <a class="link" href="wocky-WockyPorter.html#wocky-porter-unregister-handler" title="wocky_porter_unregister_handler ()"><code class="function">wocky_porter_unregister_handler()</code></a>.</td>
 </tr>
@@ -917,6 +920,12 @@ stop further processing.</td>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>Passed to <em class="parameter"><code>callback</code></em>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build" title="wocky_stanza_build ()"><code class="function">wocky_stanza_build()</code></a> specification. The handler
+will match a stanza only if the stanza received is a superset of the one
+passed to this function, as per <a class="link" href="wocky-WockyNode.html#wocky-node-is-superset" title="wocky_node_is_superset ()"><code class="function">wocky_node_is_superset()</code></a>.</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>

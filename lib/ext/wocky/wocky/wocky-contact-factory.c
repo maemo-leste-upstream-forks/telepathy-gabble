@@ -48,8 +48,8 @@
 #include "wocky-signals-marshal.h"
 #include "wocky-utils.h"
 
-#define DEBUG_FLAG DEBUG_ROSTER
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_ROSTER
+#include "wocky-debug-internal.h"
 
 G_DEFINE_TYPE (WockyContactFactory, wocky_contact_factory, G_TYPE_OBJECT)
 

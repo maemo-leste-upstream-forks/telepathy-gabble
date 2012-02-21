@@ -23,8 +23,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef G_OS_WIN32
+#include <windows.h>
+#include <ws2tcpip.h>
+#include <stdint.h>
+typedef uint32_t u_int32_t;
+typedef uint16_t u_int16_t;
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
+#endif
 
 #include "wocky-ll-connection-factory.h"
 #include "wocky-contact-factory.h"
@@ -34,8 +42,8 @@
 #include "wocky-ll-connector.h"
 #include "wocky-loopback-stream.h"
 
-#define DEBUG_FLAG DEBUG_PORTER
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_PORTER
+#include "wocky-debug-internal.h"
 
 static void wocky_porter_iface_init (gpointer g_iface,
     gpointer iface_data);

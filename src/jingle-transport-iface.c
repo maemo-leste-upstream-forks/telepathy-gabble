@@ -41,10 +41,10 @@ gabble_jingle_transport_iface_new (GType type,
 
 void
 gabble_jingle_transport_iface_parse_candidates (GabbleJingleTransportIface *self,
-    LmMessageNode *node, GError **error)
+    WockyNode *node, GError **error)
 {
   void (*virtual_method)(GabbleJingleTransportIface *,
-      LmMessageNode *, GError **) =
+      WockyNode *, GError **) =
     GABBLE_JINGLE_TRANSPORT_IFACE_GET_CLASS (self)->parse_candidates;
 
   g_assert (virtual_method != NULL);
@@ -70,9 +70,9 @@ gabble_jingle_transport_iface_new_local_candidates (GabbleJingleTransportIface *
 void
 gabble_jingle_transport_iface_inject_candidates (
     GabbleJingleTransportIface *self,
-    LmMessageNode *transport_node)
+    WockyNode *transport_node)
 {
-  void (*virtual_method)(GabbleJingleTransportIface *, LmMessageNode *) =
+  void (*virtual_method)(GabbleJingleTransportIface *, WockyNode *) =
       GABBLE_JINGLE_TRANSPORT_IFACE_GET_CLASS (self)->inject_candidates;
 
   if (virtual_method != NULL)
@@ -134,6 +134,19 @@ gabble_jingle_transport_iface_get_local_candidates (
 
   g_assert (virtual_method != NULL);
   return virtual_method (self);
+}
+
+gboolean
+jingle_transport_get_credentials (GabbleJingleTransportIface *self,
+    gchar **ufrag, gchar **pwd)
+{
+  GabbleJingleTransportIfaceClass *klass =
+      GABBLE_JINGLE_TRANSPORT_IFACE_GET_CLASS (self);
+
+  if (klass->get_credentials)
+    return klass->get_credentials (self, ufrag, pwd);
+  else
+    return FALSE;
 }
 
 JingleTransportType

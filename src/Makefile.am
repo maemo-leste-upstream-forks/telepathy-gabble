@@ -45,13 +45,9 @@ libgabble_convenience_la_SOURCES = \
     call-member-content.c \
     call-stream.h \
     call-stream.c \
-    $(top_srcdir)/gabble/capabilities-set.h \
-    $(top_srcdir)/gabble/capabilities.h \
     capabilities.c \
-    $(top_srcdir)/gabble/caps-hash.h \
     caps-hash.h \
     caps-hash.c \
-    $(top_srcdir)/gabble/caps-channel-manager.h \
     caps-channel-manager.c \
     conn-addressing.h \
     conn-addressing.c \
@@ -77,7 +73,6 @@ libgabble_convenience_la_SOURCES = \
     conn-util.c \
     conn-mail-notif.h \
     conn-mail-notif.c \
-    $(top_srcdir)/gabble/connection.h \
     connection.h \
     connection.c \
     connection-manager.h \
@@ -88,16 +83,10 @@ libgabble_convenience_la_SOURCES = \
     disco.c \
     error.c \
     error.h \
-    ft-channel.c \
-    ft-channel.h \
-    ft-manager.c \
-    ft-manager.h \
     gabble.c \
     gabble.h \
     google-relay.c \
     google-relay.h \
-    gtalk-file-collection.h \
-    gtalk-file-collection.c \
     im-channel.h \
     im-channel.c \
     im-factory.h \
@@ -136,14 +125,11 @@ libgabble_convenience_la_SOURCES = \
     muc-channel.c \
     muc-factory.h \
     muc-factory.c \
-    $(top_srcdir)/gabble/namespaces.h \
     namespaces.h \
     olpc-activity.h \
     olpc-activity.c \
     plugin-loader.h \
     plugin-loader.c \
-    $(top_srcdir)/gabble/plugin.h \
-    plugin.c \
     presence.h \
     presence.c \
     presence-cache.h \
@@ -172,7 +158,6 @@ libgabble_convenience_la_SOURCES = \
     server-tls-channel.c \
     server-tls-manager.h \
     server-tls-manager.c \
-    $(top_srcdir)/gabble/sidecar.h \
     sidecar.c \
     tls-certificate.h \
     tls-certificate.c \
@@ -184,12 +169,29 @@ libgabble_convenience_la_SOURCES = \
     tube-dbus.c \
     tube-stream.h \
     tube-stream.c \
-    $(top_srcdir)/gabble/types.h \
     types.h \
     util.h \
     util.c \
     vcard-manager.h \
     vcard-manager.c
+
+if ENABLE_FILE_TRANSFER
+libgabble_convenience_la_SOURCES += \
+    ft-channel.c \
+    ft-channel.h \
+    ft-manager.c \
+    ft-manager.h \
+    gtalk-file-collection.h \
+    gtalk-file-collection.c
+else
+EXTRA_DIST += \
+    ft-channel.c \
+    ft-channel.h \
+    ft-manager.c \
+    ft-manager.h \
+    gtalk-file-collection.h \
+    gtalk-file-collection.c
+endif
 
 enumtype_sources = \
     $(top_srcdir)/src/connection.h \
@@ -200,8 +202,7 @@ enumtype_sources = \
 libgabble_convenience_la_LIBADD = \
    $(top_builddir)/extensions/libgabble-extensions.la \
    $(top_builddir)/lib/gibber/libgibber.la \
-   $(top_builddir)/lib/loudmouth/libloudmouth.la \
-   $(top_builddir)/lib/ext/telepathy-yell/telepathy-yell/libtelepathy-yell.la \
+   libgabble-plugins.la \
    $(ALL_LIBS)
 
 nodist_libgabble_convenience_la_SOURCES = \
@@ -227,14 +228,34 @@ telepathy_gabble_LDFLAGS = -export-dynamic
 
 noinst_LTLIBRARIES = libgabble-convenience.la
 
+lib_LTLIBRARIES = libgabble-plugins.la
+
+libgabble_plugins_la_LDFLAGS = -shared -no-undefined -avoid-version
+
+libgabble_plugins_la_LIBADD = \
+   $(ALL_LIBS)
+
+libgabble_plugins_la_SOURCES = \
+   capabilities.c \
+   caps-channel-manager.c \
+   debug.c \
+   error.c \
+   plugin.c \
+   plugin-connection.c \
+   sidecar.c
+
 AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
-	    @TP_YELL_CFLAGS@ \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
 	    @TP_GLIB_CFLAGS@ \
 	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @GMODULE_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
 	    -DG_LOG_DOMAIN=\"gabble\" \
 	    -DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\"
+
+# following flag is requied to make getnameinfo work
+if WINDOWS
+  AM_CFLAGS += -D_WIN32_WINNT=0x0501
+endif
 
 ALL_LIBS =  @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
 	    @SOUP_LIBS@ @NICE_LIBS@ @GMODULE_LIBS@
@@ -283,12 +304,21 @@ gabble-enumtypes.c: $(enumtype_sources) Makefile.in
 	$(enumtype_sources) > $@
 
 Android.mk: Makefile.am $(BUILT_SOURCES)
-	androgenizer -:PROJECT telepathy-gabble -:SHARED telepathy-gabble -:TAGS eng debug \
-	 -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
-	 -:SOURCES $(libgabble_convenience_la_SOURCES) \
-	  $(nodist_libgabble_convenience_la_SOURCES) main.c \
-	 -:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	  $(AM_CFLAGS) -DBUILD_AS_ANDROID_SERVICE \
-	  -:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) $(telepathy_gabble_LDFLAGS) \
-	  -:LDFLAGS $(telepathy_gabble_LDADD) $(libgabble_convenience_la_LIBADD) \
+	androgenizer -:PROJECT telepathy-gabble \
+	-:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	-:SHARED gabble-plugins -:TAGS eng debug \
+	-:SOURCES $(libgabble_plugins_la_SOURCES) \
+	-:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CFLAGS) \
+	-:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) \
+	-:LDFLAGS $(libgabble_plugins_la_LDFLAGS) \
+	$(libgabble_plugins_la_LIBADD) \
+	-:SHARED telepathy-gabble -:TAGS eng debug \
+	-:SOURCES $(libgabble_convenience_la_SOURCES) \
+	$(nodist_libgabble_convenience_la_SOURCES) main.c \
+	-:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CFLAGS) -DBUILD_AS_ANDROID_SERVICE \
+	-:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) $(telepathy_gabble_LDFLAGS) \
+	-:LDFLAGS $(telepathy_gabble_LDADD) $(libgabble_convenience_la_LIBADD) \
+	$(lib_LTLIBRARIES) \
 	> $@

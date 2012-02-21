@@ -25,9 +25,10 @@
 
 #include <telepathy-glib/base-connection.h>
 #include <telepathy-glib/presence-mixin.h>
-#include <wocky/wocky-session.h>
+#include <wocky/wocky.h>
 
 #include "gabble/sidecar.h"
+#include "gabble/plugin-connection.h"
 
 typedef struct _GabblePluginLoader GabblePluginLoader;
 typedef struct _GabblePluginLoaderClass GabblePluginLoaderClass;
@@ -86,6 +87,7 @@ const gchar *gabble_plugin_loader_presence_status_for_privacy_list (
     const gchar *list_name);
 
 GPtrArray * gabble_plugin_loader_create_channel_managers (
-    GabblePluginLoader *self, TpBaseConnection *connection);
+    GabblePluginLoader *self,
+    GabblePluginConnection *plugin_connection);
 
 #endif /* #ifndef __PLUGIN_LOADER_H__ */

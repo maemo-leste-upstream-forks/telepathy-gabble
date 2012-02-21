@@ -21,7 +21,7 @@
 #define __GABBLE_JINGLE_TRANSPORT_IFACE_H__
 
 #include <glib-object.h>
-#include <loudmouth/loudmouth.h>
+#include <wocky/wocky.h>
 
 #include "jingle-factory.h"
 #include "types.h"
@@ -42,16 +42,19 @@ struct _GabbleJingleTransportIfaceClass {
   GTypeInterface parent;
 
   void (*parse_candidates) (GabbleJingleTransportIface *,
-    LmMessageNode *, GError **);
+    WockyNode *, GError **);
 
   void (*new_local_candidates) (GabbleJingleTransportIface *, GList *);
   void (*inject_candidates) (GabbleJingleTransportIface *,
-      LmMessageNode *transport_node);
+      WockyNode *transport_node);
   void (*send_candidates) (GabbleJingleTransportIface *, gboolean all);
   gboolean (*can_accept) (GabbleJingleTransportIface *);
 
   GList * (*get_remote_candidates) (GabbleJingleTransportIface *);
   GList * (*get_local_candidates) (GabbleJingleTransportIface *);
+  gboolean (*get_credentials) (GabbleJingleTransportIface *,
+      gchar **ufrag, gchar **pwd);
+
   JingleTransportType (*get_transport_type) (void);
 };
 
@@ -69,14 +72,14 @@ GType gabble_jingle_transport_iface_get_type (void);
                               GabbleJingleTransportIfaceClass))
 
 void gabble_jingle_transport_iface_parse_candidates (GabbleJingleTransportIface *,
-    LmMessageNode *, GError **);
+    WockyNode *, GError **);
 
 void gabble_jingle_transport_iface_new_local_candidates (
     GabbleJingleTransportIface *self,
     GList *candidates);
 void gabble_jingle_transport_iface_inject_candidates (
     GabbleJingleTransportIface *self,
-    LmMessageNode *transport_node);
+    WockyNode *transport_node);
 void gabble_jingle_transport_iface_send_candidates (
     GabbleJingleTransportIface *self,
     gboolean all);
@@ -86,6 +89,8 @@ gboolean gabble_jingle_transport_iface_can_accept (
 GList *gabble_jingle_transport_iface_get_remote_candidates (GabbleJingleTransportIface *);
 GList *gabble_jingle_transport_iface_get_local_candidates (GabbleJingleTransportIface *);
 JingleTransportType gabble_jingle_transport_iface_get_transport_type (GabbleJingleTransportIface *);
+gboolean jingle_transport_get_credentials (GabbleJingleTransportIface *,
+    gchar **ufrag, gchar **pwd);
 
 GabbleJingleTransportIface *gabble_jingle_transport_iface_new (
     GType type, GabbleJingleContent *content, const gchar *transport_ns);
