@@ -1,3 +1,26 @@
+telepathy-gabble (0.16.0-0ubuntu1) precise; urgency=low
+
+  * New upstream release.
+    - Correctly convert between Telepathy and Jingle candidate types
+    - Start sending automatically on accepting bidirectional calls.
+  * debian/control
+    - bump build depends for libtelepathy-glib-dev to >= 0.18.0
+  * debian/rules
+    - no longer strip -Bsymbolic-function from LDFLAGS, bug has been fixed 
+      upstream
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 03 Apr 2012 11:54:00 -0400
+
+telepathy-gabble (0.15.4-1ubuntu1) precise; urgency=low
+
+  * Merge with Debian experimental. Remaining Ubuntu changes:
+    - debian/telepathy-gabble.install: Install telepathy-gabble-xmpp-console.
+  * debian/rules
+    - strip -Bsymbolic-function from LDFLAGS, causes a crash on 
+      start https://bugs.freedesktop.org/show_bug.cgi?id=46417
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 05 Mar 2012 16:51:45 -0500
+
 telepathy-gabble (0.15.4-1) experimental; urgency=low
 
   * New upstream release
@@ -7,6 +30,13 @@ telepathy-gabble (0.15.4-1) experimental; urgency=low
       public/stable; to be fixed in a future Gabble)
 
  -- Simon McVittie <smcv@debian.org>  Tue, 21 Feb 2012 21:38:52 +0000
+
+telepathy-gabble (0.15.3-1ubuntu1) precise; urgency=low
+
+  * Merge with Debian experimental. Remaining Ubuntu changes:
+    - debian/telepathy-gabble.install: Install telepathy-gabble-xmpp-console.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 08 Feb 2012 09:32:43 +0100
 
 telepathy-gabble (0.15.3-1) experimental; urgency=low
 
