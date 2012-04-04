@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ --with autotools_dev
+	dh $@ --with autotools_dev --parallel
 
 # Now that we use debhelper 9, dh_auto_configure defaults to
 # $libexecdir=$libdir, which might be better than this, but doesn't match
@@ -14,10 +14,6 @@ override_dh_auto_configure:
 		--with-ca-certificates=/etc/ssl/certs/ca-certificates.crt \
 		--disable-static \
 		$(NULL)
-
-# parallel make works
-override_dh_auto_build:
-	dh_auto_build --parallel
 
 # the regression tests are too race-prone to run on Debian buildds
 override_dh_auto_test:
