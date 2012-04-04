@@ -29,8 +29,10 @@
 #include <telepathy-glib/util.h>
 #include <wocky/wocky.h>
 
+#ifdef ENABLE_VOIP
 #include "jingle-factory.h"
 #include "jingle-content.h"
+#endif
 
 #include "types.h"
 
@@ -72,7 +74,11 @@ GPtrArray *gabble_g_ptr_array_copy (GPtrArray *source);
 
 WockyBareContact * ensure_bare_contact_from_jid (GabbleConnection *conn,
     const gchar *jid);
+TpHandle ensure_handle_from_contact (
+    GabbleConnection *conn,
+    WockyContact *contact);
 
+#ifdef ENABLE_VOIP
 gboolean jingle_pick_best_resource (GabbleConnection *conn,
     TpHandle peer,
     gboolean want_audio,
@@ -87,6 +93,7 @@ const gchar *jingle_pick_best_content_type (GabbleConnection *conn,
     JingleMediaType type);
 
 GPtrArray *gabble_call_candidates_to_array (GList *candidates);
+#endif
 
 gchar * gabble_peer_to_jid (GabbleConnection *conn,
     TpHandle peer,

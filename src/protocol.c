@@ -32,7 +32,9 @@
 #include "connection.h"
 #include "connection-manager.h"
 #include "im-factory.h"
+#ifdef ENABLE_VOIP
 #include "media-factory.h"
+#endif
 #include "private-tubes-factory.h"
 #include "roomlist-manager.h"
 #include "search-manager.h"
@@ -156,6 +158,12 @@ static TpCMParamSpec jabber_params[] = {
     TP_CONN_MGR_PARAM_FLAG_HAS_DEFAULT, GUINT_TO_POINTER (30),
     0 /* unused */, NULL, NULL },
 
+  { TP_PROP_CONNECTION_INTERFACE_CONTACT_LIST_DOWNLOAD_AT_CONNECTION,
+    DBUS_TYPE_BOOLEAN_AS_STRING, G_TYPE_BOOLEAN,
+    TP_CONN_MGR_PARAM_FLAG_HAS_DEFAULT | TP_CONN_MGR_PARAM_FLAG_DBUS_PROPERTY,
+    GUINT_TO_POINTER (TRUE),
+    0 /* unused */, NULL, NULL },
+
   { GABBLE_PROP_CONNECTION_INTERFACE_GABBLE_DECLOAK_DECLOAK_AUTOMATICALLY,
     DBUS_TYPE_BOOLEAN_AS_STRING, G_TYPE_BOOLEAN,
     TP_CONN_MGR_PARAM_FLAG_HAS_DEFAULT |
@@ -243,6 +251,8 @@ struct ParamMapping {
   SAME ("alias"),
   SAME ("fallback-socks5-proxies"),
   SAME ("keepalive-interval"),
+  MAP (TP_PROP_CONNECTION_INTERFACE_CONTACT_LIST_DOWNLOAD_AT_CONNECTION,
+       "download-roster-at-connection"),
   MAP (GABBLE_PROP_CONNECTION_INTERFACE_GABBLE_DECLOAK_DECLOAK_AUTOMATICALLY,
        "decloak-automatically"),
   SAME ("fallback-servers"),
@@ -345,7 +355,9 @@ get_connection_details (TpBaseProtocol *self,
           GABBLE_TYPE_FT_MANAGER,
 #endif
           GABBLE_TYPE_IM_FACTORY,
+#ifdef ENABLE_VOIP
           GABBLE_TYPE_MEDIA_FACTORY,
+#endif
           GABBLE_TYPE_MUC_FACTORY,
           GABBLE_TYPE_ROOMLIST_MANAGER,
           GABBLE_TYPE_SEARCH_MANAGER,

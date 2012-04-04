@@ -1,3 +1,934 @@
+commit 4291d1d472bc22ea1423e5ef2dc063eb1782ac15
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-04-02 17:05:53 -0400
+
+    version 0.16.0
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b0112d03c77dfe4b506168ccffcc1eb4bb83d29f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-04-02 17:04:52 -0400
+
+    NEWS: summary for 0.16.0
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 40322ddb3228a9687bee25ee4c85a5dffeccefe2
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-04-02 17:13:10 -0400
+
+    configure: update dependency on tp-glib
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 4d9133a523d95207699b3ede02b26e7e2c272fdd
+Merge: 71dcf75 44582af
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-04-02 17:50:28 +0100
+
+    Merge branch '47999-handle-ibb-errors'
+
+commit 44582af04f111e4ba855afceb814997fce812a4e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-03-28 14:53:43 +0100
+
+    bytestream-ibb: handle IQ send errors
+    
+    This is untested, but the existing tests still pass…
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=47999
+
+commit b8f84c653318b18c5070085e66fca011f04bcb65
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-03-28 14:26:12 +0100
+
+    bytestream-ibb: correct send_data's return value.
+    
+    This function returns the number of messages sent, not a boolean.
+
+commit 71dcf75998ea8a332903def7b6513df5e4e6d819
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-13 16:43:57 +0000
+
+    New test: connect/test-connection-params.py
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43828
+
+commit 45d81af51417a79bd2fd7c98b0980ba7e725dd5c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-13 12:16:07 +0000
+
+    ContactList: downloading the roster at connection depends on a connection parameter
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43828
+
+commit deb67c35893b1770533eb48c4e7ec0840afc8926
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2012-02-23 16:29:49 +0000
+
+    Update dependency on telepathy-glib
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43826
+    https://bugs.freedesktop.org/show_bug.cgi?id=43828
+
+commit 687ec45023294d6003f987ff0dfc72986fdb7f46
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2012-01-04 14:22:02 +0000
+
+    gabble_roster_unpublish_async: correct the source tag
+
+commit 5d7a8f948c504b842781e99f77bebcb94bf610a0
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2012-01-04 14:21:42 +0000
+
+    gabble_roster_authorize_publication_async: correct the source tag
+
+commit 352d2da805561ec0164a6e800cd3c3e3bbc629f3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-03-09 13:38:04 +0000
+
+    Replace plugindir with an AC_ARG_VAR so it can be passed to configure
+    
+    This lets you configure the plugin directory:
+    
+        ./configure pluginexecdir='${libdir}/my-gabble-plugins'
+    
+    The directory-name variable has 'exec' in it because Automake installs
+    unknown directory names with 'exec' in their variable name during
+    "make install-exec", and other unknown directory names during
+    "make install-data".
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f06469da5cfc7c8dc750bce82099dde4b528a20b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-03-09 13:35:37 +0000
+
+    Install non-ABI-stable libraries used by plugins to a private directory
+    
+    This avoids having Gabble and Salut, or old Gabble and a future stable
+    Wocky, fight over the libwocky.so symlink.
+    
+    If you're building for a tightly controlled platform where Gabble and
+    Salut are definitely using the same Wocky version, you can put them in the
+    normal libdir with
+    
+        ./configure pluginexeclibdir='${libdir}'
+    
+    or (when Salut has been updated with this change) make them share a private
+    library directory:
+    
+        ./configure pluginexeclibdir='${libdir}/telepathy/ytstenut-1.0'
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c535a29358002b3b48c3df7bedecfbf73ab4553f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-03-09 12:42:10 +0000
+
+    Avoid non-portable use of += in configure.ac
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b942885bb6bca2e56b1a24737fcb8cf266d9cb61
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-03-09 13:04:13 +0000
+
+    Avoid Wocky trying to install into --prefix=NONE
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 531bffcfaf8bed572259981d4d900e7f1e42e473
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-03-09 12:41:46 +0000
+
+    configure.ac: remove apostrophe from a help message so syntax highlighting works
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit fed5695cc026ab4076197de2a28a5f7bbe69dacb
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-03-09 12:24:44 +0000
+
+    telepathy-gabble.pc: link to Wocky
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c8da384dd9f311296145cdb49a2279f624502708
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-22 19:20:56 -0400
+
+    start on 0.15.6
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b26a704c87968bc1db29a2917c2ca0bdf10ed999
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-22 19:09:06 -0400
+
+    version 0.15.5
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b7350b195bae44bda93e767b7a8a5616c558102a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-22 18:52:51 -0400
+
+    configure: depend on telepathy-glib 0.17.7
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b82352ce6eb3bab55e09f58ce07a3fd1d90ce319
+Merge: 21ec409 27fa0aa
+Author: Marco Barisione <marco@barisione.org>
+Date:   2012-03-22 17:52:20 +0000
+
+    Merge branch 'disable-voip'
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=47502
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 27fa0aa72eb61ecffb26998f535f66e4ae992ae6
+Author: Marco Barisione <marco@barisione.org>
+Date:   2012-03-09 08:33:54 +0000
+
+    Allow to disable VoIP-related code with --disable-voip
+
+commit a69250eac91ac827ff90cf8a03d6540b68a5d001
+Author: Marco Barisione <marco@barisione.org>
+Date:   2012-03-16 16:14:15 +0000
+
+    There is no need to include non-compiled files in EXTRA_DIST
+    
+    Automake makes sure that all the source files, even if they are not
+    being compiled at the moment, will be distributed when doing make dist.
+
+commit 21ec409017f58d1ff863cc8c26d42108931ecabb
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-16 14:18:25 -0400
+
+    CallStream: Replace want_send with the local sending state of the Stream
+    
+    Also require the newest telepathy-glib
+
+commit 78db4e43dcbc8e8fabe87e05a9231b3b6555116a
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-16 14:17:51 -0400
+
+    CallStream: Set local sending to true if a locally-created content wants to send
+
+commit b9926cf5413dde094ae134a84b349e26ffeabfa4
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-13 19:01:35 -0400
+
+    Also check the sending state of non-initial streams
+
+commit a1414b8e991a4a51bb9cc09af29f4e3b56e23289
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-13 18:44:30 -0400
+
+    tests: Expect new contents to be pending_start receiving
+
+commit 12e43de2942da80fb31e59ba334d5813af895fd6
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-09 17:12:24 -0500
+
+    Fix unit tests to use the Telepathy candidate types
+
+commit 72e98283ca6a53b31f45a3fb410324bfba7ec1e1
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-09 16:52:32 -0500
+
+    Convert Telepathy types to Jingle types correctly
+
+commit ceb7985d76f8d2c614344b4b6c68d152384b695b
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-09 16:45:47 -0500
+
+    Correctly convert JingleCandidateType to Telepathy types
+
+commit 8bbc8e408464f65f5cc93ff18109661f297b39d8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-09 10:29:40 -0500
+
+    tube-iface: remove duplicated properties
+    
+    These wouldn't *have* to disappear, but GObject was complaining
+    because GabbleTubeIface:connection was implemented in TpBaseChannel as
+    type TpBaseConnection, when it was expecting a GabbleConnection.
+    
+    Stop crying, you baby.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 0d57767b5f669d51049257bac918a98de798b9e0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-23 12:19:42 +0000
+
+    Link plugins in the same way on Unix as on Windows
+    
+    Reviewed-by: Olli Salli <olli.salli@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+
+commit a167423acad1bbc41d764710fbc1de4347906da6
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-23 12:01:26 +0000
+
+    Build Wocky as a version-specific shared library
+    
+    Reviewed-by: Olli Salli <olli.salli@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+
+commit 9a52bb20676a5290b3778cecb9d5bbc74a928db7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-23 12:29:42 +0000
+
+    Use the standard EXEEXT variable rather than reinventing it
+
+commit 0a7c66f48e2a4f5f1b80237def4063fa952ccc71
+Merge: 52fac35 c8f08ce
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-03-01 17:07:08 +0000
+
+    Merge branch 'detp-jingle'
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=46513
+    
+    Conflicts:
+    	src/ft-channel.c
+
+commit 52fac3507be8db06a9e1ae1b7a3c98a28d02da44
+Merge: 10785ff 491db17
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-02-29 15:02:55 -0500
+
+    Merge branch 'base-channels'
+    
+    Conflicts:
+    	src/Makefile.am
+    	src/tube-dbus.c
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c8f08ceb6e7f44303d1950a565e47f170129e524
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-29 13:22:22 +0000
+
+    CallStream style: add a missing blank line.
+
+commit de5eb4bebefa0d68d7ec081ed5845479c5aeae9e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-29 13:20:50 +0000
+
+    JingleMint: rename ::new-session to ::incoming-session
+    
+    This is Simon's idea, and it's a good one. It makes it clearly a
+    different signal to JingleFactory::new-session, too.
+
+commit f6d4a38fc058300dc2422f61f469ed6a86697ed8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-29 13:14:05 +0000
+
+    JingleInfo: chain up at the end of dispose
+    
+    Simon noticed:
+    
+    > Surely dispose should chain up at the end, not the beginning? I see
+    > dispose and finalize as progressively breaking the functionality of
+    > the object's classes, most-derived first.
+    
+    Yup!
+
+commit cdc02ea04db52b24d84be250893b3bdc750baafe
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-29 13:12:47 +0000
+
+    JingleSession: don't leak in initiate/accept callbacks
+    
+    Simon noticed:
+    
+    > "Send session-{initiate,accept} IQs using porter directly.",
+    > 72ea73343252: I think you're leaking sess in the callbacks, except in
+    > the early-return cases where the state has become inappropriate?
+    
+    He's quite right.
+
+commit 10785ffc0e61d98d6bc23b5281872d7268b3a3a1
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-02-29 11:26:31 +0100
+
+    Include config.h to have GLIB_DISABLE_DEPRECATION_WARNINGS defined
+
+commit a6ef0c0b9d2747baaaa049a6c441da7b94d65265
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-23 12:59:29 +0000
+
+    JingleSession: make _new() take a dialect.
+    
+    Everywhere that creates a new session knows the dialect it wants to use,
+    so let's pass it right into the constructor.
+
+commit da9f352766edf270c907421ea610549593c46325
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-20 15:24:12 +0000
+
+    Represent Jingle relays by a struct, not an aa{sv}
+    
+    This has the dual benefits of removing Telepathy data structures from
+    google-relay.c, and of simplifying the use of these structures in
+    gtalk-file-collection.c.
+
+commit 089a5f2de461d90f9089a68dc11ada1cfc6f58b1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-20 12:35:02 +0000
+
+    Jingle*: stop including util.h
+
+commit ae1d315c9bae65a5dd9c1eacbdcda1aa2ec6408f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-20 12:32:12 +0000
+
+    JingleFactory: drop use of gabble_signal_connect_weak()
+    
+    Wocky doesn't have an equivalent of this function. It's relatively
+    little work to explicitly disconnect from the sessions' ::query-cap
+    signals, so let's do that.
+
+commit ca86afb5cde89cc1832ed002a59cef6f51916ef4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 19:19:44 +0000
+
+    Remove unused JingleInitiator type.
+    
+    It would actually be better if a two-element version of this without the
+    INVALID element had been used throughout rather than booleans to
+    represent the direction of a session… but oh well.
+
+commit d88193074f1f1d9f4d618932821dbab36a474182
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 19:07:19 +0000
+
+    Move Jingle enums and typedefs to a new jingle-types.h
+    
+    For some reason the enums lived in jingle-factory.h before.
+    
+    We do need a separate header for the typedefs because some of the Jingle
+    headers are mutually dependent.
+
+commit ac9ee4a66f56f8c033f150eb5c8a4a9999e475e3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 19:10:27 +0000
+
+    JingleFactory: correct TpChannelGroupChangeReason reference
+
+commit 003e72bc1d8cf70aa595f036ebcfb7e2a542efbb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 18:55:27 +0000
+
+    JingleFactory: drop GabbleConnection dependency.
+    
+    So with this patch, GabbleJingleFactory takes a construct-time
+    WockySession property rather than a GabbleConnection; GabbleJingleMint
+    only creats the factory when the porter (and hence session) becomes
+    available.
+    
+    With this, we've removed the core Jingle code's last significant
+    Gabble/Telepathy dependency.
+
+commit 745b27e041cb9db5b6a1eb920fdaf480a65d4762
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 18:35:05 +0000
+
+    JingleFactory: store WockySession as well as Porter
+    
+    This makes ::porter-available the only place in jingle-factory.c which
+    uses the connection non-trivially, laying the ground for removing it…
+
+commit 081f2e7776614e6e8147909c0e5ab9593a85f2dd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 18:28:08 +0000
+
+    JingleFactory: propagate caps queries out to Mint
+
+commit 4a27eccf389050be52eb4701263e832634fe63ca
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 18:22:01 +0000
+
+    JingleFactory: move pre-initiate presence pushes to Mint
+
+commit 035f99f9c5ea8dbff493555921b6056756106215
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 18:18:44 +0000
+
+    JingleFactory: emit ::new-session for outgoing sessions too
+
+commit 46c47589c95f923453b9f4e3fe4aa6d648e8447b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 18:11:12 +0000
+
+    JingleFactory: explain why create_session() can't emit new-session
+
+commit ad631083a88dfdea01b2a9957eeff9594a97ed7b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 17:55:21 +0000
+
+    JingleFactory: move connection status monitoring to Mint
+
+commit b6ff8bff994babae4afb0e00b8d388b2c37cff8b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 17:49:12 +0000
+
+    JingleFactory: call stop() from dispose()
+    
+    This is currently redundant, but will prevent crashing in a hypothetical
+    situation where the factory gets disposed without anyone calling stop()
+    on it first.
+
+commit 3676e46472aad8a8205cf8618a15b45d07690e2e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 17:47:48 +0000
+
+    JingleFactory: refactor handler-unregistration to a method
+    
+    This will be used by the mint to stop the factory accepting new incoming
+    sessions when the connection starts disconnecting.
+
+commit 618234580dcb23f076d0cc75b69f2cbcc92b96a6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 17:42:19 +0000
+
+    Wrap JingleFactory in a new class, JingleMint.
+    
+    The intention is to move all Gabble-specific code into JingleMint,
+    leaving only the pure angle-bracket distillate behind in JingleFactory,
+    which can then be moved to Wocky. But as of this commit, JingleMint is
+    basically an empty shell: it immediately creates a JingleFactory, and
+    proxies its ::new-session signal.
+    
+    As described in the comments, “mint” is meant in the “factory which
+    makes coins” sense. It seemed like a better name than
+    JingleFactoryFactory.
+
+commit 8b958fc8c845755832b44e00ffb30e235c82994e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 17:32:14 +0000
+
+    JingleFactory: add _new() method
+
+commit 77d5d99e9b608d080cc46c523880eccdc1d5360c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 13:59:35 +0000
+
+    JingleFactory: correct ::new-session's signature
+    
+    GabbleJingleSessions are not mere pointers: they are objects!
+
+commit f40f6c4db3079aa7b4befe70c8a709d49144cc6f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 12:07:07 +0000
+
+    Split Telepathy<->Jingle enum mapping out of Jingle code
+
+commit 51ec259c494d42c30adfb982646eda2805b2ec3d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 11:56:35 +0000
+
+    JingleMediaRtp: drop use of TP_ERRORS
+    
+    Depending on whether an illegal codec update comes from the network or
+    from the local system, we end up wanting either a WOCKY_XMPP_ERROR or a
+    TP_ERROR (to throw back over the wire or in a D-Bus method error,
+    respectively). Previously, this choice was made inside JingleMediaRtp;
+    this patch moves the conversion out to GabbleMediaStream. (The Call
+    codepaths all pass NULL for the GError **... great.)
+
+commit 729d3f4f06eba69e499805b004383aba521c7a35
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 10:41:17 +0000
+
+    Jingle*: spell out tp_clear_{boxed,pointer}
+    
+    Wocky doesn't have things like this. GLib, however, does have
+    g_clear_object() so we can use that in place of tp_clear_object.
+
+commit feb1266ce56e12359a9f2d6ff2325acd0c3a8b56
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 10:28:27 +0000
+
+    JingleSession: spell out tp_str_empty()
+    
+    Wocky doesn't have an equivalent function.
+
+commit b1be04b448e5860f7cadc27ac7a20a81367f4b3a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 10:26:53 +0000
+
+    Jingle*: use wocky_strdiff rather than tp_strdiff
+
+commit 10f9eccfb8e3e1e8f88315b41e6a60a26185db26
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 20:00:23 +0000
+
+    JingleSession: remove GabbleConnection property.
+
+commit dada0afc57d852209a78494c3af12e3704790f1c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 19:48:01 +0000
+
+    JingleSession: move pre-initiate presence pushes to Factory
+    
+    This change has the same rationale as the previous.
+
+commit 78629e08e943bcca2a0d28648c853f5ac50e93b5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 18:02:50 +0000
+
+    JingleSession: delegate capability queries to factory
+    
+    The two remaining bits of code that use GabbleConnection inside
+    GabbleJingleSession use the caps cache and the roster. There is really
+    no good code for these inside Wocky just now (well, WockyRoster exists,
+    but it's not what Gabble uses so the point is moot).
+    
+    I've resigned myself to the fact that GabbleJingleFactory will have to
+    stick around in some form—not least to listen for ::porter-available,
+    and also to dig stun server parameters out of GabbleConnection. So I
+    think the best path to breaking GabbleJingleSession's Gabble addiction
+    is to add some signals which get handled by the Gabble-specific remnants
+    of the JingleFactory.
+    
+    Meanwhile, I noticed that the caps-checking code didn't actually work
+    for the bare-JID case, so fixed that up while moving the code.
+
+commit 28f25af9b2f95103bacb3ab3a005b6cb102950fc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 17:36:48 +0000
+
+    JingleSession: get own full JID from porter.
+
+commit e1a08344fcfaac717bd533c7ea990f82b3c3732d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 17:34:38 +0000
+
+    JingleSession: add a porter property.
+
+commit fd17643d8495e4f3fe87fe3660f7008ee1953eb7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 17:26:31 +0000
+
+    JingleFactory: pass self to JingleSession
+    
+    This avoids the JingleSession having to go via its GabbleConnection to
+    get back to the JingleFactory which created it.
+
+commit 39b90872eb4939ba4b4262ababc7ae54743fa465
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 16:04:47 +0000
+
+    JingleContent: don't store a GabbleConnection.
+
+commit 41c4e316f12c7bbd285702ca74e3e4c2d7af6ee2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 16:27:16 +0000
+
+    CallStream: don't grab Connection from JingleContent.
+
+commit 2863cdcee0c4d464a0f15f587e20f3a8f67c5014
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 16:03:06 +0000
+
+    MediaStream: don't grab Connection from JingleContent.
+    
+    Previously, GabbleMediaStream was getting to the JingleFactory for its
+    content via the connection object stored by the content. Instead, go via
+    the JingleSession stored by the content (so that we can stop storing the
+    connection in the content).
+
+commit 679cfd663064781d1ca60d5ed8dae8cab85cb594
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 16:21:06 +0000
+
+    MediaStream: add a TpDBusDaemon property.
+    
+    Previously it was retrieved from the JingleContent, via the
+    GabbleConnection it stores. But the Jingle code shouldn't know anything
+    about Telepathy.
+
+commit 5410295679bb8ff4a0aad3eb38cc5717124fb5c5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 15:41:11 +0000
+
+    JingleFactory: remove prototype for long-dead function.
+    
+    I removed _jingle_factory_unregister_session() way back in 2009 with
+    commit fd410e9.
+
+commit a101f15d96f43c4a5c3da10d6acf485ad22bafa9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 13:11:57 +0000
+
+    JingleSession: remove unused handle-repo-dynamic import.
+
+commit 570ad5f69f99f4eace580998d0e5df76f100e74f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-23 12:36:36 +0000
+
+    JingleInfo: don't crash when disconnecting before reply.
+    
+    For some reason I can't quite discern, this didn't crash before the
+    previous patch but does afterwards. Oh well. Here's a fix.
+
+commit 51767ee2ec4423c00199fe4e0411f0b83d61aa2f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 11:21:40 +0000
+
+    Split google:jingleinfo code out from JingleFactory
+    
+    I am a terrible person and included a couple of changes in this which
+    are not just moving code around:
+    
+    • When parsing STUN server info out of a jingle:info stanza, we no
+      longer use GABBLE_PARAMS_DEFAULT_STUN_PORT as the default if the
+      <server> element does not have a udp='' attribute. (Which seems
+      uncontroversial: if the server erroneously leaves out that attribute,
+      the chances of it happening to listen on
+      GABBLE_PARAMS_DEFAULT_STUN_PORT is pretty low.)
+    
+    • Rather than using conn_util_send_iq_async(), we use
+      wocky_porter_send_iq_async() plus wocky_stanza_extract_errors() to
+      send the jingleinfo request. Wocky doesn't have something like
+      conn_util_send_iq_async(), and this branch is really about removing
+      Gabble dependencies from the Jingle code.
+
+commit f2b8df3800135b115bd801921a626bc7edde90e0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 15:56:26 +0000
+
+    JingleFactory: store WockyPorter
+
+commit 90b7b2911a76ed9335d161d88fd6a7dd7a2ba41e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 15:42:21 +0000
+
+    gabble_jingle_session_send: drop callback arguments.
+    
+    Since nothing uses the weak_object argument any more, we can drop it,
+    and hence stop using _gabble_connection_send_with_reply() in favour of
+    wocky_porter_send_iq_async() directly. One less bit of Gabble inside the
+    Jingle code!
+
+commit 72ea73343252d8ac6b792f9f4035cd511290a33d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 15:41:40 +0000
+
+    Send session-{initiate,accept} IQs using porter directly.
+    
+    This is the second and final place where the callback arguments to
+    gabble_jingle_session_send() were used.
+
+commit a2e03f323dcb96d3043baef52a04eb41f22c6440
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 15:40:22 +0000
+
+    Content: use porter directly to send content-remove
+    
+    This is one of only two places which passes a callback to
+    gabble_jingle_session_send(), so let's just spell it out.
+
+commit d039d1900888a828e2fc686c331cdfcaca8931ef
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 15:12:04 +0000
+
+    Session: tolerate being outlived by contents
+    
+    Never disconnecting these signals happens to be safe because
+    GabbleJingleSession always holds the last reference to
+    GabbleJingleContent, but it feels fragile.
+
+commit 91e8bc6b3a74cfdf2aaf685fc8883f3344c4e228
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 12:56:23 +0000
+
+    Jingle transports: stop using GabbleConnection
+
+commit 534bfa15133ead76a46a22f9f8e788c159fb2541
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 12:48:08 +0000
+
+    JingleSession: add and use factory accessor.
+
+commit 8080a905390ad9ca51059db15277930af6cc6bae
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 12:06:15 +0000
+
+    JingleSession: localize use of peer handle.
+    
+    Now that we only use a handle in one place, let's move everything to do
+    with it there.
+
+commit 1dbbf70e672bcccef88c19b66ebb47bf4897a7fa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 12:04:30 +0000
+
+    JingleSession: remove "peer" GObject property.
+
+commit bd654d2d812a1d5edae9796a20fca0b81dbfbaf7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 12:02:32 +0000
+
+    JingleSession: remove get_peer_handle.
+    
+    The session unfortunately still uses the handle internally…
+
+commit a15ae7cf17528dd7a0d24386025cfe450c93cda2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 11:59:50 +0000
+
+    media-factory: stop using gabble_jingle_session_get_peer_handle
+
+commit 7f40e47b980f917fa01d8d1f1012e4fb5a6f1559
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 11:54:10 +0000
+
+    ft-manager: stop using gabble_jingle_session_get_peer_handle
+
+commit b8ac1245d91828644f8ef37a9d107a12ae087275
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-14 18:00:52 +0000
+
+    Call: stop using gabble_jingle_session_get_peer_handle
+
+commit 363b2c580cb5500979020221b74e4889c59f93c2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-07 11:55:42 +0000
+
+    MediaChannel: store peer's handle.
+    
+    This removes its dependency on GabbleJingleSession knowing about
+    handles, and is less code.
+
+commit d884caf42e3e4608b5db84a6d1411c67aa9db925
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 17:38:09 +0100
+
+    MediaChannel: use gabble_jingle_session_get_peer_handle()
+    
+    Previously for some reason this was using g_object_get (..., "peer").
+    Calling a function instead makes it easier to see what needs changing.
+
+commit 819be150a66f99a1be524f31e0c8985aa613553d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 16:29:58 +0000
+
+    JingleSession: look up presence by WockyContact.
+
+commit ca9f3991776c9c277178f88c51941b6cad09800a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 16:27:31 +0000
+
+    PresenceCache: add WockyContact-based lookup.
+
+commit c5328de7a89e2882036b64ba19a2c5bc3e8e70ce
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-07 19:26:01 +0000
+
+    util: add helper to fetch TpHandle for WockyContact
+
+commit 97d9c5ae3afc425eb8db91cbe83c37289e1baa5d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 15:21:34 +0000
+
+    JingleMediaRTP: use jingle_session_peer_has_cap()
+    
+    The body of content_has_cap() is basically identical to the body of
+    gabble_jingle_session_peer_has_cap(), so let's delete the former.
+
+commit 63ade9c2226b72739b53039e26a31b483162aba5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 15:15:56 +0000
+
+    JingleSession: rename _peer_has_quirk to _peer_has_cap
+    
+    There's nothing quirk-specific about the function.
+
+commit 8bd15af6cae7e90c97b81690a44bd2e43e1ab5e8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 16:25:24 +0000
+
+    JingleFactory: stop dabbling in handles.
+
+commit bc53ec13c956191ab00cdf29236effac6d98651e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 16:18:11 +0000
+
+    JingleSession: remove defunct handle refcounting
+
+commit 2ad876aee650c4977f214a6d14b6852e164a6a82
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 16:15:34 +0000
+
+    JingleSession: grab resource from WockyResourceContact
+
+commit 439380da7a6a49f5e5255dcf691c24f3aec669ad
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 16:11:19 +0000
+
+    JingleSession: hold a WockyContact.
+
+commit b516378e41944381ccea6f29821ce7ac41a4cada
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 15:40:02 +0000
+
+    JingleFactory: exclude handle from session map keys
+    
+    The handle doesn't provide any additional information over the JID; it
+    is a relic of when the format was "<handle>\n<resource>\n<session id>".
+
+commit 512c7492c2cb925e0260043a89170cda0907566c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-01 16:55:46 +0000
+
+    JingleSession: move TpHandle peer to private structure
+
+commit 1fc97cba57211fa8075c08ed63d882950b0d9451
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-02-13 13:25:25 +0100
+
+    groups.py: test RenameGroup()
+    
+    This has been started as a regression test for fdo#45982 which turned to be a
+    tp-glib bug. So we shouldn't merge this commit to master until we depend on a
+    fixed tp-glib.
+
+commit f6eda33b8127fd18a81495c221fed4ac57eba37e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-02-13 11:51:11 +0100
+
+    groups.py: factor out send_roster_push()
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=45982
+
+commit 40283718ad184b014f4941a3126e5dfa0ed0640c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-02-13 11:43:17 +0100
+
+    groups.py: factor out parse_roster_change_request()
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=45982
+
+commit dcc73750bceb0e7b1bd865fde5744583cb75300c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-21 21:59:58 +0000
+
+    Nano version
+
 commit 04c7829858da40f943363cfc3e61aa76f68c59ac
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2012-02-21 21:02:10 +0000
@@ -119,6 +1050,33 @@ Author: Olivier Crête <olivier.crete@collabora.com>
 Date:   2012-02-16 16:19:28 -0500
 
     Add a direction parameter to AddContent
+
+commit 491db173ad4da5ce4f5ff8d90d1a7ea20aed7785
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-02-14 18:54:37 -0500
+
+    tube-stream: subclass TpBaseChannel
+    
+    See also: exactly the same commit to GabbleTubeDBus.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit efbde4c8755e1bf55752ddb170d80a122f482afa
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-02-03 19:44:09 -0500
+
+    tube-dbus: subclass TpBaseChannel
+    
+    This one is complicated because the old GabbleTubeDBus handled both
+    TargetHandleType as Contact *and* Room. TpBaseChannel sets the
+    TargetHandleType per class so makes this hard. The easiest way to do
+    this is to have a really dummy subclass for MUCs to change the
+    TargetHandleType (and interfaces, to add Group).
+    
+    It would be nice in future to move the actual MUC stuff into
+    GabbleMucTubeDbus, but that's for another day.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
 commit 571037bf029f2cd46f85a50d7d2b0892ae50be10
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -347,6 +1305,14 @@ Date:   2012-02-01 16:09:56 +0000
     Update Wocky snapshot for One Big Header.
     
     https://bugs.freedesktop.org/show_bug.cgi?id=27489
+
+commit 3e0c8b55b81207f7842495b4ab9f59f0de655ae3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-02-03 14:31:13 -0500
+
+    ft-channel: subclass TpBaseChannel
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
 commit ab745cbdead64a313fe3e8859cec5bf7c4382dc9
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>

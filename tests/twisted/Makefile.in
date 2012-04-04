@@ -148,12 +148,13 @@ am__nobase_dist_twistedtests_DATA_DIST = addressing.py \
 	connect/disco-error-from-bare-jid.py \
 	connect/disconnect-timeout.py connect/disco-no-reply.py \
 	connect/network-error.py connect/stream-closed.py \
-	connect/test-fail.py connect/test-nonblocking-tls.py \
-	connect/test-success.py connect/test-twice.py console.py \
-	dataforms.py gateways.py last-activity.py mail-notification.py \
-	muc/avatars.py muc/banned.py muc/chat-states.py \
-	muc/conference.py muc/kicked.py muc/name-conflict.py \
-	muc/password.py muc/presence-before-closing.py muc/renamed.py \
+	connect/test-connection-params.py connect/test-fail.py \
+	connect/test-nonblocking-tls.py connect/test-success.py \
+	connect/test-twice.py console.py dataforms.py gateways.py \
+	last-activity.py mail-notification.py muc/avatars.py \
+	muc/banned.py muc/chat-states.py muc/conference.py \
+	muc/kicked.py muc/name-conflict.py muc/password.py \
+	muc/presence-before-closing.py muc/renamed.py \
 	muc/room-config.py muc/roomlist.py muc/room.py \
 	muc/scrollback.py muc/send-error.py muc/subject.py \
 	muc/test-ensure.py muc/test-muc-alias.py \
@@ -420,6 +421,8 @@ oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 pkgpyexecdir = @pkgpyexecdir@
 pkgpythondir = @pkgpythondir@
+pluginexecdir = @pluginexecdir@
+pluginexeclibdir = @pluginexeclibdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
@@ -445,12 +448,13 @@ TWISTED_TESTS = addressing.py avatar-requirements.py \
 	connect/disco-error-from-bare-jid.py \
 	connect/disconnect-timeout.py connect/disco-no-reply.py \
 	connect/network-error.py connect/stream-closed.py \
-	connect/test-fail.py connect/test-nonblocking-tls.py \
-	connect/test-success.py connect/test-twice.py console.py \
-	dataforms.py gateways.py last-activity.py mail-notification.py \
-	muc/avatars.py muc/banned.py muc/chat-states.py \
-	muc/conference.py muc/kicked.py muc/name-conflict.py \
-	muc/password.py muc/presence-before-closing.py muc/renamed.py \
+	connect/test-connection-params.py connect/test-fail.py \
+	connect/test-nonblocking-tls.py connect/test-success.py \
+	connect/test-twice.py console.py dataforms.py gateways.py \
+	last-activity.py mail-notification.py muc/avatars.py \
+	muc/banned.py muc/chat-states.py muc/conference.py \
+	muc/kicked.py muc/name-conflict.py muc/password.py \
+	muc/presence-before-closing.py muc/renamed.py \
 	muc/room-config.py muc/roomlist.py muc/room.py \
 	muc/scrollback.py muc/send-error.py muc/subject.py \
 	muc/test-ensure.py muc/test-muc-alias.py \
@@ -688,6 +692,10 @@ CHECK_TWISTED_SLEEP = 0
 @ENABLE_GOOGLE_RELAY_TRUE@GOOGLE_RELAY_ENABLED_PYBOOL = True
 @ENABLE_FILE_TRANSFER_FALSE@FILE_TRANSFER_ENABLED_PYBOOL = False
 @ENABLE_FILE_TRANSFER_TRUE@FILE_TRANSFER_ENABLED_PYBOOL = True
+@ENABLE_VOIP_FALSE@VOIP_ENABLED_PYBOOL = False
+@ENABLE_VOIP_TRUE@VOIP_ENABLED_PYBOOL = True
+@ENABLE_JINGLE_FILE_TRANSFER_FALSE@JINGLE_FILE_TRANSFER_ENABLED_PYBOOL = False
+@ENABLE_JINGLE_FILE_TRANSFER_TRUE@JINGLE_FILE_TRANSFER_ENABLED_PYBOOL = True
 BUILT_SOURCES = config.py $(service_files) $(installed_conf_files) \
 	$(uninstalled_service_files) $(uninstalled_conf_files) \
 	run-test.sh tools/exec-with-log.sh tools/run-gabble.sh $(NULL)
@@ -1347,6 +1355,8 @@ config.py: Makefile
 		echo "CHANNEL_TYPE_CALL_ENABLED = $(CHANNEL_TYPE_CALL_ENABLED_PYBOOL)"; \
 		echo "GOOGLE_RELAY_ENABLED = $(GOOGLE_RELAY_ENABLED_PYBOOL)"; \
 		echo "FILE_TRANSFER_ENABLED = $(FILE_TRANSFER_ENABLED_PYBOOL)"; \
+		echo "VOIP_ENABLED = $(VOIP_ENABLED_PYBOOL)"; \
+		echo "JINGLE_FILE_TRANSFER_ENABLED = $(JINGLE_FILE_TRANSFER_ENABLED_PYBOOL)"; \
 	} > $@
 check-coding-style:
 	@fail=0; \

@@ -19,8 +19,6 @@ libgabble_convenience_la_SOURCES = \
     auth-manager.c \
     base64.h \
     base64.c \
-    base-call-channel.h \
-    base-call-channel.c \
     bytestream-factory.h \
     bytestream-factory.c \
     bytestream-ibb.h \
@@ -33,18 +31,6 @@ libgabble_convenience_la_SOURCES = \
     bytestream-multiple.c \
     bytestream-socks5.h \
     bytestream-socks5.c \
-    call-content.h \
-    call-content.c \
-    call-channel.h \
-    call-channel.c \
-    call-muc-channel.h \
-    call-muc-channel.c \
-    call-member.h \
-    call-member.c \
-    call-member-content.h \
-    call-member-content.c \
-    call-stream.h \
-    call-stream.c \
     capabilities.c \
     caps-hash.h \
     caps-hash.c \
@@ -85,46 +71,22 @@ libgabble_convenience_la_SOURCES = \
     error.h \
     gabble.c \
     gabble.h \
-    google-relay.c \
-    google-relay.h \
     im-channel.h \
     im-channel.c \
     im-factory.h \
     im-factory.c \
-    jingle-content.h \
-    jingle-content.c \
-    jingle-factory.h \
-    jingle-factory.c \
-    jingle-share.h \
-    jingle-share.c \
-    jingle-media-rtp.h \
-    jingle-media-rtp.c \
-    jingle-session.h \
-    jingle-session.c \
-    jingle-transport-google.h \
-    jingle-transport-google.c \
-    jingle-transport-rawudp.h \
-    jingle-transport-rawudp.c \
-    jingle-transport-iceudp.h \
-    jingle-transport-iceudp.c \
-    jingle-transport-iface.h \
-    jingle-transport-iface.c \
     legacy-caps.h \
     legacy-caps.c \
-    media-channel.h \
-    media-channel-internal.h \
-    media-channel.c \
-    media-channel-hold.c \
-    media-stream.h \
-    media-stream.c \
-    media-factory.h \
-    media-factory.c \
     message-util.h \
     message-util.c \
     muc-channel.h \
     muc-channel.c \
     muc-factory.h \
     muc-factory.c \
+    muc-tube-dbus.h \
+    muc-tube-dbus.c \
+    muc-tube-stream.h \
+    muc-tube-stream.c \
     namespaces.h \
     olpc-activity.h \
     olpc-activity.c \
@@ -180,22 +142,71 @@ libgabble_convenience_la_SOURCES += \
     ft-channel.c \
     ft-channel.h \
     ft-manager.c \
-    ft-manager.h \
-    gtalk-file-collection.h \
-    gtalk-file-collection.c
-else
-EXTRA_DIST += \
-    ft-channel.c \
-    ft-channel.h \
-    ft-manager.c \
-    ft-manager.h \
-    gtalk-file-collection.h \
-    gtalk-file-collection.c
+    ft-manager.h
+endif
+
+if ENABLE_VOIP
+libgabble_convenience_la_SOURCES += \
+    base-call-channel.h \
+    base-call-channel.c \
+    call-content.h \
+    call-content.c \
+    call-channel.h \
+    call-channel.c \
+    call-muc-channel.h \
+    call-muc-channel.c \
+    call-member.h \
+    call-member.c \
+    call-member-content.h \
+    call-member-content.c \
+    call-stream.h \
+    call-stream.c \
+    google-relay.c \
+    google-relay.h \
+    jingle-content.h \
+    jingle-content.c \
+    jingle-factory.h \
+    jingle-factory.c \
+    jingle-info.c \
+    jingle-info.h \
+    jingle-share.h \
+    jingle-share.c \
+    jingle-media-rtp.h \
+    jingle-media-rtp.c \
+    jingle-mint.h \
+    jingle-mint.c \
+    jingle-session.h \
+    jingle-session.c \
+    jingle-tp-util.h \
+    jingle-tp-util.c \
+    jingle-transport-google.h \
+    jingle-transport-google.c \
+    jingle-transport-rawudp.h \
+    jingle-transport-rawudp.c \
+    jingle-transport-iceudp.h \
+    jingle-transport-iceudp.c \
+    jingle-transport-iface.h \
+    jingle-transport-iface.c \
+    jingle-types.h \
+    media-channel.h \
+    media-channel-internal.h \
+    media-channel.c \
+    media-channel-hold.c \
+    media-stream.h \
+    media-stream.c \
+    media-factory.h \
+    media-factory.c
+endif
+
+if ENABLE_JINGLE_FILE_TRANSFER
+libgabble_convenience_la_SOURCES += \
+    gtalk-file-collection.c \
+    gtalk-file-collection.h
 endif
 
 enumtype_sources = \
     $(top_srcdir)/src/connection.h \
-    $(top_srcdir)/src/jingle-factory.h \
+    $(top_srcdir)/src/jingle-types.h \
     $(top_srcdir)/src/room-config.h \
     $(top_srcdir)/src/presence.h
 
@@ -228,9 +239,15 @@ telepathy_gabble_LDFLAGS = -export-dynamic
 
 noinst_LTLIBRARIES = libgabble-convenience.la
 
-lib_LTLIBRARIES = libgabble-plugins.la
+pluginexeclib_LTLIBRARIES = libgabble-plugins.la
 
-libgabble_plugins_la_LDFLAGS = -shared -no-undefined -avoid-version
+# Gabble's plugin API is not stable yet (it can't be, since neither is Wocky),
+# so use -release to make the SONAME of the plugin library change with every
+# Gabble release.
+libgabble_plugins_la_LDFLAGS = \
+   -no-undefined \
+   -release $(VERSION) \
+   $(NULL)
 
 libgabble_plugins_la_LIBADD = \
    $(ALL_LIBS)
@@ -250,7 +267,7 @@ AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @GMODULE_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
 	    -DG_LOG_DOMAIN=\"gabble\" \
-	    -DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\"
+	    -DPLUGIN_DIR=\"$(pluginexecdir)\"
 
 # following flag is requied to make getnameinfo work
 if WINDOWS

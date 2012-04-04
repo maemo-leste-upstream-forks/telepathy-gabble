@@ -13,6 +13,12 @@ from call_helper import CallTest, run_call_test
 import constants as cs
 import dbus
 
+from config import VOIP_ENABLED
+
+if not VOIP_ENABLED:
+    print "NOTE: built with --disable-voip"
+    raise SystemExit(77)
+
 class CallContentAddingRemovalTest(CallTest):
 
     # A/V
@@ -54,7 +60,7 @@ class CallContentAddingRemovalTest(CallTest):
             dbus_interface=cs.CHANNEL_TYPE_CALL);
         self.q.expect('dbus-signal', signal='ContentAdded')
 
-        self.store_content(content_path, initial=False)
+        self.store_content(content_path, initial=False, incoming=False)
 
         md = self.jt2.get_call_video_md_dbus()
         self.check_and_accept_offer(self.video_content, md)
