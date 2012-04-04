@@ -41,23 +41,68 @@ noinst_PROGRAMS = write-mgr-file$(EXEEXT)
 @ENABLE_FILE_TRANSFER_TRUE@    ft-channel.c \
 @ENABLE_FILE_TRANSFER_TRUE@    ft-channel.h \
 @ENABLE_FILE_TRANSFER_TRUE@    ft-manager.c \
-@ENABLE_FILE_TRANSFER_TRUE@    ft-manager.h \
-@ENABLE_FILE_TRANSFER_TRUE@    gtalk-file-collection.h \
-@ENABLE_FILE_TRANSFER_TRUE@    gtalk-file-collection.c
+@ENABLE_FILE_TRANSFER_TRUE@    ft-manager.h
 
-@ENABLE_FILE_TRANSFER_FALSE@am__append_2 = \
-@ENABLE_FILE_TRANSFER_FALSE@    ft-channel.c \
-@ENABLE_FILE_TRANSFER_FALSE@    ft-channel.h \
-@ENABLE_FILE_TRANSFER_FALSE@    ft-manager.c \
-@ENABLE_FILE_TRANSFER_FALSE@    ft-manager.h \
-@ENABLE_FILE_TRANSFER_FALSE@    gtalk-file-collection.h \
-@ENABLE_FILE_TRANSFER_FALSE@    gtalk-file-collection.c
+@ENABLE_VOIP_TRUE@am__append_2 = \
+@ENABLE_VOIP_TRUE@    base-call-channel.h \
+@ENABLE_VOIP_TRUE@    base-call-channel.c \
+@ENABLE_VOIP_TRUE@    call-content.h \
+@ENABLE_VOIP_TRUE@    call-content.c \
+@ENABLE_VOIP_TRUE@    call-channel.h \
+@ENABLE_VOIP_TRUE@    call-channel.c \
+@ENABLE_VOIP_TRUE@    call-muc-channel.h \
+@ENABLE_VOIP_TRUE@    call-muc-channel.c \
+@ENABLE_VOIP_TRUE@    call-member.h \
+@ENABLE_VOIP_TRUE@    call-member.c \
+@ENABLE_VOIP_TRUE@    call-member-content.h \
+@ENABLE_VOIP_TRUE@    call-member-content.c \
+@ENABLE_VOIP_TRUE@    call-stream.h \
+@ENABLE_VOIP_TRUE@    call-stream.c \
+@ENABLE_VOIP_TRUE@    google-relay.c \
+@ENABLE_VOIP_TRUE@    google-relay.h \
+@ENABLE_VOIP_TRUE@    jingle-content.h \
+@ENABLE_VOIP_TRUE@    jingle-content.c \
+@ENABLE_VOIP_TRUE@    jingle-factory.h \
+@ENABLE_VOIP_TRUE@    jingle-factory.c \
+@ENABLE_VOIP_TRUE@    jingle-info.c \
+@ENABLE_VOIP_TRUE@    jingle-info.h \
+@ENABLE_VOIP_TRUE@    jingle-share.h \
+@ENABLE_VOIP_TRUE@    jingle-share.c \
+@ENABLE_VOIP_TRUE@    jingle-media-rtp.h \
+@ENABLE_VOIP_TRUE@    jingle-media-rtp.c \
+@ENABLE_VOIP_TRUE@    jingle-mint.h \
+@ENABLE_VOIP_TRUE@    jingle-mint.c \
+@ENABLE_VOIP_TRUE@    jingle-session.h \
+@ENABLE_VOIP_TRUE@    jingle-session.c \
+@ENABLE_VOIP_TRUE@    jingle-tp-util.h \
+@ENABLE_VOIP_TRUE@    jingle-tp-util.c \
+@ENABLE_VOIP_TRUE@    jingle-transport-google.h \
+@ENABLE_VOIP_TRUE@    jingle-transport-google.c \
+@ENABLE_VOIP_TRUE@    jingle-transport-rawudp.h \
+@ENABLE_VOIP_TRUE@    jingle-transport-rawudp.c \
+@ENABLE_VOIP_TRUE@    jingle-transport-iceudp.h \
+@ENABLE_VOIP_TRUE@    jingle-transport-iceudp.c \
+@ENABLE_VOIP_TRUE@    jingle-transport-iface.h \
+@ENABLE_VOIP_TRUE@    jingle-transport-iface.c \
+@ENABLE_VOIP_TRUE@    jingle-types.h \
+@ENABLE_VOIP_TRUE@    media-channel.h \
+@ENABLE_VOIP_TRUE@    media-channel-internal.h \
+@ENABLE_VOIP_TRUE@    media-channel.c \
+@ENABLE_VOIP_TRUE@    media-channel-hold.c \
+@ENABLE_VOIP_TRUE@    media-stream.h \
+@ENABLE_VOIP_TRUE@    media-stream.c \
+@ENABLE_VOIP_TRUE@    media-factory.h \
+@ENABLE_VOIP_TRUE@    media-factory.c
+
+@ENABLE_JINGLE_FILE_TRANSFER_TRUE@am__append_3 = \
+@ENABLE_JINGLE_FILE_TRANSFER_TRUE@    gtalk-file-collection.c \
+@ENABLE_JINGLE_FILE_TRANSFER_TRUE@    gtalk-file-collection.h
 
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/tools/check-coding-style.mk
 
 # following flag is requied to make getnameinfo work
-@WINDOWS_TRUE@am__append_3 = -D_WIN32_WINNT=0x0501
+@WINDOWS_TRUE@am__append_4 = -D_WIN32_WINNT=0x0501
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_config_dir.m4 \
@@ -100,8 +145,9 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libexecdir)"
-LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
+am__installdirs = "$(DESTDIR)$(pluginexeclibdir)" \
+	"$(DESTDIR)$(libexecdir)"
+LTLIBRARIES = $(noinst_LTLIBRARIES) $(pluginexeclib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libgabble_convenience_la_DEPENDENCIES =  \
 	$(top_builddir)/extensions/libgabble-extensions.la \
@@ -109,38 +155,26 @@ libgabble_convenience_la_DEPENDENCIES =  \
 	$(am__DEPENDENCIES_1)
 am__libgabble_convenience_la_SOURCES_DIST = addressing-util.h \
 	addressing-util.c auth-manager.h auth-manager.c base64.h \
-	base64.c base-call-channel.h base-call-channel.c \
-	bytestream-factory.h bytestream-factory.c bytestream-ibb.h \
-	bytestream-ibb.c bytestream-iface.h bytestream-iface.c \
-	bytestream-muc.h bytestream-muc.c bytestream-multiple.h \
-	bytestream-multiple.c bytestream-socks5.h bytestream-socks5.c \
-	call-content.h call-content.c call-channel.h call-channel.c \
-	call-muc-channel.h call-muc-channel.c call-member.h \
-	call-member.c call-member-content.h call-member-content.c \
-	call-stream.h call-stream.c capabilities.c caps-hash.h \
-	caps-hash.c caps-channel-manager.c conn-addressing.h \
-	conn-addressing.c conn-aliasing.h conn-aliasing.c \
-	conn-avatars.h conn-avatars.c conn-client-types.h \
-	conn-client-types.c conn-contact-info.h conn-contact-info.c \
-	conn-location.h conn-location.c conn-olpc.h conn-olpc.c \
-	conn-power-saving.h conn-power-saving.c conn-presence.h \
-	conn-presence.c conn-sidecars.h conn-sidecars.c conn-util.h \
-	conn-util.c conn-mail-notif.h conn-mail-notif.c connection.h \
-	connection.c connection-manager.h connection-manager.c debug.h \
-	debug.c disco.h disco.c error.c error.h gabble.c gabble.h \
-	google-relay.c google-relay.h im-channel.h im-channel.c \
-	im-factory.h im-factory.c jingle-content.h jingle-content.c \
-	jingle-factory.h jingle-factory.c jingle-share.h \
-	jingle-share.c jingle-media-rtp.h jingle-media-rtp.c \
-	jingle-session.h jingle-session.c jingle-transport-google.h \
-	jingle-transport-google.c jingle-transport-rawudp.h \
-	jingle-transport-rawudp.c jingle-transport-iceudp.h \
-	jingle-transport-iceudp.c jingle-transport-iface.h \
-	jingle-transport-iface.c legacy-caps.h legacy-caps.c \
-	media-channel.h media-channel-internal.h media-channel.c \
-	media-channel-hold.c media-stream.h media-stream.c \
-	media-factory.h media-factory.c message-util.h message-util.c \
-	muc-channel.h muc-channel.c muc-factory.h muc-factory.c \
+	base64.c bytestream-factory.h bytestream-factory.c \
+	bytestream-ibb.h bytestream-ibb.c bytestream-iface.h \
+	bytestream-iface.c bytestream-muc.h bytestream-muc.c \
+	bytestream-multiple.h bytestream-multiple.c \
+	bytestream-socks5.h bytestream-socks5.c capabilities.c \
+	caps-hash.h caps-hash.c caps-channel-manager.c \
+	conn-addressing.h conn-addressing.c conn-aliasing.h \
+	conn-aliasing.c conn-avatars.h conn-avatars.c \
+	conn-client-types.h conn-client-types.c conn-contact-info.h \
+	conn-contact-info.c conn-location.h conn-location.c \
+	conn-olpc.h conn-olpc.c conn-power-saving.h \
+	conn-power-saving.c conn-presence.h conn-presence.c \
+	conn-sidecars.h conn-sidecars.c conn-util.h conn-util.c \
+	conn-mail-notif.h conn-mail-notif.c connection.h connection.c \
+	connection-manager.h connection-manager.c debug.h debug.c \
+	disco.h disco.c error.c error.h gabble.c gabble.h im-channel.h \
+	im-channel.c im-factory.h im-factory.c legacy-caps.h \
+	legacy-caps.c message-util.h message-util.c muc-channel.h \
+	muc-channel.c muc-factory.h muc-factory.c muc-tube-dbus.h \
+	muc-tube-dbus.c muc-tube-stream.h muc-tube-stream.c \
 	namespaces.h olpc-activity.h olpc-activity.c plugin-loader.h \
 	plugin-loader.c presence.h presence.c presence-cache.h \
 	presence-cache.c protocol.h protocol.c private-tubes-factory.h \
@@ -155,38 +189,64 @@ am__libgabble_convenience_la_SOURCES_DIST = addressing-util.h \
 	tube-iface.c tubes-channel.h tubes-channel.c tube-dbus.h \
 	tube-dbus.c tube-stream.h tube-stream.c types.h util.h util.c \
 	vcard-manager.h vcard-manager.c ft-channel.c ft-channel.h \
-	ft-manager.c ft-manager.h gtalk-file-collection.h \
-	gtalk-file-collection.c
-@ENABLE_FILE_TRANSFER_TRUE@am__objects_1 = ft-channel.lo ft-manager.lo \
-@ENABLE_FILE_TRANSFER_TRUE@	gtalk-file-collection.lo
+	ft-manager.c ft-manager.h base-call-channel.h \
+	base-call-channel.c call-content.h call-content.c \
+	call-channel.h call-channel.c call-muc-channel.h \
+	call-muc-channel.c call-member.h call-member.c \
+	call-member-content.h call-member-content.c call-stream.h \
+	call-stream.c google-relay.c google-relay.h jingle-content.h \
+	jingle-content.c jingle-factory.h jingle-factory.c \
+	jingle-info.c jingle-info.h jingle-share.h jingle-share.c \
+	jingle-media-rtp.h jingle-media-rtp.c jingle-mint.h \
+	jingle-mint.c jingle-session.h jingle-session.c \
+	jingle-tp-util.h jingle-tp-util.c jingle-transport-google.h \
+	jingle-transport-google.c jingle-transport-rawudp.h \
+	jingle-transport-rawudp.c jingle-transport-iceudp.h \
+	jingle-transport-iceudp.c jingle-transport-iface.h \
+	jingle-transport-iface.c jingle-types.h media-channel.h \
+	media-channel-internal.h media-channel.c media-channel-hold.c \
+	media-stream.h media-stream.c media-factory.h media-factory.c \
+	gtalk-file-collection.c gtalk-file-collection.h
+@ENABLE_FILE_TRANSFER_TRUE@am__objects_1 = ft-channel.lo ft-manager.lo
+@ENABLE_VOIP_TRUE@am__objects_2 = base-call-channel.lo call-content.lo \
+@ENABLE_VOIP_TRUE@	call-channel.lo call-muc-channel.lo \
+@ENABLE_VOIP_TRUE@	call-member.lo call-member-content.lo \
+@ENABLE_VOIP_TRUE@	call-stream.lo google-relay.lo \
+@ENABLE_VOIP_TRUE@	jingle-content.lo jingle-factory.lo \
+@ENABLE_VOIP_TRUE@	jingle-info.lo jingle-share.lo \
+@ENABLE_VOIP_TRUE@	jingle-media-rtp.lo jingle-mint.lo \
+@ENABLE_VOIP_TRUE@	jingle-session.lo jingle-tp-util.lo \
+@ENABLE_VOIP_TRUE@	jingle-transport-google.lo \
+@ENABLE_VOIP_TRUE@	jingle-transport-rawudp.lo \
+@ENABLE_VOIP_TRUE@	jingle-transport-iceudp.lo \
+@ENABLE_VOIP_TRUE@	jingle-transport-iface.lo media-channel.lo \
+@ENABLE_VOIP_TRUE@	media-channel-hold.lo media-stream.lo \
+@ENABLE_VOIP_TRUE@	media-factory.lo
+@ENABLE_JINGLE_FILE_TRANSFER_TRUE@am__objects_3 =  \
+@ENABLE_JINGLE_FILE_TRANSFER_TRUE@	gtalk-file-collection.lo
 am_libgabble_convenience_la_OBJECTS = addressing-util.lo \
-	auth-manager.lo base64.lo base-call-channel.lo \
-	bytestream-factory.lo bytestream-ibb.lo bytestream-iface.lo \
-	bytestream-muc.lo bytestream-multiple.lo bytestream-socks5.lo \
-	call-content.lo call-channel.lo call-muc-channel.lo \
-	call-member.lo call-member-content.lo call-stream.lo \
-	capabilities.lo caps-hash.lo caps-channel-manager.lo \
-	conn-addressing.lo conn-aliasing.lo conn-avatars.lo \
-	conn-client-types.lo conn-contact-info.lo conn-location.lo \
-	conn-olpc.lo conn-power-saving.lo conn-presence.lo \
-	conn-sidecars.lo conn-util.lo conn-mail-notif.lo connection.lo \
+	auth-manager.lo base64.lo bytestream-factory.lo \
+	bytestream-ibb.lo bytestream-iface.lo bytestream-muc.lo \
+	bytestream-multiple.lo bytestream-socks5.lo capabilities.lo \
+	caps-hash.lo caps-channel-manager.lo conn-addressing.lo \
+	conn-aliasing.lo conn-avatars.lo conn-client-types.lo \
+	conn-contact-info.lo conn-location.lo conn-olpc.lo \
+	conn-power-saving.lo conn-presence.lo conn-sidecars.lo \
+	conn-util.lo conn-mail-notif.lo connection.lo \
 	connection-manager.lo debug.lo disco.lo error.lo gabble.lo \
-	google-relay.lo im-channel.lo im-factory.lo jingle-content.lo \
-	jingle-factory.lo jingle-share.lo jingle-media-rtp.lo \
-	jingle-session.lo jingle-transport-google.lo \
-	jingle-transport-rawudp.lo jingle-transport-iceudp.lo \
-	jingle-transport-iface.lo legacy-caps.lo media-channel.lo \
-	media-channel-hold.lo media-stream.lo media-factory.lo \
-	message-util.lo muc-channel.lo muc-factory.lo olpc-activity.lo \
-	plugin-loader.lo presence.lo presence-cache.lo protocol.lo \
+	im-channel.lo im-factory.lo legacy-caps.lo message-util.lo \
+	muc-channel.lo muc-factory.lo muc-tube-dbus.lo \
+	muc-tube-stream.lo olpc-activity.lo plugin-loader.lo \
+	presence.lo presence-cache.lo protocol.lo \
 	private-tubes-factory.lo request-pipeline.lo roster.lo \
 	room-config.lo roomlist-channel.lo roomlist-manager.lo \
 	search-channel.lo search-manager.lo server-sasl-channel.lo \
 	server-tls-channel.lo server-tls-manager.lo sidecar.lo \
 	tls-certificate.lo tube-iface.lo tubes-channel.lo tube-dbus.lo \
-	tube-stream.lo util.lo vcard-manager.lo $(am__objects_1)
-am__objects_2 = gabble-signals-marshal.lo gabble-enumtypes.lo
-nodist_libgabble_convenience_la_OBJECTS = $(am__objects_2)
+	tube-stream.lo util.lo vcard-manager.lo $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3)
+am__objects_4 = gabble-signals-marshal.lo gabble-enumtypes.lo
+nodist_libgabble_convenience_la_OBJECTS = $(am__objects_4)
 libgabble_convenience_la_OBJECTS =  \
 	$(am_libgabble_convenience_la_OBJECTS) \
 	$(nodist_libgabble_convenience_la_OBJECTS)
@@ -384,6 +444,8 @@ oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 pkgpyexecdir = @pkgpyexecdir@
 pkgpythondir = @pkgpythondir@
+pluginexecdir = @pluginexecdir@
+pluginexeclibdir = @pluginexeclibdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
@@ -405,41 +467,28 @@ BUILT_SOURCES = \
     gabble-enumtypes.c
 
 CLEANFILES = $(BUILT_SOURCES)
-EXTRA_DIST = $(am__append_2)
+EXTRA_DIST = 
 libgabble_convenience_la_SOURCES = addressing-util.h addressing-util.c \
 	auth-manager.h auth-manager.c base64.h base64.c \
-	base-call-channel.h base-call-channel.c bytestream-factory.h \
-	bytestream-factory.c bytestream-ibb.h bytestream-ibb.c \
-	bytestream-iface.h bytestream-iface.c bytestream-muc.h \
-	bytestream-muc.c bytestream-multiple.h bytestream-multiple.c \
-	bytestream-socks5.h bytestream-socks5.c call-content.h \
-	call-content.c call-channel.h call-channel.c \
-	call-muc-channel.h call-muc-channel.c call-member.h \
-	call-member.c call-member-content.h call-member-content.c \
-	call-stream.h call-stream.c capabilities.c caps-hash.h \
-	caps-hash.c caps-channel-manager.c conn-addressing.h \
-	conn-addressing.c conn-aliasing.h conn-aliasing.c \
-	conn-avatars.h conn-avatars.c conn-client-types.h \
-	conn-client-types.c conn-contact-info.h conn-contact-info.c \
-	conn-location.h conn-location.c conn-olpc.h conn-olpc.c \
-	conn-power-saving.h conn-power-saving.c conn-presence.h \
-	conn-presence.c conn-sidecars.h conn-sidecars.c conn-util.h \
-	conn-util.c conn-mail-notif.h conn-mail-notif.c connection.h \
-	connection.c connection-manager.h connection-manager.c debug.h \
-	debug.c disco.h disco.c error.c error.h gabble.c gabble.h \
-	google-relay.c google-relay.h im-channel.h im-channel.c \
-	im-factory.h im-factory.c jingle-content.h jingle-content.c \
-	jingle-factory.h jingle-factory.c jingle-share.h \
-	jingle-share.c jingle-media-rtp.h jingle-media-rtp.c \
-	jingle-session.h jingle-session.c jingle-transport-google.h \
-	jingle-transport-google.c jingle-transport-rawudp.h \
-	jingle-transport-rawudp.c jingle-transport-iceudp.h \
-	jingle-transport-iceudp.c jingle-transport-iface.h \
-	jingle-transport-iface.c legacy-caps.h legacy-caps.c \
-	media-channel.h media-channel-internal.h media-channel.c \
-	media-channel-hold.c media-stream.h media-stream.c \
-	media-factory.h media-factory.c message-util.h message-util.c \
-	muc-channel.h muc-channel.c muc-factory.h muc-factory.c \
+	bytestream-factory.h bytestream-factory.c bytestream-ibb.h \
+	bytestream-ibb.c bytestream-iface.h bytestream-iface.c \
+	bytestream-muc.h bytestream-muc.c bytestream-multiple.h \
+	bytestream-multiple.c bytestream-socks5.h bytestream-socks5.c \
+	capabilities.c caps-hash.h caps-hash.c caps-channel-manager.c \
+	conn-addressing.h conn-addressing.c conn-aliasing.h \
+	conn-aliasing.c conn-avatars.h conn-avatars.c \
+	conn-client-types.h conn-client-types.c conn-contact-info.h \
+	conn-contact-info.c conn-location.h conn-location.c \
+	conn-olpc.h conn-olpc.c conn-power-saving.h \
+	conn-power-saving.c conn-presence.h conn-presence.c \
+	conn-sidecars.h conn-sidecars.c conn-util.h conn-util.c \
+	conn-mail-notif.h conn-mail-notif.c connection.h connection.c \
+	connection-manager.h connection-manager.c debug.h debug.c \
+	disco.h disco.c error.c error.h gabble.c gabble.h im-channel.h \
+	im-channel.c im-factory.h im-factory.c legacy-caps.h \
+	legacy-caps.c message-util.h message-util.c muc-channel.h \
+	muc-channel.c muc-factory.h muc-factory.c muc-tube-dbus.h \
+	muc-tube-dbus.c muc-tube-stream.h muc-tube-stream.c \
 	namespaces.h olpc-activity.h olpc-activity.c plugin-loader.h \
 	plugin-loader.c presence.h presence.c presence-cache.h \
 	presence-cache.c protocol.h protocol.c private-tubes-factory.h \
@@ -453,10 +502,11 @@ libgabble_convenience_la_SOURCES = addressing-util.h addressing-util.c \
 	sidecar.c tls-certificate.h tls-certificate.c tube-iface.h \
 	tube-iface.c tubes-channel.h tubes-channel.c tube-dbus.h \
 	tube-dbus.c tube-stream.h tube-stream.c types.h util.h util.c \
-	vcard-manager.h vcard-manager.c $(am__append_1)
+	vcard-manager.h vcard-manager.c $(am__append_1) \
+	$(am__append_2) $(am__append_3)
 enumtype_sources = \
     $(top_srcdir)/src/connection.h \
-    $(top_srcdir)/src/jingle-factory.h \
+    $(top_srcdir)/src/jingle-types.h \
     $(top_srcdir)/src/room-config.h \
     $(top_srcdir)/src/presence.h
 
@@ -482,8 +532,16 @@ check_c_sources = \
 telepathy_gabble_LDADD = libgabble-convenience.la
 telepathy_gabble_LDFLAGS = -export-dynamic
 noinst_LTLIBRARIES = libgabble-convenience.la
-lib_LTLIBRARIES = libgabble-plugins.la
-libgabble_plugins_la_LDFLAGS = -shared -no-undefined -avoid-version
+pluginexeclib_LTLIBRARIES = libgabble-plugins.la
+
+# Gabble's plugin API is not stable yet (it can't be, since neither is Wocky),
+# so use -release to make the SONAME of the plugin library change with every
+# Gabble release.
+libgabble_plugins_la_LDFLAGS = \
+   -no-undefined \
+   -release $(VERSION) \
+   $(NULL)
+
 libgabble_plugins_la_LIBADD = \
    $(ALL_LIBS)
 
@@ -500,8 +558,8 @@ AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
 	@DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ @TP_GLIB_CFLAGS@ \
 	@SOUP_CFLAGS@ @NICE_CFLAGS@ @GMODULE_CFLAGS@ -I \
 	$(top_srcdir)/lib -I $(top_builddir)/lib \
-	-DG_LOG_DOMAIN=\"gabble\" \
-	-DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\" $(am__append_3)
+	-DG_LOG_DOMAIN=\"gabble\" -DPLUGIN_DIR=\"$(pluginexecdir)\" \
+	$(am__append_4)
 ALL_LIBS = @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
 	    @SOUP_LIBS@ @NICE_LIBS@ @GMODULE_LIBS@
 
@@ -541,37 +599,6 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
-	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
-	list2=; for p in $$list; do \
-	  if test -f $$p; then \
-	    list2="$$list2 $$p"; \
-	  else :; fi; \
-	done; \
-	test -z "$$list2" || { \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(libdir)'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(libdir)"; \
-	}
-
-uninstall-libLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
-	for p in $$list; do \
-	  $(am__strip_dir) \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(libdir)/$$f'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/$$f"; \
-	done
-
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test "$$dir" != "$$p" || dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
 
 clean-noinstLTLIBRARIES:
 	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
@@ -581,10 +608,41 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
+install-pluginexeclibLTLIBRARIES: $(pluginexeclib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	test -z "$(pluginexeclibdir)" || $(MKDIR_P) "$(DESTDIR)$(pluginexeclibdir)"
+	@list='$(pluginexeclib_LTLIBRARIES)'; test -n "$(pluginexeclibdir)" || list=; \
+	list2=; for p in $$list; do \
+	  if test -f $$p; then \
+	    list2="$$list2 $$p"; \
+	  else :; fi; \
+	done; \
+	test -z "$$list2" || { \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(pluginexeclibdir)'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(pluginexeclibdir)"; \
+	}
+
+uninstall-pluginexeclibLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(pluginexeclib_LTLIBRARIES)'; test -n "$(pluginexeclibdir)" || list=; \
+	for p in $$list; do \
+	  $(am__strip_dir) \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(pluginexeclibdir)/$$f'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(pluginexeclibdir)/$$f"; \
+	done
+
+clean-pluginexeclibLTLIBRARIES:
+	-test -z "$(pluginexeclib_LTLIBRARIES)" || rm -f $(pluginexeclib_LTLIBRARIES)
+	@list='$(pluginexeclib_LTLIBRARIES)'; for p in $$list; do \
+	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+	  test "$$dir" != "$$p" || dir=.; \
+	  echo "rm -f \"$${dir}/so_locations\""; \
+	  rm -f "$${dir}/so_locations"; \
+	done
 libgabble-convenience.la: $(libgabble_convenience_la_OBJECTS) $(libgabble_convenience_la_DEPENDENCIES) $(EXTRA_libgabble_convenience_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK)  $(libgabble_convenience_la_OBJECTS) $(libgabble_convenience_la_LIBADD) $(LIBS)
 libgabble-plugins.la: $(libgabble_plugins_la_OBJECTS) $(libgabble_plugins_la_DEPENDENCIES) $(EXTRA_libgabble_plugins_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libgabble_plugins_la_LINK) -rpath $(libdir) $(libgabble_plugins_la_OBJECTS) $(libgabble_plugins_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libgabble_plugins_la_LINK) -rpath $(pluginexeclibdir) $(libgabble_plugins_la_OBJECTS) $(libgabble_plugins_la_LIBADD) $(LIBS)
 install-libexecPROGRAMS: $(libexec_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	test -z "$(libexecdir)" || $(MKDIR_P) "$(DESTDIR)$(libexecdir)"
@@ -697,9 +755,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/im-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-content.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-info.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-media-rtp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-mint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-session.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-share.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-tp-util.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-google.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-iceudp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jingle-transport-iface.Plo@am__quote@
@@ -713,6 +774,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/message-util.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muc-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muc-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muc-tube-dbus.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muc-tube-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olpc-activity.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugin-connection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugin-loader.Plo@am__quote@
@@ -856,7 +919,7 @@ check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libexecdir)"; do \
+	for dir in "$(DESTDIR)$(pluginexeclibdir)" "$(DESTDIR)$(libexecdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -894,9 +957,9 @@ maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
-clean-am: clean-generic clean-libLTLIBRARIES clean-libexecPROGRAMS \
-	clean-libtool clean-noinstLTLIBRARIES clean-noinstPROGRAMS \
-	mostlyclean-am
+clean-am: clean-generic clean-libexecPROGRAMS clean-libtool \
+	clean-noinstLTLIBRARIES clean-noinstPROGRAMS \
+	clean-pluginexeclibLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -922,7 +985,8 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-libLTLIBRARIES install-libexecPROGRAMS
+install-exec-am: install-libexecPROGRAMS \
+	install-pluginexeclibLTLIBRARIES
 
 install-html: install-html-am
 
@@ -962,26 +1026,27 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libLTLIBRARIES uninstall-libexecPROGRAMS
+uninstall-am: uninstall-libexecPROGRAMS \
+	uninstall-pluginexeclibLTLIBRARIES
 
 .MAKE: all check check-am install install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am check-local clean \
-	clean-generic clean-libLTLIBRARIES clean-libexecPROGRAMS \
-	clean-libtool clean-noinstLTLIBRARIES clean-noinstPROGRAMS \
-	ctags distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libLTLIBRARIES install-libexecPROGRAMS \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-libLTLIBRARIES \
-	uninstall-libexecPROGRAMS
+	clean-generic clean-libexecPROGRAMS clean-libtool \
+	clean-noinstLTLIBRARIES clean-noinstPROGRAMS \
+	clean-pluginexeclibLTLIBRARIES ctags distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am \
+	install-libexecPROGRAMS install-man install-pdf install-pdf-am \
+	install-pluginexeclibLTLIBRARIES install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags uninstall uninstall-am \
+	uninstall-libexecPROGRAMS uninstall-pluginexeclibLTLIBRARIES
 
 check-coding-style:
 	@fail=0; \

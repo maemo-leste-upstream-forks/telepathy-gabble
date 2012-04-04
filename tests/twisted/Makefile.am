@@ -25,6 +25,7 @@ TWISTED_TESTS = \
 	connect/disco-no-reply.py \
 	connect/network-error.py \
 	connect/stream-closed.py \
+	connect/test-connection-params.py \
 	connect/test-fail.py \
 	connect/test-nonblocking-tls.py \
 	connect/test-success.py \
@@ -378,6 +379,18 @@ else
 FILE_TRANSFER_ENABLED_PYBOOL = False
 endif
 
+if ENABLE_VOIP
+VOIP_ENABLED_PYBOOL = True
+else
+VOIP_ENABLED_PYBOOL = False
+endif
+
+if ENABLE_JINGLE_FILE_TRANSFER
+JINGLE_FILE_TRANSFER_ENABLED_PYBOOL = True
+else
+JINGLE_FILE_TRANSFER_ENABLED_PYBOOL = False
+endif
+
 config.py: Makefile
 	$(AM_V_GEN) { \
 		echo "PACKAGE_STRING = \"$(PACKAGE_STRING)\""; \
@@ -387,6 +400,8 @@ config.py: Makefile
 		echo "CHANNEL_TYPE_CALL_ENABLED = $(CHANNEL_TYPE_CALL_ENABLED_PYBOOL)"; \
 		echo "GOOGLE_RELAY_ENABLED = $(GOOGLE_RELAY_ENABLED_PYBOOL)"; \
 		echo "FILE_TRANSFER_ENABLED = $(FILE_TRANSFER_ENABLED_PYBOOL)"; \
+		echo "VOIP_ENABLED = $(VOIP_ENABLED_PYBOOL)"; \
+		echo "JINGLE_FILE_TRANSFER_ENABLED = $(JINGLE_FILE_TRANSFER_ENABLED_PYBOOL)"; \
 	} > $@
 
 BUILT_SOURCES = config.py

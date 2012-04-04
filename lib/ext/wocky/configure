@@ -666,6 +666,9 @@ GLIB_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
+SHARED_SUFFIX
+ENABLE_SHARED_SUFFIX_FALSE
+ENABLE_SHARED_SUFFIX_TRUE
 HEADER_DIR
 INSTALL_HEADERS_FALSE
 INSTALL_HEADERS_TRUE
@@ -804,6 +807,7 @@ enable_Werror
 enable_coding_style_checks
 enable_debug
 with_installed_headers
+enable_shared_suffix
 with_tls
 enable_prefer_stream_ciphers
 enable_coverage
@@ -1474,6 +1478,8 @@ Optional Features:
   --disable-coding-style-checks
                           do not check coding style using grep
   --disable-debug         compile without debug code
+  --enable-shared-suffix= install a shared library with a version-specific
+                          suffix
   --enable-prefer-stream-ciphers
                           prefer stream ciphers over block ciphers to save
                           bandwidth (at the possible expense of security)
@@ -12923,6 +12929,24 @@ fi
 HEADER_DIR=$with_installed_headers
 
 
+# Check whether --enable-shared-suffix was given.
+if test "${enable_shared_suffix+set}" = set; then :
+  enableval=$enable_shared_suffix;
+else
+  enable_shared_suffix=
+fi
+
+ if test x$enable_shared_suffix != x; then
+  ENABLE_SHARED_SUFFIX_TRUE=
+  ENABLE_SHARED_SUFFIX_FALSE='#'
+else
+  ENABLE_SHARED_SUFFIX_TRUE='#'
+  ENABLE_SHARED_SUFFIX_FALSE=
+fi
+
+SHARED_SUFFIX="$enable_shared_suffix"
+
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ANSI C header files" >&5
 $as_echo_n "checking for ANSI C header files... " >&6; }
 if ${ac_cv_header_stdc+:} false; then :
@@ -15150,6 +15174,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${INSTALL_HEADERS_TRUE}" && test -z "${INSTALL_HEADERS_FALSE}"; then
   as_fn_error $? "conditional \"INSTALL_HEADERS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_SHARED_SUFFIX_TRUE}" && test -z "${ENABLE_SHARED_SUFFIX_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_SHARED_SUFFIX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

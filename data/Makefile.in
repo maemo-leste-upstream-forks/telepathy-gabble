@@ -223,6 +223,8 @@ oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 pkgpyexecdir = @pkgpyexecdir@
 pkgpythondir = @pkgpythondir@
+pluginexecdir = @pluginexecdir@
+pluginexeclibdir = @pluginexeclibdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
@@ -242,7 +244,6 @@ manager_DATA = gabble.manager
 servicedir = $(datadir)/dbus-1/services
 service_DATA = org.freedesktop.Telepathy.ConnectionManager.gabble.service
 CLEANFILES = $(service_DATA) $(manager_DATA)
-@WINDOWS_TRUE@ext = ".exe"
 all: all-am
 
 .SUFFIXES:
@@ -483,8 +484,8 @@ org.freedesktop.Telepathy.ConnectionManager.gabble.service: gabble.service.in \
 	$(AM_V_GEN)sed -e "s|[@]libexecdir[@]|$(libexecdir)|" $< > $@
 
 $(manager_DATA): ../src/write-mgr-file.c ../src/protocol.c ../src/protocol.h
-	@$(MAKE) -C ../src write-mgr-file$(ext)
-	$(AM_V_GEN)../src/write-mgr-file$(ext) > $@
+	@$(MAKE) -C ../src write-mgr-file$(EXEEXT)
+	$(AM_V_GEN)../src/write-mgr-file$(EXEEXT) > $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

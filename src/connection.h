@@ -37,7 +37,9 @@
 #ifdef ENABLE_FILE_TRANSFER
 #include "ft-manager.h"
 #endif
-#include "jingle-factory.h"
+#ifdef ENABLE_VOIP
+#include "jingle-mint.h"
+#endif
 #include "muc-factory.h"
 #include "types.h"
 
@@ -222,8 +224,9 @@ struct _GabbleConnection {
     /* outstanding vcard requests */
     GHashTable *vcard_requests;
 
-    /* jingle factory */
-    GabbleJingleFactory *jingle_factory;
+#ifdef ENABLE_VOIP
+    GabbleJingleMint *jingle_mint;
+#endif
 
 #ifdef ENABLE_FILE_TRANSFER
     /* file transfer manager */

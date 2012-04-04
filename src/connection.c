@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "config.h"
+
 #include "connection.h"
 #include "gabble.h"
 
@@ -60,11 +62,8 @@
 #include "conn-power-saving.h"
 #include "debug.h"
 #include "disco.h"
-#include "media-channel.h"
 #include "im-factory.h"
-#include "jingle-factory.h"
 #include "legacy-caps.h"
-#include "media-factory.h"
 #include "muc-factory.h"
 #include "namespaces.h"
 #include "presence-cache.h"
@@ -81,6 +80,12 @@
 #include "vcard-manager.h"
 #include "conn-util.h"
 #include "conn-addressing.h"
+
+#ifdef ENABLE_VOIP
+#include "media-channel.h"
+#include "jingle-factory.h"
+#include "media-factory.h"
+#endif
 
 static guint disco_reply_timeout = 5;
 
@@ -178,6 +183,7 @@ enum
     PROP_FALLBACK_SERVERS,
     PROP_EXTRA_CERTIFICATE_IDENTITIES,
     PROP_POWER_SAVING,
+    PROP_DOWNLOAD_AT_CONNECTION,
 
     LAST_PROPERTY
 };
@@ -368,13 +374,14 @@ _gabble_connection_create_channel_managers (TpBaseConnection *conn)
   self->private_tubes_factory = gabble_private_tubes_factory_new (self);
   g_ptr_array_add (channel_managers, self->private_tubes_factory);
 
-  self->jingle_factory = g_object_new (GABBLE_TYPE_JINGLE_FACTORY,
-    "connection", self, NULL);
+#ifdef ENABLE_VOIP
+  self->jingle_mint = gabble_jingle_mint_new (self);
 
   g_ptr_array_add (channel_managers,
       g_object_new (GABBLE_TYPE_MEDIA_FACTORY,
         "connection", self,
         NULL));
+#endif
 
 #ifdef ENABLE_FILE_TRANSFER
   self->ft_manager = gabble_ft_manager_new (self);
@@ -492,8 +499,10 @@ gabble_connection_constructor (GType type,
    * presence, but could be removed by AdvertiseCapabilities(). Emulate
    * that here for now. */
   priv->bonus_caps = gabble_capability_set_new ();
+#ifdef ENABLE_VOIP
   gabble_capability_set_add (priv->bonus_caps, NS_GOOGLE_TRANSPORT_P2P);
   gabble_capability_set_add (priv->bonus_caps, NS_JINGLE_TRANSPORT_ICEUDP);
+#endif
 
   return (GObject *) self;
 }
@@ -671,6 +680,23 @@ gabble_connection_get_property (GObject    *object,
       g_value_set_boolean (value, priv->power_saving);
       break;
 
+    case PROP_DOWNLOAD_AT_CONNECTION:
+      {
+        gboolean download_at_connection = TRUE;
+        if (self->roster != NULL)
+          {
+            g_object_get (self->roster,
+                "download-at-connection", &download_at_connection,
+                NULL);
+          }
+        else
+          {
+            g_warn_if_reached ();
+          }
+        g_value_set_boolean (value, download_at_connection);
+        break;
+      }
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -810,6 +836,16 @@ gabble_connection_set_property (GObject      *object,
 
     case PROP_POWER_SAVING:
       priv->power_saving = g_value_get_boolean (value);
+      break;
+
+    case PROP_DOWNLOAD_AT_CONNECTION:
+      /* Connection parameters are set by TpBaseProtocolClass->new_connection
+       * after the channel managers are created. So at this step self->roster
+       * is not NULL and we pass the property.
+       */
+      if (self->roster != NULL)
+        g_object_set (self->roster, "download-at-connection",
+            g_value_get_boolean (value), NULL);
       break;
 
     default:
@@ -1169,6 +1205,15 @@ gabble_connection_class_init (GabbleConnectionClass *gabble_connection_class)
           FALSE,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (
+      object_class, PROP_DOWNLOAD_AT_CONNECTION,
+      g_param_spec_boolean (
+          "download-roster-at-connection",
+          "Download the contact list at connection?",
+          "Download the contact list at connection?",
+          TRUE,
+          G_PARAM_CONSTRUCT | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
   g_object_class_install_property (object_class, PROP_FALLBACK_SERVERS,
       g_param_spec_boxed (
         "fallback-servers", "Fallback servers",
@@ -1229,7 +1274,9 @@ gabble_connection_dispose (GObject *object)
   tp_clear_object (&self->disco);
   tp_clear_object (&self->req_pipeline);
   tp_clear_object (&self->vcard_manager);
-  tp_clear_object (&self->jingle_factory);
+#ifdef ENABLE_VOIP
+  tp_clear_object (&self->jingle_mint);
+#endif
 
   /* remove borrowed references before TpBaseConnection unrefs the channel
    * factories */
@@ -2832,10 +2879,12 @@ connection_disco_cb (GabbleDisco *disco,
               if (var == NULL)
                 continue;
 
-              if (0 == strcmp (var, NS_GOOGLE_JINGLE_INFO))
-                conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_JINGLE_INFO;
-              else if (0 == strcmp (var, NS_GOOGLE_ROSTER))
+              if (0 == strcmp (var, NS_GOOGLE_ROSTER))
                 conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_ROSTER;
+#ifdef ENABLE_VOIP
+              else if (0 == strcmp (var, NS_GOOGLE_JINGLE_INFO))
+                conn->features |= GABBLE_CONNECTION_FEATURES_GOOGLE_JINGLE_INFO;
+#endif
               else if (0 == strcmp (var, NS_PRESENCE_INVISIBLE))
                 conn->features |= GABBLE_CONNECTION_FEATURES_PRESENCE_INVISIBLE;
               else if (0 == strcmp (var, NS_PRIVACY))

@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,6 +33,7 @@
 #include "connection.h"
 #include "jingle-session.h"
 #include "jingle-content.h"
+#include "jingle-tp-util.h"
 #include "util.h"
 
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
@@ -82,8 +84,6 @@ struct _GabbleCallStreamPrivate
 {
   gboolean dispose_has_run;
 
-  gboolean want_send;
-
   GabbleJingleContent *content;
 };
 
@@ -94,8 +94,6 @@ gabble_call_stream_init (GabbleCallStream *self)
       GABBLE_TYPE_CALL_STREAM, GabbleCallStreamPrivate);
 
   self->priv = priv;
-
-  self->priv->want_send = TRUE;
 }
 
 static void gabble_call_stream_dispose (GObject *object);
@@ -105,19 +103,17 @@ static GPtrArray *
 get_stun_servers (GabbleCallStream *self)
 {
   GPtrArray *arr;
-  GabbleConnection *connection;
+  GabbleJingleFactory *jf;
   gchar *stun_server;
   guint stun_port;
 
   arr = g_ptr_array_new_with_free_func ((GDestroyNotify) g_value_array_free);
-
-  g_object_get (self->priv->content,
-      "connection", &connection,
-      NULL);
+  jf = gabble_jingle_session_get_factory (self->priv->content->session);
 
   /* maybe one day we'll support multiple STUN servers */
-  if (gabble_jingle_factory_get_stun_server (
-          connection->jingle_factory, &stun_server, &stun_port))
+  if (gabble_jingle_info_get_stun_server (
+          gabble_jingle_factory_get_jingle_info (jf),
+          &stun_server, &stun_port))
     {
       GValueArray *va = tp_value_array_build (2,
           G_TYPE_STRING, stun_server,
@@ -127,8 +123,6 @@ get_stun_servers (GabbleCallStream *self)
       g_free (stun_server);
       g_ptr_array_add (arr, va);
     }
-
-  g_object_unref (connection);
 
   return arr;
 }
@@ -190,7 +184,10 @@ google_relay_session_cb (GPtrArray *relays,
 
   if (stream != NULL)
     {
-      tp_base_media_call_stream_set_relay_info (stream, relays);
+      GPtrArray *tp_relays = gabble_build_tp_relay_info (relays);
+
+      tp_base_media_call_stream_set_relay_info (stream, tp_relays);
+      g_ptr_array_unref (tp_relays);
       g_object_unref (stream);
     }
 
@@ -218,7 +215,8 @@ content_remote_members_changed_cb (GabbleJingleContent *content,
 }
 
 static void
-jingle_factory_stun_server_changed_cb (GabbleJingleFactory *factory,
+jingle_info_stun_server_changed_cb (
+    GabbleJingleInfo *jingle_info,
     const gchar *stun_server,
     guint stun_port,
     GabbleCallStream *self)
@@ -325,11 +323,20 @@ gabble_call_stream_constructed (GObject *obj)
   gchar *path;
   JingleTransportType transport;
   GPtrArray *stun_servers;
+  gboolean locally_created;
 
   if (G_OBJECT_CLASS (gabble_call_stream_parent_class)->constructed != NULL)
     G_OBJECT_CLASS (gabble_call_stream_parent_class)->constructed (obj);
 
   conn = GABBLE_CONNECTION (tp_base_call_stream_get_connection (base));
+
+  g_object_get (priv->content, "locally-created", &locally_created, NULL);
+
+  if (locally_created &&
+      gabble_jingle_content_sending (priv->content))
+    tp_base_media_call_stream_set_local_sending (
+        TP_BASE_MEDIA_CALL_STREAM (self), TRUE);
+
 
   /* Currently we'll only have one endpoint we know right away */
   path = g_strdup_printf ("%s/Endpoint",
@@ -348,7 +355,8 @@ gabble_call_stream_constructed (GObject *obj)
       /* See if our server is Google, and if it is, ask them for a relay.
        * We ask for enough relays for 2 components (RTP and RTCP) since we
        * don't yet know whether there will be RTCP. */
-      gabble_jingle_factory_create_google_relay_session (conn->jingle_factory,
+      gabble_jingle_info_create_google_relay_session (
+          gabble_jingle_mint_get_info (conn->jingle_mint),
           2, google_relay_session_cb, tp_weak_ref_new (self, NULL, NULL));
     }
   else
@@ -368,18 +376,25 @@ gabble_call_stream_constructed (GObject *obj)
     G_CALLBACK (content_state_changed_cb), obj);
   gabble_signal_connect_weak (priv->content, "notify::senders",
     G_CALLBACK (content_remote_members_changed_cb), obj);
-  gabble_signal_connect_weak (conn->jingle_factory, "stun-server-changed",
-    G_CALLBACK (jingle_factory_stun_server_changed_cb), obj);
+  gabble_signal_connect_weak (
+      gabble_jingle_mint_get_info (conn->jingle_mint),
+      "stun-server-changed",
+      G_CALLBACK (jingle_info_stun_server_changed_cb), obj);
 }
 
 void
 gabble_call_stream_update_member_states (GabbleCallStream *self)
 {
   TpBaseCallStream *base = TP_BASE_CALL_STREAM (self);
+  TpBaseMediaCallStream *bmcs = TP_BASE_MEDIA_CALL_STREAM (self);
   GabbleCallStreamPrivate *priv = self->priv;
   JingleContentState state;
   TpSendingState local_state;
   TpSendingState remote_state;
+  TpBaseConnection *conn = tp_base_call_stream_get_connection (base);
+  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
+      conn, TP_HANDLE_TYPE_CONTACT);
+  TpHandle peer;
 
   g_object_get (priv->content, "state", &state, NULL);
 
@@ -391,17 +406,17 @@ gabble_call_stream_update_member_states (GabbleCallStream *self)
 
   if (gabble_jingle_content_sending (priv->content))
     {
-      if (self->priv->want_send)
+      if (tp_base_media_call_stream_get_local_sending (bmcs))
         local_state = TP_SENDING_STATE_SENDING;
       else
         local_state = TP_SENDING_STATE_PENDING_SEND;
     }
   else
     {
-      if (!self->priv->want_send)
-        local_state = TP_SENDING_STATE_NONE;
-      else
+      if (tp_base_media_call_stream_get_local_sending (bmcs))
         local_state = TP_SENDING_STATE_PENDING_STOP_SENDING;
+      else
+        local_state = TP_SENDING_STATE_NONE;
     }
 
   if (gabble_jingle_content_receiving (priv->content))
@@ -417,8 +432,12 @@ gabble_call_stream_update_member_states (GabbleCallStream *self)
 
   tp_base_call_stream_update_local_sending_state (base, local_state,
       0, TP_CALL_STATE_CHANGE_REASON_PROGRESS_MADE, "", "");
+  peer = tp_handle_ensure (contact_repo,
+      gabble_jingle_session_get_peer_jid (priv->content->session),
+      NULL,
+      NULL);
   tp_base_call_stream_update_remote_sending_state (base,
-        priv->content->session->peer, remote_state,
+        peer, remote_state,
         0, TP_CALL_STATE_CHANGE_REASON_PROGRESS_MADE, "", "");
 }
 
@@ -495,7 +514,8 @@ gabble_call_stream_add_candidates (TpBaseMediaCallStream *stream,
       GValueArray *va;
       JingleCandidate *c;
       GHashTable *info;
-      guint fstype, type;
+      guint tptype;
+      JingleCandidateType type;
       /* borrowed strings, owned by other people. */
       const gchar *username;
       const gchar *password;
@@ -505,24 +525,20 @@ gabble_call_stream_add_candidates (TpBaseMediaCallStream *stream,
 
       info = g_value_get_boxed (va->values + 3);
 
-      fstype = tp_asv_get_uint32 (info, "Type", NULL);
-
-      switch (fstype)
+      tptype = tp_asv_get_uint32 (info, "type", NULL);
+      switch (tptype)
         {
-        case 0: /* FS_CANDIDATE_TYPE_HOST */
+        default:
+          /* Anything else is local */
+        case TP_CALL_STREAM_CANDIDATE_TYPE_HOST:
           type = JINGLE_CANDIDATE_TYPE_LOCAL;
           break;
-        case 1: /* FS_CANDIDATE_TYPE_SRFLX */
-        case 2: /* FS_CANDIDATE_TYPE_PRFLX */
+        case TP_CALL_STREAM_CANDIDATE_TYPE_SERVER_REFLEXIVE:
           type = JINGLE_CANDIDATE_TYPE_STUN;
           break;
-        case 3: /* FS_CANDIDATE_TYPE_RELAY */
+        case TP_CALL_STREAM_CANDIDATE_TYPE_RELAY:
           type = JINGLE_CANDIDATE_TYPE_RELAY;
           break;
-        case 4: /* FS_CANDIDATE_TYPE_MULTICAST */
-        default:
-          DEBUG ("Unhandled candidate type %d", fstype);
-          continue;
         }
 
       username = tp_asv_get_string (info, "username");
@@ -583,12 +599,10 @@ gabble_call_stream_set_sending (TpBaseMediaCallStream *stream,
 {
   GabbleCallStream *self = GABBLE_CALL_STREAM (stream);
 
-  self->priv->want_send = sending;
-
-  gabble_jingle_content_set_sending (self->priv->content, sending);
-
   if (sending)
     tp_base_media_call_stream_set_local_sending (stream, TRUE);
+
+  gabble_jingle_content_set_sending (self->priv->content, sending);
 
   return TRUE;
 }

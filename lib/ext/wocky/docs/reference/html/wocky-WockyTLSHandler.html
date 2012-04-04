@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="wocky-Wocky-OpenSSL-TLS.html" title="Wocky OpenSSL TLS">
+<link rel="prev" href="wocky-Wocky-GnuTLS-TLS.html" title="Wocky GnuTLS TLS">
 <link rel="next" href="wocky-wocky-utils.html" title="wocky-utils">
 <meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -14,7 +14,7 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="wocky-Wocky-OpenSSL-TLS.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="wocky-Wocky-GnuTLS-TLS.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Wocky Reference Manual</th>
@@ -39,7 +39,7 @@
 <a name="wocky-WockyTLSHandler.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">struct              <a class="link" href="wocky-WockyTLSHandler.html#WockyTLSHandlerClass" title="struct WockyTLSHandlerClass">WockyTLSHandlerClass</a>;
 <span class="returnvalue">void</span>                (<a class="link" href="wocky-WockyTLSHandler.html#WockyTLSHandlerVerifyAsyncFunc" title="WockyTLSHandlerVerifyAsyncFunc ()">*WockyTLSHandlerVerifyAsyncFunc</a>)   (<em class="parameter"><code><span class="type">WockyTLSHandler</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> *tls_session</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-Wocky-GnuTLS-TLS.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> *tls_session</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *peername</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GStrv"><span class="type">GStrv</span></a> extra_identities</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
@@ -55,7 +55,7 @@
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            <a class="link" href="wocky-WockyTLSHandler.html#wocky-tls-handler-get-crls" title="wocky_tls_handler_get_crls ()">wocky_tls_handler_get_crls</a>          (<em class="parameter"><code><span class="type">WockyTLSHandler</span> *self</code></em>);
 <span class="returnvalue">WockyTLSHandler</span> *   <a class="link" href="wocky-WockyTLSHandler.html#wocky-tls-handler-new" title="wocky_tls_handler_new ()">wocky_tls_handler_new</a>               (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> ignore_ssl_errors</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="wocky-WockyTLSHandler.html#wocky-tls-handler-verify-async" title="wocky_tls_handler_verify_async ()">wocky_tls_handler_verify_async</a>      (<em class="parameter"><code><span class="type">WockyTLSHandler</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> *tls_session</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-Wocky-GnuTLS-TLS.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> *tls_session</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *peername</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GStrv"><span class="type">GStrv</span></a> extra_identities</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
@@ -102,7 +102,7 @@ details</td>
 <div class="refsect2">
 <a name="WockyTLSHandlerVerifyAsyncFunc"></a><h3>WockyTLSHandlerVerifyAsyncFunc ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                (*WockyTLSHandlerVerifyAsyncFunc)   (<em class="parameter"><code><span class="type">WockyTLSHandler</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> *tls_session</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-Wocky-GnuTLS-TLS.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> *tls_session</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *peername</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GStrv"><span class="type">GStrv</span></a> extra_identities</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
@@ -200,7 +200,7 @@ until just before the TLS session setup is attempted.</td>
 <div class="refsect2">
 <a name="wocky-tls-handler-verify-async"></a><h3>wocky_tls_handler_verify_async ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_tls_handler_verify_async      (<em class="parameter"><code><span class="type">WockyTLSHandler</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-Wocky-OpenSSL-TLS.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> *tls_session</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-Wocky-GnuTLS-TLS.html#WockyTLSSession"><span class="type">WockyTLSSession</span></a> *tls_session</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *peername</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GStrv"><span class="type">GStrv</span></a> extra_identities</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,

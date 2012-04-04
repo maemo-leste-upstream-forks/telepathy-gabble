@@ -83,12 +83,13 @@ am__uninstall_files_from_dir = { \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
 am__installdirs = "$(DESTDIR)$(libtestplugindir)" \
-	"$(DESTDIR)$(plugindir)" "$(DESTDIR)$(bindir)"
+	"$(DESTDIR)$(pluginexecdir)" "$(DESTDIR)$(bindir)"
 LTLIBRARIES = $(libtestplugin_LTLIBRARIES) $(noinst_LTLIBRARIES) \
-	$(plugin_LTLIBRARIES)
-@WINDOWS_TRUE@am__DEPENDENCIES_1 = $(top_builddir)/extensions/libgabble-extensions.la \
-@WINDOWS_TRUE@	$(top_builddir)/src/libgabble-plugins.la
-@WINDOWS_TRUE@libconsole_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+	$(pluginexec_LTLIBRARIES)
+am__DEPENDENCIES_1 =  \
+	$(top_builddir)/extensions/libgabble-extensions.la \
+	$(top_builddir)/src/libgabble-plugins.la
+libconsole_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_libconsole_la_OBJECTS = console.lo
 libconsole_la_OBJECTS = $(am_libconsole_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -96,14 +97,14 @@ am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 @ENABLE_INSTALLED_TESTS_FALSE@@ENABLE_PLUGINS_FALSE@am_libconsole_la_rpath =
 @ENABLE_INSTALLED_TESTS_TRUE@@ENABLE_PLUGINS_FALSE@am_libconsole_la_rpath =
-@ENABLE_PLUGINS_TRUE@am_libconsole_la_rpath = -rpath $(plugindir)
-@WINDOWS_TRUE@libgateways_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+@ENABLE_PLUGINS_TRUE@am_libconsole_la_rpath = -rpath $(pluginexecdir)
+libgateways_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_libgateways_la_OBJECTS = gateways.lo
 libgateways_la_OBJECTS = $(am_libgateways_la_OBJECTS)
 @ENABLE_INSTALLED_TESTS_FALSE@@ENABLE_PLUGINS_FALSE@am_libgateways_la_rpath =
 @ENABLE_INSTALLED_TESTS_TRUE@@ENABLE_PLUGINS_FALSE@am_libgateways_la_rpath =
-@ENABLE_PLUGINS_TRUE@am_libgateways_la_rpath = -rpath $(plugindir)
-@WINDOWS_TRUE@libtest_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+@ENABLE_PLUGINS_TRUE@am_libgateways_la_rpath = -rpath $(pluginexecdir)
+libtest_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_libtest_la_OBJECTS = test.lo
 libtest_la_OBJECTS = $(am_libtest_la_OBJECTS)
 libtest_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -282,6 +283,8 @@ oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 pkgpyexecdir = @pkgpyexecdir@
 pkgpythondir = @pkgpythondir@
+pluginexecdir = @pluginexecdir@
+pluginexeclibdir = @pluginexeclibdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
@@ -295,7 +298,6 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-plugindir = $(libdir)/telepathy/gabble-0
 installable_plugins = \
 	libconsole.la \
 	libgateways.la
@@ -318,9 +320,9 @@ libtest_only_plugins = \
 
 # because libtest.la is not installed, libtool will want to compile it as static
 # despite -shared (a convenience library), unless we also use -rpath
-@ENABLE_INSTALLED_TESTS_FALSE@libtest_la_LDFLAGS = $(AM_LDFLAGS) -rpath $(plugindir)
+@ENABLE_INSTALLED_TESTS_FALSE@libtest_la_LDFLAGS = $(AM_LDFLAGS) -rpath $(pluginexecdir)
 @ENABLE_INSTALLED_TESTS_TRUE@libtest_la_LDFLAGS = $(AM_LDFLAGS)
-@ENABLE_PLUGINS_TRUE@plugin_LTLIBRARIES = $(installable_plugins)
+@ENABLE_PLUGINS_TRUE@pluginexec_LTLIBRARIES = $(installable_plugins)
 @ENABLE_PLUGINS_TRUE@dist_bin_SCRIPTS = \
 @ENABLE_PLUGINS_TRUE@	telepathy-gabble-xmpp-console
 
@@ -328,16 +330,16 @@ libtest_only_plugins = \
 @ENABLE_PLUGINS_FALSE@	telepathy-gabble-xmpp-console
 
 AM_LDFLAGS = -avoid-version -shared -no-undefined
-@WINDOWS_TRUE@ALL_PLUGIN_LIBS = \
-@WINDOWS_TRUE@	@WOCKY_LIBS@ \
-@WINDOWS_TRUE@	@GLIB_LIBS@ \
-@WINDOWS_TRUE@	@TP_GLIB_LIBS@ \
-@WINDOWS_TRUE@	$(top_builddir)/extensions/libgabble-extensions.la \
-@WINDOWS_TRUE@	$(top_builddir)/src/libgabble-plugins.la
+ALL_PLUGIN_LIBS = \
+	@WOCKY_LIBS@ \
+	@GLIB_LIBS@ \
+	@TP_GLIB_LIBS@ \
+	$(top_builddir)/extensions/libgabble-extensions.la \
+	$(top_builddir)/src/libgabble-plugins.la
 
-@WINDOWS_TRUE@libtest_la_LIBADD = $(ALL_PLUGIN_LIBS)
-@WINDOWS_TRUE@libgateways_la_LIBADD = $(ALL_PLUGIN_LIBS)
-@WINDOWS_TRUE@libconsole_la_LIBADD = $(ALL_PLUGIN_LIBS)
+libtest_la_LIBADD = $(ALL_PLUGIN_LIBS)
+libgateways_la_LIBADD = $(ALL_PLUGIN_LIBS)
+libconsole_la_LIBADD = $(ALL_PLUGIN_LIBS)
 libtest_la_SOURCES = \
     test.c \
     test.h
@@ -430,32 +432,32 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-install-pluginLTLIBRARIES: $(plugin_LTLIBRARIES)
+install-pluginexecLTLIBRARIES: $(pluginexec_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
-	test -z "$(plugindir)" || $(MKDIR_P) "$(DESTDIR)$(plugindir)"
-	@list='$(plugin_LTLIBRARIES)'; test -n "$(plugindir)" || list=; \
+	test -z "$(pluginexecdir)" || $(MKDIR_P) "$(DESTDIR)$(pluginexecdir)"
+	@list='$(pluginexec_LTLIBRARIES)'; test -n "$(pluginexecdir)" || list=; \
 	list2=; for p in $$list; do \
 	  if test -f $$p; then \
 	    list2="$$list2 $$p"; \
 	  else :; fi; \
 	done; \
 	test -z "$$list2" || { \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(plugindir)'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(plugindir)"; \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(pluginexecdir)'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(pluginexecdir)"; \
 	}
 
-uninstall-pluginLTLIBRARIES:
+uninstall-pluginexecLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	@list='$(plugin_LTLIBRARIES)'; test -n "$(plugindir)" || list=; \
+	@list='$(pluginexec_LTLIBRARIES)'; test -n "$(pluginexecdir)" || list=; \
 	for p in $$list; do \
 	  $(am__strip_dir) \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(plugindir)/$$f'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(plugindir)/$$f"; \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(pluginexecdir)/$$f'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(pluginexecdir)/$$f"; \
 	done
 
-clean-pluginLTLIBRARIES:
-	-test -z "$(plugin_LTLIBRARIES)" || rm -f $(plugin_LTLIBRARIES)
-	@list='$(plugin_LTLIBRARIES)'; for p in $$list; do \
+clean-pluginexecLTLIBRARIES:
+	-test -z "$(pluginexec_LTLIBRARIES)" || rm -f $(pluginexec_LTLIBRARIES)
+	@list='$(pluginexec_LTLIBRARIES)'; for p in $$list; do \
 	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
 	  test "$$dir" != "$$p" || dir=.; \
 	  echo "rm -f \"$${dir}/so_locations\""; \
@@ -623,7 +625,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(SCRIPTS)
 installdirs:
-	for dir in "$(DESTDIR)$(libtestplugindir)" "$(DESTDIR)$(plugindir)" "$(DESTDIR)$(bindir)"; do \
+	for dir in "$(DESTDIR)$(libtestplugindir)" "$(DESTDIR)$(pluginexecdir)" "$(DESTDIR)$(bindir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -659,7 +661,8 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-generic clean-libtestpluginLTLIBRARIES clean-libtool \
-	clean-noinstLTLIBRARIES clean-pluginLTLIBRARIES mostlyclean-am
+	clean-noinstLTLIBRARIES clean-pluginexecLTLIBRARIES \
+	mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -679,14 +682,13 @@ info: info-am
 
 info-am:
 
-install-data-am: install-libtestpluginLTLIBRARIES \
-	install-pluginLTLIBRARIES
+install-data-am: install-libtestpluginLTLIBRARIES
 
 install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-dist_binSCRIPTS
+install-exec-am: install-dist_binSCRIPTS install-pluginexecLTLIBRARIES
 
 install-html: install-html-am
 
@@ -727,13 +729,14 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-dist_binSCRIPTS \
-	uninstall-libtestpluginLTLIBRARIES uninstall-pluginLTLIBRARIES
+	uninstall-libtestpluginLTLIBRARIES \
+	uninstall-pluginexecLTLIBRARIES
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
 	clean-libtestpluginLTLIBRARIES clean-libtool \
-	clean-noinstLTLIBRARIES clean-pluginLTLIBRARIES ctags \
+	clean-noinstLTLIBRARIES clean-pluginexecLTLIBRARIES ctags \
 	distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
@@ -741,13 +744,14 @@ uninstall-am: uninstall-dist_binSCRIPTS \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am \
 	install-libtestpluginLTLIBRARIES install-man install-pdf \
-	install-pdf-am install-pluginLTLIBRARIES install-ps \
+	install-pdf-am install-pluginexecLTLIBRARIES install-ps \
 	install-ps-am install-strip installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-dist_binSCRIPTS \
-	uninstall-libtestpluginLTLIBRARIES uninstall-pluginLTLIBRARIES
+	uninstall-libtestpluginLTLIBRARIES \
+	uninstall-pluginexecLTLIBRARIES
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

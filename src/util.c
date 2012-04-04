@@ -762,8 +762,31 @@ ensure_bare_contact_from_jid (GabbleConnection *conn,
   return wocky_contact_factory_ensure_bare_contact (contact_factory, jid);
 }
 
-#define TWICE(x) x, x
+TpHandle
+ensure_handle_from_contact (
+    GabbleConnection *conn,
+    WockyContact *contact)
+{
+  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
+      (TpBaseConnection *) conn, TP_HANDLE_TYPE_CONTACT);
+  gchar *jid = wocky_contact_dup_jid (contact);
+  GError *error = NULL;
+  TpHandle handle = tp_handle_ensure (contact_repo, jid, NULL, &error);
 
+  if (handle == 0)
+    {
+      g_critical ("Contact %p has JID '%s' which is not valid: %s",
+          contact, jid, error->message);
+      g_clear_error (&error);
+    }
+
+  g_free (jid);
+  return handle;
+}
+
+#ifdef ENABLE_VOIP
+
+#define TWICE(x) x, x
 static gboolean
 jingle_pick_resource_or_bare_jid (GabblePresence *presence,
     GabbleCapabilitySet *caps, const gchar **resource)
@@ -974,6 +997,22 @@ jingle_pick_best_content_type (GabbleConnection *conn,
     }
 }
 
+static TpCallStreamCandidateType
+tp_candidate_type_from_jingle (JingleCandidateType type)
+{
+  switch (type)
+    {
+    default:
+      /* Consider UNKNOWN as LOCAL/HOST */
+    case JINGLE_CANDIDATE_TYPE_LOCAL:
+      return TP_CALL_STREAM_CANDIDATE_TYPE_HOST;
+    case JINGLE_CANDIDATE_TYPE_STUN:
+      return TP_CALL_STREAM_CANDIDATE_TYPE_SERVER_REFLEXIVE;
+    case JINGLE_CANDIDATE_TYPE_RELAY:
+      return TP_CALL_STREAM_CANDIDATE_TYPE_RELAY;
+    }
+}
+
 /**
  * @candidates: (element-type JingleCandidate): candidates
  *
@@ -996,7 +1035,7 @@ gabble_call_candidates_to_array (GList *candidates)
 
         info = tp_asv_new (
           "protocol", G_TYPE_UINT, cand->protocol,
-          "type", G_TYPE_UINT, cand->type,
+          "type", G_TYPE_UINT, tp_candidate_type_from_jingle (cand->type),
           "foundation", G_TYPE_STRING, cand->id,
           "priority", G_TYPE_UINT, cand->preference,
           "username", G_TYPE_STRING, cand->username,
@@ -1015,6 +1054,8 @@ gabble_call_candidates_to_array (GList *candidates)
 
   return arr;
 }
+
+#endif
 
 gchar *
 gabble_peer_to_jid (GabbleConnection *conn,
