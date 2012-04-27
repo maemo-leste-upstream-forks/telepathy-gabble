@@ -2,8 +2,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>WockyPubsubNode-protected</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<title>wocky-pubsub-node-protected</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="WockyPubsubNode.html" title="WockyPubsubNode">
@@ -30,19 +30,14 @@
 <a name="wocky-wocky-pubsub-node-protected"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2><span class="refentrytitle"><a name="wocky-wocky-pubsub-node-protected.top_of_page"></a>WockyPubsubNode-protected</span></h2>
-<p>WockyPubsubNode-protected</p>
+<h2><span class="refentrytitle"><a name="wocky-wocky-pubsub-node-protected.top_of_page"></a>wocky-pubsub-node-protected</span></h2>
+<p>wocky-pubsub-node-protected</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="wocky-wocky-pubsub-node-protected.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis"><span class="returnvalue">void</span>                (<a class="link" href="wocky-wocky-pubsub-node-protected.html#WockyPubsubNodeEventHandler" title="WockyPubsubNodeEventHandler ()">*WockyPubsubNodeEventHandler</a>)      (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *event_stanza</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *event_node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *action_node</code></em>);
-                    <a class="link" href="wocky-wocky-pubsub-node-protected.html#WockyPubsubNodeEventMapping" title="WockyPubsubNodeEventMapping">WockyPubsubNodeEventMapping</a>;
-<span class="returnvalue">WockyPorter</span> *       <a class="link" href="wocky-wocky-pubsub-node-protected.html#wocky-pubsub-node-get-porter" title="wocky_pubsub_node_get_porter ()">wocky_pubsub_node_get_porter</a>        (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>);
+<pre class="synopsis"><span class="returnvalue">WockyPorter</span> *       <a class="link" href="wocky-wocky-pubsub-node-protected.html#wocky-pubsub-node-get-porter" title="wocky_pubsub_node_get_porter ()">wocky_pubsub_node_get_porter</a>        (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>);
 <span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-wocky-pubsub-node-protected.html#wocky-pubsub-node-make-delete-stanza" title="wocky_pubsub_node_make_delete_stanza ()">wocky_pubsub_node_make_delete_stanza</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
@@ -82,37 +77,12 @@
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-pubsub-node-protected.description"></a><h2>Description</h2>
-<p>
-</p>
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-pubsub-node-protected.details"></a><h2>Details</h2>
 <div class="refsect2">
-<a name="WockyPubsubNodeEventHandler"></a><h3>WockyPubsubNodeEventHandler ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                (*WockyPubsubNodeEventHandler)      (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *event_stanza</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *event_node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *action_node</code></em>);</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="WockyPubsubNodeEventMapping"></a><h3>WockyPubsubNodeEventMapping</h3>
-<pre class="programlisting">typedef struct {
-    const gchar *action;
-    WockyPubsubNodeEventHandler method;
-} WockyPubsubNodeEventMapping;
-</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2">
 <a name="wocky-pubsub-node-get-porter"></a><h3>wocky_pubsub_node_get_porter ()</h3>
 <pre class="programlisting"><span class="returnvalue">WockyPorter</span> *       wocky_pubsub_node_get_porter        (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -121,8 +91,6 @@
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **delete_node</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -165,8 +133,6 @@ node, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Mac
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **affiliations_node</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -175,8 +141,6 @@ node, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Mac
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **subscriptions_node</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -226,8 +190,6 @@ own.</td>
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **subscribe_node</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -238,8 +200,6 @@ own.</td>
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *subid</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **unsubscribe_node</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -247,8 +207,6 @@ own.</td>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_pubsub_node_parse_affiliations
                                                         (<em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *affiliations_node</code></em>);</pre>
-<p>
-</p>
 </div>
 </div>
 </div>

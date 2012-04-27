@@ -15,6 +15,12 @@ from servicetest import (
 import constants as cs
 from jingletest2 import JingleTest2, test_all_dialects
 
+from config import VOIP_ENABLED
+
+if not VOIP_ENABLED:
+    print "NOTE: built with --disable-voip"
+    raise SystemExit(77)
+
 # There are various deprecated APIs for requesting calls, documented at
 # <http://telepathy.freedesktop.org/wiki/Requesting StreamedMedia channels>.
 # These are ordered from most recent to most deprecated.
@@ -144,20 +150,14 @@ def worker(jp, q, bus, conn, stream, variant, peer):
             # but we should be allowed to add the peer.
             chan.Group.AddMembers([remote_handle], 'I love backwards compat')
 
-    base_flags = cs.GF_PROPERTIES | cs.GF_MESSAGE_REMOVE \
+    base_flags = cs.GF_MEMBERS_CHANGED_DETAILED | cs.GF_PROPERTIES | cs.GF_MESSAGE_REMOVE \
                | cs.GF_MESSAGE_REJECT | cs.GF_MESSAGE_RESCIND
 
     if variant == REQUEST_ANONYMOUS_AND_ADD or variant == REQUEST_ANONYMOUS:
         expected_flags = base_flags | cs.GF_CAN_ADD
     else:
         expected_flags = base_flags
-
-    # Knock out MembersChangedDetailed flag if it's there. Versions of
-    # telepathy-glib newer than 0.16.2 always set it. We don't really care here
-    # whether it's set or not, so knocking it out of the reported flags makes
-    # this test pass either way.
-    assertEquals(expected_flags,
-        group_props['GroupFlags'] & ~cs.GF_MEMBERS_CHANGED_DETAILED)
+    assertEquals(expected_flags, group_props['GroupFlags'])
     assertEquals({}, group_props['HandleOwners'])
 
     assertEquals([], chan.StreamedMedia.ListStreams())

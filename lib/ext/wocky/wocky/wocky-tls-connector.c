@@ -25,8 +25,8 @@
 
 #include "wocky-tls-connector.h"
 
-#define DEBUG_FLAG DEBUG_TLS
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_TLS
+#include "wocky-debug-internal.h"
 
 #include "wocky-namespaces.h"
 #include "wocky-connector.h"
@@ -372,8 +372,7 @@ starttls_recv_cb (GObject *source,
   DEBUG ("Received STARTTLS response");
   node = wocky_stanza_get_top_node (stanza);
 
-  if (wocky_strdiff (node->name, "proceed") ||
-      wocky_strdiff (wocky_node_get_ns (node), WOCKY_XMPP_NS_TLS))
+  if (!wocky_node_matches (node, "proceed", WOCKY_XMPP_NS_TLS))
     {
       report_error_in_idle (self, WOCKY_CONNECTOR_ERROR_TLS_REFUSED,
           "%s", "STARTTLS refused by the server");

@@ -19,28 +19,39 @@
 
 #include "protocol.h"
 
+#include <string.h>
 #include <telepathy-glib/base-connection-manager.h>
+#include <telepathy-glib/interfaces.h>
 #include <dbus/dbus-protocol.h>
 #include <dbus/dbus-glib.h>
 
+#include "extensions/extensions.h"
+
 #include "conn-presence.h"
+
 #include "connection.h"
 #include "connection-manager.h"
 #include "im-factory.h"
+#ifdef ENABLE_VOIP
 #include "media-factory.h"
+#endif
 #include "private-tubes-factory.h"
 #include "roomlist-manager.h"
 #include "search-manager.h"
 #include "util.h"
+#include "addressing-util.h"
 
 #define PROTOCOL_NAME "jabber"
 #define ICON_NAME "im-" PROTOCOL_NAME
 #define VCARD_FIELD_NAME "x-" PROTOCOL_NAME
 #define ENGLISH_NAME "Jabber"
 
-G_DEFINE_TYPE (GabbleJabberProtocol,
-    gabble_jabber_protocol,
-    TP_TYPE_BASE_PROTOCOL)
+static void addressing_iface_init (TpProtocolAddressingInterface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (GabbleJabberProtocol, gabble_jabber_protocol,
+    TP_TYPE_BASE_PROTOCOL,
+    G_IMPLEMENT_INTERFACE (TP_TYPE_PROTOCOL_ADDRESSING, addressing_iface_init);
+    )
 
 static TpCMParamSpec jabber_params[] = {
   { "account", DBUS_TYPE_STRING_AS_STRING, G_TYPE_STRING,
@@ -147,6 +158,12 @@ static TpCMParamSpec jabber_params[] = {
     TP_CONN_MGR_PARAM_FLAG_HAS_DEFAULT, GUINT_TO_POINTER (30),
     0 /* unused */, NULL, NULL },
 
+  { TP_PROP_CONNECTION_INTERFACE_CONTACT_LIST_DOWNLOAD_AT_CONNECTION,
+    DBUS_TYPE_BOOLEAN_AS_STRING, G_TYPE_BOOLEAN,
+    TP_CONN_MGR_PARAM_FLAG_HAS_DEFAULT | TP_CONN_MGR_PARAM_FLAG_DBUS_PROPERTY,
+    GUINT_TO_POINTER (TRUE),
+    0 /* unused */, NULL, NULL },
+
   { GABBLE_PROP_CONNECTION_INTERFACE_GABBLE_DECLOAK_DECLOAK_AUTOMATICALLY,
     DBUS_TYPE_BOOLEAN_AS_STRING, G_TYPE_BOOLEAN,
     TP_CONN_MGR_PARAM_FLAG_HAS_DEFAULT |
@@ -234,6 +251,8 @@ struct ParamMapping {
   SAME ("alias"),
   SAME ("fallback-socks5-proxies"),
   SAME ("keepalive-interval"),
+  MAP (TP_PROP_CONNECTION_INTERFACE_CONTACT_LIST_DOWNLOAD_AT_CONNECTION,
+       "download-roster-at-connection"),
   MAP (GABBLE_PROP_CONNECTION_INTERFACE_GABBLE_DECLOAK_DECLOAK_AUTOMATICALLY,
        "decloak-automatically"),
   SAME ("fallback-servers"),
@@ -303,6 +322,7 @@ get_interfaces (TpBaseProtocol *self)
 {
   const gchar * const interfaces[] = {
     TP_IFACE_PROTOCOL_INTERFACE_PRESENCE,
+    TP_IFACE_PROTOCOL_INTERFACE_ADDRESSING,
     NULL };
 
   return g_strdupv ((GStrv) interfaces);
@@ -331,9 +351,13 @@ get_connection_details (TpBaseProtocol *self,
   if (channel_managers != NULL)
     {
       GType types[] = {
+#ifdef ENABLE_FILE_TRANSFER
           GABBLE_TYPE_FT_MANAGER,
+#endif
           GABBLE_TYPE_IM_FACTORY,
+#ifdef ENABLE_VOIP
           GABBLE_TYPE_MEDIA_FACTORY,
+#endif
           GABBLE_TYPE_MUC_FACTORY,
           GABBLE_TYPE_ROOMLIST_MANAGER,
           GABBLE_TYPE_SEARCH_MANAGER,
@@ -370,6 +394,59 @@ dup_authentication_types (TpBaseProtocol *self)
   return g_strdupv ((GStrv) types);
 }
 
+static GStrv
+dup_supported_uri_schemes (TpBaseProtocol *self)
+{
+  return g_strdupv ((gchar **) gabble_get_addressable_uri_schemes ());
+}
+
+static GStrv
+dup_supported_vcard_fields (TpBaseProtocol *self)
+{
+  return g_strdupv ((gchar **) gabble_get_addressable_vcard_fields ());
+}
+
+static gchar *
+addressing_normalize_vcard_address (TpBaseProtocol *self,
+    const gchar *vcard_field,
+    const gchar *vcard_address,
+    GError **error)
+{
+  gchar *normalized_address = gabble_normalize_vcard_address (vcard_field, vcard_address, error);
+
+  if (normalized_address == NULL)
+    {
+      /* InvalidHandle makes no sense in Protocol */
+      if (error != NULL && g_error_matches (*error, TP_ERROR, TP_ERROR_INVALID_HANDLE))
+        {
+          (*error)->code = TP_ERROR_INVALID_ARGUMENT;
+        }
+    }
+
+  return normalized_address;
+}
+
+static gchar *
+addressing_normalize_contact_uri (TpBaseProtocol *self,
+    const gchar *uri,
+    GError **error)
+{
+  gchar *normalized_address = NULL;
+
+  normalized_address = gabble_normalize_contact_uri (uri, error);
+
+  if (normalized_address == NULL)
+    {
+      /* InvalidHandle makes no sense in Protocol */
+      if (error != NULL && g_error_matches (*error, TP_ERROR, TP_ERROR_INVALID_HANDLE))
+        {
+          (*error)->code = TP_ERROR_INVALID_ARGUMENT;
+        }
+    }
+
+  return normalized_address;
+}
+
 static void
 gabble_jabber_protocol_class_init (GabbleJabberProtocolClass *klass)
 {
@@ -394,3 +471,11 @@ gabble_jabber_protocol_new (void)
       NULL);
 }
 
+static void
+addressing_iface_init (TpProtocolAddressingInterface *iface)
+{
+  iface->dup_supported_vcard_fields = dup_supported_vcard_fields;
+  iface->dup_supported_uri_schemes = dup_supported_uri_schemes;
+  iface->normalize_vcard_address = addressing_normalize_vcard_address;
+  iface->normalize_contact_uri = addressing_normalize_contact_uri;
+}

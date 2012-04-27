@@ -32,7 +32,7 @@
 #include <telepathy-glib/run.h>
 #include <telepathy-glib/util.h>
 #include <wocky/wocky.h>
-#include <wocky/wocky-debug.h>
+#include <wocky/wocky.h>
 
 #include "debug.h"
 #include "connection-manager.h"
@@ -109,10 +109,12 @@ log_handler (const gchar *log_domain,
 void
 gabble_init (void)
 {
+#if !GLIB_CHECK_VERSION (2, 31, 0)
   /* libsoup uses glib in multiple threads and don't have this, so we have to
    * enable it manually here */
   if (!g_thread_supported ())
     g_thread_init (NULL);
+#endif
 
   g_type_init ();
   wocky_init ();
@@ -159,7 +161,10 @@ gabble_main (int argc,
   if (g_getenv ("WOCKY_DEBUG") == NULL)
     {
       redirect_wocky = TRUE;
-      wocky_debug_set_flags (DEBUG_XMPP | DEBUG_AUTH | DEBUG_PORTER);
+      wocky_debug_set_flags ( WOCKY_DEBUG_XMPP
+                            | WOCKY_DEBUG_AUTH
+                            | WOCKY_DEBUG_PORTER
+                            );
     }
 
   debug_sender = tp_debug_sender_dup ();

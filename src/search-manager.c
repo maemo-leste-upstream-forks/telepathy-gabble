@@ -25,7 +25,7 @@
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/interfaces.h>
 
-#include <wocky/wocky-utils.h>
+#include <wocky/wocky.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_SEARCH
 
@@ -230,7 +230,7 @@ gabble_search_manager_finalize (GObject *object)
 
   /* close_all removed all the channels from the hash table */
   g_assert_cmpuint (g_hash_table_size (priv->channels), ==, 0);
-  g_hash_table_destroy (priv->channels);
+  g_hash_table_unref (priv->channels);
 
   if (G_OBJECT_CLASS (gabble_search_manager_parent_class)->finalize)
     G_OBJECT_CLASS (gabble_search_manager_parent_class)->finalize (object);
@@ -341,7 +341,7 @@ gabble_search_manager_type_foreach_channel_class (GType type,
 
   func (type, table, search_channel_allowed_properties, user_data);
 
-  g_hash_table_destroy (table);
+  g_hash_table_unref (table);
 }
 
 static void
@@ -406,16 +406,16 @@ search_channel_ready_or_not_cb (GabbleSearchChannel *chan,
     }
   else
     {
-      if (domain == GABBLE_XMPP_ERROR)
+      if (domain == WOCKY_XMPP_ERROR)
         {
           domain = TP_ERRORS;
 
           switch (code)
             {
-            case XMPP_ERROR_FORBIDDEN:
+            case WOCKY_XMPP_ERROR_FORBIDDEN:
               code = TP_ERROR_PERMISSION_DENIED;
               break;
-            case XMPP_ERROR_JID_MALFORMED:
+            case WOCKY_XMPP_ERROR_JID_MALFORMED:
               code = TP_ERROR_INVALID_ARGUMENT;
               break;
             default:

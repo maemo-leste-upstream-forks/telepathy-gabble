@@ -25,17 +25,13 @@
 #include <string.h>
 #include <glib.h>
 
-#include <loudmouth/loudmouth.h>
-
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
 
-#include "connection.h"
 #include "debug.h"
 #include "jingle-content.h"
 #include "jingle-factory.h"
 #include "jingle-session.h"
 #include "namespaces.h"
-#include "util.h"
 
 static void
 transport_iface_init (gpointer g_iface, gpointer iface_data);
@@ -110,7 +106,7 @@ gabble_jingle_transport_google_dispose (GObject *object)
   DEBUG ("dispose called");
   priv->dispose_has_run = TRUE;
 
-  g_hash_table_destroy (priv->component_names);
+  g_hash_table_unref (priv->component_names);
   priv->component_names = NULL;
 
   jingle_transport_free_candidates (priv->remote_candidates);
@@ -231,21 +227,19 @@ gabble_jingle_transport_google_class_init (GabbleJingleTransportGoogleClass *cls
 
 }
 
-#define SET_BAD_REQ(txt) \
-  g_set_error (error, GABBLE_XMPP_ERROR, XMPP_ERROR_BAD_REQUEST, txt)
-
 static void
 parse_candidates (GabbleJingleTransportIface *obj,
-    LmMessageNode *transport_node, GError **error)
+    WockyNode *transport_node, GError **error)
 {
   GabbleJingleTransportGoogle *t = GABBLE_JINGLE_TRANSPORT_GOOGLE (obj);
   GabbleJingleTransportGooglePrivate *priv = t->priv;
   GList *candidates = NULL;
-  NodeIter i;
+  WockyNodeIter i;
+  WockyNode *node;
 
-  for (i = node_iter (transport_node); i; i = node_iter_next (i))
+  wocky_node_iter_init (&i, transport_node, "candidate", NULL);
+  while (wocky_node_iter_next (&i, &node))
     {
-      LmMessageNode *node = node_iter_data (i);
       const gchar *name, *address, *user, *pass, *str;
       guint port, net, gen, component;
       int pref;
@@ -253,10 +247,7 @@ parse_candidates (GabbleJingleTransportIface *obj,
       JingleCandidateType ctype;
       JingleCandidate *c;
 
-      if (tp_strdiff (lm_message_node_get_name (node), "candidate"))
-          continue;
-
-      name = lm_message_node_get_attribute (node, "name");
+      name = wocky_node_get_attribute (node, "name");
       if (name == NULL)
           break;
 
@@ -269,24 +260,24 @@ parse_candidates (GabbleJingleTransportIface *obj,
 
       component = GPOINTER_TO_INT (g_hash_table_lookup (priv->component_names,
               name));
-      address = lm_message_node_get_attribute (node, "address");
+      address = wocky_node_get_attribute (node, "address");
       if (address == NULL)
           break;
 
-      str = lm_message_node_get_attribute (node, "port");
+      str = wocky_node_get_attribute (node, "port");
       if (str == NULL)
           break;
       port = atoi (str);
 
-      str = lm_message_node_get_attribute (node, "protocol");
+      str = wocky_node_get_attribute (node, "protocol");
       if (str == NULL)
           break;
 
-      if (!tp_strdiff (str, "udp"))
+      if (!wocky_strdiff (str, "udp"))
         {
           proto = JINGLE_TRANSPORT_PROTOCOL_UDP;
         }
-      else if (!tp_strdiff (str, "tcp"))
+      else if (!wocky_strdiff (str, "tcp"))
         {
           /* candiates on port 443 must be "ssltcp" */
           if (port == 443)
@@ -294,7 +285,7 @@ parse_candidates (GabbleJingleTransportIface *obj,
 
           proto = JINGLE_TRANSPORT_PROTOCOL_TCP;
         }
-      else if (!tp_strdiff (str, "ssltcp"))
+      else if (!wocky_strdiff (str, "ssltcp"))
         {
           /* "ssltcp" must use port 443 */
           if (port != 443)
@@ -310,25 +301,25 @@ parse_candidates (GabbleJingleTransportIface *obj,
           break;
         }
 
-      str = lm_message_node_get_attribute (node, "preference");
+      str = wocky_node_get_attribute (node, "preference");
       if (str == NULL)
           break;
 
       pref = g_ascii_strtod (str, NULL) * 65536;
 
-      str = lm_message_node_get_attribute (node, "type");
+      str = wocky_node_get_attribute (node, "type");
       if (str == NULL)
           break;
 
-      if (!tp_strdiff (str, "local"))
+      if (!wocky_strdiff (str, "local"))
         {
           ctype = JINGLE_CANDIDATE_TYPE_LOCAL;
         }
-      else if (!tp_strdiff (str, "stun"))
+      else if (!wocky_strdiff (str, "stun"))
         {
           ctype = JINGLE_CANDIDATE_TYPE_STUN;
         }
-      else if (!tp_strdiff (str, "relay"))
+      else if (!wocky_strdiff (str, "relay"))
         {
           ctype = JINGLE_CANDIDATE_TYPE_RELAY;
         }
@@ -339,25 +330,25 @@ parse_candidates (GabbleJingleTransportIface *obj,
           break;
         }
 
-      user = lm_message_node_get_attribute (node, "username");
+      user = wocky_node_get_attribute (node, "username");
       if (user == NULL)
           break;
 
-      pass = lm_message_node_get_attribute (node, "password");
+      pass = wocky_node_get_attribute (node, "password");
       if (pass == NULL)
           break;
 
-      str = lm_message_node_get_attribute (node, "network");
+      str = wocky_node_get_attribute (node, "network");
       if (str == NULL)
           break;
       net = atoi (str);
 
-      str = lm_message_node_get_attribute (node, "generation");
+      str = wocky_node_get_attribute (node, "generation");
       if (str == NULL)
           break;
       gen = atoi (str);
 
-      str = lm_message_node_get_attribute (node, "component");
+      str = wocky_node_get_attribute (node, "component");
       if (str != NULL)
           component = atoi (str);
 
@@ -367,12 +358,13 @@ parse_candidates (GabbleJingleTransportIface *obj,
       candidates = g_list_append (candidates, c);
     }
 
-  if (i != NULL)
+  if (wocky_node_iter_next (&i, NULL))
     {
       DEBUG ("not all nodes were processed, reporting error");
       /* rollback these */
       jingle_transport_free_candidates (candidates);
-      SET_BAD_REQ ("invalid candidate");
+      g_set_error (error, WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST,
+          "invalid candidate");
       return;
     }
 
@@ -391,8 +383,8 @@ transmit_candidates (GabbleJingleTransportGoogle *transport,
 {
   GabbleJingleTransportGooglePrivate *priv = transport->priv;
   GList *li;
-  LmMessage *msg;
-  LmMessageNode *trans_node, *sess_node;
+  WockyStanza *msg;
+  WockyNode *trans_node, *sess_node;
 
   if (candidates == NULL)
     return;
@@ -407,7 +399,7 @@ transmit_candidates (GabbleJingleTransportGoogle *transport,
     {
       JingleCandidate *c = (JingleCandidate *) li->data;
       gchar port_str[16], pref_str[16], comp_str[16], *type_str, *proto_str;
-      LmMessageNode *cnode;
+      WockyNode *cnode;
 
       sprintf (port_str, "%d", c->port);
       sprintf (pref_str, "%lf", c->preference / 65536.0);
@@ -441,8 +433,8 @@ transmit_candidates (GabbleJingleTransportGoogle *transport,
           g_assert_not_reached ();
       }
 
-      cnode = lm_message_node_add_child (trans_node, "candidate", NULL);
-      lm_message_node_set_attributes (cnode,
+      cnode = wocky_node_add_child_with_content (trans_node, "candidate", NULL);
+      wocky_node_set_attributes (cnode,
           "address", c->address,
           "port", port_str,
           "username", c->username,
@@ -455,12 +447,13 @@ transmit_candidates (GabbleJingleTransportGoogle *transport,
           "generation", "0",
           NULL);
 
-      lm_message_node_set_attribute (cnode, "name", name);
+      wocky_node_set_attribute (cnode, "name", name);
     }
 
-  _gabble_connection_send_with_reply (priv->content->conn, msg, NULL, NULL,
-      NULL, NULL);
-  lm_message_unref (msg);
+  wocky_porter_send_iq_async (
+      gabble_jingle_session_get_porter (priv->content->session), msg,
+      NULL, NULL, NULL);
+  g_object_unref (msg);
 }
 
 /* Groups @candidates into rtp and rtcp and sends each group in its own

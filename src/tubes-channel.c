@@ -120,7 +120,7 @@ struct _GabbleTubesChannelPrivate
 
 static void update_tubes_presence (GabbleTubesChannel *self);
 
-static void pre_presence_cb (GabbleMucChannel *muc, LmMessage *msg,
+static void pre_presence_cb (GabbleMucChannel *muc, WockyStanza *msg,
     GabbleTubesChannel *self);
 
 static void
@@ -353,8 +353,8 @@ d_bus_names_changed_added (GabbleTubesChannel *self,
 
   for (i = 0; i < added->len; i++)
     g_boxed_free (TP_STRUCT_TYPE_DBUS_TUBE_MEMBER, added->pdata[i]);
-  g_ptr_array_free (added, TRUE);
-  g_array_free (removed, TRUE);
+  g_ptr_array_unref (added);
+  g_array_unref (removed);
 }
 
 static void
@@ -377,8 +377,8 @@ d_bus_names_changed_removed (GabbleTubesChannel *self,
   tp_svc_channel_type_tubes_emit_d_bus_names_changed (self,
       tube_id, added, removed);
 
-  g_ptr_array_free (added, TRUE);
-  g_array_free (removed, TRUE);
+  g_ptr_array_unref (added);
+  g_array_unref (removed);
 }
 
 static void
@@ -452,8 +452,6 @@ tube_closed_cb (GabbleTubeIface *tube,
   update_tubes_presence (self);
 
   tp_svc_channel_type_tubes_emit_tube_closed (self, tube_id);
-
-  tp_svc_channel_emit_closed (tube);
 
   /* Ideally, this should be done in the factory directly but the private
    * tubes factory and the muc factory are not aware of tube channels.
@@ -532,7 +530,7 @@ tube_offered_cb (GabbleTubeIface *tube,
   update_tubes_presence (self);
 
   g_free (service);
-  g_hash_table_destroy (parameters);
+  g_hash_table_unref (parameters);
 }
 
 static GabbleTubeIface *
@@ -561,11 +559,13 @@ create_new_tube (GabbleTubesChannel *self,
     case TP_TUBE_TYPE_STREAM:
       tube = GABBLE_TUBE_IFACE (gabble_tube_stream_new (priv->conn,
           priv->handle, priv->handle_type, priv->self_handle, initiator,
-          service, parameters, tube_id, self->muc));
+          service, parameters, tube_id, self->muc, requested));
       break;
     default:
       g_return_val_if_reached (NULL);
     }
+
+  tp_base_channel_register ((TpBaseChannel *) tube);
 
   DEBUG ("create tube %u", tube_id);
   g_hash_table_insert (priv->tubes, GUINT_TO_POINTER (tube_id), tube);
@@ -596,7 +596,7 @@ create_new_tube (GabbleTubesChannel *self,
 
 static gboolean
 extract_tube_information (GabbleTubesChannel *self,
-                          LmMessageNode *tube_node,
+                          WockyNode *tube_node,
                           TpTubeType *type,
                           TpHandle *initiator_handle,
                           const gchar **service,
@@ -611,7 +611,7 @@ extract_tube_information (GabbleTubesChannel *self,
     {
       const gchar *_type;
 
-      _type = lm_message_node_get_attribute (tube_node, "type");
+      _type = wocky_node_get_attribute (tube_node, "type");
 
       if (!tp_strdiff (_type, "stream"))
         {
@@ -632,7 +632,7 @@ extract_tube_information (GabbleTubesChannel *self,
     {
       const gchar *initiator;
 
-      initiator = lm_message_node_get_attribute (tube_node, "initiator");
+      initiator = wocky_node_get_attribute (tube_node, "initiator");
 
       if (initiator != NULL)
         {
@@ -653,14 +653,14 @@ extract_tube_information (GabbleTubesChannel *self,
 
   if (service != NULL)
     {
-      *service = lm_message_node_get_attribute (tube_node, "service");
+      *service = wocky_node_get_attribute (tube_node, "service");
     }
 
   if (parameters != NULL)
     {
-      LmMessageNode *node;
+      WockyNode *node;
 
-      node = lm_message_node_get_child (tube_node, "parameters");
+      node = wocky_node_get_child (tube_node, "parameters");
       *parameters = lm_message_node_extract_properties (node, "parameter");
     }
 
@@ -670,7 +670,7 @@ extract_tube_information (GabbleTubesChannel *self,
       gchar *endptr;
       unsigned long tmp;
 
-      str = lm_message_node_get_attribute (tube_node, "id");
+      str = wocky_node_get_attribute (tube_node, "id");
       if (str == NULL)
         {
           DEBUG ("no tube id in SI request");
@@ -803,7 +803,7 @@ contact_left_muc (GabbleTubesChannel *self,
   g_hash_table_foreach (old_dbus_tubes, emit_d_bus_names_changed_foreach,
       &emit_data);
 
-  g_hash_table_destroy (old_dbus_tubes);
+  g_hash_table_unref (old_dbus_tubes);
 }
 
 /* Called when we receive a presence from a contact who is
@@ -811,13 +811,14 @@ contact_left_muc (GabbleTubesChannel *self,
 void
 gabble_tubes_channel_presence_updated (GabbleTubesChannel *self,
                                        TpHandle contact,
-                                       LmMessageNode *pnode)
+                                       WockyNode *pnode)
 {
   GabbleTubesChannelPrivate *priv = self->priv;
-  LmMessageNode *tubes_node;
+  WockyNode *tubes_node;
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
       (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_CONTACT);
-  NodeIter i;
+  WockyNodeIter i;
+  WockyNode *tube_node;
   const gchar *presence_type;
   GHashTable *old_dbus_tubes;
   struct _add_in_old_dbus_tubes_data add_data;
@@ -829,15 +830,14 @@ gabble_tubes_channel_presence_updated (GabbleTubesChannel *self,
 
   /* We are interested by this presence only if it contains tube information
    * or indicates someone left the muc */
-  presence_type = lm_message_node_get_attribute (pnode, "type");
+  presence_type = wocky_node_get_attribute (pnode, "type");
   if (!tp_strdiff (presence_type, "unavailable"))
     {
       contact_left_muc (self, contact);
       return;
     }
 
-  tubes_node = lm_message_node_get_child_with_namespace (pnode,
-      "tubes", NS_TUBES);
+  tubes_node = wocky_node_get_child_ns (pnode, "tubes", NS_TUBES);
 
   if (tubes_node == NULL)
     return;
@@ -849,15 +849,15 @@ gabble_tubes_channel_presence_updated (GabbleTubesChannel *self,
   add_data.contact = contact;
   g_hash_table_foreach (priv->tubes, add_in_old_dbus_tubes, &add_data);
 
-  for (i = node_iter (tubes_node); i; i = node_iter_next (i))
+  wocky_node_iter_init (&i, tubes_node, NULL, NULL);
+  while (wocky_node_iter_next (&i, &tube_node))
     {
-      LmMessageNode *tube_node = node_iter_data (i);
       const gchar *stream_id;
       GabbleTubeIface *tube;
       guint tube_id;
       TpTubeType type;
 
-      stream_id = lm_message_node_get_attribute (tube_node, "stream-id");
+      stream_id = wocky_node_get_attribute (tube_node, "stream-id");
 
       if (!extract_tube_information (self, tube_node, NULL,
           NULL, NULL, NULL, &tube_id))
@@ -914,7 +914,7 @@ gabble_tubes_channel_presence_updated (GabbleTubesChannel *self,
 
               /* the tube has reffed its initiator, no need to keep a ref */
               tp_handle_unref (contact_repo, initiator_handle);
-              g_hash_table_destroy (parameters);
+              g_hash_table_unref (parameters);
             }
         }
       else
@@ -939,7 +939,7 @@ gabble_tubes_channel_presence_updated (GabbleTubesChannel *self,
               /* Contact just joined the tube */
               const gchar *new_name;
 
-              new_name = lm_message_node_get_attribute (tube_node,
+              new_name = wocky_node_get_attribute (tube_node,
                   "dbus-name");
 
               if (!new_name)
@@ -961,7 +961,7 @@ gabble_tubes_channel_presence_updated (GabbleTubesChannel *self,
   g_hash_table_foreach (old_dbus_tubes, emit_d_bus_names_changed_foreach,
       &emit_data);
 
-  g_hash_table_destroy (old_dbus_tubes);
+  g_hash_table_unref (old_dbus_tubes);
 }
 
 static void
@@ -1051,7 +1051,7 @@ gabble_tubes_channel_get_available_tube_types (TpSvcChannelTypeTubes *iface,
   tp_svc_channel_type_tubes_return_from_get_available_tube_types (context,
       ret);
 
-  g_array_free (ret, TRUE);
+  g_array_unref (ret);
 }
 
 /**
@@ -1079,13 +1079,13 @@ gabble_tubes_channel_list_tubes (TpSvcChannelTypeTubes *iface,
   for (i = 0; i < ret->len; i++)
     g_boxed_free (TP_STRUCT_TYPE_TUBE_INFO, ret->pdata[i]);
 
-  g_ptr_array_free (ret, TRUE);
+  g_ptr_array_unref (ret);
 }
 
 struct _i_hate_g_hash_table_foreach
 {
   GabbleTubesChannel *self;
-  LmMessageNode *tubes_node;
+  WockyNode *tubes_node;
 };
 
 static void
@@ -1098,7 +1098,7 @@ publish_tubes_in_node (gpointer key,
     (struct _i_hate_g_hash_table_foreach *) user_data;
   GabbleTubesChannelPrivate *priv = data->self->priv;
   TpTubeChannelState state;
-  LmMessageNode *tube_node;
+  WockyNode *tube_node;
   TpTubeType type;
   TpHandle initiator;
 
@@ -1118,24 +1118,24 @@ publish_tubes_in_node (gpointer key,
     /* We only announce stream tubes we initiated */
     return;
 
-  tube_node = lm_message_node_add_child (data->tubes_node, "tube", NULL);
+  tube_node = wocky_node_add_child_with_content (data->tubes_node, "tube", NULL);
   gabble_tube_iface_publish_in_node (tube, (TpBaseConnection *) priv->conn,
       tube_node);
 }
 
 static void
 pre_presence_cb (GabbleMucChannel *muc,
-                 LmMessage *msg,
+                 WockyStanza *msg,
                  GabbleTubesChannel *self)
 {
   GabbleTubesChannelPrivate *priv = self->priv;
   struct _i_hate_g_hash_table_foreach data;
-  LmMessageNode *node;
+  WockyNode *node;
 
   /* Augment the muc presence with tubes information */
-  node = lm_message_node_add_child (
+  node = wocky_node_add_child_with_content (
       wocky_stanza_get_top_node (msg), "tubes", NULL);
-  lm_message_node_set_attribute (node, "xmlns", NS_TUBES);
+  node->ns = g_quark_from_string (NS_TUBES);
   data.self = self;
   data.tubes_node = node;
 
@@ -1159,34 +1159,37 @@ update_tubes_presence (GabbleTubesChannel *self)
 void
 gabble_tubes_channel_tube_si_offered (GabbleTubesChannel *self,
                                       GabbleBytestreamIface *bytestream,
-                                      LmMessage *msg)
+                                      WockyStanza *msg)
 {
   GabbleTubesChannelPrivate *priv = self->priv;
   const gchar *service, *stream_id;
   GHashTable *parameters;
   TpTubeType type;
-  LmMessageNode *si_node, *tube_node;
+  WockyNode *si_node, *tube_node;
   guint tube_id;
   GabbleTubeIface *tube;
+  WockyStanzaType stanza_type;
+  WockyStanzaSubType sub_type;
 
   /* Caller is expected to have checked that we have a SI node with
    * a stream ID, the TUBES profile and a <tube> element
    */
-  g_return_if_fail (lm_message_get_type (msg) == LM_MESSAGE_TYPE_IQ);
-  g_return_if_fail (lm_message_get_sub_type (msg) == LM_MESSAGE_SUB_TYPE_SET);
-  si_node = lm_message_node_get_child_with_namespace (
+  wocky_stanza_get_type_info (msg, &stanza_type, &sub_type);
+  g_return_if_fail (stanza_type == WOCKY_STANZA_TYPE_IQ);
+  g_return_if_fail (sub_type == WOCKY_STANZA_SUB_TYPE_SET);
+  si_node = wocky_node_get_child_ns (
       wocky_stanza_get_top_node (msg), "si", NS_SI);
   g_return_if_fail (si_node != NULL);
-  stream_id = lm_message_node_get_attribute (si_node, "id");
+  stream_id = wocky_node_get_attribute (si_node, "id");
   g_return_if_fail (stream_id != NULL);
-  tube_node = lm_message_node_get_child_with_namespace (si_node, "tube",
+  tube_node = wocky_node_get_child_ns (si_node, "tube",
       NS_TUBES);
   g_return_if_fail (tube_node != NULL);
 
   if (!extract_tube_information (self, tube_node, NULL, NULL,
               NULL, NULL, &tube_id))
     {
-      GError e = { GABBLE_XMPP_ERROR, XMPP_ERROR_BAD_REQUEST,
+      GError e = { WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST,
           "<tube> has no id attribute" };
 
       NODE_DEBUG (tube_node, e.message);
@@ -1197,7 +1200,7 @@ gabble_tubes_channel_tube_si_offered (GabbleTubesChannel *self,
   tube = g_hash_table_lookup (priv->tubes, GUINT_TO_POINTER (tube_id));
   if (tube != NULL)
     {
-      GError e = { GABBLE_XMPP_ERROR, XMPP_ERROR_BAD_REQUEST,
+      GError e = { WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST,
           "tube ID already in use" };
 
       NODE_DEBUG (tube_node, e.message);
@@ -1209,18 +1212,18 @@ gabble_tubes_channel_tube_si_offered (GabbleTubesChannel *self,
   if (!extract_tube_information (self, tube_node, &type, NULL,
               &service, &parameters, NULL))
     {
-      GError e = { GABBLE_XMPP_ERROR, XMPP_ERROR_BAD_REQUEST,
+      GError e = { WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST,
           "can't extract <tube> information from SI request" };
 
       NODE_DEBUG (tube_node, e.message);
       gabble_bytestream_iface_close (bytestream, &e);
-      g_hash_table_destroy (parameters);
+      g_hash_table_unref (parameters);
       return;
     }
 
   if (type != TP_TUBE_TYPE_DBUS)
     {
-      GError e = { GABBLE_XMPP_ERROR, XMPP_ERROR_FORBIDDEN,
+      GError e = { WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_FORBIDDEN,
           "Only D-Bus tubes are allowed to be created using SI" };
 
       DEBUG ("%s", e.message);
@@ -1235,7 +1238,7 @@ gabble_tubes_channel_tube_si_offered (GabbleTubesChannel *self,
   tp_channel_manager_emit_new_channel (priv->conn->private_tubes_factory,
       TP_EXPORTABLE_CHANNEL (tube), NULL);
 
-  g_hash_table_destroy (parameters);
+  g_hash_table_unref (parameters);
 }
 
 /* Called when we receive a SI request,
@@ -1245,41 +1248,44 @@ gabble_tubes_channel_tube_si_offered (GabbleTubesChannel *self,
 void
 gabble_tubes_channel_bytestream_offered (GabbleTubesChannel *self,
                                          GabbleBytestreamIface *bytestream,
-                                         LmMessage *msg)
+                                         WockyStanza *msg)
 {
   GabbleTubesChannelPrivate *priv = self->priv;
   const gchar *stream_id, *tmp;
   gchar *endptr;
-  LmMessageNode *si_node, *stream_node;
+  WockyNode *si_node, *stream_node;
   guint tube_id;
   unsigned long tube_id_tmp;
   GabbleTubeIface *tube;
+  WockyStanzaType stanza_type;
+  WockyStanzaSubType sub_type;
 
   /* Caller is expected to have checked that we have a stream or muc-stream
    * node with a stream ID and the TUBES profile
    */
-  g_return_if_fail (lm_message_get_type (msg) == LM_MESSAGE_TYPE_IQ);
-  g_return_if_fail (lm_message_get_sub_type (msg) == LM_MESSAGE_SUB_TYPE_SET);
+  wocky_stanza_get_type_info (msg, &stanza_type, &sub_type);
+  g_return_if_fail (stanza_type == WOCKY_STANZA_TYPE_IQ);
+  g_return_if_fail (sub_type == WOCKY_STANZA_SUB_TYPE_SET);
 
-  si_node = lm_message_node_get_child_with_namespace (
+  si_node = wocky_node_get_child_ns (
       wocky_stanza_get_top_node (msg), "si", NS_SI);
   g_return_if_fail (si_node != NULL);
 
   if (priv->handle_type == TP_HANDLE_TYPE_CONTACT)
-    stream_node = lm_message_node_get_child_with_namespace (si_node,
+    stream_node = wocky_node_get_child_ns (si_node,
         "stream", NS_TUBES);
   else
-    stream_node = lm_message_node_get_child_with_namespace (si_node,
+    stream_node = wocky_node_get_child_ns (si_node,
         "muc-stream", NS_TUBES);
   g_return_if_fail (stream_node != NULL);
 
-  stream_id = lm_message_node_get_attribute (si_node, "id");
+  stream_id = wocky_node_get_attribute (si_node, "id");
   g_return_if_fail (stream_id != NULL);
 
-  tmp = lm_message_node_get_attribute (stream_node, "tube");
+  tmp = wocky_node_get_attribute (stream_node, "tube");
   if (tmp == NULL)
     {
-      GError e = { GABBLE_XMPP_ERROR, XMPP_ERROR_BAD_REQUEST,
+      GError e = { WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST,
           "<stream> or <muc-stream> has no tube attribute" };
 
       NODE_DEBUG (stream_node, e.message);
@@ -1289,7 +1295,7 @@ gabble_tubes_channel_bytestream_offered (GabbleTubesChannel *self,
   tube_id_tmp = strtoul (tmp, &endptr, 10);
   if (!endptr || *endptr || tube_id_tmp > G_MAXUINT32)
     {
-      GError e = { GABBLE_XMPP_ERROR, XMPP_ERROR_BAD_REQUEST,
+      GError e = { WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST,
           "<stream> or <muc-stream> tube attribute not numeric or > 2**32" };
 
       DEBUG ("tube id is not numeric or > 2**32: %s", tmp);
@@ -1301,7 +1307,7 @@ gabble_tubes_channel_bytestream_offered (GabbleTubesChannel *self,
   tube = g_hash_table_lookup (priv->tubes, GUINT_TO_POINTER (tube_id));
   if (tube == NULL)
     {
-      GError e = { GABBLE_XMPP_ERROR, XMPP_ERROR_BAD_REQUEST,
+      GError e = { WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST,
           "<stream> or <muc-stream> tube attribute points to a nonexistent "
           "tube" };
 
@@ -1321,7 +1327,7 @@ send_tube_close_msg (GabbleTubesChannel *self,
                      guint tube_id)
 {
   GabbleTubesChannelPrivate *priv = self->priv;
-  LmMessage *msg;
+  WockyStanza *msg;
   const gchar *jid;
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
       (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_CONTACT);
@@ -1331,48 +1337,36 @@ send_tube_close_msg (GabbleTubesChannel *self,
   id_str = g_strdup_printf ("%u", tube_id);
 
   /* Send the close message */
-  msg = lm_message_build (jid, LM_MESSAGE_TYPE_MESSAGE,
-      '(', "close", "",
-        '@', "xmlns", NS_TUBES,
+  msg = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
+      NULL, jid,
+      '(', "close",
+        ':', NS_TUBES,
         '@', "tube", id_str,
       ')',
-      '(', "amp", "",
-        '@', "xmlns", NS_AMP,
-        '(', "rule", "",
-          '@', "condition", "deliver-at",
-          '@', "value", "stored",
-          '@', "action", "error",
-        ')',
-        '(', "rule", "",
-          '@', "condition", "match-resource",
-          '@', "value", "exact",
-          '@', "action", "error",
-        ')',
-      ')',
+      GABBLE_AMP_DO_NOT_STORE_SPEC,
       NULL);
   g_free (id_str);
 
   _gabble_connection_send (priv->conn, msg, NULL);
 
-  lm_message_unref (msg);
+  g_object_unref (msg);
 }
 
 static void
 tube_msg_offered (GabbleTubesChannel *self,
-                  LmMessage *msg)
+                  WockyStanza *msg,
+                  WockyNode *tube_node)
 {
   GabbleTubesChannelPrivate *priv = self->priv;
   const gchar *service;
   GHashTable *parameters;
   TpTubeType type;
-  LmMessageNode *tube_node;
   guint tube_id;
   GabbleTubeIface *tube;
+  WockyStanzaType stanza_type;
 
-  g_return_if_fail (lm_message_get_type (msg) == LM_MESSAGE_TYPE_MESSAGE);
-  tube_node = lm_message_node_get_child_with_namespace (
-      wocky_stanza_get_top_node (msg), "tube", NS_TUBES);
-  g_return_if_fail (tube_node != NULL);
+  wocky_stanza_get_type_info (msg, &stanza_type, NULL);
+  g_return_if_fail (stanza_type == WOCKY_STANZA_TYPE_MESSAGE);
 
   if (!extract_tube_information (self, tube_node, NULL, NULL,
               NULL, NULL, &tube_id))
@@ -1413,26 +1407,22 @@ tube_msg_offered (GabbleTubesChannel *self,
   tp_channel_manager_emit_new_channel (priv->conn->private_tubes_factory,
       TP_EXPORTABLE_CHANNEL (tube), NULL);
 
-  g_hash_table_destroy (parameters);
+  g_hash_table_unref (parameters);
 }
 
 static void
 tube_msg_close (GabbleTubesChannel *self,
-                LmMessage *msg)
+                WockyStanza *msg,
+                WockyNode *close_node)
 {
   GabbleTubesChannelPrivate *priv = self->priv;
-  LmMessageNode *close_node;
   guint tube_id;
   const gchar *tmp;
   gchar *endptr;
   GabbleTubeIface *tube;
   TpTubeType type;
 
-  close_node = lm_message_node_get_child_with_namespace (
-      wocky_stanza_get_top_node (msg), "close", NS_TUBES);
-  g_assert (close_node != NULL);
-
-  tmp = lm_message_node_get_attribute (close_node, "tube");
+  tmp = wocky_node_get_attribute (close_node, "tube");
   if (tmp == NULL)
     {
       DEBUG ("no tube id in close message");
@@ -1466,23 +1456,23 @@ tube_msg_close (GabbleTubesChannel *self,
 
 void
 gabble_tubes_channel_tube_msg (GabbleTubesChannel *self,
-                               LmMessage *msg)
+                               WockyStanza *msg)
 {
-  LmMessageNode *node;
+  WockyNode *node;
 
-  node = lm_message_node_get_child_with_namespace (
+  node = wocky_node_get_child_ns (
       wocky_stanza_get_top_node (msg), "tube", NS_TUBES);
   if (node != NULL)
     {
-      tube_msg_offered (self, msg);
+      tube_msg_offered (self, msg, node);
       return;
     }
 
-  node = lm_message_node_get_child_with_namespace (
+  node = wocky_node_get_child_ns (
       wocky_stanza_get_top_node (msg), "close", NS_TUBES);
   if (node != NULL)
     {
-      tube_msg_close (self, msg);
+      tube_msg_close (self, msg, node);
       return;
     }
 }
@@ -1548,7 +1538,7 @@ GabbleTubeIface *gabble_tubes_channel_tube_request (GabbleTubesChannel *self,
   tube = create_new_tube (self, type, priv->self_handle, service,
       parameters, stream_id, tube_id, NULL, TRUE);
   g_free (stream_id);
-  g_hash_table_destroy (parameters);
+  g_hash_table_unref (parameters);
 
   return tube;
 }
@@ -2018,7 +2008,7 @@ gabble_tubes_channel_get_d_bus_names (TpSvcChannelTypeTubes *iface,
   for (i = 0; i < ret->len; i++)
     g_boxed_free (TP_STRUCT_TYPE_DBUS_TUBE_MEMBER, ret->pdata[i]);
   g_hash_table_unref (names);
-  g_ptr_array_free (ret, TRUE);
+  g_ptr_array_unref (ret);
 }
 
 /**
@@ -2098,7 +2088,7 @@ gabble_tubes_channel_get_available_stream_tube_types (TpSvcChannelTypeTubes *ifa
   tp_svc_channel_type_tubes_return_from_get_available_stream_tube_types (
       context, ret);
 
-  g_hash_table_destroy (ret);
+  g_hash_table_unref (ret);
 }
 
 static void
@@ -2131,7 +2121,7 @@ gabble_tubes_channel_close (GabbleTubesChannel *self)
   priv->closed = TRUE;
 
   g_hash_table_foreach (priv->tubes, emit_tube_closed_signal, self);
-  g_hash_table_destroy (priv->tubes);
+  g_hash_table_unref (priv->tubes);
 
   priv->tubes = NULL;
 

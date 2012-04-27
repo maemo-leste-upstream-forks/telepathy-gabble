@@ -4,6 +4,12 @@ import constants as cs
 from file_transfer_helper import SendFileTest, ReceiveFileTest, \
     FileTransferTest, exec_file_transfer_test
 
+from config import JINGLE_FILE_TRANSFER_ENABLED
+
+if not JINGLE_FILE_TRANSFER_ENABLED:
+    print "NOTE: built with --disable-file-transfer or --disable-voip"
+    raise SystemExit(77)
+
 class ReceiveFileAndSenderDisconnectWhileTransfering(ReceiveFileTest):
     def receive_file(self):
         self.q.expect('dbus-signal', signal='FileTransferStateChanged',

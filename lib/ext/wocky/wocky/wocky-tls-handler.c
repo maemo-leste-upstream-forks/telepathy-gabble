@@ -24,8 +24,8 @@
 #include "wocky-tls-handler.h"
 #include "wocky-utils.h"
 
-#define DEBUG_FLAG DEBUG_TLS
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_TLS
+#include "wocky-debug-internal.h"
 
 static void
 real_verify_async (WockyTLSHandler *self,

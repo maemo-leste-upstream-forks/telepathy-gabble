@@ -22,9 +22,13 @@
 #include "gabble.h"
 #include "connection.h"
 #include "vcard-manager.h"
+#ifdef ENABLE_VOIP
 #include "jingle-factory.h"
 #include "jingle-session.h"
+#endif
+#ifdef ENABLE_JINGLE_FILE_TRANSFER
 #include "gtalk-file-collection.h"
+#endif
 
 #include "test-resolver.h"
 
@@ -60,8 +64,13 @@ main (int argc,
   test_resolver_add_A (TEST_RESOLVER (kludged),
       "stun.telepathy.im", "6.7.8.9");
 
-  gabble_jingle_factory_set_test_mode ();
+#ifdef ENABLE_VOIP
+  gabble_jingle_info_set_test_mode ();
+#endif
+
+#ifdef ENABLE_JINGLE_FILE_TRANSFER
   gtalk_file_collection_set_test_mode ();
+#endif
 
   ret = gabble_main (argc, argv);
 

@@ -1,7 +1,9 @@
 TWISTED_TESTS = \
+	addressing.py \
 	avatar-requirements.py \
 	caps/advertise-contact-caps.py \
 	caps/advertise-legacy.py \
+	caps/broken-reply.py \
 	caps/caps-cache.py \
 	caps/caps-persistent-cache.py \
 	caps/compat-bundles.py \
@@ -23,10 +25,12 @@ TWISTED_TESTS = \
 	connect/disco-no-reply.py \
 	connect/network-error.py \
 	connect/stream-closed.py \
+	connect/test-connection-params.py \
 	connect/test-fail.py \
 	connect/test-nonblocking-tls.py \
 	connect/test-success.py \
 	connect/test-twice.py \
+	console.py \
 	dataforms.py \
 	gateways.py \
 	last-activity.py \
@@ -61,6 +65,7 @@ TWISTED_TESTS = \
 	plugin-channel-managers.py \
 	power-save.py \
 	presence/decloak.py \
+	presence/error.py \
 	presence/initial-contact-presence.py \
 	presence/initial-presence.py \
 	presence/invisible_xep_0126.py \
@@ -171,7 +176,11 @@ TWISTED_JINGLE_TESTS = \
 	jingle/accept-extra-stream.py \
 	jingle/call-basics.py \
 	jingle/call-codecoffer.py \
+	jingle/call-content-adding-removal.py \
 	jingle/call-dtmf.py \
+	jingle/call-google-relay.py \
+	jingle/call-hold-audio.py \
+	jingle/call-hold-av.py \
 	jingle/call-muc-cancel.py \
 	jingle/call-muc.py \
 	jingle/call-muc-re-re-request.py \
@@ -225,6 +234,8 @@ TWISTED_FT_TESTS = \
 	file-transfer/test-send-file-to-unknown-contact.py \
 	file-transfer/test-send-file-wait-to-provide.py \
 	file-transfer/test-uri.py \
+	file-transfer/metadata.py \
+	file-transfer/ft-client-caps.py \
 	jingle-share/test-caps-file-transfer.py \
 	jingle-share/test-multift.py \
 	jingle-share/test-receive-file-and-close-socket-while-receiving.py \
@@ -247,6 +258,7 @@ TWISTED_OTHER_FILES = \
 	file-transfer/file_transfer_helper.py \
 	gabbletest.py \
 	httptest.py \
+	jingle/call_helper.py \
 	jingle/callutils.py \
 	jingle/__init__.py \
 	jingle/jingletest2.py \
@@ -361,6 +373,24 @@ else
 GOOGLE_RELAY_ENABLED_PYBOOL = False
 endif
 
+if ENABLE_FILE_TRANSFER
+FILE_TRANSFER_ENABLED_PYBOOL = True
+else
+FILE_TRANSFER_ENABLED_PYBOOL = False
+endif
+
+if ENABLE_VOIP
+VOIP_ENABLED_PYBOOL = True
+else
+VOIP_ENABLED_PYBOOL = False
+endif
+
+if ENABLE_JINGLE_FILE_TRANSFER
+JINGLE_FILE_TRANSFER_ENABLED_PYBOOL = True
+else
+JINGLE_FILE_TRANSFER_ENABLED_PYBOOL = False
+endif
+
 config.py: Makefile
 	$(AM_V_GEN) { \
 		echo "PACKAGE_STRING = \"$(PACKAGE_STRING)\""; \
@@ -369,6 +399,9 @@ config.py: Makefile
 		echo "PLUGINS_ENABLED = $(PLUGINS_ENABLED_PYBOOL)"; \
 		echo "CHANNEL_TYPE_CALL_ENABLED = $(CHANNEL_TYPE_CALL_ENABLED_PYBOOL)"; \
 		echo "GOOGLE_RELAY_ENABLED = $(GOOGLE_RELAY_ENABLED_PYBOOL)"; \
+		echo "FILE_TRANSFER_ENABLED = $(FILE_TRANSFER_ENABLED_PYBOOL)"; \
+		echo "VOIP_ENABLED = $(VOIP_ENABLED_PYBOOL)"; \
+		echo "JINGLE_FILE_TRANSFER_ENABLED = $(JINGLE_FILE_TRANSFER_ENABLED_PYBOOL)"; \
 	} > $@
 
 BUILT_SOURCES = config.py

@@ -1,6 +1,6 @@
 /*
  * wocky-pep-service.h - Header of WockyPepService
- * Copyright (C) 2009 Collabora Ltd.
+ * Copyright © 2009, 2012 Collabora Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,6 +16,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+#if !defined (WOCKY_H_INSIDE) && !defined (WOCKY_COMPILATION)
+# error "Only <wocky/wocky.h> can be included directly."
+#endif
 
 #ifndef __WOCKY_PEP_SERVICE_H__
 #define __WOCKY_PEP_SERVICE_H__
@@ -74,7 +77,7 @@ GType wocky_pep_service_get_type (void);
    WockyPepServiceClass))
 
 WockyPepService * wocky_pep_service_new (const gchar *node,
-    gboolean subscribe);
+    gboolean subscribe) G_GNUC_WARN_UNUSED_RESULT;
 
 void wocky_pep_service_start (WockyPepService *self,
     WockySession *session);
@@ -87,10 +90,11 @@ void wocky_pep_service_get_async (WockyPepService *self,
 
 WockyStanza * wocky_pep_service_get_finish (WockyPepService *self,
     GAsyncResult *result,
-    GError **error);
+    WockyNode **item,
+    GError **error) G_GNUC_WARN_UNUSED_RESULT;
 
 WockyStanza * wocky_pep_service_make_publish_stanza (WockyPepService *self,
-    WockyNode **item);
+    WockyNode **item) G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

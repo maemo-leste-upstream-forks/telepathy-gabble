@@ -4,10 +4,7 @@
 
 #include <glib.h>
 
-#include <wocky/wocky-c2s-porter.h>
-#include <wocky/wocky-utils.h>
-#include <wocky/wocky-namespaces.h>
-#include <wocky/wocky-xmpp-error.h>
+#include <wocky/wocky.h>
 
 #include "wocky-test-stream.h"
 #include "wocky-test-helper.h"
@@ -1086,6 +1083,7 @@ test_handler_stanza (void)
       ')', NULL);
 
   wocky_porter_start (test->sched_out);
+  wocky_porter_start (test->sched_in);
 
   /* Send a not jingle IQ */
   iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
@@ -1175,7 +1173,7 @@ test_handler_stanza (void)
     ')', NULL);
   send_stanza (test, iq, TRUE);
 
-  test_close_porter (test);
+  test_close_both_porters (test);
   teardown_test (test);
 }
 
@@ -1999,6 +1997,69 @@ test_handler_filter (void)
   send_stanza (test, iq, TRUE);
 
   test_close_porter (test);
+  teardown_test (test);
+}
+
+static void
+unhandled_iq_reply_cb (
+    GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  WockyPorter *porter = WOCKY_PORTER (source);
+  test_data_t *test = user_data;
+  GError *error = NULL;
+  WockyStanza *reply = wocky_porter_send_iq_finish (porter, result, &error);
+  gboolean is_error;
+  WockyXmppErrorType type;
+  GError *core = NULL;
+  GError *specialized = NULL;
+  WockyNode *specialized_node;
+
+  g_assert_no_error (error);
+  g_assert (reply != NULL);
+
+  is_error = wocky_stanza_extract_errors (reply, &type, &core, &specialized,
+      &specialized_node);
+
+  /* The reply should have type='error'. */
+  g_assert (is_error);
+
+  g_assert_cmpuint (type, ==, WOCKY_XMPP_ERROR_TYPE_CANCEL);
+  g_assert_error (core, WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_SERVICE_UNAVAILABLE);
+
+  /* There should be no non-XMPP Core error condition. */
+  g_assert_no_error (specialized);
+  g_assert (specialized_node == NULL);
+
+  g_clear_error (&core);
+  g_object_unref (reply);
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+}
+
+static void
+test_unhandled_iq (void)
+{
+  test_data_t *test = setup_test ();
+  WockyStanza *iq = wocky_stanza_build (
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET, NULL, NULL,
+      '(', "framed-photograph",
+        ':', "http://kimjongillookingatthings.tumblr.com",
+      ')', NULL);
+
+  test_open_both_connections (test);
+  wocky_porter_start (test->sched_out);
+  wocky_porter_start (test->sched_in);
+
+  wocky_porter_send_iq_async (test->sched_out, iq, NULL,
+      unhandled_iq_reply_cb, test);
+
+  test->outstanding++;
+  test_wait_pending (test);
+
+  g_object_unref (iq);
+  test_close_both_porters (test);
   teardown_test (test);
 }
 
@@ -3091,10 +3152,9 @@ handler_from_anyone (void)
   send_query_from (test, "tybalt@capulet.lit", "anyone");
   send_query_from (test, "tybalt@capulet.lit/FIXME", "anyone");
 
-  /* Slightly counterintuitively, a stanza from our server's domain should not
-   * be matched by got_stanza_from_server().
-   */
-  send_query_from (test, "capulet.lit", "anyone");
+  /* A stanza from our server's domain should be matched by
+   * got_stanza_from_server(). See fd.o#39057. */
+  send_query_from (test, "capulet.lit", "server");
 
   /* On the other hand, a stanza with no sender should be picked up by
    * got_stanza_from_server(). */
@@ -3290,12 +3350,182 @@ send_from_send_callback (void)
   teardown_test (test);
 }
 
+static gboolean
+test_reply_from_domain_handler_cb (WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  test_data_t *test = (test_data_t *) user_data;
+  WockyStanza *reply;
+  const gchar *id;
+
+  test_expected_stanza_received (test, stanza);
+
+  id = wocky_node_get_attribute (wocky_stanza_get_top_node (stanza),
+      "id");
+
+  /* Reply with from="domain" */
+  reply = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+    WOCKY_STANZA_SUB_TYPE_RESULT, "example.com", "juliet@example.com",
+    '@', "id", id,
+    NULL);
+  wocky_porter_send_async (porter, reply,
+      NULL, test_send_iq_sent_cb, test);
+  g_queue_push_tail (test->expected_stanzas, reply);
+  test->outstanding++;
+
+  return TRUE;
+}
+
+static void
+test_reply_from_domain (void)
+{
+  test_data_t *test = setup_test ();
+  WockyStanza *iq;
+
+  g_test_bug ("39057");
+
+  /* Testing that when we send an iq to server, it can reply from the domain
+     instead of full/bare jid. This happens with xmpp.messenger.live.com.
+
+     <iq type="get" id="1062691559">...</iq>
+     <iq from="domain.com" id="1062691559"
+         to="user@domain.com/resource">...</iq>
+   */
+
+  test_open_both_connections (test);
+  wocky_porter_start (test->sched_out);
+  wocky_porter_start (test->sched_in);
+
+  /* register an IQ handler */
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE,
+      0,
+      test_reply_from_domain_handler_cb, test, NULL);
+
+  /* Send an IQ query */
+  iq = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+    WOCKY_STANZA_SUB_TYPE_GET, NULL, NULL,
+    '@', "id", "1",
+    NULL);
+
+  wocky_porter_send_iq_async (test->sched_in, iq,
+      NULL, test_send_iq_reply_cb, test);
+  g_queue_push_tail (test->expected_stanzas, iq);
+
+  test->outstanding += 2;
+  test_wait_pending (test);
+
+  test_close_both_porters (test);
+  teardown_test (test);
+}
+
+/* Callbacks used in wildcard_handlers() */
+const gchar * const ROMEO = "romeo@montague.lit";
+const gchar * const JULIET = "juliet@montague.lit";
+
+static gboolean
+any_stanza_received_from_romeo_cb (
+    WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  test_data_t *test = user_data;
+
+  g_assert_cmpstr (wocky_stanza_get_from (stanza), ==, ROMEO);
+
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+  return FALSE;
+}
+
+static gboolean
+any_stanza_received_from_server_cb (
+    WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  test_data_t *test = user_data;
+
+  g_assert_cmpstr (wocky_stanza_get_from (stanza), ==, NULL);
+
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+  return FALSE;
+}
+
+static gboolean
+any_stanza_received_from_anyone_cb (
+    WockyPorter *porter,
+    WockyStanza *stanza,
+    gpointer user_data)
+{
+  test_data_t *test = user_data;
+
+  test->outstanding--;
+  g_main_loop_quit (test->loop);
+  return FALSE;
+}
+
+static void
+wildcard_handlers (void)
+{
+  test_data_t *test = setup_test ();
+  WockyStanza *stanza;
+
+  test_open_both_connections (test);
+  wocky_porter_start (test->sched_in);
+  wocky_porter_start (test->sched_out);
+
+  wocky_porter_register_handler_from_anyone (test->sched_out,
+      WOCKY_STANZA_TYPE_NONE, WOCKY_STANZA_SUB_TYPE_NONE,
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+      any_stanza_received_from_anyone_cb, test,
+      NULL);
+  wocky_porter_register_handler_from (test->sched_out,
+      WOCKY_STANZA_TYPE_NONE, WOCKY_STANZA_SUB_TYPE_NONE,
+      ROMEO,
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+      any_stanza_received_from_romeo_cb, test,
+      NULL);
+  wocky_c2s_porter_register_handler_from_server (
+      WOCKY_C2S_PORTER (test->sched_out),
+      WOCKY_STANZA_TYPE_NONE, WOCKY_STANZA_SUB_TYPE_NONE,
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+      any_stanza_received_from_server_cb, test,
+      NULL);
+
+  stanza = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
+      WOCKY_STANZA_SUB_TYPE_HEADLINE, ROMEO, NULL, NULL);
+  wocky_porter_send (test->sched_in, stanza);
+  g_object_unref (stanza);
+  test->outstanding += 2;
+
+  stanza = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
+      WOCKY_STANZA_SUB_TYPE_GET, JULIET, NULL, NULL);
+  wocky_porter_send (test->sched_in, stanza);
+  g_object_unref (stanza);
+  test->outstanding += 1;
+
+  stanza = wocky_stanza_build (WOCKY_STANZA_TYPE_STREAM_FEATURES,
+      WOCKY_STANZA_SUB_TYPE_NONE, NULL, NULL, NULL);
+  wocky_porter_send (test->sched_in, stanza);
+  g_object_unref (stanza);
+  test->outstanding += 2;
+
+  test_wait_pending (test);
+
+  test_close_both_porters (test);
+  teardown_test (test);
+}
+
 int
 main (int argc, char **argv)
 {
   int result;
 
   test_init (argc, argv);
+  g_test_bug_base ("http://bugs.freedesktop.org/show_bug.cgi?id=");
 
   g_test_add_func ("/xmpp-porter/initiation", test_instantiation);
   g_test_add_func ("/xmpp-porter/send", test_send);
@@ -3325,6 +3555,7 @@ main (int argc, char **argv)
   g_test_add_func ("/xmpp-porter/error-while-sending-iq",
       test_error_while_sending_iq);
   g_test_add_func ("/xmpp-porter/handler-filter", test_handler_filter);
+  g_test_add_func ("/xmpp-porter/unhandled-iq", test_unhandled_iq);
   g_test_add_func ("/xmpp-porter/send-invalid-iq", test_send_invalid_iq);
   g_test_add_func ("/xmpp-porter/handler-filter-from",
       test_handler_filter_from);
@@ -3352,6 +3583,9 @@ main (int argc, char **argv)
       close_from_send_callback);
   g_test_add_func ("/xmpp-porter/send-from-send-callback",
       send_from_send_callback);
+  g_test_add_func ("/xmpp-porter/reply-from-domain",
+      test_reply_from_domain);
+  g_test_add_func ("/xmpp-porter/wildcard-handlers", wildcard_handlers);
 
   result = g_test_run ();
   test_deinit ();

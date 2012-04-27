@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "config.h"
+
 #define _BSD_SOURCE
 #define _XOPEN_SOURCE /* glibc2 needs this */
 #include <time.h>
@@ -28,20 +30,23 @@
 #include <string.h>
 #include <glib/gstdio.h>
 
+#ifdef ENABLE_JINGLE_FILE_TRANSFER
 #include "jingle-session.h"
 #include "jingle-share.h"
+#endif
 #include "gabble/caps-channel-manager.h"
 #include "connection.h"
 #include "ft-manager.h"
-#include "error.h"
+#include "ft-channel.h"
 #include "gabble-signals-marshal.h"
 #include "namespaces.h"
 #include "presence-cache.h"
 #include "util.h"
 
-#include "ft-channel.h"
+#include <wocky/wocky.h>
 
 #include <telepathy-glib/base-connection.h>
+#include <telepathy-glib/base-channel.h>
 #include <telepathy-glib/channel-factory-iface.h>
 #include <telepathy-glib/channel-manager.h>
 #include <telepathy-glib/gtypes.h>
@@ -190,7 +195,7 @@ ft_manager_close_all (GabbleFtManager *self)
 
   while ((l = self->priv->channels) != NULL)
     {
-      gabble_file_transfer_channel_do_close (l->data);
+      tp_base_channel_close (l->data);
       /* Channels should have closed and disappeared from the list */
       g_assert (l != self->priv->channels);
     }
@@ -286,6 +291,7 @@ file_channel_closed_cb (GabbleFileTransferChannel *chan,
     }
 }
 
+#ifdef ENABLE_JINGLE_FILE_TRANSFER
 static void
 gabble_ft_manager_channels_created (GabbleFtManager *self, GList *channels)
 {
@@ -296,6 +302,8 @@ gabble_ft_manager_channels_created (GabbleFtManager *self, GList *channels)
   for (i = channels; i ; i = i->next)
     {
       GabbleFileTransferChannel *chan = i->data;
+
+      tp_base_channel_register (TP_BASE_CHANNEL (chan));
 
       gabble_signal_connect_weak (chan, "closed",
           G_CALLBACK (file_channel_closed_cb), G_OBJECT (self));
@@ -308,8 +316,9 @@ gabble_ft_manager_channels_created (GabbleFtManager *self, GList *channels)
 
   tp_channel_manager_emit_new_channels (self, new_channels);
 
-  g_hash_table_destroy (new_channels);
+  g_hash_table_unref (new_channels);
 }
+#endif
 
 static void
 gabble_ft_manager_channel_created (GabbleFtManager *self,
@@ -317,6 +326,8 @@ gabble_ft_manager_channel_created (GabbleFtManager *self,
                                    gpointer request_token)
 {
   GSList *requests = NULL;
+
+  tp_base_channel_register (TP_BASE_CHANNEL (chan));
 
   gabble_signal_connect_weak (chan, "closed",
       G_CALLBACK (file_channel_closed_cb), G_OBJECT (self));
@@ -332,9 +343,9 @@ gabble_ft_manager_channel_created (GabbleFtManager *self,
   g_slist_free (requests);
 }
 
-
+#ifdef ENABLE_JINGLE_FILE_TRANSFER
 static void
-new_jingle_session_cb (GabbleJingleFactory *jf,
+new_jingle_session_cb (GabbleJingleMint *jm,
     GabbleJingleSession *sess,
     gpointer data)
 {
@@ -359,7 +370,9 @@ new_jingle_session_cb (GabbleJingleFactory *jf,
       if (content == NULL)
           return;
 
-      gtalk_fc = gtalk_file_collection_new_from_session (jf, sess);
+      gtalk_fc = gtalk_file_collection_new_from_session (
+          gabble_jingle_mint_get_factory (jm),
+          sess);
 
       if (gtalk_fc)
         {
@@ -376,13 +389,18 @@ new_jingle_session_cb (GabbleJingleFactory *jf,
               GabbleJingleShareManifestEntry *entry = i->data;
               GabbleFileTransferChannel *channel = NULL;
               gchar *filename = NULL;
+              TpHandleRepoIface *contacts = tp_base_connection_get_handles (
+                  TP_BASE_CONNECTION (self->priv->connection),
+                  TP_HANDLE_TYPE_CONTACT);
+              TpHandle peer = tp_handle_ensure (contacts,
+                  gabble_jingle_session_get_peer_jid (sess), NULL, NULL);
 
               filename = g_strdup_printf ("%s%s",
                   entry->name, entry->folder? ".tar":"");
               channel = gabble_file_transfer_channel_new (self->priv->connection,
-                  sess->peer, sess->peer, TP_FILE_TRANSFER_STATE_PENDING,
+                  peer, peer, TP_FILE_TRANSFER_STATE_PENDING,
                   NULL, filename, entry->size, TP_FILE_HASH_TYPE_NONE, NULL,
-                  NULL, 0, 0, FALSE, NULL, gtalk_fc, token, NULL);
+                  NULL, 0, 0, FALSE, NULL, gtalk_fc, token, NULL, NULL, NULL);
               g_free (filename);
 
               gtalk_file_collection_add_channel (gtalk_fc, channel);
@@ -401,7 +419,7 @@ new_jingle_session_cb (GabbleJingleFactory *jf,
         }
     }
 }
-
+#endif
 
 static void
 connection_status_changed_cb (GabbleConnection *conn,
@@ -412,11 +430,13 @@ connection_status_changed_cb (GabbleConnection *conn,
 
   switch (status)
     {
+#ifdef ENABLE_JINGLE_FILE_TRANSFER
       case TP_CONNECTION_STATUS_CONNECTING:
-        g_signal_connect (self->priv->connection->jingle_factory,
-            "new-session",
+        g_signal_connect (self->priv->connection->jingle_mint,
+            "incoming-session",
             G_CALLBACK (new_jingle_session_cb), self);
         break;
+#endif
 
       case TP_CONNECTION_STATUS_DISCONNECTED:
         ft_manager_close_all (self);
@@ -443,9 +463,10 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
       tp_base_connection_get_handles (base_connection, TP_HANDLE_TYPE_CONTACT);
   TpHandle handle;
   const gchar *content_type, *filename, *content_hash, *description;
-  const gchar *file_uri;
+  const gchar *file_uri, *service_name;
   guint64 size, date, initial_offset;
   TpFileHashType content_hash_type;
+  const GHashTable *metadata;
   GError *error = NULL;
   gboolean valid;
 
@@ -550,13 +571,28 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
   file_uri = tp_asv_get_string (request_properties,
       TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_URI);
 
+  service_name = tp_asv_get_string (request_properties,
+      TP_PROP_CHANNEL_INTERFACE_FILE_TRANSFER_METADATA_SERVICE_NAME);
+
+  metadata = tp_asv_get_boxed (request_properties,
+      TP_PROP_CHANNEL_INTERFACE_FILE_TRANSFER_METADATA_METADATA,
+      TP_HASH_TYPE_METADATA);
+
+  if (metadata != NULL && g_hash_table_lookup ((GHashTable *) metadata, "FORM_TYPE"))
+    {
+      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+          "Metadata cannot contain an item with key 'FORM_TYPE'");
+      goto error;
+    }
+
   DEBUG ("Requested outgoing channel with contact: %s",
       tp_handle_inspect (contact_repo, handle));
 
   chan = gabble_file_transfer_channel_new (self->priv->connection,
       handle, base_connection->self_handle, TP_FILE_TRANSFER_STATE_PENDING,
       content_type, filename, size, content_hash_type, content_hash,
-      description, date, initial_offset, TRUE, NULL, NULL, NULL, file_uri);
+      description, date, initial_offset, TRUE, NULL, NULL, NULL, file_uri,
+      service_name, metadata);
 
   if (!gabble_file_transfer_channel_offer_file (chan, &error))
     {
@@ -583,20 +619,38 @@ static const gchar * const file_transfer_channel_fixed_properties[] = {
     NULL
 };
 
+   /* ContentHashType has to be first so we can easily skip it when needed */
+#define STANDARD_PROPERTIES \
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_CONTENT_HASH_TYPE, \
+   TP_PROP_CHANNEL_TARGET_HANDLE, \
+   TP_PROP_CHANNEL_TARGET_ID, \
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_CONTENT_TYPE, \
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_FILENAME, \
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_SIZE, \
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_CONTENT_HASH, \
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_DESCRIPTION, \
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_DATE, \
+   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_URI
+
 static const gchar * const file_transfer_channel_allowed_properties[] =
 {
-   /* ContentHashType has to be first so we can easily skip it when needed */
-   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_CONTENT_HASH_TYPE,
-   TP_PROP_CHANNEL_TARGET_HANDLE,
-   TP_PROP_CHANNEL_TARGET_ID,
-   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_CONTENT_TYPE,
-   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_FILENAME,
-   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_SIZE,
-   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_CONTENT_HASH,
-   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_DESCRIPTION,
-   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_DATE,
-   TP_PROP_CHANNEL_TYPE_FILE_TRANSFER_URI,
-   NULL
+  STANDARD_PROPERTIES,
+  NULL
+};
+
+static const gchar * const file_transfer_channel_allowed_properties_with_metadata_prop[] =
+{
+  STANDARD_PROPERTIES,
+  TP_PROP_CHANNEL_INTERFACE_FILE_TRANSFER_METADATA_METADATA,
+  NULL
+};
+
+static const gchar * const file_transfer_channel_allowed_properties_with_both_metadata_props[] =
+{
+  STANDARD_PROPERTIES,
+  TP_PROP_CHANNEL_INTERFACE_FILE_TRANSFER_METADATA_SERVICE_NAME,
+  TP_PROP_CHANNEL_INTERFACE_FILE_TRANSFER_METADATA_METADATA,
+  NULL
 };
 
 static void
@@ -616,7 +670,7 @@ gabble_ft_manager_type_foreach_channel_class (GType type,
   g_hash_table_insert (table, TP_IFACE_CHANNEL ".TargetHandleType",
       tp_g_value_slice_new_uint (TP_HANDLE_TYPE_CONTACT));
 
-  func (type, table, file_transfer_channel_allowed_properties,
+  func (type, table, file_transfer_channel_allowed_properties_with_both_metadata_props,
       user_data);
 
   /* MD5 HashType class */
@@ -625,15 +679,15 @@ gabble_ft_manager_type_foreach_channel_class (GType type,
       tp_g_value_slice_new_uint (TP_FILE_HASH_TYPE_MD5));
 
   /* skip ContentHashType in allowed properties */
-  func (type, table, file_transfer_channel_allowed_properties + 1,
+  func (type, table, file_transfer_channel_allowed_properties_with_both_metadata_props + 1,
       user_data);
 
-  g_hash_table_destroy (table);
+  g_hash_table_unref (table);
 }
 
-static LmMessageNode *
+static WockyNode *
 hyvaa_vappua (
-    LmMessageNode *si_node,
+    WockyNode *si_node,
     const gchar **filename,
     const gchar **size_str,
     GError **error)
@@ -641,32 +695,140 @@ hyvaa_vappua (
 #define die_if_null(var, msg) \
   if ((var) == NULL) \
     { \
-      g_set_error (error, GABBLE_XMPP_ERROR, XMPP_ERROR_BAD_REQUEST, msg); \
+      g_set_error (error, WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST, \
+          msg); \
       return NULL; \
     }
 
-  LmMessageNode *file_node = lm_message_node_get_child_with_namespace (si_node,
+  WockyNode *file_node = wocky_node_get_child_ns (si_node,
       "file", NS_FILE_TRANSFER);
 
   die_if_null (file_node, "Invalid file transfer SI request: no <file>")
-  die_if_null (*filename = lm_message_node_get_attribute (file_node, "name"),
+  die_if_null (*filename = wocky_node_get_attribute (file_node, "name"),
       "Invalid file transfer SI request: missing file name")
-  die_if_null (*size_str = lm_message_node_get_attribute (file_node, "size"),
+  die_if_null (*size_str = wocky_node_get_attribute (file_node, "size"),
       "Invalid file transfer SI request: missing file size")
 
   return file_node;
 #undef die_if_null
 }
 
+static WockyDataForm *
+find_data_form (WockyNode *file,
+    const gchar *form_type)
+{
+  WockyNodeIter iter;
+  WockyNode *x;
+
+  wocky_node_iter_init (&iter, file, "x", NS_X_DATA);
+  while (wocky_node_iter_next (&iter, &x))
+    {
+      GError *error = NULL;
+      WockyDataForm *form = wocky_data_form_new_from_node (x, &error);
+      WockyDataFormField *field;
+
+      if (form == NULL)
+        {
+          DEBUG ("Failed to parse data form: %s", error->message);
+          g_clear_error (&error);
+          continue;
+        }
+
+      field = g_hash_table_lookup (form->fields, "FORM_TYPE");
+
+      if (field == NULL)
+        {
+          DEBUG ("Data form doesn't have FORM_TYPE field!");
+          g_object_unref (form);
+          continue;
+        }
+
+      /* found it! */
+      if (!tp_strdiff (field->raw_value_contents[0], form_type))
+        return form;
+
+      g_object_unref (form);
+    }
+
+  return NULL;
+}
+
+static gchar *
+extract_service_name (WockyNode *file)
+{
+  WockyDataForm *form = find_data_form (file, NS_TP_FT_METADATA_SERVICE);
+  WockyDataFormField *field;
+  gchar *service_name = NULL;
+
+  if (form == NULL)
+    return NULL;
+
+  field = g_hash_table_lookup (form->fields, "ServiceName");
+
+  if (field == NULL)
+    {
+      DEBUG ("ServiceName property not present in data form; odd...");
+      goto out;
+    }
+
+  if (field->raw_value_contents == NULL
+      || field->raw_value_contents[0] == NULL)
+    {
+      DEBUG ("ServiceName property doesn't have a real value; odd...");
+    }
+  else
+    {
+      service_name = g_strdup (field->raw_value_contents[0]);
+    }
+
+out:
+  g_object_unref (form);
+  return service_name;
+}
+
+static GHashTable *
+extract_metadata (WockyNode *file)
+{
+  WockyDataForm *form = find_data_form (file, NS_TP_FT_METADATA);
+  GHashTable *metadata;
+  GHashTableIter iter;
+  gpointer key, value;
+
+  if (form == NULL)
+    return NULL;
+
+  metadata = g_hash_table_new_full (g_str_hash, g_str_equal,
+      g_free, (GDestroyNotify) g_strfreev);
+
+  g_hash_table_iter_init (&iter, form->fields);
+  while (g_hash_table_iter_next (&iter, &key, &value))
+    {
+      const gchar *var = key;
+      WockyDataFormField *field = value;
+
+      if (!tp_strdiff (var, "FORM_TYPE"))
+        continue;
+
+      g_hash_table_insert (metadata,
+          g_strdup (var),
+          g_strdupv (field->raw_value_contents));
+    }
+
+  g_object_unref (form);
+  return metadata;
+}
+
 void gabble_ft_manager_handle_si_request (GabbleFtManager *self,
                                           GabbleBytestreamIface *bytestream,
                                           TpHandle handle,
                                           const gchar *stream_id,
-                                          LmMessage *msg)
+                                          WockyStanza *msg)
 {
-  LmMessageNode *si_node, *file_node, *desc_node;
+  WockyNode *si_node, *file_node, *desc_node;
   const gchar *filename, *size_str, *content_type, *content_hash, *description;
   const gchar *date_str;
+  gchar *service_name;
+  GHashTable *metadata;
   guint64 size;
   guint64 date = 0;
   TpFileHashType content_hash_type;
@@ -674,7 +836,7 @@ void gabble_ft_manager_handle_si_request (GabbleFtManager *self,
   gboolean resume_supported;
   GError *error = NULL;
 
-  si_node = lm_message_node_get_child_with_namespace (
+  si_node = wocky_node_get_child_ns (
       wocky_stanza_get_top_node (msg), "si", NS_SI);
   g_assert (si_node != NULL);
 
@@ -690,24 +852,24 @@ void gabble_ft_manager_handle_si_request (GabbleFtManager *self,
 
   size = g_ascii_strtoull (size_str, NULL, 0);
 
-  content_type = lm_message_node_get_attribute (file_node, "mime-type");
+  content_type = wocky_node_get_attribute (file_node, "mime-type");
   if (content_type == NULL)
     content_type = "application/octet-stream";
 
   /* The hash is always an MD5-sum, if present. */
-  content_hash = lm_message_node_get_attribute (file_node, "hash");
+  content_hash = wocky_node_get_attribute (file_node, "hash");
   if (content_hash != NULL)
     content_hash_type = TP_FILE_HASH_TYPE_MD5;
   else
     content_hash_type = TP_FILE_HASH_TYPE_NONE;
 
-  desc_node = lm_message_node_get_child (file_node, "desc");
+  desc_node = wocky_node_get_child (file_node, "desc");
   if (desc_node != NULL)
-    description = lm_message_node_get_value (desc_node);
+    description = desc_node->content;
   else
     description = NULL;
 
-  date_str = lm_message_node_get_attribute (file_node, "date");
+  date_str = wocky_node_get_attribute (file_node, "date");
   if (date_str != NULL)
     {
       GTimeVal val;
@@ -717,14 +879,23 @@ void gabble_ft_manager_handle_si_request (GabbleFtManager *self,
         date = val.tv_sec;
     }
 
-  resume_supported = (lm_message_node_get_child (file_node, "range") != NULL);
+  resume_supported = (wocky_node_get_child (file_node, "range") != NULL);
+
+  /* metadata */
+  service_name = extract_service_name (file_node);
+  metadata = extract_metadata (file_node);
 
   chan = gabble_file_transfer_channel_new (self->priv->connection,
       handle, handle, TP_FILE_TRANSFER_STATE_PENDING,
       content_type, filename, size, content_hash_type, content_hash,
-      description, date, 0, resume_supported, bytestream, NULL, NULL, NULL);
+      description, date, 0, resume_supported, bytestream, NULL, NULL, NULL,
+      service_name, metadata);
 
   gabble_ft_manager_channel_created (self, chan, NULL);
+
+  g_free (service_name);
+  if (metadata != NULL)
+    g_hash_table_unref (metadata);
 }
 
 static void
@@ -770,12 +941,16 @@ gabble_ft_manager_get_tmp_dir (GabbleFtManager *self)
 #endif
 
 static void
-add_file_transfer_channel_class (GPtrArray *arr)
+add_file_transfer_channel_class (GPtrArray *arr,
+    gboolean include_metadata_properties,
+    const gchar *service_name_str)
 {
   GValue monster = {0, };
   GHashTable *fixed_properties;
   GValue *channel_type_value;
   GValue *target_handle_type_value;
+  GValue *service_name_value;
+  const gchar * const *allowed_properties;
 
   g_value_init (&monster, TP_STRUCT_TYPE_REQUESTABLE_CHANNEL_CLASS);
   g_value_take_boxed (&monster,
@@ -785,25 +960,57 @@ add_file_transfer_channel_class (GPtrArray *arr)
   fixed_properties = g_hash_table_new_full (g_str_hash, g_str_equal, NULL,
       (GDestroyNotify) tp_g_value_slice_free);
 
-  channel_type_value = tp_g_value_slice_new (G_TYPE_STRING);
-  g_value_set_static_string (channel_type_value,
+  channel_type_value = tp_g_value_slice_new_static_string (
       TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER);
   g_hash_table_insert (fixed_properties, TP_IFACE_CHANNEL ".ChannelType",
       channel_type_value);
 
-  target_handle_type_value = tp_g_value_slice_new (G_TYPE_UINT);
-  g_value_set_uint (target_handle_type_value, TP_HANDLE_TYPE_CONTACT);
+  target_handle_type_value = tp_g_value_slice_new_uint (TP_HANDLE_TYPE_CONTACT);
   g_hash_table_insert (fixed_properties, TP_IFACE_CHANNEL ".TargetHandleType",
       target_handle_type_value);
 
+  if (service_name_str != NULL)
+    {
+      service_name_value = tp_g_value_slice_new_string (service_name_str);
+      g_hash_table_insert (fixed_properties,
+          TP_PROP_CHANNEL_INTERFACE_FILE_TRANSFER_METADATA_SERVICE_NAME,
+          service_name_value);
+    }
+
+  if (include_metadata_properties)
+    {
+      if (service_name_str == NULL)
+        allowed_properties = file_transfer_channel_allowed_properties_with_both_metadata_props;
+      else
+        allowed_properties = file_transfer_channel_allowed_properties_with_metadata_prop;
+    }
+  else
+    {
+      allowed_properties = file_transfer_channel_allowed_properties;
+    }
+
   dbus_g_type_struct_set (&monster,
       0, fixed_properties,
-      1, file_transfer_channel_allowed_properties,
+      1, allowed_properties,
       G_MAXUINT);
 
-  g_hash_table_destroy (fixed_properties);
+  g_hash_table_unref (fixed_properties);
 
   g_ptr_array_add (arr, g_value_get_boxed (&monster));
+}
+
+static void
+get_contact_caps_foreach (gpointer data,
+    gpointer user_data)
+{
+  const gchar *ns = data;
+  GPtrArray *arr = user_data;
+
+  if (!g_str_has_prefix (ns, NS_TP_FT_METADATA "#"))
+    return;
+
+  add_file_transfer_channel_class (arr, TRUE,
+      ns + strlen (NS_TP_FT_METADATA "#"));
 }
 
 static void
@@ -815,7 +1022,12 @@ gabble_ft_manager_get_contact_caps (
 {
   if (gabble_capability_set_has (caps, NS_FILE_TRANSFER) ||
       gabble_capability_set_has (caps, NS_GOOGLE_FEAT_SHARE))
-    add_file_transfer_channel_class (arr);
+    {
+      add_file_transfer_channel_class (arr,
+          gabble_capability_set_has (caps, NS_TP_FT_METADATA), NULL);
+    }
+
+  gabble_capability_set_foreach (caps, get_contact_caps_foreach, arr);
 }
 
 static void
@@ -832,6 +1044,8 @@ gabble_ft_manager_represent_client (
   for (i = 0; i < filters->len; i++)
     {
       GHashTable *channel_class = g_ptr_array_index (filters, i);
+      const gchar *service_name;
+      gchar *ns;
 
       if (tp_strdiff (tp_asv_get_string (channel_class,
               TP_IFACE_CHANNEL ".ChannelType"),
@@ -846,9 +1060,28 @@ gabble_ft_manager_represent_client (
       DEBUG ("client %s supports file transfer", client_name);
       gabble_capability_set_add (cap_set, NS_FILE_TRANSFER);
       gabble_capability_set_add (cap_set, NS_GOOGLE_FEAT_SHARE);
-      /* there's no point in looking at the subsequent filters if we've
-       * already added the FT capability */
-      break;
+      gabble_capability_set_add (cap_set, NS_TP_FT_METADATA);
+
+      /* now look at service names */
+
+      /* capabilities mean being able to RECEIVE said kinds of
+       * FTs. hence, skip Requested=true (locally initiated) channel
+       * classes */
+      if (tp_asv_get_boolean (channel_class,
+              TP_PROP_CHANNEL_REQUESTED, FALSE))
+        continue;
+
+      service_name = tp_asv_get_string (channel_class,
+          TP_PROP_CHANNEL_INTERFACE_FILE_TRANSFER_METADATA_SERVICE_NAME);
+
+      if (service_name == NULL)
+        continue;
+
+      ns = g_strconcat (NS_TP_FT_METADATA "#", service_name, NULL);
+
+      DEBUG ("%s: adding capability %s", client_name, ns);
+      gabble_capability_set_add (cap_set, ns);
+      g_free (ns);
     }
 }
 

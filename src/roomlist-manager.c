@@ -25,7 +25,6 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-#include <loudmouth/loudmouth.h>
 #include <telepathy-glib/channel-manager.h>
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/interfaces.h>
@@ -113,7 +112,7 @@ gabble_roomlist_manager_close_all (GabbleRoomlistManager *self)
           g_object_unref (channel);
         }
 
-      g_ptr_array_free (tmp, TRUE);
+      g_ptr_array_unref (tmp);
     }
 }
 
@@ -289,7 +288,7 @@ gabble_roomlist_manager_type_foreach_channel_class (GType type,
 
   func (type, table, roomlist_channel_allowed_properties, user_data);
 
-  g_hash_table_destroy (table);
+  g_hash_table_unref (table);
 }
 
 

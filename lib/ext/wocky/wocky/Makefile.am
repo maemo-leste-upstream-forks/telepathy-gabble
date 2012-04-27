@@ -1,6 +1,15 @@
 include $(top_srcdir)/tools/flymake.mk
 
+if ENABLE_SHARED_SUFFIX
+lib_LTLIBRARIES = libwocky.la
+
+libwocky_la_LDFLAGS = \
+  -no-undefined \
+  -release $(SHARED_SUFFIX) \
+  $(NULL)
+else
 noinst_LTLIBRARIES = libwocky.la
+endif
 
 EXTRA_DIST =
 
@@ -58,6 +67,7 @@ handwritten_headers = \
   wocky-contact-factory.h \
   wocky-data-form.h \
   wocky-debug.h \
+  wocky-debug-internal.h \
   wocky-disco-identity.h \
   wocky-heartbeat-source.h \
   wocky-jabber-auth.h \
@@ -78,6 +88,7 @@ handwritten_headers = \
   wocky-pubsub-helpers.h \
   wocky-pubsub-node.h \
   wocky-pubsub-node-protected.h \
+  wocky-pubsub-node-internal.h \
   wocky-pubsub-service.h \
   wocky-pubsub-service-protected.h \
   wocky-resource-contact.h \
@@ -142,6 +153,7 @@ handwritten_sources = \
   wocky-session.c \
   wocky-stanza.c \
   wocky-utils.c \
+  wocky-tls-common.c \
   wocky-tls-handler.c \
   wocky-tls-connector.c \
   wocky-xep-0115-capabilities.c \
@@ -210,9 +222,18 @@ wocky-signals-marshal.list: $(handwritten_sources) Makefile.am
 AM_CFLAGS = $(ERROR_CFLAGS) $(GCOV_CFLAGS) \
             @GLIB_CFLAGS@ @LIBXML2_CFLAGS@ @SQLITE_CFLAGS@ @TLS_CFLAGS@ \
             @LIBIPHB_CFLAGS@ \
-            -DG_LOG_DOMAIN=\"wocky\"
+            -DG_LOG_DOMAIN=\"wocky\" \
+            -DWOCKY_COMPILATION
 
-AM_LDFLAGS = $(GCOV_LIBS) @GLIB_LIBS@ @LIBXML2_LIBS@ @SQLITE_LIBS@ @TLS_LIBS@ @LIBIPHB_LIBS@
+
+libwocky_la_LIBADD = \
+  $(GCOV_LIBS) \
+  @GLIB_LIBS@ \
+  @LIBXML2_LIBS@ \
+  @SQLITE_LIBS@ \
+  @TLS_LIBS@ \
+  @LIBIPHB_LIBS@ \
+  $(NULL)
 
 # rules for making the glib enum objects
 # The shell variable $long is something like WOCKY_XMPP_ERROR for
@@ -238,4 +259,11 @@ $(filter %-enumtypes.c,$(built_sources)): %-enumtypes.c: %.h Makefile.in
 	--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
 	$< > $@
 
-
+Android.mk: Makefile.am $(built_sources) $(built_headers)
+	androgenizer -:PROJECT wocky -:SHARED wocky -:TAGS eng debug \
+	 -:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	 -:SOURCES $(handwritten_sources) $(built_sources) \
+	 -:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CFLAGS) \
+	 -:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) \
+	 -:LDFLAGS $(AM_LDFLAGS) $(libwocky_la_LIBADD) \
+	> $@

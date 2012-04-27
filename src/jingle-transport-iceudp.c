@@ -25,17 +25,13 @@
 #include <string.h>
 #include <glib.h>
 
-#include <loudmouth/loudmouth.h>
-
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
 
-#include "connection.h"
 #include "debug.h"
 #include "jingle-content.h"
 #include "jingle-factory.h"
 #include "jingle-session.h"
 #include "namespaces.h"
-#include "util.h"
 
 static void
 transport_iface_init (gpointer g_iface, gpointer iface_data);
@@ -78,6 +74,9 @@ struct _GabbleJingleTransportIceUdpPrivate
   GList *pending_candidates;
   GList *remote_candidates;
 
+  gchar *ufrag;
+  gchar *pwd;
+
   /* next ID to send with a candidate */
   int id_sequence;
 
@@ -116,6 +115,12 @@ gabble_jingle_transport_iceudp_dispose (GObject *object)
 
   g_free (priv->transport_ns);
   priv->transport_ns = NULL;
+
+  g_free (priv->ufrag);
+  priv->ufrag = NULL;
+
+  g_free (priv->pwd);
+  priv->pwd = NULL;
 
   if (G_OBJECT_CLASS (gabble_jingle_transport_iceudp_parent_class)->dispose)
     G_OBJECT_CLASS (gabble_jingle_transport_iceudp_parent_class)->dispose (object);
@@ -228,19 +233,20 @@ gabble_jingle_transport_iceudp_class_init (GabbleJingleTransportIceUdpClass *cls
 
 static void
 parse_candidates (GabbleJingleTransportIface *obj,
-    LmMessageNode *transport_node, GError **error)
+    WockyNode *transport_node, GError **error)
 {
   GabbleJingleTransportIceUdp *t = GABBLE_JINGLE_TRANSPORT_ICEUDP (obj);
   GabbleJingleTransportIceUdpPrivate *priv = t->priv;
   gboolean node_contains_a_candidate = FALSE;
   GList *candidates = NULL;
-  NodeIter i;
+  WockyNodeIter i;
+  WockyNode *node;
 
   DEBUG ("called");
 
-  for (i = node_iter (transport_node); i; i = node_iter_next (i))
+  wocky_node_iter_init (&i, transport_node, "candidate", NULL);
+  while (wocky_node_iter_next (&i, &node))
     {
-      LmMessageNode *node = node_iter_data (i);
       const gchar *id, *address, *user, *pass, *str;
       guint port, net, gen, component = 1;
       gdouble pref;
@@ -248,26 +254,23 @@ parse_candidates (GabbleJingleTransportIface *obj,
       JingleCandidateType ctype;
       JingleCandidate *c;
 
-      if (tp_strdiff (lm_message_node_get_name (node), "candidate"))
-        continue;
-
       node_contains_a_candidate = TRUE;
 
-      id = lm_message_node_get_attribute (node, "foundation");
+      id = wocky_node_get_attribute (node, "foundation");
       if (id == NULL)
         {
           DEBUG ("candidate doesn't contain foundation");
           continue;
         }
 
-      address = lm_message_node_get_attribute (node, "ip");
+      address = wocky_node_get_attribute (node, "ip");
       if (address == NULL)
         {
           DEBUG ("candidate doesn't contain ip");
           continue;
         }
 
-      str = lm_message_node_get_attribute (node, "port");
+      str = wocky_node_get_attribute (node, "port");
       if (str == NULL)
         {
           DEBUG ("candidate doesn't contain port");
@@ -275,14 +278,14 @@ parse_candidates (GabbleJingleTransportIface *obj,
         }
       port = atoi (str);
 
-      str = lm_message_node_get_attribute (node, "protocol");
+      str = wocky_node_get_attribute (node, "protocol");
       if (str == NULL)
         {
           DEBUG ("candidate doesn't contain protocol");
           continue;
         }
 
-      if (!tp_strdiff (str, "udp"))
+      if (!wocky_strdiff (str, "udp"))
         {
           proto = JINGLE_TRANSPORT_PROTOCOL_UDP;
         }
@@ -293,7 +296,7 @@ parse_candidates (GabbleJingleTransportIface *obj,
           continue;
         }
 
-      str = lm_message_node_get_attribute (node, "priority");
+      str = wocky_node_get_attribute (node, "priority");
       if (str == NULL)
         {
           DEBUG ("candidate doesn't contain priority");
@@ -301,25 +304,25 @@ parse_candidates (GabbleJingleTransportIface *obj,
         }
       pref = g_ascii_strtod (str, NULL);
 
-      str = lm_message_node_get_attribute (node, "type");
+      str = wocky_node_get_attribute (node, "type");
       if (str == NULL)
         {
           DEBUG ("candidate doesn't contain type");
           continue;
         }
 
-      if (!tp_strdiff (str, "host"))
+      if (!wocky_strdiff (str, "host"))
         {
           ctype = JINGLE_CANDIDATE_TYPE_LOCAL;
         }
-      else if (!tp_strdiff (str, "srflx") || !tp_strdiff (str, "prflx"))
+      else if (!wocky_strdiff (str, "srflx") || !wocky_strdiff (str, "prflx"))
         {
           /* FIXME Strictly speaking a prflx candidate should be a different
            * type, but the TP spec has now way to distinguish and it doesn't
            * matter much anyway.. */
           ctype = JINGLE_CANDIDATE_TYPE_STUN;
         }
-      else if (!tp_strdiff (str, "relay"))
+      else if (!wocky_strdiff (str, "relay"))
         {
           ctype = JINGLE_CANDIDATE_TYPE_RELAY;
         }
@@ -330,21 +333,21 @@ parse_candidates (GabbleJingleTransportIface *obj,
           continue;
         }
 
-      user = lm_message_node_get_attribute (transport_node, "ufrag");
+      user = wocky_node_get_attribute (transport_node, "ufrag");
       if (user == NULL)
         {
           DEBUG ("transport doesn't contain ufrag");
           continue;
         }
 
-      pass = lm_message_node_get_attribute (transport_node, "pwd");
+      pass = wocky_node_get_attribute (transport_node, "pwd");
       if (pass == NULL)
         {
           DEBUG ("transport doesn't contain pwd");
           continue;
         }
 
-      str = lm_message_node_get_attribute (node, "network");
+      str = wocky_node_get_attribute (node, "network");
       if (str == NULL)
         {
           DEBUG ("candidate doesn't contain network");
@@ -352,7 +355,7 @@ parse_candidates (GabbleJingleTransportIface *obj,
         }
       net = atoi (str);
 
-      str = lm_message_node_get_attribute (node, "generation");
+      str = wocky_node_get_attribute (node, "generation");
       if (str == NULL)
         {
           DEBUG ("candidate doesn't contain generation");
@@ -360,13 +363,25 @@ parse_candidates (GabbleJingleTransportIface *obj,
         }
       gen = atoi (str);
 
-      str = lm_message_node_get_attribute (node, "component");
+      str = wocky_node_get_attribute (node, "component");
       if (str == NULL)
         {
           DEBUG ("candidate doesn't contain component");
           continue;
         }
       component = atoi (str);
+
+      if (priv->ufrag == NULL || strcmp (priv->ufrag, user))
+        {
+          g_free (priv->ufrag);
+          priv->ufrag = g_strdup (user);
+        }
+
+      if (priv->pwd == NULL || strcmp (priv->pwd, pass))
+        {
+          g_free (priv->pwd);
+          priv->pwd = g_strdup (pass);
+        }
 
       c = jingle_candidate_new (proto, ctype, id, component,
           address, port, gen, pref, user, pass, net);
@@ -380,7 +395,7 @@ parse_candidates (GabbleJingleTransportIface *obj,
         {
           NODE_DEBUG (transport_node,
               "couldn't parse any of the given candidates");
-          g_set_error (error, GABBLE_XMPP_ERROR, XMPP_ERROR_BAD_REQUEST,
+          g_set_error (error, WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST,
               "could not parse any of the given candidates");
         }
       else
@@ -401,7 +416,7 @@ parse_candidates (GabbleJingleTransportIface *obj,
 
 static void
 inject_candidates (GabbleJingleTransportIface *obj,
-    LmMessageNode *transport_node)
+    WockyNode *transport_node)
 {
   GabbleJingleTransportIceUdp *self = GABBLE_JINGLE_TRANSPORT_ICEUDP (obj);
   GabbleJingleTransportIceUdpPrivate *priv = self->priv;
@@ -413,13 +428,13 @@ inject_candidates (GabbleJingleTransportIface *obj,
       JingleCandidate *c = (JingleCandidate *) priv->pending_candidates->data;
       gchar port_str[16], pref_str[16], comp_str[16], id_str[16],
           *type_str, *proto_str;
-      LmMessageNode *cnode;
+      WockyNode *cnode;
 
       if (username == NULL)
         {
           username = c->username;
         }
-      else if (tp_strdiff (username, c->username))
+      else if (wocky_strdiff (username, c->username))
         {
           DEBUG ("found a candidate with a different username (%s not %s); "
               "will send in a separate batch", c->username, username);
@@ -458,13 +473,13 @@ inject_candidates (GabbleJingleTransportIface *obj,
           continue;
       }
 
-      lm_message_node_set_attributes (transport_node,
+      wocky_node_set_attributes (transport_node,
           "ufrag", c->username,
           "pwd", c->password,
           NULL);
 
-      cnode = lm_message_node_add_child (transport_node, "candidate", NULL);
-      lm_message_node_set_attributes (cnode,
+      cnode = wocky_node_add_child_with_content (transport_node, "candidate", NULL);
+      wocky_node_set_attributes (cnode,
           "ip", c->address,
           "port", port_str,
           "priority", pref_str,
@@ -491,8 +506,8 @@ send_candidates (GabbleJingleTransportIface *iface,
 
   while (priv->pending_candidates != NULL)
     {
-      LmMessageNode *trans_node, *sess_node;
-      LmMessage *msg;
+      WockyNode *trans_node, *sess_node;
+      WockyStanza *msg;
 
       msg = gabble_jingle_session_new_message (priv->content->session,
           JINGLE_ACTION_TRANSPORT_INFO, &sess_node);
@@ -501,9 +516,10 @@ send_candidates (GabbleJingleTransportIface *iface,
           TRUE, &trans_node);
       inject_candidates (iface, trans_node);
 
-      _gabble_connection_send_with_reply (priv->content->conn, msg, NULL, NULL,
-          NULL, NULL);
-      lm_message_unref (msg);
+      wocky_porter_send_iq_async (
+          gabble_jingle_session_get_porter (priv->content->session), msg,
+          NULL, NULL, NULL);
+      g_object_unref (msg);
     }
 
   DEBUG ("sent all pending candidates");
@@ -553,6 +569,26 @@ get_transport_type (void)
   return JINGLE_TRANSPORT_ICE_UDP;
 }
 
+static gboolean
+get_credentials (GabbleJingleTransportIface *iface,
+      gchar **ufrag, gchar **pwd)
+{
+  GabbleJingleTransportIceUdp *transport =
+    GABBLE_JINGLE_TRANSPORT_ICEUDP (iface);
+  GabbleJingleTransportIceUdpPrivate *priv = transport->priv;
+
+  if (!priv->ufrag || !priv->pwd)
+    return FALSE;
+
+  if (ufrag)
+    *ufrag = priv->ufrag;
+  if (pwd)
+    *pwd = priv->pwd;
+
+  return TRUE;
+}
+
+
 static void
 transport_iface_init (gpointer g_iface, gpointer iface_data)
 {
@@ -567,6 +603,7 @@ transport_iface_init (gpointer g_iface, gpointer iface_data)
   klass->get_remote_candidates = get_remote_candidates;
   klass->get_local_candidates = get_local_candidates;
   klass->get_transport_type = get_transport_type;
+  klass->get_credentials = get_credentials;
 }
 
 void

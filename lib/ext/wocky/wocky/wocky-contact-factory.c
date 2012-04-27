@@ -48,8 +48,8 @@
 #include "wocky-signals-marshal.h"
 #include "wocky-utils.h"
 
-#define DEBUG_FLAG DEBUG_ROSTER
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_ROSTER
+#include "wocky-debug-internal.h"
 
 G_DEFINE_TYPE (WockyContactFactory, wocky_contact_factory, G_TYPE_OBJECT)
 
@@ -198,9 +198,9 @@ wocky_contact_factory_finalize (GObject *object)
   WockyContactFactory *self = WOCKY_CONTACT_FACTORY (object);
   WockyContactFactoryPrivate *priv = self->priv;
 
-  g_hash_table_destroy (priv->bare_contacts);
-  g_hash_table_destroy (priv->resource_contacts);
-  g_hash_table_destroy (priv->ll_contacts);
+  g_hash_table_unref (priv->bare_contacts);
+  g_hash_table_unref (priv->resource_contacts);
+  g_hash_table_unref (priv->ll_contacts);
 
   G_OBJECT_CLASS (wocky_contact_factory_parent_class)->finalize (object);
 }

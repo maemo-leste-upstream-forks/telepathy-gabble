@@ -99,6 +99,16 @@ AM_CONDITIONAL(INSTALL_HEADERS, test x$with_installed_headers != x)
 HEADER_DIR=$with_installed_headers
 AC_SUBST(HEADER_DIR)
 
+dnl Build a shared library even though Wocky isn't stable yet?
+AC_ARG_ENABLE([shared-suffix],
+  AC_HELP_STRING([--enable-shared-suffix=],
+    [install a shared library with a version-specific suffix]),
+  [],
+  [enable_shared_suffix=])
+AM_CONDITIONAL([ENABLE_SHARED_SUFFIX], [test x$enable_shared_suffix != x])
+SHARED_SUFFIX="$enable_shared_suffix"
+AC_SUBST([SHARED_SUFFIX])
+
 dnl Check for code generation tools
 AC_HEADER_STDC([])
 AC_CHECK_HEADERS_ONCE([unistd.h])
@@ -108,7 +118,7 @@ dnl Check endianness (Needed for the sha1 implementation)
 AC_C_BIGENDIAN
 
 dnl Check for Glib
-PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >=
+PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.28, gobject-2.0 >= 2.16, gthread-2.0 >=
 2.4, gio-2.0 >= 2.26])
 
 AC_SUBST(GLIB_CFLAGS)

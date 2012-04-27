@@ -5,8 +5,8 @@
 
 #include <string.h>
 
-#define DEBUG_FLAG DEBUG_AUTH
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_AUTH
+#include "wocky-debug-internal.h"
 
 typedef enum {
   WOCKY_SASL_DIGEST_MD5_STATE_STARTED,
@@ -264,7 +264,7 @@ digest_md5_challenge_to_hash (const GString * challenge)
 
 error:
   DEBUG ("Failed to parse challenge: %s", challenge->str);
-  g_hash_table_destroy (result);
+  g_hash_table_unref (result);
   return NULL;
 }
 
@@ -498,7 +498,7 @@ digest_md5_handle_auth_data (WockyAuthHandler *handler,
           WOCKY_AUTH_ERROR_INVALID_REPLY,
           "Server sent unexpected auth data");
   }
-  g_hash_table_destroy (h);
+  g_hash_table_unref (h);
 
   return ret;
 }

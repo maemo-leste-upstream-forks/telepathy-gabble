@@ -21,14 +21,20 @@
 #include "config.h"
 #include "legacy-caps.h"
 
+#include <telepathy-glib/interfaces.h>
+
 #define DEBUG_FLAG GABBLE_DEBUG_PRESENCE
 #include "debug.h"
+#ifdef ENABLE_VOIP
 #include "media-factory.h"
+#endif
 
 const CapabilityConversionData capabilities_conversions[] =
 {
+#ifdef ENABLE_VOIP
   { TP_IFACE_CHANNEL_TYPE_STREAMED_MEDIA,
     _gabble_media_factory_typeflags_to_caps,
     _gabble_media_factory_caps_to_typeflags },
+#endif
   { NULL, NULL, NULL}
 };

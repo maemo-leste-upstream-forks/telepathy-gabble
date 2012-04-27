@@ -666,6 +666,9 @@ GLIB_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
+SHARED_SUFFIX
+ENABLE_SHARED_SUFFIX_FALSE
+ENABLE_SHARED_SUFFIX_TRUE
 HEADER_DIR
 INSTALL_HEADERS_FALSE
 INSTALL_HEADERS_TRUE
@@ -678,6 +681,8 @@ CCASFLAGS
 CCAS
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
+AM_DEFAULT_V
+AM_V
 CPP
 OTOOL64
 OTOOL
@@ -702,6 +707,7 @@ SED
 am__fastdepCC_FALSE
 am__fastdepCC_TRUE
 CCDEPMODE
+am__nodep
 AMDEPBACKSLASH
 AMDEP_FALSE
 AMDEP_TRUE
@@ -801,6 +807,7 @@ enable_Werror
 enable_coding_style_checks
 enable_debug
 with_installed_headers
+enable_shared_suffix
 with_tls
 enable_prefer_stream_ciphers
 enable_coverage
@@ -1471,6 +1478,8 @@ Optional Features:
   --disable-coding-style-checks
                           do not check coding style using grep
   --disable-debug         compile without debug code
+  --enable-shared-suffix= install a shared library with a version-specific
+                          suffix
   --enable-prefer-stream-ciphers
                           prefer stream ciphers over block ciphers to save
                           bandwidth (at the possible expense of security)
@@ -2815,9 +2824,9 @@ MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 
 # We need awk for the "check" target.  The system "awk" is bad on
 # some platforms.
-# Always define AMTAR for backward compatibility.
-
-AMTAR=${AMTAR-"${am_missing_run}tar"}
+# Always define AMTAR for backward compatibility.  Yes, it's still used
+# in the wild :-(  We should find a proper way to deprecate it ...
+AMTAR='$${TAR-tar}'
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking how to create a ustar tar archive" >&5
@@ -3123,6 +3132,7 @@ fi
 if test "x$enable_dependency_tracking" != xno; then
   am_depcomp="$ac_aux_dir/depcomp"
   AMDEPBACKSLASH='\'
+  am__nodep='_no'
 fi
  if test "x$enable_dependency_tracking" != xno; then
   AMDEP_TRUE=
@@ -3936,6 +3946,7 @@ else
   # instance it was reported that on HP-UX the gcc test will end up
   # making a dummy file named `D' -- because `-MD' means `put the output
   # in D'.
+  rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
   # using a relative directory.
@@ -3995,7 +4006,7 @@ else
 	break
       fi
       ;;
-    msvisualcpp | msvcmsys)
+    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
       # This compiler won't grok `-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
@@ -11496,6 +11507,33 @@ yes) AM_DEFAULT_VERBOSITY=0;;
 no)  AM_DEFAULT_VERBOSITY=1;;
 *)   AM_DEFAULT_VERBOSITY=1;;
 esac
+am_make=${MAKE-make}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $am_make supports nested variables" >&5
+$as_echo_n "checking whether $am_make supports nested variables... " >&6; }
+if ${am_cv_make_support_nested_variables+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if $as_echo 'TRUE=$(BAR$(V))
+BAR0=false
+BAR1=true
+V=1
+am__doit:
+	@$(TRUE)
+.PHONY: am__doit' | $am_make -f - >/dev/null 2>&1; then
+  am_cv_make_support_nested_variables=yes
+else
+  am_cv_make_support_nested_variables=no
+fi
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $am_cv_make_support_nested_variables" >&5
+$as_echo "$am_cv_make_support_nested_variables" >&6; }
+if test $am_cv_make_support_nested_variables = yes; then
+    AM_V='$(V)'
+  AM_DEFAULT_V='$(AM_DEFAULT_VERBOSITY)'
+else
+  AM_V=$AM_DEFAULT_VERBOSITY
+  AM_DEFAULT_V=$AM_DEFAULT_VERBOSITY
+fi
 AM_BACKSLASH='\'
 
 
@@ -12052,6 +12090,7 @@ else
   # instance it was reported that on HP-UX the gcc test will end up
   # making a dummy file named `D' -- because `-MD' means `put the output
   # in D'.
+  rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
   # using a relative directory.
@@ -12111,7 +12150,7 @@ else
 	break
       fi
       ;;
-    msvisualcpp | msvcmsys)
+    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
       # This compiler won't grok `-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
@@ -12479,6 +12518,7 @@ else
   # instance it was reported that on HP-UX the gcc test will end up
   # making a dummy file named `D' -- because `-MD' means `put the output
   # in D'.
+  rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
   # using a relative directory.
@@ -12536,7 +12576,7 @@ else
 	break
       fi
       ;;
-    msvisualcpp | msvcmsys)
+    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
       # This compiler won't grok `-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
@@ -12887,6 +12927,24 @@ fi
 
 
 HEADER_DIR=$with_installed_headers
+
+
+# Check whether --enable-shared-suffix was given.
+if test "${enable_shared_suffix+set}" = set; then :
+  enableval=$enable_shared_suffix;
+else
+  enable_shared_suffix=
+fi
+
+ if test x$enable_shared_suffix != x; then
+  ENABLE_SHARED_SUFFIX_TRUE=
+  ENABLE_SHARED_SUFFIX_FALSE='#'
+else
+  ENABLE_SHARED_SUFFIX_TRUE='#'
+  ENABLE_SHARED_SUFFIX_FALSE=
+fi
+
+SHARED_SUFFIX="$enable_shared_suffix"
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ANSI C header files" >&5
@@ -13418,14 +13476,14 @@ if test -n "$GLIB_CFLAGS"; then
     pkg_cv_GLIB_CFLAGS="$GLIB_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >=
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= 2.28, gobject-2.0 >= 2.16, gthread-2.0 >=
 2.4, gio-2.0 >= 2.26\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >=
+  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= 2.28, gobject-2.0 >= 2.16, gthread-2.0 >=
 2.4, gio-2.0 >= 2.26") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GLIB_CFLAGS=`$PKG_CONFIG --cflags "glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >=
+  pkg_cv_GLIB_CFLAGS=`$PKG_CONFIG --cflags "glib-2.0 >= 2.28, gobject-2.0 >= 2.16, gthread-2.0 >=
 2.4, gio-2.0 >= 2.26" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
@@ -13438,14 +13496,14 @@ if test -n "$GLIB_LIBS"; then
     pkg_cv_GLIB_LIBS="$GLIB_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >=
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= 2.28, gobject-2.0 >= 2.16, gthread-2.0 >=
 2.4, gio-2.0 >= 2.26\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >=
+  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= 2.28, gobject-2.0 >= 2.16, gthread-2.0 >=
 2.4, gio-2.0 >= 2.26") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GLIB_LIBS=`$PKG_CONFIG --libs "glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >=
+  pkg_cv_GLIB_LIBS=`$PKG_CONFIG --libs "glib-2.0 >= 2.28, gobject-2.0 >= 2.16, gthread-2.0 >=
 2.4, gio-2.0 >= 2.26" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
@@ -13467,16 +13525,16 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GLIB_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >=
+	        GLIB_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "glib-2.0 >= 2.28, gobject-2.0 >= 2.16, gthread-2.0 >=
 2.4, gio-2.0 >= 2.26" 2>&1`
         else
-	        GLIB_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >=
+	        GLIB_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "glib-2.0 >= 2.28, gobject-2.0 >= 2.16, gthread-2.0 >=
 2.4, gio-2.0 >= 2.26" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GLIB_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (glib-2.0 >= 2.16, gobject-2.0 >= 2.16, gthread-2.0 >=
+	as_fn_error $? "Package requirements (glib-2.0 >= 2.28, gobject-2.0 >= 2.16, gthread-2.0 >=
 2.4, gio-2.0 >= 2.26) were not met:
 
 $GLIB_PKG_ERRORS
@@ -15116,6 +15174,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${INSTALL_HEADERS_TRUE}" && test -z "${INSTALL_HEADERS_FALSE}"; then
   as_fn_error $? "conditional \"INSTALL_HEADERS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_SHARED_SUFFIX_TRUE}" && test -z "${ENABLE_SHARED_SUFFIX_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_SHARED_SUFFIX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

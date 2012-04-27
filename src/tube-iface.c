@@ -63,32 +63,6 @@ gabble_tube_iface_base_init (gpointer klass)
     {
       GParamSpec *param_spec;
 
-      param_spec = g_param_spec_object (
-          "connection",
-          "GabbleConnection object",
-          "Gabble connection object that owns this tube object.",
-          GABBLE_TYPE_CONNECTION,
-          G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-      g_object_interface_install_property (klass, param_spec);
-
-      param_spec = g_param_spec_uint (
-          "handle",
-          "Handle",
-          "The TpHandle associated with the tubes channel that"
-          "owns this tube object.",
-          0, G_MAXUINT32, 0,
-          G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-      g_object_interface_install_property (klass, param_spec);
-
-      param_spec = g_param_spec_uint (
-          "handle-type",
-          "Handle type",
-          "The TpHandleType of the handle associated with the tubes channel"
-          "that owns this tube object.",
-          0, G_MAXUINT32, 0,
-          G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-      g_object_interface_install_property (klass, param_spec);
-
       param_spec = g_param_spec_uint (
           "self-handle",
           "Self handle",
@@ -171,9 +145,9 @@ gabble_tube_iface_get_type (void)
 void
 gabble_tube_iface_publish_in_node (GabbleTubeIface *tube,
                                    TpBaseConnection *conn,
-                                   LmMessageNode *node)
+                                   WockyNode *node)
 {
-  LmMessageNode *parameters_node;
+  WockyNode *parameters_node;
   GHashTable *parameters;
   TpTubeType type;
   gchar *service, *id_str;
@@ -192,7 +166,7 @@ gabble_tube_iface_publish_in_node (GabbleTubeIface *tube,
 
   id_str = g_strdup_printf ("%u", tube_id);
 
-  lm_message_node_set_attributes (node,
+  wocky_node_set_attributes (node,
       "service", service,
       "id", id_str,
       NULL);
@@ -210,14 +184,14 @@ gabble_tube_iface_publish_in_node (GabbleTubeIface *tube,
               "dbus-name", &name,
               NULL);
 
-          lm_message_node_set_attributes (node,
+          wocky_node_set_attributes (node,
               "type", "dbus",
               "stream-id", stream_id,
               "initiator", tp_handle_inspect (contact_repo, initiator_handle),
               NULL);
 
           if (name != NULL)
-            lm_message_node_set_attribute (node, "dbus-name", name);
+            wocky_node_set_attribute (node, "dbus-name", name);
 
           g_free (name);
           g_free (stream_id);
@@ -225,7 +199,7 @@ gabble_tube_iface_publish_in_node (GabbleTubeIface *tube,
         break;
       case TP_TUBE_TYPE_STREAM:
         {
-          lm_message_node_set_attribute (node, "type", "stream");
+          wocky_node_set_attribute (node, "type", "stream");
         }
         break;
       default:
@@ -234,7 +208,7 @@ gabble_tube_iface_publish_in_node (GabbleTubeIface *tube,
         }
     }
 
-  parameters_node = lm_message_node_add_child (node, "parameters",
+  parameters_node = wocky_node_add_child_with_content (node, "parameters",
       NULL);
   lm_message_node_add_children_from_properties (parameters_node, parameters,
       "parameter");

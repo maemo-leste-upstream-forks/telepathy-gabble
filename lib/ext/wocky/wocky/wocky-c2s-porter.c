@@ -49,8 +49,8 @@
 #include "wocky-namespaces.h"
 #include "wocky-contact-factory.h"
 
-#define DEBUG_FLAG DEBUG_PORTER
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_PORTER
+#include "wocky-debug-internal.h"
 
 static void wocky_porter_iface_init (gpointer g_iface, gpointer iface_data);
 
@@ -76,6 +76,7 @@ struct _WockyC2SPorterPrivate
   gchar *full_jid;
   gchar *bare_jid;
   gchar *resource;
+  gchar *domain;
 
   /* Queue of (sending_queue_elem *) */
   GQueue *sending_queue;
@@ -196,8 +197,10 @@ stanza_handler_new (
   result->priority = priority;
   result->callback = callback;
   result->user_data = user_data;
-  result->match = g_object_ref (stanza);
   result->sender_match = sender_match;
+
+  if (stanza != NULL)
+    result->match = g_object_ref (stanza);
 
   if (sender_match == MATCH_JID)
     {
@@ -222,7 +225,10 @@ stanza_handler_free (StanzaHandler *handler)
   g_free (handler->node);
   g_free (handler->domain);
   g_free (handler->resource);
-  g_object_unref (handler->match);
+
+  if (handler->match != NULL)
+    g_object_unref (handler->match);
+
   g_slice_free (StanzaHandler, handler);
 }
 
@@ -361,7 +367,7 @@ wocky_c2s_porter_set_property (GObject *object,
 
   switch (property_id)
     {
-      gchar *node, *domain;
+      gchar *node;
 
       case PROP_CONNECTION:
         g_assert (priv->connection == NULL);
@@ -376,10 +382,9 @@ wocky_c2s_porter_set_property (GObject *object,
 
         priv->full_jid = g_value_dup_string (value);
         g_assert (priv->full_jid != NULL);
-        wocky_decode_jid (priv->full_jid, &node, &domain, &priv->resource);
-        priv->bare_jid = wocky_compose_jid (node, domain, NULL);
+        wocky_decode_jid (priv->full_jid, &node, &priv->domain, &priv->resource);
+        priv->bare_jid = wocky_compose_jid (node, priv->domain, NULL);
         g_free (node);
-        g_free (domain);
         break;
 
       default:
@@ -568,9 +573,9 @@ wocky_c2s_porter_finalize (GObject *object)
   g_assert_cmpuint (g_queue_get_length (priv->sending_queue), ==, 0);
   g_queue_free (priv->sending_queue);
 
-  g_hash_table_destroy (priv->handlers_by_id);
+  g_hash_table_unref (priv->handlers_by_id);
   g_list_free (priv->handlers);
-  g_hash_table_destroy (priv->iq_reply_handlers);
+  g_hash_table_unref (priv->iq_reply_handlers);
 
   g_queue_free (priv->unimportant_queue);
 
@@ -580,6 +585,7 @@ wocky_c2s_porter_finalize (GObject *object)
   g_free (priv->full_jid);
   g_free (priv->bare_jid);
   g_free (priv->resource);
+  g_free (priv->domain);
 
   G_OBJECT_CLASS (wocky_c2s_porter_parent_class)->finalize (object);
 }
@@ -626,7 +632,7 @@ send_head_stanza (WockyC2SPorter *self)
   wocky_xmpp_connection_send_stanza_async (priv->connection,
       elem->stanza, elem->cancellable, send_stanza_cb, g_object_ref (self));
 
-  g_signal_emit_by_name (self, "sending");
+  g_signal_emit_by_name (self, "sending", elem->stanza);
 }
 
 static void
@@ -816,7 +822,8 @@ stanza_is_from_server (
 {
   return (nfrom == NULL ||
       !wocky_strdiff (nfrom, self->priv->full_jid) ||
-      !wocky_strdiff (nfrom, self->priv->bare_jid));
+      !wocky_strdiff (nfrom, self->priv->bare_jid) ||
+      !wocky_strdiff (nfrom, self->priv->domain));
 }
 
 /* Return TRUE if not spoofed. */
@@ -844,7 +851,7 @@ check_spoofing (WockyC2SPorter *self,
     goto finally;
 
   /* if we sent an IQ without a 'to' attribute, it's to our server: allow it
-   * to use our full or bare JID to reply */
+   * to use our full/bare JID or domain to reply */
   if (should_be_from == NULL)
     {
       if (stanza_is_from_server (self, nfrom))
@@ -935,6 +942,7 @@ handle_stanza (WockyC2SPorter *self,
   WockyStanzaSubType sub_type;
   gchar *node = NULL, *domain = NULL, *resource = NULL;
   gboolean is_from_server;
+  gboolean handled = FALSE;
 
   wocky_stanza_get_type_info (stanza, &type, &sub_type);
 
@@ -961,11 +969,12 @@ handle_stanza (WockyC2SPorter *self,
       is_from_server = FALSE;
     }
 
-  for (l = priv->handlers; l != NULL; l = g_list_next (l))
+  for (l = priv->handlers; l != NULL && !handled; l = g_list_next (l))
     {
       StanzaHandler *handler = (StanzaHandler *) l->data;
 
-      if (type != handler->type)
+      if (type != handler->type &&
+          handler->type != WOCKY_STANZA_TYPE_NONE)
         continue;
 
       if (sub_type != handler->sub_type &&
@@ -1000,16 +1009,26 @@ handle_stanza (WockyC2SPorter *self,
         }
 
       /* Check if the stanza matches the pattern */
-      if (!wocky_node_is_superset (wocky_stanza_get_top_node (stanza),
-          wocky_stanza_get_top_node (handler->match)))
+      if (handler->match != NULL &&
+          !wocky_node_is_superset (wocky_stanza_get_top_node (stanza),
+              wocky_stanza_get_top_node (handler->match)))
         continue;
 
-      if (handler->callback (WOCKY_PORTER (self), stanza, handler->user_data))
-        goto out;
+      handled = handler->callback (WOCKY_PORTER (self), stanza,
+          handler->user_data);
     }
 
-  DEBUG ("Stanza not handled");
-out:
+  if (!handled)
+    {
+      DEBUG ("Stanza not handled");
+
+      if (type == WOCKY_STANZA_TYPE_IQ &&
+          (sub_type == WOCKY_STANZA_SUB_TYPE_GET ||
+           sub_type == WOCKY_STANZA_SUB_TYPE_SET))
+        wocky_porter_send_iq_error (WOCKY_PORTER (self), stanza,
+            WOCKY_XMPP_ERROR_SERVICE_UNAVAILABLE, NULL);
+    }
+
   g_free (node);
   g_free (domain);
   g_free (resource);
@@ -1605,14 +1624,26 @@ wocky_c2s_porter_register_handler_from_server_va (
 
   g_return_val_if_fail (WOCKY_IS_C2S_PORTER (self), 0);
 
-  stanza = wocky_stanza_build_va (type, WOCKY_STANZA_SUB_TYPE_NONE,
-      NULL, NULL, ap);
-  g_assert (stanza != NULL);
+  if (type == WOCKY_STANZA_TYPE_NONE)
+    {
+      stanza = NULL;
+      g_return_val_if_fail (
+          (va_arg (ap, WockyNodeBuildTag) == 0) &&
+          "Pattern-matching is not supported when matching stanzas "
+          "of any type", 0);
+    }
+  else
+    {
+      stanza = wocky_stanza_build_va (type, WOCKY_STANZA_SUB_TYPE_NONE,
+          NULL, NULL, ap);
+      g_assert (stanza != NULL);
+    }
 
   ret = wocky_c2s_porter_register_handler_from_server_by_stanza (self, type, sub_type,
       priority, callback, user_data, stanza);
 
-  g_object_unref (stanza);
+  if (stanza != NULL)
+    g_object_unref (stanza);
 
   return ret;
 }
@@ -1653,7 +1684,11 @@ wocky_c2s_porter_register_handler_from_server_by_stanza (
     WockyStanza *stanza)
 {
   g_return_val_if_fail (WOCKY_IS_C2S_PORTER (self), 0);
-  g_return_val_if_fail (WOCKY_IS_STANZA (stanza), 0);
+
+  if (type == WOCKY_STANZA_TYPE_NONE)
+    g_return_val_if_fail (stanza == NULL, 0);
+  else
+    g_return_val_if_fail (WOCKY_IS_STANZA (stanza), 0);
 
   return wocky_c2s_porter_register_handler_internal (self, type, sub_type,
       MATCH_SERVER, NULL,
@@ -1675,7 +1710,7 @@ wocky_c2s_porter_register_handler_from_server_by_stanza (
  *  the stanza (Wocky will continue to the next handler, if any), or %TRUE to
  *  stop further processing.
  * @user_data: Passed to @callback.
- * @Varargs: a wocky_stanza_build() specification. The handler
+ * @...: a wocky_stanza_build() specification. The handler
  *  will match a stanza only if the stanza received is a superset of the one
  *  passed to this function, as per wocky_node_is_superset().
  *
@@ -2129,7 +2164,7 @@ wocky_c2s_porter_send_whitespace_ping_async (WockyC2SPorter *self,
       wocky_xmpp_connection_send_whitespace_ping_async (priv->connection,
           cancellable, send_whitespace_ping_cb, g_object_ref (result));
 
-      g_signal_emit_by_name (self, "sending");
+      g_signal_emit_by_name (self, "sending", NULL);
     }
 
   g_object_unref (result);

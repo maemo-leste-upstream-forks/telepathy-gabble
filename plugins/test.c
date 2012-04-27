@@ -1,11 +1,11 @@
 #include "test.h"
+#include "config.h"
 
 #include <stdio.h>
 
 #include <telepathy-glib/telepathy-glib.h>
 
-#include <wocky/wocky-disco-identity.h>
-#include <wocky/wocky-data-form.h>
+#include <wocky/wocky.h>
 
 #include "extensions/extensions.h"
 
@@ -79,20 +79,18 @@ sidecar_iq_created_cb (
 }
 
 static void
-test_plugin_create_sidecar (
+test_plugin_create_sidecar_async (
     GabblePlugin *plugin,
     const gchar *sidecar_interface,
-    GabbleConnection *connection,
+    GabblePluginConnection *plugin_connection,
     WockySession *session,
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
   GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (plugin),
       callback, user_data,
-      /* sic: all plugins share gabble_plugin_create_sidecar_finish() so we
-       * need to use the same source tag.
-       */
-      gabble_plugin_create_sidecar);
+      test_plugin_create_sidecar_async);
+
   GabbleSidecar *sidecar = NULL;
 
   if (!tp_strdiff (sidecar_interface, IFACE_TEST))
@@ -107,7 +105,7 @@ test_plugin_create_sidecar (
     {
       g_async_initable_new_async (TEST_TYPE_SIDECAR_IQ, G_PRIORITY_DEFAULT,
           NULL, sidecar_iq_created_cb, result, "session", session,
-          "connection", connection, NULL);
+          "plugin-connection", plugin_connection, NULL);
       return;
     }
   else
@@ -123,20 +121,42 @@ test_plugin_create_sidecar (
     g_simple_async_result_set_op_res_gpointer (result, sidecar, g_object_unref);
 
   g_simple_async_result_complete_in_idle (result);
+
   g_object_unref (result);
+}
+
+static GabbleSidecar *
+test_plugin_create_sidecar_finish (
+    GabblePlugin *plugin,
+    GAsyncResult *result,
+    GError **error)
+{
+  GabbleSidecar *sidecar;
+
+  if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
+        error))
+    return NULL;
+
+  g_return_val_if_fail (g_simple_async_result_is_valid (result,
+        G_OBJECT (plugin), test_plugin_create_sidecar_async), NULL);
+
+  sidecar = GABBLE_SIDECAR (g_simple_async_result_get_op_res_gpointer (
+        G_SIMPLE_ASYNC_RESULT (result)));
+
+  return g_object_ref (sidecar);
 }
 
 static GPtrArray *
 test_plugin_create_channel_managers (GabblePlugin *plugin,
-    TpBaseConnection *connection)
+    GabblePluginConnection *plugin_connection)
 {
   GPtrArray *ret = g_ptr_array_new ();
 
-  DEBUG ("plugin %p on connection %p", plugin, connection);
+  DEBUG ("plugin %p on connection %p", plugin, plugin_connection);
 
   g_ptr_array_add (ret,
       g_object_new (TEST_TYPE_CHANNEL_MANAGER,
-          "connection", connection,
+          "plugin-connection", plugin_connection,
           NULL));
 
   return ret;
@@ -161,8 +181,10 @@ plugin_iface_init (
   GabblePluginInterface *iface = g_iface;
 
   iface->name = "Sidecar test plugin";
+  iface->version = PACKAGE_VERSION;
   iface->sidecar_interfaces = sidecar_interfaces;
-  iface->create_sidecar = test_plugin_create_sidecar;
+  iface->create_sidecar_async = test_plugin_create_sidecar_async;
+  iface->create_sidecar_finish = test_plugin_create_sidecar_finish;
   iface->create_channel_managers = test_plugin_create_channel_managers;
 
   iface->presence_statuses = test_presences;
@@ -337,7 +359,7 @@ test_sidecar_iq_set_property (
               g_ptr_array_add (identities, identity);
 
               /* set own caps so we proper reply to disco#info */
-              hash = gabble_connection_add_sidecar_own_caps (self->connection,
+              hash = gabble_plugin_connection_add_sidecar_own_caps (self->connection,
                   features, identities);
 
               g_free (hash);
@@ -376,9 +398,9 @@ test_sidecar_iq_class_init (TestSidecarIQClass *klass)
           WOCKY_TYPE_SESSION,
           G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, PROP_CONNECTION,
-      g_param_spec_object ("connection", "Gabble Connection",
-          "Gabble connection",
-          GABBLE_TYPE_CONNECTION,
+      g_param_spec_object ("plugin-connection", "Gabble Plugin Connection",
+          "Gabble Plugin Connection",
+          GABBLE_TYPE_PLUGIN_CONNECTION,
           G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
@@ -516,7 +538,7 @@ test_channel_manager_set_property (
         /* Not reffing this: the connection owns all channel managers, so it
          * must outlive us. Taking a reference leads to a cycle.
          */
-        self->connection = g_value_get_object (value);
+        self->plugin_connection = g_value_get_object (value);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -535,7 +557,7 @@ test_channel_manager_get_property (
   switch (property_id)
     {
       case PROP_CONNECTION:
-        g_value_set_object (value, self->connection);
+        g_value_set_object (value, self->plugin_connection);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -560,7 +582,8 @@ test_channel_manager_constructed (GObject *object)
   if (G_OBJECT_CLASS (test_channel_manager_parent_class)->constructed != NULL)
     G_OBJECT_CLASS (test_channel_manager_parent_class)->constructed (object);
 
-  tp_g_signal_connect_object (self->connection, "porter-available",
+  tp_g_signal_connect_object (self->plugin_connection,
+      "porter-available",
       G_CALLBACK (test_channel_manager_porter_available_cb),
       self, 0);
 }
@@ -575,9 +598,9 @@ test_channel_manager_class_init (TestChannelManagerClass *klass)
   oclass->constructed = test_channel_manager_constructed;
 
   g_object_class_install_property (oclass, PROP_CONNECTION,
-      g_param_spec_object ("connection", "Gabble Connection",
-          "Gabble connection",
-          GABBLE_TYPE_CONNECTION,
+      g_param_spec_object ("plugin-connection", "Gabble Plugin Connection",
+          "Gabble Plugin Connection",
+          GABBLE_TYPE_PLUGIN_CONNECTION,
           G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
@@ -595,7 +618,7 @@ test_channel_manager_type_foreach_channel_class (GType type,
 
   func (type, table, chock_a_block_full_of_strings, user_data);
 
-  g_hash_table_destroy (table);
+  g_hash_table_unref (table);
 }
 
 static void

@@ -8,6 +8,12 @@ from jingletest2 import JingleProtocol031
 import constants as cs
 from callutils import *
 
+from config import VOIP_ENABLED
+
+if not VOIP_ENABLED:
+    print "NOTE: built with --disable-voip"
+    raise SystemExit(77)
+
 muc = "muji@test"
 
 def run_cancel_test(q, bus, conn, stream):
@@ -23,13 +29,9 @@ def run_cancel_test(q, bus, conn, stream):
             dbus_interface = dbus.PROPERTIES_IFACE)
 
         content = bus.get_object (conn.bus_name, contents[0])
-        codecs = jt.get_call_audio_codecs_dbus()
 
-        # Accept codec offer
-        props = content.GetAll(cs.CALL_CONTENT_IFACE_MEDIA,
-            dbus_interface=dbus.PROPERTIES_IFACE)
-        offer = bus.get_object (conn.bus_name, props["CodecOffer"][0])
-        offer.Accept(codecs, dbus_interface=cs.CALL_CONTENT_CODECOFFER)
+        md = jt.get_call_audio_md_dbus()
+        check_and_accept_offer (q, bus, conn, content, md)
 
         # Accept the channel
         channel.Accept()

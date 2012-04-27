@@ -21,6 +21,7 @@
 #include "config.h"
 #include "conn-aliasing.h"
 
+#include <wocky/wocky.h>
 #include <telepathy-glib/contacts-mixin.h>
 #include <telepathy-glib/gtypes.h>
 #include <telepathy-glib/interfaces.h>
@@ -38,7 +39,7 @@
 #include "vcard-manager.h"
 
 static void gabble_conn_aliasing_pep_nick_reply_handler (
-    GabbleConnection *conn, LmMessage *msg, TpHandle handle);
+    GabbleConnection *conn, WockyStanza *msg, TpHandle handle);
 static GQuark gabble_conn_aliasing_pep_alias_quark (void);
 
 static GabbleConnectionAliasSource _gabble_connection_get_cached_remote_alias (
@@ -141,7 +142,7 @@ aliases_request_free (AliasesRequest *request)
       (TpBaseConnection *) request->conn, TP_HANDLE_TYPE_CONTACT);
   tp_handles_unref (contact_handles, request->contacts);
 
-  g_array_free (request->contacts, TRUE);
+  g_array_unref (request->contacts);
   g_free (request->vcard_requests);
   g_free (request->pep_requests);
   g_strfreev (request->aliases);
@@ -171,7 +172,7 @@ static void
 aliases_request_vcard_cb (GabbleVCardManager *manager,
                           GabbleVCardManagerRequest *request,
                           TpHandle handle,
-                          LmMessageNode *vcard,
+                          WockyNode *vcard,
                           GError *error,
                           gpointer user_data)
 {
@@ -223,7 +224,7 @@ _cache_negatively (GabbleConnection *self,
 /* Cache pep if successful */
 static void
 aliases_request_cache_pep (GabbleConnection *self,
-                           LmMessage *msg,
+                           WockyStanza *msg,
                            TpHandle handle,
                            GError *error)
 {
@@ -231,8 +232,9 @@ aliases_request_cache_pep (GabbleConnection *self,
     {
       DEBUG ("Error getting alias from PEP: %s", error->message);
       _cache_negatively (self, handle);
+      return;
     }
-  else if (lm_message_get_sub_type (msg) != LM_MESSAGE_SUB_TYPE_RESULT)
+  else if (wocky_stanza_extract_errors (msg, NULL, NULL, NULL, NULL))
     {
       STANZA_DEBUG (msg, "Error getting alias from PEP");
       _cache_negatively (self, handle);
@@ -247,7 +249,7 @@ aliases_request_cache_pep (GabbleConnection *self,
 
 static void
 aliases_request_basic_pep_cb (GabbleConnection *self,
-                              LmMessage *msg,
+                              WockyStanza *msg,
                               gpointer user_data,
                               GError *error)
 {
@@ -271,7 +273,7 @@ aliases_request_basic_pep_cb (GabbleConnection *self,
 
 static void
 aliases_request_pep_cb (GabbleConnection *self,
-                        LmMessage *msg,
+                        WockyStanza *msg,
                         gpointer user_data,
                         GError *error)
 {
@@ -332,7 +334,7 @@ typedef struct {
 static void
 pep_request_cb (
     GabbleConnection *conn,
-    LmMessage *msg,
+    WockyStanza *msg,
     gpointer user_data,
     GError *error)
 {
@@ -354,7 +356,8 @@ gabble_do_pep_request (GabbleConnection *self,
                        gpointer user_data)
 {
   TpBaseConnection *base = (TpBaseConnection *) self;
-  LmMessage *msg;
+  const gchar *to;
+  WockyStanza *msg;
   GabbleRequestPipelineItem *pep_request;
   pep_request_ctx *ctx;
 
@@ -370,19 +373,19 @@ gabble_do_pep_request (GabbleConnection *self,
   ctx->handle = handle;
 
   tp_handle_ref (contact_handles, handle);
-  msg = lm_message_build (tp_handle_inspect (contact_handles, handle),
-      LM_MESSAGE_TYPE_IQ,
-      '@', "type", "get",
-      '(', "pubsub", "",
-        '@', "xmlns", NS_PUBSUB,
-        '(', "items", "",
+  to = tp_handle_inspect (contact_handles, handle);
+  msg = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_GET,
+      NULL, to,
+      '(', "pubsub",
+        ':', NS_PUBSUB,
+        '(', "items",
           '@', "node", NS_NICK,
         ')',
       ')',
       NULL);
    pep_request = gabble_request_pipeline_enqueue (self->req_pipeline,
       msg, 0, pep_request_cb, ctx);
-   lm_message_unref (msg);
+   g_object_unref (msg);
 
    return pep_request;
 }
@@ -477,34 +480,24 @@ gabble_connection_request_aliases (TpSvcConnectionInterfaceAliasing *iface,
     aliases_request_free (request);
 }
 
-static LmHandlerResult
+static void
 nick_publish_msg_reply_cb (GabbleConnection *conn,
-                           LmMessage *sent_msg,
-                           LmMessage *reply_msg,
+                           WockyStanza *sent_msg,
+                           WockyStanza *reply_msg,
                            GObject *object,
                            gpointer user_data)
 {
 #ifdef ENABLE_DEBUG
-  if (lm_message_get_sub_type (reply_msg) == LM_MESSAGE_SUB_TYPE_ERROR)
+  GError *error = NULL;
+
+  if (wocky_stanza_extract_errors (reply_msg, NULL, &error, NULL, NULL))
     {
-      LmMessageNode *error_node;
+      DEBUG ("can't publish nick using PEP: %s: %s",
+          wocky_xmpp_stanza_error_to_string (error), error->message);
 
-      error_node = lm_message_node_get_child (
-          wocky_stanza_get_top_node (reply_msg), "error");
-
-      if (error_node != NULL)
-        {
-          GabbleXmppError error = gabble_xmpp_error_from_node (error_node,
-              NULL);
-
-          DEBUG ("can't publish nick using PEP: %s: %s",
-              gabble_xmpp_error_string (error),
-              gabble_xmpp_error_description (error));
-        }
+      g_clear_error (&error);
     }
 #endif
-
-  return LM_HANDLER_RESULT_REMOVE_MESSAGE;
 }
 
 static gboolean
@@ -575,7 +568,7 @@ set_one_alias (
       if (conn->features & GABBLE_CONNECTION_FEATURES_PEP)
         {
           /* Publish nick using PEP */
-          LmMessage *msg;
+          WockyStanza *msg;
           WockyNode *item;
 
           msg = wocky_pep_service_make_publish_stanza (conn->pep_nick, &item);
@@ -585,7 +578,7 @@ set_one_alias (
           _gabble_connection_send_with_reply (conn, msg,
               nick_publish_msg_reply_cb, NULL, NULL, NULL);
 
-          lm_message_unref (msg);
+          g_object_unref (msg);
         }
 
       if (alias == NULL)
@@ -666,7 +659,7 @@ gabble_conn_aliasing_pep_alias_quark (void)
 static gboolean
 _grab_nickname (GabbleConnection *self,
                 TpHandle handle,
-                LmMessageNode *node)
+                WockyNode *node)
 {
   TpBaseConnection *base = (TpBaseConnection *) self;
   TpHandleRepoIface *contact_handles = tp_base_connection_get_handles (base,
@@ -674,7 +667,7 @@ _grab_nickname (GabbleConnection *self,
   GQuark quark = gabble_conn_aliasing_pep_alias_quark ();
   const gchar *old, *nickname;
 
-  node = lm_message_node_get_child_with_namespace (node, "nick", NS_NICK);
+  node = wocky_node_get_child_ns (node, "nick", NS_NICK);
 
   if (NULL == node)
     {
@@ -684,7 +677,7 @@ _grab_nickname (GabbleConnection *self,
       return FALSE;
     }
 
-  nickname = lm_message_node_get_value (node);
+  nickname = node->content;
   old = tp_handle_get_qdata (contact_handles, handle, quark);
 
   if (tp_strdiff (old, nickname))
@@ -710,11 +703,11 @@ static void
 pep_nick_node_changed (WockyPepService *pep,
     WockyBareContact *contact,
     WockyStanza *stanza,
+    WockyNode *item,
     GabbleConnection *conn)
 {
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
       (TpBaseConnection *) conn, TP_HANDLE_TYPE_CONTACT);
-  LmMessageNode *node;
   TpHandle handle;
   const gchar *jid;
 
@@ -726,32 +719,30 @@ pep_nick_node_changed (WockyPepService *pep,
       return;
     }
 
-  node = lm_message_node_find_child (wocky_stanza_get_top_node (stanza),
-      "item");
-  if (NULL == node)
+  if (NULL == item)
     {
       STANZA_DEBUG (stanza, "PEP event without item node, ignoring");
       return;
     }
 
-  _grab_nickname (conn, handle, node);
+  _grab_nickname (conn, handle, item);
 }
 
 
 static void
 gabble_conn_aliasing_pep_nick_reply_handler (GabbleConnection *conn,
-                                             LmMessage *msg,
+                                             WockyStanza *msg,
                                              TpHandle handle)
 {
-  LmMessageNode *pubsub_node, *items_node;
+  WockyNode *pubsub_node, *items_node, *item_node;
   gboolean found = FALSE;
-  NodeIter i;
+  WockyNodeIter i;
 
-  pubsub_node = lm_message_node_get_child_with_namespace (
+  pubsub_node = wocky_node_get_child_ns (
       wocky_stanza_get_top_node (msg), "pubsub", NS_PUBSUB);
   if (pubsub_node == NULL)
     {
-      pubsub_node = lm_message_node_get_child_with_namespace (
+      pubsub_node = wocky_node_get_child_ns (
         wocky_stanza_get_top_node (msg), "pubsub", NS_PUBSUB "#event");
 
       if (pubsub_node == NULL)
@@ -767,7 +758,7 @@ gabble_conn_aliasing_pep_nick_reply_handler (GabbleConnection *conn,
         }
     }
 
-  items_node = lm_message_node_get_child (pubsub_node, "items");
+  items_node = wocky_node_get_child (pubsub_node, "items");
   if (items_node == NULL)
     {
       STANZA_DEBUG (msg, "No items in PEP reply");
@@ -775,10 +766,9 @@ gabble_conn_aliasing_pep_nick_reply_handler (GabbleConnection *conn,
       return;
     }
 
-  for (i = node_iter (items_node); i; i = node_iter_next (i))
+  wocky_node_iter_init (&i, items_node, NULL, NULL);
+  while (wocky_node_iter_next (&i, &item_node))
     {
-      LmMessageNode *item_node = node_iter_data (i);
-
       if (_grab_nickname (conn, handle, item_node))
         {
           /* FIXME: does this do the right thing on servers which return
@@ -806,7 +796,7 @@ gabble_conn_aliasing_nickname_updated (GObject *object,
 
   gabble_conn_aliasing_nicknames_updated (object, handles, user_data);
 
-  g_array_free (handles, TRUE);
+  g_array_unref (handles);
 }
 
 void
@@ -895,7 +885,7 @@ gabble_conn_aliasing_nicknames_updated (GObject *object,
   for (i = 0; i < aliases->len; i++)
     g_boxed_free (TP_STRUCT_TYPE_ALIAS_PAIR, g_ptr_array_index (aliases, i));
 
-  g_ptr_array_free (aliases, TRUE);
+  g_ptr_array_unref (aliases);
 }
 
 static void
@@ -962,7 +952,7 @@ get_cached_remote_alias (
     }
 
   /* MUC handles have the nickname in the resource */
-  if (gabble_decode_jid (jid, NULL, NULL, &resource) &&
+  if (wocky_decode_jid (jid, NULL, NULL, &resource) &&
       NULL != resource)
     {
       set_or_clear (alias, resource);
@@ -1190,7 +1180,7 @@ gabble_connection_get_aliases (TpSvcConnectionInterfaceAliasing *iface,
   tp_svc_connection_interface_aliasing_return_from_get_aliases (context,
     result);
 
-  g_hash_table_destroy (result);
+  g_hash_table_unref (result);
 }
 
 

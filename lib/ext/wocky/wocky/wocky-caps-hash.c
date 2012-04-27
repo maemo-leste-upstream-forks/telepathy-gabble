@@ -39,8 +39,8 @@
 #include "wocky-data-form.h"
 #include "wocky-namespaces.h"
 
-#define DEBUG_FLAG DEBUG_PRESENCE
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_PRESENCE
+#include "wocky-debug-internal.h"
 
 static gint
 char_cmp (gconstpointer a,
@@ -185,11 +185,20 @@ wocky_caps_hash_compute_from_lists (
 
       if (field == NULL)
         {
-          DEBUG ("Data form is missing FORM_TYPE field");
-          goto cleanup;
+          DEBUG ("Data form is missing FORM_TYPE field; ignoring form and "
+              "moving onto next one");
+          continue;
         }
 
       form_name = g_value_get_string (field->default_value);
+
+      if (field->type != WOCKY_DATA_FORM_FIELD_TYPE_HIDDEN)
+        {
+          DEBUG ("FORM_TYPE field of form '%s' is not hidden; "
+              "ignoring form and moving onto next one",
+                 form_name);
+          continue;
+        }
 
       if (g_hash_table_lookup (form_names, form_name) != NULL)
         {
@@ -257,11 +266,11 @@ wocky_caps_hash_compute_from_lists (
 cleanup:
   g_checksum_free (checksum);
 
-  g_hash_table_destroy (form_names);
+  g_hash_table_unref (form_names);
 
-  g_ptr_array_free (identities_sorted, TRUE);
-  g_ptr_array_free (features_sorted, TRUE);
-  g_ptr_array_free (dataforms_sorted, TRUE);
+  g_ptr_array_unref (identities_sorted);
+  g_ptr_array_unref (features_sorted);
+  g_ptr_array_unref (dataforms_sorted);
 
   return encoded;
 }
@@ -353,8 +362,8 @@ wocky_caps_hash_compute_from_node (WockyNode *node)
 
 out:
   wocky_disco_identity_array_free (identities);
-  g_ptr_array_free (features, TRUE);
-  g_ptr_array_free (dataforms, TRUE);
+  g_ptr_array_unref (features);
+  g_ptr_array_unref (dataforms);
 
   return str;
 }

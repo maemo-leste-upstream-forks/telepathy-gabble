@@ -32,12 +32,11 @@
 
 #include <string.h>
 
-#include "wocky-data-form-enumtypes.h"
 #include "wocky-namespaces.h"
 #include "wocky-utils.h"
 
-#define DEBUG_FLAG DEBUG_DATA_FORM
-#include "wocky-debug.h"
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_DATA_FORM
+#include "wocky-debug-internal.h"
 
 G_DEFINE_TYPE (WockyDataForm, wocky_data_form, G_TYPE_OBJECT)
 
@@ -572,8 +571,7 @@ wocky_data_form_new_from_node (WockyNode *x,
   const gchar *type, *title, *instructions;
   WockyDataForm *form;
 
-  if (wocky_strdiff (x->name, "x")
-      || x->ns != g_quark_from_string (WOCKY_XMPP_NS_DATA))
+  if (!wocky_node_matches (x, "x", WOCKY_XMPP_NS_DATA))
     {
       DEBUG ("Invalid 'x' node");
       g_set_error (error, WOCKY_DATA_FORM_ERROR,
@@ -650,6 +648,8 @@ wocky_data_form_set_type (WockyDataForm *self,
     const gchar *form_type)
 {
   WockyDataFormField *field;
+  const gchar const *raw_value_contents[] =
+      { form_type, NULL };
 
   g_return_val_if_fail (form_type != NULL, FALSE);
 
@@ -662,7 +662,9 @@ wocky_data_form_set_type (WockyDataForm *self,
     }
 
   field = wocky_data_form_field_new (WOCKY_DATA_FORM_FIELD_TYPE_HIDDEN,
-      "FORM_TYPE", NULL, NULL, FALSE, NULL, NULL,
+      "FORM_TYPE", NULL, NULL, FALSE,
+      wocky_g_value_slice_new_string (form_type),
+      g_strdupv ((GStrv) raw_value_contents),
       wocky_g_value_slice_new_string (form_type),
       NULL);
   data_form_add_field (self, field, FALSE);
@@ -688,6 +690,7 @@ data_form_set_value (WockyDataForm *self,
     gboolean create_if_missing)
 {
   WockyDataFormField *field;
+  GType t;
 
   g_return_val_if_fail (field_name != NULL, FALSE);
   g_return_val_if_fail (value != NULL, FALSE);
@@ -715,6 +718,35 @@ data_form_set_value (WockyDataForm *self,
     wocky_g_value_slice_free (field->value);
 
   field->value = value;
+
+  g_strfreev (field->raw_value_contents);
+
+  t = G_VALUE_TYPE (field->value);
+  if (t == G_TYPE_STRING)
+    {
+      const gchar const *value_str[] =
+          { g_value_get_string (field->value), NULL };
+
+      field->raw_value_contents = g_strdupv ((GStrv) value_str);
+    }
+  else if (t == G_TYPE_BOOLEAN)
+    {
+      const gchar const *value_str[] =
+          { g_value_get_boolean (field->value) ? "1" : "0", NULL };
+
+      field->raw_value_contents = g_strdupv ((GStrv) value_str);
+    }
+  else if (t == G_TYPE_STRV)
+    {
+      const GStrv value_str = g_value_get_boxed (field->value);
+
+      field->raw_value_contents = g_strdupv (value_str);
+    }
+  else
+    {
+      g_assert_not_reached ();
+    }
+
   return TRUE;
 }
 
@@ -739,14 +771,14 @@ wocky_data_form_set_boolean (WockyDataForm *self,
 }
 
 /**
- * wocky_data_form_set_boolean:
+ * wocky_data_form_set_string:
  * @self: a data form
- * @field_name: the name of a boolean field of @self
+ * @field_name: the name of a string field of @self
  * @field_value: the value to fill in for @field_name
  * @create_if_missing: if no field named @field_name exists, create it
  *
  * Returns: %TRUE if the field was successfully filled in; %FALSE if the field
- *          did not exist or does not accept a boolean
+ *          did not exist or does not accept a string
  */
 gboolean
 wocky_data_form_set_string (WockyDataForm *self,
@@ -1035,6 +1067,7 @@ add_field_to_node_using_default (WockyDataFormField *field,
     wocky_node_set_attribute (field_node, "type",
         type_to_str (field->type));
 
+  g_assert (field->raw_value_contents != NULL);
   for (s = field->raw_value_contents; *s != NULL; s++)
     wocky_node_add_child_with_content (field_node, "value", *s);
 }

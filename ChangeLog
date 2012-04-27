@@ -1,27 +1,2566 @@
-commit 7693b5d8176a6af8c1ce937d228049363c40d09f
-Author: Will Thompson <will.thompson@collabora.co.uk>
-Date:   2011-11-24 13:14:07 +0000
+commit 4291d1d472bc22ea1423e5ef2dc063eb1782ac15
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-04-02 17:05:53 -0400
 
-    jingle/outgoing-basics: disregard MembersChangedDetailed flag
+    version 0.16.0
     
-    In 0.15, 65c8b8f makes this test always expect the
-    Members_Changed_Detailed flag to be present in the channel's group
-    flags. But 0.14 doesn't depend on a new enough telepathy-glib to be sure
-    of that; so here we just mask that flag.
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
-commit 266d8346b0b195a9c924cdd3ba1ba3295c9eb8ea
+commit b0112d03c77dfe4b506168ccffcc1eb4bb83d29f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-04-02 17:04:52 -0400
+
+    NEWS: summary for 0.16.0
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 40322ddb3228a9687bee25ee4c85a5dffeccefe2
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-04-02 17:13:10 -0400
+
+    configure: update dependency on tp-glib
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 4d9133a523d95207699b3ede02b26e7e2c272fdd
+Merge: 71dcf75 44582af
 Author: Will Thompson <will.thompson@collabora.co.uk>
-Date:   2011-11-24 09:50:04 +0000
+Date:   2012-04-02 17:50:28 +0100
 
-    Version 0.14.1
+    Merge branch '47999-handle-ibb-errors'
 
-commit bb9ea185579d089ca87234a27e7ed971640a5da4
+commit 44582af04f111e4ba855afceb814997fce812a4e
 Author: Will Thompson <will.thompson@collabora.co.uk>
-Date:   2011-11-24 09:49:55 +0000
+Date:   2012-03-28 14:53:43 +0100
 
-    NEWS for 0.14.1
+    bytestream-ibb: handle IQ send errors
+    
+    This is untested, but the existing tests still pass…
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=47999
 
-commit 4452a4c807b3fa6ad0b37342fc35d1f1049f101c
+commit b8f84c653318b18c5070085e66fca011f04bcb65
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-03-28 14:26:12 +0100
+
+    bytestream-ibb: correct send_data's return value.
+    
+    This function returns the number of messages sent, not a boolean.
+
+commit 71dcf75998ea8a332903def7b6513df5e4e6d819
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-13 16:43:57 +0000
+
+    New test: connect/test-connection-params.py
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43828
+
+commit 45d81af51417a79bd2fd7c98b0980ba7e725dd5c
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-13 12:16:07 +0000
+
+    ContactList: downloading the roster at connection depends on a connection parameter
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43828
+
+commit deb67c35893b1770533eb48c4e7ec0840afc8926
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2012-02-23 16:29:49 +0000
+
+    Update dependency on telepathy-glib
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43826
+    https://bugs.freedesktop.org/show_bug.cgi?id=43828
+
+commit 687ec45023294d6003f987ff0dfc72986fdb7f46
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2012-01-04 14:22:02 +0000
+
+    gabble_roster_unpublish_async: correct the source tag
+
+commit 5d7a8f948c504b842781e99f77bebcb94bf610a0
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2012-01-04 14:21:42 +0000
+
+    gabble_roster_authorize_publication_async: correct the source tag
+
+commit 352d2da805561ec0164a6e800cd3c3e3bbc629f3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-03-09 13:38:04 +0000
+
+    Replace plugindir with an AC_ARG_VAR so it can be passed to configure
+    
+    This lets you configure the plugin directory:
+    
+        ./configure pluginexecdir='${libdir}/my-gabble-plugins'
+    
+    The directory-name variable has 'exec' in it because Automake installs
+    unknown directory names with 'exec' in their variable name during
+    "make install-exec", and other unknown directory names during
+    "make install-data".
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f06469da5cfc7c8dc750bce82099dde4b528a20b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-03-09 13:35:37 +0000
+
+    Install non-ABI-stable libraries used by plugins to a private directory
+    
+    This avoids having Gabble and Salut, or old Gabble and a future stable
+    Wocky, fight over the libwocky.so symlink.
+    
+    If you're building for a tightly controlled platform where Gabble and
+    Salut are definitely using the same Wocky version, you can put them in the
+    normal libdir with
+    
+        ./configure pluginexeclibdir='${libdir}'
+    
+    or (when Salut has been updated with this change) make them share a private
+    library directory:
+    
+        ./configure pluginexeclibdir='${libdir}/telepathy/ytstenut-1.0'
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c535a29358002b3b48c3df7bedecfbf73ab4553f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-03-09 12:42:10 +0000
+
+    Avoid non-portable use of += in configure.ac
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b942885bb6bca2e56b1a24737fcb8cf266d9cb61
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-03-09 13:04:13 +0000
+
+    Avoid Wocky trying to install into --prefix=NONE
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 531bffcfaf8bed572259981d4d900e7f1e42e473
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-03-09 12:41:46 +0000
+
+    configure.ac: remove apostrophe from a help message so syntax highlighting works
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit fed5695cc026ab4076197de2a28a5f7bbe69dacb
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-03-09 12:24:44 +0000
+
+    telepathy-gabble.pc: link to Wocky
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c8da384dd9f311296145cdb49a2279f624502708
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-22 19:20:56 -0400
+
+    start on 0.15.6
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b26a704c87968bc1db29a2917c2ca0bdf10ed999
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-22 19:09:06 -0400
+
+    version 0.15.5
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b7350b195bae44bda93e767b7a8a5616c558102a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-22 18:52:51 -0400
+
+    configure: depend on telepathy-glib 0.17.7
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b82352ce6eb3bab55e09f58ce07a3fd1d90ce319
+Merge: 21ec409 27fa0aa
+Author: Marco Barisione <marco@barisione.org>
+Date:   2012-03-22 17:52:20 +0000
+
+    Merge branch 'disable-voip'
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=47502
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 27fa0aa72eb61ecffb26998f535f66e4ae992ae6
+Author: Marco Barisione <marco@barisione.org>
+Date:   2012-03-09 08:33:54 +0000
+
+    Allow to disable VoIP-related code with --disable-voip
+
+commit a69250eac91ac827ff90cf8a03d6540b68a5d001
+Author: Marco Barisione <marco@barisione.org>
+Date:   2012-03-16 16:14:15 +0000
+
+    There is no need to include non-compiled files in EXTRA_DIST
+    
+    Automake makes sure that all the source files, even if they are not
+    being compiled at the moment, will be distributed when doing make dist.
+
+commit 21ec409017f58d1ff863cc8c26d42108931ecabb
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-16 14:18:25 -0400
+
+    CallStream: Replace want_send with the local sending state of the Stream
+    
+    Also require the newest telepathy-glib
+
+commit 78db4e43dcbc8e8fabe87e05a9231b3b6555116a
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-16 14:17:51 -0400
+
+    CallStream: Set local sending to true if a locally-created content wants to send
+
+commit b9926cf5413dde094ae134a84b349e26ffeabfa4
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-13 19:01:35 -0400
+
+    Also check the sending state of non-initial streams
+
+commit a1414b8e991a4a51bb9cc09af29f4e3b56e23289
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-13 18:44:30 -0400
+
+    tests: Expect new contents to be pending_start receiving
+
+commit 12e43de2942da80fb31e59ba334d5813af895fd6
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-09 17:12:24 -0500
+
+    Fix unit tests to use the Telepathy candidate types
+
+commit 72e98283ca6a53b31f45a3fb410324bfba7ec1e1
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-09 16:52:32 -0500
+
+    Convert Telepathy types to Jingle types correctly
+
+commit ceb7985d76f8d2c614344b4b6c68d152384b695b
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-03-09 16:45:47 -0500
+
+    Correctly convert JingleCandidateType to Telepathy types
+
+commit 8bbc8e408464f65f5cc93ff18109661f297b39d8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-09 10:29:40 -0500
+
+    tube-iface: remove duplicated properties
+    
+    These wouldn't *have* to disappear, but GObject was complaining
+    because GabbleTubeIface:connection was implemented in TpBaseChannel as
+    type TpBaseConnection, when it was expecting a GabbleConnection.
+    
+    Stop crying, you baby.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 0d57767b5f669d51049257bac918a98de798b9e0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-23 12:19:42 +0000
+
+    Link plugins in the same way on Unix as on Windows
+    
+    Reviewed-by: Olli Salli <olli.salli@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+
+commit a167423acad1bbc41d764710fbc1de4347906da6
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-23 12:01:26 +0000
+
+    Build Wocky as a version-specific shared library
+    
+    Reviewed-by: Olli Salli <olli.salli@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=46417
+
+commit 9a52bb20676a5290b3778cecb9d5bbc74a928db7
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-23 12:29:42 +0000
+
+    Use the standard EXEEXT variable rather than reinventing it
+
+commit 0a7c66f48e2a4f5f1b80237def4063fa952ccc71
+Merge: 52fac35 c8f08ce
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-03-01 17:07:08 +0000
+
+    Merge branch 'detp-jingle'
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=46513
+    
+    Conflicts:
+    	src/ft-channel.c
+
+commit 52fac3507be8db06a9e1ae1b7a3c98a28d02da44
+Merge: 10785ff 491db17
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-02-29 15:02:55 -0500
+
+    Merge branch 'base-channels'
+    
+    Conflicts:
+    	src/Makefile.am
+    	src/tube-dbus.c
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c8f08ceb6e7f44303d1950a565e47f170129e524
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-29 13:22:22 +0000
+
+    CallStream style: add a missing blank line.
+
+commit de5eb4bebefa0d68d7ec081ed5845479c5aeae9e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-29 13:20:50 +0000
+
+    JingleMint: rename ::new-session to ::incoming-session
+    
+    This is Simon's idea, and it's a good one. It makes it clearly a
+    different signal to JingleFactory::new-session, too.
+
+commit f6d4a38fc058300dc2422f61f469ed6a86697ed8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-29 13:14:05 +0000
+
+    JingleInfo: chain up at the end of dispose
+    
+    Simon noticed:
+    
+    > Surely dispose should chain up at the end, not the beginning? I see
+    > dispose and finalize as progressively breaking the functionality of
+    > the object's classes, most-derived first.
+    
+    Yup!
+
+commit cdc02ea04db52b24d84be250893b3bdc750baafe
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-29 13:12:47 +0000
+
+    JingleSession: don't leak in initiate/accept callbacks
+    
+    Simon noticed:
+    
+    > "Send session-{initiate,accept} IQs using porter directly.",
+    > 72ea73343252: I think you're leaking sess in the callbacks, except in
+    > the early-return cases where the state has become inappropriate?
+    
+    He's quite right.
+
+commit 10785ffc0e61d98d6bc23b5281872d7268b3a3a1
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-02-29 11:26:31 +0100
+
+    Include config.h to have GLIB_DISABLE_DEPRECATION_WARNINGS defined
+
+commit a6ef0c0b9d2747baaaa049a6c441da7b94d65265
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-23 12:59:29 +0000
+
+    JingleSession: make _new() take a dialect.
+    
+    Everywhere that creates a new session knows the dialect it wants to use,
+    so let's pass it right into the constructor.
+
+commit da9f352766edf270c907421ea610549593c46325
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-20 15:24:12 +0000
+
+    Represent Jingle relays by a struct, not an aa{sv}
+    
+    This has the dual benefits of removing Telepathy data structures from
+    google-relay.c, and of simplifying the use of these structures in
+    gtalk-file-collection.c.
+
+commit 089a5f2de461d90f9089a68dc11ada1cfc6f58b1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-20 12:35:02 +0000
+
+    Jingle*: stop including util.h
+
+commit ae1d315c9bae65a5dd9c1eacbdcda1aa2ec6408f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-20 12:32:12 +0000
+
+    JingleFactory: drop use of gabble_signal_connect_weak()
+    
+    Wocky doesn't have an equivalent of this function. It's relatively
+    little work to explicitly disconnect from the sessions' ::query-cap
+    signals, so let's do that.
+
+commit ca86afb5cde89cc1832ed002a59cef6f51916ef4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 19:19:44 +0000
+
+    Remove unused JingleInitiator type.
+    
+    It would actually be better if a two-element version of this without the
+    INVALID element had been used throughout rather than booleans to
+    represent the direction of a session… but oh well.
+
+commit d88193074f1f1d9f4d618932821dbab36a474182
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 19:07:19 +0000
+
+    Move Jingle enums and typedefs to a new jingle-types.h
+    
+    For some reason the enums lived in jingle-factory.h before.
+    
+    We do need a separate header for the typedefs because some of the Jingle
+    headers are mutually dependent.
+
+commit ac9ee4a66f56f8c033f150eb5c8a4a9999e475e3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 19:10:27 +0000
+
+    JingleFactory: correct TpChannelGroupChangeReason reference
+
+commit 003e72bc1d8cf70aa595f036ebcfb7e2a542efbb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 18:55:27 +0000
+
+    JingleFactory: drop GabbleConnection dependency.
+    
+    So with this patch, GabbleJingleFactory takes a construct-time
+    WockySession property rather than a GabbleConnection; GabbleJingleMint
+    only creats the factory when the porter (and hence session) becomes
+    available.
+    
+    With this, we've removed the core Jingle code's last significant
+    Gabble/Telepathy dependency.
+
+commit 745b27e041cb9db5b6a1eb920fdaf480a65d4762
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 18:35:05 +0000
+
+    JingleFactory: store WockySession as well as Porter
+    
+    This makes ::porter-available the only place in jingle-factory.c which
+    uses the connection non-trivially, laying the ground for removing it…
+
+commit 081f2e7776614e6e8147909c0e5ab9593a85f2dd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 18:28:08 +0000
+
+    JingleFactory: propagate caps queries out to Mint
+
+commit 4a27eccf389050be52eb4701263e832634fe63ca
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 18:22:01 +0000
+
+    JingleFactory: move pre-initiate presence pushes to Mint
+
+commit 035f99f9c5ea8dbff493555921b6056756106215
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 18:18:44 +0000
+
+    JingleFactory: emit ::new-session for outgoing sessions too
+
+commit 46c47589c95f923453b9f4e3fe4aa6d648e8447b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 18:11:12 +0000
+
+    JingleFactory: explain why create_session() can't emit new-session
+
+commit ad631083a88dfdea01b2a9957eeff9594a97ed7b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 17:55:21 +0000
+
+    JingleFactory: move connection status monitoring to Mint
+
+commit b6ff8bff994babae4afb0e00b8d388b2c37cff8b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 17:49:12 +0000
+
+    JingleFactory: call stop() from dispose()
+    
+    This is currently redundant, but will prevent crashing in a hypothetical
+    situation where the factory gets disposed without anyone calling stop()
+    on it first.
+
+commit 3676e46472aad8a8205cf8618a15b45d07690e2e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 17:47:48 +0000
+
+    JingleFactory: refactor handler-unregistration to a method
+    
+    This will be used by the mint to stop the factory accepting new incoming
+    sessions when the connection starts disconnecting.
+
+commit 618234580dcb23f076d0cc75b69f2cbcc92b96a6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 17:42:19 +0000
+
+    Wrap JingleFactory in a new class, JingleMint.
+    
+    The intention is to move all Gabble-specific code into JingleMint,
+    leaving only the pure angle-bracket distillate behind in JingleFactory,
+    which can then be moved to Wocky. But as of this commit, JingleMint is
+    basically an empty shell: it immediately creates a JingleFactory, and
+    proxies its ::new-session signal.
+    
+    As described in the comments, “mint” is meant in the “factory which
+    makes coins” sense. It seemed like a better name than
+    JingleFactoryFactory.
+
+commit 8b958fc8c845755832b44e00ffb30e235c82994e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 17:32:14 +0000
+
+    JingleFactory: add _new() method
+
+commit 77d5d99e9b608d080cc46c523880eccdc1d5360c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 13:59:35 +0000
+
+    JingleFactory: correct ::new-session's signature
+    
+    GabbleJingleSessions are not mere pointers: they are objects!
+
+commit f40f6c4db3079aa7b4befe70c8a709d49144cc6f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 12:07:07 +0000
+
+    Split Telepathy<->Jingle enum mapping out of Jingle code
+
+commit 51ec259c494d42c30adfb982646eda2805b2ec3d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 11:56:35 +0000
+
+    JingleMediaRtp: drop use of TP_ERRORS
+    
+    Depending on whether an illegal codec update comes from the network or
+    from the local system, we end up wanting either a WOCKY_XMPP_ERROR or a
+    TP_ERROR (to throw back over the wire or in a D-Bus method error,
+    respectively). Previously, this choice was made inside JingleMediaRtp;
+    this patch moves the conversion out to GabbleMediaStream. (The Call
+    codepaths all pass NULL for the GError **... great.)
+
+commit 729d3f4f06eba69e499805b004383aba521c7a35
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 10:41:17 +0000
+
+    Jingle*: spell out tp_clear_{boxed,pointer}
+    
+    Wocky doesn't have things like this. GLib, however, does have
+    g_clear_object() so we can use that in place of tp_clear_object.
+
+commit feb1266ce56e12359a9f2d6ff2325acd0c3a8b56
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 10:28:27 +0000
+
+    JingleSession: spell out tp_str_empty()
+    
+    Wocky doesn't have an equivalent function.
+
+commit b1be04b448e5860f7cadc27ac7a20a81367f4b3a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-17 10:26:53 +0000
+
+    Jingle*: use wocky_strdiff rather than tp_strdiff
+
+commit 10f9eccfb8e3e1e8f88315b41e6a60a26185db26
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 20:00:23 +0000
+
+    JingleSession: remove GabbleConnection property.
+
+commit dada0afc57d852209a78494c3af12e3704790f1c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 19:48:01 +0000
+
+    JingleSession: move pre-initiate presence pushes to Factory
+    
+    This change has the same rationale as the previous.
+
+commit 78629e08e943bcca2a0d28648c853f5ac50e93b5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 18:02:50 +0000
+
+    JingleSession: delegate capability queries to factory
+    
+    The two remaining bits of code that use GabbleConnection inside
+    GabbleJingleSession use the caps cache and the roster. There is really
+    no good code for these inside Wocky just now (well, WockyRoster exists,
+    but it's not what Gabble uses so the point is moot).
+    
+    I've resigned myself to the fact that GabbleJingleFactory will have to
+    stick around in some form—not least to listen for ::porter-available,
+    and also to dig stun server parameters out of GabbleConnection. So I
+    think the best path to breaking GabbleJingleSession's Gabble addiction
+    is to add some signals which get handled by the Gabble-specific remnants
+    of the JingleFactory.
+    
+    Meanwhile, I noticed that the caps-checking code didn't actually work
+    for the bare-JID case, so fixed that up while moving the code.
+
+commit 28f25af9b2f95103bacb3ab3a005b6cb102950fc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 17:36:48 +0000
+
+    JingleSession: get own full JID from porter.
+
+commit e1a08344fcfaac717bd533c7ea990f82b3c3732d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 17:34:38 +0000
+
+    JingleSession: add a porter property.
+
+commit fd17643d8495e4f3fe87fe3660f7008ee1953eb7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 17:26:31 +0000
+
+    JingleFactory: pass self to JingleSession
+    
+    This avoids the JingleSession having to go via its GabbleConnection to
+    get back to the JingleFactory which created it.
+
+commit 39b90872eb4939ba4b4262ababc7ae54743fa465
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 16:04:47 +0000
+
+    JingleContent: don't store a GabbleConnection.
+
+commit 41c4e316f12c7bbd285702ca74e3e4c2d7af6ee2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 16:27:16 +0000
+
+    CallStream: don't grab Connection from JingleContent.
+
+commit 2863cdcee0c4d464a0f15f587e20f3a8f67c5014
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 16:03:06 +0000
+
+    MediaStream: don't grab Connection from JingleContent.
+    
+    Previously, GabbleMediaStream was getting to the JingleFactory for its
+    content via the connection object stored by the content. Instead, go via
+    the JingleSession stored by the content (so that we can stop storing the
+    connection in the content).
+
+commit 679cfd663064781d1ca60d5ed8dae8cab85cb594
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 16:21:06 +0000
+
+    MediaStream: add a TpDBusDaemon property.
+    
+    Previously it was retrieved from the JingleContent, via the
+    GabbleConnection it stores. But the Jingle code shouldn't know anything
+    about Telepathy.
+
+commit 5410295679bb8ff4a0aad3eb38cc5717124fb5c5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 15:41:11 +0000
+
+    JingleFactory: remove prototype for long-dead function.
+    
+    I removed _jingle_factory_unregister_session() way back in 2009 with
+    commit fd410e9.
+
+commit a101f15d96f43c4a5c3da10d6acf485ad22bafa9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 13:11:57 +0000
+
+    JingleSession: remove unused handle-repo-dynamic import.
+
+commit 570ad5f69f99f4eace580998d0e5df76f100e74f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-23 12:36:36 +0000
+
+    JingleInfo: don't crash when disconnecting before reply.
+    
+    For some reason I can't quite discern, this didn't crash before the
+    previous patch but does afterwards. Oh well. Here's a fix.
+
+commit 51767ee2ec4423c00199fe4e0411f0b83d61aa2f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 11:21:40 +0000
+
+    Split google:jingleinfo code out from JingleFactory
+    
+    I am a terrible person and included a couple of changes in this which
+    are not just moving code around:
+    
+    • When parsing STUN server info out of a jingle:info stanza, we no
+      longer use GABBLE_PARAMS_DEFAULT_STUN_PORT as the default if the
+      <server> element does not have a udp='' attribute. (Which seems
+      uncontroversial: if the server erroneously leaves out that attribute,
+      the chances of it happening to listen on
+      GABBLE_PARAMS_DEFAULT_STUN_PORT is pretty low.)
+    
+    • Rather than using conn_util_send_iq_async(), we use
+      wocky_porter_send_iq_async() plus wocky_stanza_extract_errors() to
+      send the jingleinfo request. Wocky doesn't have something like
+      conn_util_send_iq_async(), and this branch is really about removing
+      Gabble dependencies from the Jingle code.
+
+commit f2b8df3800135b115bd801921a626bc7edde90e0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 15:56:26 +0000
+
+    JingleFactory: store WockyPorter
+
+commit 90b7b2911a76ed9335d161d88fd6a7dd7a2ba41e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 15:42:21 +0000
+
+    gabble_jingle_session_send: drop callback arguments.
+    
+    Since nothing uses the weak_object argument any more, we can drop it,
+    and hence stop using _gabble_connection_send_with_reply() in favour of
+    wocky_porter_send_iq_async() directly. One less bit of Gabble inside the
+    Jingle code!
+
+commit 72ea73343252d8ac6b792f9f4035cd511290a33d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 15:41:40 +0000
+
+    Send session-{initiate,accept} IQs using porter directly.
+    
+    This is the second and final place where the callback arguments to
+    gabble_jingle_session_send() were used.
+
+commit a2e03f323dcb96d3043baef52a04eb41f22c6440
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 15:40:22 +0000
+
+    Content: use porter directly to send content-remove
+    
+    This is one of only two places which passes a callback to
+    gabble_jingle_session_send(), so let's just spell it out.
+
+commit d039d1900888a828e2fc686c331cdfcaca8931ef
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 15:12:04 +0000
+
+    Session: tolerate being outlived by contents
+    
+    Never disconnecting these signals happens to be safe because
+    GabbleJingleSession always holds the last reference to
+    GabbleJingleContent, but it feels fragile.
+
+commit 91e8bc6b3a74cfdf2aaf685fc8883f3344c4e228
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 12:56:23 +0000
+
+    Jingle transports: stop using GabbleConnection
+
+commit 534bfa15133ead76a46a22f9f8e788c159fb2541
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 12:48:08 +0000
+
+    JingleSession: add and use factory accessor.
+
+commit 8080a905390ad9ca51059db15277930af6cc6bae
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 12:06:15 +0000
+
+    JingleSession: localize use of peer handle.
+    
+    Now that we only use a handle in one place, let's move everything to do
+    with it there.
+
+commit 1dbbf70e672bcccef88c19b66ebb47bf4897a7fa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 12:04:30 +0000
+
+    JingleSession: remove "peer" GObject property.
+
+commit bd654d2d812a1d5edae9796a20fca0b81dbfbaf7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 12:02:32 +0000
+
+    JingleSession: remove get_peer_handle.
+    
+    The session unfortunately still uses the handle internally…
+
+commit a15ae7cf17528dd7a0d24386025cfe450c93cda2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 11:59:50 +0000
+
+    media-factory: stop using gabble_jingle_session_get_peer_handle
+
+commit 7f40e47b980f917fa01d8d1f1012e4fb5a6f1559
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-15 11:54:10 +0000
+
+    ft-manager: stop using gabble_jingle_session_get_peer_handle
+
+commit b8ac1245d91828644f8ef37a9d107a12ae087275
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-14 18:00:52 +0000
+
+    Call: stop using gabble_jingle_session_get_peer_handle
+
+commit 363b2c580cb5500979020221b74e4889c59f93c2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-07 11:55:42 +0000
+
+    MediaChannel: store peer's handle.
+    
+    This removes its dependency on GabbleJingleSession knowing about
+    handles, and is less code.
+
+commit d884caf42e3e4608b5db84a6d1411c67aa9db925
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 17:38:09 +0100
+
+    MediaChannel: use gabble_jingle_session_get_peer_handle()
+    
+    Previously for some reason this was using g_object_get (..., "peer").
+    Calling a function instead makes it easier to see what needs changing.
+
+commit 819be150a66f99a1be524f31e0c8985aa613553d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 16:29:58 +0000
+
+    JingleSession: look up presence by WockyContact.
+
+commit ca9f3991776c9c277178f88c51941b6cad09800a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 16:27:31 +0000
+
+    PresenceCache: add WockyContact-based lookup.
+
+commit c5328de7a89e2882036b64ba19a2c5bc3e8e70ce
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-07 19:26:01 +0000
+
+    util: add helper to fetch TpHandle for WockyContact
+
+commit 97d9c5ae3afc425eb8db91cbe83c37289e1baa5d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 15:21:34 +0000
+
+    JingleMediaRTP: use jingle_session_peer_has_cap()
+    
+    The body of content_has_cap() is basically identical to the body of
+    gabble_jingle_session_peer_has_cap(), so let's delete the former.
+
+commit 63ade9c2226b72739b53039e26a31b483162aba5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-16 15:15:56 +0000
+
+    JingleSession: rename _peer_has_quirk to _peer_has_cap
+    
+    There's nothing quirk-specific about the function.
+
+commit 8bd15af6cae7e90c97b81690a44bd2e43e1ab5e8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 16:25:24 +0000
+
+    JingleFactory: stop dabbling in handles.
+
+commit bc53ec13c956191ab00cdf29236effac6d98651e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 16:18:11 +0000
+
+    JingleSession: remove defunct handle refcounting
+
+commit 2ad876aee650c4977f214a6d14b6852e164a6a82
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 16:15:34 +0000
+
+    JingleSession: grab resource from WockyResourceContact
+
+commit 439380da7a6a49f5e5255dcf691c24f3aec669ad
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 16:11:19 +0000
+
+    JingleSession: hold a WockyContact.
+
+commit b516378e41944381ccea6f29821ce7ac41a4cada
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-03 15:40:02 +0000
+
+    JingleFactory: exclude handle from session map keys
+    
+    The handle doesn't provide any additional information over the JID; it
+    is a relic of when the format was "<handle>\n<resource>\n<session id>".
+
+commit 512c7492c2cb925e0260043a89170cda0907566c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-01 16:55:46 +0000
+
+    JingleSession: move TpHandle peer to private structure
+
+commit 1fc97cba57211fa8075c08ed63d882950b0d9451
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-02-13 13:25:25 +0100
+
+    groups.py: test RenameGroup()
+    
+    This has been started as a regression test for fdo#45982 which turned to be a
+    tp-glib bug. So we shouldn't merge this commit to master until we depend on a
+    fixed tp-glib.
+
+commit f6eda33b8127fd18a81495c221fed4ac57eba37e
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-02-13 11:51:11 +0100
+
+    groups.py: factor out send_roster_push()
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=45982
+
+commit 40283718ad184b014f4941a3126e5dfa0ed0640c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-02-13 11:43:17 +0100
+
+    groups.py: factor out parse_roster_change_request()
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=45982
+
+commit dcc73750bceb0e7b1bd865fde5744583cb75300c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-21 21:59:58 +0000
+
+    Nano version
+
+commit 04c7829858da40f943363cfc3e61aa76f68c59ac
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-21 21:02:10 +0000
+
+    Distribute jingle/call_helper.py too
+
+commit c59a2f0b3612ba830154156279d0c6e03daf1e5c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-21 20:31:25 +0000
+
+    Distribute headers more normally, and stop trying to distribute gabble/debug.h
+    
+    There is no gabble/debug.h. The only effect of putting a .h file
+    in SOURCES is to get it included in the distribution tarball, so this
+    wasn't visible until we tried to make a release, and apparently nobody
+    runs distcheck any more or something.
+
+commit 920b112a30b0c0f86d150d5fa6aa07779f22c50a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-21 19:44:54 +0000
+
+    Update telepathy.am from telepathy-glib 0.17.5 to fix out-of-tree releases
+
+commit 5cb548e7650846ae51142e8d9464de693775ffe0
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-21 19:41:30 +0000
+
+    Prepare 0.15.4
+
+commit 8d7efad30c8633d6df4a0635eb7f78f2fa326e9a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-02-21 16:56:09 +0100
+
+    accept-*-stream-tube.py: don't test with Credentials access control
+    
+    It fails on recent Linux because of Twisted; see fdo #45443.
+
+commit ce467279e0df62ef43ccf30a2724323f2290aac9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-02-21 13:30:40 +0000
+
+    Update Wocky for #46379
+
+commit b2bf243653dfd394648913cca94f379fc09bb71a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-01-18 15:22:51 +0100
+
+    presence-cache: hardcode gtalk's bot caps
+    
+    Thanks Google for not implementing disco query on the bot...
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=44855
+
+commit 205df6480b16d66cf74144b37b197251678a565d
+Merge: 3d6ba70 b40042c
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-02-21 10:18:53 +0100
+
+    Merge branch 'call1' into master+call1
+    
+    I added the dependency on tp-glib 0.17.5 as it's required for Call1.
+    
+    Conflicts:
+    	src/Makefile.am
+
+commit 3d6ba70935c402e1e2b39716ca6014c22aa1520e
+Merge: 571037b 299ab6d
+Author: Olli Salli <olli.salli@collabora.co.uk>
+Date:   2012-02-20 15:49:04 +0200
+
+    Merge remote-tracking branch 'siraj/plugin-api-update'
+    
+    Reviewed-by: Olli Salli (oggis) <olli.salli@collabora.co.uk>
+
+commit b40042c598476bc14f578b1d121c14eb9da59c3e
+Merge: 2aff6d0 7a0e8d7
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-02-20 10:51:16 +0100
+
+    Merge remote-tracking branch 'tester/call1-addcontent-direction' into call1
+    
+    Conflicts:
+    	tests/twisted/jingle/call-dtmf.py
+
+commit 299ab6dbdd3fb0e290b57201c92bdf1b46b58aa3
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2012-02-17 16:16:00 -0500
+
+    test-plugin: Remove the duplicate TpBaseConnection
+    
+    Gabble and Salut Plugin API was updated to remove the dupliate
+    TpBaseconnection from create_channel_managers. This patch updates
+    the plugin-base to match the API change
+
+commit e651270a8a58da63e3f6fe739a6491942604cea5
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2012-02-17 15:35:49 -0500
+
+    plugins: Remove the dupliate TpBaseConnection from create_channel_managers
+    
+    create_channel_managers already passes a GabblePluginConnection which
+    can be casted into TpBaseConnection. So removing the duplicate TpBaseConnection
+    pointer from the API
+
+commit 2aff6d0ac4102835c5e125850eef6062011d910d
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-02-16 16:55:05 -0500
+
+    tests: the SendingTones signal now only happens when actually sending tones
+
+commit 9a90f92a6a4f50b33800ca2885efeb7785ad94ca
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-02-16 16:54:36 -0500
+
+    tests: Correct the order of the DTMFChangeRequested signal according to the spec
+
+commit 7a0e8d7f6edf24c96857a72af39940b555a1cf8c
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-02-16 16:19:28 -0500
+
+    Add a direction parameter to AddContent
+
+commit 491db173ad4da5ce4f5ff8d90d1a7ea20aed7785
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-02-14 18:54:37 -0500
+
+    tube-stream: subclass TpBaseChannel
+    
+    See also: exactly the same commit to GabbleTubeDBus.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit efbde4c8755e1bf55752ddb170d80a122f482afa
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-02-03 19:44:09 -0500
+
+    tube-dbus: subclass TpBaseChannel
+    
+    This one is complicated because the old GabbleTubeDBus handled both
+    TargetHandleType as Contact *and* Room. TpBaseChannel sets the
+    TargetHandleType per class so makes this hard. The easiest way to do
+    this is to have a really dummy subclass for MUCs to change the
+    TargetHandleType (and interfaces, to add Group).
+    
+    It would be nice in future to move the actual MUC stuff into
+    GabbleMucTubeDbus, but that's for another day.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 571037bf029f2cd46f85a50d7d2b0892ae50be10
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-02-09 18:39:19 +0100
+
+    Disable GLib deprecation warnings
+
+commit 8b537d968d0fb0047d9143ab05ce5a5bc2c4a1d7
+Author: Alvaro Soliverez <alvaro.soliverez@collabora.co.uk>
+Date:   2012-02-09 08:13:53 -0300
+
+    Fixed android build after plugin API refactor
+    
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=45824
+
+commit e3ddd734e9c9c711ad44837b6d1f548718b0fbbf
+Merge: 359a1ae 07c6ad3
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-02-08 14:16:47 +0100
+
+    Merge remote-tracking branch 'nicolas/call1' into call1
+
+commit 07c6ad32bbfc377c7fe09cb6e5bc8c0ce10ef464
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 14:00:47 +0100
+
+    Remove unwanted debug print in call-content-adding-removal
+
+commit ee5304dc3ed64d11670d53b9068a69ff1df598c2
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 14:00:27 +0100
+
+    Add missing call test into makefile list
+
+commit 2e543e74a65f9cb2da584f35d2348b6b57fabd78
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 11:25:20 +0100
+
+    Implement a call version of content-adding-removal
+
+commit daa6d7252861dbb9c7951330d413975573d45b89
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 11:24:57 +0100
+
+    Remove now unused advertise_call helper
+
+commit ba58cf5e5784e51c4c311d4c4a273bd383ee7173
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 11:24:33 +0100
+
+    Remove unused header in call-muc
+
+commit c33c3060db31e3d6578a00ea2a611181a760e062
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 11:24:16 +0100
+
+    Port call-hold-av test to CallTest
+
+commit 7f27e6ffcb7f67f5e3c624015f28082852fee9a5
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 11:24:05 +0100
+
+    Port call-hold-audio test to CallTest
+
+commit d3864c978337e6bff417b48e2f51844030b8365d
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 11:23:48 +0100
+
+    Port call-google-relay test to CallTest
+
+commit 9bd7bc624705ffc897225027cc47c2ed5ee0d339
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 11:23:24 +0100
+
+    Port call-dtmf test to CallTest
+
+commit 8e8501ce2b8d843b42254cb87e0f67d540006005
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 11:23:14 +0100
+
+    Port call-dtmf-no-audio test to CallTest
+
+commit 4da073f860d3d994b614d0c8bb33dceaa8e4f0a9
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 11:22:50 +0100
+
+    Remove uneeded header in call-codecoffer
+
+commit 729a6e979e0b302ccd3d582549118c3787bd3b7b
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 11:22:26 +0100
+
+    Port call-basics test to CallTest
+
+commit 00a76e3668c2c10ab2b3cceaf6cc4e1a3eb70c97
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-08 11:21:33 +0100
+
+    Add CallTest base class
+    
+    This base class can be use to greatly reduce Call test code size
+
+commit 0c9c11eee409aba15c58d9e91ab7d8f0eb1b7c7b
+Author: Olli Salli <ollisal@gmail.com>
+Date:   2012-02-07 18:37:47 +0200
+
+    Only pass -fPIC cflag to submodules if compiler doesn't warn or error from it
+    
+    Reviewed-by: Siraj Razick <siraj.razick@collabora.co.uk>
+
+commit 5c780cf06292a80271bbe5a35d5d10a9eba5e8d2
+Author: Olli Salli <ollisal@gmail.com>
+Date:   2012-02-07 15:28:26 +0200
+
+    Update NEWS
+
+commit 5ed3540f9321fed01df2729a37477f219ab1b9cb
+Author: Olli Salli <ollisal@gmail.com>
+Date:   2012-02-07 15:02:14 +0200
+
+    Compile submodules with -fPIC to fix gabble-plugins.so link on linux/x86_64
+    
+    Reviewed-by: Simon McVittie (smcv) <simon.mcvittie@collabora.co.uk>
+
+commit 415706b45a63915dcd442fab7364a6d9ade1d79c
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-07 13:40:11 +0100
+
+    call: Fix last content remove special case
+    
+    when the last content in a session is removed, the XEP says the
+    content-remove signal must be replaced with session-terminated. This case
+    is handled in gabble_jingle_session_remove_content, but call was bypassing
+    it by using gabble_jingle_content_remove() directly.
+
+commit 82d8ca3198eef823c7bfca836e537926ebc49149
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-07 13:38:20 +0100
+
+    Add CallStreamComponent enum in constants
+
+commit 0e697dc4f035d78efc27a652efa8c5c3bdaf52a2
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-07 13:37:59 +0100
+
+    Add CallStateChangeReason enum in constants
+
+commit 78b6994fab54d317f77bbfdcfc47446ed4ba3701
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-02-07 13:37:21 +0100
+
+    jingle: Fix comment typo
+
+commit 359a1ae278a9c33dd0bc41394912166ac2b5ecda
+Merge: e073905 b33adc6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-06 17:47:58 +0000
+
+    Merge branch 'master' into call1
+    
+    Conflicts:
+    	src/Makefile.am
+    
+    For reasons I don't fully understand (presumably headers moving around
+    a bit?) I had to add includes of <telepathy-glib/gtypes.h> or
+    <telepathy-glib/interfaces.h> to:
+    
+    • src/call-content.c
+    • src/private-tubes-factory.c
+    • src/protocol.c
+    • src/util.c
+    
+    But otherwise this has been an uneventful merge!
+
+commit 0c0dccb8135ca48e4222a408043dc93b3fcf4a98
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2012-01-25 16:32:32 -0500
+
+    Windows specfic changes to produce plugins as dll's
+    
+    Using -module doesn't produce .dll files when compiling for windows
+    These changes enable us to output .dll files for plugins.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=44649
+
+commit f54da139bb483fce675d6f11bfc000ec2d6732aa
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2012-01-13 11:32:48 -0500
+
+    fd.o#44649 - Gabble plugin API symbols should be factored out to a separate library
+    
+    This patch refactors gabble connection by introducing a new GInterface
+    which the plugins will link agaist. And GabbleConnection implements the
+    new Interface.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=44649
+
+commit bb63a668664a2003c966b7e3d9806c98d0875bf5
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2012-02-06 11:02:19 -0500
+
+    Change the plugin API to create_sidecar_async and create_sidecar_finish
+    
+    All gabble plugins should implement these two methods hereafter.
+    This patch also updates all the internal plugins to use this new API.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=44331
+
+commit b33adc647bf4e6dc75efba1abd74380d4bbb18d1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-06 15:22:43 +0000
+
+    Update Wocky snapshot for DEBUG_* namespacing
+
+commit 87841786d0ed60fb093c3343e185805db500de7a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-06 14:40:36 +0000
+
+    NEWS for single-header Wocky.
+
+commit ee48ee9a8c440bbd0c1efa49fc9cd346a92883d3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-01 16:09:56 +0000
+
+    Update Wocky snapshot for One Big Header.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=27489
+
+commit 3e0c8b55b81207f7842495b4ab9f59f0de655ae3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-02-03 14:31:13 -0500
+
+    ft-channel: subclass TpBaseChannel
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit ab745cbdead64a313fe3e8859cec5bf7c4382dc9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-02-01 16:07:25 -0500
+
+    Revert "Merge remote-tracking branch 'siraj/plugin-api-change'"
+    
+    This reverts commit bf805ba0b2ecced81e5c2830a79d021a42da91a7, reversing
+    changes made to 1296a2f5ce46e77787ca42eadb1c2ca4a957a09b.
+
+commit 1d41beb99b03f828fd204e6e18fa7499360937b9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-02-01 16:07:06 -0500
+
+    Revert "Merge remote-tracking branch 'siraj/windows-compile-fix'"
+    
+    This reverts commit a687785628216f8f73c699096e9aae4a07b811c6, reversing
+    changes made to bf805ba0b2ecced81e5c2830a79d021a42da91a7.
+
+commit a687785628216f8f73c699096e9aae4a07b811c6
+Merge: bf805ba e4cccf0
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-02-01 13:54:00 -0500
+
+    Merge remote-tracking branch 'siraj/windows-compile-fix'
+    
+    Conflicts:
+    	lib/loudmouth/Makefile.am
+    	plugins/console.c
+    	src/Makefile.am
+    	src/connection.c
+    	src/error.c
+    	src/plugin-loader.c
+    	src/plugin.c
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit bf805ba0b2ecced81e5c2830a79d021a42da91a7
+Merge: 1296a2f 026e84f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-02-01 13:40:56 -0500
+
+    Merge remote-tracking branch 'siraj/plugin-api-change'
+    
+    Conflicts:
+    	lib/loudmouth/Makefile.am
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit e4cccf0a604c7cdf1107aa9b5d9cdaa996bcc702
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2012-01-25 16:32:32 -0500
+
+    Windows specfic changes to produce plugins as dll's
+    
+    Using -module doesn't produce .dll files when compiling for windows
+    These changes enable us to output .dll files for plugins.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=44649
+
+commit 1296a2f5ce46e77787ca42eadb1c2ca4a957a09b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-01 12:49:04 +0000
+
+    NEWS for <presence type=error/> improvement
+
+commit e7fbb73258ab0eb00eb239f277ae5ad4ed0f9ee5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-01 11:16:51 +0000
+
+    Presence: show better error status messages.
+    
+    When you get <presence type='error'>, any <status/> element in the
+    presence is an echo of a stanza you sent out. So the message in that is
+    not the contact's presence: it's either your status, or maybe the
+    message you sent with a subscription request, depending on whether we
+    got the <presence type='error'/> for a roster contact or someone we
+    tried to subscribe to.
+    
+    So instead, I think we should use the text of the error (if any) as the
+    status for such contacts, falling back to the error element name if the
+    server is unkind and doesn't include an error message. Yes, this means
+    strings will show up in the UI in the server's locale, but this is
+    hardly news.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=45491
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit cdcbaaa7a6e2b1056be96dda77d8a8363f78539d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-01 11:30:01 +0000
+
+    NEWS for deLoudmouthing etc.
+
+commit de0f8a21f82234e1fcc2a84994b07dc2bf1cc45a
+Merge: fbf798b c0a4dca
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-01 11:22:50 +0000
+
+    Merge branch 'unhandled-iqs'
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=34975
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit fbf798b5fce94bc932fde45bc5579652acb05cd7
+Merge: 281673e 6c68414
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-01 11:21:36 +0000
+
+    Merge branch 'node-iter-get-child-with-namespace'
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=33911
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit c0a4dca930b1e43d716df1295545fbf1856dae1a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-31 15:15:04 +0000
+
+    send_with_reply: remove stale reference to iq_unknown_cb
+
+commit d8feabf6ef67e5b7e5b0a4d01ef983bea877f0b5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-31 17:15:28 +0000
+
+    Connection: rely on Wocky replying to unhandled IQs.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=34975
+
+commit 6c684143294c9dc2becc3af0887f907c760bf8af
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-30 17:29:09 +0000
+
+    conn-olpc: give _get_child_with_namespace a clearer name.
+
+commit d8a2087662fe895eef24296fab7755c5b5ead197
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-30 17:27:17 +0000
+
+    conn-olpc: adopt lm_message_node_get_child_with_namespace
+    
+    This is now only used within this code, and I am too scared of breaking
+    code I know nothing about to stop using it here too, so I'm just going
+    to leave it here, probably with a new name.
+
+commit 7b258fc5ea423927878cd63e6f0a01ffe11d2869
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-30 17:23:32 +0000
+
+    conn-aliasing: use <item> passed to ::changed handler.
+
+commit 821409f5203dc6b640ef6e0c00e0c343facc3a82
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-30 17:21:30 +0000
+
+    Update Wocky submodule for PepService changes
+    
+    This new snapshot changes WockyPepService to provide a pointer to the
+    <item/> node in wocky_pep_service_get_finish() and
+    WockyPepService::changed.
+    
+    This commit only updates conn-location.c to actually take advantage of
+    it, but soon…
+
+commit 8601d29953e44416e5413c8e8053f980397f04b3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-30 15:26:01 +0000
+
+    location: stop using lm_message_node_get_child_with_namespace()
+    
+    The test change illustrates the problem with using
+    lm_message_node_get_child_with_namespace(): the test suite was sending
+    a broken stanza, and we still accepted it. It should have sent:
+    
+      <iq type=result>
+        <pubsub>
+          <items>
+            <item>
+              <geoloc>
+    
+    But instead it sent:
+    
+      <iq type=result>
+        <pubsub>
+        <items>
+          <item>
+            <geoloc>
+    
+    This patch would be smaller if
+    <https://bugs.freedesktop.org/show_bug.cgi?id=45400> were fixed.
+
+commit 3403ab38582559b2293feb17f69f2df90e6ed229
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-30 14:58:32 +0000
+
+    tubes: stop using lm_message_node_get_child_with_namespace
+    
+    These cases weren't completely obvious to me, being unfamiliar with the
+    tubes protocol. But they all wanted to be wocky_node_get_child_ns()
+    too, really.
+
+commit 603aeb65562002ca1aa6273acf8580f88486e345
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-30 14:31:46 +0000
+
+    ft-channel: spell out finding <si><file> node.
+
+commit aa11a7ed781c48ffda4d00f303776603d2f6ada5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 10:47:32 +0000
+
+    _grab_nickname: use wocky_node_get_child_ns
+    
+    This is called on a variety of nodes from different stanza types, but in
+    all cases (as far as I can tell) the <nick/> element is a direct child
+    of 'node'.
+
+commit 2db196ba241a2a22fd07ef6aa97ca9b559c26934
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 10:32:42 +0000
+
+    presence: explicitly hunt for privacy list node.
+
+commit bd3c28af3b96bf73256e8e0fc42470f0cf43039e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 10:17:54 +0000
+
+    Replace trivial uses of lm_message_node_get_child_with_namespace
+    
+    These are the cases where it was relatively quickly apparent to me that
+    we only needed a direct child, not a deeper descendent.
+
+commit 5d91fadfb646437363c9f1e60f1deb279b09e180
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 09:59:21 +0000
+
+    util: remove node_iter
+
+commit 25980c6c7f70e2d3ff7d012b8e3a6a7cbed644e8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 09:58:13 +0000
+
+    bytestream-socks5: remove degenerate node_iter use.
+
+commit 12a2a93c80a33723fdc6bfc031850b20e462b1b6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 09:56:00 +0000
+
+    disco: move to WockyNodeIter
+
+commit 582a4e1fa932a81397c9b47992ceec673fe62419
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 09:51:34 +0000
+
+    conn-*: move to WockyNodeIter
+
+commit 48175abc011072b8c4e5fb4c01342f71ab33a982
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 09:50:53 +0000
+
+    conn-olpc: use WockyNodeIter
+    
+    The huge change is just reindenting the body of that loop inside an if
+    block. There's no clean way to initialize a WockyNodeIter to be empty if
+    your starting node is NULL.
+
+commit 50d3ef27080c66f95fa254f7c39fcc1f2c8b6d4b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 09:42:59 +0000
+
+    tubes: move to WockyNodeIter
+
+commit d61893c1abc031c9179a6b7565ba5d55075d1b8e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 09:41:08 +0000
+
+    muc: move to WockyNodeIter
+
+commit 5a7f08a3c78e8f4e33d3ddcf0a4450ae69cb92fd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 09:38:37 +0000
+
+    roster: move to WockyNodeIter
+
+commit 1c53458f88e5aa97b47640a58e41b1db46b0092b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 09:35:58 +0000
+
+    vcard-manager: move to WockyNodeIter
+
+commit ca262307fcbd3cf9bf6cd5b6e2268fcfa4badac4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 09:33:20 +0000
+
+    Connection: move to WockyNodeIter
+
+commit c1d1d52bb4ab166a4df0ac5c46e46257698db5f0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 23:40:10 +0000
+
+    search: move to WockyNodeIter
+    
+    In one place, I actually replaced a confusing use of NodeIter with
+    wocky_node_get_content_from_child(). I think the result is much clearer.
+
+commit dd33dbffeefd72d3db74569d59f4975001e554d9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 23:37:17 +0000
+
+    Jingle: migrate to WockyNodeIter
+
+commit c2c973e622f77d30a3d5cecf8ca2308dcb291b51
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 23:29:19 +0000
+
+    bytestream-factory: move to WockyNodeIter
+
+commit c7ee7f1ea0d9f0898679f892ce42a583967108e0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 22:55:40 +0000
+
+    util: remove unused wocky_node_get_attribute_with_namespace
+
+commit 051d07d18a364c054d6f5ff50c8636281198fba2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 22:54:46 +0000
+
+    disco: use wocky_node_get_child_ns
+
+commit 32ab1ebc7d68611187a15f545f82af8dd2399c0b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 22:53:25 +0000
+
+    search-channel: stop using lm_message_node_get_child_with_namespace
+    
+    In all cases, we wanted a direct child.
+
+commit 9dc5bfd7a376277180cecf9a77cf0882d3e6d292
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 22:53:10 +0000
+
+    message-util: stop using lm_message_node_get_child_with_namespace
+    
+    In every case, we wanted a direct child of some node.
+
+commit 383a34f1b2c2405c9b940f0024fe9ca92754dee7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 22:52:55 +0000
+
+    util: explain why lm_message_node_get_child_with_namespace is bad
+
+commit 281673e30aa5012ec3425a59fddcb24d8c2ac18b
+Merge: c2279a6 14732bf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-31 17:18:13 +0000
+
+    Merge branch 'quietmouth'
+
+commit c2279a6b7dda2060e198d5407f22228d2c3be9ed
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-01-26 19:00:24 +0000
+
+    Fix a typo
+
+commit 5d7c87b1c753558c8c2525623a88103c1084fe2a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-01-31 11:25:51 +0000
+
+    tubetestutil: clear list in a way that doesn't make it a local variable
+
+commit 2a2893a89248f22af2894cc2c6555da0ec365ed4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-01-31 11:25:34 +0000
+
+    Update Wocky for fd.o #43992
+
+commit f1e67f8d9a348aac23821878779f7a45dad9719c
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-30 16:27:37 -0500
+
+    Cleanup twisted tests import
+
+commit 2b5dbb4be2fa9890f332368d21cd92dd4dda67d9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-12-21 12:37:02 +0000
+
+    tubetestutil: use temporary files as unix socket paths
+    
+    This is all an attempt to make the unix socket path shorter.
+    
+    Fixes: fd.o#43981
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit e0739058a22dae127e5410fd8ab4fb5dc2d49ad1
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-01-30 16:08:54 +0000
+
+    Disable call-muc.py tests that isn't ported
+
+commit 4fe564149c374a2b30a4bfb8467b5d41f1fd4816
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-01-30 16:05:34 +0000
+
+    Make call-muc-re-re-request.py test pass
+
+commit 14732bf5081f20aa314c3530e4c6a38155f75a62
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-28 12:55:34 +0000
+
+    disco: don't crash on replies whose <query/> is missing
+    
+    This is a regression from the BYE-BYE-LOUDMOUTH branch. The logic in
+    request_reply_cb is meant to be:
+    
+    • if the stanza is an error, pass (with 'err' having been filled in);
+    • else, if there is no <query/> node in the reply, set 'err' to that
+      effect;
+    • now call the callback; it is guaranteed that if err is NULL,
+      query_node is not NULL.
+    
+    I inverted the check for the return value of
+    wocky_stanza_extract_errors(): it returns TRUE if 'reply_msg' was an
+    error, not FALSE.
+
+commit a7c0fccb5bbf66e05a0062a3d7056b6d1c57bd9a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 22:08:56 +0000
+
+    Remove vestigial Loudmouth headers and build system
+
+commit fb5672370cad426fa90a4906824704a4f5699cc9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 21:56:19 +0000
+
+    Delete LmConnection API.
+    
+    This is it! There is now nothing left but a build system and some empty
+    headers.
+    
+    The last functional vestige was the GCancellable used in
+    _gabble_connection_send_with_reply(), which I basically just moved to
+    GabbleConnection. That function should really die as well, but I'll
+    leave that for another lifetime.
+
+commit 9fed5574a65c7d7318cd1c86e7e9ffc741139966
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 21:39:44 +0000
+
+    Remove LmHandlerResult
+    
+    The callback type for _gabble_connection_send_with_reply returned one of
+    these. All instances, bar two, returned
+    LM_HANDLER_RESULT_REMOVE_MESSAGE, which makes sense, because if you send
+    an IQ you had better be prepared to handle the reply.
+    
+    When I removed lm_connection_send_with_reply(), I stopped
+    _gabble_connection_send_with_reply() paying attention to the return
+    value, with no apparent ill effects.
+    
+    The two which returned LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS were:
+    
+     • the disco pipeline's reply handler, in the case where the request is
+       no longer in the pipeline (such as in a timeout). I checked, and as
+       far as I can tell nothing is trying to scrape any information out of
+       zombie disco replies.
+    
+     • the request pipeline's reply handler, in the same case. I couldn't be
+       bothered to check for this, but I don't think it will pose any ill
+       effects because normally the handler is the highest-priority
+       callback, so anyone trying to catch these would not catch the ones
+       which were not cancelled… which seems unlikely.
+
+commit cea17f274de06f7a7db6bcc68fa10cbdc083feb6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 21:38:03 +0000
+
+    conn-olpc: remove an orphaned prototype
+
+commit 7319d124c880f0d8858ac137768bddd5c6ebc869
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 21:24:26 +0000
+
+    Remove LmMessageHandler API.
+    
+    LmHandlerResult shows up in _gabble_connection_send_with_reply(), so we
+    can't ditch that just yet.
+
+commit 5881a6456bad0b47dba58134dfabd7f766b2cd17
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 21:18:43 +0000
+
+    connect/torture: skip if $REALLY_TORTURE is unset
+
+commit 0e1bb7601788afb19dea55e3fae5d4243bda4898
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 21:18:35 +0000
+
+    BytestreamFactory: stop using LmMessageHandler
+
+commit 9a567a7cf16759f8f692cf827211db81a76b2b1e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 20:46:25 +0000
+
+    PrivateTubesFactory: stop using LmMessageHandler
+
+commit afef96c60473b99b0fee8c3fbd7d777a3c9e4883
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 20:31:52 +0000
+
+    PresenceCache: use wocky_node_get_content_from_child
+    
+    This shortens some code a bit.
+
+commit 0bb2b04020b63e760f919f7b9c725b878f4df419
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 20:29:17 +0000
+
+    PresenceCache: remove duplicated code.
+
+commit 6d80ecf861640a76297ba8963027bc280931307f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 20:27:36 +0000
+
+    PresenceCache: refactor looking for decloak requests
+    
+    This was a little bit intertwingled, and long functions offend me.
+
+commit 7ab3e8a878e79a84c3c13d2a03e3bfe4148d2032
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 20:23:05 +0000
+
+    PresenceCache: stop using LmMessageHandler
+
+commit b76a9f08c6d9b6a410a1fda567ec81316dce47a8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 19:34:37 +0000
+
+    conn-presence: stop using LmMessageHandler
+
+commit 8ee8a2027a38b67448eb56720baac842c6d218a1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 19:21:21 +0000
+
+    MucFactory: stop using LmMessageHandler
+
+commit f676f5045909587dbf612a19ef35e6188f6308ca
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 18:41:46 +0000
+
+    IMFactory: stop using LmMessageHandler.
+
+commit 62303c98f15f8e23e3bfa0a03e7ba109de0ac653
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 18:13:51 +0000
+
+    Remove lm-message.[ch]
+
+commit 89f7b1a1daafe6b9159c5cb42fb0c7fb7acf6871
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 18:08:32 +0000
+
+    Delete LmMessage{,Type,SubType} typedefs
+
+commit 6e3d12a641453d1a00b5271b3094edb7a6845a6c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 18:04:40 +0000
+
+    Remove lm_message_new[_with_subtype]
+
+commit 3c0a4208c89e0f2fc2acbf2da8a4563386da7870
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 17:43:07 +0000
+
+    Remove lm_message_get_[sub_]type.
+    
+    Wocky is a little less convenient here, but
+    wocky_stanza_extract_errors() comes to the rescue.
+
+commit ee42d5f8329229aa8b7ed34cc96b4b888f60f307
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 17:40:48 +0000
+
+    Remove lm_connection_send_with_reply
+    
+    This basically inlines the call to wocky_porter_send_iq_async() in
+    _gabble_connection_send_with_reply(), and removes a layer of indirection
+    in calling the callback.
+
+commit 6ce72d766d274ab84c00b8533ae7f665067ea2e2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 17:03:45 +0000
+
+    test-parse-message: g_assert_*-ify
+
+commit 89f7ea25ae4d0afdfc807747b543392a27a89220
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 17:01:26 +0000
+
+    test-parse-message: GTestify
+
+commit d89833fb55289705c6791a7a07a9c662b8a85df9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 16:46:40 +0000
+
+    Remove duplicated AMP rules.
+    
+    I noticed this duplication while deleting lm_message_build and thought
+    it might be better moved to some random place.
+
+commit 722536a79ae18e6bc060e97a7a520e89a13b371c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 16:20:45 +0000
+
+    Remove lm_message_get_node()
+    
+    It's completely unused!
+
+commit a615d8380375c3d5266c1b17e58488868fda23fb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 16:16:35 +0000
+
+    Expunge lm_message_node_get_name()
+
+commit d1758a79e0f9287fed177574b5c39e324128b15a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-27 15:55:09 +0000
+
+    Remove lm_message_build[_with_subtype]
+    
+    The build specs aren't *quite* compatible. lm_message_build()'s '('
+    accepted two arguments: tag name, and content (usually ""). So:
+    
+      '(', "foo", ""      becomes   '(', "foo"
+      '(', "foo", "bar"   becomes   '(', "foo", '$', "bar"
+    
+    I didn't actually do this with sed as a result.
+
+commit af1a389766cad96903932f9231219ca5e80d5f98
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-26 16:04:59 -0500
+
+    Port google-relay test to call1
+
+commit 89ccb036c015a2988b282198f74ec7ad5fbd51c9
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-26 16:04:26 -0500
+
+    Move new check_and_accept_offer to callutils
+
+commit a6ffa908693db3183a274e133c5cbdb37eb60d58
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-26 16:03:38 -0500
+
+    Update CALL_STREAM_TRANSPORT enum to new API
+    
+    Add missing and renamed to what is in the spec.
+
+commit 84403989062485a3ef0c5e131b8e11f47d964104
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-26 18:56:15 +0000
+
+    Correct NODE_DEBUG's first argument type.
+    
+    My previous patch was wrong. I didn't compile it. Sorry.
+
+commit bc55f4cd2ccba08642b39dcdb576dd3df05cd901
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-26 18:05:13 +0000
+
+    debug: remove leftover reference to LmMessageNode
+    
+    This is only on the --disable-debug path.
+
+commit 8cd1fe08bee1f31cd05b7fee5629496e0d2f806e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-26 17:03:26 +0000
+
+    Update Wocky submodule
+    
+    Something has gone screwy here. This supposedly only adds a single new
+    commit:
+    
+        commit 44a326f3ab2aafea7a78df6ac75e9b4c014fe0e8
+        Author: Siraj Razick <siraj.razick@collabora.co.uk>
+        Date:   Wed Dec 21 12:29:29 2011 -0500
+    
+            Build fixes for Windows
+    
+            These changes enables us to cross-compile wocky for windows
+            with mingw32
+    
+    but the buildbots are confused and are using a ridiculously old
+    snapshot.
+
+commit 450c82611c7921c6d0711bfa3170a6f1cc70f336
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-26 14:25:33 +0000
+
+    Expunge lm_message_ref and lm_message_unref.
+    
+    And also a couple of uses of lm_message_get_node().
+
+commit c3e951a71acd69f2c3c3196675e2b2979e8a9a4a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-26 14:14:36 +0000
+
+    Jingle*: (mostly) de-Loudmouth-ify
+    
+    The only remaining reference is a reference to LmHandlerResult forced
+    upon us by _gabble_connection_send_with_reply(). I'm sure we can deal
+    with that later.
+
+commit e142bebe3e112d715af2b4784b24730eb9c310a0
+Merge: a2a603b 035a6b0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-01-26 13:09:47 +0000
+
+    Merge branch 'master' into BYE-BYE-LOUDMOUTH
+    
+    Conflicts:
+    	src/connection.c
+    	src/connection.h
+    	src/ft-manager.c
+    	src/jingle-content.c
+    	src/jingle-factory.c
+    	src/jingle-session.c
+    	src/message-util.c
+    	src/muc-channel.c
+    	src/muc-channel.h
+
+commit f8e208971a06a1f2b911066014900437559dd758
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-25 17:38:42 -0500
+
+    call-test: Add advertise_call utility
+
+commit debda34210cf48069c08ac8395592ef00f2f0ba6
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-25 17:16:08 -0500
+
+    call-test: Use callutils check_state instead of a copy
+
+commit e5bf54da204ff67396ee77835b25c8aea77c198c
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-25 17:15:13 -0500
+
+    call-test: Remove unused exec_test import
+
+commit 3323f531d06bbaf9494c5b6bc56a8f14d68f3900
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-25 16:59:49 -0500
+
+    call: Connect signals in sync constructor
+    
+    The sync constructor was not connecting to jingle session "terminate"
+    and "content-removed" signal. This was causing incoming call to not send
+    the ENDED state.
+
+commit 4214f06caf4c809958e6cd33cd730f76c52bda49
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-25 16:58:12 -0500
+
+    call: Add trace on jingle session terminate
+
+commit d3beae79aadab2e0adfc206082068fc6689ff290
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2012-01-13 11:32:48 -0500
+
+    fd.o#44649 - Gabble plugin API symbols should be factored out to a separate library
+    
+    This patch refactors gabble connection by introducing a new GInterface
+    which the plugins will link agaist. And GabbleConnection implements the
+    new Interface.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=44649
+
+commit 93943569220656d2939c96f50515da5ed7877af6
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-01-20 20:23:47 -0500
+
+    Add the other reason from Jingle to the Call channel termination
+
+commit 7a207a7a42a6c6fe9737d9ce0032bab820c4ce58
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-20 15:29:55 -0500
+
+    Add Call1 version of hold-av test
+
+commit 8bf0743da622c2adf7a93f82c9a86dd28d277e3b
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-20 15:29:06 -0500
+
+    Stream failure brings call to pending_hold state
+
+commit 123a0d473ad742c85f6d5242c1009403e7f222ba
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-16 15:41:40 -0500
+
+    Add no-audio content DTMF call
+    
+    This test simply check that DTMF method does not exist on non-audio
+    content object.
+
+commit 9ee76cdc02c550850c8490ddc97dc0c0fa24c38a
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2012-01-06 16:32:47 -0500
+
+    Change the plugin API to create_sidecar_async and create_sidecar_finish
+    
+    All gabble plugins should implement these two methods hereafter. This patch also updates
+    all the internal plugins to use this new API
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=44331
+
+commit 026e84f10bbfa52f813d30d95b0efbd2ec7a5228
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2012-01-06 16:32:47 -0500
+
+    Change the plugin API to create_sidecar_async and create_sidecar_finish
+    
+    All gabble plugins should implement these two methods hereafter. This patch also updates
+    all the internal plugins to use this new API
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=44331
+
+commit b642a5dab5535bb3787529de26b6d69be98210e0
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-01-12 13:56:51 +0100
+
+    call-channel: Fix build warning
+
+commit 8c9c9fe6e67066a3208371734be54fa1e264af09
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2012-01-11 17:35:20 -0500
+
+    Check that DefferedTones is reset when sending new tones
+
+commit 47994713103ae137ca86810e0f032dce3418120c
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2012-01-11 17:34:35 -0500
+
+    Check that CurrentlySendingTones is triggered
+
+commit 606d64610704dcdbfbc80e56a2c4e5f032350091
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.co.uk>
+Date:   2012-01-11 16:28:39 -0500
+
+    Test deferred tones in Call1
+
+commit 0cb44ec85906f4ea21c55c9ead449a386eacbcd4
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-10 13:03:17 -0500
+
+    Fix reason when a call is rejected
+
+commit 635ee7183038d7bec1b10f2a56b41fbf087dcbef
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-01-06 20:24:49 -0500
+
+    Add fixme to remember to handle rejected codecs
+
+commit ca0726474896e546f40f251d4a25ecbbb98bbb0a
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-01-06 15:51:49 -0500
+
+    Set the Call termination reason
+
+commit 9aa42222621917e040f778d8ecea7f9f1663de76
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-01-05 20:17:55 -0500
+
+    Port DTMF test to recent Call
+
+commit 25dce42e3b0786d84ef017648ceb31268702b680
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2012-01-05 19:06:17 -0500
+
+    Update candidate capitalisation in tests too
+
+commit 75826de1194146ddc7c9a3e1677d6fcbe37dcb13
+Author: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   2012-01-04 16:48:25 -0500
+
+    Candidate info names are no longer capitalised
+
+commit c253cfd561152df8a7f12459c3787d15a738d823
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-01-03 17:06:22 +0100
+
+    Fix build warning
+
+commit c5dea13a289fbaa29068a834252c9b8a29b02193
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   2011-12-19 11:48:57 +0100
+
+    GabbleMediaFactory: Use TP_PROP_ where appropriate
+
+commit dd0f6115ada3ad038f383662e02805f2641cfa9e
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-31 02:25:47 -0500
+
+    Add test for Hold in Call
+
+commit 3a1a8fc0e062ac268ed54a2b56b70062ed4e2195
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-30 17:14:15 -0500
+
+    Implement local hold for Call
+
+commit b555f952361fce1e037e67be2d90770eec5ffd02
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-29 22:49:45 -0500
+
+    Update to new tp-glib api for setting the local sending state
+
+commit 47cc822f25c4100fd91758ee34a49a9edc31f9c2
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-28 01:18:13 -0500
+
+    Add test for the remote side changing the direction
+
+commit 20483522b56a08c5fe01b1012db89c8e7239b850
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-27 03:06:59 -0500
+
+    Add test for pending states when the other side asks to send
+
+commit 8fe2c028aedd1b9daae79546cbb07cb9e1b50759
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-27 01:46:21 -0500
+
+    Implement per-dialect CanRequestReceiving
+    
+    Also add unit test for it
+
+commit db3883574a31350605f03555616be01ef0bfe3b3
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-27 00:54:18 -0500
+
+    Fix Request receiving
+    
+    Also add tests
+
+commit f4c69b786b2c33930f7b6625a161c1b6b4013a2a
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-26 23:08:29 -0500
+
+    Add test for endpoint state changes caused by reconnection
+
+commit b50e272f22ca8c8f94b00ec273beef36ea1c0aa1
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-26 21:06:40 -0500
+
+    Update codec offer test for updated spec
+
+commit 80f2cc4c085c1a7e76150f939f2c65fac06de370
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-26 20:59:03 -0500
+
+    Update to correctly set the local and remote sending states
+    
+    Also update the unit tests and move some work to the base class
+
+commit 3940ed863349a6f1ab6be6764b79c00cf303798a
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-23 15:03:39 -0500
+
+    Implement request_receiving using the base class
+
+commit 6af603c3edcfdcd0f836ec34fc720f50b90a73e4
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-23 15:03:01 -0500
+
+    Port to BaseMediaCallChannel
+
+commit a8c774fcd09e4298ade48982112ac0cc69b89321
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-23 11:54:22 -0500
+
+    Export the ICE credentials from the transport to the stream
+
+commit 10d618e5098ec0b5a8baada8c1dec67428382797
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-13 17:55:05 -0500
+
+    WIP: Half port DTMF test
+
+commit e97ab16a643a7a45c9e2e09d28777218759436b2
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-13 17:47:33 -0500
+
+    Restore flags for StreamedMedia tests
+
+commit 591755cc3fcb5fe257eca33462cddef26aef71a2
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-13 17:42:36 -0500
+
+    Port the codec offer test
+
+commit 395bb80683f5830326db422f9ed9ee3123c30ab1
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-13 16:02:24 -0500
+
+    Listen to endpoint state change notification
+
+commit b25eb1fe6845f72bf2f4fb991c09cbdd8d9ed671
+Author: Olivier Crête <olivier.crete@collabora.com>
+Date:   2011-12-13 15:47:45 -0500
+
+    Update tests to new Call1 spec
+
+commit 0009ecf2483e1ddb935266a4a8d03c31ca5ddb36
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   2011-12-09 15:30:57 +0100
+
+    WIP: port unit tests to Call1
+
+commit e946c179c33cac58de14443ed877cbd829e8ed04
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   2011-11-28 14:23:17 +0100
+
+    Replace tp-yell with tp-glib's Call1 API
+
+commit ab43a9f94d0f304003b581a67c7dff6391917b5b
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2011-12-30 17:14:00 -0500
+
+    build libgabble-convenience as a .dll for windows
+    
+    when building 3rd part plugins for gabble, all the
+    symbols as to be defined at link time, not at run time.
+    to solve this problem libgabble-convenience has to compiled
+    as libgabble-runtime.dll. also by this patch we avoid static
+    linking telepath-gabble.exe
+
+commit 035a6b0a6e8ce1787abf2583bb918436282026fe
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2011-12-22 16:02:51 +0100
+
+    telepathy-gabble-xmpp-console: no need to import pygtk
+    
+    In gobject-introspection we trust.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=44056
+
+commit 748caada6a36c26e7b8752a39138b4eaf42296db
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2012-01-04 05:10:37 -0500
+
+    Use ";" as the seperator on windows.
+    
+    With this fix, gabble can locate the plugin directory properly on
+    Windows
+
+commit b5bc31a5084e05d7e4251a37f628f7835928ab1c
+Author: Siraj Razick <siraj.razick@collabora.co.uk>
+Date:   2012-01-02 13:12:08 -0500
+
+    Make gabble cross compile with mingw32
+    
+    The patch provides the changes required to make gabble
+    compile under mingw32.
+    
+     - Index is replaced with strchr since index is deprecated
+      and not included in mingw32 sdk
+     - D_WIN32_WINNT=0x0501 is defined to make  getnameinfo work
+     - And other compile fixes
+
+commit 3cdfbe659bbe3a7e217486c2b0a957880b3c24ea
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-12-22 12:04:53 -0200
+
+    Update NEWS
+
+commit 5df4b3abb3909f4cdac2f88580acba762f7b07d1
+Merge: dfb062f e1524fd
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-12-22 12:02:40 -0200
+
+    Merge branch 'ft-optional'
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit dfb062f2a580d431713742904791627c2044155d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-22 11:48:37 +0000
+
+    Start on version 0.15.4
+
+commit bf29681bd6ac87c63b1ce6624d1efc58957af920
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-22 10:59:49 +0000
+
+    version 0.15.3
+
+commit 3e7bb6cedcca537126422799a33a11d95bc8808a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-22 10:43:24 +0000
+
+    NEWS: add reference to fd.o#43891
+
+commit 845816e8c451bd18412b4c616ce549863689714a
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-22 10:33:05 +0000
+
+    Update wocky to fix wocky_data_form_set_type()
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43891
+
+commit ead4381be6e3ab46d454458d54c86fc98c4fe61d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-12-21 09:28:06 +0000
+
+    start on version 0.15.3
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit ac5b2184c9b89f527d8ce4ee83484fde084f8499
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-12-21 09:15:53 +0000
+
+    version 0.15.2
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit e1524fd2acb29611f8e9055e227b86c4809b546f
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-12-20 21:40:36 -0200
+
+    Add configure option to disable file transfer support.
+
+commit 109ae37c08613b9d1b240ab325f993d466a9be55
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   2011-12-20 15:09:27 +0100
+
+    Update wocky commit to fix build warnings
+
+commit 09cae896ad821071e7d1fcfc69503deeefb57534
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-16 16:02:01 +0000
+
+    Compute the caps verification string correctly with dataforms in plugins
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43889
+
+commit a17ea171acb4847ada48782a8b57feff78aee123
+Author: Alvaro Soliverez <alvaro.soliverez@collabora.co.uk>
+Date:   2011-12-14 17:00:11 -0300
+
+    Added missing build flag
+
+commit 2348d1d320bd99560427875de45351691c018274
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   2011-12-14 12:33:48 +0100
+
+    Fix the build with glib 2.32 deprecated symbols
+
+commit e61ea6b4baa4080e072f69699bc876c762797b5d
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-12-07 13:19:22 +0000
+
+    Add gabble_connection_add_sidecar_own_caps_full() with dataforms
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43588
+
+commit a7740569c39532c1e508ff707ddecadbcd5acd0b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2011-11-29 12:58:32 +0100
+
+    Update wocky snapshot to fix issues with non-character data
+
+commit 956da5d8d2df4aad54e44315ae9df4b54a3ec0fc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 16:48:18 +0000
+
+    Rhythm is a dancer.
+
+commit f7555112d4d9fb17709befd5068a4fdac7365886
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 16:17:58 +0000
+
+    Version 0.15.1
+
+commit 4284793d64274349ced1d4c0ceb6f69cb136425d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 16:14:49 +0000
+
+    NEWS for 0.15.1
+
+commit 7d6e1fa81492520fcd020fe6a1ab4b0a8a1e85ef
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 15:32:29 +0000
+
+    Knock .DRAFT off Conn.I.Addressing.
+    
+    I've taken the executive decision to turn it into a version number, so
+    that we don't force ourselves to break compatibility if we decide the
+    interface is perfect.
+
+commit 05e7ea30f2588a098ad52c1969ca3f25795e7dba
+Merge: f467b8c 9e4bd73
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 15:25:21 +0000
+
+    Merge remote-tracking branch 'andrunko/fb-addressing'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=41789>
+
+commit f467b8cd4dffca20516be46d6da58f0bb4868df3
+Merge: 6a0ed9a 7fa869b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 15:15:58 +0000
+
+    Merge remote-tracking branch 'andrunko/conn-addressing'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=30296>
+
+commit 6a0ed9a2f9c49d21060dd0053c8b71864ee59e10
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 14:22:23 +0000
+
+    extensions: add Make rules for *-gtk-doc.h
+    
+    3c830e9 fixed `make clean` but in the process it broke building from
+    nothing… since these are now included in
+    nodist_libgabble_extensions_la_SOURCES, we need to tell Make how to
+    build them.
+
+commit 210aeb46df44531b1b3c348b5b75e743afe2503c
+Merge: b775d24 43cbe47
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 14:06:42 +0000
+
+    Merge remote-tracking branch 'andrunko/protocol-addressing'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=32692>
+
+commit b775d249a13db7a31a0306572f670f6b76b3c804
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-24 13:58:29 +0000
+
+    configure: depend on tp-glib 0.17.2
+    
+    This is needed to support Protocol.Interface.Addressing, coming right
+    up…
+
+commit 6554c595fe1fd7684ac8efb2505b589601660c3b
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
 Date:   2011-11-22 17:26:17 +0000
 
@@ -36,6 +2575,690 @@ Date:   2011-11-22 17:26:17 +0000
     |    gabble: add capabilities.h and caps-channel-manager.h as public API
     |
     |    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c6e76ac44acd46e8d5a1c9f2cc950548d7a30ead
+Author: Alvaro Soliverez <alvaro.soliverez@collabora.co.uk>
+Date:   2011-11-15 13:05:47 -0300
+
+    Support building on Android
+    
+    This patch makes it possible to use installed versions of Wocky and
+    Yell, rather than submodules; adds a missing explicit dependency on gio;
+    and adds Androgenizer build targets.
+    
+    Modified from an original patch by Derek Foreman.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=42446
+
+commit 9e4bd7355548bc64aeda0c997dbd14e66522193b
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 14:36:38 -0200
+
+    addressing-util: Properly check if "x-facebook-id" vcard address is a number.
+
+commit f3d2d2e95ed23e080e5bd4ec935491916efd7bbf
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 13:10:03 -0200
+
+    addressing-util: Refactor gabble_parse_vcard_address and make "x-facebook-id" parsing expect a number, not a JID.
+    
+    Refactor gabble_parse_vcard_address in gabble_normalize_vcard_address, gabble_vcard_address_to_jid and gabble_jid_to_vcard_address
+    and and make "x-facebook-id" parsing expect a number, not a JID.
+
+commit a3c018452d6e4bf48c6eeb16bfd55b35b70c3aad
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 21:31:18 -0200
+
+    Expand tests for Conn.I.Addressing to test normalization of vCard addresses with 'x-facebook-id' field.fb-addressing.
+
+commit fdf0b93faa48797b739a4d6275baad0f1069f0ce
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-10 21:33:21 -0200
+
+    Expand tests for Protocol.I.Addressing to test normalization of vCard addresses with 'x-facebook-id' field.
+
+commit 3f4ce2c1a14aba3c5f0c922e527ff9e648311207
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 20:32:45 -0200
+
+    protocol: Add support for normalizing vCard addresses with 'x-facebook-id' field.
+
+commit 7fa869b1f319ab42c75d61fdd3b22859f3bb1dfb
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-21 13:25:27 -0200
+
+    Update Conn.I.Addressing from tp-spec.
+
+commit aa5280ce5e76c65b310379d73671f4bce826a286
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-21 13:11:07 -0200
+
+    addressing-util: Rename gabble_normalize_uri to gabble_normalize_contact_uri.
+
+commit b203be272d60153eef7d00b5edab30a4f0021759
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 13:39:22 -0200
+
+    addressing-util: Replace gabble_decode_jid with wocky_decode_jid.
+
+commit 25c3d3469e587467008d0f7942125ff9a421a6d9
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 13:34:56 -0200
+
+    addressing-util: Remove redundant checks when calling g_uri_escape_string.
+
+commit 4192c92ae505489050da9f89fcbb756d83f66bb3
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 12:00:23 -0200
+
+    twisted/addressing.py: Expand tests for normalizing URIs.
+
+commit 2d661e26a114dcf91e0461a814072be4c095e0f4
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 11:40:05 -0200
+
+    addressing-util: Use gabble_parse_xmpp_uri on gabble_uri_to_jid.
+
+commit 9f53dc66c3a9b29ba987e5bb1d9a33ad34567beb
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 11:39:46 -0200
+
+    addressing-util: Add gabble_parse_xmpp_uri helper method.
+
+commit 909d5428e4187ffe276587e726a790e7b1653636
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 11:10:19 -0200
+
+    addressing-util: Refactor gabble_jid_to_uri and gabble_normalize_uri.
+
+commit dad62245979ea66a63c4e2ad8ad99386c0007e07
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 10:42:07 -0200
+
+    conn-addressing: Remove unnecessary cast.
+
+commit 26594e8d47c0af050128d9133892f676cde96e55
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 10:41:33 -0200
+
+    Update docs for Conn.I.Addressing.
+
+commit ef5685459b4815aac89d3e0ed4202e277e127705
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 20:36:26 -0200
+
+    protocol: Use gabble_get_addressable_uri_schemes/vcard_fields.
+
+commit 687adff7ab22e0f2dc5f81b895726372acc28a98
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 21:30:49 -0200
+
+    addressing-util: Make gabble_uri/vcard_address_for_handle generic.
+
+commit 2e33ef47c7fc2c2630c084b590610f5bf086fdab
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 21:27:39 -0200
+
+    addressing-util: Use vcard address as the identifier for tp_handle_inspect in gabble_ensure_handle_from_vcard_address.
+    
+    We need to parse the vcard address to make sure the field/address is supported, but we cannot use
+    the return of it as the identifier to tp_handle_ensure, as the return may be invalid
+    (depending on the vcard field).
+
+commit ab6aef86574495c699756f13f7fe3e8e33b48c97
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 20:08:28 -0200
+
+    addressing-util: Split gabble_parse_uri in gabble_normalize_uri, gabble_jid_to_uri and gabble_uri_to_jid.
+    
+    Also properly escape URIs.
+
+commit 846339c2ad4fe280a1f89ca60ff4bfcd59ed7063
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 17:44:35 -0200
+
+    conn-addressing: Use g_str_hash/equal and dup/free the key for the requested hash on conn_addressing_get_contacts_by_uri/vcard_field.
+
+commit 1393bc432a2a271e94d528df15b9166c9fa9a8b7
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 17:41:42 -0200
+
+    Update docs for Conn.I.Addressing.
+
+commit 774995d3b527ced96f236ac7937d8861c9403c03
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 17:37:08 -0200
+
+    Fix typo in Conn.I.Addressing.
+
+commit f84a9c17a256a17ad0118a9a932cc90650399143
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 17:16:56 -0200
+
+    Split requested contacts into a separate argument in Conn.I.Addressing.
+    
+    Remove the contact attributes ".../requested-*" and return the satisfied requested addresses on
+    GetContactsByURI/VCardField.
+
+commit a1c71d47685d266be24f3a6deebddb5d184c781d
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:27:18 -0200
+
+    protocol: Use g_error_matches to properly match for errors and don't crash if error is NULL.
+
+commit bee30c01c77fcd76fe046bf962d1568f16149980
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:23:49 -0200
+
+    conn-addressing: Use g_error_matches to properly match for errors.
+
+commit 158fbf5c3987b90f27345cd54ba3885790caddd3
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:19:31 -0200
+
+    conn-addressing: Add comments for g_hash_table_get_keys usage.
+
+commit cd210ac5a6d04fb46d532e1421b11cc9baa34197
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:18:25 -0200
+
+    conn-addressing: Rename variables starting with "in_".
+
+commit 4137aba89752ae3b773c44fa59e238376a2561dc
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:14:47 -0200
+
+    conn-addressing: Reorder includes.
+
+commit 36be157b1edb9776a320d377588b2ec8fd1cce56
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:11:50 -0200
+
+    conn-addressing: No need to include debug.h and define a debug flag as we don't use them.
+
+commit 2a1708b475e527bd2d8662d30777c910d08c5df1
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:08:42 -0200
+
+    addressing-util: Refactor gabble_vcard_address_for_handle.
+
+commit 082f79dbf29e3a11d641b6339000e2bcf639f2c9
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:01:22 -0200
+
+    addressing-util: Refactor gabble_vcard_addresses_for_handle.
+
+commit 24f94aad9af73af03486f0612e4f99a723b30e3e
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 12:32:51 -0200
+
+    addressing-util: Refactor gabble_parse_vcard_address.
+
+commit 218ae8f0dc091444b34df18f9e79797a9bfdcc37
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 13:06:59 -0200
+
+    addressing-util: Refactor gabble_uri_for_handle.
+
+commit 44184e6acbcd8cd6cd6baa39811833d39c90e600
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 12:52:44 -0200
+
+    addressing-util: Refactor gabble_uris_for_handle.
+
+commit 5e74e1d55948636645b654f267398253d329ffdc
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-16 12:24:00 -0200
+
+    addressing-util: Refactor gabble_parse_uri.
+
+commit 3210556571ef281f2afe6586c35474be0906681b
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 16:33:30 -0200
+
+    addressing-util: Put includes in alphabetical order.
+
+commit 78af6ffac2fccf1f26ad7c38b369e9c493f726f1
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 16:31:38 -0200
+
+    addressing-util: No need to include debug.h and define a debug flag as we don't use them.
+
+commit d977ec1feaf34a19979309ca1a8e2e1808aa3ece
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 16:32:22 -0200
+
+    addressing-util: No need to include config.h in the header file.
+
+commit c07bb73548709f427c4b47b5a0d93c77806d631e
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-11 01:30:05 -0200
+
+    addressing-util: Fix some coding style issues.
+
+commit dda584a302134223185a36d589e48d8d2a1ec07d
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-11 01:00:34 -0200
+
+    addressing-util: Do not fill output uri if input uri cannot be parsed in gabble_parse_uri.
+
+commit 33394ec5a4f1acfc3f6235626d98e0267e27fa53
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-11 00:53:31 -0200
+
+    twisted/addressing.py: Re-enable Protocol.I.Addressing test.
+
+commit f4a87f5d3584d19993206992f768638a0209bdea
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-22 10:32:09 -0700
+
+    Synced with latest tp_contacts_mixin_get_contact_attributes.
+
+commit b4cc4692ee10fa84f92922bfabb22153232187a5
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-21 13:07:32 -0700
+
+    More centralizing.
+
+commit c1610996707159f8c09ed0077df169eadd253d59
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-21 12:07:35 -0700
+
+    Added addressing-utils.[ch] to aide in addressing consistency.
+
+commit 3c86293fa5dc2b24447eeaddc5cd8b7a1e3cf9da
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-20 11:54:33 -0700
+
+    Added Conn.I.Addressing tests.
+
+commit d7618fe18e64c05625d95531c3c918a1c238a5da
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-20 00:05:06 -0700
+
+    Implemented getters in Conn.I.Addressing.
+
+commit 2524367ba1531d27a1c201651119a44aba0a999a
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-20 00:04:40 -0700
+
+    Factored out URI parsing.
+
+commit f1b72e248195b25f629bb2042135066c34b482a4
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-19 16:20:18 -0700
+
+    Started work on connection addressing iface.
+
+commit 4c0aa45e6a69de77cc9e685edac9213ba34192dd
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-19 09:19:42 -0700
+
+    Added Conn.I.Addressing as an extension.
+
+commit 43cbe4770f28bc52115bec727edc07a6c9142841
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-21 13:05:55 -0200
+
+    protocol: Update to latest changes in Proto.I.Addressing.
+
+commit a9608bc48432be0e18441b931c60d6438acc40e9
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 15:05:14 -0200
+
+    twisted/constants.py: Re-use PROTOCOL definition when defining PROTOCOL_IFACE_ADDRESSING.
+
+commit 9c745c78daa57bb374fdcb536ead75ba3d50c9aa
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 15:04:34 -0200
+
+    write-mgr-file: Use one property per line when calling g_object_get, to emphasize the paired arguments.
+
+commit b7504155ef6656ee155439fef7b35b3e6226dcfb
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 14:57:45 -0200
+
+    protocol: Reorder logic of checking for uri schemes in addressing_normalize_uri.
+
+commit be3b8aa3f9b6d8aa5e933d7ee44475ab4356c5c3
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 14:56:09 -0200
+
+    protocol: Reorder logic of checking for vcard fields in addressing_normalize_vcard_address.
+
+commit c02c3f6d08d890627ed19b8513cc3609e4ed8303
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 14:53:38 -0200
+
+    Remove debug area for protocol as it's not being used.
+
+commit f498451348f9053ff3e4b01a854862d00ba57a80
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-14 14:49:52 -0200
+
+    protocol: Updated with latest changes in tp-glib to support Protocol.I.Addressing.
+
+commit 6cdcedb7faca3d2fa43e01d32d9ae7bade2a0a5b
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-10 21:34:37 -0200
+
+    write-mgr-file: Make it comply with ISO C90.
+
+commit fb792b824efcc0960db7143ff69bf79ee76ac278
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2011-01-03 16:24:43 -0800
+
+    Use new addressing GInterface API. Fix review nitpicks.
+
+commit bd20b6a9c8b4ba138a77112efd698af126965afc
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-27 15:56:53 -0800
+
+    Update manager file writer for new addressing features.
+
+commit 83095016b23bc2096dd7fcd567bde3ac56017ac4
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-12-27 15:56:06 -0800
+
+    Added tests for Protocol.Interface.Addressing.
+
+commit fb0b624a751807821dcaa91196457dc0be70406c
+Author: Eitan Isaacson <eitan@monotonous.org>
+Date:   2010-09-15 15:56:54 -0700
+
+    Added Addressing support to protocol.
+
+commit 3c830e93b65121c2a6450c97b68922b49d85fde3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-21 14:19:35 +0000
+
+    extensions: add generated -gtk-doc.h files to Makefile
+    
+    The updated code generator added in f9332611 puts gtk-doc comments into
+    separate source files. Since these weren't mentioned in
+    extensions/Makefile.am, `make distcheck` failed, protesting about “files
+    left in build directory after distclean”.
+
+commit 357aef5d882f461a05037255f3f0dee844d18d6f
+Merge: cbe05e9 ac3ed72
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-21 13:14:04 +0000
+
+    Merge branch 'xmpp-console'
+    
+    Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=xmpp-console>
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit ac3ed729bed7d8c4fb62a11ade54f54b6139c0d0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-21 10:49:00 +0000
+
+    console plugin: add a FIXME re. client dying
+
+commit f28d2d99353e91c925986f8ee7abde562384f884
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-18 11:00:46 +0000
+
+    console UI: turn off monitoring when we quit
+
+commit 936059fedae244ec4ea9cf40d500f9b761639bfb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-18 11:00:21 +0000
+
+    console UI: allow passing account identifiers
+
+commit 77f77a88c3a28a68cdbd5656912580cf2e235338
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-17 23:50:33 +0000
+
+    console UI: fix handling errors from SendIQ
+
+commit 2622e65507e83956a2dd0b7f349135771ec8f335
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-17 17:42:43 +0000
+
+    console UI: add a page for sending arbitrary stanzas
+
+commit 5bcba4d971ebf48ba827067ff4b1c5d28c36295f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-17 23:49:50 +0000
+
+    console UI: factor out spinner wrapper notebook thing
+
+commit ff861b9904b4d200c33107fd39178585310918d0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-17 11:07:32 +0000
+
+    console plugin: add SendStanza method
+
+commit 0212d45fcddd528cf3f3b66c930b0b57e0788d6e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 10:23:42 +0000
+
+    console UI: add stanza monitor pane
+
+commit 9391ee87e77315f3405722846d6b2bec14736497
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 09:38:46 +0000
+
+    console UI: split out UI helpers
+    
+    The traffic monitor window will need to show nicely-formatted stanzas,
+    and it will also need a grid with the same spacing.
+
+commit bd8c210005270e42b09feb08abf521bd64a1237d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 09:29:12 +0000
+
+    console UI: pack IQ page into a notebook.
+
+commit ace82cb0e39516c6df7b055b5a2219c45578c746
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 09:19:29 +0000
+
+    console UI: refactor IQ interface into a class
+    
+    This just pulls out the entire Gtk.Grid containing the UI for sending an
+    IQ into its own subclass of Gtk.Grid, paving the way for another page in
+    the UI for watching the stanzas fly past.
+
+commit 54dc3ce758b1f47f2a46590297765c5baf5dbd77
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 09:18:38 +0000
+
+    Add a smoke test for the XMPP console
+
+commit 1a6f7fff8022d9f4bf17ded58771c3c7a8582049
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 09:09:39 +0000
+
+    console plugin: implement received/sent signals
+    
+    Ideally the SpewStanzas property would become False when the client
+    which asked for it falls off the bus. Later...
+
+commit 27afc946f679d649d57026ffd7d81bbaae00b4a2
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-16 09:08:18 +0000
+
+    Add Sending/Receiving signals to Console API
+
+commit f9332611f8c19a0bf96a7c822c7e03da796813f7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-11 19:45:25 +0000
+
+    tools: update to respect EmitsChangedSignal
+
+commit 20901a521f66d1106e69ca967c2a60af10b3c486
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-11 19:27:50 +0000
+
+    Update Wocky snapshot
+    
+    This new snapshot allows Gabble (specifically, our plugin) to register
+    match-all stanza handlers, and also adds the stanza currently being sent
+    as an argument to the WockyPorter::sending signal.
+
+commit 9f3e22edb1b13ff37b124a5fe3a5e9a1522dbebb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 18:07:09 +0100
+
+    xmpp-console: add some better error reporting
+
+commit f59235111739cde7b746de4b93d9090f039dc494
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 17:38:54 +0100
+
+    xmpp-console: Readd a crucial feature from 0.12.5.
+
+commit 4fd5fd804b45b3b1c8f8de5a71210099663d688c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 16:49:39 +0100
+
+    xmpp-console: show a spinner while waiting for a reply
+
+commit c63263f038c938839e5a3ec5e4809955b877a381
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 16:28:13 +0100
+
+    xmpp-console: add radio buttons for get vs. set
+
+commit 00e1ca483ad07ddcd2a059130e3e186ae12fbd63
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 16:17:12 +0100
+
+    xmpp-console: split up entry-adding function
+    
+    I'd like to use a combobox or something for the get/set selection.
+
+commit 880edbed11b23262afed535ce51dc3e36ebf3698
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 10:43:59 +0100
+
+    Add XMPP console UI
+    
+    It is only installed if the plugin is installed.
+
+commit 59fbf7d5e24859595d230f6249c30370f09a6281
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-09-21 10:43:50 +0100
+
+    test plugin: include version number
+
+commit 98ab5aa93c9574187bf47ff7bad10f7a1fe2b935
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-06-22 14:33:52 +0100
+
+    Add an XMPP console sidecar
+    
+    It currently only supports sending an arbitrary IQ and getting the
+    reply. Obviously this is for developer use only.
+
+commit cbe05e97476160fab38ba491717f4d5a42c17887
+Merge: 7c77196 2f1c385
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 14:46:33 -0200
+
+    Merge branch 'trivia'
+
+commit 2f1c3854ed8860caeb8410d4a9c0882124641e10
+Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
+Date:   2011-11-17 14:18:18 -0200
+
+    Remove gabble_decode_jid in favour of wocky_decode_jid.
+
+commit 7c77196d24c77a31bb51928ee3875f1161b9fd08
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   2011-11-16 15:21:04 +0100
+
+    Add coding style check for g_hash_table_destroy and g_array_free usage
+
+commit 769a97c2ed9e6cbfda656a65483f6142423adc36
+Author: Xavier Claessens <xclaesse@gmail.com>
+Date:   2011-11-16 14:39:30 +0100
+
+    Use _unref instead of _free _destroy when possible.unref
+    
+    Replace g_(ptr_)array_free (foo, TRUE) and g_hash_table_destroy
+    with respectively g_(ptr_)array_unref (foo) and g_hash_table_unref.
+    
+    I used this command to generate this patch:
+    for f in `find -name "*.c"`; do sed -i $f -re 's/g_ptr_array_free \(([^ ,]+), TRUE\)/g_ptr_array_unref \(\1\)/'; done
+    
+    See Danielle's blog for explanation of possible bug _free can do:
+    http://blogs.gnome.org/danni/2011/11/16/mistakes-with-g_value_set_boxed/
+
+commit dfccd984ac6c694a689c1f224efb4f4e2b27e01c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 11:37:13 +0000
+
+    bump nano-version
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 241356cdbd74bca44e8c0c9c583a2d1f4daf903a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 10:07:32 +0000
+
+    version 0.15.0
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 65c8b8f3edb446e3a0411a7401d9e3947ba858db
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 11:24:10 +0000
+
+    jingle outgoing test: add MembersChangedDetailed flag to base flags
+    
+    telepathy-glib ≥ 0.16.2 always sets the Members_Changed_Detailed flag
+    in the group mixin, so now that we depend on tp-glib ≥ 0.17.1 we
+    should expect that too.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 9f8e0db4ba039eb78d055a0c04bb8fb283c89751
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 10:01:14 +0000
+
+    NEWS: further updates about Wocky
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 1e61c2ef8d352294f369eebe3493f135c7dca16c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 09:48:34 +0000
+
+    NEWS: update
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 65628acf0d363f0868d643cffcb01b950d6dcf5f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 08:44:02 +0000
+
+    file transfer helper: use crazier stock metadata in file transfer tests
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 78af31f043327c194ed4db4c2db2d8b04d57f07f
+Merge: f903c62 80ffa6e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-16 08:07:09 +0000
+
+    Merge branch 'ft-metadata'
+    
+    Conflicts:
+    	src/namespaces.h
+    	tests/twisted/Makefile.am
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f903c62e4de60610638931cc14ed3118de2d37c6
+Merge: 9309cb4 566c0f7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-15 15:34:41 +0000
+
+    Merge branch 'telepathy-gabble-0.14'
 
 commit 566c0f72fe54d44752c3704537e42c3e3640488c
 Merge: ebcb135 7524ce7
@@ -87,6 +3310,83 @@ Date:   2011-08-31 17:31:24 +0100
 
     Roster: don't hide local pending contacts from stored
 
+commit 9309cb456645ff7643ebe36c50e3b447641b6c6b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-15 12:13:46 +0000
+
+    Fully expunge HANDLE_LEAK_DEBUG_CFLAGS
+    
+    Sorry, internet.
+
+commit 36a50290e5d9324cf55ed7a53cb9c221d7386d95
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-15 11:34:42 +0000
+
+    configure: remove --enable-handle-leak-debug.
+    
+    There's no such thing as a handle leak any more, so this is vestigial.
+    
+    Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5b3105a5a357cdd1f1d098fcc3e2c26a40e5b93f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-15 10:12:55 +0000
+
+    wocky: update snapshot for sasl fix again
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 30ff2ae153dfa5b45072df344d129d909429a63e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-15 09:16:56 +0000
+
+    wocky: update snapshot to fix sasl build failure
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 80ffa6e731f2ecb5c31bbaec1083d13e6757d912
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-15 09:16:05 +0000
+
+    ft metadata: use tp-glib generated code rather than using the draft interface
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 13835c53f6e7b0cf1d576ca8ae031282494ed473
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-15 09:15:36 +0000
+
+    configure: up the tp-glib dependency
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 275667c68ed51ffd4dc988c5916a11e85401f4ac
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-11 11:11:14 +0000
+
+    metadata test: test for odd metadata with a key but no values
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 631d3beed4585d9c2b1530ab4c9657907234c9fe
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-11 11:10:51 +0000
+
+    caps-helper: deal with no value nodes in data forms
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 798edc37548cbcea3c4c16edbe65aa62f3ba3ff4
+Merge: 585f946 ebcb135
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-10 17:09:40 +0000
+
+    Merge branch 'telepathy-gabble-0.14'
+    
+    Conflicts:
+    	NEWS
+    	configure.ac
+
 commit ebcb1350c3b316f8fe510caacacf0b2a59b95458
 Author: Will Thompson <will.thompson@collabora.co.uk>
 Date:   2011-11-10 16:40:09 +0000
@@ -109,6 +3409,40 @@ Date:   2011-11-09 17:46:04 +0000
     
     https://bugs.freedesktop.org/show_bug.cgi?id=42679
 
+commit c5afb4dc7f6ea3a55ca35bbd04e16ce87e57cacc
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-09 19:34:03 +0000
+
+    metadata: update to new draft
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit a1f943c809232021db6d831f0e9869bb0584dcfc
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-09 18:07:37 +0000
+
+    extensions: update FT.Metadata draft
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 585f9467b8916b5d3ebc0e06c00019b916099672
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2011-11-09 17:46:04 +0000
+
+    Remove double definition
+    
+    gabbletestsdir is defined in configure.ac
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=42679
+
+commit dd7cbb323b1ed31f34f2babff8d066f7e88bc3c9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-09 17:33:55 +0000
+
+    namespaces: update metadata namespaces
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit bdf5c1535079d7f69e8b0d50def2bf0acd2a7d1a
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   2011-11-09 08:20:31 +0000
@@ -120,6 +3454,24 @@ Date:   2011-11-09 08:20:31 +0000
     Fixes: fd.o#42706
     
     Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b4b5aa0be69a171615801c13626f5221e8b1cb6c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-11-09 08:20:31 +0000
+
+    connection: fix typo when indexing pointer array using wrong counter
+    
+    D'oh!
+    
+    Fixes: fd.o#42706
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit e5d6c92c9ff74fdba49d751ed1f7b5d87bf17336
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-11-07 20:34:38 +0000
+
+    lay the foundations for 0.15.x
 
 commit ed197893f4e303276480649330b9c362c60f6442
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -346,6 +3698,18 @@ Date:   2011-05-27 12:09:52 +0100
 
     MucFactory: remove stupid priv anti-idiom
 
+commit 616ccbaf5f8b04e1ab1f74f0441490731c1044eb
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 17:09:39 +0000
+
+    ft-client-caps test: change client name
+    
+    I've no idea why but if caps/tube-caps.py is run before this test (it
+    has the same idea and design as this test was copied from it) then
+    this one fails due to the same client name?! Another day...
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit ed09e896b3c249568192e92b5195462e626918fb
 Merge: 08da102 f5f7cc6
 Author: Andre Moreira Magalhaes (andrunko) <andre.magalhaes@collabora.co.uk>
@@ -373,6 +3737,72 @@ Date:   2011-10-31 13:48:15 -0200
 
     conn-presence: Properly free priv member.
 
+commit 107d1867af1cd827cf41cc202b0f91bace124f20
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 14:51:35 +0000
+
+    ft-client-caps test: clarify caps dict building
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 8ecdc16893fc2208233252dd5054b88925392601
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 14:30:39 +0000
+
+    ft-client-caps: remove duplication by using caps_helper.presence_and_disco
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c5ea43c6c5bac3cc29695df4f2c2889775eb94a4
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 13:45:25 +0000
+
+    ft-manager: use nicer tp_g_value_slice_new_* functions
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 70d83e788df4acd2218447696e5517b27b416530
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 13:43:51 +0000
+
+    ft-manager: clarify argument name
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 534678998700786a5bc5c6e66e863fc64e353ee6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 13:43:01 +0000
+
+    twisted tests: use conn.Requests isntead of making a dbus.Interface
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5cdf63160451cb2142eb1915eb369d9c248bd80b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 13:40:31 +0000
+
+    ft-channel: simplify adding fields to dataform
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 56086a17c480737973cc28e6c82b7b98d8eb9f6e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 13:29:07 +0000
+
+    namespaces: change FT metadata namespace
+    
+    "and… im: is not a URI scheme. http://telepathy.im/..."
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 7560587e9a14e13b1cb6f1ce2b0c5451bfc67c65
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-31 13:01:21 +0000
+
+    ft-manager: deal with bad ServiceName fields
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit 08da102662f74cf084e4d2bdfc86f2b15e33ca66
 Merge: f9529b7 9cf653e
 Author: Will Thompson <will.thompson@collabora.co.uk>
@@ -399,6 +3829,25 @@ Date:   2011-10-28 18:34:25 +0100
     
     Fixes: <https://bugs.freedesktop.org/show_bug.cgi?id=42186>
     Reviewed-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit abbfb9b9fd90cb9f279449a9b43e3bff66167d87
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-28 18:54:57 +0100
+
+    ft metadata test: fix subclass of file receiving test
+    
+    Oops, this was subclassing the wrong FT helper test class. No other
+    changes necessary (like a boss).
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 735bea1282b3299030869d41920d7dbaabaaddce
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-27 17:23:57 +0100
+
+    capabilities: only add metadata cap when we have normal FT caps
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
 commit f9529b7d27b0cc9edc9b7c39573c533963d87079
 Author: Alban Crequy <alban.crequy@collabora.co.uk>
@@ -449,6 +3898,22 @@ Date:   2011-10-21 13:54:06 +0100
 
     tests/twisted/Makefile.am: order lists in alphabetic order
 
+commit ade61fe2442ee0787c253b9aff7848216427a71f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 18:55:45 +0100
+
+    ft tests: add tests for FT service name caps
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 3107077eaafd32548273e79363fa3dce4ddc3d25
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 18:26:25 +0100
+
+    ft-manager: advertise file transfer services with capabilities
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit d92500bcd3911dbddad5fff2d40cfbc674663b41
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   2011-10-26 16:19:58 +0200
@@ -464,6 +3929,166 @@ Date:   2011-10-26 15:50:31 +0200
     Advertise ContactBlocking if supported
     
     https://bugs.freedesktop.org/show_bug.cgi?id=42281
+
+commit 16060fa8422c7ba530461732821064c3576136c8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 13:10:15 +0100
+
+    ft-channel: fail to create channel if the contact doesn't have the right caps
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit bd6cb214613a95dc5870ac256fd95349576f5fce
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 11:50:34 +0100
+
+    ft-manager: only advertise Metadata support for those who support it
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 583cb3ae5b8538fa24a882462a453d5865587352
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 11:48:11 +0100
+
+    capabilities: advertise support for the TP FT metadata extension
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 08599349b9681f588826393b4c8c2debe228a50b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 11:05:58 +0100
+
+    metadata test: ensure we get an error with a bad Metadata property
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b4f1e9b52846826faf4b843cf4c3bdd00f75150c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 09:09:40 +0100
+
+    metadata test: test receiving an offer with no dataforms
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 82e7b8a0f7461665e58381e7690e3c0f2ebeacc0
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 09:09:33 +0100
+
+    ft-helper: test parsing incoming offer metadata
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit fcf41a7e505a2d38cba5a40e82150bb03eb8d9a1
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 09:08:00 +0100
+
+    caps-helper: split out function to add data forms to a node
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 396e49c5492c8142cfc3fc45054eee0bbba36e23
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 08:48:31 +0100
+
+    file-transfer tests: add simple Metadata test
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 52e76fbe1a5348eccdda726133e2705a1f78f44d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 08:46:54 +0100
+
+    ft-channel: include metadata in file transfer offer
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c2f0b06cb87a62ca9e15bb9bfa870a9854e0117e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 08:44:40 +0100
+
+    caps-helper: allow extract_data_forms to be called with no x nodes
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit b9f1bc49edd64959ff0ea57f216672d3067b1118
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 08:35:16 +0100
+
+    caps-helper: move data form parsing code into its own function
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 2933e974314887c283276c904832c69d470849b5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 08:33:00 +0100
+
+    ft-manager: disallow FORM_TYPE keys in Metadata property
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 30899a8616c660cc0852af003a4ad40609a5b52d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-26 08:30:25 +0100
+
+    ft-channel: make Metadata props immutable and test them
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 7a1da4c951c3bda7793f4511e3b470e7226d8108
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 21:13:09 +0100
+
+    namespaces: define NSs for Metadata dataforms
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5472db8eb4a59c6261a36ddcea407489d488c3eb
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 21:05:04 +0100
+
+    ft-manager: get Metadata props from SI file transfer offer
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 64c9d82af61b25ab06bd74607acf0f336c6c463a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 21:04:33 +0100
+
+    ft-manager: set Metadata props from channel request
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit ab38d52b84ddd80f356a3d804eeae0aeb99b1520
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 21:03:03 +0100
+
+    ft-channel: set Metadata props on construction
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 50e3c855268d9e43f0a2853cc71757f5e88b1ab3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 21:00:28 +0100
+
+    ft-manager: add Metadata props to Allowed_Properties
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit a5fd662a8f3a70eccef1a3d943f060513d2658f3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 20:58:42 +0100
+
+    ft-channel: implement Metadata properties
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit d903da03658e26e574ed6d8ffdd58cc20023857b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-10-25 20:57:16 +0100
+
+    extensions: add FileTransfer.Metadata draft
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
 commit e1973c15669a6043cd474cb48b89baafc4bb0d45
 Merge: bf1c8dd 3cdbae8
@@ -3366,6 +6991,97 @@ Date:   2011-05-05 12:05:33 +0100
     Bump micro version for unstable branch.
     
     The next release from master will be 0.13.0
+
+commit a2a603bdfb12bc9aa80726bf1f822cc22c76917e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-05-03 13:15:32 +0100
+
+    Request pipeline: remove FIXME
+    
+    I checked everything that uses the request pipeline (directly or
+    indirectly), and nothing checks for error codes outside of those
+    specified in XMPP Core. (Previously this code used
+    gabble_message_get_xmpp_error, which would also fetch Jingle, SI and a
+    couple of other class of error.)
+
+commit c1be75d93784a9b1b37b0dd717b1494029a675b8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-07 14:12:22 +0000
+
+    Remove GabbleXmppError.
+    
+    There is a FIXME buried in here … but the tests pass.
+
+commit ea21cdcd49ba24235f97060c056fe9cd9744e69e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-04 11:09:11 +0000
+
+    _gabble_connection_acknowledge_set_iq: use Wocky
+    
+    Really, this function should go away, but this will be much easier when
+    we get rid of LmMessageHandler since then (almost) all the places
+    calling it will have a WockyPorter * already.
+
+commit 66c905575590cf30b0c3307de55718a813833a09
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-01 10:36:33 +0000
+
+    Delete my favourite function. :'(
+
+commit f510988de177d4c60ce10cc93ec15e1e85bd29bb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-01 10:36:07 +0000
+
+    _gabble_connection_send_iq_error: use Wocky
+
+commit b32211ace00f3591d6e77d14313787f8d440a483
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-03-01 10:47:21 +0000
+
+    Remove lm_iq_message_make_result()
+
+commit e1e754f9440a35a69a3ac6dc15ed5190da184047
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2011-02-28 21:46:39 +0000
+
+    Remove three redundant node functions from util.[ch]
+    
+    lm_message_node_has_namespace(), wocky_node_get_child_any_ns() and
+    lm_message_node_get_namespace() have exact equivalents in Wocky.
+
+commit 46410a32d5eef705a48b74a6d5aa4f61aa1c3fef
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-04 17:09:04 +0000
+
+    loudmouth: Remove LmMessageNode
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 3cd3ffc609f92a534317f006eb4401f39bc4b279
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-04 17:06:54 +0000
+
+    stop using LmMessageNode wrapper
+    
+    WockyNode is the future.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 0de3d249d69bb99fddbcf72e4dafe36660245eb7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-04 17:05:53 +0000
+
+    use the new xmlns and xml:lang build tags
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 36c8f4e67979c60d635d1448b1c2afe15d2a96ec
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2011-02-04 16:55:45 +0000
+
+    util: add xml:lang and xmlns lm_message_build tags
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
 commit 160289f855182e9e2d00a91b38541d8e989eee17
 Merge: 4722b73 0d865ef

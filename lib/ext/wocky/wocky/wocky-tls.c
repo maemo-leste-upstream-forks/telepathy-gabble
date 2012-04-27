@@ -1,4 +1,7 @@
 /*
+ * Wocky TLS integration - GNUTLS implementation
+ * (just named -tls for historical reasons)
+ *
  * Copyright © 2008 Christian Kellner, Samuel Cormier-Iijima
  * Copyright © 2008-2009 Codethink Limited
  * Copyright © 2009 Collabora Limited
@@ -76,7 +79,7 @@
   "+COMP-NULL"     /* fall back to null */
 #endif
 
-#define DEBUG_FLAG DEBUG_TLS
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_TLS
 #define DEBUG_HANDSHAKE_LEVEL 5
 #define DEBUG_ASYNC_DETAIL_LEVEL 6
 
@@ -89,14 +92,12 @@
                          GNUTLS_VERIFY_DISABLE_TIME_CHECKS      | \
                          GNUTLS_VERIFY_DISABLE_CA_SIGN          )
 
-#include "wocky-debug.h"
-#include "wocky-tls-enumtypes.h"
+#include "wocky-debug-internal.h"
 #include "wocky-utils.h"
 
 #include <gnutls/gnutls.h>
 #include <string.h>
 #include <errno.h>
-#include <gcrypt.h>
 #include <sys/types.h>
 #include <unistd.h>
 enum
@@ -263,17 +264,6 @@ G_DEFINE_TYPE (WockyTLSOutputStream, wocky_tls_output_stream, G_TYPE_OUTPUT_STRE
                                        WOCKY_TYPE_TLS_OUTPUT_STREAM,         \
                                        WockyTLSOutputStream))
 
-GQuark
-wocky_tls_cert_error_quark (void)
-{
-  static GQuark quark = 0;
-
-  if (quark == 0)
-    quark = g_quark_from_static_string ("wocky-tls-cert-error");
-
-  return quark;
-}
-
 static const gchar *hdesc_to_string (long desc)
 {
 #define HDESC(x) case GNUTLS_HANDSHAKE_##x: return #x; break;
@@ -312,7 +302,8 @@ wocky_tls_set_error (GError **error,
   int code = (int) result;
 
   if (result < 0)
-    g_set_error (error, 0, 0, "%d: %s", code, error_to_string (code));
+    g_set_error (error, WOCKY_TLS_ERROR, 0, "%d: %s",
+        code, error_to_string (code));
 
   return result < 0;
 }
@@ -688,7 +679,7 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
                                WockyTLSCertStatus *status)
 {
   int rval = -1;
-  guint _stat = 0;
+  guint peer_cert_status = 0;
   gboolean peer_name_ok = TRUE;
   gnutls_certificate_verify_flags check;
 
@@ -732,7 +723,7 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
   DEBUG ("setting gnutls verify flags level to: %s",
       wocky_enum_to_nick (WOCKY_TYPE_TLS_VERIFICATION_LEVEL, level));
   gnutls_certificate_set_verify_flags (session->gnutls_cert_cred, check);
-  rval = gnutls_certificate_verify_peers2 (session->session, &_stat);
+  rval = gnutls_certificate_verify_peers2 (session->session, &peer_cert_status);
 
   if (rval != GNUTLS_E_SUCCESS)
     {
@@ -876,7 +867,7 @@ wocky_tls_session_verify_peer (WockyTLSSession    *session,
       for (x = 0; status_map[x].gnutls != 0; x++)
         {
           DEBUG ("checking gnutls error %d", status_map[x].gnutls);
-          if (_stat & status_map[x].gnutls)
+          if (peer_cert_status & status_map[x].gnutls)
             {
               DEBUG ("gnutls error %d set", status_map[x].gnutls);
               *status = status_map[x].wocky;
@@ -1232,10 +1223,10 @@ wocky_tls_session_write_ready (GObject      *object,
     wocky_tls_session_try_operation (session, WOCKY_TLS_OP_WRITE);
 }
 
-static gssize
+static ssize_t
 wocky_tls_session_push_func (gpointer    user_data,
                              const void *buffer,
-                             gsize       count)
+                             size_t      count)
 {
   WockyTLSSession *session = WOCKY_TLS_SESSION (user_data);
   GOutputStream *stream;
@@ -1325,10 +1316,10 @@ wocky_tls_session_push_func (gpointer    user_data,
     }
 }
 
-static gssize
+static ssize_t
 wocky_tls_session_pull_func (gpointer  user_data,
                              void     *buffer,
-                             gsize     count)
+                             size_t     count)
 {
   WockyTLSSession *session = WOCKY_TLS_SESSION (user_data);
   GInputStream *stream;
@@ -1433,7 +1424,7 @@ static void
 wocky_tls_session_init (WockyTLSSession *session)
 {
   const char *level;
-  guint lvl = 0;
+  guint64 lvl = 0;
   static gsize initialised;
 
   if G_UNLIKELY (g_once_init_enter (&initialised))
@@ -1443,8 +1434,8 @@ wocky_tls_session_init (WockyTLSSession *session)
       g_once_init_leave (&initialised, 1);
     }
 
-  if ((level = getenv ("WOCKY_TLS_DEBUG_LEVEL")) != NULL)
-    lvl = atoi (level);
+  if ((level = g_getenv ("WOCKY_TLS_DEBUG_LEVEL")) != NULL)
+    lvl = g_ascii_strtoull (level, NULL, 10);
 
   tls_debug_level = lvl;
   gnutls_global_set_log_level (lvl);
@@ -1481,7 +1472,7 @@ wocky_tls_session_set_property (GObject *object, guint prop_id,
 static const char *
 tls_options (void)
 {
-  const char *options = getenv ("WOCKY_GNUTLS_OPTIONS");
+  const char *options = g_getenv ("WOCKY_GNUTLS_OPTIONS");
   return (options != NULL && *options != '\0') ? options : DEFAULT_TLS_OPTIONS;
 }
 

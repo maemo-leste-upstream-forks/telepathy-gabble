@@ -465,6 +465,7 @@ def wrap_connection(conn):
          ('ContactList', cs.CONN_IFACE_CONTACT_LIST),
          ('ContactGroups', cs.CONN_IFACE_CONTACT_GROUPS),
          ('PowerSaving', cs.CONN_IFACE_POWER_SAVING),
+         ('Addressing', cs.CONN_IFACE_ADDRESSING),
         ]))
 
 def wrap_channel(chan, type_, extra=None):
@@ -479,6 +480,17 @@ def wrap_channel(chan, type_, extra=None):
             for name in extra]))
 
     return ProxyWrapper(chan, tp_name_prefix + '.Channel', interfaces)
+
+
+def wrap_content(chan, extra=None):
+    interfaces = { }
+
+    if extra:
+        interfaces.update(dict([
+            (name, tp_name_prefix + '.Call1.Content.Interface.' + name)
+            for name in extra]))
+
+    return ProxyWrapper(chan, tp_name_prefix + '.Call1.Content', interfaces)
 
 def make_connection(bus, event_func, name, proto, params):
     cm = bus.get_object(

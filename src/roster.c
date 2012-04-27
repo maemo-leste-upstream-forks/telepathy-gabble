@@ -28,10 +28,7 @@
 #include <telepathy-glib/channel-manager.h>
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/interfaces.h>
-#include <wocky/wocky-c2s-porter.h>
-#include <wocky/wocky-namespaces.h>
-#include <wocky/wocky-node.h>
-#include <wocky/wocky-stanza.h>
+#include <wocky/wocky.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_ROSTER
 
@@ -236,7 +233,7 @@ gabble_roster_finalize (GObject *object)
   DEBUG ("called with %p", object);
 
   g_hash_table_foreach (priv->items, item_handle_unref_foreach, priv);
-  g_hash_table_destroy (priv->items);
+  g_hash_table_unref (priv->items);
 
   G_OBJECT_CLASS (gabble_roster_parent_class)->finalize (object);
 }
@@ -311,17 +308,13 @@ _parse_item_groups (WockyNode *item_node, TpBaseConnection *conn)
       conn, TP_HANDLE_TYPE_GROUP);
   TpHandleSet *groups = tp_handle_set_new (group_repo);
   TpHandle handle;
-  NodeIter i;
+  WockyNodeIter i;
+  WockyNode *group_node;
 
-  for (i = node_iter (item_node); i; i = node_iter_next (i))
+  wocky_node_iter_init (&i, item_node, "group", NULL);
+  while (wocky_node_iter_next (&i, &group_node))
     {
-      WockyNode *group_node = node_iter_data (i);
-      const gchar *value;
-
-      if (0 != strcmp (group_node->name, "group"))
-        continue;
-
-      value = group_node->content;
+      const gchar *value = group_node->content;
 
       if (NULL == value)
         continue;
@@ -623,7 +616,7 @@ _gabble_roster_item_update (GabbleRoster *roster,
           tp_base_contact_list_groups_created ((TpBaseContactList *) roster,
               (const gchar * const *) strv->pdata, strv->len);
 
-          g_ptr_array_free (strv, TRUE);
+          g_ptr_array_unref (strv);
         }
 
       tp_clear_pointer (&created_groups, tp_intset_destroy);
@@ -1027,8 +1020,7 @@ is_google_roster_push (
 /**
  * validate_roster_item:
  * @contact_repo: the handle repository for contacts
- * @item_node: a child of a <query xmlns='jabber:iq:roster'>, purporting to be
- *             an <item>
+ * @item_node: an <item> child of a <query xmlns='jabber:iq:roster'>
  * @jid_out: location at which to store the roster item's jid, borrowed from
  *           @item_node, if the item is valid.
  *
@@ -1043,12 +1035,6 @@ validate_roster_item (
 {
   const gchar *jid;
   TpHandle handle;
-
-  if (strcmp (item_node->name, "item"))
-    {
-      NODE_DEBUG (item_node, "query sub-node is not item, skipping");
-      return 0;
-    }
 
   jid = wocky_node_get_attribute (item_node, "jid");
   if (!jid)
@@ -1103,17 +1089,18 @@ process_roster (
   TpHandleSet *referenced_handles = tp_handle_set_new (contact_repo);
 
   gboolean google_roster = is_google_roster_push (roster, query_node);
-  NodeIter j;
+  WockyNodeIter j;
+  WockyNode *item_node;
 
   if (google_roster)
     blocking_changed = tp_handle_set_new (contact_repo);
   else
     blocking_changed = NULL;
 
-  /* iterate every sub-node, which we expect to be <item>s */
-  for (j = node_iter (query_node); j; j = node_iter_next (j))
+  /* iterate every <item> sub-node */
+  wocky_node_iter_init (&j, query_node, "item", NULL);
+  while (wocky_node_iter_next (&j, &item_node))
     {
-      WockyNode *item_node = node_iter_data (j);
       const char *jid;
       TpHandle handle;
       GabbleRosterItem *item;
@@ -1333,7 +1320,7 @@ process_roster (
       tp_handle_set_destroy (blocking_changed);
     }
 
-  g_array_free (updated_nicknames, TRUE);
+  g_array_unref (updated_nicknames);
   tp_handle_set_destroy (changed);
   tp_handle_set_destroy (removed);
   tp_handle_set_destroy (referenced_handles);
@@ -1440,7 +1427,7 @@ got_roster_iq (GabbleRoster *roster,
         }
 
       conn_presence_emit_presence_update (priv->conn, members);
-      g_array_free (members, TRUE);
+      g_array_unref (members);
 
       /* The roster is now complete and we can emit signals... */
       tp_base_contact_list_set_list_received ((TpBaseContactList *) roster);
@@ -1808,19 +1795,28 @@ connection_status_changed_cb (GabbleConnection *conn,
     case TP_CONNECTION_STATUS_CONNECTED:
         {
           WockyStanza *stanza;
+          TpBaseContactList *base = TP_BASE_CONTACT_LIST (self);
 
           self->priv->cancel_on_disconnect = g_cancellable_new ();
 
-          DEBUG ("requesting roster");
+          if (tp_base_contact_list_get_download_at_connection (base))
+            {
+              DEBUG ("requesting roster");
 
-          stanza = _gabble_roster_message_new (self, WOCKY_STANZA_SUB_TYPE_GET,
-              NULL);
+              stanza = _gabble_roster_message_new (self, WOCKY_STANZA_SUB_TYPE_GET,
+                  NULL);
 
-          conn_util_send_iq_async (conn, stanza,
-              self->priv->cancel_on_disconnect,
-              roster_received_cb, tp_weak_ref_new (self, NULL, NULL));
+              conn_util_send_iq_async (conn, stanza,
+                  self->priv->cancel_on_disconnect,
+                  roster_received_cb, tp_weak_ref_new (self, NULL, NULL));
 
-          g_object_unref (stanza);
+              g_object_unref (stanza);
+            }
+          else
+            {
+              DEBUG ("don't request the roster because the property"
+                     " ContactList.DownloadAtConnection is FALSE");
+            }
         }
       break;
 
@@ -2786,7 +2782,7 @@ gabble_roster_authorize_publication_async (TpBaseContactList *base,
     }
 
   gabble_simple_async_succeed_or_fail_in_idle (self, callback, user_data,
-      gabble_roster_request_subscription_async, error);
+      gabble_roster_authorize_publication_async, error);
   g_clear_error (&error);
 }
 
@@ -2964,10 +2960,44 @@ gabble_roster_unpublish_async (TpBaseContactList *base,
 
   tp_base_contact_list_contacts_changed (base, changed, removed);
   gabble_simple_async_succeed_or_fail_in_idle (self, callback, user_data,
-      gabble_roster_request_subscription_async, error);
+      gabble_roster_unpublish_async, error);
   g_clear_error (&error);
   tp_handle_set_destroy (changed);
   tp_handle_set_destroy (removed);
+}
+
+static void
+gabble_roster_download_async (TpBaseContactList *base,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
+{
+  GabbleRoster *self = GABBLE_ROSTER (base);
+  GError *error = NULL;
+
+  if (!tp_base_contact_list_get_download_at_connection (base))
+    {
+      WockyStanza *stanza;
+
+      DEBUG ("Downloading roster requested");
+
+      stanza = _gabble_roster_message_new (self, WOCKY_STANZA_SUB_TYPE_GET,
+          NULL);
+
+      conn_util_send_iq_async (self->priv->conn, stanza,
+          self->priv->cancel_on_disconnect,
+          roster_received_cb, tp_weak_ref_new (self, NULL, NULL));
+
+      g_object_unref (stanza);
+    }
+  else
+    {
+      DEBUG ("Downloading roster requested but it is already requested at "
+             "connection. Just do nothing and return.");
+    }
+
+  gabble_simple_async_succeed_or_fail_in_idle (self, callback, user_data,
+      gabble_roster_download_async, error);
+  g_clear_error (&error);
 }
 
 static TpHandleSet *
@@ -3197,7 +3227,7 @@ gabble_roster_set_contact_groups_async (TpBaseContactList *base,
           (const gchar * const *) groups_created->pdata, groups_created->len);
     }
 
-  g_ptr_array_free (groups_created, TRUE);
+  g_ptr_array_unref (groups_created);
 
   if (item->unsent_edits == NULL)
     item->unsent_edits = item_edit_new (contact_repo, contact);
@@ -3554,6 +3584,7 @@ gabble_roster_class_init (GabbleRosterClass *cls)
 
   base_class->dup_states = gabble_roster_dup_states;
   base_class->dup_contacts = gabble_roster_dup_contacts;
+  base_class->download_async = gabble_roster_download_async;
 
   signals[NICKNAMES_UPDATE] = g_signal_new (
     "nicknames-update",

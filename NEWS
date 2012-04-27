@@ -1,24 +1,213 @@
-telepathy-gabble 0.14.1 (2011-11-24)
+telepathy-gabble 0.16.0 (2012-04-02)
 ====================================
 
-The “mispronouncing a vowel in the word ‘panini’” release. This is a
-bugfix release.
+This is the start of a new stable branch.
+
+Changes since 0.15.5:
+
+• telepathy-glib 0.18.0 is now required.
+
+• Install plugins in their own special (versioned) gabble directory so
+  we're not installing unversioned ABI-unstable libraries. (Simon)
+
+• The DownloadAtConnection and Download ContactList members have been
+  implemented. (Alban)
+
+• Handle errors in IBB bytestreams. (fd.o#47999, Will)
+
+Summary of particularly noteworthy changes since 0.14.x:
+
+• telepathy-glib 0.18.0 is now required.
+
+• Gabble can now be built on Android, using 'androgenizer'.
+
+• Add support for the final version of Call1 and remove the
+  telepathy-yell submodule.
+
+• Many other miscellanous fixes and small interface implementations.
+
+telepathy-gabble 0.15.5 (2012-03-22)
+====================================
+
+Requirements:
+
+• telepathy-glib 0.17.7 is now required.
+
+Enhancements:
+
+• fd.o#46513: Refactor Jingle code to remove Telepathy in preparation
+  of moving it to Wocky. (Will)
+
+• fd.o#45602: Subclass TpBaseChannel in more channel
+  implemenations. (Jonny)
+
+• fd.o#47502: Add a --disable-voip configure flag to disable building
+  gabble with VoIP support. (Marco)
 
 Fixes:
 
-• No longer crashes on startup if an Ytstenut service is running.
-  (fd.o#42706, jonathan)
+• Correctly convert between Telepathy and Jingle candidate
+  types. (Olivier)
 
-• Hopefully no longer crashes in somewhat unknown Sugar-related
-  circumstances. (fd.o#32050, wjt)
+• Start sending automatically on accepting bidirectional
+  calls. (Olivier)
 
-• Contacts with subscription='none' and a locally-pending subscription
-  request are no longer hidden from the contact list. This works around
-  another “flickering” bug with the Google Talk server. (fd.o#40518,
-  Marco & Cosimo)
+telepathy-gabble 0.15.4 (2012-02-21)
+====================================
 
-• The capabilities.h and caps-channel-manager.h headers are now
-  distributed and installed correctly. (Alban)
+The "disproportionate retribution" release.
+
+Requirements:
+
+• telepathy-glib 0.17.5 is now required
+
+Enhancements:
+
+• Add support for the final version of Call1 from telepathy-spec 0.25.2
+  and remove the telepathy-yell submodule. (Many contributors)
+
+• fd.o#41790 - Make file transfer support optional (andrunko)
+
+• fd.o#44056 - telepathy-gabble-xmpp-console no longer mixes GIR and
+  pygtk. (Guillaume)
+
+• fd.o#33911 - The Loudmouth API compatibility layer has been removed.
+  It's possible this will cause regressions in weird edge cases but it
+  should make the code base more maintainable. (Jonny, Will)
+
+• fd.o#45491 - Error messages provided by the server in <presence
+  type='error'/> stanzas are now exposed via the SimplePresence API.
+  This makes it easier for users to distinguish contacts being offline
+  from contacts' servers being broken. (Will)
+
+• fd.o#44649 - Gabble now has a gabble-plugins.so library, similarly
+  to mission-control. This enables plugins to link correctly as DLLs
+  on Windows. This also means that plugins don't directly access
+  GabbleConnections anymore, but instead invoke the same functionality
+  through a GabblePluginConnection GInterface. (siraj)
+
+API changes to Wocky snapshot:
+
+• fd.o#45400 - WockyPepService's API has changed a little bit.
+  wocky_pep_service_get_finish() has grown an extra out argument to give
+  the caller the <item/> element found, if any; similarly, the ::changed
+  signal has grown a similar extra argument. (Will)
+
+• fd.o#34975 - WockyPorter is now responsible for sending back error
+  replies for unhandled IQs, whereas previously this was up to Gabble.
+  Plugin authors shouldn't notice this change. (Will)
+
+• fd.o#27489 - including <wocky/wocky.h> now includes all public API
+  from Wocky, and including any other header directly is forbidden.
+  (This is similar to how GLib's headers are structured.) Out-of-tree
+  plugins will need to be updated. (Will)
+
+Fixes:
+
+• fd.o#44331 - Gabble plugin API fails at runtime on Windows :
+  gabble_plugin_create_sidecar function is renamed
+  to gabble_plugin_create_sidecar_async and new virtual function
+  gabble_plugin_create_sidecar_finish is introduced. All gabble plugins
+  should implement these two methods and all internal plugins are
+  updated to use this new API. (siraj)
+
+• fd.o #45443 (workaround): avoid testing Credentials access control,
+  since recent Linux has  stricter requirements for credentials-passing
+  (it's now opt-in) which we're not yet meeting. (Guillaume)
+
+• fd.o #46379: don't raise a GError with domain 0. (Simon)
+
+• fd.o #44855: work around Google's unimplemented capability discovery
+  by hard-coding the capabilities of the GTalk echo bot. (Guillaume)
+
+• Work around the deprecation of GValueArray. (Guillaume)
+
+telepathy-gabble 0.15.3 (2011-12-22)
+====================================
+
+Fixes:
+
+• fd.o#43891: Update wocky snapshot to fix wocky_data_form_set_type() (Alban)
+
+telepathy-gabble 0.15.2 (2011-12-21)
+====================================
+
+Enhancements:
+
+• fd.o#43588, fd.o#43889: Add public
+  gabble_connection_add_sidecar_own_caps_full() function which
+  includes data forms. (Alban)
+
+Fixes:
+
+• fd.o#42462: Update wocky snapshot to fix gabble getting kicked from D-Bus
+  when non-character utf-8 is used by remote clients (Sjoerd)
+
+• Fix the build when using GLib 2.32. (Xavier)
+
+telepathy-gabble 0.15.1 (2011-11-24)
+====================================
+
+The “goodbye desolate railyard” release.
+
+Dependencies:
+
+• telepathy-glib 0.17.2 is now required.
+
+Enhancements:
+
+• fd.o#38568: Ladies and gentlemen, prepare your angle brackets: Gabble
+  now ships with an XMPP console interface! You can send IQs and get
+  their replies, send arbitrary stanzas, or monitor all incoming and
+  outgoing stanzas, all with beautiful GtkSourceView syntax
+  highlighting. UI love and caring welcome. Anyone want to make a
+  version of the Telepathy “heads” icon with stanzas in place of the
+  thought balloons? (wjt)
+
+• fd.o#32692, fd.o#30296, fd.o#41789: Gabble now implements the
+  freshly-undrafted Protocol.Interface.Addressing and the still-unstable
+  Connection.Interface.Addressing1, and uses them to expose Facebook
+  contacts' integer IDs. (andrunko, eeejay)
+
+• fd.o#42446: Gabble can now be built on Android, using Androgenizer.
+  (Derek Foreman, Alvaro Soliverez)
+
+Fixes:
+
+• capabilities.h and caps-channel-manager.h are no longer erroneously
+  omitted. (albanc)
+
+telepathy-gabble 0.15.0 (2011-11-16)
+====================================
+
+This is the start of a new development branch that will lead to 0.16
+in roughly six months.
+
+Dependencies:
+
+• telepathy-glib 0.17.1 is now required.
+
+Enhancements:
+
+• fd.o#42288: the Chan.I.FileTransfer.Metadata interface has been
+  implemented. (jonny)
+
+• Updated Wocky:
+  · The SASL auth server test now builds with new and old versions of
+    libsasl2.
+
+Bug fixes:
+
+• fd.o#42706: fix a typo when indexing a pointer array by using the
+  wrong counter! (jonny)
+
+• fd.o#32050: fix a crasher when using OLPC activities. (wjt)
+
+• Wocky:
+  · fd.o#41719: don't bail on hashing caps if there's no
+    FORM_TYPE. (jonny)
+  · fdo#39057: Accept from="server.com" as stanzas coming from
+    server. (xclaesse)
 
 telepathy-gabble 0.14.0 (2011-11-07)
 ====================================

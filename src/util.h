@@ -27,18 +27,14 @@
 #include <glib.h>
 #include <telepathy-glib/handle-repo.h>
 #include <telepathy-glib/util.h>
-#include <loudmouth/loudmouth.h>
-#include <wocky/wocky-bare-contact.h>
+#include <wocky/wocky.h>
 
+#ifdef ENABLE_VOIP
 #include "jingle-factory.h"
 #include "jingle-content.h"
+#endif
 
 #include "types.h"
-
-typedef GSList * NodeIter;
-#define node_iter(node) (node->children)
-#define node_iter_next(i) (g_slist_next (i))
-#define node_iter_data(i) ((LmMessageNode *) i->data)
 
 /* Guarantees that the resulting hash is in lower-case */
 gchar *sha1_hex (const gchar *bytes, guint len);
@@ -49,22 +45,10 @@ void sha1_bin (const gchar *bytes, guint len, guchar out[SHA1_HASH_SIZE]);
 
 gchar *gabble_generate_id (void);
 
-void lm_message_node_add_own_nick (LmMessageNode *node,
+void lm_message_node_add_own_nick (WockyNode *node,
     GabbleConnection *conn);
-void lm_message_node_steal_children (LmMessageNode *snatcher,
-    LmMessageNode *mum);
-gboolean lm_message_node_has_namespace (LmMessageNode *node, const gchar *ns,
-    const gchar *tag);
-LmMessageNode *lm_message_node_get_child_with_namespace (LmMessageNode *node,
-    const gchar *name, const gchar *ns);
-G_GNUC_NULL_TERMINATED LmMessage *lm_message_build (const gchar *to,
-    LmMessageType type, guint spec, ...);
-G_GNUC_NULL_TERMINATED LmMessage * lm_message_build_with_sub_type (
-    const gchar *to, LmMessageType type, LmMessageSubType sub_type,
-    guint spec, ...);
 
 G_GNUC_WARN_UNUSED_RESULT
-gboolean gabble_decode_jid (const gchar *jid, gchar **a, gchar **b, gchar **c);
 gchar *gabble_encode_jid (const gchar *node, const gchar *domain,
     const gchar *resource);
 
@@ -76,32 +60,25 @@ gchar *gabble_normalize_room (TpHandleRepoIface *repo, const gchar *jid,
 TpHandle gabble_get_room_handle_from_jid (TpHandleRepoIface *room_repo,
     const gchar *jid);
 
-GHashTable *lm_message_node_extract_properties (LmMessageNode *node,
+GHashTable *lm_message_node_extract_properties (WockyNode *node,
     const gchar *prop);
 void
-lm_message_node_add_children_from_properties (LmMessageNode *node,
+lm_message_node_add_children_from_properties (WockyNode *node,
     GHashTable *properties, const gchar *prop);
-const gchar * lm_message_node_get_namespace (LmMessageNode *node);
-const gchar * lm_message_node_get_name (LmMessageNode *node);
-LmMessageNode * lm_message_node_get_child_any_ns (LmMessageNode *node,
-    const gchar *name);
-
-LmMessage *
-lm_iq_message_make_result (LmMessage *iq_message);
 
 void gabble_signal_connect_weak (gpointer instance, const gchar *detailed_signal,
     GCallback c_handler, GObject *user_data);
 guint gabble_idle_add_weak (GSourceFunc function, GObject *object);
 
-const gchar * lm_message_node_get_attribute_with_namespace (LmMessageNode *node,
-    const gchar *attribute,
-    const gchar *ns);
-
 GPtrArray *gabble_g_ptr_array_copy (GPtrArray *source);
 
 WockyBareContact * ensure_bare_contact_from_jid (GabbleConnection *conn,
     const gchar *jid);
+TpHandle ensure_handle_from_contact (
+    GabbleConnection *conn,
+    WockyContact *contact);
 
+#ifdef ENABLE_VOIP
 gboolean jingle_pick_best_resource (GabbleConnection *conn,
     TpHandle peer,
     gboolean want_audio,
@@ -116,6 +93,7 @@ const gchar *jingle_pick_best_content_type (GabbleConnection *conn,
     JingleMediaType type);
 
 GPtrArray *gabble_call_candidates_to_array (GList *candidates);
+#endif
 
 gchar * gabble_peer_to_jid (GabbleConnection *conn,
     TpHandle peer,
@@ -138,5 +116,36 @@ GSimpleAsyncResult *gabble_simple_async_countdown_new (gpointer self,
     gssize todo);
 void gabble_simple_async_countdown_inc (GSimpleAsyncResult *simple);
 void gabble_simple_async_countdown_dec (GSimpleAsyncResult *simple);
+
+/* Boilerplate for telling servers which implement XEP-0079 not to store these
+ * messages for delivery later. Include it in your call to wocky_stanza_build()
+ * like so:
+ *
+ *    wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
+ *       NULL, jid,
+ *       '(', "close",
+ *         ':', NS_TUBES,
+ *         '@', "tube", id_str,
+ *       ')',
+ *       GABBLE_AMP_DO_NOT_STORE_SPEC,
+ *       NULL);
+ *
+ * Every 1000th user will win a Marshall amplifier!
+ */
+#define GABBLE_AMP_DO_NOT_STORE_SPEC \
+          '(', "amp", \
+            ':', NS_AMP, \
+            '(', "rule", \
+              '@', "condition", "deliver-at", \
+              '@', "value", "stored", \
+              '@', "action", "error", \
+            ')', \
+            '(', "rule", \
+              '@', "condition", "match-resource", \
+              '@', "value", "exact", \
+              '@', "action", "error", \
+            ')', \
+          ')'
+
 
 #endif /* __GABBLE_UTIL_H__ */

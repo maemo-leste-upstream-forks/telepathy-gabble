@@ -21,11 +21,11 @@
 #define __JINGLE_SESSION_H__
 
 #include <glib-object.h>
-#include <loudmouth/loudmouth.h>
+#include <wocky/wocky.h>
 
 #include "jingle-content.h"
 #include "jingle-factory.h"
-#include "types.h"
+#include "jingle-types.h"
 
 G_BEGIN_DECLS
 
@@ -65,22 +65,23 @@ typedef struct _GabbleJingleSessionPrivate GabbleJingleSessionPrivate;
 struct _GabbleJingleSession {
     GObject parent;
     GabbleJingleSessionPrivate *priv;
-
-    TpHandle peer;
 };
 
-GabbleJingleSession *gabble_jingle_session_new (GabbleConnection *connection,
+GabbleJingleSession *gabble_jingle_session_new (
+    GabbleJingleFactory *factory,
+    WockyPorter *porter,
     const gchar *session_id,
     gboolean local_initiator,
-    const gchar *jid,
+    WockyContact *peer,
+    JingleDialect dialect,
     gboolean local_hold);
 
-const gchar * gabble_jingle_session_detect (LmMessage *message,
+const gchar * gabble_jingle_session_detect (WockyStanza *stanza,
     JingleAction *action, JingleDialect *dialect);
 gboolean gabble_jingle_session_parse (GabbleJingleSession *sess,
-    JingleAction action, LmMessage *message, GError **error);
-LmMessage *gabble_jingle_session_new_message (GabbleJingleSession *sess,
-    JingleAction action, LmMessageNode **sess_node);
+    JingleAction action, WockyStanza *stanza, GError **error);
+WockyStanza *gabble_jingle_session_new_message (GabbleJingleSession *sess,
+    JingleAction action, WockyNode **sess_node);
 
 void gabble_jingle_session_accept (GabbleJingleSession *sess);
 gboolean gabble_jingle_session_terminate (GabbleJingleSession *sess,
@@ -93,6 +94,7 @@ void gabble_jingle_session_remove_content (GabbleJingleSession *sess,
 GabbleJingleContent *
 gabble_jingle_session_add_content (GabbleJingleSession *sess,
     JingleMediaType mtype,
+    JingleContentSenders senders,
     const char *name,
     const gchar *content_ns,
     const gchar *transport_ns);
@@ -107,16 +109,13 @@ const gchar *gabble_jingle_session_get_sid (GabbleJingleSession *sess);
 JingleDialect gabble_jingle_session_get_dialect (GabbleJingleSession *sess);
 
 gboolean gabble_jingle_session_can_modify_contents (GabbleJingleSession *sess);
-gboolean gabble_jingle_session_peer_has_quirk (
+gboolean gabble_jingle_session_peer_has_cap (
     GabbleJingleSession *self,
-    const gchar *quirk);
+    const gchar *cap_or_quirk);
 
-typedef void (*JingleReplyHandler) (GObject *, gboolean success,
-    LmMessage *reply);
-void gabble_jingle_session_send (GabbleJingleSession *sess,
-    LmMessage *msg,
-    JingleReplyHandler cb,
-    GObject *weak_object);
+void gabble_jingle_session_send (
+    GabbleJingleSession *sess,
+    WockyStanza *stanza);
 
 void gabble_jingle_session_set_local_hold (GabbleJingleSession *sess,
     gboolean held);
@@ -128,9 +127,13 @@ gboolean gabble_jingle_session_get_remote_ringing (GabbleJingleSession *sess);
 gboolean gabble_jingle_session_defines_action (GabbleJingleSession *sess,
     JingleAction action);
 
+WockyContact *gabble_jingle_session_get_peer_contact (GabbleJingleSession *self);
 const gchar *gabble_jingle_session_get_peer_jid (GabbleJingleSession *sess);
 
 const gchar *gabble_jingle_session_get_reason_name (JingleReason reason);
+
+GabbleJingleFactory *gabble_jingle_session_get_factory (GabbleJingleSession *self);
+WockyPorter *gabble_jingle_session_get_porter (GabbleJingleSession *self);
 
 #endif /* __JINGLE_SESSION_H__ */
 

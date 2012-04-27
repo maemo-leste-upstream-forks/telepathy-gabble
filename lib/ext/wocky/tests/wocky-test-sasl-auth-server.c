@@ -28,14 +28,12 @@
 
 #include "wocky-test-sasl-auth-server.h"
 
-#include <wocky/wocky-xmpp-connection.h>
-#include <wocky/wocky-utils.h>
-#include <wocky/wocky-namespaces.h>
 #include "config.h"
 
 #ifdef HAVE_LIBSASL2
 
 #include <sasl/sasl.h>
+#include <sasl/saslplug.h>
 #define CHECK_SASL_RETURN(x)                                \
 G_STMT_START   {                                            \
     if (x < SASL_OK) {                                      \
@@ -44,6 +42,13 @@ G_STMT_START   {                                            \
       g_assert_not_reached ();                              \
     }                                                       \
 } G_STMT_END
+
+/* Apparently, we're allowed to typedef the same thing *again* if it's
+ * the same signature, so this allows for backwards compatiblity with
+ * older libsasl2s and also works with newer ones too. This'll only
+ * break if libsasl2 change the type of sasl_callback_ft. I sure hope
+ * they don't! */
+typedef int (*sasl_callback_ft)(void);
 
 #else
 
@@ -929,8 +934,8 @@ test_sasl_auth_server_new (GIOStream *stream, gchar *mech,
   static gboolean sasl_initialized = FALSE;
   int ret;
   static sasl_callback_t callbacks[] = {
-    { SASL_CB_LOG, test_sasl_server_auth_log, NULL },
-    { SASL_CB_GETOPT, test_sasl_server_auth_getopt, NULL },
+    { SASL_CB_LOG, (sasl_callback_ft) test_sasl_server_auth_log, NULL },
+    { SASL_CB_GETOPT, (sasl_callback_ft) test_sasl_server_auth_getopt, NULL },
     { SASL_CB_LIST_END, NULL, NULL },
   };
 

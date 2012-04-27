@@ -24,13 +24,12 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-#include <loudmouth/loudmouth.h>
+#include <wocky/wocky.h>
 #include <telepathy-glib/channel-manager.h>
 #include <telepathy-glib/dbus.h>
+#include <telepathy-glib/gtypes.h>
 #include <telepathy-glib/interfaces.h>
 #include <telepathy-glib/util.h>
-
-#include <telepathy-yell/interfaces.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_MUC
 
@@ -40,7 +39,9 @@
 #include "debug.h"
 #include "disco.h"
 #include "im-channel.h"
+#ifdef ENABLE_VOIP
 #include "media-factory.h"
+#endif
 #include "message-util.h"
 #include "muc-channel.h"
 #include "namespaces.h"
@@ -49,7 +50,9 @@
 #include "tube-dbus.h"
 #include "tube-stream.h"
 #include "util.h"
+#ifdef ENABLE_VOIP
 #include "call-muc-channel.h"
+#endif
 
 static void channel_manager_iface_init (gpointer, gpointer);
 
@@ -75,7 +78,7 @@ struct _GabbleMucFactoryPrivate
   GabbleConnection *conn;
   gulong status_changed_id;
 
-  LmMessageHandler *message_cb;
+  guint message_cb_id;
   /* GUINT_TO_POINTER(room_handle) => (GabbleMucChannel *) */
   GHashTable *text_channels;
   /* Tubes channels which will be considered ready when the corresponding
@@ -121,8 +124,6 @@ gabble_muc_factory_init (GabbleMucFactory *fac)
   priv->queued_requests = g_hash_table_new_full (g_direct_hash,
       g_direct_equal, NULL, NULL);
 
-  priv->message_cb = NULL;
-
   priv->conn = NULL;
   priv->dispose_has_run = FALSE;
 }
@@ -161,7 +162,7 @@ gabble_muc_factory_dispose (GObject *object)
 
   g_hash_table_foreach (priv->disco_requests, cancel_disco_request,
       priv->conn->disco);
-  g_hash_table_destroy (priv->disco_requests);
+  g_hash_table_unref (priv->disco_requests);
 
   if (G_OBJECT_CLASS (gabble_muc_factory_parent_class)->dispose)
     G_OBJECT_CLASS (gabble_muc_factory_parent_class)->dispose (object);
@@ -335,7 +336,7 @@ muc_ready_cb (GabbleMucChannel *text_chan,
 
       tp_channel_manager_emit_new_channels (fac, channels);
 
-      g_hash_table_destroy (channels);
+      g_hash_table_unref (channels);
     }
 
   g_hash_table_remove (priv->tubes_needed_for_tube, tubes_chan);
@@ -398,6 +399,7 @@ muc_sub_channel_closed_cb (TpSvcChannel *chan,
       TP_EXPORTABLE_CHANNEL (chan));
 }
 
+#ifdef ENABLE_VOIP
 static void
 muc_channel_new_call (GabbleMucChannel *muc,
     GabbleCallMucChannel *call,
@@ -414,6 +416,7 @@ muc_channel_new_call (GabbleMucChannel *muc,
   g_signal_connect (call, "closed",
     G_CALLBACK (muc_sub_channel_closed_cb), fac);
 }
+#endif
 
 static void
 muc_channel_new_tube (GabbleMucChannel *channel,
@@ -498,13 +501,15 @@ new_muc_channel (GabbleMucFactory *fac,
 
   g_signal_connect (chan, "closed", (GCallback) muc_channel_closed_cb, fac);
   g_signal_connect (chan, "new-tube", (GCallback) muc_channel_new_tube, fac);
+#ifdef ENABLE_VOIP
   g_signal_connect (chan, "new-call",
       (GCallback) muc_channel_new_call, fac);
+#endif
 
   g_hash_table_insert (priv->text_channels, GUINT_TO_POINTER (handle), chan);
 
   g_free (object_path);
-  g_ptr_array_free (initial_channels_array, TRUE);
+  g_ptr_array_unref (initial_channels_array);
   g_array_unref (initial_handles);
 
   if (_gabble_muc_channel_is_ready (chan))
@@ -571,7 +576,7 @@ obsolete_invite_disco_cb (GabbleDisco *self,
                           GabbleDiscoRequest *request,
                           const gchar *jid,
                           const gchar *node,
-                          LmMessageNode *query_result,
+                          WockyNode *query_result,
                           GError* error,
                           gpointer user_data)
 {
@@ -581,7 +586,7 @@ obsolete_invite_disco_cb (GabbleDisco *self,
   GabbleMucFactoryPrivate *priv = fac->priv;
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
       (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_CONTACT);
-  LmMessageNode *identity;
+  WockyNode *identity;
   const char *category = NULL, *type = NULL;
 
   g_hash_table_remove (priv->disco_requests, request);
@@ -593,11 +598,11 @@ obsolete_invite_disco_cb (GabbleDisco *self,
       goto out;
     }
 
-  identity = lm_message_node_get_child (query_result, "identity");
+  identity = wocky_node_get_child (query_result, "identity");
   if (identity != NULL)
     {
-      category = lm_message_node_get_attribute (identity, "category");
-      type = lm_message_node_get_attribute (identity, "type");
+      category = wocky_node_get_attribute (identity, "category");
+      type = wocky_node_get_attribute (identity, "type");
     }
 
   if (tp_strdiff (category, "conference") ||
@@ -619,7 +624,7 @@ out:
 
 static gboolean
 process_muc_invite (GabbleMucFactory *fac,
-                    LmMessage *message,
+                    WockyStanza *message,
                     const gchar *from,
                     TpChannelTextSendError send_error)
 {
@@ -628,13 +633,13 @@ process_muc_invite (GabbleMucFactory *fac,
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (conn,
       TP_HANDLE_TYPE_CONTACT);
 
-  LmMessageNode *x_node, *invite_node, *reason_node;
+  WockyNode *x_node, *invite_node, *reason_node;
   const gchar *invite_from, *reason = NULL;
   TpHandle inviter_handle;
   gchar *room;
 
   /* does it have a muc subnode? */
-  x_node = lm_message_node_get_child_with_namespace (
+  x_node = wocky_node_get_child_ns (
       wocky_stanza_get_top_node (message), "x",
       NS_MUC_USER);
 
@@ -642,7 +647,7 @@ process_muc_invite (GabbleMucFactory *fac,
     return FALSE;
 
   /* and an invitation? */
-  invite_node = lm_message_node_get_child (x_node, "invite");
+  invite_node = wocky_node_get_child (x_node, "invite");
 
   if (invite_node == NULL)
     return FALSE;
@@ -656,7 +661,7 @@ process_muc_invite (GabbleMucFactory *fac,
       return TRUE;
     }
 
-  invite_from = lm_message_node_get_attribute (invite_node, "from");
+  invite_from = wocky_node_get_attribute (invite_node, "from");
   if (invite_from == NULL)
     {
       STANZA_DEBUG (message, "got a MUC invitation message with no JID; "
@@ -675,10 +680,10 @@ process_muc_invite (GabbleMucFactory *fac,
       return TRUE;
     }
 
-  reason_node = lm_message_node_get_child (invite_node, "reason");
+  reason_node = wocky_node_get_child (invite_node, "reason");
 
   if (reason_node != NULL)
-    reason = lm_message_node_get_value (reason_node);
+    reason = reason_node->content;
 
   /* create the channel */
   room = gabble_remove_resource (from);
@@ -692,7 +697,7 @@ process_muc_invite (GabbleMucFactory *fac,
 
 static gboolean
 process_obsolete_invite (GabbleMucFactory *fac,
-                         LmMessage *message,
+                         WockyStanza *message,
                          const gchar *from,
                          const gchar *body,
                          TpChannelTextSendError send_error)
@@ -702,14 +707,14 @@ process_obsolete_invite (GabbleMucFactory *fac,
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (conn,
       TP_HANDLE_TYPE_CONTACT);
 
-  LmMessageNode *x_node;
+  WockyNode *x_node;
   const gchar *room;
   TpHandle inviter_handle;
   GabbleDiscoRequest *request;
   struct DiscoInviteData *disco_udata;
 
   /* check for obsolete invite method */
-  x_node = lm_message_node_get_child_with_namespace (
+  x_node = wocky_node_get_child_ns (
       wocky_stanza_get_top_node (message), "x", NS_X_CONFERENCE);
   if (x_node == NULL)
     return FALSE;
@@ -726,7 +731,7 @@ process_obsolete_invite (GabbleMucFactory *fac,
     }
 
   /* the room JID is in x */
-  room = lm_message_node_get_attribute (x_node, "jid");
+  room = wocky_node_get_attribute (x_node, "jid");
   if (room == NULL)
     {
       STANZA_DEBUG (message,
@@ -775,14 +780,14 @@ process_obsolete_invite (GabbleMucFactory *fac,
 /**
  * muc_factory_message_cb:
  *
- * Called by loudmouth when we get an incoming <message>.
+ * Called by Wocky when we get an incoming <message>.
  * We filter only groupchat and MUC messages, ignoring the rest.
  */
-static LmHandlerResult
-muc_factory_message_cb (LmMessageHandler *handler,
-                        LmConnection *connection,
-                        LmMessage *message,
-                        gpointer user_data)
+static gboolean
+muc_factory_message_cb (
+    WockyPorter *porter,
+    WockyStanza *message,
+    gpointer user_data)
 {
   GabbleMucFactory *fac = GABBLE_MUC_FACTORY (user_data);
   GabbleMucFactoryPrivate *priv = fac->priv;
@@ -796,26 +801,26 @@ muc_factory_message_cb (LmMessageHandler *handler,
 
   if (!gabble_message_util_parse_incoming_message (message, &from, &stamp,
         &msgtype, &id, &body, &state, &send_error, &delivery_status))
-    return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+    return TRUE;
 
   if (conn_olpc_process_activity_properties_message (priv->conn, message,
         from))
-    return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+    return TRUE;
 
   if (conn_olpc_process_activity_uninvite_message (priv->conn, message,
         from))
-    return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+    return TRUE;
 
   if (process_muc_invite (fac, message, from, send_error))
-    return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+    return TRUE;
 
   if (process_obsolete_invite (fac, message, from, body, send_error))
-    return LM_HANDLER_RESULT_REMOVE_MESSAGE;
+    return TRUE;
 
   /* we used to check if a room with the jid exists, instead at this  *
    * point we stop caring: actual MUC messages are handled internally *
    * by the wocky muc implementation                                  */
-  return LM_HANDLER_RESULT_ALLOW_MORE_HANDLERS;
+  return FALSE;
 }
 
 void
@@ -892,9 +897,9 @@ gabble_muc_factory_close_all (GabbleMucFactory *self)
     g_hash_table_foreach_steal (priv->queued_requests,
         cancel_queued_requests, self);
 
-  tp_clear_pointer (&priv->queued_requests, g_hash_table_destroy);
-  tp_clear_pointer (&priv->text_needed_for_tubes, g_hash_table_destroy);
-  tp_clear_pointer (&priv->tubes_needed_for_tube, g_hash_table_destroy);
+  tp_clear_pointer (&priv->queued_requests, g_hash_table_unref);
+  tp_clear_pointer (&priv->text_needed_for_tubes, g_hash_table_unref);
+  tp_clear_pointer (&priv->tubes_needed_for_tube, g_hash_table_unref);
 
   /* Use a temporary variable because we don't want
    * muc_channel_closed_cb or tubes_channel_closed_cb to remove the channel
@@ -911,20 +916,33 @@ gabble_muc_factory_close_all (GabbleMucFactory *self)
       while (g_hash_table_iter_next (&iter, NULL, &chan))
         gabble_muc_channel_teardown (GABBLE_MUC_CHANNEL (chan));
 
-      g_hash_table_destroy (tmp);
+      g_hash_table_unref (tmp);
     }
 
-  if (priv->message_cb != NULL)
+  if (priv->message_cb_id != 0)
     {
-      DEBUG ("removing callbacks");
+      WockyPorter *porter = gabble_connection_dup_porter (priv->conn);
 
-      lm_connection_unregister_message_handler (priv->conn->lmconn,
-          priv->message_cb, LM_MESSAGE_TYPE_MESSAGE);
+      wocky_porter_unregister_handler (porter, priv->message_cb_id);
+      priv->message_cb_id = 0;
+      g_object_unref (porter);
     }
-
-  tp_clear_pointer (&priv->message_cb, lm_message_handler_unref);
 }
 
+static void
+porter_available_cb (
+    GabbleConnection *conn,
+    WockyPorter *porter,
+    gpointer user_data)
+{
+  GabbleMucFactory *self = GABBLE_MUC_FACTORY (user_data);
+
+  self->priv->message_cb_id = wocky_porter_register_handler_from_anyone (porter,
+      WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
+      WOCKY_PORTER_HANDLER_PRIORITY_NORMAL,
+      muc_factory_message_cb, self,
+      NULL);
+}
 
 static void
 connection_status_changed_cb (GabbleConnection *conn,
@@ -932,21 +950,8 @@ connection_status_changed_cb (GabbleConnection *conn,
                               guint reason,
                               GabbleMucFactory *self)
 {
-  GabbleMucFactoryPrivate *priv = self->priv;
-
   switch (status)
     {
-    case TP_CONNECTION_STATUS_CONNECTING:
-      DEBUG ("adding callbacks");
-      g_assert (priv->message_cb == NULL);
-
-      priv->message_cb = lm_message_handler_new (muc_factory_message_cb,
-          self, NULL);
-      lm_connection_register_message_handler (priv->conn->lmconn,
-          priv->message_cb, LM_MESSAGE_TYPE_MESSAGE,
-          LM_HANDLER_PRIORITY_NORMAL);
-      break;
-
     case TP_CONNECTION_STATUS_DISCONNECTED:
       gabble_muc_factory_close_all (self);
       break;
@@ -965,6 +970,8 @@ gabble_muc_factory_constructor (GType type, guint n_props,
 
   priv->status_changed_id = g_signal_connect (priv->conn,
       "status-changed", (GCallback) connection_status_changed_cb, obj);
+  tp_g_signal_connect_object (priv->conn,
+      "porter-available", (GCallback) porter_available_cb, obj, 0);
 
   return obj;
 }
@@ -996,8 +1003,10 @@ _foreach_slave (gpointer key, gpointer value, gpointer user_data)
       g_object_unref (tube);
     }
 
+#ifdef ENABLE_VOIP
   g_list_foreach (gabble_muc_channel_get_call_channels (gmuc),
       (GFunc) data->foreach, data->user_data);
+#endif
 }
 
 static void
@@ -1058,7 +1067,7 @@ gabble_muc_factory_handle_si_stream_request (GabbleMucFactory *self,
                                              GabbleBytestreamIface *bytestream,
                                              TpHandle room_handle,
                                              const gchar *stream_id,
-                                             LmMessage *msg)
+                                             WockyStanza *msg)
 {
   GabbleMucFactoryPrivate *priv = self->priv;
   TpHandleRepoIface *room_repo = tp_base_connection_get_handles (
@@ -1074,7 +1083,7 @@ gabble_muc_factory_handle_si_stream_request (GabbleMucFactory *self,
 
   if (tube == NULL)
     {
-      GError e = { GABBLE_XMPP_ERROR, XMPP_ERROR_BAD_REQUEST,
+      GError e = { WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST,
           "No tubes channel available for this MUC" };
 
       DEBUG ("tubes channel doesn't exist for muc %d", room_handle);
@@ -1164,14 +1173,16 @@ gabble_muc_factory_type_foreach_channel_class (GType type,
   func (type, table, gabble_tube_dbus_channel_get_allowed_properties (),
       user_data);
 
+#ifdef ENABLE_VOIP
   /* Muc Channel.Type.Call */
   g_value_set_static_string (channel_type_value,
-      TPY_IFACE_CHANNEL_TYPE_CALL);
+      TP_IFACE_CHANNEL_TYPE_CALL);
   func (type, table,
       gabble_media_factory_call_channel_allowed_properties (),
       user_data);
+#endif
 
-  g_hash_table_destroy (table);
+  g_hash_table_unref (table);
 }
 
 /* return TRUE if the text_channel associated is ready */
@@ -1418,7 +1429,7 @@ handle_text_channel_request (GabbleMucFactory *self,
       gboolean ok;
 
       /* JIDs that are handles must already be valid. */
-      ok = gabble_decode_jid (target_id, &target_room, NULL, NULL);
+      ok = wocky_decode_jid (target_id, &target_room, NULL, NULL);
       g_assert (ok);
 
       ok = !tp_strdiff (target_room, room_name);
@@ -1445,7 +1456,7 @@ handle_text_channel_request (GabbleMucFactory *self,
       gboolean ok = TRUE;
 
       /* JIDs that are handles must already be valid. */
-      ok = gabble_decode_jid (target_id, NULL, &target_server, NULL);
+      ok = wocky_decode_jid (target_id, NULL, &target_server, NULL);
       g_assert (ok);
 
       if (target_server != NULL)
@@ -1535,8 +1546,8 @@ out:
   if (room != 0)
     tp_handle_unref (room_handles, room);
 
-  g_hash_table_destroy (final_channels);
-  g_array_free (final_handles, TRUE);
+  g_hash_table_unref (final_channels);
+  g_array_unref (final_handles);
   g_free (final_ids);
 
   tp_handle_set_destroy (handles);
@@ -1656,7 +1667,7 @@ handle_tube_channel_request (GabbleMucFactory *self,
       g_hash_table_insert (channels, new_channel, request_tokens);
       tp_channel_manager_emit_new_channels (self, channels);
 
-      g_hash_table_destroy (channels);
+      g_hash_table_unref (channels);
       g_slist_free (request_tokens);
     }
   else
@@ -1742,6 +1753,7 @@ handle_dbus_tube_channel_request (GabbleMucFactory *self,
       require_new, handle, error);
 }
 
+#ifdef ENABLE_VOIP
 static void
 call_muc_channel_request_cb (GObject *source,
   GAsyncResult *result,
@@ -1789,9 +1801,9 @@ handle_call_channel_request (GabbleMucFactory *self,
     return FALSE;
 
   initial_audio = tp_asv_get_boolean (request_properties,
-      TPY_PROP_CHANNEL_TYPE_CALL_INITIAL_AUDIO, NULL);
+      TP_PROP_CHANNEL_TYPE_CALL_INITIAL_AUDIO, NULL);
   initial_video = tp_asv_get_boolean (request_properties,
-      TPY_PROP_CHANNEL_TYPE_CALL_INITIAL_VIDEO, NULL);
+      TP_PROP_CHANNEL_TYPE_CALL_INITIAL_VIDEO, NULL);
 
   if (!initial_audio && !initial_video)
     {
@@ -1838,6 +1850,7 @@ out:
 error:
   return FALSE;
 }
+#endif
 
 typedef gboolean (*ChannelTypeHandlerFunc) (
     GabbleMucFactory *self,
@@ -1857,7 +1870,9 @@ static ChannelTypeHandler channel_type_handlers[] = {
     { TP_IFACE_CHANNEL_TYPE_TUBES, handle_tubes_channel_request },
     { TP_IFACE_CHANNEL_TYPE_STREAM_TUBE, handle_stream_tube_channel_request },
     { TP_IFACE_CHANNEL_TYPE_DBUS_TUBE, handle_dbus_tube_channel_request },
-    { TPY_IFACE_CHANNEL_TYPE_CALL, handle_call_channel_request },
+#ifdef ENABLE_VOIP
+    { TP_IFACE_CHANNEL_TYPE_CALL, handle_call_channel_request },
+#endif
     { NULL }
 };
 
@@ -1959,6 +1974,7 @@ gabble_muc_factory_ensure_channel (TpChannelManager *manager,
       FALSE);
 }
 
+#ifdef ENABLE_VOIP
 gboolean
 gabble_muc_factory_handle_jingle_session (GabbleMucFactory *self,
   GabbleJingleSession *session)
@@ -1985,7 +2001,7 @@ gabble_muc_factory_handle_jingle_session (GabbleMucFactory *self,
 
   return FALSE;
 }
-
+#endif
 
 static void
 channel_manager_iface_init (gpointer g_iface,

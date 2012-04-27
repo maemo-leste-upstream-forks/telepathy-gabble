@@ -13,12 +13,12 @@ libexec_PROGRAMS=telepathy-gabble
 noinst_PROGRAMS = write-mgr-file
 
 libgabble_convenience_la_SOURCES = \
+    addressing-util.h \
+    addressing-util.c \
     auth-manager.h \
     auth-manager.c \
     base64.h \
     base64.c \
-    base-call-channel.h \
-    base-call-channel.c \
     bytestream-factory.h \
     bytestream-factory.c \
     bytestream-ibb.h \
@@ -31,26 +31,12 @@ libgabble_convenience_la_SOURCES = \
     bytestream-multiple.c \
     bytestream-socks5.h \
     bytestream-socks5.c \
-    call-content.h \
-    call-content.c \
-    call-channel.h \
-    call-channel.c \
-    call-muc-channel.h \
-    call-muc-channel.c \
-    call-member.h \
-    call-member.c \
-    call-member-content.h \
-    call-member-content.c \
-    call-stream.h \
-    call-stream.c \
-    $(top_srcdir)/gabble/capabilities-set.h \
-    $(top_srcdir)/gabble/capabilities.h \
     capabilities.c \
-    $(top_srcdir)/gabble/caps-hash.h \
     caps-hash.h \
     caps-hash.c \
-    $(top_srcdir)/gabble/caps-channel-manager.h \
     caps-channel-manager.c \
+    conn-addressing.h \
+    conn-addressing.c \
     conn-aliasing.h \
     conn-aliasing.c \
     conn-avatars.h \
@@ -73,7 +59,6 @@ libgabble_convenience_la_SOURCES = \
     conn-util.c \
     conn-mail-notif.h \
     conn-mail-notif.c \
-    $(top_srcdir)/gabble/connection.h \
     connection.h \
     connection.c \
     connection-manager.h \
@@ -84,62 +69,29 @@ libgabble_convenience_la_SOURCES = \
     disco.c \
     error.c \
     error.h \
-    ft-channel.c \
-    ft-channel.h \
-    ft-manager.c \
-    ft-manager.h \
     gabble.c \
     gabble.h \
-    google-relay.c \
-    google-relay.h \
-    gtalk-file-collection.h \
-    gtalk-file-collection.c \
     im-channel.h \
     im-channel.c \
     im-factory.h \
     im-factory.c \
-    jingle-content.h \
-    jingle-content.c \
-    jingle-factory.h \
-    jingle-factory.c \
-    jingle-share.h \
-    jingle-share.c \
-    jingle-media-rtp.h \
-    jingle-media-rtp.c \
-    jingle-session.h \
-    jingle-session.c \
-    jingle-transport-google.h \
-    jingle-transport-google.c \
-    jingle-transport-rawudp.h \
-    jingle-transport-rawudp.c \
-    jingle-transport-iceudp.h \
-    jingle-transport-iceudp.c \
-    jingle-transport-iface.h \
-    jingle-transport-iface.c \
     legacy-caps.h \
     legacy-caps.c \
-    media-channel.h \
-    media-channel-internal.h \
-    media-channel.c \
-    media-channel-hold.c \
-    media-stream.h \
-    media-stream.c \
-    media-factory.h \
-    media-factory.c \
     message-util.h \
     message-util.c \
     muc-channel.h \
     muc-channel.c \
     muc-factory.h \
     muc-factory.c \
-    $(top_srcdir)/gabble/namespaces.h \
+    muc-tube-dbus.h \
+    muc-tube-dbus.c \
+    muc-tube-stream.h \
+    muc-tube-stream.c \
     namespaces.h \
     olpc-activity.h \
     olpc-activity.c \
     plugin-loader.h \
     plugin-loader.c \
-    $(top_srcdir)/gabble/plugin.h \
-    plugin.c \
     presence.h \
     presence.c \
     presence-cache.h \
@@ -168,7 +120,6 @@ libgabble_convenience_la_SOURCES = \
     server-tls-channel.c \
     server-tls-manager.h \
     server-tls-manager.c \
-    $(top_srcdir)/gabble/sidecar.h \
     sidecar.c \
     tls-certificate.h \
     tls-certificate.c \
@@ -180,24 +131,89 @@ libgabble_convenience_la_SOURCES = \
     tube-dbus.c \
     tube-stream.h \
     tube-stream.c \
-    $(top_srcdir)/gabble/types.h \
     types.h \
     util.h \
     util.c \
     vcard-manager.h \
     vcard-manager.c
 
+if ENABLE_FILE_TRANSFER
+libgabble_convenience_la_SOURCES += \
+    ft-channel.c \
+    ft-channel.h \
+    ft-manager.c \
+    ft-manager.h
+endif
+
+if ENABLE_VOIP
+libgabble_convenience_la_SOURCES += \
+    base-call-channel.h \
+    base-call-channel.c \
+    call-content.h \
+    call-content.c \
+    call-channel.h \
+    call-channel.c \
+    call-muc-channel.h \
+    call-muc-channel.c \
+    call-member.h \
+    call-member.c \
+    call-member-content.h \
+    call-member-content.c \
+    call-stream.h \
+    call-stream.c \
+    google-relay.c \
+    google-relay.h \
+    jingle-content.h \
+    jingle-content.c \
+    jingle-factory.h \
+    jingle-factory.c \
+    jingle-info.c \
+    jingle-info.h \
+    jingle-share.h \
+    jingle-share.c \
+    jingle-media-rtp.h \
+    jingle-media-rtp.c \
+    jingle-mint.h \
+    jingle-mint.c \
+    jingle-session.h \
+    jingle-session.c \
+    jingle-tp-util.h \
+    jingle-tp-util.c \
+    jingle-transport-google.h \
+    jingle-transport-google.c \
+    jingle-transport-rawudp.h \
+    jingle-transport-rawudp.c \
+    jingle-transport-iceudp.h \
+    jingle-transport-iceudp.c \
+    jingle-transport-iface.h \
+    jingle-transport-iface.c \
+    jingle-types.h \
+    media-channel.h \
+    media-channel-internal.h \
+    media-channel.c \
+    media-channel-hold.c \
+    media-stream.h \
+    media-stream.c \
+    media-factory.h \
+    media-factory.c
+endif
+
+if ENABLE_JINGLE_FILE_TRANSFER
+libgabble_convenience_la_SOURCES += \
+    gtalk-file-collection.c \
+    gtalk-file-collection.h
+endif
+
 enumtype_sources = \
     $(top_srcdir)/src/connection.h \
-    $(top_srcdir)/src/jingle-factory.h \
+    $(top_srcdir)/src/jingle-types.h \
     $(top_srcdir)/src/room-config.h \
     $(top_srcdir)/src/presence.h
 
 libgabble_convenience_la_LIBADD = \
    $(top_builddir)/extensions/libgabble-extensions.la \
    $(top_builddir)/lib/gibber/libgibber.la \
-   $(top_builddir)/lib/loudmouth/libloudmouth.la \
-   $(top_builddir)/lib/ext/telepathy-yell/telepathy-yell/libtelepathy-yell.la \
+   libgabble-plugins.la \
    $(ALL_LIBS)
 
 nodist_libgabble_convenience_la_SOURCES = \
@@ -223,14 +239,40 @@ telepathy_gabble_LDFLAGS = -export-dynamic
 
 noinst_LTLIBRARIES = libgabble-convenience.la
 
+pluginexeclib_LTLIBRARIES = libgabble-plugins.la
+
+# Gabble's plugin API is not stable yet (it can't be, since neither is Wocky),
+# so use -release to make the SONAME of the plugin library change with every
+# Gabble release.
+libgabble_plugins_la_LDFLAGS = \
+   -no-undefined \
+   -release $(VERSION) \
+   $(NULL)
+
+libgabble_plugins_la_LIBADD = \
+   $(ALL_LIBS)
+
+libgabble_plugins_la_SOURCES = \
+   capabilities.c \
+   caps-channel-manager.c \
+   debug.c \
+   error.c \
+   plugin.c \
+   plugin-connection.c \
+   sidecar.c
+
 AM_CFLAGS = $(ERROR_CFLAGS) -I$(top_srcdir) -I$(top_builddir) \
-	    @TP_YELL_CFLAGS@ \
 	    @DBUS_CFLAGS@ @GLIB_CFLAGS@ @WOCKY_CFLAGS@ \
-	    @HANDLE_LEAK_DEBUG_CFLAGS@ @TP_GLIB_CFLAGS@ \
+	    @TP_GLIB_CFLAGS@ \
 	    @SOUP_CFLAGS@ @NICE_CFLAGS@ @GMODULE_CFLAGS@ \
 	    -I $(top_srcdir)/lib -I $(top_builddir)/lib \
 	    -DG_LOG_DOMAIN=\"gabble\" \
-	    -DPLUGIN_DIR=\"$(libdir)/telepathy/gabble-0\"
+	    -DPLUGIN_DIR=\"$(pluginexecdir)\"
+
+# following flag is requied to make getnameinfo work
+if WINDOWS
+  AM_CFLAGS += -D_WIN32_WINNT=0x0501
+endif
 
 ALL_LIBS =  @DBUS_LIBS@ @GLIB_LIBS@ @WOCKY_LIBS@ @TP_GLIB_LIBS@ \
 	    @SOUP_LIBS@ @NICE_LIBS@ @GMODULE_LIBS@
@@ -277,3 +319,23 @@ gabble-enumtypes.c: $(enumtype_sources) Makefile.in
 	--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 	--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
 	$(enumtype_sources) > $@
+
+Android.mk: Makefile.am $(BUILT_SOURCES)
+	androgenizer -:PROJECT telepathy-gabble \
+	-:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
+	-:SHARED gabble-plugins -:TAGS eng debug \
+	-:SOURCES $(libgabble_plugins_la_SOURCES) \
+	-:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CFLAGS) \
+	-:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) \
+	-:LDFLAGS $(libgabble_plugins_la_LDFLAGS) \
+	$(libgabble_plugins_la_LIBADD) \
+	-:SHARED telepathy-gabble -:TAGS eng debug \
+	-:SOURCES $(libgabble_convenience_la_SOURCES) \
+	$(nodist_libgabble_convenience_la_SOURCES) main.c \
+	-:CFLAGS $(DEFS) $(CFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CFLAGS) -DBUILD_AS_ANDROID_SERVICE \
+	-:CPPFLAGS $(CPPFLAGS) $(AM_CPPFLAGS) $(telepathy_gabble_LDFLAGS) \
+	-:LDFLAGS $(telepathy_gabble_LDADD) $(libgabble_convenience_la_LIBADD) \
+	$(lib_LTLIBRARIES) \
+	> $@

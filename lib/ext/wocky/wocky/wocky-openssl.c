@@ -57,12 +57,11 @@
 #include <openssl/engine.h>
 #include <openssl/x509v3.h>
 
-#define DEBUG_FLAG DEBUG_TLS
+#define WOCKY_DEBUG_FLAG WOCKY_DEBUG_TLS
 #define DEBUG_HANDSHAKE_LEVEL 5
 #define DEBUG_ASYNC_DETAIL_LEVEL 6
 
-#include "wocky-debug.h"
-#include "wocky-tls-enumtypes.h"
+#include "wocky-debug-internal.h"
 #include "wocky-utils.h"
 
 #include <openssl/ssl.h>
@@ -233,28 +232,6 @@ G_DEFINE_TYPE (WockyTLSOutputStream, wocky_tls_output_stream, G_TYPE_OUTPUT_STRE
 #define WOCKY_TLS_OUTPUT_STREAM(inst) (G_TYPE_CHECK_INSTANCE_CAST ((inst),   \
                                        WOCKY_TYPE_TLS_OUTPUT_STREAM,         \
                                        WockyTLSOutputStream))
-
-GQuark
-wocky_tls_cert_error_quark (void)
-{
-  static GQuark quark = 0;
-
-  if (quark == 0)
-    quark = g_quark_from_static_string ("wocky-tls-cert-error");
-
-  return quark;
-}
-
-GQuark
-wocky_tls_error_quark (void)
-{
-  static GQuark quark = 0;
-
-  if (quark == 0)
-    quark = g_quark_from_static_string ("wocky-tls-error");
-
-  return quark;
-}
 
 /* Ok: This function tries to retrieve the error that caused a problem from  *
  * bottom of the openssl error stack: The errnum argument is the error code  *

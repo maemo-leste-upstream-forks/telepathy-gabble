@@ -35,10 +35,11 @@
 #include <dbus/dbus-glib-lowlevel.h>
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/gtypes.h>
 #include <telepathy-glib/svc-connection.h>
 #include <telepathy-glib/util.h>
 
-#include <wocky/wocky-c2s-porter.h>
+#include <wocky/wocky.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_MAIL_NOTIF
 #include "connection.h"
@@ -125,7 +126,7 @@ return_from_request_inbox_url (GabbleConnection *conn)
   if (error == NULL)
     {
       g_value_array_free (result);
-      g_ptr_array_free (empty_array, TRUE);
+      g_ptr_array_unref (empty_array);
     }
   else
     {
@@ -214,7 +215,7 @@ gabble_mail_notification_request_mail_url (
           context, result);
 
       g_value_array_free (result);
-      g_ptr_array_free (empty_array, TRUE);
+      g_ptr_array_unref (empty_array);
       g_free (url);
     }
   else
@@ -460,8 +461,8 @@ store_unread_mails (GabbleConnection *conn,
       conn, priv->unread_count, collector.mails_added,
       (const char **)mails_removed->pdata);
 
-  g_ptr_array_free (collector.mails_added, TRUE);
-  g_ptr_array_free (mails_removed, TRUE);
+  g_ptr_array_unref (collector.mails_added);
+  g_ptr_array_unref (mails_removed);
 }
 
 static void
@@ -826,7 +827,7 @@ conn_mail_notif_properties_getter (GObject *object,
     {
       GPtrArray *mails = get_unread_mails (conn);
       g_value_set_boxed (value, mails);
-      g_ptr_array_free (mails, TRUE);
+      g_ptr_array_unref (mails);
     }
   else if (name == prop_quarks[PROP_MAIL_ADDRESS])
     {

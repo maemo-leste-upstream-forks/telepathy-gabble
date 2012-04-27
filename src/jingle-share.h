@@ -21,10 +21,9 @@
 #define __JINGLE_SHARE_H__
 
 #include <glib-object.h>
-#include <loudmouth/loudmouth.h>
-#include "types.h"
 
 #include "jingle-content.h"
+#include "jingle-types.h"
 
 G_BEGIN_DECLS
 

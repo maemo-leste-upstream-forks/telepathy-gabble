@@ -5,12 +5,32 @@ Test basic roster group functionality.
 from gabbletest import exec_test, acknowledge_iq, sync_stream
 from rostertest import expect_contact_list_signals, check_contact_list_signals
 from servicetest import (assertLength, EventPattern, assertEquals, call_async,
-        sync_dbus)
+        sync_dbus, assertContains, assertDoesNotContain)
 import constants as cs
 import ns
 
 from twisted.words.protocols.jabber.client import IQ
 from twisted.words.xish import xpath
+
+def parse_roster_change_request(query, iq):
+    item = query.firstChildElement()
+
+    groups = set()
+
+    for gn in xpath.queryForNodes('/iq/query/item/group', iq):
+        groups.add(str(gn))
+
+    return item['jid'], groups
+
+def send_roster_push(stream, jid, groups):
+    iq = IQ(stream, 'set')
+    query = iq.addElement((ns.ROSTER, 'query'))
+    item = query.addElement('item')
+    item['jid'] = jid
+    item['subscription'] = 'both'
+    for group in groups:
+        item.addElement('group', content=group)
+    stream.send(iq)
 
 def test(q, bus, conn, stream):
     event = q.expect('stream-iq', query_ns=ns.ROSTER)
@@ -74,28 +94,15 @@ def test(q, bus, conn, stream):
 
     assertEquals(set(('ladies', 'people starting with A')), set(s.args[0]))
 
-    item = iq.query.firstChildElement()
-    assertEquals('amy@foo.com', item['jid'])
-
-    groups = set()
-
-    for gn in xpath.queryForNodes('/iq/query/item/group', iq.stanza):
-        groups.add(str(gn))
-
+    jid, groups = parse_roster_change_request(iq.query, iq.stanza)
+    assertEquals('amy@foo.com', jid)
     assertEquals(set(('ladies', 'people starting with A')), groups)
 
     acknowledge_iq(stream, iq.stanza)
     q.expect('dbus-return', method='SetContactGroups')
 
     # Now the server sends us a roster push.
-    iq = IQ(stream, 'set')
-    query = iq.addElement((ns.ROSTER, 'query'))
-    item = query.addElement('item')
-    item['jid'] = 'amy@foo.com'
-    item['subscription'] = 'both'
-    item.addElement('group', content='people starting with A')
-    item.addElement('group', content='ladies')
-    stream.send(iq)
+    send_roster_push(stream, 'amy@foo.com', ['people starting with A', 'ladies'])
 
     # We get a single signal corresponding to that roster push
     e = q.expect('dbus-signal', signal='GroupsChanged',
@@ -122,14 +129,8 @@ def test(q, bus, conn, stream):
         iq = q.expect('stream-iq', iq_type='set',
                 query_name='query', query_ns=ns.ROSTER)
 
-        item = iq.query.firstChildElement()
-        assertEquals('amy@foo.com', item['jid'])
-
-        groups = set()
-
-        for gn in xpath.queryForNodes('/iq/query/item/group', iq.stanza):
-            groups.add(str(gn))
-
+        jid, groups = parse_roster_change_request(iq.query, iq.stanza)
+        assertEquals('amy@foo.com', jid)
         assertEquals(set(('ladies',)), groups)
 
         acknowledge_iq(stream, iq.stanza)
@@ -146,23 +147,10 @@ def test(q, bus, conn, stream):
         if it_worked:
             # ... although in fact this is what *actually* removes Amy from the
             # group
-            iq = IQ(stream, 'set')
-            query = iq.addElement((ns.ROSTER, 'query'))
-            item = query.addElement('item')
-            item['jid'] = 'amy@foo.com'
-            item['subscription'] = 'both'
-            item.addElement('group', content='ladies')
-            stream.send(iq)
+            send_roster_push(stream, 'amy@foo.com', ['ladies'])
         else:
             # if the change didn't "stick", this message will revert it
-            iq = IQ(stream, 'set')
-            query = iq.addElement((ns.ROSTER, 'query'))
-            item = query.addElement('item')
-            item['jid'] = 'amy@foo.com'
-            item['subscription'] = 'both'
-            item.addElement('group', content='ladies')
-            item.addElement('group', content='people starting with A')
-            stream.send(iq)
+            send_roster_push(stream, 'amy@foo.com', ['ladies', 'people starting with A'])
 
             q.expect('dbus-signal', signal='GroupsCreated',
                     args=[['people starting with A']])
@@ -186,6 +174,37 @@ def test(q, bus, conn, stream):
             cs.CONN + '/contact-id': 'amy@foo.com' },
         conn.Contacts.GetContactAttributes([amy],
             [cs.CONN_IFACE_CONTACT_GROUPS], False)[amy])
+
+    # Rename group 'ladies' to 'girls'
+    call_async(q, conn.ContactGroups, 'RenameGroup', 'ladies', 'girls')
+
+    # Amy is added to 'girls'
+    e = q.expect('stream-iq', iq_type='set', query_name='query', query_ns=ns.ROSTER)
+    jid, groups = parse_roster_change_request(e.query, e.stanza)
+    assertEquals('amy@foo.com', jid)
+    assertEquals(set(['girls', 'ladies']), groups)
+
+    send_roster_push(stream, 'amy@foo.com', ['girls', 'ladies'])
+    acknowledge_iq(stream, e.stanza)
+
+    # Amy is removed from 'ladies'
+    e = q.expect('stream-iq', iq_type='set', query_name='query', query_ns=ns.ROSTER)
+    jid, groups = parse_roster_change_request(e.query, e.stanza)
+    assertEquals('amy@foo.com', jid)
+    assertEquals(set(['girls']), groups)
+
+    send_roster_push(stream, 'amy@foo.com', ['girls'])
+    acknowledge_iq(stream, e.stanza)
+
+    q.expect('dbus-return', method='RenameGroup')
+
+    # check everything has been updated
+    groups = conn.Properties.Get(cs.CONN_IFACE_CONTACT_GROUPS, 'Groups')
+    assertContains('girls', groups)
+    assertDoesNotContain('ladies', groups)
+
+    contacts = conn.ContactList.GetContactListAttributes([cs.CONN_IFACE_CONTACT_GROUPS], False)
+    assertEquals(['girls'], contacts[amy][cs.CONN_IFACE_CONTACT_GROUPS + '/groups'])
 
 if __name__ == '__main__':
     exec_test(test)

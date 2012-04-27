@@ -18,7 +18,7 @@
  */
 
 #include <stdio.h>
-#include <wocky/wocky-sasl-utils.h>
+#include <wocky/wocky.h>
 
 typedef struct {
   guint8 *key;
@@ -138,7 +138,7 @@ test_sasl_utils_hmac_sha1 (digest_test *t)
   for (i = 0; i < g_checksum_type_get_length (G_CHECKSUM_SHA1); i++)
     g_assert_cmphex (result->data[i], ==, t->result[i]);
 
-  g_byte_array_free (result, TRUE);
+  g_byte_array_unref (result);
 }
 
 int
@@ -146,7 +146,11 @@ main (int argc,
     char **argv)
 {
   int i;
+
+#if !GLIB_CHECK_VERSION (2, 31, 0)
   g_thread_init (NULL);
+#endif
+
   g_test_init (&argc, &argv, NULL);
 
   for (i = 0 ; hmac_sha1_tests[i].key_len > 0 ; i++)

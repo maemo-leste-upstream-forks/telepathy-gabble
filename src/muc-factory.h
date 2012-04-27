@@ -20,9 +20,15 @@
 #ifndef __MUC_FACTORY_H__
 #define __MUC_FACTORY_H__
 
+#include "config.h"
+
 #include <glib-object.h>
+#include <wocky/wocky.h>
 
 #include "bytestream-iface.h"
+#ifdef ENABLE_VOIP
+#include "jingle-types.h"
+#endif
 #include "types.h"
 
 G_BEGIN_DECLS
@@ -64,12 +70,14 @@ GabbleMucChannel *gabble_muc_factory_find_text_channel (GabbleMucFactory *self,
 
 void gabble_muc_factory_handle_si_stream_request (GabbleMucFactory *self,
     GabbleBytestreamIface *bytestream, TpHandle room_handle,
-    const gchar *stream_id, LmMessage *msg);
+    const gchar *stream_id, WockyStanza *msg);
 
 void gabble_muc_factory_broadcast_presence (GabbleMucFactory *self);
 
+#ifdef ENABLE_VOIP
 gboolean gabble_muc_factory_handle_jingle_session (GabbleMucFactory *self,
   GabbleJingleSession *session);
+#endif
 
 G_END_DECLS
 

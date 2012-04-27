@@ -17,6 +17,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+#if !defined (WOCKY_H_INSIDE) && !defined (WOCKY_COMPILATION)
+# error "Only <wocky/wocky.h> can be included directly."
+#endif
 
 #ifndef __WOCKY__NODE_H__
 #define __WOCKY__NODE_H__
@@ -175,6 +178,16 @@ WockyNode *wocky_node_add_child_with_content_ns_q (
 const gchar *wocky_node_get_ns (WockyNode *node);
 gboolean wocky_node_has_ns (WockyNode *node, const gchar *ns);
 gboolean wocky_node_has_ns_q (WockyNode *node, GQuark ns);
+
+/* Matching element name and namespace */
+gboolean wocky_node_matches_q (
+    WockyNode *node,
+    const gchar *name,
+    GQuark ns);
+gboolean wocky_node_matches (
+    WockyNode *node,
+    const gchar *name,
+    const gchar *ns);
 
 /* Setting/Getting language */
 const gchar *wocky_node_get_language (WockyNode *node);
