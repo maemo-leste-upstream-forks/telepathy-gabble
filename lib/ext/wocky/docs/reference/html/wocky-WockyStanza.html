@@ -337,58 +337,30 @@ Example:
 <p>
 </p>
 <div class="example">
-<a name="idp19869472"></a><p class="title"><b>Example 3. </b></p>
-<div class="example-contents">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build">wocky_stanza_build</a></span> <span class="gtkdoc opt">(</span>
-   WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span>
-   <span class="string">&quot;alice&#64;collabora.co.uk&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;bob&#64;collabora.co.uk&quot;</span><span class="gtkdoc opt">,</span>
-   WOCKY_NODE_START<span class="gtkdoc opt">,</span> <span class="string">&quot;html&quot;</span><span class="gtkdoc opt">,</span>
-     WOCKY_NODE_XMLNS<span class="gtkdoc opt">,</span> <span class="string">&quot;http://www.w3.org/1999/xhtml&quot;</span><span class="gtkdoc opt">,</span>
-     WOCKY_NODE<span class="gtkdoc opt">,</span> <span class="string">&quot;body&quot;</span><span class="gtkdoc opt">,</span>
-       WOCKY_NODE_ATTRIBUTE<span class="gtkdoc opt">,</span> <span class="string">&quot;textcolor&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;red&quot;</span><span class="gtkdoc opt">,</span>
-       WOCKY_NODE_TEXT<span class="gtkdoc opt">,</span> <span class="string">&quot;Telepathy rocks!&quot;</span><span class="gtkdoc opt">,</span>
-     WOCKY_NODE_END<span class="gtkdoc opt">,</span>
-   WOCKY_NODE_END<span class="gtkdoc opt">,</span>
-  NULL<span class="gtkdoc opt">);</span>
+<a name="idp18860032"></a><p class="title"><b>Example 3. </b></p>
+<div class="example-contents"><pre class="programlisting">
+wocky_stanza_build (
+   WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
+   "alice@collabora.co.uk", "bob@collabora.co.uk",
+   WOCKY_NODE_START, "html",
+     WOCKY_NODE_XMLNS, "http://www.w3.org/1999/xhtml",
+     WOCKY_NODE, "body",
+       WOCKY_NODE_ATTRIBUTE, "textcolor", "red",
+       WOCKY_NODE_TEXT, "Telepathy rocks!",
+     WOCKY_NODE_END,
+   WOCKY_NODE_END,
+  NULL);
 
-<span class="comment">/* produces</span>
-<span class="comment">&lt;message from='alice&#64;collabora.co.uk' to='bob&#64;collabora.co.uk'&gt;</span>
-<span class="comment">  &lt;html xmlns='http://www.w3.org/1999/xhtml'&gt;</span>
-<span class="comment">    &lt;body textcolor='red'&gt;</span>
-<span class="comment">      Telepathy rocks!</span>
-<span class="comment">    &lt;/body&gt;</span>
-<span class="comment">  &lt;/html&gt;</span>
-<span class="comment">&lt;/message&gt;</span>
-<span class="comment">*/</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+/* produces
+&lt;message from='alice@collabora.co.uk' to='bob@collabora.co.uk'&gt;
+  &lt;html xmlns='http://www.w3.org/1999/xhtml'&gt;
+    &lt;body textcolor='red'&gt;
+      Telepathy rocks!
+    &lt;/body&gt;
+  &lt;/html&gt;
+&lt;/message&gt;
+*/
+</pre></div>
 </div>
 <p><br class="example-break">
 </p>
@@ -400,34 +372,18 @@ above stanza could be written as:
 <p>
 </p>
 <div class="example">
-<a name="idp19874208"></a><p class="title"><b>Example 4. </b></p>
-<div class="example-contents">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build">wocky_stanza_build</a></span> <span class="gtkdoc opt">(</span>
-   WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span>
-   <span class="string">&quot;alice&#64;collabora.co.uk&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;bob&#64;collabora.co.uk&quot;</span><span class="gtkdoc opt">,</span>
-   <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;html&quot;</span><span class="gtkdoc opt">,</span> <span class="string">':'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;http://www.w3.org/1999/xhtml&quot;</span><span class="gtkdoc opt">,</span>
-     <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;body&quot;</span><span class="gtkdoc opt">,</span> <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;textcolor&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;red&quot;</span><span class="gtkdoc opt">,</span>
-       <span class="string">'$'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;Telepathy rocks!&quot;</span><span class="gtkdoc opt">,</span>
-     <span class="string">')'</span><span class="gtkdoc opt">,</span>
-   <span class="string">')'</span>
-  NULL<span class="gtkdoc opt">);</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+<a name="idp18864768"></a><p class="title"><b>Example 4. </b></p>
+<div class="example-contents"><pre class="programlisting">
+wocky_stanza_build (
+   WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
+   "alice@collabora.co.uk", "bob@collabora.co.uk",
+   '(', "html", ':', "http://www.w3.org/1999/xhtml",
+     '(', "body", '@', "textcolor", "red",
+       '$', "Telepathy rocks!",
+     ')',
+   ')'
+  NULL);
+</pre></div>
 </div>
 <p><br class="example-break">
 </p>
@@ -484,31 +440,16 @@ example:
 </p>
 <p>
 </p>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1
-2
-3
-4
-5
-6
-7
-8</pre></td>
-        <td class="listing_code"><pre class="programlisting">WockyStanza <span class="gtkdoc opt">*</span>reply <span class="gtkdoc opt">=</span> <span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build-iq-error">wocky_stanza_build_iq_error</a></span> <span class="gtkdoc opt">(</span>iq<span class="gtkdoc opt">,</span>
-   <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;error&quot;</span><span class="gtkdoc opt">,</span>
-     <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;type&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;cancel&quot;</span><span class="gtkdoc opt">,</span>
-     <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;feature-not-implemented&quot;</span><span class="gtkdoc opt">,</span> <span class="string">':'</span><span class="gtkdoc opt">,</span> WOCKY_XMPP_NS_STANZAS<span class="gtkdoc opt">,</span> <span class="string">')'</span><span class="gtkdoc opt">,</span>
-     <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;unsupported&quot;</span><span class="gtkdoc opt">,</span> <span class="string">':'</span><span class="gtkdoc opt">,</span> WOCKY_XMPP_NS_PUBSUB_ERRORS<span class="gtkdoc opt">,</span>
-       <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;feature&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;subscribe&quot;</span><span class="gtkdoc opt">,</span>
-     <span class="string">')'</span><span class="gtkdoc opt">,</span>
-   <span class="string">')'</span><span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+<div class="informalexample"><pre class="programlisting">
+WockyStanza *reply = wocky_stanza_build_iq_error (iq,
+   '(', "error",
+     '@', "type", "cancel",
+     '(', "feature-not-implemented", ':', WOCKY_XMPP_NS_STANZAS, ')',
+     '(', "unsupported", ':', WOCKY_XMPP_NS_PUBSUB_ERRORS,
+       '@', "feature", "subscribe",
+     ')',
+   ')', NULL);
+</pre></div>
 <p>
 </p>
 <div class="variablelist"><table border="0">

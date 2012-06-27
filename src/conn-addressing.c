@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "config.h"
+
 #include "conn-addressing.h"
 
 #include <dbus/dbus-glib-lowlevel.h>
@@ -103,6 +105,7 @@ conn_addressing_get_contacts_by_uri (GabbleSvcConnectionInterfaceAddressing *ifa
       context, requested, attributes);
 
   tp_handles_unref (contact_repo, handles);
+  g_array_unref (handles);
   g_hash_table_unref (requested);
   g_hash_table_unref (attributes);
   g_free (sender);
@@ -143,6 +146,7 @@ conn_addressing_get_contacts_by_vcard_field (GabbleSvcConnectionInterfaceAddress
       context, requested, attributes);
 
   tp_handles_unref (contact_repo, handles);
+  g_array_unref (handles);
   g_hash_table_unref (requested);
   g_hash_table_unref (attributes);
   g_free (sender);

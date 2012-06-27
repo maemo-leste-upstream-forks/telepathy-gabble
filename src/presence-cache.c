@@ -509,6 +509,8 @@ gabble_presence_cache_add_bundles (GabblePresenceCache *cache)
   gabble_presence_cache_add_bundle_caps (cache, \
       "http://www.android.com/gtalk/client/caps#" cap, features); \
   gabble_presence_cache_add_bundle_caps (cache, \
+      "http://www.android.com/gtalk/client/caps2#" cap, features); \
+  gabble_presence_cache_add_bundle_caps (cache, \
       "http://talk.google.com/xmpp/bot/caps#" cap, features);
 
   /* Cache various bundle from the Google Talk clients as trusted.  Some old
@@ -1037,6 +1039,18 @@ _parse_node (GabblePresence *presence,
 
       gabble_capability_set_add (cap_set, QUIRK_GOOGLE_WEBMAIL_CLIENT);
       gabble_capability_set_add (cap_set, QUIRK_OMITS_CONTENT_CREATORS);
+      gabble_presence_set_capabilities (presence, resource, cap_set, NULL, serial);
+      gabble_capability_set_free (cap_set);
+    }
+
+  if (!tp_strdiff (node, "http://www.android.com/gtalk/client/caps") ||
+      !tp_strdiff (node, "http://www.android.com/gtalk/client/caps2"))
+    {
+      GabbleCapabilitySet *cap_set = gabble_capability_set_new ();
+
+      DEBUG ("Client is Android GTalk Client");
+
+      gabble_capability_set_add (cap_set, QUIRK_ANDROID_GTALK_CLIENT);
       gabble_presence_set_capabilities (presence, resource, cap_set, NULL, serial);
       gabble_capability_set_free (cap_set);
     }

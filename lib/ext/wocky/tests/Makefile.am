@@ -16,7 +16,6 @@ NEW_CERT := $(CERT_DIR)/new-cert.pem
 TLS_KEY  := $(CERT_DIR)/tls-key.pem
 TLS_CERT := $(CERT_DIR)/tls-cert.pem
 CA_DIR   := $(CERT_DIR)/cas
-CRL_DIR  := $(CERT_DIR)/crl
 UNKNOWN_KEY  := $(CERT_DIR)/unknown-key.pem
 UNKNOWN_CERT := $(CERT_DIR)/unknown-cert.pem
 LIBWOCKY := $(top_builddir)/wocky/libwocky.la
@@ -35,7 +34,6 @@ TLSDEFS  := -DTLS_CA_KEY_FILE='"$(CA_KEY)"'      \
             -DTLS_UNKNOWN_CRT_FILE='"$(UNKNOWN_CERT)"' \
             -DTLS_SERVER_KEY_FILE='"$(TLS_KEY)"' \
             -DTLS_SERVER_CRT_FILE='"$(TLS_CERT)"'\
-            -DTLS_CRL_DIR='"$(CRL_DIR)"'         \
             -DTLS_CA_DIR='"$(CA_DIR)"'
 ############################################################################
 TEST_PROGS = wocky-xmpp-reader-test \
@@ -64,7 +62,7 @@ TEST_PROGS = wocky-xmpp-reader-test \
   wocky-scram-sha1-test \
   wocky-caps-hash-test
 
-noinst_PROGRAMS=
+noinst_PROGRAMS =
 
 wocky_tls_test_DEPENDENCIES = $(LIBWOCKY)
 wocky_tls_test_SOURCES = \
@@ -91,7 +89,7 @@ wocky_xmpp_reader_test_SOURCES = \
   wocky-test-stream.c wocky-test-stream.h \
   wocky-xmpp-reader-test.c
 
-wocky_connector_test_DEPENDENCIES = $(CRL_DIR) $(CA_DIR) certs $(LIBWOCKY)
+wocky_connector_test_DEPENDENCIES = $(CA_DIR) certs $(LIBWOCKY)
 
 wocky_connector_test_SOURCES = \
    wocky-connector-test.c        \
@@ -237,14 +235,14 @@ wocky_http_proxy_test_SOURCES = wocky-http-proxy-test.c \
   wocky-test-helper.c wocky-test-helper.h \
   wocky-test-stream.c wocky-test-stream.h
 
-wocky_dummy_xmpp_server_DEPENDENCIES = $(LIBWOCKY)
-wocky_dummy_xmpp_server_SOURCES = wocky-dummy-xmpp-server.c \
-   wocky-test-connector-server.c wocky-test-connector-server.h \
-   wocky-test-sasl-auth-server.c wocky-test-sasl-auth-server.h
-wocky_dummy_xmpp_server_LDADD = $(LDADD) @LIBSASL2_LIBS@
-wocky_dummy_xmpp_server_CFLAGS = $(AM_CFLAGS) @LIBSASL2_CFLAGS@ $(TLSDEFS)
-
 if HAVE_LIBSASL2
+  wocky_dummy_xmpp_server_DEPENDENCIES = $(LIBWOCKY)
+  wocky_dummy_xmpp_server_SOURCES = wocky-dummy-xmpp-server.c \
+     wocky-test-connector-server.c wocky-test-connector-server.h \
+     wocky-test-sasl-auth-server.c wocky-test-sasl-auth-server.h
+  wocky_dummy_xmpp_server_LDADD = $(LDADD) @LIBSASL2_LIBS@
+  wocky_dummy_xmpp_server_CFLAGS = $(AM_CFLAGS) @LIBSASL2_CFLAGS@ $(TLSDEFS)
+
   noinst_PROGRAMS += wocky-dummy-xmpp-server
 endif
 
@@ -267,7 +265,7 @@ check_PROGRAMS = $(TEST_PROGS)
 
 check_c_sources = $(notdir $(wildcard $(srcdir)/*.c) $(wildcard $(srcdir)/*.h))
 
-noinst_PROGRAMS = $(TEST_PROGS)
+noinst_PROGRAMS += $(TEST_PROGS)
 
 test-report: test-report.xml
 	gtester-report $(top_builddir)/tests/$@.xml > \
@@ -344,7 +342,5 @@ EXTRA_DIST = $(SUPPRESSIONS)     \
 	$(wildcard $(srcdir)/certs/*.cfg)      \
 	$(wildcard $(srcdir)/certs/*.pem)      \
 	$(wildcard $(srcdir)/certs/cas/*.pem)  \
-	$(wildcard $(srcdir)/certs/cas/*.0)    \
-	$(wildcard $(srcdir)/certs/crl/*.pem)  \
-	$(wildcard $(srcdir)/certs/crl/*.r0)
+	$(wildcard $(srcdir)/certs/cas/*.0)
 

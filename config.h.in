@@ -30,8 +30,11 @@
 /* Enable VoIP */
 #undef ENABLE_VOIP
 
-/* Build with GLib deprecated */
-#undef GLIB_DISABLE_DEPRECATION_WARNINGS
+/* Prevent post 2.30 APIs */
+#undef GLIB_VERSION_MAX_ALLOWED
+
+/* Ignore post 2.30 deprecations */
+#undef GLIB_VERSION_MIN_REQUIRED
 
 /* path to system Certificate Authority list */
 #undef GTLS_SYSTEM_CA_CERTIFICATES
