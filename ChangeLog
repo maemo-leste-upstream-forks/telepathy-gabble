@@ -1,3 +1,86 @@
+commit 8947be225e17d1cee96cf41586f495dcd35c6904
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-06-20 15:24:58 +0200
+
+    0.16.1 release
+
+commit 9abf25885dd71047746ea496ea3bdaff7f3499e7
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-06-13 14:41:10 +0200
+
+    GabbleServerTLSManager: Support multiple consecutive TLS verifications
+    
+    WockyConnector could now restart connection with another host,
+    and so needs to re-verify TLS.
+
+commit 287fb2d9fabd2703c17020c4fd9493e8531c0a03
+Author: Marcus Lundblad <ml@update.uu.se>
+Date:   2012-05-18 13:29:12 +0200
+
+    Fix for initiating a video call from an Android tablet.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd@greynoise.nl>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=36998
+
+commit bced2f61312ab407964ac3ef0653183eb3b8c6cc
+Author: Marcus Lundblad <ml@update.uu.se>
+Date:   2012-05-15 22:40:04 +0200
+
+    Make Android 4.0 GTalk contacts appear as capable of a/v calls.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd@greynoise.nl>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=36998
+
+commit 7667bb74e99e236c15f34b7f9266073441d3afde
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-05-10 15:11:56 +0200
+
+    Fix a leak in: tp_handles_unref() does not unref the array
+
+commit 0015b83d5746ec5fab3e4205c56ec599a5726bfa
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-04-04 09:49:48 +0200
+
+    use new GLib API checking macros
+
+commit 70aaaad2f9391453f7d8c9cb1ebad349d4b96421
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-04-04 09:44:51 +0200
+
+    Depends on GLib 2.30
+    
+    telepathy-glib 0.18.0 already depends on this version so that won't change
+    much in practice and it will allow us to use GLIB_VERSION_* macros
+    (GLIB_VERSION_2_24 doesn't exist).
+
+commit 7eac882fe8f48cc3145cff24fecf499b87c38f2d
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-04-04 09:48:28 +0200
+
+    gibber-unix-transport: stop defining _GNU_SOURCE
+    
+    config.h does it for us now.
+
+commit b89caf381ba7a38c1ac98fe4b04a261cf62c1ad1
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-04-04 09:34:41 +0200
+
+    add missing config.h includes
+
+commit 579eb4f247b7383d4f50f79e7802f9b48ffadf7a
+Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date:   2012-04-04 09:34:25 +0200
+
+    include config.h in the generated gabble-enumtypes.c
+
+commit ae9e1ce5a377bcd2d19d169bdede8ca264032754
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-04-02 17:43:20 -0400
+
+    start on version 0.16.1
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit 4291d1d472bc22ea1423e5ef2dc063eb1782ac15
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
 Date:   2012-04-02 17:05:53 -0400

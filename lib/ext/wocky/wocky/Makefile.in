@@ -97,13 +97,15 @@ am__libwocky_la_SOURCES_DIST = wocky.c wocky-auth-handler.c \
 	wocky-caps-cache.c wocky-ll-connection-factory.c \
 	wocky-caps-hash.c wocky-connector.c wocky-contact.c \
 	wocky-contact-factory.c wocky-data-form.c wocky-debug.c \
-	wocky-disco-identity.c wocky-heartbeat-source.c \
+	wocky-debug-internal.h wocky-disco-identity.c \
+	wocky-heartbeat-source.c wocky-heartbeat-source.h \
 	wocky-jabber-auth.c wocky-jabber-auth-digest.c \
 	wocky-jabber-auth-password.c wocky-ll-connector.c \
 	wocky-ll-contact.c wocky-loopback-stream.c wocky-meta-porter.c \
-	wocky-muc.c wocky-node.c wocky-node-tree.c wocky-pep-service.c \
-	wocky-ping.c wocky-porter.c wocky-pubsub-helpers.c \
-	wocky-pubsub-node.c wocky-pubsub-service.c \
+	wocky-muc.c wocky-node.c wocky-node-private.h \
+	wocky-node-tree.c wocky-pep-service.c wocky-ping.c \
+	wocky-porter.c wocky-pubsub-helpers.c wocky-pubsub-node.c \
+	wocky-pubsub-node-internal.h wocky-pubsub-service.c \
 	wocky-resource-contact.c wocky-roster.c wocky-sasl-auth.c \
 	wocky-sasl-digest-md5.c wocky-sasl-scram.c wocky-sasl-utils.c \
 	wocky-sasl-plain.c wocky-session.c wocky-stanza.c \
@@ -123,16 +125,14 @@ am__libwocky_la_SOURCES_DIST = wocky.c wocky-auth-handler.c \
 	wocky-bare-contact.h wocky-c2s-porter.h wocky-caps-cache.h \
 	wocky-ll-connection-factory.h wocky-caps-hash.h \
 	wocky-connector.h wocky-contact.h wocky-contact-factory.h \
-	wocky-data-form.h wocky-debug.h wocky-debug-internal.h \
-	wocky-disco-identity.h wocky-heartbeat-source.h \
+	wocky-data-form.h wocky-debug.h wocky-disco-identity.h \
 	wocky-jabber-auth.h wocky-jabber-auth-digest.h \
 	wocky-jabber-auth-password.h wocky-ll-connector.h \
 	wocky-ll-contact.h wocky-loopback-stream.h wocky-meta-porter.h \
-	wocky-muc.h wocky-namespaces.h wocky-node.h \
-	wocky-node-private.h wocky-node-tree.h wocky-pep-service.h \
-	wocky-ping.h wocky-porter.h wocky-pubsub-helpers.h \
-	wocky-pubsub-node.h wocky-pubsub-node-protected.h \
-	wocky-pubsub-node-internal.h wocky-pubsub-service.h \
+	wocky-muc.h wocky-namespaces.h wocky-node.h wocky-node-tree.h \
+	wocky-pep-service.h wocky-ping.h wocky-porter.h \
+	wocky-pubsub-helpers.h wocky-pubsub-node.h \
+	wocky-pubsub-node-protected.h wocky-pubsub-service.h \
 	wocky-pubsub-service-protected.h wocky-resource-contact.h \
 	wocky-roster.h wocky-sasl-auth.h wocky-sasl-utils.h \
 	wocky-sasl-digest-md5.h wocky-sasl-scram.h wocky-sasl-plain.h \
@@ -224,28 +224,26 @@ am__libwocky_la_HEADERS_DIST = wocky.h wocky-auth-handler.h \
 	wocky-caps-cache.h wocky-ll-connection-factory.h \
 	wocky-caps-hash.h wocky-connector.h wocky-contact.h \
 	wocky-contact-factory.h wocky-data-form.h wocky-debug.h \
-	wocky-debug-internal.h wocky-disco-identity.h \
-	wocky-heartbeat-source.h wocky-jabber-auth.h \
+	wocky-disco-identity.h wocky-jabber-auth.h \
 	wocky-jabber-auth-digest.h wocky-jabber-auth-password.h \
 	wocky-ll-connector.h wocky-ll-contact.h \
 	wocky-loopback-stream.h wocky-meta-porter.h wocky-muc.h \
-	wocky-namespaces.h wocky-node.h wocky-node-private.h \
-	wocky-node-tree.h wocky-pep-service.h wocky-ping.h \
-	wocky-porter.h wocky-pubsub-helpers.h wocky-pubsub-node.h \
-	wocky-pubsub-node-protected.h wocky-pubsub-node-internal.h \
-	wocky-pubsub-service.h wocky-pubsub-service-protected.h \
-	wocky-resource-contact.h wocky-roster.h wocky-sasl-auth.h \
-	wocky-sasl-utils.h wocky-sasl-digest-md5.h wocky-sasl-scram.h \
-	wocky-sasl-plain.h wocky-session.h wocky-stanza.h wocky-tls.h \
-	wocky-tls-handler.h wocky-tls-connector.h wocky-types.h \
-	wocky-utils.h wocky-xep-0115-capabilities.h \
-	wocky-xmpp-connection.h wocky-xmpp-error.h wocky-xmpp-reader.h \
-	wocky-xmpp-writer.h wocky-auth-registry-enumtypes.h \
-	wocky-connector-enumtypes.h wocky-data-form-enumtypes.h \
-	wocky-muc-enumtypes.h wocky-pubsub-node-enumtypes.h \
-	wocky-pubsub-service-enumtypes.h wocky-signals-marshal.h \
-	wocky-tls-enumtypes.h wocky-xmpp-error-enumtypes.h \
-	wocky-xmpp-reader-enumtypes.h
+	wocky-namespaces.h wocky-node.h wocky-node-tree.h \
+	wocky-pep-service.h wocky-ping.h wocky-porter.h \
+	wocky-pubsub-helpers.h wocky-pubsub-node.h \
+	wocky-pubsub-node-protected.h wocky-pubsub-service.h \
+	wocky-pubsub-service-protected.h wocky-resource-contact.h \
+	wocky-roster.h wocky-sasl-auth.h wocky-sasl-utils.h \
+	wocky-sasl-digest-md5.h wocky-sasl-scram.h wocky-sasl-plain.h \
+	wocky-session.h wocky-stanza.h wocky-tls.h wocky-tls-handler.h \
+	wocky-tls-connector.h wocky-types.h wocky-utils.h \
+	wocky-xep-0115-capabilities.h wocky-xmpp-connection.h \
+	wocky-xmpp-error.h wocky-xmpp-reader.h wocky-xmpp-writer.h \
+	wocky-auth-registry-enumtypes.h wocky-connector-enumtypes.h \
+	wocky-data-form-enumtypes.h wocky-muc-enumtypes.h \
+	wocky-pubsub-node-enumtypes.h wocky-pubsub-service-enumtypes.h \
+	wocky-signals-marshal.h wocky-tls-enumtypes.h \
+	wocky-xmpp-error-enumtypes.h wocky-xmpp-reader-enumtypes.h
 HEADERS = $(libwocky_la_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -464,9 +462,7 @@ handwritten_headers = \
   wocky-contact-factory.h \
   wocky-data-form.h \
   wocky-debug.h \
-  wocky-debug-internal.h \
   wocky-disco-identity.h \
-  wocky-heartbeat-source.h \
   wocky-jabber-auth.h \
   wocky-jabber-auth-digest.h \
   wocky-jabber-auth-password.h \
@@ -477,7 +473,6 @@ handwritten_headers = \
   wocky-muc.h \
   wocky-namespaces.h \
   wocky-node.h \
-  wocky-node-private.h \
   wocky-node-tree.h \
   wocky-pep-service.h \
   wocky-ping.h \
@@ -485,7 +480,6 @@ handwritten_headers = \
   wocky-pubsub-helpers.h \
   wocky-pubsub-node.h \
   wocky-pubsub-node-protected.h \
-  wocky-pubsub-node-internal.h \
   wocky-pubsub-service.h \
   wocky-pubsub-service-protected.h \
   wocky-resource-contact.h \
@@ -513,13 +507,15 @@ handwritten_sources = wocky.c wocky-auth-handler.c \
 	wocky-caps-cache.c wocky-ll-connection-factory.c \
 	wocky-caps-hash.c wocky-connector.c wocky-contact.c \
 	wocky-contact-factory.c wocky-data-form.c wocky-debug.c \
-	wocky-disco-identity.c wocky-heartbeat-source.c \
+	wocky-debug-internal.h wocky-disco-identity.c \
+	wocky-heartbeat-source.c wocky-heartbeat-source.h \
 	wocky-jabber-auth.c wocky-jabber-auth-digest.c \
 	wocky-jabber-auth-password.c wocky-ll-connector.c \
 	wocky-ll-contact.c wocky-loopback-stream.c wocky-meta-porter.c \
-	wocky-muc.c wocky-node.c wocky-node-tree.c wocky-pep-service.c \
-	wocky-ping.c wocky-porter.c wocky-pubsub-helpers.c \
-	wocky-pubsub-node.c wocky-pubsub-service.c \
+	wocky-muc.c wocky-node.c wocky-node-private.h \
+	wocky-node-tree.c wocky-pep-service.c wocky-ping.c \
+	wocky-porter.c wocky-pubsub-helpers.c wocky-pubsub-node.c \
+	wocky-pubsub-node-internal.h wocky-pubsub-service.c \
 	wocky-resource-contact.c wocky-roster.c wocky-sasl-auth.c \
 	wocky-sasl-digest-md5.c wocky-sasl-scram.c wocky-sasl-utils.c \
 	wocky-sasl-plain.c wocky-session.c wocky-stanza.c \
