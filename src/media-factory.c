@@ -25,9 +25,9 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-#include <telepathy-glib/channel-manager.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/interfaces.h>
+
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
 
@@ -776,7 +776,7 @@ gabble_media_factory_requestotron (TpChannelManager *manager,
 
       if (require_target_handle)
         {
-          g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
+          g_set_error (&error, TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
               "A valid Contact handle must be provided when requesting a media "
               "channel");
           goto error;
@@ -918,7 +918,7 @@ gabble_media_factory_create_call (TpChannelManager *manager,
 
   if (!initial_audio && !initial_video)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (&error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Call channel must contain at least "
           "one of InitialAudio or InitialVideo");
       goto error;
@@ -1053,7 +1053,10 @@ gabble_media_factory_add_caps (GabbleCapabilitySet *caps,
       /* video-v1 implies that we interop with Google Video Chat, i.e. we have
        * gtalk-p2p and H.264 as well as video */
       if (gtalk_p2p && h264)
-        gabble_capability_set_add (caps, NS_GOOGLE_FEAT_VIDEO);
+        {
+          gabble_capability_set_add (caps, NS_GOOGLE_FEAT_VIDEO);
+          gabble_capability_set_add (caps, NS_GOOGLE_FEAT_CAMERA);
+        }
     }
 }
 

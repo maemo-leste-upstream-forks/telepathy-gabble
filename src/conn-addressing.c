@@ -23,8 +23,8 @@
 
 #include <dbus/dbus-glib-lowlevel.h>
 
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #include "extensions/extensions.h"
 
@@ -104,7 +104,6 @@ conn_addressing_get_contacts_by_uri (GabbleSvcConnectionInterfaceAddressing *ifa
   gabble_svc_connection_interface_addressing_return_from_get_contacts_by_uri (
       context, requested, attributes);
 
-  tp_handles_unref (contact_repo, handles);
   g_array_unref (handles);
   g_hash_table_unref (requested);
   g_hash_table_unref (attributes);
@@ -145,7 +144,6 @@ conn_addressing_get_contacts_by_vcard_field (GabbleSvcConnectionInterfaceAddress
   gabble_svc_connection_interface_addressing_return_from_get_contacts_by_vcard_field (
       context, requested, attributes);
 
-  tp_handles_unref (contact_repo, handles);
   g_array_unref (handles);
   g_hash_table_unref (requested);
   g_hash_table_unref (attributes);

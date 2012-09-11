@@ -131,10 +131,8 @@ TWISTED_TUBE_TESTS = \
 	tubes/accept-private-stream-tube.py \
 	tubes/check-create-tube-return.py \
 	tubes/close-muc-with-closed-tube.py \
-	tubes/crash-on-list-channels.py \
 	tubes/create-invalid-tube-channels.py \
 	tubes/ensure-si-tube.py \
-	tubes/muc-presence.py \
 	tubes/offer-muc-dbus-tube.py \
 	tubes/offer-muc-stream-tube.py \
 	tubes/offer-no-caps.py \
@@ -275,7 +273,6 @@ TWISTED_OTHER_FILES = \
 	test-helper.py \
 	tls-cert.pem \
 	tls-key.pem \
-	tubes/muctubeutil.py \
 	tubes/tubetestutil.py \
 	$(NULL)
 
@@ -307,7 +304,7 @@ TESTS =
 
 TESTS_ENVIRONMENT = \
 	PYTHONPATH=@abs_top_srcdir@/tests/twisted:@abs_top_builddir@/tests/twisted \
-	GABBLE_TWISTED_SRCDIR=@srcdir@
+	GABBLE_TWISTED_PATH=@srcdir@
 
 check-local: check-coding-style check-twisted
 
@@ -446,16 +443,17 @@ include $(top_srcdir)/tools/check-coding-style.mk
 gabble-twisted-tests.list:
 	$(AM_V_GEN)echo $(TWISTED_TESTS) > $@
 
-run-test.sh: run-test.sh.in
+run-test.sh: run-test.sh.in Makefile
 	$(AM_V_GEN)sed -e "s|[@]gabbletestsdir[@]|@gabbletestsdir@|g" \
 		-e "s|[@]PYTHON[@]|$(PYTHON)|g" \
 		 $< > $@
 	@chmod +x $@
 
-tools/run-gabble.sh: tools/run-gabble.sh.in
+tools/run-gabble.sh: tools/run-gabble.sh.in Makefile
 	@mkdir -p tools
 	$(AM_V_GEN)sed \
 		-e "s|[@]gabbletestsdir[@]|@gabbletestsdir@|g" \
+		-e "s|[@]pluginexecdir[@]|@pluginexecdir@|g" \
 		-e "s|[@]libdir[@]|$(libdir)|g" \
 		$< > $@
 	@chmod +x $@
@@ -467,7 +465,7 @@ tools/exec-with-log.sh: tools/exec-with-log.sh.in
 	@chmod +x $@
 
 # The wildcard % matches both config files!
-tools/%.conf: tools/%.conf.in
+tools/%.conf: tools/%.conf.in Makefile
 	$(MKDIR_P) tools
 	$(AM_V_GEN)sed -e "s|[@]gabbletestsdir[@]|@gabbletestsdir@|g" \
 		-e "s|[@]abs_top_builddir[@]|@abs_top_builddir@|g" $< > $@
@@ -475,7 +473,7 @@ tools/%.conf: tools/%.conf.in
 # We don't use the full filename for the .in because > 99 character filenames
 # in tarballs are non-portable (and automake 1.8 doesn't let us build
 # non-archaic tarballs)
-tools/servicedir/org.freedesktop.Telepathy.ConnectionManager.%.service: tools/servicedir/%.service.in
+tools/servicedir/org.freedesktop.Telepathy.ConnectionManager.%.service: tools/servicedir/%.service.in  Makefile
 	$(MKDIR_P) tools/servicedir
 	$(AM_V_GEN)sed -e "s|[@]gabbletestsdir[@]|@gabbletestsdir@|g" $< > $@
 

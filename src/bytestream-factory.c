@@ -26,7 +26,8 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <wocky/wocky.h>
-#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_BYTESTREAM
 
@@ -1298,8 +1299,6 @@ out:
   g_slist_free (stream_methods);
   g_free (peer_resource);
   g_free (self_jid);
-  if (peer_handle != 0)
-    tp_handle_unref (contact_repo, peer_handle);
 
   return TRUE;
 }
@@ -2145,9 +2144,6 @@ END:
 
   if (peer_resource != NULL)
     g_free (peer_resource);
-
-  if (peer_handle != 0)
-    tp_handle_unref (contact_repo, peer_handle);
 
   g_free (self_jid);
   g_free (data->stream_id);

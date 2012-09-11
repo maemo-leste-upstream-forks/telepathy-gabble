@@ -24,8 +24,8 @@
 
 #include <string.h>
 
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/heap.h>
+#include <telepathy-glib/telepathy-glib.h>
+
 #include <wocky/wocky.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_VCARD
@@ -403,9 +403,6 @@ static void
 cache_entry_free (gpointer data)
 {
   GabbleVCardCacheEntry *entry = data;
-  GabbleVCardManagerPrivate *priv = entry->manager->priv;
-  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles
-      ((TpBaseConnection *) priv->connection, TP_HANDLE_TYPE_CONTACT);
 
   g_assert (entry != NULL);
 
@@ -421,8 +418,6 @@ cache_entry_free (gpointer data)
 
   tp_clear_pointer (&entry->vcard_node, wocky_node_free);
 
-  tp_handle_unref (contact_repo, entry->handle);
-
   g_slice_free (GabbleVCardCacheEntry, entry);
 }
 
@@ -430,8 +425,6 @@ static GabbleVCardCacheEntry *
 cache_entry_get (GabbleVCardManager *manager, TpHandle handle)
 {
   GabbleVCardManagerPrivate *priv = manager->priv;
-  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
-      (TpBaseConnection *) priv->connection, TP_HANDLE_TYPE_CONTACT);
   GabbleVCardCacheEntry *entry;
 
   entry = g_hash_table_lookup (priv->cache, GUINT_TO_POINTER (handle));
@@ -442,7 +435,6 @@ cache_entry_get (GabbleVCardManager *manager, TpHandle handle)
 
   entry->manager = manager;
   entry->handle = handle;
-  tp_handle_ref (contact_repo, handle);
   g_hash_table_insert (priv->cache, GUINT_TO_POINTER (handle), entry);
 
   return entry;
@@ -582,7 +574,7 @@ complete_one_request (GabbleVCardManagerRequest *request,
 static void
 disconnect_entry_foreach (gpointer handle, gpointer value, gpointer unused)
 {
-  GError err = { TP_ERRORS, TP_ERROR_DISCONNECTED, "Connection closed" };
+  GError err = { TP_ERROR, TP_ERROR_DISCONNECTED, "Connection closed" };
   GabbleVCardCacheEntry *entry = value;
 
   if (entry->suspended_timer_id)
