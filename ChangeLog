@@ -1,3 +1,572 @@
+commit 86f15f2e3057dea4fd52ad0840c6b77cf379c47e
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-09-11 15:54:55 +0200
+
+    Prepare 0.17.1 release
+
+commit eb53bcaffc16ae388d3cda3b13e7088d84f80388
+Merge: 4c720bc 2a17888
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-09-11 15:49:33 +0200
+
+    Merge branch 'telepathy-gabble-0.16'
+    
+    Conflicts:
+    	NEWS
+    	configure.ac
+
+commit 2a1788842f38aaadb028ddd96f7e82f6db7e70b8
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-09-11 15:43:05 +0200
+
+    Bump nano version
+
+commit 406c9d74b100184197780d8bd6c68c6e393eeb76
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-09-11 15:39:40 +0200
+
+    Prepare 0.16.3 release
+
+commit 4c720bc262ea35b802606910b63b57f28929bdc6
+Merge: 36b4819 5c2184c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-09-11 12:02:09 +0100
+
+    Merge branch 'telepathy-gabble-0.16'
+    
+    Conflicts:
+    	NEWS
+    	configure.ac
+    	src/conn-addressing.c
+    	src/jingle-info.c
+    	src/media-channel-hold.c
+    	src/message-util.c
+    	src/muc-tube-dbus.c
+    	src/muc-tube-stream.c
+    	src/olpc-activity.c
+    	src/presence-cache.c
+    	src/protocol.c
+    	src/room-config.c
+
+commit 5c2184c21b1e8878394834a3b1ef9096a3c51087
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-09-11 11:26:03 +0100
+
+    NEWS for 0.16
+
+commit 8a6e9461f9cc12788532441bcc6f43fa7df4913f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-09-07 15:22:30 +0100
+
+    Verify that every caps 'ext' we ever advertise can be disco'd without error
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=54634
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit da14b4e86d503b30054b10b5e7b00eae7ba1add5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-09-07 15:19:30 +0100
+
+    Now that camera-v1 has a caps URI, don't treat it as part of video-v1
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=54634
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit fbfa8c138da1a4f00c74af4bda98e858a203a58b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-09-07 15:18:23 +0100
+
+    Add Google camera-v1 as a first-class caps bundle
+    
+    This is partly a point of principle - given any caps bundle that we have
+    ever advertised support for, we should be prepared to define when asked -
+    but mainly a workaround for the iChat bug mentioned in commit af55ea3d.
+    If we return an error, it will keep disco'ing us repeatedly in a loop.
+    
+    This leaves us with the problem of finding out what the bundle contains.
+    In Google's usage it is only its name that is important (ignoring that
+    XEP-0115 explicitly makes bundle names opaque), but replying to disco
+    requests for it requires us to be able to turn it into a set of 0 or
+    more capability URIs. Because of the Google server bug mentioned in
+    commit cd0da0a8, we can't just ask a Google client, because they're
+    all on Google servers, so they can't usefully be disco'd.
+    
+    We assume here that it behaves like the voice-v1 and video-v1 bundles
+    in containing exactly one URI, and that that URI corresponds to the
+    bundle name in the same way.
+    
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=54634
+
+commit 1866bc54eecf2fa6ce00b37d196cd904f8a0203b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 11:45:16 +0200
+
+    Pass RemoteContact key into UpdateLocalMediaDescription
+    
+    Now that telepathy-glib actually correctly checks what is passed to
+    UpdateLocalMediaDescription ensure we always pass the RemoteContact key
+    in the dictionary.
+
+commit 61cb4d227d1cbbf85d08f94c28036ba9d831f2fb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 11:06:28 +0200
+
+    Don't assume NewDebugMessage will occur before NewChannel
+
+commit e3aae2b2143c8b851e5814f6711aff75d4a1d197
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 10:30:36 +0200
+
+    Make the installed file generation depend on Makefile
+    
+    Make the rules for generating files part of the installed tests depend on
+    the Makefile such that it gets regenerated after runing configure with
+    a different prefix
+
+commit 217f39faabeece4946030ea14b6f26bda40fa276
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 10:14:48 +0200
+
+    sed pluginexecdir in run-gabble.sh
+    
+    Commit 352d2da805561ec0164a6e800cd3c3e3bbc629f3 starting using
+    pluginexecdir instead of ${libdir}/telepathy/gabble-0. Unfortunately the
+    generation of run-gabble.sh wasn't adapated
+
+commit ccc8f443c94d14d9dd94a5f4fbc84183159e8d33
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 10:10:52 +0200
+
+    Set gabble twisted location both for installed and uninstalled tests
+    
+    Set GABBLE_TWISTED_PATH in the environment which points to either the
+    installed (when using run-test.sh) or the srcdir location (when using
+    make check)
+
+commit 36b4819e116fbbcca22c7c87d72d31353b6802bb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 11:45:16 +0200
+
+    Pass RemoteContact key into UpdateLocalMediaDescription
+    
+    Now that telepathy-glib actually correctly checks what is passed to
+    UpdateLocalMediaDescription ensure we always pass the RemoteContact key
+    in the dictionary.
+
+commit ed9e8cf54b708276cfa02a589a77af7ce6ac447c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 11:06:28 +0200
+
+    Don't assume NewDebugMessage will occur before NewChannel
+
+commit 204fa429bbe263d0f88540957b613572f002259c
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 10:30:36 +0200
+
+    Make the installed file generation depend on Makefile
+    
+    Make the rules for generating files part of the installed tests depend on
+    the Makefile such that it gets regenerated after runing configure with
+    a different prefix
+
+commit a8bab9887ce33c580b74e43d75fe4b64a1edfecb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 10:14:48 +0200
+
+    sed pluginexecdir in run-gabble.sh
+    
+    Commit 352d2da805561ec0164a6e800cd3c3e3bbc629f3 starting using
+    pluginexecdir instead of ${libdir}/telepathy/gabble-0. Unfortunately the
+    generation of run-gabble.sh wasn't adapated
+
+commit 41cccaa8baf6970810ea406a86c04029c2230849
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 10:10:52 +0200
+
+    Set gabble twisted location both for installed and uninstalled tests
+    
+    Set GABBLE_TWISTED_PATH in the environment which points to either the
+    installed (when using run-test.sh) or the srcdir location (when using
+    make check)
+
+commit 223a234ad1b30608b122670d8504d33fd6c05d42
+Author: Luis Araujo <luis.araujo@collabora.co.uk>
+Date:   2012-09-07 17:12:47 +0100
+
+    run-test.sh.in: print pass/fail status
+    
+    Some automated testing frameworks, including LAVA, ignore exit status
+    and rely on screen-scraping results from log output. Use the Automake
+    convention here (each match of ^(PASS|FAIL|SKIP): (.*)$ is a test result).
+    
+    [commit message added -smcv]
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=52049
+
+commit 6f4aeea22388d325f056882224b87429da1e702c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-09-07 15:26:19 +0100
+
+    Turn off deprecation warnings, this is a stable branch
+    
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit e193a39e1272931c9470884a42f1a97655438e9a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-08-28 14:19:19 +0100
+
+    NEWS: updated
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit d4c7189ee40a9eb8a0831c78b2dbd5a54e221237
+Merge: e5aed68 1ed31aa
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-08-28 12:19:56 +0100
+
+    Merge branch 'only-one-tube'
+    
+    Conflicts:
+    	src/tubes-channel.c
+    	src/tubes-channel.h
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit e5aed68fb70d5450f3dd463b13aef7e52900232f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-08-28 12:19:12 +0100
+
+    configure: bump dependency on tp-glib
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 97c72b2036065b7b3f4862692656b87e9a07ae62
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-08-14 16:39:35 +0200
+
+    Bump nano version
+
+commit e60e4f72356ccfe6f8b62c04709430d8debbb737
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-08-14 16:07:30 +0200
+
+    Prepare 0.17.0
+
+commit 1bdfdfcfc0457a33d19df9d8deaeb3bc42d424a6
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-08-14 15:49:41 +0200
+
+    Make sure "make -j3 maintainer-foo" works
+
+commit 9f6c4a07d6a3f4776dca92864fe356442b75d19c
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-08-14 15:53:18 +0200
+
+    Bump nano version
+
+commit 46be2e2be7e11d9270907b886085c962ee361861
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-08-14 15:41:52 +0200
+
+    Prepare 0.16.2
+
+commit 49dc42c7ee6a77858d6e57df919a3008122661c1
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-08-14 15:49:41 +0200
+
+    Make sure "make -j3 maintainer-foo" works
+
+commit 1ed31aae5ef79aa7ffc92143ad1b80400c37197e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-24 13:15:39 +0100
+
+    muc-factory: clarify code deciding whether to announce text channels
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5c8c83a0637f3c44d7e608372454b6aa6410b032
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-20 12:44:15 +0100
+
+    muc-channel: remove ::appeared signal, replace with is_respawning check
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 73b0cbbf9eda1ca4922f562bc99f209e7fac326e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-20 12:17:07 +0100
+
+    private-tubes-factory: add further assertions in parsing a tube invite
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 77dafcbc1a7f1de2c6de8f82fd60c3b7eac2a3d3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-20 12:03:50 +0100
+
+    private-tubes-factory: ensure (not lookup) handles from tube invites
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 745b5ddcaf5220f2976cabd60a966c52eb25f440
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-19 17:30:25 +0100
+
+    tubes: use 64bit uints for tube IDs everywhere
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 18f0ca014a92fcc40be0f4658a247687739fc1dd
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-18 17:40:32 +0100
+
+    private-tubes-factory: simplify emit_new_channel code
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit dbae4d1275181d9c792616a53b328d5de02035b5
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-18 17:34:16 +0100
+
+    private-tubes-factory: add a comment about who owns new channels
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 1ed620dc1a64533f8aeaa668f510c930c2aa6f5e
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-18 17:27:38 +0100
+
+    private-tubes-factory: correct logic in looking up existing tubes
+    
+    Good catch, Simon!
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 7dca54edf28f95a911d95aa7fc6c6d333e31b915
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-18 17:25:17 +0100
+
+    private-tubes-factory: appease the code style checker
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit eeb872711256df80c71f3dac2f8de718f0c0d64d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-04-05 12:11:59 -0400
+
+    muc-channel: disappear from the bus when not requested
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 3b045801e426844af922b5a34a86f4ca0765a6f3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-05-18 09:44:58 +0100
+
+    muc-channel: use TP_PROP more than appending the property to an iface name
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit ba5b6373c4b42c572f44f9559aad995a81115d8f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-26 17:57:54 -0400
+
+    tubes-channel: remove
+    
+    Hooray!
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit faaec035ccef8d2b3f196d923c412f7fecfef1bc
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-26 17:56:59 -0400
+
+    muc-channel: remove "tube" property
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 1b08b38de7166ae229555ff9aecf49278d67a97c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-26 17:53:31 -0400
+
+    muc-factory: simplify code to get IM channel from InitialChannels
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5b5ffc4516a4fe2ef2ac5b0c131ae1b2610de789
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-26 17:53:20 -0400
+
+    muc-factory: remove dead comment
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 353db90ad65b2f5749384505bd8372ca8264f44c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-26 17:52:33 -0400
+
+    muc-channel: enable SI stream requests again
+    
+    This code came from GabbleTubesChannel.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f5b269b50df5b859fee0c168deafa97b107d9ad7
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-26 17:35:17 -0400
+
+    muc-factory: fix listing of channels
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 2aea52346a9c1a4adc6e373888298d9a6c50e52a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-26 17:29:57 -0400
+
+    tubes test: fix up now that we return text & tube channels together
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 07dca90ececeee6613a6c0057f3d1b68a6b8ea5c
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-26 17:27:23 -0400
+
+    muc-channel: remove unused methods
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 8305b566af9b3b0219a417dd9e854d32a8ec06fb
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-26 17:24:37 -0400
+
+    muc-channel: send Tube presence where appropriate
+    
+    This was removed GabbleTubesChannel.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit d6ade9e4a2cfae7054dfc75a39cc6d724bdb7933
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-26 17:11:53 -0400
+
+    muc-channel: add way to request single Tube channels
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 9568e3b1c68648781b39d4968d71128ba07ede96
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-26 16:51:24 -0400
+
+    muc-factory: remove Tubes channels from Tube channel requests
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 87fc93eba8527d5c183c0121190ac75d07f39beb
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-23 19:16:25 -0400
+
+    muc-channel: store Tube channels here
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 64cf190a7fc4ed8e8bbd340c9581e3ddfff9d4e6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-23 18:55:04 -0400
+
+    muc-factory: remove Tubes channel handling code
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 88777ca5ca7847d6f7b27a590d26f283a286f7ad
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-23 18:51:37 -0400
+
+    muc-factory: stop exposing Tubes channels in RCCs
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 95ea89f326c9d2b34eda734a77344664e6f56bf0
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-23 18:49:39 -0400
+
+    private-tubes-factory: make extract_tube_information public
+    
+    This should probably go in a tubes-util file or something...
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 6ae35c68a9451257b6cc136ed3dbd857241fdcd6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-23 18:48:38 -0400
+
+    private-tubes-factory: make error messages more specific
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 2fd80cbc062c60402d3bc93e0b08dcba3b6d6732
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-16 17:48:14 +0100
+
+    jingle caps test: add a test for Google caps with a random node
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5752b2a7b92f91fb80874272137a89151c630f21
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-16 17:45:55 +0100
+
+    presence-cache: ignore caps nodes when we see google 'ext' features
+    
+    Google keeps changing the node for its voice-v1, video-v1, share-v1,
+    etc. features. Let's just ignore it from now on and if there's no hash
+    treat it as if it might be Google.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 1158ce4649fe88dc410769665def19e5e702c9ec
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-16 14:04:12 +0100
+
+    presence-cache: parse caps URIs as a pair of node and fragment
+    
+    Previously we'd always throw the node and fragment together like:
+    
+        node + '#' + fragment
+    
+    Separating them has the advantage of being able to only look at the
+    fragment later (without using string tricks) and ignore the node.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f88ae541292e0ff4abd9214bef4c7b99a55dc4e9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-11 11:53:03 +0100
+
+    server-tls-manager: deal with modification of the GList while iterating it
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5de7189fa93918cc1dda3bfdf8d5833b63e43020
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-11 11:53:03 +0100
+
+    server-tls-manager: deal with modification of the GList while iterating it
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c04d52520e405649a2878902a0c825558b5a91ac
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-05-28 10:30:55 +0200
+
+    Implement WLM jidlookup
+    
+    See description: http://msdn.microsoft.com/en-us/library/live/hh550849.aspx
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=50341
+
 commit 8947be225e17d1cee96cf41586f495dcd35c6904
 Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
 Date:   2012-06-20 15:24:58 +0200
@@ -5,6 +574,15 @@ Date:   2012-06-20 15:24:58 +0200
     0.16.1 release
 
 commit 9abf25885dd71047746ea496ea3bdaff7f3499e7
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-06-13 14:41:10 +0200
+
+    GabbleServerTLSManager: Support multiple consecutive TLS verifications
+    
+    WockyConnector could now restart connection with another host,
+    and so needs to re-verify TLS.
+
+commit 788a8fcfc2946eae5327665b9e7c8a71a9475a9c
 Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
 Date:   2012-06-13 14:41:10 +0200
 
@@ -31,11 +609,216 @@ Date:   2012-05-15 22:40:04 +0200
     Reviewed-by: Sjoerd Simons <sjoerd@greynoise.nl>
     Bug: https://bugs.freedesktop.org/show_bug.cgi?id=36998
 
+commit e1673f4fb2818a8c2906b056a0a62d28cdd54097
+Author: Marcus Lundblad <ml@update.uu.se>
+Date:   2012-05-18 13:29:12 +0200
+
+    Fix for initiating a video call from an Android tablet.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd@greynoise.nl>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=36998
+
+commit dad87309ae85ca4a45e393c1e351b309fc8097a6
+Author: Marcus Lundblad <ml@update.uu.se>
+Date:   2012-05-15 22:40:04 +0200
+
+    Make Android 4.0 GTalk contacts appear as capable of a/v calls.
+    
+    Reviewed-by: Sjoerd Simons <sjoerd@greynoise.nl>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=36998
+
+commit 89751765986de2390c53e83ec41a4ea59aabd62c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-05-30 13:56:20 +0100
+
+    Include missing config.h at the beginning of jingle-info.c
+
+commit fa3b39e7a84fa985a5f7bac664fa6af8a355e622
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-05-30 13:34:20 +0100
+
+    Use meta-headers for everything
+    
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=49384
+
+commit a71f4c62ac847c8d2cf78cb6b7db62786b82dd1b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-20 19:01:46 -0400
+
+    private-tubes-factory: remove some duplication
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f9eca443d693dbde73e92cd7a2eee6980b69114f
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-20 15:22:25 -0400
+
+    connection: make a better guess at the final number of channel managers
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit d9f90c7b16df1ed85fbabbdaa34ea418e29e38f3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-20 15:11:13 -0400
+
+    private-tubes-factory: remove old Tubes code
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 7490deaff7d3acf2cbecb947d3dfe984e782eb94
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-20 15:04:05 -0400
+
+    private-tubes-factory: move SI tube request handling to here
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5d804b3926c93becaea7d017fcdae766d13fe056
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-20 11:22:11 -0400
+
+    private-tubes-factory: implement handle_si_stream_request
+    
+    ...instead of popping into TubesChannel.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 143bdcde2369f6bd001d3b86eef15ffb20a499d3
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-15 16:49:49 -0400
+
+    private-tubes-factory: only create Tube channels for tube offers
+    
+    extract_tube_information has been copied verbatum from
+    tubes-channel.c.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 867dea173d0c9ac876199fca0b532ff1126987d6
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-15 16:41:39 -0400
+
+    private-tubes-factory: remove Tubes channels from RCCs
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 5747291212d7f6ccc92ceb4cc198a292985d203a
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-15 16:41:11 -0400
+
+    private-tubes-factory: create only Tube channels for requests
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit c10809c97c20c1d3a55740f4e93eac26664b88a9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-15 16:36:42 -0400
+
+    tube tests: remove all Chan.T.Tubes tests
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 4f67d0e00694967c31ab35ab6eec0a325bc19d5d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-05-17 17:57:50 +0100
+
+    configure: ignore post 0.18 deprecations so we can build against tp-glib master
+    
+    Gabble still uses emit_new_channels and tp_handle_{,un}ref, but for
+    now we can ignore it with this. config.h had to be included in the
+    right place for a lot of source files.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit 7667bb74e99e236c15f34b7f9266073441d3afde
 Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
 Date:   2012-05-10 15:11:56 +0200
 
     Fix a leak in: tp_handles_unref() does not unref the array
+
+commit b7eaf004dd62f4425cc6027420533b493640d70d
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-05-10 14:59:46 +0200
+
+    Stop using tp_handle_ref/unref
+
+commit 591ee25d44a016b38067d1f9a8772dca0fbca09c
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-05-10 15:11:56 +0200
+
+    Fix a leak in: tp_handles_unref() does not unref the array
+
+commit df5e6d51ff66b5e84efdb1a1dfb28e584c2d5f3e
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-05-09 18:44:05 +0200
+
+    Bump telepathy-glib required version to 0.19.0
+
+commit 13eebb3cb90c31bcb27e70958e4664174cdce621
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-05-01 15:17:26 +0200
+
+    Improve ChatState test
+
+commit 956a5f821854494228981c2b7d3095a9a0687427
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-04-30 23:24:01 +0200
+
+    Use TpMessageMixin to implement ChatState
+
+commit cbfa9d06a8e4cc93b15e4a8b53819638ab09d67c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-05-07 18:54:08 +0100
+
+    Set G_MESSAGES_DEBUG during testing
+    
+    With recent GLib, we don't see debug messages otherwise.
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=49596
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+
+commit 3ee4f3fe45cd9b045081532bb4213582938a00f8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-05-07 17:29:22 +0100
+
+    Use non-deprecated TpIntset APIs
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=49596
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+
+commit c4b8ceb361748495be477bd3de49ac87c1a5bb2a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-05-07 16:58:51 +0100
+
+    Use TP_ERROR instead of deprecated TP_ERRORS
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=49596
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+
+commit eda09f9123a74dcc7e1b5ad52816ff70d794dec2
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-05-04 14:47:49 +0100
+
+    Stop using deprecated debug-ansi.h
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=49596
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+
+commit 0b2ba1be64a70c74408919b8717457042ce23648
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-04-05 13:28:10 -0400
+
+    servicetest: TextTestRunner might not be in unittest.runner
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit f9fd6bebc5f8774395433dfb055b68ddd5de84de
+Merge: 208a634 b8dd9b0
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-04-05 12:49:14 -0400
+
+    Merge branch 'shutup-servicetest'
 
 commit 0015b83d5746ec5fab3e4205c56ec599a5726bfa
 Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
@@ -72,6 +855,14 @@ Author: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
 Date:   2012-04-04 09:34:25 +0200
 
     include config.h in the generated gabble-enumtypes.c
+
+commit 208a634498e965a6087c6fb59a6d220e91163faf
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-04-02 17:47:49 -0400
+
+    start on version 0.17.0
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
 commit ae9e1ce5a377bcd2d19d169bdede8ca264032754
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
@@ -374,6 +1165,18 @@ Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2012-02-23 12:29:42 +0000
 
     Use the standard EXEEXT variable rather than reinventing it
+
+commit b8dd9b07c8a90a84bccc0cb348c5801a29d6c68b
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-03-07 15:28:14 -0500
+
+    servicetest: silence unittest
+    
+    The output when running all the tests is made really ugly by this
+    appearing out of nowhere. Only print the unittest stuff if
+    CHECK_TWISTED_VERBOSE is set.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
 commit 0a7c66f48e2a4f5f1b80237def4063fa952ccc71
 Merge: 52fac35 c8f08ce

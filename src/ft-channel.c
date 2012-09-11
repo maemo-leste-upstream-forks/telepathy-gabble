@@ -48,14 +48,8 @@
 #include "presence-cache.h"
 #include "util.h"
 
-#include <telepathy-glib/base-channel.h>
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/svc-generic.h>
-#include <telepathy-glib/svc-channel.h>
-
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 static void file_transfer_iface_init (gpointer g_iface, gpointer iface_data);
 static void transferred_chunk (GabbleFileTransferChannel *self, guint64 count);
@@ -481,21 +475,21 @@ file_transfer_channel_properties_setter (GObject *object,
 
   if (self->priv->uri != NULL)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "URI has already be set");
       return FALSE;
     }
 
   if (tp_base_channel_is_requested (base))
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Channel is not an incoming transfer");
       return FALSE;
     }
 
   if (self->priv->state != TP_FILE_TRANSFER_STATE_PENDING)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
         "State is not pending; cannot set URI");
       return FALSE;
     }
@@ -931,7 +925,7 @@ check_address_and_access_control (GabbleFileTransferChannel *self,
       GUINT_TO_POINTER (address_type));
   if (access_arr == NULL)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
           "AddressType %u is not implemented", address_type);
       return FALSE;
     }
@@ -946,7 +940,7 @@ check_address_and_access_control (GabbleFileTransferChannel *self,
         return TRUE;
     }
 
-  g_set_error (error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
+  g_set_error (error, TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
       "AccesControl %u is not implemented with AddressType %u",
       access_control, address_type);
 
@@ -1410,7 +1404,7 @@ gabble_file_transfer_channel_offer_file (GabbleFileTransferChannel *self,
   if (presence == NULL)
     {
       DEBUG ("can't find contact's presence");
-      g_set_error (error, TP_ERRORS, TP_ERROR_OFFLINE,
+      g_set_error (error, TP_ERROR, TP_ERROR_OFFLINE,
           "can't find contact's presence");
 
       return FALSE;
@@ -1422,7 +1416,7 @@ gabble_file_transfer_channel_offer_file (GabbleFileTransferChannel *self,
         {
           DEBUG ("trying to use Metadata properties on a contact "
               "who doesn't support it");
-          g_set_error (error, TP_ERRORS, TP_ERROR_NOT_CAPABLE,
+          g_set_error (error, TP_ERROR, TP_ERROR_NOT_CAPABLE,
               "The specified contact does not support the "
               "Metadata extension; you should ensure both ServiceName and "
               "Metadata properties are not present in the channel "
@@ -1490,7 +1484,7 @@ gabble_file_transfer_channel_offer_file (GabbleFileTransferChannel *self,
   else
     {
       DEBUG ("contact doesn't have file transfer capabilities");
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_CAPABLE,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_CAPABLE,
           "contact doesn't have file transfer capabilities");
       result = FALSE;
     }
@@ -1698,7 +1692,7 @@ gabble_file_transfer_channel_accept_file (TpSvcChannelTypeFileTransfer *iface,
 
   if (tp_base_channel_is_requested (base))
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "Channel is not an incoming transfer");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -1707,7 +1701,7 @@ gabble_file_transfer_channel_accept_file (TpSvcChannelTypeFileTransfer *iface,
 
   if (self->priv->state != TP_FILE_TRANSFER_STATE_PENDING)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
         "State is not pending; cannot accept file");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -1726,7 +1720,7 @@ gabble_file_transfer_channel_accept_file (TpSvcChannelTypeFileTransfer *iface,
         access_control_param))
     {
       DEBUG ("Could not set up local socket");
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "Could not set up local socket");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -1798,7 +1792,7 @@ gabble_file_transfer_channel_provide_file (
 
   if (!tp_base_channel_is_requested (TP_BASE_CHANNEL (self)))
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "Channel is not an outgoing transfer");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -1808,7 +1802,7 @@ gabble_file_transfer_channel_provide_file (
   if (self->priv->state != TP_FILE_TRANSFER_STATE_PENDING &&
       self->priv->state != TP_FILE_TRANSFER_STATE_ACCEPTED)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
         "State is not pending or accepted; cannot provide file");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -1817,7 +1811,7 @@ gabble_file_transfer_channel_provide_file (
 
   if (self->priv->socket_address != NULL)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "ProvideFile has already been called for this channel");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -1836,7 +1830,7 @@ gabble_file_transfer_channel_provide_file (
         access_control_param))
     {
       DEBUG ("Could not set up local socket");
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "Could not set up local socket");
       dbus_g_method_return_error (context, error);
       g_error_free (error);

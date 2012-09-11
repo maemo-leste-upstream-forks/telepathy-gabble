@@ -18,6 +18,7 @@
  */
 
 #include "config.h"
+
 #include "muc-tube-dbus.h"
 
 G_DEFINE_TYPE (GabbleMucTubeDBus, gabble_muc_tube_dbus,

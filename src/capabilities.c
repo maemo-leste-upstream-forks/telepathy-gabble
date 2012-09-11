@@ -24,11 +24,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/channel-manager.h>
-#include <telepathy-glib/handle-repo.h>
-#include <telepathy-glib/handle-repo-dynamic.h>
-#include <telepathy-glib/util.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_PRESENCE
 #include "debug.h"
@@ -77,6 +74,7 @@ static const Feature self_advertised_features[] =
   { FEATURE_OPTIONAL, NS_GOOGLE_FEAT_SHARE },
   { FEATURE_OPTIONAL, NS_GOOGLE_FEAT_VOICE },
   { FEATURE_OPTIONAL, NS_GOOGLE_FEAT_VIDEO },
+  { FEATURE_OPTIONAL, NS_GOOGLE_FEAT_CAMERA },
   { FEATURE_OPTIONAL, NS_JINGLE_DESCRIPTION_AUDIO },
   { FEATURE_OPTIONAL, NS_JINGLE_DESCRIPTION_VIDEO },
   { FEATURE_OPTIONAL, NS_JINGLE_RTP },
@@ -103,6 +101,7 @@ static GabbleCapabilitySet *legacy_caps = NULL;
 static GabbleCapabilitySet *share_v1_caps = NULL;
 static GabbleCapabilitySet *voice_v1_caps = NULL;
 static GabbleCapabilitySet *video_v1_caps = NULL;
+static GabbleCapabilitySet *camera_v1_caps = NULL;
 static GabbleCapabilitySet *any_audio_caps = NULL;
 static GabbleCapabilitySet *any_video_caps = NULL;
 static GabbleCapabilitySet *any_audio_video_caps = NULL;
@@ -135,6 +134,12 @@ const GabbleCapabilitySet *
 gabble_capabilities_get_bundle_video_v1 (void)
 {
   return video_v1_caps;
+}
+
+const GabbleCapabilitySet *
+gabble_capabilities_get_bundle_camera_v1 (void)
+{
+  return camera_v1_caps;
 }
 
 const GabbleCapabilitySet *
@@ -271,6 +276,9 @@ gabble_capabilities_init (gpointer conn)
       video_v1_caps = gabble_capability_set_new ();
       gabble_capability_set_add (video_v1_caps, NS_GOOGLE_FEAT_VIDEO);
 
+      camera_v1_caps = gabble_capability_set_new ();
+      gabble_capability_set_add (camera_v1_caps, NS_GOOGLE_FEAT_CAMERA);
+
       any_audio_caps = gabble_capability_set_new ();
       gabble_capability_set_add (any_audio_caps, NS_JINGLE_RTP_AUDIO);
       gabble_capability_set_add (any_audio_caps, NS_JINGLE_DESCRIPTION_AUDIO);
@@ -335,6 +343,7 @@ gabble_capabilities_finalize (gpointer conn)
       gabble_capability_set_free (share_v1_caps);
       gabble_capability_set_free (voice_v1_caps);
       gabble_capability_set_free (video_v1_caps);
+      gabble_capability_set_free (camera_v1_caps);
       gabble_capability_set_free (any_audio_caps);
       gabble_capability_set_free (any_video_caps);
       gabble_capability_set_free (any_audio_video_caps);
@@ -350,6 +359,7 @@ gabble_capabilities_finalize (gpointer conn)
       share_v1_caps = NULL;
       voice_v1_caps = NULL;
       video_v1_caps = NULL;
+      camera_v1_caps = NULL;
       any_audio_caps = NULL;
       any_video_caps = NULL;
       any_audio_video_caps = NULL;
@@ -440,7 +450,7 @@ void
 gabble_capability_set_update (GabbleCapabilitySet *target,
     const GabbleCapabilitySet *source)
 {
-  TpIntSet *ret;
+  TpIntset *ret;
   g_return_if_fail (target != NULL);
   g_return_if_fail (source != NULL);
 
@@ -526,9 +536,7 @@ gabble_capability_set_add (GabbleCapabilitySet *caps,
   g_return_if_fail (cap != NULL);
 
   handle = tp_handle_ensure (feature_handles, cap, NULL, NULL);
-
   tp_handle_set_add (caps->handles, handle);
-  tp_handle_unref (feature_handles, handle);
 }
 
 gboolean
@@ -600,16 +608,17 @@ gboolean
 gabble_capability_set_has_one (const GabbleCapabilitySet *caps,
     const GabbleCapabilitySet *alternatives)
 {
-  TpIntSetIter iter;
+  TpIntsetFastIter iter;
+  guint element;
 
   g_return_val_if_fail (caps != NULL, FALSE);
   g_return_val_if_fail (alternatives != NULL, FALSE);
 
-  tp_intset_iter_init (&iter, tp_handle_set_peek (alternatives->handles));
+  tp_intset_fast_iter_init (&iter, tp_handle_set_peek (alternatives->handles));
 
-  while (tp_intset_iter_next (&iter))
+  while (tp_intset_fast_iter_next (&iter, &element))
     {
-      if (tp_handle_set_is_member (caps->handles, iter.element))
+      if (tp_handle_set_is_member (caps->handles, element))
         {
           return TRUE;
         }
@@ -623,16 +632,17 @@ gboolean
 gabble_capability_set_at_least (const GabbleCapabilitySet *caps,
     const GabbleCapabilitySet *query)
 {
-  TpIntSetIter iter;
+  TpIntsetFastIter iter;
+  guint element;
 
   g_return_val_if_fail (caps != NULL, FALSE);
   g_return_val_if_fail (query != NULL, FALSE);
 
-  tp_intset_iter_init (&iter, tp_handle_set_peek (query->handles));
+  tp_intset_fast_iter_init (&iter, tp_handle_set_peek (query->handles));
 
-  while (tp_intset_iter_next (&iter))
+  while (tp_intset_fast_iter_next (&iter, &element))
     {
-      if (!tp_handle_set_is_member (caps->handles, iter.element))
+      if (!tp_handle_set_is_member (caps->handles, element))
         {
           return FALSE;
         }
@@ -657,16 +667,17 @@ void
 gabble_capability_set_foreach (const GabbleCapabilitySet *caps,
     GFunc func, gpointer user_data)
 {
-  TpIntSetIter iter;
+  TpIntsetFastIter iter;
+  guint element;
 
   g_return_if_fail (caps != NULL);
   g_return_if_fail (func != NULL);
 
-  tp_intset_iter_init (&iter, tp_handle_set_peek (caps->handles));
+  tp_intset_fast_iter_init (&iter, tp_handle_set_peek (caps->handles));
 
-  while (tp_intset_iter_next (&iter))
+  while (tp_intset_fast_iter_next (&iter, &element))
     {
-      const gchar *var = tp_handle_inspect (feature_handles, iter.element);
+      const gchar *var = tp_handle_inspect (feature_handles, element);
 
       g_return_if_fail (var != NULL);
 
@@ -677,10 +688,10 @@ gabble_capability_set_foreach (const GabbleCapabilitySet *caps,
 
 static void
 append_intset (GString *ret,
-    const TpIntSet *cap_ints,
+    const TpIntset *cap_ints,
     const gchar *indent)
 {
-  TpIntSetFastIter iter;
+  TpIntsetFastIter iter;
   guint element;
 
   tp_intset_fast_iter_init (&iter, cap_ints);
@@ -726,7 +737,7 @@ gabble_capability_set_dump_diff (const GabbleCapabilitySet *old_caps,
     const GabbleCapabilitySet *new_caps,
     const gchar *indent)
 {
-  TpIntSet *old_ints, *new_ints, *rem, *add;
+  TpIntset *old_ints, *new_ints, *rem, *add;
   GString *ret;
 
   g_return_val_if_fail (old_caps != NULL, NULL);

@@ -25,10 +25,9 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-#include <telepathy-glib/channel-manager.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/util.h>
+
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_MUC
 
@@ -329,7 +328,7 @@ gabble_roomlist_manager_handle_request (TpChannelManager *manager,
   if (tp_asv_get_uint32 (request_properties,
        TP_IFACE_CHANNEL ".TargetHandleType", NULL) != 0)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
           "RoomList channels can't have a target handle");
       goto error;
     }
@@ -349,7 +348,7 @@ gabble_roomlist_manager_handle_request (TpChannelManager *manager,
 
       if (server == NULL)
         {
-          g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+          g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
               "Unable to choose a default conference server");
           goto error;
         }

@@ -35,6 +35,7 @@
 #define NS_GOOGLE_FEAT_SHARE    "http://google.com/xmpp/protocol/share/v1"
 #define NS_GOOGLE_FEAT_VOICE    "http://www.google.com/xmpp/protocol/voice/v1"
 #define NS_GOOGLE_FEAT_VIDEO    "http://www.google.com/xmpp/protocol/video/v1"
+#define NS_GOOGLE_FEAT_CAMERA   "http://www.google.com/xmpp/protocol/camera/v1"
 #define NS_GOOGLE_JINGLE_INFO   "google:jingleinfo"
 #define NS_GOOGLE_ROSTER        "google:roster"
 #define NS_GOOGLE_QUEUE         "google:queue"
@@ -133,5 +134,9 @@
 
 #define NS_TP_FT_METADATA_SERVICE "http://telepathy.freedesktop.org/xmpp/file-transfer-service"
 #define NS_TP_FT_METADATA       "http://telepathy.freedesktop.org/xmpp/file-transfer-metadata"
+
+/* This is used by WLM to convert Windows Live ID to XMPP jid.
+ * See http://msdn.microsoft.com/en-us/library/live/hh550849.aspx */
+#define NS_WLM_JID_LOOKUP "http://messenger.live.com/xmpp/jidlookup"
 
 #endif /* __GABBLE_NAMESPACES__H__ */

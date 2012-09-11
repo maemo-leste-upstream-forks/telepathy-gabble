@@ -27,12 +27,8 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <wocky/wocky.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/group-mixin.h>
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/svc-channel.h>
-#include <telepathy-glib/svc-generic.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #include "extensions/extensions.h"
 
@@ -120,7 +116,7 @@ enum
 struct _GabbleTubeDBusPrivate
 {
   TpHandle self_handle;
-  guint id;
+  guint64 id;
   GabbleBytestreamIface *bytestream;
   gchar *stream_id;
   gchar *service;
@@ -394,7 +390,7 @@ create_dbus_server (GabbleTubeDBus *self,
       g_free (priv->socket_path);
       priv->socket_path = NULL;
 
-      g_set_error (err, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (err, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "Can't create D-Bus server");
       return FALSE;
     }
@@ -411,6 +407,8 @@ static void
 tube_dbus_open (GabbleTubeDBus *self)
 {
   GabbleTubeDBusPrivate *priv = GABBLE_TUBE_DBUS_GET_PRIVATE (self);
+  TpBaseChannel *base = TP_BASE_CHANNEL (self);
+  TpBaseChannelClass *cls = TP_BASE_CHANNEL_GET_CLASS (base);
 
   g_signal_connect (priv->bytestream, "data-received",
       G_CALLBACK (data_received_cb), self);
@@ -424,6 +422,15 @@ tube_dbus_open (GabbleTubeDBus *self)
     {
       dbus_server_setup_with_g_main (priv->dbus_srv, NULL);
     }
+
+  if (cls->target_handle_type == TP_HANDLE_TYPE_ROOM)
+    {
+      /* add yourself in dbus names */
+      gabble_tube_dbus_add_name (self, priv->self_handle,
+          priv->dbus_local_name);
+
+      gabble_muc_channel_send_presence (priv->muc);
+    }
 }
 
 static void
@@ -433,17 +440,6 @@ gabble_tube_dbus_init (GabbleTubeDBus *self)
       GABBLE_TYPE_TUBE_DBUS, GabbleTubeDBusPrivate);
 
   self->priv = priv;
-}
-
-static void
-unref_handle_foreach (gpointer key,
-                      gpointer value,
-                      gpointer user_data)
-{
-  TpHandle handle = GPOINTER_TO_UINT (key);
-  TpHandleRepoIface *contact_repo = (TpHandleRepoIface *) user_data;
-
-  tp_handle_unref (contact_repo, handle);
 }
 
 static TpTubeChannelState
@@ -485,11 +481,16 @@ bytestream_state_changed_cb (GabbleBytestreamIface *bytestream,
 {
   GabbleTubeDBus *self = GABBLE_TUBE_DBUS (user_data);
   GabbleTubeDBusPrivate *priv = GABBLE_TUBE_DBUS_GET_PRIVATE (self);
+  TpBaseChannel *base = TP_BASE_CHANNEL (self);
+  TpBaseChannelClass *cls = TP_BASE_CHANNEL_GET_CLASS (base);
 
   if (state == GABBLE_BYTESTREAM_STATE_CLOSED)
     {
       tp_clear_object (&priv->bytestream);
       g_signal_emit (G_OBJECT (self), signals[CLOSED], 0);
+
+      if (cls->target_handle_type == TP_HANDLE_TYPE_ROOM)
+        gabble_muc_channel_send_presence (priv->muc);
     }
   else if (state == GABBLE_BYTESTREAM_STATE_OPEN)
     {
@@ -507,10 +508,6 @@ gabble_tube_dbus_dispose (GObject *object)
 {
   GabbleTubeDBus *self = GABBLE_TUBE_DBUS (object);
   GabbleTubeDBusPrivate *priv = GABBLE_TUBE_DBUS_GET_PRIVATE (self);
-  TpBaseConnection *base_conn = tp_base_channel_get_connection (
-      TP_BASE_CHANNEL (self));
-  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
-      base_conn, TP_HANDLE_TYPE_CONTACT);
 
   DEBUG ("called");
 
@@ -556,13 +553,6 @@ gabble_tube_dbus_dispose (GObject *object)
   tp_clear_pointer (&priv->dbus_srv_addr, g_free);
   tp_clear_pointer (&priv->socket_path, g_free);
   tp_clear_pointer (&priv->dbus_local_name, g_free);
-
-  if (priv->dbus_names != NULL)
-    {
-      g_hash_table_foreach (priv->dbus_names, unref_handle_foreach,
-          contact_repo);
-    }
-
   tp_clear_pointer (&priv->dbus_names, g_hash_table_unref);
   tp_clear_pointer (&priv->dbus_name_to_handle, g_hash_table_unref);
 
@@ -605,7 +595,7 @@ gabble_tube_dbus_get_property (GObject *object,
         g_value_set_uint (value, priv->self_handle);
         break;
       case PROP_ID:
-        g_value_set_uint (value, priv->id);
+        g_value_set_uint64 (value, priv->id);
         break;
       case PROP_BYTESTREAM:
         g_value_set_object (value, priv->bytestream);
@@ -661,7 +651,7 @@ gabble_tube_dbus_set_property (GObject *object,
         priv->self_handle = g_value_get_uint (value);
         break;
       case PROP_ID:
-        priv->id = g_value_get_uint (value);
+        priv->id = g_value_get_uint64 (value);
         break;
       case PROP_BYTESTREAM:
         if (priv->bytestream == NULL)
@@ -839,7 +829,7 @@ gabble_tube_dbus_get_object_path_suffix (TpBaseChannel *base)
 {
   GabbleTubeDBus *self = GABBLE_TUBE_DBUS (base);
 
-  return g_strdup_printf ("DBusTubeChannel/%u/%u",
+  return g_strdup_printf ("DBusTubeChannel/%u/%" G_GUINT64_FORMAT,
       tp_base_channel_get_target_handle (base),
       self->priv->id);
 }
@@ -1038,7 +1028,7 @@ gabble_tube_dbus_offer (GabbleTubeDBus *tube,
 
   if (priv->offered)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Tube has already been offered");
       return FALSE;
     }
@@ -1062,7 +1052,7 @@ gabble_tube_dbus_offer (GabbleTubeDBus *tube,
       if (presence == NULL)
         {
           DEBUG ("can't find contact %s's presence", jid);
-          g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+          g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
               "can't find contact %s's presence", jid);
           return FALSE;
         }
@@ -1073,7 +1063,7 @@ gabble_tube_dbus_offer (GabbleTubeDBus *tube,
       if (resource == NULL)
         {
           DEBUG ("contact %s doesn't have tubes capabilities", jid);
-          g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+          g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
               "contact %s doesn't have tubes capabilities", jid);
           return FALSE;
         }
@@ -1114,6 +1104,8 @@ gabble_tube_dbus_offer (GabbleTubeDBus *tube,
       g_object_set (priv->bytestream,
           "state", GABBLE_BYTESTREAM_STATE_OPEN,
           NULL);
+
+      gabble_muc_channel_send_presence (priv->muc);
     }
 
   if (!create_dbus_server (tube, error))
@@ -1348,7 +1340,7 @@ gabble_tube_dbus_new (GabbleConnection *conn,
                       const gchar *service,
                       GHashTable *parameters,
                       const gchar *stream_id,
-                      guint id,
+                      guint64 id,
                       GabbleBytestreamIface *bytestream,
                       GabbleMucChannel *muc,
                       gboolean requested)
@@ -1518,7 +1510,6 @@ gabble_tube_dbus_add_name (GabbleTubeDBus *self,
   name_copy = g_strdup (name);
   g_hash_table_insert (priv->dbus_names, GUINT_TO_POINTER (handle),
       name_copy);
-  tp_handle_ref (contact_repo, handle);
 
   g_hash_table_insert (priv->dbus_name_to_handle, name_copy,
       GUINT_TO_POINTER (handle));
@@ -1545,9 +1536,6 @@ gabble_tube_dbus_remove_name (GabbleTubeDBus *self,
   GabbleTubeDBusPrivate *priv = GABBLE_TUBE_DBUS_GET_PRIVATE (self);
   TpBaseChannel *base = TP_BASE_CHANNEL (self);
   TpBaseChannelClass *cls = TP_BASE_CHANNEL_GET_CLASS (base);
-  TpBaseConnection *base_conn = tp_base_channel_get_connection (base);
-  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
-      base_conn, TP_HANDLE_TYPE_CONTACT);
   const gchar *name;
   GHashTable *added;
   GArray *removed;
@@ -1575,7 +1563,6 @@ gabble_tube_dbus_remove_name (GabbleTubeDBus *self,
 
   g_hash_table_unref (added);
   g_array_unref (removed);
-  tp_handle_unref (contact_repo, handle);
   return TRUE;
 }
 
@@ -1661,7 +1648,7 @@ gabble_tube_dbus_check_access_control (GabbleTubeDBus *self,
         break;
 
       default:
-        g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+        g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
             "%u socket access control is not supported", access_control);
         return FALSE;
     }

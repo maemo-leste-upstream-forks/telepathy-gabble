@@ -25,9 +25,8 @@
 #include <string.h>
 
 #include <dbus/dbus-glib.h>
-#include <telepathy-glib/channel-manager.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 #include <wocky/wocky.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_ROSTER
@@ -214,17 +213,6 @@ gabble_roster_dispose (GObject *object)
 }
 
 static void
-item_handle_unref_foreach (gpointer key, gpointer data, gpointer user_data)
-{
-  TpHandle handle = GPOINTER_TO_UINT (key);
-  GabbleRosterPrivate *priv = (GabbleRosterPrivate *) user_data;
-  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
-      (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_CONTACT);
-
-  tp_handle_unref (contact_repo, handle);
-}
-
-static void
 gabble_roster_finalize (GObject *object)
 {
   GabbleRoster *self = GABBLE_ROSTER (object);
@@ -232,7 +220,6 @@ gabble_roster_finalize (GObject *object)
 
   DEBUG ("called with %p", object);
 
-  g_hash_table_foreach (priv->items, item_handle_unref_foreach, priv);
   g_hash_table_unref (priv->items);
 
   G_OBJECT_CLASS (gabble_roster_parent_class)->finalize (object);
@@ -323,7 +310,6 @@ _parse_item_groups (WockyNode *item_node, TpBaseConnection *conn)
       if (!handle)
         continue;
       tp_handle_set_add (groups, handle);
-      tp_handle_unref (group_repo, handle);
     }
 
   return groups;
@@ -459,7 +445,6 @@ _gabble_roster_item_ensure (GabbleRoster *roster,
       item->publish = TP_SUBSCRIPTION_STATE_NO;
       item->name = alias;
       item->groups = tp_handle_set_new (group_repo);
-      tp_handle_ref (contact_repo, handle);
       g_hash_table_insert (priv->items, GUINT_TO_POINTER (handle), item);
     }
 
@@ -512,7 +497,6 @@ _gabble_roster_item_maybe_remove (GabbleRoster *roster,
   DEBUG ("removing contact#%u", handle);
   item = NULL;
   g_hash_table_remove (priv->items, GUINT_TO_POINTER (handle));
-  tp_handle_unref (contact_repo, handle);
   return TRUE;
 }
 
@@ -526,7 +510,7 @@ _gabble_roster_item_update (GabbleRoster *roster,
   GabbleRosterPrivate *priv = roster->priv;
   GabbleRosterItem *item;
   const gchar *ask, *name;
-  TpIntSet *new_groups, *added_to, *removed_from, *removed_from2;
+  TpIntset *new_groups, *added_to, *removed_from, *removed_from2;
   TpHandleSet *new_groups_handle_set, *old_groups;
   TpBaseContactList *base = (TpBaseContactList *) roster;
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
@@ -588,7 +572,7 @@ _gabble_roster_item_update (GabbleRoster *roster,
 
   if (roster->priv->groups != NULL)
     {
-      TpIntSet *created_groups = tp_handle_set_update (roster->priv->groups,
+      TpIntset *created_groups = tp_handle_set_update (roster->priv->groups,
           new_groups);
 
       /* we don't need to do this work if TpBaseContactList will just be
@@ -599,7 +583,7 @@ _gabble_roster_item_update (GabbleRoster *roster,
         {
           GPtrArray *strv = g_ptr_array_sized_new (tp_intset_size (
                 created_groups));
-          TpIntSetFastIter iter;
+          TpIntsetFastIter iter;
           TpHandle group;
 
           tp_intset_fast_iter_init (&iter, created_groups);
@@ -636,7 +620,7 @@ _gabble_roster_item_update (GabbleRoster *roster,
       GPtrArray *removed_names = g_ptr_array_sized_new (
           tp_intset_size (removed_from));
       TpHandleSet *the_contact = tp_handle_set_new (contact_repo);
-      TpIntSetFastIter iter;
+      TpIntsetFastIter iter;
       TpHandle group;
 
       tp_handle_set_add (the_contact, contact_handle);
@@ -1113,7 +1097,6 @@ process_roster (
 
       /* transfer ownership of the reference to referenced_handles */
       tp_handle_set_add (referenced_handles, handle);
-      tp_handle_unref (contact_repo, handle);
 
       item = _gabble_roster_item_update (roster, handle, item_node,
                                          google_roster, &nickname_updated);
@@ -1551,8 +1534,7 @@ gabble_roster_presence_cb (WockyPorter *porter,
     {
       NODE_DEBUG (pres_node, "ignoring presence from ourselves on another "
           "resource");
-      ret = FALSE;
-      goto OUT;
+      return FALSE;
     }
 
   g_assert (handle != 0);
@@ -1679,8 +1661,6 @@ gabble_roster_presence_cb (WockyPorter *porter,
       ret = FALSE;
     }
 
-OUT:
-  tp_handle_unref (contact_repo, handle);
   return ret;
 }
 
@@ -1880,7 +1860,6 @@ item_edit_new (TpHandleRepoIface *contact_repo,
 {
   GabbleRosterItemEdit *self = g_slice_new0 (GabbleRosterItemEdit);
 
-  tp_handle_ref (contact_repo, handle);
   self->contact_repo = g_object_ref (contact_repo);
   self->handle = handle;
   self->new_subscription = GABBLE_ROSTER_SUBSCRIPTION_INVALID;
@@ -1906,7 +1885,6 @@ item_edit_free (GabbleRosterItemEdit *edits)
 
   g_slist_free (edits->results);
 
-  tp_handle_unref (edits->contact_repo, edits->handle);
   g_object_unref (edits->contact_repo);
   tp_clear_pointer (&edits->add_to_groups, tp_handle_set_destroy);
   tp_clear_pointer (&edits->remove_from_groups, tp_handle_set_destroy);
@@ -1969,7 +1947,7 @@ roster_item_apply_edits (GabbleRoster *roster,
 {
   gboolean altered = FALSE;
   GabbleRosterItem edited_item;
-  TpIntSet *intset;
+  TpIntset *intset;
   GabbleRosterPrivate *priv = roster->priv;
   TpHandleRepoIface *group_repo = tp_base_connection_get_handles (
       (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_GROUP);
@@ -2658,7 +2636,7 @@ gabble_roster_request_subscription_added_cb (GObject *source,
       (TpBaseConnection *) self->priv->conn, TP_HANDLE_TYPE_CONTACT);
   SubscribeContext *context = user_data;
   GError *error = NULL;
-  TpIntSetFastIter iter;
+  TpIntsetFastIter iter;
   TpHandle contact;
 
   /* Now that we've added all the contacts, send off all the subscription
@@ -2712,7 +2690,7 @@ gabble_roster_request_subscription_async (TpBaseContactList *base,
   GSimpleAsyncResult *result = gabble_simple_async_countdown_new (self,
       gabble_roster_request_subscription_added_cb, context,
       gabble_roster_request_subscription_async, 1);
-  TpIntSetFastIter iter;
+  TpIntsetFastIter iter;
   TpHandle contact;
 
   /* Before subscribing, add items to the roster
@@ -2740,7 +2718,7 @@ gabble_roster_authorize_publication_async (TpBaseContactList *base,
     gpointer user_data)
 {
   GabbleRoster *self = GABBLE_ROSTER (base);
-  TpIntSetFastIter iter;
+  TpIntsetFastIter iter;
   TpHandle contact;
   GError *error = NULL;
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
@@ -2793,7 +2771,7 @@ gabble_roster_store_contacts_async (TpBaseContactList *base,
     gpointer user_data)
 {
   GabbleRoster *self = GABBLE_ROSTER (base);
-  TpIntSetFastIter iter;
+  TpIntsetFastIter iter;
   TpHandle contact;
   GSimpleAsyncResult *result = gabble_simple_async_countdown_new (self,
       callback, user_data, gabble_roster_store_contacts_async, 1);
@@ -2814,7 +2792,7 @@ gabble_roster_remove_contacts_async (TpBaseContactList *base,
     gpointer user_data)
 {
   GabbleRoster *self = GABBLE_ROSTER (base);
-  TpIntSetFastIter iter;
+  TpIntsetFastIter iter;
   TpHandle contact;
   GSimpleAsyncResult *result = gabble_simple_async_countdown_new (self,
       callback, user_data, gabble_roster_request_subscription_async, 1);
@@ -2839,7 +2817,7 @@ gabble_roster_unsubscribe_async (TpBaseContactList *base,
       (TpBaseConnection *) self->priv->conn, TP_HANDLE_TYPE_CONTACT);
   TpHandleSet *changed = tp_handle_set_new (contact_repo);
   TpHandleSet *removed = tp_handle_set_new (contact_repo);
-  TpIntSetFastIter iter;
+  TpIntsetFastIter iter;
   TpHandle contact;
   GError *error = NULL;
 
@@ -2900,7 +2878,7 @@ gabble_roster_unpublish_async (TpBaseContactList *base,
       (TpBaseConnection *) self->priv->conn, TP_HANDLE_TYPE_CONTACT);
   TpHandleSet *changed = tp_handle_set_new (contact_repo);
   TpHandleSet *removed = tp_handle_set_new (contact_repo);
-  TpIntSetFastIter iter;
+  TpIntsetFastIter iter;
   TpHandle contact;
   GError *error = NULL;
 
@@ -3041,7 +3019,7 @@ gabble_roster_block_contacts_async (TpBaseContactList *base,
     gpointer user_data)
 {
   GabbleRoster *self = GABBLE_ROSTER (base);
-  TpIntSetFastIter iter;
+  TpIntsetFastIter iter;
   TpHandle contact;
   GSimpleAsyncResult *result = gabble_simple_async_countdown_new (self,
       callback, user_data, gabble_roster_request_subscription_async, 1);
@@ -3062,7 +3040,7 @@ gabble_roster_unblock_contacts_async (TpBaseContactList *base,
     gpointer user_data)
 {
   GabbleRoster *self = GABBLE_ROSTER (base);
-  TpIntSetFastIter iter;
+  TpIntsetFastIter iter;
   TpHandle contact;
   GSimpleAsyncResult *result = gabble_simple_async_countdown_new (self,
       callback, user_data, gabble_roster_request_subscription_async, 1);
@@ -3086,7 +3064,7 @@ gabble_roster_dup_groups (TpBaseContactList *base)
 
   if (self->priv->groups != NULL)
     {
-      TpIntSetFastIter iter;
+      TpIntsetFastIter iter;
       TpHandle group;
 
       ret = g_ptr_array_sized_new (
@@ -3122,7 +3100,7 @@ gabble_roster_dup_contact_groups (TpBaseContactList *base,
     {
       TpHandleRepoIface *group_repo = tp_base_connection_get_handles (
           (TpBaseConnection *) self->priv->conn, TP_HANDLE_TYPE_GROUP);
-      TpIntSetFastIter iter;
+      TpIntsetFastIter iter;
       TpHandle group;
 
       ret = g_ptr_array_sized_new (tp_handle_set_size (item->groups) + 1);
@@ -3218,7 +3196,6 @@ gabble_roster_set_contact_groups_async (TpBaseContactList *base,
           g_ptr_array_add (groups_created, (gchar *) groups[i]);
         }
 
-      tp_handle_unref (group_repo, group_handle);
     }
 
   if (groups_created->len > 0)
@@ -3273,7 +3250,7 @@ gabble_roster_set_group_members_async (TpBaseContactList *base,
   /* You can't add people to an invalid group. */
   if (G_UNLIKELY (group_handle == 0))
     {
-      g_simple_async_result_set_error (result, TP_ERRORS,
+      g_simple_async_result_set_error (result, TP_ERROR,
           TP_ERROR_INVALID_ARGUMENT, "Invalid group name: %s", group);
       goto finally;
     }
@@ -3300,8 +3277,6 @@ gabble_roster_set_group_members_async (TpBaseContactList *base,
             result);
     }
 
-  tp_handle_unref (group_repo, group_handle);
-
 finally:
   gabble_simple_async_countdown_dec (result);
   g_object_unref (result);
@@ -3315,7 +3290,7 @@ gabble_roster_add_to_group_async (TpBaseContactList *base,
     gpointer user_data)
 {
   GabbleRoster *self = GABBLE_ROSTER (base);
-  TpIntSetFastIter iter;
+  TpIntsetFastIter iter;
   TpHandle contact;
   TpHandleRepoIface *group_repo = tp_base_connection_get_handles (
       (TpBaseConnection *) self->priv->conn, TP_HANDLE_TYPE_GROUP);
@@ -3327,7 +3302,7 @@ gabble_roster_add_to_group_async (TpBaseContactList *base,
   /* You can't add people to an invalid group. */
   if (G_UNLIKELY (group_handle == 0))
     {
-      g_simple_async_result_set_error (result, TP_ERRORS,
+      g_simple_async_result_set_error (result, TP_ERROR,
           TP_ERROR_INVALID_ARGUMENT, "Invalid group name: %s", group);
       goto finally;
     }
@@ -3348,8 +3323,6 @@ gabble_roster_add_to_group_async (TpBaseContactList *base,
       gabble_roster_handle_add_to_group (self, contact, group_handle, result);
     }
 
-  tp_handle_unref (group_repo, group_handle);
-
 finally:
   gabble_simple_async_countdown_dec (result);
   g_object_unref (result);
@@ -3363,7 +3336,7 @@ gabble_roster_remove_from_group_async (TpBaseContactList *base,
     gpointer user_data)
 {
   GabbleRoster *self = GABBLE_ROSTER (base);
-  TpIntSetFastIter iter;
+  TpIntsetFastIter iter;
   TpHandle contact;
   TpHandleRepoIface *group_repo = tp_base_connection_get_handles (
       (TpBaseConnection *) self->priv->conn, TP_HANDLE_TYPE_GROUP);
@@ -3464,8 +3437,6 @@ gabble_roster_remove_group_removed_cb (GObject *source,
           DEBUG ("contact #%u is still a member of group '%s', not removing",
               remaining_member, group);
         }
-
-      tp_handle_unref (group_repo, context->group_handle);
     }
 
   context->callback (source, result, context->user_data);
@@ -3494,9 +3465,6 @@ gabble_roster_remove_group_async (TpBaseContactList *base,
   context->callback = callback;
   context->user_data = user_data;
   context->contacts = tp_handle_set_new (contact_repo);
-
-  if (context->group_handle != 0)
-    tp_handle_ref (group_repo, context->group_handle);
 
   result = gabble_simple_async_countdown_new (self,
       gabble_roster_remove_group_removed_cb,
