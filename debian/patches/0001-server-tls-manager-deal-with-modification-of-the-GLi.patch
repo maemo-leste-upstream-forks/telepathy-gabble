@@ -1,0 +1,39 @@
+From: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date: Wed, 11 Jul 2012 11:53:03 +0100
+Subject: [PATCH 01/15] server-tls-manager: deal with modification of the
+ GList while iterating it
+
+Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Origin: upstream, 0.16.2, commit:f88ae541292e0ff4abd9214bef4c7b99a55dc4e9
+Bug: https://bugs.freedesktop.org/show_bug.cgi?id=53087
+---
+ src/server-tls-manager.c |   13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/src/server-tls-manager.c b/src/server-tls-manager.c
+index 8dd90fb..c28d2d4 100644
+--- a/src/server-tls-manager.c
++++ b/src/server-tls-manager.c
+@@ -122,8 +122,17 @@ close_all (GabbleServerTLSManager *self)
+   if (self->priv->channel != NULL)
+     tp_base_channel_close (TP_BASE_CHANNEL (self->priv->channel));
+ 
+-  for (l = self->priv->completed_channels; l != NULL; l = l->next)
+-    tp_base_channel_close (l->data);
++  l = self->priv->completed_channels;
++  while (l != NULL)
++    {
++      /* use a temporary variable as the ::closed callback will delete
++       * the link from the list. */
++      GList *next = l->next;
++
++      tp_base_channel_close (l->data);
++
++      l = next;
++    }
+ }
+ 
+ static void
+-- 
+1.7.10.4
+

@@ -1,0 +1,53 @@
+From: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date: Fri, 7 Sep 2012 15:19:30 +0100
+Subject: [PATCH 12/15] Now that camera-v1 has a caps URI, don't treat it as
+ part of video-v1
+
+Bug: https://bugs.freedesktop.org/show_bug.cgi?id=54634
+Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Bug-Debian: http://bugs.debian.org/687370
+Bug-Ubuntu: https://bugs.launchpad.net/ubuntu/+source/telepathy-gabble/+bug/984132
+Origin: upstream, 0.16.3, commit:da14b4e86d503b30054b10b5e7b00eae7ba1add5
+---
+ src/connection.c    |    5 +++--
+ src/media-factory.c |    5 ++++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/src/connection.c b/src/connection.c
+index 316af96..5ea0d1a 100644
+--- a/src/connection.c
++++ b/src/connection.c
+@@ -2403,10 +2403,11 @@ gabble_connection_fill_in_caps (GabbleConnection *self,
+   if (voice_v1)
+     g_string_append (ext, " " BUNDLE_VOICE_V1);
+ 
+-  if (video_v1) {
++  if (video_v1)
+     g_string_append (ext, " " BUNDLE_VIDEO_V1);
++
++  if (gabble_presence_has_cap (presence, NS_GOOGLE_FEAT_CAMERA))
+     g_string_append (ext, " " BUNDLE_CAMERA_V1);
+-  }
+ 
+   wocky_node_set_attribute (node, "ext", ext->str);
+   g_string_free (ext, TRUE);
+diff --git a/src/media-factory.c b/src/media-factory.c
+index b52cfc6..493a817 100644
+--- a/src/media-factory.c
++++ b/src/media-factory.c
+@@ -1053,7 +1053,10 @@ gabble_media_factory_add_caps (GabbleCapabilitySet *caps,
+       /* video-v1 implies that we interop with Google Video Chat, i.e. we have
+        * gtalk-p2p and H.264 as well as video */
+       if (gtalk_p2p && h264)
+-        gabble_capability_set_add (caps, NS_GOOGLE_FEAT_VIDEO);
++        {
++          gabble_capability_set_add (caps, NS_GOOGLE_FEAT_VIDEO);
++          gabble_capability_set_add (caps, NS_GOOGLE_FEAT_CAMERA);
++        }
+     }
+ }
+ 
+-- 
+1.7.10.4
+
