@@ -4,8 +4,9 @@
 #include <string.h>
 #include <glib.h>
 #include <glib-object.h>
-#include <telepathy-glib/telepathy-glib.h>
-#include <telepathy-glib/telepathy-glib-dbus.h>
+#include <telepathy-glib/enums.h>
+#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/errors.h>
 
 #include "src/connection.h"
 
@@ -63,6 +64,9 @@ test_handles (guint handle_type)
   /* Try to inspect it */
   return_jid = tp_handle_inspect (tp_repo, handle);
   g_assert (!strcmp (return_jid, jid));
+
+  /* Now unref it */
+  tp_handle_unref (tp_repo, handle);
 
   for (i = 0; i < NUM_TP_HANDLE_TYPES; i++)
     {

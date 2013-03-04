@@ -25,7 +25,8 @@
 #include <config.h>
 
 #include <glib.h>
-#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/handle-repo.h>
+#include <telepathy-glib/util.h>
 #include <wocky/wocky.h>
 
 #ifdef ENABLE_VOIP

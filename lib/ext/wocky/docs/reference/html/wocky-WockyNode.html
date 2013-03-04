@@ -258,7 +258,8 @@ Tags for building a stanza using <a class="link" href="wocky-WockyStanza.html#wo
 </tr>
 <tr>
 <td><p><a name="WOCKY-NODE-LANGUAGE:CAPS"></a><span class="term"><code class="literal">WOCKY_NODE_LANGUAGE</code></span></p></td>
-<td></td>
+<td>
+</td>
 </tr>
 </tbody>
 </table></div>
@@ -283,14 +284,26 @@ details.
 Add a node subtree to an existing parent node.
 </p>
 <div class="example">
-<a name="idp17000608"></a><p class="title"><b>Example 1. </b></p>
-<div class="example-contents"><pre class="programlisting">
-wocky_node_add_build (node,
-   '(', "body",
-       '$', "Telepathy rocks!",
-   ')',
-  NULL);
-</pre></div>
+<a name="idp15918912"></a><p class="title"><b>Example 1. </b></p>
+<div class="example-contents">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="wocky-WockyNode.html#wocky-node-add-build">wocky_node_add_build</a></span> <span class="gtkdoc opt">(</span>node<span class="gtkdoc opt">,</span>
+   <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;body&quot;</span><span class="gtkdoc opt">,</span>
+       <span class="string">'$'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;Telepathy rocks!&quot;</span><span class="gtkdoc opt">,</span>
+   <span class="string">')'</span><span class="gtkdoc opt">,</span>
+  NULL<span class="gtkdoc opt">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 </div>
 <p><br class="example-break">
 </p>
@@ -325,6 +338,8 @@ terminated with <a href="http://library.gnome.org/devel/glib/unstable/glib-Stand
 <a name="wocky-node-add-build-va"></a><h3>wocky_node_add_build_va ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_node_add_build_va             (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code><span class="type">va_list</span> va</code></em>);</pre>
+<p>
+</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1146,12 +1161,16 @@ Gets the namespace of a <a class="link" href="wocky-WockyNode.html#WockyNode" ti
 <a name="wocky-node-has-ns"></a><h3>wocky_node_has_ns ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_node_has_ns                   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
+<p>
+</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-node-has-ns-q"></a><h3>wocky_node_has_ns_q ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_node_has_ns_q                 (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>);</pre>
+<p>
+</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1197,18 +1216,35 @@ This should be always called before using <a class="link" href="wocky-WockyNode.
 Initializes an iterator that can be used to iterate over the children of
 <em class="parameter"><code>node</code></em>, filtered by <em class="parameter"><code>name</code></em> and <em class="parameter"><code>ns</code></em>
 </p>
-<div class="informalexample"><pre class="programlisting">
-WockyNodeIter iter;
-WockyNode *child;
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10</pre></td>
+        <td class="listing_code"><pre class="programlisting">WockyNodeIter iter<span class="gtkdoc opt">;</span>
+WockyNode <span class="gtkdoc opt">*</span>child<span class="gtkdoc opt">;</span>
 
-wocky_node_iter_init (&amp;iter, wocky_stanza_get_top_node (stanza),
-   "payload-type",
-   WOCKY_XMPP_NS_JINGLE_RTP);
-while (wocky_node_iter_next (iter, &amp;child))
-  {
-    /* do something with the child */
-  }
-</pre></div>
+<span class="function"><a href="wocky-WockyNode.html#wocky-node-iter-init">wocky_node_iter_init</a></span> <span class="gtkdoc opt">(&amp;</span>iter<span class="gtkdoc opt">,</span> <span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-get-top-node">wocky_stanza_get_top_node</a></span> <span class="gtkdoc opt">(</span>stanza<span class="gtkdoc opt">),</span>
+   <span class="string">&quot;payload-type&quot;</span><span class="gtkdoc opt">,</span>
+   WOCKY_XMPP_NS_JINGLE_RTP<span class="gtkdoc opt">);</span>
+<span class="keyword">while</span> <span class="gtkdoc opt">(</span><span class="function"><a href="wocky-WockyNode.html#wocky-node-iter-next">wocky_node_iter_next</a></span> <span class="gtkdoc opt">(</span>iter<span class="gtkdoc opt">, &amp;</span>child<span class="gtkdoc opt">))</span>
+  <span class="gtkdoc opt">{</span>
+    <span class="comment">/* do something with the child */</span>
+  <span class="gtkdoc opt">}</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -1269,34 +1305,6 @@ returned next is not set and the iterator becomes invalid
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_node_matches                  (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
-<p>
-Checks whether a node has a particular name and namespace.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>the expected element name, which may not be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>the expected element namespace, which may not be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>node</code></em> is named <em class="parameter"><code>name</code></em>, in namespace <em class="parameter"><code>ns</code></em>.</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 <hr>
 <div class="refsect2">
@@ -1304,33 +1312,6 @@ Checks whether a node has a particular name and namespace.
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_node_matches_q                (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> ns</code></em>);</pre>
-<p>
-Checks whether a node has a particular name and namespace.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>the expected element name, which may not be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>ns</code></em> :</span></p></td>
-<td>the expected element namespace, which may not be 0</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>node</code></em> is named <em class="parameter"><code>name</code></em>, in namespace <em class="parameter"><code>ns</code></em>.</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 <hr>
 <div class="refsect2">

@@ -22,8 +22,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <telepathy-glib/telepathy-glib.h>
-#include <telepathy-glib/telepathy-glib-dbus.h>
+#include <telepathy-glib/interfaces.h>
 
 #include <extensions/extensions.h>
 

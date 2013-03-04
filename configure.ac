@@ -8,8 +8,8 @@ AC_PREREQ([2.59])
 #   set gabble_nano_version to 0.
 
 m4_define([gabble_major_version], [0])
-m4_define([gabble_minor_version], [17])
-m4_define([gabble_micro_version], [1])
+m4_define([gabble_minor_version], [16])
+m4_define([gabble_micro_version], [5])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -93,6 +93,7 @@ TP_COMPILER_WARNINGS([ERROR_CFLAGS], [test "x$official_release" = xno],
    format-security \
    init-self],
   [missing-field-initializers \
+   deprecated-declarations \
    unused-parameter])
 AC_SUBST([ERROR_CFLAGS])
 
@@ -295,8 +296,7 @@ PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.82])
 AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)
 
-AC_DEFINE(TP_VERSION_MIN_REQUIRED, TP_VERSION_0_18, [Ignore post 0.18 deprecations])
-PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.19.7])
+PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.18.0])
 
 AC_SUBST(TP_GLIB_CFLAGS)
 AC_SUBST(TP_GLIB_LIBS)

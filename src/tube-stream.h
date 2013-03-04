@@ -22,8 +22,9 @@
 
 #include <glib-object.h>
 
-#include <telepathy-glib/telepathy-glib.h>
-#include <telepathy-glib/telepathy-glib-dbus.h>
+#include <telepathy-glib/enums.h>
+#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/base-channel.h>
 
 #include "connection.h"
 #include "extensions/extensions.h"
@@ -68,7 +69,7 @@ GType gabble_tube_stream_get_type (void);
 GabbleTubeStream *gabble_tube_stream_new (GabbleConnection *conn,
     TpHandle handle, TpHandleType handle_type, TpHandle self_handle,
     TpHandle initiator, const gchar *service, GHashTable *parameters,
-    guint64 id, GabbleMucChannel *muc, gboolean requested);
+    guint id, GabbleMucChannel *muc, gboolean requested);
 
 gboolean gabble_tube_stream_check_params (TpSocketAddressType address_type,
     const GValue *address, TpSocketAccessControl access_control,

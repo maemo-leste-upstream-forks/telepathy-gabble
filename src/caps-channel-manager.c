@@ -23,7 +23,9 @@
 #include "config.h"
 #include "gabble/caps-channel-manager.h"
 
-#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/dbus.h>
+#include <telepathy-glib/channel-manager.h>
+
 
 #define DEBUG_FLAG GABBLE_DEBUG_PRESENCE
 #include "debug.h"
@@ -39,21 +41,6 @@ gabble_caps_channel_manager_default_init (
 }
 
 /* Virtual-method wrappers */
-void
-gabble_caps_channel_manager_reset_capabilities (
-    GabbleCapsChannelManager *caps_manager)
-{
-  GabbleCapsChannelManagerInterface *iface =
-    GABBLE_CAPS_CHANNEL_MANAGER_GET_INTERFACE (caps_manager);
-  GabbleCapsChannelManagerResetCapsFunc method = iface->reset_caps;
-
-  if (method != NULL)
-    {
-      method (caps_manager);
-    }
-  /* ... else assume there is no need to reset the caps */
-}
-
 void
 gabble_caps_channel_manager_get_contact_capabilities (
     GabbleCapsChannelManager *caps_manager,

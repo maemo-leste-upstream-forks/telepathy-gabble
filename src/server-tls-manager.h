@@ -23,7 +23,8 @@
 
 #include <glib-object.h>
 #include <wocky/wocky.h>
-#include <telepathy-glib/telepathy-glib.h>
+
+#include <telepathy-glib/enums.h>
 
 #include "extensions/extensions.h"
 

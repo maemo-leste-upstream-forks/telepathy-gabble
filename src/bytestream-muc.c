@@ -24,8 +24,7 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-#include <telepathy-glib/telepathy-glib.h>
-#include <telepathy-glib/telepathy-glib-dbus.h>
+#include <telepathy-glib/interfaces.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_BYTESTREAM
 
@@ -101,11 +100,15 @@ gabble_bytestream_muc_dispose (GObject *object)
 {
   GabbleBytestreamMuc *self = GABBLE_BYTESTREAM_MUC (object);
   GabbleBytestreamMucPrivate *priv = GABBLE_BYTESTREAM_MUC_GET_PRIVATE (self);
+  TpHandleRepoIface *room_repo = tp_base_connection_get_handles (
+      (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_ROOM);
 
   if (priv->dispose_has_run)
     return;
 
   priv->dispose_has_run = TRUE;
+
+  tp_handle_unref (room_repo, priv->peer_handle);
 
   if (priv->state != GABBLE_BYTESTREAM_STATE_CLOSED)
     {
@@ -224,6 +227,8 @@ gabble_bytestream_muc_constructor (GType type,
 
   room_repo = tp_base_connection_get_handles (
       (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_ROOM);
+
+  tp_handle_ref (room_repo, priv->peer_handle);
 
   priv->peer_jid = tp_handle_inspect (room_repo,
         priv->peer_handle);

@@ -28,8 +28,13 @@
 #include <wocky/wocky.h>
 
 #include <dbus/dbus-glib.h>
-#include <telepathy-glib/telepathy-glib.h>
-#include <telepathy-glib/telepathy-glib-dbus.h>
+#include <telepathy-glib/dbus.h>
+#include <telepathy-glib/debug-ansi.h>
+#include <telepathy-glib/errors.h>
+#include <telepathy-glib/exportable-channel.h>
+#include <telepathy-glib/gtypes.h>
+#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/channel-iface.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_MUC
 #include "connection.h"
@@ -46,10 +51,6 @@
 #include "presence-cache.h"
 #include "gabble-signals-marshal.h"
 #include "gabble-enumtypes.h"
-#include "tube-dbus.h"
-#include "tube-stream.h"
-#include "private-tubes-factory.h"
-#include "bytestream-factory.h"
 
 #define DEFAULT_JOIN_TIMEOUT 180
 #define DEFAULT_LEAVE_TIMEOUT 180
@@ -59,6 +60,7 @@
 #define PROPS_POLL_INTERVAL_HIGH 60
 
 static void password_iface_init (gpointer, gpointer);
+static void chat_state_iface_init (gpointer, gpointer);
 static void subject_iface_init (gpointer, gpointer);
 #ifdef ENABLE_VOIP
 static void gabble_muc_channel_start_call_creation (GabbleMucChannel *gmuc,
@@ -79,7 +81,7 @@ G_DEFINE_TYPE_WITH_CODE (GabbleMucChannel, gabble_muc_channel,
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CHANNEL_INTERFACE_MESSAGES,
       tp_message_mixin_messages_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CHANNEL_INTERFACE_CHAT_STATE,
-      tp_message_mixin_chat_state_iface_init)
+      chat_state_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CHANNEL_INTERFACE_CONFERENCE, NULL);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CHANNEL_INTERFACE_ROOM, NULL);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CHANNEL_INTERFACE_ROOM_CONFIG,
@@ -90,9 +92,6 @@ G_DEFINE_TYPE_WITH_CODE (GabbleMucChannel, gabble_muc_channel,
 
 static void gabble_muc_channel_send (GObject *obj, TpMessage *message,
     TpMessageSendingFlags flags);
-static gboolean gabble_muc_channel_send_chat_state (GObject *object,
-    TpChannelChatState state,
-    GError **error);
 static void gabble_muc_channel_close (TpBaseChannel *base);
 
 static const gchar *gabble_muc_channel_interfaces[] = {
@@ -130,11 +129,11 @@ static guint signals[LAST_SIGNAL] = {0};
 enum
 {
   PROP_STATE = 1,
-  PROP_INITIALLY_REGISTER,
   PROP_INVITED,
   PROP_INVITATION_MESSAGE,
   PROP_SELF_JID,
   PROP_WOCKY_MUC,
+  PROP_TUBE,
   PROP_INITIAL_CHANNELS,
   PROP_INITIAL_INVITEE_HANDLES,
   PROP_INITIAL_INVITEE_IDS,
@@ -164,8 +163,6 @@ struct _GabbleMucChannelPrivate
 {
   GabbleMucState state;
   gboolean closing;
-  gboolean autoclose;
-  gboolean initially_register;
 
   guint join_timer_id;
   guint poll_timer_id;
@@ -206,9 +203,7 @@ struct _GabbleMucChannelPrivate
   gchar *invitation_message;
 
   WockyMuc *wmuc;
-
-  /* tube ID => owned GabbleTubeIface */
-  GHashTable *tubes;
+  GabbleTubesChannel *tube;
 
 #ifdef ENABLE_VOIP
   /* Current active call */
@@ -243,9 +238,6 @@ gabble_muc_channel_init (GabbleMucChannel *self)
   self->priv = priv;
 
   priv->requests_cancellable = g_cancellable_new ();
-
-  priv->tubes = g_hash_table_new_full (g_direct_hash, g_direct_equal,
-      NULL, (GDestroyNotify) g_object_unref);
 }
 
 static TpHandle create_room_identity (GabbleMucChannel *)
@@ -364,6 +356,8 @@ gabble_muc_channel_constructed (GObject *obj)
   if (chain_up != NULL)
     chain_up (obj);
 
+  priv->tube = NULL;
+
   room_handles = tp_base_connection_get_handles (base_conn,
       TP_HANDLE_TYPE_ROOM);
   contact_handles = tp_base_connection_get_handles (base_conn,
@@ -422,8 +416,7 @@ gabble_muc_channel_constructed (GObject *obj)
   }
 
   /* register object on the bus */
-  if (priv->initially_register)
-    tp_base_channel_register (base);
+  tp_base_channel_register (base);
 
   /* initialize group mixin */
   tp_group_mixin_init (obj,
@@ -446,8 +439,6 @@ gabble_muc_channel_constructed (GObject *obj)
       TP_DELIVERY_REPORTING_SUPPORT_FLAG_RECEIVE_FAILURES |
       TP_DELIVERY_REPORTING_SUPPORT_FLAG_RECEIVE_SUCCESSES,
       supported_content_types);
-  tp_message_mixin_implement_send_chat_state (obj,
-      gabble_muc_channel_send_chat_state);
 
   tp_group_mixin_add_handle_owner (obj, self_handle, base_conn->self_handle);
 
@@ -502,8 +493,8 @@ gabble_muc_channel_constructed (GObject *obj)
   if (priv->invited)
     {
       /* invited: add ourself to local pending and the inviter to members */
-      TpIntset *members = tp_intset_new_containing (initiator);
-      TpIntset *pending = tp_intset_new_containing (self_handle);
+      TpIntSet *members = tp_intset_new_containing (initiator);
+      TpIntSet *pending = tp_intset_new_containing (self_handle);
 
       tp_group_mixin_change_members (obj, priv->invitation_message,
           members, NULL, pending, NULL,
@@ -534,6 +525,8 @@ gabble_muc_channel_constructed (GObject *obj)
       g_assert (error == NULL);
       g_array_unref (members);
     }
+
+  tp_handle_unref (contact_handles, self_handle);
 }
 
 typedef struct {
@@ -783,49 +776,6 @@ send_join_request (GabbleMucChannel *gmuc)
   wocky_muc_join (priv->wmuc, NULL);
 }
 
-static void
-tube_pre_presence (GabbleMucChannel *gmuc,
-    WockyStanza *stanza)
-{
-  GabbleMucChannelPrivate *priv = gmuc->priv;
-  TpBaseConnection *conn = tp_base_channel_get_connection (
-      TP_BASE_CHANNEL (gmuc));
-  WockyNode *tubes_node;
-  GHashTableIter iter;
-  gpointer value;
-
-  tubes_node = wocky_node_add_child_with_content_ns (
-      wocky_stanza_get_top_node (stanza), "tubes", NULL, NS_TUBES);
-
-  g_hash_table_iter_init (&iter, priv->tubes);
-  while (g_hash_table_iter_next (&iter, NULL, &value))
-    {
-      GabbleTubeIface *tube = value;
-      TpTubeChannelState state;
-      WockyNode *tube_node;
-      TpTubeType type;
-      TpHandle initiator;
-
-      g_object_get (tube,
-          "state", &state,
-          "type", &type,
-          "initiator-handle", &initiator,
-          NULL);
-
-      if (state != TP_TUBE_CHANNEL_STATE_OPEN)
-        continue;
-
-      if (type == TP_TUBE_TYPE_STREAM
-          && initiator != TP_GROUP_MIXIN (gmuc)->self_handle)
-        /* We only announce stream tubes we initiated */
-        continue;
-
-      tube_node = wocky_node_add_child_with_content (tubes_node,
-          "tube", NULL);
-      gabble_tube_iface_publish_in_node (tube, conn, tube_node);
-    }
-}
-
 static gboolean
 timeout_leave (gpointer data)
 {
@@ -847,8 +797,6 @@ send_leave_message (GabbleMucChannel *gmuc,
   TpBaseChannel *base = TP_BASE_CHANNEL (gmuc);
   WockyStanza *stanza = wocky_muc_create_presence (priv->wmuc,
       WOCKY_STANZA_SUB_TYPE_UNAVAILABLE, reason);
-
-  tube_pre_presence (gmuc, stanza);
 
   g_signal_emit (gmuc, signals[PRE_PRESENCE], 0, stanza);
   _gabble_connection_send (
@@ -873,11 +821,11 @@ gabble_muc_channel_get_property (GObject    *object,
     case PROP_STATE:
       g_value_set_uint (value, priv->state);
       break;
-    case PROP_INITIALLY_REGISTER:
-      g_value_set_boolean (value, priv->initially_register);
-      break;
     case PROP_SELF_JID:
       g_value_set_string (value, priv->self_jid->str);
+      break;
+    case PROP_TUBE:
+      g_value_set_object (value, priv->tube);
       break;
     case PROP_WOCKY_MUC:
       g_value_set_object (value, priv->wmuc);
@@ -947,9 +895,6 @@ gabble_muc_channel_set_property (GObject     *object,
       if (priv->state != prev_state)
         channel_state_changed (chan, prev_state, priv->state);
 
-      break;
-    case PROP_INITIALLY_REGISTER:
-      priv->initially_register = g_value_get_boolean (value);
       break;
     case PROP_INVITED:
       priv->invited = g_value_get_boolean (value);
@@ -1077,12 +1022,6 @@ gabble_muc_channel_class_init (GabbleMucChannelClass *gabble_muc_channel_class)
       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (object_class, PROP_STATE, param_spec);
 
-  param_spec = g_param_spec_boolean ("initially-register", "Initially register",
-      "whether to register the channel on the bus on creation",
-      TRUE,
-      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-  g_object_class_install_property (object_class, PROP_INITIALLY_REGISTER, param_spec);
-
   param_spec = g_param_spec_boolean ("invited", "Invited?",
       "Whether the user has been invited to the channel.", FALSE,
       G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
@@ -1103,6 +1042,11 @@ gabble_muc_channel_class_init (GabbleMucChannelClass *gabble_muc_channel_class)
       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (object_class, PROP_SELF_JID,
       param_spec);
+
+  param_spec = g_param_spec_object ("tube", "Tube Channel",
+      "The GabbleTubesChannel associated with this MUC (if any)",
+      GABBLE_TYPE_TUBES_CHANNEL, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (object_class, PROP_TUBE, param_spec);
 
   param_spec = g_param_spec_object ("wocky-muc", "Wocky MUC Object",
       "The backend (Wocky) MUC instance",
@@ -1234,9 +1178,7 @@ gabble_muc_channel_class_init (GabbleMucChannelClass *gabble_muc_channel_class)
                   0,
                   NULL, NULL,
                   g_cclosure_marshal_VOID__OBJECT,
-                  /* this should be GABBLE_TYPE_TUBE_IFACE but GObject
-                   * wants a value type, not an interface. */
-                  G_TYPE_NONE, 1, TP_TYPE_BASE_CHANNEL);
+                  G_TYPE_NONE, 1, GABBLE_TYPE_TUBES_CHANNEL);
 
 #ifdef ENABLE_VOIP
   signals[NEW_CALL] = g_signal_new ("new-call",
@@ -1289,8 +1231,6 @@ gabble_muc_channel_dispose (GObject *object)
   tp_clear_object (&priv->wmuc);
   tp_clear_object (&priv->requests_cancellable);
   tp_clear_object (&priv->room_config);
-
-  tp_clear_pointer (&priv->tubes, g_hash_table_unref);
 
   if (G_OBJECT_CLASS (gabble_muc_channel_parent_class)->dispose)
     G_OBJECT_CLASS (gabble_muc_channel_parent_class)->dispose (object);
@@ -1532,42 +1472,19 @@ close_channel (GabbleMucChannel *chan, const gchar *reason,
   GabbleMucChannelPrivate *priv = chan->priv;
   GabbleConnection *conn = GABBLE_CONNECTION (
       tp_base_channel_get_connection (base));
-  TpIntset *set;
+  TpIntSet *set;
   GArray *handles;
-  GError error = { TP_ERROR, TP_ERROR_CANCELLED,
+  GError error = { TP_ERRORS, TP_ERROR_CANCELLED,
       "Muc channel closed below us" };
 
-  if (tp_base_channel_is_destroyed (base))
+  if (tp_base_channel_is_destroyed (base) || priv->closing)
     return;
-
-  /* if priv->closing is TRUE, we're waiting for the MUC to echo our
-   * presence. however, if we're being asked to close again, but this
-   * time without letting the muc know, let's actually close. if we
-   * don't then the channel won't disappear from the bus properly. */
-  if (priv->closing && !inform_muc)
-    {
-      clear_leave_timer (chan);
-      tp_base_channel_destroyed (base);
-      return;
-    }
-
-  /* If inform_muc is TRUE it means that we're closing the channel
-   * gracefully and we don't mind if the channel doesn't actually
-   * close behind the scenes if a tube/call is still open. Every call
-   * to this function has inform_muc=FALSE, except for Channel.Close()
-   * and RemoveMembers(self_handle) */
-  if (inform_muc && !gabble_muc_channel_can_be_closed (chan))
-    {
-      priv->autoclose = TRUE;
-      tp_base_channel_disappear (base);
-      return;
-    }
 
   DEBUG ("Closing");
   /* Ensure we stay alive even while telling everyone else to abandon us. */
   g_object_ref (chan);
 
-  g_hash_table_remove_all (priv->tubes);
+  gabble_muc_channel_close_tube (chan);
 
 #ifdef ENABLE_VOIP
   muc_call_channel_finish_requests (chan, NULL, &error);
@@ -1626,35 +1543,6 @@ _gabble_muc_channel_is_ready (GabbleMucChannel *chan)
   return priv->ready;
 }
 
-/* returns TRUE if there are no tube or Call channels open in this MUC */
-gboolean
-gabble_muc_channel_can_be_closed (GabbleMucChannel *chan)
-{
-  GabbleMucChannelPrivate *priv = chan->priv;
-
-  if (g_hash_table_size (priv->tubes) > 0)
-    return FALSE;
-
-  if (priv->calls != NULL || priv->call_requests != NULL
-      || priv->call_initiating)
-    return FALSE;
-
-  return TRUE;
-}
-
-gboolean
-gabble_muc_channel_get_autoclose (GabbleMucChannel *chan)
-{
-  return chan->priv->autoclose;
-}
-
-void
-gabble_muc_channel_set_autoclose (GabbleMucChannel *chan,
-                                  gboolean autoclose)
-{
-  chan->priv->autoclose = autoclose;
-}
-
 static gboolean
 handle_nick_conflict (GabbleMucChannel *chan,
                       WockyStanza *stanza,
@@ -1666,7 +1554,7 @@ handle_nick_conflict (GabbleMucChannel *chan,
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
       tp_base_channel_get_connection (base), TP_HANDLE_TYPE_CONTACT);
   TpHandle self_handle;
-  TpIntset *add_rp, *remove_rp;
+  TpIntSet *add_rp, *remove_rp;
   const gchar *from = wocky_stanza_get_from (stanza);
 
   /* If this is a nick conflict message with a resource in the JID, and the
@@ -1690,7 +1578,7 @@ handle_nick_conflict (GabbleMucChannel *chan,
 
   if (priv->nick_retry_count >= MAX_NICK_RETRIES)
     {
-      g_set_error (tp_error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (tp_error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "nickname already in use and retry count exceeded");
       return FALSE;
     }
@@ -1714,6 +1602,7 @@ handle_nick_conflict (GabbleMucChannel *chan,
 
   tp_intset_destroy (add_rp);
   tp_intset_destroy (remove_rp);
+  tp_handle_unref (contact_repo, self_handle);
 
   priv->nick_retry_count++;
   send_join_request (chan);
@@ -1912,18 +1801,18 @@ handle_error (GObject *source,
       switch (errnum)
         {
           case WOCKY_XMPP_ERROR_FORBIDDEN:
-            tp_error = g_error_new (TP_ERROR, TP_ERROR_CHANNEL_BANNED,
+            tp_error = g_error_new (TP_ERRORS, TP_ERROR_CHANNEL_BANNED,
                 "banned from room");
             reason = TP_CHANNEL_GROUP_CHANGE_REASON_BANNED;
             break;
           case WOCKY_XMPP_ERROR_SERVICE_UNAVAILABLE:
-            tp_error = g_error_new (TP_ERROR, TP_ERROR_CHANNEL_FULL,
+            tp_error = g_error_new (TP_ERRORS, TP_ERROR_CHANNEL_FULL,
                 "room is full");
             reason = TP_CHANNEL_GROUP_CHANGE_REASON_BUSY;
             break;
 
           case WOCKY_XMPP_ERROR_REGISTRATION_REQUIRED:
-            tp_error = g_error_new (TP_ERROR, TP_ERROR_CHANNEL_INVITE_ONLY,
+            tp_error = g_error_new (TP_ERRORS, TP_ERROR_CHANNEL_INVITE_ONLY,
                 "room is invite only");
             break;
 
@@ -1933,7 +1822,7 @@ handle_error (GObject *source,
             break;
 
           default:
-            tp_error = g_error_new (TP_ERROR, TP_ERROR_NOT_AVAILABLE,
+            tp_error = g_error_new (TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
                 "%s", wocky_xmpp_error_description (errnum));
             break;
         }
@@ -1946,388 +1835,90 @@ handle_error (GObject *source,
 }
 
 static void
-tube_closed_cb (GabbleTubeIface *tube,
-    GabbleMucChannel *gmuc)
+tube_closed_cb (GabbleTubesChannel *chan, gpointer user_data)
 {
+  GabbleMucChannel *gmuc = GABBLE_MUC_CHANNEL (user_data);
   GabbleMucChannelPrivate *priv = gmuc->priv;
-  guint64 tube_id;
+  TpHandle room;
 
-  g_object_get (tube, "id", &tube_id, NULL);
-
-  g_hash_table_remove (priv->tubes, GUINT_TO_POINTER (tube_id));
+  if (priv->tube != NULL)
+    {
+      priv->tube = NULL;
+      g_object_get (chan, "handle", &room, NULL);
+      DEBUG ("removing MUC tubes channel with handle %d", room);
+      g_object_unref (chan);
+    }
 }
 
-static GabbleTubeIface *
-create_new_tube (GabbleMucChannel *gmuc,
-    TpTubeType type,
+static GabbleTubesChannel *
+new_tube (GabbleMucChannel *gmuc,
     TpHandle initiator,
-    const gchar *service,
-    GHashTable *parameters,
-    const gchar *stream_id,
-    guint64 tube_id,
-    GabbleBytestreamIface *bytestream,
     gboolean requested)
 {
   GabbleMucChannelPrivate *priv = gmuc->priv;
   TpBaseChannel *base = TP_BASE_CHANNEL (gmuc);
-  GabbleConnection *conn = GABBLE_CONNECTION (
-      tp_base_channel_get_connection (base));
-  TpHandle self_handle = TP_GROUP_MIXIN (gmuc)->self_handle;
-  TpHandle handle = tp_base_channel_get_target_handle (base);
-  GabbleTubeIface *tube;
+  TpBaseConnection *conn = tp_base_channel_get_connection (base);
+  char *object_path;
 
-  switch (type)
-    {
-    case TP_TUBE_TYPE_DBUS:
-      tube = GABBLE_TUBE_IFACE (gabble_tube_dbus_new (conn,
-          handle, TP_HANDLE_TYPE_ROOM, self_handle, initiator,
-          service, parameters, stream_id, tube_id, bytestream, gmuc,
-          requested));
-      break;
-    case TP_TUBE_TYPE_STREAM:
-      tube = GABBLE_TUBE_IFACE (gabble_tube_stream_new (conn,
-          handle, TP_HANDLE_TYPE_ROOM, self_handle, initiator,
-          service, parameters, tube_id, gmuc, requested));
-      break;
-    default:
-      g_return_val_if_reached (NULL);
-    }
+  g_assert (priv->tube == NULL);
 
-  tp_base_channel_register ((TpBaseChannel *) tube);
+  object_path = g_strdup_printf ("%s/MucTubesChannel%u",
+      conn->object_path, tp_base_channel_get_target_handle (base));
 
-  DEBUG ("create tube %" G_GUINT64_FORMAT, tube_id);
-  g_hash_table_insert (priv->tubes, GUINT_TO_POINTER (tube_id), tube);
+  DEBUG ("creating new tubes chan, object path %s", object_path);
 
-  g_signal_connect (tube, "closed", G_CALLBACK (tube_closed_cb), gmuc);
+  priv->tube = g_object_new (GABBLE_TYPE_TUBES_CHANNEL,
+      "connection", tp_base_channel_get_connection (base),
+      "object-path", object_path,
+      "handle", tp_base_channel_get_target_handle (base),
+      "handle-type", TP_HANDLE_TYPE_ROOM,
+      "muc", gmuc,
+      "initiator-handle", initiator,
+      "requested", requested,
+      NULL);
 
-  return tube;
-}
+  g_signal_connect (priv->tube, "closed", (GCallback) tube_closed_cb, gmuc);
 
-static guint64
-generate_tube_id (GabbleMucChannel *self)
-{
-  GabbleMucChannelPrivate *priv = self->priv;
-  guint64 out;
+  g_signal_emit (gmuc, signals[NEW_TUBE], 0 , priv->tube);
 
-  /* probably totally overkill */
-  do
-    {
-      out = g_random_int_range (1, G_MAXINT32);
-    }
-  while (g_hash_table_lookup (priv->tubes,
-          GUINT_TO_POINTER (out)) != NULL);
+  g_free (object_path);
 
-  return out;
-}
-
-GabbleTubeIface *
-gabble_muc_channel_tube_request (GabbleMucChannel *self,
-    gpointer request_token,
-    GHashTable *request_properties,
-    gboolean require_new)
-{
-  GabbleTubeIface *tube;
-  const gchar *channel_type;
-  const gchar *service;
-  GHashTable *parameters = NULL;
-  guint64 tube_id;
-  gchar *stream_id;
-  TpTubeType type;
-
-  tube_id = generate_tube_id (self);
-
-  channel_type = tp_asv_get_string (request_properties,
-      TP_PROP_CHANNEL_CHANNEL_TYPE);
-
-  if (!tp_strdiff (channel_type, TP_IFACE_CHANNEL_TYPE_STREAM_TUBE))
-    {
-      type = TP_TUBE_TYPE_STREAM;
-      service = tp_asv_get_string (request_properties,
-          TP_PROP_CHANNEL_TYPE_STREAM_TUBE_SERVICE);
-
-    }
-  else if (! tp_strdiff (channel_type, TP_IFACE_CHANNEL_TYPE_DBUS_TUBE))
-    {
-      type = TP_TUBE_TYPE_DBUS;
-      service = tp_asv_get_string (request_properties,
-          TP_PROP_CHANNEL_TYPE_DBUS_TUBE_SERVICE_NAME);
-    }
-  else
-    /* This assertion is safe: this function's caller only calls it in one of
-     * the above cases.
-     * FIXME: but it would be better to pass an enum member or something maybe.
-     */
-    g_assert_not_reached ();
-
-  /* requested tubes have an empty parameters dict */
-  parameters = g_hash_table_new_full (g_str_hash, g_str_equal, g_free,
-      (GDestroyNotify) tp_g_value_slice_free);
-
-  /* if the service property is missing, the requestotron rejects the request
-   */
-  g_assert (service != NULL);
-
-  DEBUG ("Request a tube channel with type='%s' and service='%s'",
-      channel_type, service);
-
-  stream_id = gabble_bytestream_factory_generate_stream_id ();
-  tube = create_new_tube (self, type, TP_GROUP_MIXIN (self)->self_handle,
-      service, parameters, stream_id, tube_id, NULL, TRUE);
-  g_free (stream_id);
-  g_hash_table_unref (parameters);
-
-  return tube;
-}
-
-void
-gabble_muc_channel_foreach_tubes (GabbleMucChannel *gmuc,
-    TpExportableChannelFunc foreach,
-    gpointer user_data)
-{
-  GabbleMucChannelPrivate *priv = gmuc->priv;
-  GHashTableIter iter;
-  gpointer value;
-
-  g_hash_table_iter_init (&iter, priv->tubes);
-  while (g_hash_table_iter_next (&iter, NULL, &value))
-    {
-      foreach (TP_EXPORTABLE_CHANNEL (value), user_data);
-    }
-}
-
-void
-gabble_muc_channel_handle_si_stream_request (GabbleMucChannel *self,
-    GabbleBytestreamIface *bytestream,
-    const gchar *stream_id,
-    WockyStanza *msg)
-{
-  GabbleMucChannelPrivate *priv = self->priv;
-  WockyNode *si_node, *stream_node;
-  const gchar *tmp;
-  guint64 tube_id;
-  GabbleTubeIface *tube;
-
-  si_node = wocky_node_get_child_ns (
-      wocky_stanza_get_top_node (msg), "si", NS_SI);
-  g_return_if_fail (si_node != NULL);
-
-  stream_node = wocky_node_get_child_ns (si_node,
-      "muc-stream", NS_TUBES);
-  g_return_if_fail (stream_node != NULL);
-
-  tmp = wocky_node_get_attribute (stream_node, "tube");
-  if (tmp == NULL)
-    {
-      GError e = { WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST,
-          "<muc-stream> has no tube attribute" };
-
-      NODE_DEBUG (stream_node, e.message);
-      gabble_bytestream_iface_close (bytestream, &e);
-      return;
-    }
-  tube_id = g_ascii_strtoull (tmp, NULL, 10);
-  if (tube_id == 0 || tube_id > G_MAXUINT32)
-    {
-      GError e = { WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST,
-          "<muc-stream> tube ID attribute non-numeric or out of range" };
-
-      DEBUG ("tube id is non-numeric or out of range: %s", tmp);
-      gabble_bytestream_iface_close (bytestream, &e);
-      return;
-    }
-
-  tube = g_hash_table_lookup (priv->tubes, GUINT_TO_POINTER (tube_id));
-  if (tube == NULL)
-    {
-      GError e = { WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_BAD_REQUEST,
-          "<muc-stream> tube attribute points to a nonexistent "
-          "tube" };
-
-      DEBUG ("tube %" G_GUINT64_FORMAT " doesn't exist", tube_id);
-      gabble_bytestream_iface_close (bytestream, &e);
-      return;
-    }
-
-  DEBUG ("received new bytestream request for existing tube: %" G_GUINT64_FORMAT,
-      tube_id);
-
-  gabble_tube_iface_add_bytestream (tube, bytestream);
-}
-
-static void
-tubes_presence_update (GabbleMucChannel *gmuc,
-    TpHandle contact,
-    WockyNode *pnode)
-{
-  GabbleMucChannelPrivate *priv = gmuc->priv;
-  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
-      tp_base_channel_get_connection (TP_BASE_CHANNEL (gmuc)),
-      TP_HANDLE_TYPE_CONTACT);
-  const gchar *presence_type;
-  WockyNode *tubes_node;
-  GHashTable *old_dbus_tubes;
-  GHashTableIter iter;
-  gpointer key, value;
-  WockyNodeIter i;
-  WockyNode *tube_node;
-
-  if (contact == TP_GROUP_MIXIN (gmuc)->self_handle)
-    /* We don't need to inspect our own presence */
-    return;
-
-  presence_type = wocky_node_get_attribute (pnode, "type");
-  if (!tp_strdiff (presence_type, "unavailable"))
-    {
-      g_hash_table_iter_init (&iter, priv->tubes);
-      while (g_hash_table_iter_next (&iter, NULL, &value))
-        {
-          GabbleTubeDBus *tube = value;
-
-          if (!GABBLE_IS_TUBE_DBUS (value))
-            continue;
-
-          gabble_tube_dbus_remove_name (tube, contact);
-        }
-    }
-
-  tubes_node = wocky_node_get_child_ns (pnode, "tubes", NS_TUBES);
-
-  if (tubes_node == NULL)
-    return;
-
-  /* Fill old_dbus_tubes with D-BUS tubes previously announced by
-   * the contact */
-  old_dbus_tubes = g_hash_table_new (g_direct_hash, g_direct_equal);
-
-  g_hash_table_iter_init (&iter, priv->tubes);
-  while (g_hash_table_iter_next (&iter, &key, &value))
-    {
-      if (!GABBLE_IS_TUBE_DBUS (value))
-        continue;
-
-      if (gabble_tube_dbus_handle_in_names (GABBLE_TUBE_DBUS (value),
-              contact))
-        {
-          g_hash_table_insert (old_dbus_tubes,
-              key, value);
-        }
-    }
-
-  wocky_node_iter_init (&i, tubes_node, NULL, NULL);
-  while (wocky_node_iter_next (&i, &tube_node))
-    {
-      const gchar *stream_id;
-      GabbleTubeIface *tube;
-      guint64 tube_id;
-      TpTubeType type;
-
-      stream_id = wocky_node_get_attribute (tube_node, "stream-id");
-
-      if (!gabble_private_tubes_factory_extract_tube_information (
-              contact_repo, tube_node, NULL, NULL, NULL, NULL, &tube_id))
-        {
-          DEBUG ("Bad tube ID, skipping to next child of <tubes>");
-          continue;
-        }
-
-      tube = g_hash_table_lookup (priv->tubes, GUINT_TO_POINTER (tube_id));
-
-      if (tube == NULL)
-        {
-          /* We don't know yet this tube */
-          const gchar *service;
-          TpHandle initiator_handle;
-          GHashTable *parameters;
-
-          if (gabble_private_tubes_factory_extract_tube_information (
-                  contact_repo, tube_node, &type, &initiator_handle,
-                  &service, &parameters, NULL))
-            {
-              if (type == TP_TUBE_TYPE_DBUS && initiator_handle == 0)
-                {
-                  DEBUG ("D-Bus tube initiator missing");
-                  /* skip to the next child of <tubes> */
-                  continue;
-                }
-              else if (type == TP_TUBE_TYPE_STREAM)
-                {
-                  initiator_handle = contact;
-                }
-
-              tube = create_new_tube (gmuc, type, initiator_handle,
-                  service, parameters, stream_id, tube_id, NULL, FALSE);
-
-              g_signal_emit (gmuc, signals[NEW_TUBE], 0, tube);
-
-              /* the tube has reffed its initiator, no need to keep a ref */
-              tp_handle_unref (contact_repo, initiator_handle);
-              g_hash_table_unref (parameters);
-            }
-        }
-      else
-        {
-          /* The contact is in the tube.
-           * Remove it from old_dbus_tubes if needed */
-          g_hash_table_remove (old_dbus_tubes, GUINT_TO_POINTER (tube_id));
-        }
-
-      if (tube == NULL)
-        /* skip to the next child of <tubes> */
-        continue;
-
-      g_object_get (tube, "type", &type, NULL);
-
-      if (type == TP_TUBE_TYPE_DBUS)
-        {
-          /* Update mapping of handle -> D-Bus name. */
-          if (!gabble_tube_dbus_handle_in_names (GABBLE_TUBE_DBUS (tube),
-                contact))
-            {
-              /* Contact just joined the tube */
-              const gchar *new_name;
-
-              new_name = wocky_node_get_attribute (tube_node,
-                  "dbus-name");
-
-              if (!new_name)
-                {
-                  DEBUG ("Contact %u isn't announcing their D-Bus name",
-                         contact);
-                  /* skip to the next child of <tubes> */
-                  continue;
-                }
-
-              gabble_tube_dbus_add_name (GABBLE_TUBE_DBUS (tube),
-                  contact, new_name);
-            }
-        }
-    }
-
-  /* Tubes remaining in old_dbus_tubes was left by the contact */
-  g_hash_table_iter_init (&iter, old_dbus_tubes);
-  while (g_hash_table_iter_next (&iter, NULL, &value))
-    {
-      gabble_tube_dbus_remove_name (GABBLE_TUBE_DBUS (value), contact);
-    }
-
-  g_hash_table_unref (old_dbus_tubes);
+  return priv->tube;
 }
 
 /* ************************************************************************* */
 /* presence related signal handlers                                          */
 
-/* not actually a signal handler, but used by them.                        */
+/* not actually a signal handler, but used by them:                        *
+ * creates a tube if none exists, and then prods the presence handler      *
+ * in the gabble tubes implementation to do whatever else needs to be done */
 static void
 handle_tube_presence (GabbleMucChannel *gmuc,
     TpHandle from,
     WockyStanza *stanza)
 {
+  GabbleMucChannelPrivate *priv = gmuc->priv;
   WockyNode *node = wocky_stanza_get_top_node (stanza);
 
   if (from == 0)
     return;
 
-  tubes_presence_update (gmuc, from, node);
+  if (priv->tube == NULL)
+    {
+      WockyNode *tubes;
+      tubes = wocky_node_get_child_ns (node, "tubes", NS_TUBES);
+
+      /* presence doesn't contain tubes information, no need
+       * to create a tubes channel */
+      if (tubes == NULL)
+        return;
+
+      /* MUC Tubes channels (as opposed to the individual tubes) don't
+       * have a well-defined initiator (they're a consensus) so use 0 */
+      priv->tube = new_tube (gmuc, 0, FALSE);
+    }
+
+  gabble_tubes_channel_presence_updated (priv->tube, from, node);
 }
 
 static TpChannelGroupChangeReason
@@ -2364,7 +1955,7 @@ handle_parted (GObject *source,
   TpHandleRepoIface *contact_repo =
     tp_base_connection_get_handles (tp_base_channel_get_connection (base),
         TP_HANDLE_TYPE_CONTACT);
-  TpIntset *handles = NULL;
+  TpIntSet *handles = NULL;
   TpHandle member = 0;
   TpHandle actor = 0;
   const char *jid = wocky_muc_jid (wmuc);
@@ -2408,11 +1999,16 @@ handle_parted (GObject *source,
   reason = muc_status_codes_to_change_reason (codes);
 
   /* handle_tube_presence creates tubes if need be, so bypass it here: */
-  tubes_presence_update (gmuc, member, wocky_stanza_get_top_node (stanza));
+  if (priv->tube != NULL)
+    gabble_tubes_channel_presence_updated (priv->tube, member,
+      wocky_stanza_get_top_node (stanza));
 
   close_channel (gmuc, why, FALSE, actor, reason);
 
+  if (actor != 0)
+    tp_handle_unref (contact_repo, actor);
   tp_intset_destroy (handles);
+  tp_handle_unref (contact_repo, member);
 }
 
 
@@ -2430,11 +2026,12 @@ handle_left (GObject *source,
 {
   GabbleMucChannel *gmuc = GABBLE_MUC_CHANNEL (data);
   TpBaseChannel *base = TP_BASE_CHANNEL (gmuc);
+  GabbleMucChannelPrivate *priv = gmuc->priv;
   TpChannelGroupChangeReason reason = TP_CHANNEL_GROUP_CHANGE_REASON_NONE;
   TpHandleRepoIface *contact_repo =
     tp_base_connection_get_handles (tp_base_channel_get_connection (base),
         TP_HANDLE_TYPE_CONTACT);
-  TpIntset *handles = NULL;
+  TpIntSet *handles = NULL;
   TpHandle member = 0;
   TpHandle actor = 0;
 
@@ -2459,14 +2056,17 @@ handle_left (GObject *source,
   reason = muc_status_codes_to_change_reason (codes);
 
   /* handle_tube_presence creates tubes if need be, so bypass it here: */
-  tubes_presence_update (gmuc, member, wocky_stanza_get_top_node (stanza));
+  if (priv->tube != NULL)
+    gabble_tubes_channel_presence_updated (priv->tube, member,
+        wocky_stanza_get_top_node (stanza));
 
   tp_group_mixin_change_members (data, why, NULL, handles, NULL, NULL,
       actor, reason);
-  tp_message_mixin_change_chat_state (data, member,
-      TP_CHANNEL_CHAT_STATE_GONE);
 
+  if (actor != 0)
+    tp_handle_unref (contact_repo, actor);
   tp_intset_destroy (handles);
+  tp_handle_unref (contact_repo, member);
 }
 
 /* connect to wocky-muc:SIG_PERM_CHANGE, which we will receive when the *
@@ -2524,8 +2124,6 @@ handle_fill_presence (WockyMuc *muc,
       conn->self_presence->status_message,
       0);
 
-  tube_pre_presence (self, stanza);
-
   g_signal_emit (self, signals[PRE_PRESENCE], 0, (WockyStanza *) stanza);
 }
 
@@ -2543,7 +2141,7 @@ handle_renamed (GObject *source,
   TpHandleRepoIface *contact_repo =
     tp_base_connection_get_handles (tp_base_channel_get_connection (base),
         TP_HANDLE_TYPE_CONTACT);
-  TpIntset *old_self = tp_intset_new ();
+  TpIntSet *old_self = tp_intset_new ();
   const gchar *me = wocky_muc_jid (wmuc);
   const gchar *me2 = wocky_muc_user (wmuc);
   TpHandle myself = tp_handle_ensure (contact_repo, me,
@@ -2559,6 +2157,8 @@ handle_renamed (GObject *source,
   handle_tube_presence (gmuc, myself, stanza);
 
   tp_intset_destroy (old_self);
+  tp_handle_unref (contact_repo, userid);
+  tp_handle_unref (contact_repo, myself);
 }
 
 static void
@@ -2594,6 +2194,7 @@ update_roster_presence (GabbleMucChannel *gmuc,
       GUINT_TO_POINTER (handle),
       GUINT_TO_POINTER (owner));
 
+  tp_handle_unref (contact_repo, handle);
   /* make a note of the fact that owner JIDs are visible to us    */
   /* notify whomever that an identifiable contact joined the MUC  */
   if (owner != 0)
@@ -2601,6 +2202,7 @@ update_roster_presence (GabbleMucChannel *gmuc,
       tp_group_mixin_change_flags (G_OBJECT (gmuc), 0,
           TP_CHANNEL_GROUP_FLAG_HANDLE_OWNERS_NOT_AVAILABLE);
       g_signal_emit (gmuc, signals[CONTACT_JOIN], 0, owner);
+      tp_handle_unref (contact_repo, owner);
     }
 
   handle_tube_presence (gmuc, handle, member->presence_stanza);
@@ -2664,6 +2266,7 @@ handle_join (WockyMuc *muc,
 
   g_object_set (gmuc, "state", MUC_STATE_JOINED, NULL);
 
+  tp_handle_unref (contact_repo, myself);
   tp_handle_set_destroy (members);
   tp_handle_set_destroy (owners);
   g_hash_table_unref (omap);
@@ -2738,6 +2341,10 @@ handle_presence (GObject *source,
     }
 #endif
 
+  /* zap the handle refs we created */
+  tp_handle_unref (contact_repo, handle);
+  if (owner != 0)
+    tp_handle_unref (contact_repo, owner);
   tp_handle_set_destroy (handles);
 }
 
@@ -2784,6 +2391,7 @@ handle_message (GObject *source,
       handle_type = TP_HANDLE_TYPE_ROOM;
       repo = tp_base_connection_get_handles (conn, handle_type);
       from = tp_base_channel_get_target_handle (base);
+      tp_handle_ref (repo, from);
     }
 
   switch (type)
@@ -2805,7 +2413,7 @@ handle_message (GObject *source,
 
   if (from_member && state != WOCKY_MUC_MSG_STATE_NONE)
     {
-      TpChannelChatState tp_msg_state;
+      gint tp_msg_state;
       switch (state)
         {
           case WOCKY_MUC_MSG_STATE_ACTIVE:
@@ -2824,12 +2432,15 @@ handle_message (GObject *source,
             tp_msg_state = TP_CHANNEL_CHAT_STATE_ACTIVE;
         }
 
-      tp_message_mixin_change_chat_state ((GObject *) gmuc, from, tp_msg_state);
+      tp_svc_channel_interface_chat_state_emit_chat_state_changed (gmuc,
+          from, tp_msg_state);
     }
 
   if (subject != NULL)
     _gabble_muc_channel_handle_subject (gmuc, handle_type, from,
         datetime, subject, stanza);
+
+  tp_handle_unref (repo, from);
 }
 
 static void
@@ -2874,6 +2485,7 @@ handle_errmsg (GObject *source,
       handle_type = TP_HANDLE_TYPE_ROOM;
       repo = tp_base_connection_get_handles (conn, handle_type);
       from = tp_base_channel_get_target_handle (base);
+      tp_handle_ref (repo, from);
     }
 
   tp_err = gabble_tp_send_error_from_wocky_xmpp_error (error);
@@ -2902,6 +2514,8 @@ handle_errmsg (GObject *source,
        !tp_strdiff (xmpp_id, priv->set_subject_stanza_id)))
     _gabble_muc_channel_handle_subject (gmuc,
         handle_type, from, datetime, subject, stanza);
+
+  tp_handle_unref (repo, from);
 }
 
 /* ************************************************************************* */
@@ -3041,16 +2655,6 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
       return;
     }
 
-  /* are we actually hidden? */
-  if (!tp_base_channel_is_registered (base))
-    {
-      DEBUG ("making MUC channel reappear!");
-      tp_base_channel_reopened_with_requested (base, FALSE, sender);
-    }
-
-  /* let's not autoclose now */
-  chan->priv->autoclose = FALSE;
-
   message = tp_cm_message_new (base_conn, 2);
 
   /* Header common to normal message and delivery-echo */
@@ -3179,7 +2783,7 @@ gabble_muc_channel_provide_password (TpSvcChannelInterfacePassword *iface,
   if (!priv->must_provide_password ||
       priv->password_ctx != NULL)
     {
-      GError error = { TP_ERROR, TP_ERROR_NOT_AVAILABLE,
+      GError error = { TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "password cannot be provided in the current state" };
       dbus_g_method_return_error (context, &error);
     }
@@ -3235,20 +2839,13 @@ gabble_muc_channel_send (GObject *obj,
   GabbleMucChannel *self = GABBLE_MUC_CHANNEL (obj);
   TpBaseChannel *base = TP_BASE_CHANNEL (self);
   GabbleMucChannelPrivate *priv = self->priv;
-  TpBaseConnection *base_conn;
-  GabbleConnection *gabble_conn;
+  GabbleConnection *gabble_conn =
+      GABBLE_CONNECTION (tp_base_channel_get_connection (base));
   _GabbleMUCSendMessageCtx *context = NULL;
   WockyStanza *stanza = NULL;
   WockyPorter *porter = NULL;
   GError *error = NULL;
   gchar *id = NULL;
-
-  base_conn = tp_base_channel_get_connection (base);
-  gabble_conn = GABBLE_CONNECTION (base_conn);
-
-  tp_message_mixin_change_chat_state (obj,
-      tp_base_channel_get_self_handle (base),
-      TP_CHANNEL_CHAT_STATE_ACTIVE);
 
   stanza = gabble_message_util_build_stanza (message, gabble_conn,
       WOCKY_STANZA_SUB_TYPE_GROUPCHAT, TP_CHANNEL_CHAT_STATE_ACTIVE,
@@ -3335,14 +2932,14 @@ gabble_muc_channel_add_member (GObject *obj,
   if (handle == mixin->self_handle)
     {
       TpBaseConnection *conn = tp_base_channel_get_connection (base);
-      TpIntset *set_remove_members, *set_remote_pending;
+      TpIntSet *set_remove_members, *set_remote_pending;
       GArray *arr_members;
 
       /* are we already a member or in remote pending? */
       if (tp_handle_set_is_member (mixin->members, handle) ||
           tp_handle_set_is_member (mixin->remote_pending, handle))
         {
-          g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
+          g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
               "already a member or in remote pending");
 
           return FALSE;
@@ -3386,7 +2983,7 @@ gabble_muc_channel_add_member (GObject *obj,
   /* check that we're indeed a member when attempting to invite others */
   if (priv->state < MUC_STATE_JOINED)
     {
-      g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "channel membership is required for inviting others");
 
       return FALSE;
@@ -3653,7 +3250,7 @@ request_config_form_reply_cb (
    * platforms, so fail at compile time if this is no longer the case
    */
 #if TP_NUM_BASE_ROOM_CONFIG_PROPERTIES > 32
-#error GabbleMUCChannel request_config_form_reply_cb needs porting to TpIntset
+#error GabbleMUCChannel request_config_form_reply_cb needs porting to TpIntSet
 #endif
 
   props_left = 0;
@@ -3727,7 +3324,8 @@ request_config_form_reply_cb (
     {
       GString *unsubstituted = g_string_new ("");
 
-      printf ("\n%s: the following properties were not substituted:\n",
+      printf (TP_ANSI_BOLD_ON TP_ANSI_FG_WHITE TP_ANSI_BG_RED
+              "\n%s: the following properties were not substituted:\n",
               G_STRFUNC);
 
       for (i = 0; i < TP_NUM_BASE_ROOM_CONFIG_PROPERTIES; i++)
@@ -3747,10 +3345,10 @@ request_config_form_reply_cb (
 
       printf ("\nthis is a MUC server compatibility bug in gabble, please "
               "report it with a full debug log attached (running gabble "
-              "with WOCKY_DEBUG=xmpp)\n\n");
+              "with WOCKY_DEBUG=xmpp)" TP_ANSI_RESET "\n\n");
       fflush (stdout);
 
-      error = g_error_new (TP_ERROR, TP_ERROR_SERVICE_CONFUSED,
+      error = g_error_new (TP_ERRORS, TP_ERROR_SERVICE_CONFUSED,
           "Couldn't find fields corresponding to %s in the muc#owner form. "
           "This is a MUC server compatibility bug in Gabble.",
           unsubstituted->str);
@@ -3805,18 +3403,55 @@ request_config_form_submit_reply_cb (
   g_object_unref (update_result);
 }
 
-static gboolean
-gabble_muc_channel_send_chat_state (GObject *object,
-    TpChannelChatState state,
-    GError **error)
+/**
+ * gabble_muc_channel_set_chat_state
+ *
+ * Implements D-Bus method SetChatState
+ * on interface org.freedesktop.Telepathy.Channel.Interface.ChatState
+ */
+static void
+gabble_muc_channel_set_chat_state (TpSvcChannelInterfaceChatState *iface,
+                                   guint state,
+                                   DBusGMethodInvocation *context)
 {
-  GabbleMucChannel *self = GABBLE_MUC_CHANNEL (object);
-  GabbleMucChannelPrivate *priv = self->priv;
+  GabbleMucChannel *self = GABBLE_MUC_CHANNEL (iface);
   TpBaseChannel *base = TP_BASE_CHANNEL (self);
+  GabbleMucChannelPrivate *priv;
+  GError *error = NULL;
 
-  return gabble_message_util_send_chat_state (G_OBJECT (self),
-      GABBLE_CONNECTION (tp_base_channel_get_connection (base)),
-      WOCKY_STANZA_SUB_TYPE_GROUPCHAT, state, priv->jid, error);
+  g_assert (GABBLE_IS_MUC_CHANNEL (self));
+
+  priv = self->priv;
+
+  if (state >= NUM_TP_CHANNEL_CHAT_STATES)
+    {
+      DEBUG ("invalid state %u", state);
+
+      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+          "invalid state: %u", state);
+    }
+
+  if (state == TP_CHANNEL_CHAT_STATE_GONE)
+    {
+      /* We cannot explicitly set the Gone state */
+      DEBUG ("you may not explicitly set the Gone state");
+
+      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+          "you may not explicitly set the Gone state");
+    }
+
+  if (error != NULL ||
+      !gabble_message_util_send_chat_state (G_OBJECT (self),
+          GABBLE_CONNECTION (tp_base_channel_get_connection (base)),
+          WOCKY_STANZA_SUB_TYPE_GROUPCHAT, state, priv->jid, &error))
+    {
+      dbus_g_method_return_error (context, error);
+      g_error_free (error);
+
+      return;
+    }
+
+  tp_svc_channel_interface_chat_state_return_from_set_chat_state (context);
 }
 
 void
@@ -3836,6 +3471,40 @@ gabble_muc_channel_send_presence (GabbleMucChannel *self)
       GABBLE_CONNECTION (tp_base_channel_get_connection (base)),
       stanza, NULL);
   g_object_unref (stanza);
+}
+
+GabbleTubesChannel *
+gabble_muc_channel_open_tube (GabbleMucChannel *gmuc,
+    TpHandle initiator,
+    gboolean requested)
+{
+  GabbleMucChannelPrivate *priv = gmuc->priv;
+
+  if (priv->tube == NULL)
+    priv->tube = new_tube (gmuc, initiator, requested);
+
+  if (priv->tube != NULL)
+    return g_object_ref (priv->tube);
+
+  return NULL;
+}
+
+void
+gabble_muc_channel_close_tube (GabbleMucChannel *gmuc)
+{
+  GabbleMucChannelPrivate *priv = gmuc->priv;
+
+  if (priv->tube != NULL)
+    {
+      TpHandle room;
+      GabbleTubesChannel *tube = priv->tube;
+
+      priv->tube = NULL;
+      g_object_get (tube, "handle", &room, NULL);
+      DEBUG ("removing MUC tubes channel with handle %d", room);
+      gabble_tubes_channel_close (tube);
+      g_object_unref (tube);
+    }
 }
 
 #ifdef ENABLE_VOIP
@@ -4020,7 +3689,7 @@ gabble_muc_channel_request_call (GabbleMucChannel *gmuc,
     {
       g_simple_async_report_error_in_idle (G_OBJECT (gmuc),
         callback, user_data,
-        TP_ERROR, TP_ERROR_NOT_AVAILABLE,
+        TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
         "A request for a call is already in progress");
       return;
     }
@@ -4116,21 +3785,21 @@ gabble_muc_channel_set_subject (TpSvcChannelInterfaceSubject *iface,
 
   if (priv->state < MUC_STATE_JOINED)
     {
-      GError error = { TP_ERROR, TP_ERROR_NOT_AVAILABLE,
+      GError error = { TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "Steady on. You're not in the room yet" };
 
       dbus_g_method_return_error (context, &error);
     }
   else if (priv->state > MUC_STATE_JOINED || priv->closing)
     {
-      GError error = { TP_ERROR, TP_ERROR_NOT_AVAILABLE,
+      GError error = { TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "Already left/leaving the room" };
 
       dbus_g_method_return_error (context, &error);
     }
   else if (priv->set_subject_context != NULL)
     {
-      GError error = { TP_ERROR, TP_ERROR_NOT_AVAILABLE,
+      GError error = { TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
           "Hey! Stop changing the subject! (Your last request is still in "
           "flight.)" };
 
@@ -4172,6 +3841,18 @@ password_iface_init (gpointer g_iface, gpointer iface_data)
     klass, gabble_muc_channel_##x)
   IMPLEMENT(get_password_flags);
   IMPLEMENT(provide_password);
+#undef IMPLEMENT
+}
+
+static void
+chat_state_iface_init (gpointer g_iface, gpointer iface_data)
+{
+  TpSvcChannelInterfaceChatStateClass *klass =
+    (TpSvcChannelInterfaceChatStateClass *) g_iface;
+
+#define IMPLEMENT(x) tp_svc_channel_interface_chat_state_implement_##x (\
+    klass, gabble_muc_channel_##x)
+  IMPLEMENT(set_chat_state);
 #undef IMPLEMENT
 }
 

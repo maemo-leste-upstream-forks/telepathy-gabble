@@ -24,8 +24,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <telepathy-glib/telepathy-glib.h>
-#include <telepathy-glib/telepathy-glib-dbus.h>
+#include <telepathy-glib/dbus.h>
+#include <telepathy-glib/presence-mixin.h>
+#include <telepathy-glib/svc-connection.h>
+#include <telepathy-glib/util.h>
+#include <telepathy-glib/interfaces.h>
 
 #include <wocky/wocky.h>
 
@@ -703,10 +706,7 @@ create_invisible_privacy_list_reply_cb (GabbleConnection *conn,
   GError *error = NULL;
 
   if (wocky_stanza_extract_errors (reply_msg, NULL, &error, NULL, NULL))
-    {
-      g_simple_async_result_set_from_error (result, error);
-      g_free (error);
-    }
+    g_simple_async_result_take_error (result, error);
 
   g_simple_async_result_complete_in_idle (result);
 
@@ -1097,7 +1097,7 @@ get_existing_privacy_lists_cb (GabbleConnection *conn,
   else if (query_node == NULL)
     {
       g_simple_async_result_set_error (result,
-          TP_ERROR, TP_ERROR_NETWORK_ERROR,
+          TP_ERRORS, TP_ERROR_NETWORK_ERROR,
           "no <query/> node in 'list privacy lists' reply");
     }
   else
@@ -1287,10 +1287,10 @@ verify_invisible_privacy_list_cb (GabbleConnection *conn,
   if (query_node != NULL)
     list_node = wocky_node_get_child (query_node, "list");
 
-  if (!wocky_stanza_extract_errors (reply_msg, NULL, &error, NULL, NULL) &&
-      list_node != NULL)
+  if (!wocky_stanza_extract_errors (reply_msg, NULL, &error, NULL, NULL))
     {
-      if (!is_valid_invisible_list (list_node))
+      if (list_node == NULL ||
+          !is_valid_invisible_list (list_node))
         {
           g_free (priv->invisible_list_name);
           priv->invisible_list_name = g_strdup ("invisible-gabble");
@@ -1761,7 +1761,7 @@ set_own_status_cb (GObject *obj,
        * with the check enabled). Assumes PresenceId value ordering. */
       if (i < GABBLE_PRESENCE_HIDDEN)
         {
-          g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
+          g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
               "Status '%s' can not be requested in this connection",
                 gabble_statuses[i].name);
           retval = FALSE;
@@ -1779,7 +1779,7 @@ set_own_status_cb (GObject *obj,
           if (!G_VALUE_HOLDS_STRING (message))
             {
               DEBUG ("got a status message which was not a string");
-              g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
+              g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
                   "Status argument 'message' requires a string");
               retval = FALSE;
               goto OUT;
@@ -1792,7 +1792,7 @@ set_own_status_cb (GObject *obj,
           if (!G_VALUE_HOLDS_INT (priority))
             {
               DEBUG ("got a priority value which was not a signed integer");
-              g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
+              g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
                    "Status argument 'priority' requires a signed integer");
               retval = FALSE;
               goto OUT;

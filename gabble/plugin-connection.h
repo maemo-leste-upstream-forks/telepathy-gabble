@@ -22,7 +22,8 @@
 
 #include <glib-object.h>
 
-#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/base-connection.h>
+#include <telepathy-glib/base-contact-list.h>
 
 #include <gabble/capabilities-set.h>
 #include <gabble/types.h>

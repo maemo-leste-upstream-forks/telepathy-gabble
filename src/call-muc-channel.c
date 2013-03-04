@@ -23,8 +23,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <telepathy-glib/telepathy-glib.h>
-#include <telepathy-glib/telepathy-glib-dbus.h>
+#include <telepathy-glib/dbus.h>
+#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/gtypes.h>
 
 #include <wocky/wocky.h>
 #include "call-content.h"
@@ -1162,14 +1163,14 @@ call_muc_channel_add_content (TpBaseCallChannel *base,
 
   if (initial_direction == TP_MEDIA_STREAM_DIRECTION_NONE)
     {
-      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
           "Jingle can not do contents with direction = NONE");
       return NULL;
     }
 
   if (initial_direction != TP_MEDIA_STREAM_DIRECTION_BIDIRECTIONAL)
     {
-      g_set_error (error, TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
+      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
           "Adding un-directional contents is not supported"
           " in MUC channels");
       return NULL;

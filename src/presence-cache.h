@@ -68,7 +68,7 @@ struct _GabbleCapabilityInfo
   /* array of WockyDataForm or NULL */
   GPtrArray *data_forms;
 
-  TpIntset *guys;
+  TpIntSet *guys;
   guint trust;
 
   /* bitfield of GabbleClientType flags */

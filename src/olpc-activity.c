@@ -18,7 +18,6 @@
  */
 
 #include "config.h"
-
 #include "olpc-activity.h"
 
 #include <stdlib.h>
@@ -62,6 +61,26 @@ gabble_olpc_activity_init (GabbleOlpcActivity *self)
   self->priv = priv;
 
   priv->dispose_has_run = FALSE;
+}
+
+static void
+gabble_olpc_activity_dispose (GObject *object)
+{
+  GabbleOlpcActivity *self = GABBLE_OLPC_ACTIVITY (object);
+  GabbleOlpcActivityPrivate *priv = self->priv;
+  TpHandleRepoIface *room_repo;
+
+  if (priv->dispose_has_run)
+    return;
+
+  room_repo = tp_base_connection_get_handles ((TpBaseConnection *) priv->conn,
+      TP_HANDLE_TYPE_ROOM);
+  tp_handle_unref (room_repo, self->room);
+
+  priv->dispose_has_run = TRUE;
+
+  if (G_OBJECT_CLASS (gabble_olpc_activity_parent_class)->dispose)
+    G_OBJECT_CLASS (gabble_olpc_activity_parent_class)->dispose (object);
 }
 
 static void
@@ -153,13 +172,22 @@ gabble_olpc_activity_constructor (GType type,
 {
   GObject *obj;
   GabbleOlpcActivity *self;
+  GabbleOlpcActivityPrivate *priv;
+  TpHandleRepoIface *room_repo;
 
   obj = G_OBJECT_CLASS (gabble_olpc_activity_parent_class)->
            constructor (type, n_props, props);
 
   self = GABBLE_OLPC_ACTIVITY (obj);
+  priv = self->priv;
+
+  room_repo = tp_base_connection_get_handles (
+      (TpBaseConnection *) priv->conn,
+      TP_HANDLE_TYPE_ROOM);
 
   g_assert (self->room != 0);
+
+  tp_handle_ref (room_repo, self->room);
 
   DEBUG ("new activity %s (%d)", gabble_olpc_activity_get_room (self),
       self->room);
@@ -181,6 +209,7 @@ gabble_olpc_activity_class_init (
   g_type_class_add_private (gabble_olpc_activity_class,
       sizeof (GabbleOlpcActivityPrivate));
 
+  object_class->dispose = gabble_olpc_activity_dispose;
   object_class->finalize = gabble_olpc_activity_finalize;
 
    param_spec = g_param_spec_object (

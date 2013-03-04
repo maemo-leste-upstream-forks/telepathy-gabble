@@ -21,7 +21,7 @@
 
 #include <gio/gio.h>
 #include <wocky/wocky.h>
-#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/dbus-properties-mixin.h>
 
 typedef struct _GabbleConsolePlugin GabbleConsolePlugin;
 typedef struct _GabbleConsolePluginClass GabbleConsolePluginClass;

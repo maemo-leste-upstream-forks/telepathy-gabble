@@ -6,13 +6,11 @@ if os.name != 'posix':
     # skipped on non-Unix for now, because it uses a Unix socket
     raise SystemExit(77)
 
-import dbus
-
 from servicetest import call_async, EventPattern, EventProtocolClientFactory
 from gabbletest import acknowledge_iq, make_muc_presence, exec_test
 import constants as cs
 import ns
-from mucutil import join_muc
+from muctubeutil import get_muc_tubes_channel
 from bytestream import BytestreamS5BRelay, create_from_si_offer, announce_socks5_proxy
 
 from twisted.internet import reactor
@@ -27,7 +25,8 @@ def test(q, bus, conn, stream):
 
     announce_socks5_proxy(q, stream, disco_event.stanza)
 
-    text_chan = join_muc(q, bus, conn, stream, 'chat@conf.localhost')
+    room_handle, tubes_chan, tubes_iface = get_muc_tubes_channel(q, bus, conn,
+        stream, 'chat@conf.localhost')
 
     # bob offers a stream tube
     stream_tube_id = 1
@@ -41,27 +40,20 @@ def test(q, bus, conn, stream):
     parameters = tube.addElement((None, 'parameters'))
     stream.send(presence)
 
-    def new_chan_predicate(e):
-        path, props = e.args[0][0]
-        return props[cs.CHANNEL_TYPE] == cs.CHANNEL_TYPE_STREAM_TUBE
-
-    e = q.expect('dbus-signal', signal='NewChannels',
-                 predicate=new_chan_predicate)
+    e = q.expect('dbus-signal', signal='NewChannels')
     channels = e.args[0]
     assert len(channels) == 1
     path, props = channels[0]
     assert props[cs.CHANNEL_TYPE] == cs.CHANNEL_TYPE_STREAM_TUBE
 
     tube_chan = bus.get_object(conn.bus_name, path)
-    tube_iface = dbus.Interface(tube_chan, cs.CHANNEL_TYPE_STREAM_TUBE)
-
-    call_async(q, tube_iface, 'Accept', 0, 0, '',
+    call_async(q, tubes_iface, 'AcceptStreamTube', stream_tube_id, 0, 0, '',
         byte_arrays=True)
 
     accept_return_event, _ = q.expect_many(
-        EventPattern('dbus-return', method='Accept'),
-        EventPattern('dbus-signal', signal='TubeChannelStateChanged',
-            args=[cs.TUBE_CHANNEL_STATE_OPEN]))
+        EventPattern('dbus-return', method='AcceptStreamTube'),
+        EventPattern('dbus-signal', signal='TubeStateChanged',
+            args=[stream_tube_id, cs.TUBE_CHANNEL_STATE_OPEN]))
 
     unix_socket_adr = accept_return_event.value[0]
 

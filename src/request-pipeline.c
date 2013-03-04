@@ -21,7 +21,7 @@
 #include "config.h"
 #include "request-pipeline.h"
 
-#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/dbus.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_PIPELINE
 
@@ -245,7 +245,7 @@ gabble_request_pipeline_flush (GabbleRequestPipeline *self,
     GSList **list)
 {
   GabbleRequestPipelineItem *item;
-  GError disconnected = { TP_ERROR, TP_ERROR_DISCONNECTED,
+  GError disconnected = { TP_ERRORS, TP_ERROR_DISCONNECTED,
       "Request failed because connection became disconnected" };
 
   while (*list != NULL)

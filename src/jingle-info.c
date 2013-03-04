@@ -18,11 +18,10 @@
  */
 
 #include "config.h"
-
 #include "jingle-info.h"
 
 #include <stdlib.h>
-#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/util.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
 #include "debug.h"

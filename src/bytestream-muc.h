@@ -22,7 +22,7 @@
 
 #include <glib-object.h>
 #include <wocky/wocky.h>
-#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/base-connection.h>
 
 G_BEGIN_DECLS
 

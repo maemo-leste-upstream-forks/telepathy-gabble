@@ -24,7 +24,9 @@
 #include <glib-object.h>
 #include <time.h>
 
-#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/enums.h>
+#include <telepathy-glib/message-mixin.h>
+#include <telepathy-glib/base-channel.h>
 
 G_BEGIN_DECLS
 

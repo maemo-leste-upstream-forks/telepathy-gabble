@@ -23,8 +23,9 @@
 
 #include <glib-object.h>
 
-#include <telepathy-glib/telepathy-glib.h>
-#include <telepathy-glib/telepathy-glib-dbus.h>
+#include <telepathy-glib/base-channel.h>
+#include <telepathy-glib/base-call-channel.h>
+#include <telepathy-glib/base-media-call-channel.h>
 
 #include "jingle-content.h"
 #include "call-member.h"

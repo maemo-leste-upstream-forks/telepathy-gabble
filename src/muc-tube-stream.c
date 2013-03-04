@@ -18,7 +18,6 @@
  */
 
 #include "config.h"
-
 #include "muc-tube-stream.h"
 
 G_DEFINE_TYPE (GabbleMucTubeStream, gabble_muc_tube_stream,

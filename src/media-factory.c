@@ -25,9 +25,9 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-
-#include <telepathy-glib/telepathy-glib.h>
-#include <telepathy-glib/telepathy-glib-dbus.h>
+#include <telepathy-glib/channel-manager.h>
+#include <telepathy-glib/dbus.h>
+#include <telepathy-glib/interfaces.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
 
@@ -776,7 +776,7 @@ gabble_media_factory_requestotron (TpChannelManager *manager,
 
       if (require_target_handle)
         {
-          g_set_error (&error, TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
+          g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
               "A valid Contact handle must be provided when requesting a media "
               "channel");
           goto error;
@@ -918,7 +918,7 @@ gabble_media_factory_create_call (TpChannelManager *manager,
 
   if (!initial_audio && !initial_video)
     {
-      g_set_error (&error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
           "Call channel must contain at least "
           "one of InitialAudio or InitialVideo");
       goto error;
@@ -1121,14 +1121,6 @@ _gabble_media_factory_typeflags_to_caps (TpChannelMediaCapabilities flags,
       (flags & TP_CHANNEL_MEDIA_CAPABILITY_NAT_TRAVERSAL_GTALK_P2P) != 0,
       (flags & TP_CHANNEL_MEDIA_CAPABILITY_NAT_TRAVERSAL_ICE_UDP) != 0,
       TRUE /* assume we have H.264 for now */);
-}
-
-static void
-gabble_media_factory_reset_caps (GabbleCapsChannelManager *manager)
-{
-  GabbleMediaFactory *self = GABBLE_MEDIA_FACTORY (manager);
-
-  self->priv->use_call_channels = FALSE;
 }
 
 static void
@@ -1342,7 +1334,6 @@ caps_channel_manager_iface_init (gpointer g_iface,
 {
   GabbleCapsChannelManagerInterface *iface = g_iface;
 
-  iface->reset_caps = gabble_media_factory_reset_caps;
   iface->get_contact_caps = gabble_media_factory_get_contact_caps;
   iface->represent_client = gabble_media_factory_represent_client;
 }

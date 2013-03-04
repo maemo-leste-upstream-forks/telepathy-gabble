@@ -23,13 +23,12 @@
  */
 
 #include "config.h"
-
 #include "message-util.h"
 
 #include <string.h>
 #include <time.h>
 
-#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/dbus.h>
 #include <wocky/wocky.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_IM
@@ -104,7 +103,7 @@ gabble_message_util_build_stanza (TpMessage *message,
 #define RETURN_INVALID_ARGUMENT(msg, ...) \
   G_STMT_START { \
     DEBUG (msg , ## __VA_ARGS__); \
-    g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT, \
+    g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT, \
         msg , ## __VA_ARGS__); \
     return NULL; \
   } G_STMT_END

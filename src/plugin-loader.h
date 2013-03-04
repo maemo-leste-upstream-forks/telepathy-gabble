@@ -23,7 +23,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/base-connection.h>
+#include <telepathy-glib/presence-mixin.h>
 #include <wocky/wocky.h>
 
 #include "gabble/sidecar.h"

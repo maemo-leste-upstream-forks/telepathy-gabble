@@ -28,7 +28,8 @@
 # include <gmodule.h>
 #endif
 
-#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/errors.h>
+#include <telepathy-glib/presence-mixin.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_PLUGINS
 #include "debug.h"
@@ -300,7 +301,7 @@ gabble_plugin_loader_create_sidecar (
     }
 
   g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
-      TP_ERROR, TP_ERROR_NOT_IMPLEMENTED, "No plugin implements sidecar '%s'",
+      TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED, "No plugin implements sidecar '%s'",
       sidecar_interface);
 }
 
