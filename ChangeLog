@@ -1,3 +1,221 @@
+commit ed05203947880a0f4c45a7f95316e4cc28b23442
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-03-01 12:24:16 +0000
+
+    Version 0.16.5
+
+commit 4882535eeeb5843e26dd2b6f0aeaff3f201cbfe6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-03-01 09:16:25 +0000
+
+    NEWS for 0.16.5
+
+commit 110c5af4da0dfd7cd658a1d12047f0dbc79ae2d6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-25 09:51:22 +0000
+
+    Update Wocky snapshot to fix 61433
+
+commit 3b10a7f1b0fcb728210eb12231df8b1a4c289c3b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 18:40:06 +0000
+
+    privacy lists: don't crash on malformed replies
+
+commit 0d908c122903a384882eff7de0e9ec6d6058d661
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 17:45:51 +0000
+
+    Don't crash when creating invisible privacy list fails.
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=57521
+
+commit 89346a8c8f48add8b090b31a9c63f8239f9bf761
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-09 17:12:48 +0000
+
+    post-release nano-version bump to 0.16.4.1
+
+commit b71ded41ee9ddad4a6b6be85759526dc39c55c79
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-09 16:47:26 +0000
+
+    Version 0.16.4
+
+commit b27c3518e2efd5151a24bbc7232155a32effefa7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-09 16:47:12 +0000
+
+    NEWS for 0.16.4
+
+commit 64b405cb025a00c3962a415dd90119771517cf6a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-06 16:46:44 +0000
+
+    muc_factory_broadcast_presence(): don't crash if disconnected
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=52362 (I hope)
+
+commit 3a068ebe96a0586247f4f597877a0dab78b47779
+Author: Debarshi Ray <rishi@gnu.org>
+Date:   2012-10-19 16:17:35 +0200
+
+    connection: Don't reset the capabilities in UpdateCapabilities
+    
+    This ensures that a running Gabble process will always create Call1
+    channels once it has seen such a client in its lifetime.
+    
+    Remove gabble_caps_channel_manager_reset_capabilities and its
+    implementation in GabbleMediaFactory, since it is not used anymore.
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=56181
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 2a1788842f38aaadb028ddd96f7e82f6db7e70b8
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-09-11 15:43:05 +0200
+
+    Bump nano version
+
+commit 406c9d74b100184197780d8bd6c68c6e393eeb76
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-09-11 15:39:40 +0200
+
+    Prepare 0.16.3 release
+
+commit 5c2184c21b1e8878394834a3b1ef9096a3c51087
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-09-11 11:26:03 +0100
+
+    NEWS for 0.16
+
+commit 8a6e9461f9cc12788532441bcc6f43fa7df4913f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-09-07 15:22:30 +0100
+
+    Verify that every caps 'ext' we ever advertise can be disco'd without error
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=54634
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit da14b4e86d503b30054b10b5e7b00eae7ba1add5
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-09-07 15:19:30 +0100
+
+    Now that camera-v1 has a caps URI, don't treat it as part of video-v1
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=54634
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit fbfa8c138da1a4f00c74af4bda98e858a203a58b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-09-07 15:18:23 +0100
+
+    Add Google camera-v1 as a first-class caps bundle
+    
+    This is partly a point of principle - given any caps bundle that we have
+    ever advertised support for, we should be prepared to define when asked -
+    but mainly a workaround for the iChat bug mentioned in commit af55ea3d.
+    If we return an error, it will keep disco'ing us repeatedly in a loop.
+    
+    This leaves us with the problem of finding out what the bundle contains.
+    In Google's usage it is only its name that is important (ignoring that
+    XEP-0115 explicitly makes bundle names opaque), but replying to disco
+    requests for it requires us to be able to turn it into a set of 0 or
+    more capability URIs. Because of the Google server bug mentioned in
+    commit cd0da0a8, we can't just ask a Google client, because they're
+    all on Google servers, so they can't usefully be disco'd.
+    
+    We assume here that it behaves like the voice-v1 and video-v1 bundles
+    in containing exactly one URI, and that that URI corresponds to the
+    bundle name in the same way.
+    
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=54634
+
+commit 1866bc54eecf2fa6ce00b37d196cd904f8a0203b
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 11:45:16 +0200
+
+    Pass RemoteContact key into UpdateLocalMediaDescription
+    
+    Now that telepathy-glib actually correctly checks what is passed to
+    UpdateLocalMediaDescription ensure we always pass the RemoteContact key
+    in the dictionary.
+
+commit 61cb4d227d1cbbf85d08f94c28036ba9d831f2fb
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 11:06:28 +0200
+
+    Don't assume NewDebugMessage will occur before NewChannel
+
+commit e3aae2b2143c8b851e5814f6711aff75d4a1d197
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 10:30:36 +0200
+
+    Make the installed file generation depend on Makefile
+    
+    Make the rules for generating files part of the installed tests depend on
+    the Makefile such that it gets regenerated after runing configure with
+    a different prefix
+
+commit 217f39faabeece4946030ea14b6f26bda40fa276
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 10:14:48 +0200
+
+    sed pluginexecdir in run-gabble.sh
+    
+    Commit 352d2da805561ec0164a6e800cd3c3e3bbc629f3 starting using
+    pluginexecdir instead of ${libdir}/telepathy/gabble-0. Unfortunately the
+    generation of run-gabble.sh wasn't adapated
+
+commit ccc8f443c94d14d9dd94a5f4fbc84183159e8d33
+Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date:   2012-09-11 10:10:52 +0200
+
+    Set gabble twisted location both for installed and uninstalled tests
+    
+    Set GABBLE_TWISTED_PATH in the environment which points to either the
+    installed (when using run-test.sh) or the srcdir location (when using
+    make check)
+
+commit 6f4aeea22388d325f056882224b87429da1e702c
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2012-09-07 15:26:19 +0100
+
+    Turn off deprecation warnings, this is a stable branch
+    
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 9f6c4a07d6a3f4776dca92864fe356442b75d19c
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-08-14 15:53:18 +0200
+
+    Bump nano version
+
+commit 46be2e2be7e11d9270907b886085c962ee361861
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-08-14 15:41:52 +0200
+
+    Prepare 0.16.2
+
+commit 49dc42c7ee6a77858d6e57df919a3008122661c1
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-08-14 15:49:41 +0200
+
+    Make sure "make -j3 maintainer-foo" works
+
+commit f88ae541292e0ff4abd9214bef4c7b99a55dc4e9
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-07-11 11:53:03 +0100
+
+    server-tls-manager: deal with modification of the GList while iterating it
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
 commit 8947be225e17d1cee96cf41586f495dcd35c6904
 Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
 Date:   2012-06-20 15:24:58 +0200

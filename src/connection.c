@@ -2403,10 +2403,11 @@ gabble_connection_fill_in_caps (GabbleConnection *self,
   if (voice_v1)
     g_string_append (ext, " " BUNDLE_VOICE_V1);
 
-  if (video_v1) {
+  if (video_v1)
     g_string_append (ext, " " BUNDLE_VIDEO_V1);
+
+  if (gabble_presence_has_cap (presence, NS_GOOGLE_FEAT_CAMERA))
     g_string_append (ext, " " BUNDLE_CAMERA_V1);
-  }
 
   wocky_node_set_attribute (node, "ext", ext->str);
   g_string_free (ext, TRUE);
@@ -2707,6 +2708,9 @@ iq_disco_cb (WockyPorter *porter,
 
       if (!tp_strdiff (suffix, BUNDLE_VIDEO_V1))
         features = gabble_capabilities_get_bundle_video_v1 ();
+
+      if (!tp_strdiff (suffix, BUNDLE_CAMERA_V1))
+        features = gabble_capabilities_get_bundle_camera_v1 ();
     }
 
   if (data_forms != NULL)
@@ -3364,24 +3368,11 @@ gabble_connection_update_capabilities (
   GabbleConnection *self = GABBLE_CONNECTION (iface);
   TpBaseConnection *base = (TpBaseConnection *) self;
   GabbleCapabilitySet *old_caps = NULL;
-  TpChannelManagerIter iter;
-  TpChannelManager *manager;
   guint i;
 
   /* Now that someone has told us our *actual* capabilities, we can stop
    * advertising spurious caps in initial presence */
   gabble_capability_set_clear (self->priv->bonus_caps);
-
-  tp_base_connection_channel_manager_iter_init (&iter, base);
-
-  while (tp_base_connection_channel_manager_iter_next (&iter, &manager))
-    {
-      if (GABBLE_IS_CAPS_CHANNEL_MANAGER (manager))
-        {
-          gabble_caps_channel_manager_reset_capabilities (
-              GABBLE_CAPS_CHANNEL_MANAGER (manager));
-        }
-    }
 
   DEBUG ("enter");
 
@@ -3393,6 +3384,8 @@ gabble_connection_update_capabilities (
       const gchar * const * cap_tokens = g_value_get_boxed (va->values + 2);
       GabbleCapabilitySet *cap_set;
       GPtrArray *data_forms;
+      TpChannelManagerIter iter;
+      TpChannelManager *manager;
 
       g_hash_table_remove (self->priv->client_caps, client_name);
       g_hash_table_remove (self->priv->client_data_forms, client_name);

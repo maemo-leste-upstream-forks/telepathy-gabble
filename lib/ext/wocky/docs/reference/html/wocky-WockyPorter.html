@@ -149,6 +149,8 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 </div>
 <div class="refsect1">
 <a name="wocky-WockyPorter.description"></a><h2>Description</h2>
+<p>
+</p>
 </div>
 <div class="refsect1">
 <a name="wocky-WockyPorter.details"></a><h2>Details</h2>
@@ -165,18 +167,24 @@ Get access to the error quark of the xmpp porter.
 <a name="WOCKY-PORTER-HANDLER-PRIORITY-MAX:CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_MAX</h3>
 <pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_MAX G_MAXUINT
 </pre>
+<p>
+</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="WOCKY-PORTER-HANDLER-PRIORITY-MIN:CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_MIN</h3>
 <pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_MIN 0
 </pre>
+<p>
+</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS"></a><h3>WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</h3>
 <pre class="programlisting">#define WOCKY_PORTER_HANDLER_PRIORITY_NORMAL (guint) (G_MAXUINT / 2)
 </pre>
+<p>
+</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -723,16 +731,31 @@ to one Jingle session:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-id = wocky_porter_register_handler (porter,
-  WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL,
-  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL, jingle_cb,
-  "juliet@example.com/Balcony",
-  '(', "jingle",
-    ':', "urn:xmpp:jingle:1",
-    '@', "sid", "my_sid",
-  ')', NULL);
-</pre></div>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></td>
+        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function">wocky_porter_register_handler</span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
+  WOCKY_STANZA_TYPE_IQ<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span>
+  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL<span class="gtkdoc opt">,</span> jingle_cb<span class="gtkdoc opt">,</span>
+  <span class="string">&quot;juliet&#64;example.com/Balcony&quot;</span><span class="gtkdoc opt">,</span>
+  <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;jingle&quot;</span><span class="gtkdoc opt">,</span>
+    <span class="string">':'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;urn:xmpp:jingle:1&quot;</span><span class="gtkdoc opt">,</span>
+    <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;sid&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;my_sid&quot;</span><span class="gtkdoc opt">,</span>
+  <span class="string">')'</span><span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <p>
@@ -814,12 +837,23 @@ from anyone, call:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-id = wocky_porter_register_handler (porter,
-  WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE, NULL,
-  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL, message_received_cb, NULL,
-  NULL);
-</pre></div>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4</pre></td>
+        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function">wocky_porter_register_handler</span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
+  WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span>
+  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL<span class="gtkdoc opt">,</span> message_received_cb<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span>
+  NULL<span class="gtkdoc opt">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <p>
@@ -828,19 +862,37 @@ notifications for contacts' geolocation information:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-id = wocky_porter_register_handler_from_anyone (porter,
-   WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
-   WOCKY_PORTER_HANDLER_PRIORITY_MAX,
-   msg_event_cb, self,
-   '(', "event",
-     ':', WOCKY_XMPP_NS_PUBSUB_EVENT,
-     '(', "items",
-       '@', "node", "http://jabber.org/protocol/geoloc",
-     ')',
-   ')',
-   NULL);
-</pre></div>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11</pre></td>
+        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function"><a href="wocky-WockyPorter.html#wocky-porter-register-handler-from-anyone">wocky_porter_register_handler_from_anyone</a></span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
+   WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span>
+   WOCKY_PORTER_HANDLER_PRIORITY_MAX<span class="gtkdoc opt">,</span>
+   msg_event_cb<span class="gtkdoc opt">,</span> self<span class="gtkdoc opt">,</span>
+   <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;event&quot;</span><span class="gtkdoc opt">,</span>
+     <span class="string">':'</span><span class="gtkdoc opt">,</span> WOCKY_XMPP_NS_PUBSUB_EVENT<span class="gtkdoc opt">,</span>
+     <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;items&quot;</span><span class="gtkdoc opt">,</span>
+       <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;node&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;http://jabber.org/protocol/geoloc&quot;</span><span class="gtkdoc opt">,</span>
+     <span class="string">')'</span><span class="gtkdoc opt">,</span>
+   <span class="string">')'</span><span class="gtkdoc opt">,</span>
+   NULL<span class="gtkdoc opt">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <div class="variablelist"><table border="0">

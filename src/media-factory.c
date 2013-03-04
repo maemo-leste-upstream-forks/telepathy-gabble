@@ -1053,7 +1053,10 @@ gabble_media_factory_add_caps (GabbleCapabilitySet *caps,
       /* video-v1 implies that we interop with Google Video Chat, i.e. we have
        * gtalk-p2p and H.264 as well as video */
       if (gtalk_p2p && h264)
-        gabble_capability_set_add (caps, NS_GOOGLE_FEAT_VIDEO);
+        {
+          gabble_capability_set_add (caps, NS_GOOGLE_FEAT_VIDEO);
+          gabble_capability_set_add (caps, NS_GOOGLE_FEAT_CAMERA);
+        }
     }
 }
 
@@ -1118,14 +1121,6 @@ _gabble_media_factory_typeflags_to_caps (TpChannelMediaCapabilities flags,
       (flags & TP_CHANNEL_MEDIA_CAPABILITY_NAT_TRAVERSAL_GTALK_P2P) != 0,
       (flags & TP_CHANNEL_MEDIA_CAPABILITY_NAT_TRAVERSAL_ICE_UDP) != 0,
       TRUE /* assume we have H.264 for now */);
-}
-
-static void
-gabble_media_factory_reset_caps (GabbleCapsChannelManager *manager)
-{
-  GabbleMediaFactory *self = GABBLE_MEDIA_FACTORY (manager);
-
-  self->priv->use_call_channels = FALSE;
 }
 
 static void
@@ -1339,7 +1334,6 @@ caps_channel_manager_iface_init (gpointer g_iface,
 {
   GabbleCapsChannelManagerInterface *iface = g_iface;
 
-  iface->reset_caps = gabble_media_factory_reset_caps;
   iface->get_contact_caps = gabble_media_factory_get_contact_caps;
   iface->represent_client = gabble_media_factory_represent_client;
 }
