@@ -31,9 +31,8 @@
 #include <gobject/gvaluecollector.h>
 
 #include <wocky/wocky.h>
-#include <telepathy-glib/handle-repo-dynamic.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/gtypes.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_JID
 
@@ -193,7 +192,7 @@ gabble_get_room_handle_from_jid (TpHandleRepoIface *room_repo,
 #define INVALID_HANDLE(e, f, ...) \
   G_STMT_START { \
   DEBUG (f, ##__VA_ARGS__); \
-  g_set_error (e, TP_ERRORS, TP_ERROR_INVALID_HANDLE, f, ##__VA_ARGS__);\
+  g_set_error (e, TP_ERROR, TP_ERROR_INVALID_HANDLE, f, ##__VA_ARGS__);\
   } G_STMT_END
 
 gchar *

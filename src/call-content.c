@@ -18,15 +18,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <telepathy-glib/base-connection.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/svc-properties-interface.h>
-#include <telepathy-glib/base-connection.h>
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #include "call-member.h"
 #include "call-content.h"

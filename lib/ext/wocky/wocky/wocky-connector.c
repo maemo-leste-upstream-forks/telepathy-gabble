@@ -244,9 +244,6 @@ typedef enum
 
 struct _WockyConnectorPrivate
 {
-  /* properties: */
-  GIOStream *stream;
-
   /* caller's choices about what to allow/disallow */
   gboolean auth_insecure_ok; /* can we auth over non-ssl */
   gboolean encrypted_plain_auth_ok; /* plaintext auth over secure channel */
@@ -294,6 +291,8 @@ struct _WockyConnectorPrivate
   WockyTLSHandler *tls_handler;
 
   WockyAuthRegistry *auth_registry;
+
+  guint see_other_host_count;
 };
 
 /* choose an appropriate chunk of text describing our state for debug/error */
@@ -807,22 +806,40 @@ wocky_connector_finalize (GObject *object)
 
 static void
 connect_to_host_async (WockyConnector *connector,
-    const gchar *host,
-    guint port)
+    const gchar *host_and_port,
+    guint default_port)
 {
   WockyConnectorPrivate *priv = connector->priv;
 
 #if HAVE_GIO_PROXY
-  /* Legacy SSL mode is just like doing HTTPS, so let's trigger HTTPS
-   * proxy setting if any */
-  gchar *uri = g_strdup_printf ("%s://%s:%i",
-      priv->legacy_ssl ? "https" : "xmpp-client", host, port);
-  g_socket_client_connect_to_uri_async (priv->client,
-      uri, port, NULL, tcp_host_connected, connector);
-  g_free (uri);
+  {
+    const gchar *uri_format = "%s://%s";
+    gchar *uri;
+
+    /* If host_and_port is an ipv6 address we must ensure it has [] around it */
+    if (host_and_port[0] != '[')
+      {
+        const gchar *p;
+
+        /* if host_and_port contains 2 ':' chars, it must be an ipv6 address */
+        p = g_strstr_len (host_and_port, -1, ":");
+        if (p != NULL)
+          p = g_strstr_len (p + 1, -1, ":");
+        if (p != NULL)
+          uri_format = "%s://[%s]";
+      }
+
+    /* Legacy SSL mode is just like doing HTTPS, so let's trigger HTTPS
+     * proxy setting if any */
+    uri = g_strdup_printf (uri_format,
+        priv->legacy_ssl ? "https" : "xmpp-client", host_and_port);
+    g_socket_client_connect_to_uri_async (priv->client,
+        uri, default_port, NULL, tcp_host_connected, connector);
+    g_free (uri);
+  }
 #else
   g_socket_client_connect_to_host_async (priv->client,
-      host, port, NULL, tcp_host_connected, connector);
+      host_and_port, default_port, NULL, tcp_host_connected, connector);
 #endif
 }
 
@@ -880,7 +897,7 @@ tcp_srv_connected (GObject *source,
 
       if ((host != NULL) && (*host != '\0'))
         {
-          DEBUG ("Falling back to HOST connection to %s", host);
+          DEBUG ("Falling back to HOST connection to %s port %u", host, port);
           connect_to_host_async (connector, host, port);
         }
       else
@@ -1137,7 +1154,7 @@ xmpp_init_recv_cb (GObject *source,
 /* ************************************************************************* */
 /* handle stream errors                                                      */
 static gboolean
-stream_error_abort (WockyConnector *connector,
+stream_error_abort (WockyConnector *self,
     WockyStanza *stanza)
 {
   GError *error = NULL;
@@ -1145,8 +1162,40 @@ stream_error_abort (WockyConnector *connector,
   if (!wocky_stanza_extract_stream_error (stanza, &error))
     return FALSE;
 
+  if (g_error_matches (error, WOCKY_XMPP_STREAM_ERROR,
+          WOCKY_XMPP_STREAM_ERROR_SEE_OTHER_HOST))
+    {
+      const gchar *other_host;
+
+      other_host = wocky_node_get_content_from_child_ns (
+          wocky_stanza_get_top_node (stanza),
+          "see-other-host", WOCKY_XMPP_NS_STREAMS);
+
+      if (other_host != NULL && self->priv->see_other_host_count < 5)
+        {
+          DEBUG ("Need to restart connection with host: %s", other_host);
+
+          self->priv->see_other_host_count++;
+
+          /* Reset to initial state */
+          g_clear_object (&self->priv->features);
+          g_clear_object (&self->priv->sock);
+          g_clear_object (&self->priv->conn);
+          self->priv->state = WCON_TCP_CONNECTING;
+          self->priv->authed = FALSE;
+          self->priv->encrypted = FALSE;
+          self->priv->connected = FALSE;
+
+          connect_to_host_async (self, other_host, 5222);
+
+          goto out;
+        }
+    }
+
   DEBUG ("Received stream error: %s", error->message);
-  abort_connect (connector, error);
+  abort_connect (self, error);
+
+out:
   g_error_free (error);
   return TRUE;
 }

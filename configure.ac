@@ -8,8 +8,8 @@ AC_PREREQ([2.59])
 #   set gabble_nano_version to 0.
 
 m4_define([gabble_major_version], [0])
-m4_define([gabble_minor_version], [16])
-m4_define([gabble_micro_version], [0])
+m4_define([gabble_minor_version], [17])
+m4_define([gabble_micro_version], [1])
 m4_define([gabble_nano_version], [0])
 
 # Some magic
@@ -148,10 +148,6 @@ if test -n "$with_ca_certificates"; then
     fi
 fi
 
-# We are still using GValueArray which has been deprecated in GLib. Disable
-# GLib deprecation warnings as the only way to fix this is to switch to GDBus.
-AC_DEFINE(GLIB_DISABLE_DEPRECATION_WARNINGS, 1, [Build with GLib deprecated])
-
 AC_ARG_ENABLE(debug,
   AC_HELP_STRING([--disable-debug],[compile without debug code]),
     enable_debug=$enableval, enable_debug=yes )
@@ -228,8 +224,11 @@ AM_CONDITIONAL([ENABLE_GTK_DOC], [test "x$enable_gtk_doc" = xyes])
 
 dnl Check for Glib
 PKG_CHECK_MODULES(GLIB,
-    [glib-2.0 >= 2.24, gobject-2.0 >= 2.24, gthread-2.0 >= 2.24, gio-2.0])
-PKG_CHECK_MODULES(GMODULE, [gmodule-2.0 >= 2.24])
+    [glib-2.0 >= 2.30, gobject-2.0 >= 2.30, gthread-2.0 >= 2.30, gio-2.0])
+PKG_CHECK_MODULES(GMODULE, [gmodule-2.0 >= 2.30])
+
+AC_DEFINE(GLIB_VERSION_MIN_REQUIRED, GLIB_VERSION_2_30, [Ignore post 2.30 deprecations])
+AC_DEFINE(GLIB_VERSION_MAX_ALLOWED, GLIB_VERSION_2_30, [Prevent post 2.30 APIs])
 
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
@@ -296,7 +295,8 @@ PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.1.0, dbus-glib-1 >= 0.82])
 AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)
 
-PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.18.0])
+AC_DEFINE(TP_VERSION_MIN_REQUIRED, TP_VERSION_0_18, [Ignore post 0.18 deprecations])
+PKG_CHECK_MODULES(TP_GLIB, [telepathy-glib >= 0.19.7])
 
 AC_SUBST(TP_GLIB_CFLAGS)
 AC_SUBST(TP_GLIB_LIBS)

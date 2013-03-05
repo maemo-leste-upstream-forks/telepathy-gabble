@@ -24,9 +24,8 @@
 
 #include <string.h>
 
-#include <telepathy-glib/svc-connection.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/contacts-mixin.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #include "base64.h"
 #include "presence.h"
@@ -421,7 +420,7 @@ parse_avatar (WockyNode *vcard,
 
   if (NULL == photo_node)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
         "contact vCard has no photo");
       return FALSE;
     }
@@ -441,7 +440,7 @@ parse_avatar (WockyNode *vcard,
 
   if (NULL == binval_node)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
         "contact avatar is missing binval node");
       return FALSE;
     }
@@ -450,7 +449,7 @@ parse_avatar (WockyNode *vcard,
 
   if (NULL == binval_value)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
         "contact avatar is missing binval content");
       return FALSE;
     }
@@ -459,7 +458,7 @@ parse_avatar (WockyNode *vcard,
 
   if (NULL == *avatar)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
         "failed to decode avatar from base64");
       return FALSE;
     }
@@ -489,7 +488,7 @@ _request_avatar_cb (GabbleVCardManager *self,
 
   if (NULL == vcard)
     {
-      GError tp_error = { TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      GError tp_error = { TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           vcard_error->message };
 
       if (vcard_error->domain == WOCKY_XMPP_ERROR)
@@ -537,7 +536,7 @@ _request_avatar_cb (GabbleVCardManager *self,
           DEBUG ("treason uncloaked! avatar hash in presence does not match "
               "avatar in vCard for handle %u", handle);
 
-          g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+          g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
               "avatar hash in presence does not match avatar in vCard");
           dbus_g_method_return_error (context, error);
           g_error_free (error);
@@ -755,7 +754,7 @@ _set_avatar_cb2 (GabbleVCardManager *manager,
 
   if (NULL == vcard)
     {
-      GError tp_error = { TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      GError tp_error = { TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           vcard_error->message };
 
       /* Google Talk has been observed to return bad-request when the avatar is

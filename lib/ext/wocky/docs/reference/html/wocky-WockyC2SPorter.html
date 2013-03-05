@@ -196,27 +196,14 @@ For example, to register a handler for roster pushes, call:
 </p>
 <p>
 </p>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1
-2
-3
-4
-5
-6</pre></td>
-        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function"><a href="wocky-WockyC2SPorter.html#wocky-c2s-porter-register-handler-from-server">wocky_c2s_porter_register_handler_from_server</a></span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
-  WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_SET<span class="gtkdoc opt">,</span>
-  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL<span class="gtkdoc opt">,</span> roster_push_received_cb<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span>
-  <span class="string">'('</span><span class="gtkdoc opt">,</span>
-    <span class="string">&quot;query&quot;</span><span class="gtkdoc opt">,</span> <span class="string">':'</span><span class="gtkdoc opt">,</span> WOCKY_XMPP_NS_ROSTER<span class="gtkdoc opt">,</span>
-  <span class="string">')'</span><span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+<div class="informalexample"><pre class="programlisting">
+id = wocky_c2s_porter_register_handler_from_server (porter,
+  WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_SET,
+  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL, roster_push_received_cb, NULL,
+  '(',
+    "query", ':', WOCKY_XMPP_NS_ROSTER,
+  ')', NULL);
+</pre></div>
 <p>
 </p>
 <div class="variablelist"><table border="0">

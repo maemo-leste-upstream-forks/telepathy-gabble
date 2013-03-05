@@ -18,10 +18,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "config.h"
+
 #include "media-channel.h"
 #include "media-channel-internal.h"
 
-#include <telepathy-glib/channel-iface.h>
+#include <telepathy-glib/telepathy-glib.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
 

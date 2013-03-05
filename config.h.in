@@ -30,8 +30,11 @@
 /* Enable VoIP */
 #undef ENABLE_VOIP
 
-/* Build with GLib deprecated */
-#undef GLIB_DISABLE_DEPRECATION_WARNINGS
+/* Prevent post 2.30 APIs */
+#undef GLIB_VERSION_MAX_ALLOWED
+
+/* Ignore post 2.30 deprecations */
+#undef GLIB_VERSION_MIN_REQUIRED
 
 /* path to system Certificate Authority list */
 #undef GTLS_SYSTEM_CA_CERTIFICATES
@@ -147,6 +150,9 @@
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
+
+/* Ignore post 0.18 deprecations */
+#undef TP_VERSION_MIN_REQUIRED
 
 /* Enable extensions on AIX 3, Interix.  */
 #ifndef _ALL_SOURCE

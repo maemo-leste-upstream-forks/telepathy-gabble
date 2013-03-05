@@ -17,12 +17,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "config.h"
+
 #include "conn-addressing.h"
 
 #include <dbus/dbus-glib-lowlevel.h>
 
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #include "extensions/extensions.h"
 
@@ -102,7 +104,7 @@ conn_addressing_get_contacts_by_uri (GabbleSvcConnectionInterfaceAddressing *ifa
   gabble_svc_connection_interface_addressing_return_from_get_contacts_by_uri (
       context, requested, attributes);
 
-  tp_handles_unref (contact_repo, handles);
+  g_array_unref (handles);
   g_hash_table_unref (requested);
   g_hash_table_unref (attributes);
   g_free (sender);
@@ -142,7 +144,7 @@ conn_addressing_get_contacts_by_vcard_field (GabbleSvcConnectionInterfaceAddress
   gabble_svc_connection_interface_addressing_return_from_get_contacts_by_vcard_field (
       context, requested, attributes);
 
-  tp_handles_unref (contact_repo, handles);
+  g_array_unref (handles);
   g_hash_table_unref (requested);
   g_hash_table_unref (attributes);
   g_free (sender);

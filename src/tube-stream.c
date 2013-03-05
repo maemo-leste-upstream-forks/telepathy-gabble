@@ -31,12 +31,8 @@
 #endif
 
 #include <glib/gstdio.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/group-mixin.h>
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/svc-channel.h>
-#include <telepathy-glib/svc-generic.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #include "extensions/extensions.h"
 
@@ -136,7 +132,7 @@ enum
 struct _GabbleTubeStreamPrivate
 {
   TpHandle self_handle;
-  guint id;
+  guint64 id;
 
   /* Bytestreams for tubes. One tube can have several bytestreams. The
    * mapping between the tube bytestream and the transport to the local
@@ -471,7 +467,7 @@ start_stream_initiation (GabbleTubeStream *self,
       if (presence == NULL)
         {
           DEBUG ("can't find initiator's presence");
-          g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+          g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
               "can't find initiator's presence");
           return FALSE;
         }
@@ -481,7 +477,7 @@ start_stream_initiation (GabbleTubeStream *self,
       if (resource == NULL)
         {
           DEBUG ("initiator doesn't have tubes capabilities");
-          g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+          g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
               "initiator doesn't have tubes capabilities");
           return FALSE;
         }
@@ -503,7 +499,7 @@ start_stream_initiation (GabbleTubeStream *self,
       wocky_stanza_get_top_node (msg), "si", NS_SI);
   g_assert (si_node != NULL);
 
-  id_str = g_strdup_printf ("%u", priv->id);
+  id_str = g_strdup_printf ("%" G_GUINT64_FORMAT, priv->id);
 
   if (cls->target_handle_type == TP_HANDLE_TYPE_CONTACT)
     {
@@ -1235,7 +1231,7 @@ gabble_tube_stream_get_property (GObject *object,
         g_value_set_uint (value, priv->self_handle);
         break;
       case PROP_ID:
-        g_value_set_uint (value, priv->id);
+        g_value_set_uint64 (value, priv->id);
         break;
       case PROP_TYPE:
         g_value_set_uint (value, TP_TUBE_TYPE_STREAM);
@@ -1289,7 +1285,7 @@ gabble_tube_stream_set_property (GObject *object,
         priv->self_handle = g_value_get_uint (value);
         break;
       case PROP_ID:
-        priv->id = g_value_get_uint (value);
+        priv->id = g_value_get_uint64 (value);
         break;
       case PROP_SERVICE:
         g_free (priv->service);
@@ -1401,7 +1397,7 @@ gabble_tube_stream_get_object_path_suffix (TpBaseChannel *base)
 {
   GabbleTubeStream *self = GABBLE_TUBE_STREAM (base);
 
-  return g_strdup_printf ("StreamTubeChannel/%u/%u",
+  return g_strdup_printf ("StreamTubeChannel/%u/%" G_GUINT64_FORMAT,
       tp_base_channel_get_target_handle (base),
       self->priv->id);
 }
@@ -1620,7 +1616,7 @@ gabble_tube_stream_new (GabbleConnection *conn,
                         TpHandle initiator,
                         const gchar *service,
                         GHashTable *parameters,
-                        guint id,
+                        guint64 id,
                         GabbleMucChannel *muc,
                         gboolean requested)
 {
@@ -1665,7 +1661,7 @@ gabble_tube_stream_accept (GabbleTubeIface *tube,
 
   if (priv->state != TP_TUBE_CHANNEL_STATE_LOCAL_PENDING)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Tube is not in the local pending state");
       goto fail;
     }
@@ -1725,7 +1721,7 @@ gabble_tube_iface_stream_close (GabbleTubeIface *tube,
 
       jid = tp_handle_inspect (contact_repo,
           tp_base_channel_get_target_handle (base));
-      id_str = g_strdup_printf ("%u", priv->id);
+      id_str = g_strdup_printf ("%" G_GUINT64_FORMAT, priv->id);
 
       /* Send the close message */
       msg = wocky_stanza_build (WOCKY_STANZA_TYPE_MESSAGE,
@@ -1749,6 +1745,9 @@ gabble_tube_iface_stream_close (GabbleTubeIface *tube,
    * declare ourselves as destroyed. This is rubbish, but will
    * disappear when we finally remove the Tubes channel type.. */
   g_object_ref (self);
+
+  if (cls->target_handle_type == TP_HANDLE_TYPE_ROOM)
+    gabble_muc_channel_send_presence (priv->muc);
 
   g_signal_emit (G_OBJECT (self), signals[CLOSED], 0);
 
@@ -1861,7 +1860,7 @@ check_unix_params (TpSocketAddressType address_type,
     {
       if (G_VALUE_TYPE (address) != DBUS_TYPE_G_UCHAR_ARRAY)
         {
-          g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+          g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
               "Unix socket address is supposed to be ay");
           return FALSE;
         }
@@ -1870,7 +1869,7 @@ check_unix_params (TpSocketAddressType address_type,
 
       if (array->len > sizeof (dummy.sun_path) - 1)
         {
-          g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+          g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
               "Unix socket path is too long (max length allowed: %"
               G_GSIZE_FORMAT ")",
               sizeof (dummy.sun_path) - 1);
@@ -1881,7 +1880,7 @@ check_unix_params (TpSocketAddressType address_type,
         {
           if (g_array_index (array, gchar , i) == '\0')
             {
-              g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+              g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
                   "Unix socket path can't contain zero bytes");
               return FALSE;
             }
@@ -1893,7 +1892,7 @@ check_unix_params (TpSocketAddressType address_type,
       {
         DEBUG ("Error calling stat on socket: %s", g_strerror (errno));
 
-        g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT, "%s: %s",
+        g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT, "%s: %s",
             socket_address->str, g_strerror (errno));
         g_string_free (socket_address, TRUE);
         return FALSE;
@@ -1903,7 +1902,7 @@ check_unix_params (TpSocketAddressType address_type,
       {
         DEBUG ("%s is not a socket", socket_address->str);
 
-        g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+        g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
             "%s is not a socket", socket_address->str);
         g_string_free (socket_address, TRUE);
         return FALSE;
@@ -1919,7 +1918,7 @@ check_unix_params (TpSocketAddressType address_type,
     return TRUE;
   }
 
-  g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+  g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
       "%u socket access control is not supported", access_control);
   return FALSE;
 }
@@ -1944,7 +1943,7 @@ check_ip_params (TpSocketAddressType address_type,
         {
           if (G_VALUE_TYPE (address) != TP_STRUCT_TYPE_SOCKET_ADDRESS_IPV4)
             {
-              g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+              g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
                   "IPv4 socket address is supposed to be sq");
               return FALSE;
             }
@@ -1953,7 +1952,7 @@ check_ip_params (TpSocketAddressType address_type,
         {
           if (G_VALUE_TYPE (address) != TP_STRUCT_TYPE_SOCKET_ADDRESS_IPV6)
             {
-              g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+              g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
                   "IPv6 socket address is supposed to be sq");
               return FALSE;
             }
@@ -1981,7 +1980,7 @@ check_ip_params (TpSocketAddressType address_type,
       ret = getaddrinfo (ip, NULL, &req, &result);
       if (ret != 0)
         {
-          g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+          g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
               "Invalid address: %s", gai_strerror (ret));
           g_free (ip);
           return FALSE;
@@ -2002,7 +2001,7 @@ check_ip_params (TpSocketAddressType address_type,
           if (G_VALUE_TYPE (access_control_param) !=
               TP_STRUCT_TYPE_SOCKET_ADDRESS_IPV4)
             {
-              g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+              g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
                   "Port access param is supposed to be sq");
               return FALSE;
             }
@@ -2010,7 +2009,7 @@ check_ip_params (TpSocketAddressType address_type,
       return TRUE;
     }
 
-  g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+  g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
       "%u socket access control is not supported", access_control);
   return FALSE;
 }
@@ -2040,7 +2039,7 @@ gabble_tube_stream_check_params (TpSocketAddressType address_type,
             access_control_param, error);
 
       default:
-        g_set_error (error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
+        g_set_error (error, TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
             "Address type %d not implemented", address_type);
         return FALSE;
     }
@@ -2077,7 +2076,7 @@ send_tube_offer (GabbleTubeStream *self,
   if (presence == NULL)
     {
       DEBUG ("can't find tube recipient's presence");
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "can't find tube recipient's presence");
       return FALSE;
     }
@@ -2087,7 +2086,7 @@ send_tube_offer (GabbleTubeStream *self,
   if (resource == NULL)
     {
       DEBUG ("tube recipient doesn't have tubes capabilities");
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "tube recipient doesn't have tubes capabilities");
       return FALSE;
     }
@@ -2141,6 +2140,8 @@ gabble_tube_stream_offer (GabbleTubeStream *self,
       /* muc tube is open as soon it's offered */
       priv->state = TP_TUBE_CHANNEL_STATE_OPEN;
       g_signal_emit (G_OBJECT (self), signals[OPENED], 0);
+
+      gabble_muc_channel_send_presence (priv->muc);
     }
 
   g_signal_emit (G_OBJECT (self), signals[OFFERED], 0);
@@ -2239,7 +2240,7 @@ gabble_tube_stream_offer_async (TpSvcChannelTypeStreamTube *iface,
 
   if (priv->state != TP_TUBE_CHANNEL_STATE_NOT_OFFERED)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (&error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Tube is not in the not offered state");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
