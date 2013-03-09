@@ -29,14 +29,13 @@
 #include <telepathy-glib/telepathy-glib.h>
 #include <telepathy-glib/telepathy-glib-dbus.h>
 
+#include <wocky/wocky.h>
+
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
 
 #include "gabble/caps-channel-manager.h"
 #include "connection.h"
 #include "debug.h"
-#include "jingle-factory.h"
-#include "jingle-media-rtp.h"
-#include "jingle-session.h"
 
 #include "call-channel.h"
 #include "media-channel.h"
@@ -261,7 +260,7 @@ media_channel_closed_cb (GabbleMediaChannel *chan, gpointer user_data)
  */
 static GabbleMediaChannel *
 new_media_channel (GabbleMediaFactory *fac,
-                   GabbleJingleSession *sess,
+                   WockyJingleSession *sess,
                    TpHandle maybe_peer,
                    gboolean peer_in_rp,
                    gboolean initial_audio,
@@ -278,7 +277,7 @@ new_media_channel (GabbleMediaFactory *fac,
   conn = (TpBaseConnection *) priv->conn;
 
   object_path = g_strdup_printf ("%s/MediaChannel%u",
-      conn->object_path, priv->channel_index);
+      tp_base_connection_get_object_path (conn), priv->channel_index);
   priv->channel_index += 1;
 
   chan = g_object_new (GABBLE_TYPE_MEDIA_CHANNEL,
@@ -360,7 +359,7 @@ call_channel_initialized (GObject *source,
  */
 static void
 new_call_channel (GabbleMediaFactory *self,
-  GabbleJingleSession *sess,
+  WockyJingleSession *sess,
   TpHandle peer,
   gboolean initial_audio,
   const gchar *initial_audio_name,
@@ -377,10 +376,10 @@ new_call_channel (GabbleMediaFactory *self,
   if (sess != NULL)
     initiator = peer;
   else
-    initiator = conn->self_handle;
+    initiator = tp_base_connection_get_self_handle (conn);
 
   object_path = g_strdup_printf ("%s/CallChannel%u",
-    conn->object_path, self->priv->channel_index);
+    tp_base_connection_get_object_path (conn), self->priv->channel_index);
   self->priv->channel_index++;
 
   channel = g_object_new (GABBLE_TYPE_CALL_CHANNEL,
@@ -442,7 +441,7 @@ gabble_media_factory_close_all (GabbleMediaFactory *fac)
 
 static void
 new_jingle_session_cb (GabbleJingleMint *jm,
-    GabbleJingleSession *sess,
+    WockyJingleSession *sess,
     gpointer data)
 {
   GabbleMediaFactory *self = GABBLE_MEDIA_FACTORY (data);
@@ -450,8 +449,8 @@ new_jingle_session_cb (GabbleJingleMint *jm,
   TpHandleRepoIface *contacts;
   TpHandle peer;
 
-  if (gabble_jingle_session_get_content_type (sess) !=
-      GABBLE_TYPE_JINGLE_MEDIA_RTP)
+  if (wocky_jingle_session_get_content_type (sess) !=
+      WOCKY_TYPE_JINGLE_MEDIA_RTP)
     return;
 
   if (gabble_muc_factory_handle_jingle_session (priv->conn->muc_factory, sess))
@@ -462,7 +461,7 @@ new_jingle_session_cb (GabbleJingleMint *jm,
 
   contacts = tp_base_connection_get_handles (TP_BASE_CONNECTION (priv->conn),
       TP_HANDLE_TYPE_CONTACT);
-  peer = tp_handle_ensure (contacts, gabble_jingle_session_get_peer_jid (sess),
+  peer = tp_handle_ensure (contacts, wocky_jingle_session_get_peer_jid (sess),
       NULL, NULL);
 
   if (self->priv->use_call_channels)
@@ -481,11 +480,11 @@ new_jingle_session_cb (GabbleJingleMint *jm,
 
       /* FIXME: we need this detection to properly adjust nat-traversal on
        * the channel. We hope all contents will have the same transport... */
-      cs = gabble_jingle_session_get_contents (sess);
+      cs = wocky_jingle_session_get_contents (sess);
 
       if (cs != NULL)
         {
-          GabbleJingleContent *c = cs->data;
+          WockyJingleContent *c = cs->data;
           gchar *ns;
 
           g_object_get (c, "transport-ns", &ns, NULL);
@@ -1124,14 +1123,6 @@ _gabble_media_factory_typeflags_to_caps (TpChannelMediaCapabilities flags,
 }
 
 static void
-gabble_media_factory_reset_caps (GabbleCapsChannelManager *manager)
-{
-  GabbleMediaFactory *self = GABBLE_MEDIA_FACTORY (manager);
-
-  self->priv->use_call_channels = FALSE;
-}
-
-static void
 gabble_media_factory_get_contact_caps (GabbleCapsChannelManager *manager,
     TpHandle handle,
     const GabbleCapabilitySet *caps,
@@ -1342,7 +1333,6 @@ caps_channel_manager_iface_init (gpointer g_iface,
 {
   GabbleCapsChannelManagerInterface *iface = g_iface;
 
-  iface->reset_caps = gabble_media_factory_reset_caps;
   iface->get_contact_caps = gabble_media_factory_get_contact_caps;
   iface->represent_client = gabble_media_factory_represent_client;
 }

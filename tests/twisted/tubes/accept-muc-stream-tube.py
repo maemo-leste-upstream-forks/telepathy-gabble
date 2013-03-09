@@ -4,15 +4,14 @@ import sys
 
 import dbus
 
-from servicetest import call_async, EventPattern, EventProtocolClientFactory, unwrap, assertEquals
-from gabbletest import make_result_iq, acknowledge_iq, make_muc_presence, send_error_reply, disconnect_conn
+from servicetest import call_async, EventPattern, assertEquals, assertSameSets
+from gabbletest import acknowledge_iq, make_muc_presence, send_error_reply, disconnect_conn
 import constants as cs
 import ns
 import tubetestutil as t
 from bytestream import create_from_si_offer, announce_socks5_proxy, BytestreamS5BRelay, BytestreamS5BRelayBugged
 
 from twisted.words.xish import xpath
-from twisted.internet import reactor
 
 sample_parameters = dbus.Dictionary({
     's': 'hello',
@@ -128,7 +127,8 @@ def test(q, bus, conn, stream, bytestream_cls,
     assert props[cs.CHANNEL_TYPE] == cs.CHANNEL_TYPE_STREAM_TUBE
     assert props[cs.INITIATOR_HANDLE] == bob_handle
     assert props[cs.INITIATOR_ID] == 'chat@conf.localhost/bob'
-    assert props[cs.INTERFACES] == [cs.CHANNEL_IFACE_GROUP, cs.CHANNEL_IFACE_TUBE]
+    assertSameSets([cs.CHANNEL_IFACE_GROUP, cs.CHANNEL_IFACE_TUBE],
+            props[cs.INTERFACES])
     assert props[cs.REQUESTED] == False
     assert props[cs.TARGET_HANDLE] == room_handle
     assert props[cs.TARGET_ID] == 'chat@conf.localhost'

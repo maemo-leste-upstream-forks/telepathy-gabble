@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="wocky-wocky-xmpp-reader-enumtypes.html" title="wocky-xmpp-reader-enumtypes">
+<link rel="prev" href="wocky-wocky-xmpp-error.html" title="wocky-xmpp-error">
 <link rel="next" href="wocky-WockyXmppWriter.html" title="WockyXmppWriter">
 <meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -14,7 +14,7 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="wocky-wocky-xmpp-reader-enumtypes.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="wocky-wocky-xmpp-error.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Wocky Reference Manual</th>
@@ -48,6 +48,7 @@ enum                <a class="link" href="wocky-WockyXmppReader.html#WockyXmppRe
 <a class="link" href="wocky-WockyXmppReader.html#WockyXmppReaderState"><span class="returnvalue">WockyXmppReaderState</span></a> <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-get-state" title="wocky_xmpp_reader_get_state ()">wocky_xmpp_reader_get_state</a>        (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);
 <span class="returnvalue">WockyXmppReader</span> *   <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-new" title="wocky_xmpp_reader_new ()">wocky_xmpp_reader_new</a>               (<em class="parameter"><code><span class="type">void</span></code></em>);
 <span class="returnvalue">WockyXmppReader</span> *   <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-new-no-stream" title="wocky_xmpp_reader_new_no_stream ()">wocky_xmpp_reader_new_no_stream</a>     (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">WockyXmppReader</span> *   <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-new-no-stream-ns" title="wocky_xmpp_reader_new_no_stream_ns ()">wocky_xmpp_reader_new_no_stream_ns</a>  (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *default_namespace</code></em>);
 <span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-peek-stanza" title="wocky_xmpp_reader_peek_stanza ()">wocky_xmpp_reader_peek_stanza</a>       (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);
 <span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-pop-stanza" title="wocky_xmpp_reader_pop_stanza ()">wocky_xmpp_reader_pop_stanza</a>        (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-push" title="wocky_xmpp_reader_push ()">wocky_xmpp_reader_push</a>              (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>,
@@ -247,6 +248,29 @@ mode disabled.
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>a new <span class="type">WockyXmppReader</span> in non-streaming mode</td>
 </tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-reader-new-no-stream-ns"></a><h3>wocky_xmpp_reader_new_no_stream_ns ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyXmppReader</span> *   wocky_xmpp_reader_new_no_stream_ns  (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *default_namespace</code></em>);</pre>
+<p>
+Create a new <span class="type">WockyXmppReader</span>, with <span class="type">"streaming-mode"</span> disabled
+and the specified <span class="type">"default-namespace"</span>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>default_namespace</code></em> :</span></p></td>
+<td>default XML namespace to apply to the top-level element</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new <span class="type">WockyXmppReader</span> in non-streaming mode. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
 </table></div>
 </div>
 <hr>

@@ -34,7 +34,6 @@
 
 #define DEBUG_FLAG GABBLE_DEBUG_TUBES
 
-#include "base64.h"
 #include "bytestream-factory.h"
 #include "bytestream-ibb.h"
 #include "bytestream-iface.h"
@@ -70,11 +69,6 @@ G_DEFINE_TYPE_WITH_CODE (GabbleTubeDBus, gabble_tube_dbus,
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CHANNEL_INTERFACE_GROUP,
       tp_external_group_mixin_iface_init);
 );
-
-static const gchar *gabble_tube_dbus_interfaces[] = {
-    TP_IFACE_CHANNEL_INTERFACE_TUBE,
-    NULL
-};
 
 static const gchar * const gabble_tube_dbus_channel_allowed_properties[] = {
     TP_IFACE_CHANNEL ".TargetHandle",
@@ -160,6 +154,19 @@ struct _GabbleTubeDBusPrivate
 };
 
 #define GABBLE_TUBE_DBUS_GET_PRIVATE(obj) ((obj)->priv)
+
+static GPtrArray *
+gabble_tube_dbus_get_interfaces (TpBaseChannel *base)
+{
+  GPtrArray *interfaces;
+
+  interfaces = TP_BASE_CHANNEL_CLASS (
+      gabble_tube_dbus_parent_class)->get_interfaces (base);
+
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_TUBE);
+
+  return interfaces;
+}
 
 static void data_received_cb (GabbleBytestreamIface *stream, TpHandle sender,
     GString *data, gpointer user_data);
@@ -872,7 +879,7 @@ gabble_tube_dbus_class_init (GabbleTubeDBusClass *gabble_tube_dbus_class)
   object_class->finalize = gabble_tube_dbus_finalize;
 
   base_class->channel_type = TP_IFACE_CHANNEL_TYPE_DBUS_TUBE;
-  base_class->interfaces = gabble_tube_dbus_interfaces;
+  base_class->get_interfaces = gabble_tube_dbus_get_interfaces;
   base_class->target_handle_type = TP_HANDLE_TYPE_CONTACT;
   base_class->close = gabble_tube_dbus_close;
   base_class->fill_immutable_properties =
@@ -993,7 +1000,6 @@ gabble_tube_dbus_class_init (GabbleTubeDBusClass *gabble_tube_dbus_class)
 
 static void
 bytestream_negotiate_cb (GabbleBytestreamIface *bytestream,
-                         const gchar *stream_id,
                          WockyStanza *msg,
                          GObject *object,
                          gpointer user_data)
@@ -1042,7 +1048,6 @@ gabble_tube_dbus_offer (GabbleTubeDBus *tube,
       GabblePresence *presence;
       WockyNode *tube_node, *si_node;
       WockyStanza *msg;
-      gboolean result;
 
       jid = tp_handle_inspect (contact_repo,
           tp_base_channel_get_target_handle (base));
@@ -1075,28 +1080,22 @@ gabble_tube_dbus_offer (GabbleTubeDBus *tube,
           wocky_stanza_get_top_node (msg), "si", NS_SI);
       g_assert (si_node != NULL);
 
-      tube_node = wocky_node_add_child_with_content (si_node, "tube", NULL);
-      tube_node->ns = g_quark_from_string (NS_TUBES);
+      tube_node = wocky_node_add_child_ns (si_node, "tube", NS_TUBES);
       gabble_tube_iface_publish_in_node (GABBLE_TUBE_IFACE (tube),
           base_conn, tube_node);
 
       tube->priv->offered = TRUE;
-      result = gabble_bytestream_factory_negotiate_stream (
+      gabble_bytestream_factory_negotiate_stream (
           conn->bytestream_factory, msg, priv->stream_id,
-          bytestream_negotiate_cb, tube, G_OBJECT (tube), error);
+          bytestream_negotiate_cb, tube, G_OBJECT (tube));
 
       /* We don't create the bytestream of private D-Bus tube yet.
        * It will be when we'll receive the answer of the SI request */
-
       g_object_unref (msg);
       g_free (full_jid);
 
-      if (!result)
-        return FALSE;
-
       tp_svc_channel_interface_tube_emit_tube_channel_state_changed (tube,
           TP_TUBE_CHANNEL_STATE_REMOTE_PENDING);
-
     }
   else
     {
@@ -1374,10 +1373,7 @@ static void
 augment_si_accept_iq (WockyNode *si,
                       gpointer user_data)
 {
-  WockyNode *tube_node;
-
-  tube_node = wocky_node_add_child_with_content (si, "tube", "");
-  tube_node->ns = g_quark_from_string (NS_TUBES);
+  wocky_node_add_child_ns (si, "tube", NS_TUBES);
 }
 
 /*
@@ -1590,7 +1586,7 @@ _gabble_generate_dbus_unique_name (const gchar *nick)
 
   if (len <= 186)
     {
-      encoded = base64_encode (len, nick, FALSE);
+      encoded = g_base64_encode ((const guchar *) nick, len);
     }
   else
     {
@@ -1603,7 +1599,7 @@ _gabble_generate_dbus_unique_name (const gchar *nick)
       g_string_append_len (tmp, nick, 169);
       g_string_append_len (tmp, (const gchar *) sha1, 20);
 
-      encoded = base64_encode (tmp->len, tmp->str, FALSE);
+      encoded = g_base64_encode ((const guchar *) tmp->str, tmp->len);
 
       g_string_free (tmp, TRUE);
     }

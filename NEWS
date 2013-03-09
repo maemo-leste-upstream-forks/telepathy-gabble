@@ -1,3 +1,73 @@
+telepathy-gabble 0.17.3 (2013-03-01)
+====================================
+
+The “less resplendent backup ruffs” release. This includes the fixes
+from telepathy-gabble 0.16.5, including fixing a remotely-triggered
+denial-of-service bug. You should upgrade.
+
+Fixes:
+
+• fd.o#57521: don't crash when the server sends back malformed or error
+  replies to privacy list queries. (wjt)
+
+• fd.o#61433: don't crash on weirdly-shaped data forms in caps query
+  replies. This issue is tracked as CVE-2013-1769. Unfortunately, this
+  bug can be triggered by any XMPP user who knows your bare JID, not
+  just by people you've authorized to see your presence. Fortunately, it
+  is just a NULL pointer dereference, rather than allowing the attacker
+  to do anything more nefarious like execute code. (wjt)
+
+• fd.o#43166: handle rate-limiting by MUCs better, including disabling
+  typing notifications if we get rate-limited, and including the error
+  message from the server in the D-Bus signal so that the user interface
+  could, in principle, show it to the user. (wjt)
+
+Enhancements:
+
+• fd.o#58198: the Jingle protocol code now lives in Wocky. This should make no
+  functional difference to Gabble. (wjt)
+
+
+telepathy-gabble 0.17.2 (2012-12-07)
+====================================
+
+Hooray! Hooray! Hooray!
+
+Dependencies:
+
+• telepathy-glib 0.19.9 is now required.
+
+Enhancements:
+
+• fd.o#54760, fd.o#57080: Gabble now uses GLib's base64 implementation
+  rather than including its own.  (Heiher, Alban Browaeys)
+
+• fd.o#25961, fd.o#25385: Gabble now looks up a STUN server from the
+  _stun._udp SRV record for the user's domain. (Maiku, wjt)
+
+• fd.o#47378: XEP-0184 delivery reports are now supported. Note that
+  Empathy neither requests nor displays them. (wjt)
+
+Fixes:
+
+• fd.o#56181: don't inadvertantly disable creating Call1 channels. (rishi)
+
+• fd.o#52362: hopefully, don't crash if we disconnect in the middle of trying
+  to change our Google Talk presence. (wjt)
+
+• The Jingle code now sends back unknown-session errors correctly, as
+  mentioned on fd.o#33789. (wjt)
+
+• fd.o#57267: File transfer channels now include FileTransfer.FUTURE and
+  FileTransfer.METADATA in their Interfaces property (Daniele
+  Domenichelli)
+
+• fd.o#57521: Don't crash when connecting to the League of Legends XMPP
+  server. (wjt)
+
+• fd.o#52146: Don't crash in sympathy if the auth channel handler
+  crashes. (wjt)
+
 telepathy-gabble 0.17.1 (2012-09-11)
 ====================================
 

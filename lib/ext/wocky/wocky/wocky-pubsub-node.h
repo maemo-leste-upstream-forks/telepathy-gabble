@@ -26,7 +26,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include "wocky-pubsub-node-enumtypes.h"
+#include "wocky-enumtypes.h"
 #include "wocky-types.h"
 #include "wocky-session.h"
 #include "wocky-pubsub-service.h"
@@ -170,7 +170,7 @@ gboolean wocky_pubsub_node_list_affiliates_finish (
 
 void wocky_pubsub_node_modify_affiliates_async (
     WockyPubsubNode *self,
-    const GList *affiliates,
+    GList *affiliates,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data);

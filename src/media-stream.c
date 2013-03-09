@@ -36,9 +36,6 @@
 #include "connection.h"
 #include "debug.h"
 #include "gabble-signals-marshal.h"
-#include "jingle-content.h"
-#include "jingle-session.h"
-#include "jingle-media-rtp.h"
 #include "media-channel.h"
 #include "namespaces.h"
 #include "util.h"
@@ -90,9 +87,8 @@ enum
 
 struct _GabbleMediaStreamPrivate
 {
-  GabbleJingleContent *content;
+  WockyJingleContent *content;
 
-  GabbleMediaSessionMode mode;
   TpDBusDaemon *dbus_daemon;
   gchar *object_path;
   guint id;
@@ -140,26 +136,26 @@ static void push_remote_candidates (GabbleMediaStream *stream);
 static void push_playing (GabbleMediaStream *stream);
 static void push_sending (GabbleMediaStream *stream);
 
-static void new_remote_candidates_cb (GabbleJingleContent *content,
+static void new_remote_candidates_cb (WockyJingleContent *content,
     GList *clist, GabbleMediaStream *stream);
-static void new_remote_media_description_cb (GabbleJingleContent *content,
-    JingleMediaDescription *md, GabbleMediaStream *stream);
-static void content_state_changed_cb (GabbleJingleContent *c,
+static void new_remote_media_description_cb (WockyJingleContent *content,
+    WockyJingleMediaDescription *md, GabbleMediaStream *stream);
+static void content_state_changed_cb (WockyJingleContent *c,
      GParamSpec *pspec, GabbleMediaStream *stream);
-static void content_senders_changed_cb (GabbleJingleContent *c,
+static void content_senders_changed_cb (WockyJingleContent *c,
      GParamSpec *pspec, GabbleMediaStream *stream);
-static void remote_state_changed_cb (GabbleJingleSession *session,
+static void remote_state_changed_cb (WockyJingleSession *session,
     GabbleMediaStream *stream);
-static void content_removed_cb (GabbleJingleContent *content,
+static void content_removed_cb (WockyJingleContent *content,
       GabbleMediaStream *stream);
-static void update_direction (GabbleMediaStream *stream, GabbleJingleContent *c);
+static void update_direction (GabbleMediaStream *stream, WockyJingleContent *c);
 static void update_sending (GabbleMediaStream *stream, gboolean start_sending);
 
 GabbleMediaStream *
 gabble_media_stream_new (
     TpDBusDaemon *dbus_daemon,
     const gchar *object_path,
-    GabbleJingleContent *content,
+    WockyJingleContent *content,
     const gchar *name,
     guint id,
     const gchar *nat_traversal,
@@ -169,7 +165,7 @@ gabble_media_stream_new (
   GPtrArray *empty = NULL;
   GabbleMediaStream *result;
 
-  g_return_val_if_fail (GABBLE_IS_JINGLE_MEDIA_RTP (content), NULL);
+  g_return_val_if_fail (WOCKY_IS_JINGLE_MEDIA_RTP (content), NULL);
 
   if (relay_info == NULL)
     {
@@ -241,13 +237,13 @@ _get_initial_codecs_and_candidates (gpointer user_data)
 {
   GabbleMediaStream *stream = GABBLE_MEDIA_STREAM (user_data);
   GabbleMediaStreamPrivate *priv = stream->priv;
-  JingleMediaDescription *md;
+  WockyJingleMediaDescription *md;
 
   priv->initial_getter_id = 0;
 
   /* we can immediately get the codecs if we're responder */
-  md = gabble_jingle_media_rtp_get_remote_media_description (
-      GABBLE_JINGLE_MEDIA_RTP (priv->content));
+  md = wocky_jingle_media_rtp_get_remote_media_description (
+      WOCKY_JINGLE_MEDIA_RTP (priv->content));
   if (md != NULL)
     new_remote_media_description_cb (priv->content, md, stream);
 
@@ -255,7 +251,7 @@ _get_initial_codecs_and_candidates (gpointer user_data)
    * us (e.g. specified in session-initiate/content-add), we don't want to
    * miss them */
   new_remote_candidates_cb (priv->content,
-      gabble_jingle_content_get_remote_candidates (priv->content), stream);
+      wocky_jingle_content_get_remote_candidates (priv->content), stream);
 
   return FALSE;
 }
@@ -267,9 +263,8 @@ gabble_media_stream_constructor (GType type, guint n_props,
   GObject *obj;
   GabbleMediaStream *stream;
   GabbleMediaStreamPrivate *priv;
-  GabbleJingleFactory *jf;
-  gchar *stun_server;
-  guint stun_port;
+  WockyJingleFactory *jf;
+  GList *stun_servers;
 
   /* call base class constructor */
   obj = G_OBJECT_CLASS (gabble_media_stream_parent_class)->
@@ -282,22 +277,20 @@ gabble_media_stream_constructor (GType type, guint n_props,
   /* STUN servers are needed as soon as the stream appears, so there's little
    * point in waiting for them - either they've already been resolved, or
    * we're too late to use them for this stream */
-  jf = gabble_jingle_session_get_factory (priv->content->session);
-
-  /* maybe one day we'll support multiple STUN servers */
-  if (gabble_jingle_info_get_stun_server (
-        gabble_jingle_factory_get_jingle_info (jf),
-        &stun_server, &stun_port))
+  jf = wocky_jingle_session_get_factory (priv->content->session);
+  stun_servers = wocky_jingle_info_get_stun_servers (
+      wocky_jingle_factory_get_jingle_info (jf));
+  while (stun_servers != NULL)
     {
-      GValueArray *va = g_value_array_new (2);
+      WockyStunServer *stun_server = stun_servers->data;
+      GValueArray *va = tp_value_array_build (2,
+          G_TYPE_STRING, stun_server->address,
+          G_TYPE_UINT, (guint) stun_server->port,
+          G_TYPE_INVALID);
 
-      g_value_array_append (va, NULL);
-      g_value_array_append (va, NULL);
-      g_value_init (va->values + 0, G_TYPE_STRING);
-      g_value_init (va->values + 1, G_TYPE_UINT);
-      g_value_take_string (va->values + 0, stun_server);
-      g_value_set_uint (va->values + 1, stun_port);
       g_ptr_array_add (priv->stun_servers, va);
+
+      stun_servers = g_list_delete_link (stun_servers, stun_servers);
     }
 
   /* go for the bus */
@@ -306,7 +299,7 @@ gabble_media_stream_constructor (GType type, guint n_props,
 
   update_direction (stream, priv->content);
 
-  /* MediaStream is created as soon as GabbleJingleContent is
+  /* MediaStream is created as soon as WockyJingleContent is
    * created, but we want to let it parse the initiation (if
    * initiated by remote end) before we pick up initial
    * codecs and candidates.
@@ -450,7 +443,7 @@ gabble_media_stream_set_property (GObject      *object,
               "locally-created", &locally_created,
               NULL);
 
-          if (jtype == JINGLE_MEDIA_TYPE_VIDEO)
+          if (jtype == WOCKY_JINGLE_MEDIA_TYPE_VIDEO)
             priv->media_type = TP_MEDIA_STREAM_TYPE_VIDEO;
           else
             priv->media_type = TP_MEDIA_STREAM_TYPE_AUDIO;
@@ -625,9 +618,9 @@ gabble_media_stream_class_init (GabbleMediaStreamClass *gabble_media_stream_clas
       G_PARAM_STATIC_NAME | G_PARAM_STATIC_BLURB | G_PARAM_STATIC_NICK);
   g_object_class_install_property (object_class, PROP_LOCAL_HOLD, param_spec);
 
-  param_spec = g_param_spec_object ("content", "GabbleJingleContent object",
+  param_spec = g_param_spec_object ("content", "WockyJingleContent object",
                                     "Jingle content signalling this media stream.",
-                                    GABBLE_TYPE_JINGLE_CONTENT,
+                                    WOCKY_TYPE_JINGLE_CONTENT,
                                     G_PARAM_CONSTRUCT_ONLY |
                                     G_PARAM_READWRITE |
                                     G_PARAM_STATIC_NICK |
@@ -905,7 +898,7 @@ gabble_media_stream_new_native_candidate (TpSvcMediaStreamHandler *iface,
 {
   GabbleMediaStream *self = GABBLE_MEDIA_STREAM (iface);
   GabbleMediaStreamPrivate *priv;
-  JingleState state;
+  WockyJingleState state;
   GList *li = NULL;
   guint i;
 
@@ -917,9 +910,9 @@ gabble_media_stream_new_native_candidate (TpSvcMediaStreamHandler *iface,
 
   /* FIXME: maybe this should be an assertion in case the channel
    * isn't closed early enough right now? */
-  if (state > JINGLE_STATE_ACTIVE)
+  if (state > WOCKY_JINGLE_STATE_ACTIVE)
     {
-      DEBUG ("state > JINGLE_STATE_ACTIVE, doing nothing");
+      DEBUG ("state > WOCKY_JINGLE_STATE_ACTIVE, doing nothing");
       tp_svc_media_stream_handler_return_from_new_native_candidate (context);
       return;
     }
@@ -929,7 +922,7 @@ gabble_media_stream_new_native_candidate (TpSvcMediaStreamHandler *iface,
       GValueArray *transport;
       guint component;
       const gchar *addr;
-      JingleCandidate *c;
+      WockyJingleCandidate *c;
 
       transport = g_ptr_array_index (transports, i);
       component = g_value_get_uint (g_value_array_get_nth (transport, 0));
@@ -949,7 +942,7 @@ gabble_media_stream_new_native_candidate (TpSvcMediaStreamHandler *iface,
           continue;
         }
 
-      c = jingle_candidate_new (
+      c = wocky_jingle_candidate_new (
           /* protocol */
           g_value_get_uint (g_value_array_get_nth (transport, 3)),
           /* candidate type, we're relying on 1:1 candidate type mapping */
@@ -977,7 +970,7 @@ gabble_media_stream_new_native_candidate (TpSvcMediaStreamHandler *iface,
     }
 
   if (li != NULL)
-    gabble_jingle_content_add_candidates (priv->content, li);
+    wocky_jingle_content_add_candidates (priv->content, li);
 
   tp_svc_media_stream_handler_return_from_new_native_candidate (context);
 }
@@ -1038,7 +1031,7 @@ pass_local_codecs (GabbleMediaStream *stream,
 {
   GabbleMediaStreamPrivate *priv = stream->priv;
   guint i;
-  JingleMediaDescription *md;
+  WockyJingleMediaDescription *md;
   const GPtrArray *hdrexts;
   GHashTable *fbs;
   GError *wocky_error = NULL;
@@ -1046,7 +1039,7 @@ pass_local_codecs (GabbleMediaStream *stream,
   DEBUG ("putting list of %d supported codecs from stream-engine into cache",
       codecs->len);
 
-  md = jingle_media_description_new ();
+  md = wocky_jingle_media_description_new ();
 
   fbs = g_value_get_boxed (&priv->local_feedback_messages);
 
@@ -1058,7 +1051,7 @@ pass_local_codecs (GabbleMediaStream *stream,
       guint id, clock_rate, channels;
       gchar *name;
       GHashTable *params;
-      JingleCodec *c;
+      WockyJingleCodec *c;
       GValueArray *fb_codec;
 
       g_value_init (&codec, codec_struct_type);
@@ -1108,7 +1101,7 @@ pass_local_codecs (GabbleMediaStream *stream,
                       subtype = g_value_get_string (val);
 
                       c->feedback_msgs = g_list_append (c->feedback_msgs,
-                          jingle_feedback_message_new (type, subtype));
+                          wocky_jingle_feedback_message_new (type, subtype));
                     }
                 }
             }
@@ -1134,7 +1127,7 @@ pass_local_codecs (GabbleMediaStream *stream,
           GValueArray *hdrext;
           guint id;
           guint direction;
-          JingleContentSenders senders;
+          WockyJingleContentSenders senders;
           gchar *uri;
           gchar *params;
 
@@ -1163,34 +1156,34 @@ pass_local_codecs (GabbleMediaStream *stream,
           switch (direction)
             {
             case TP_MEDIA_STREAM_DIRECTION_BIDIRECTIONAL:
-              senders = JINGLE_CONTENT_SENDERS_BOTH;
+              senders = WOCKY_JINGLE_CONTENT_SENDERS_BOTH;
               break;
             case TP_MEDIA_STREAM_DIRECTION_NONE:
-              senders = JINGLE_CONTENT_SENDERS_NONE;
+              senders = WOCKY_JINGLE_CONTENT_SENDERS_NONE;
               break;
             case TP_MEDIA_STREAM_DIRECTION_SEND:
-              senders = initiated_by_us ? JINGLE_CONTENT_SENDERS_INITIATOR :
-              JINGLE_CONTENT_SENDERS_RESPONDER;
+              senders = initiated_by_us ? WOCKY_JINGLE_CONTENT_SENDERS_INITIATOR :
+              WOCKY_JINGLE_CONTENT_SENDERS_RESPONDER;
               break;
             case TP_MEDIA_STREAM_DIRECTION_RECEIVE:
-              senders = initiated_by_us ? JINGLE_CONTENT_SENDERS_RESPONDER :
-              JINGLE_CONTENT_SENDERS_INITIATOR;
+              senders = initiated_by_us ? WOCKY_JINGLE_CONTENT_SENDERS_RESPONDER :
+              WOCKY_JINGLE_CONTENT_SENDERS_INITIATOR;
               break;
             default:
               g_assert_not_reached ();
             }
 
           md->hdrexts = g_list_append (md->hdrexts,
-              jingle_rtp_header_extension_new (id, senders, uri));
+              wocky_jingle_rtp_header_extension_new (id, senders, uri));
         }
       /* Can only be used once */
       g_value_reset (&priv->local_rtp_hdrexts);
     }
 
-  jingle_media_description_simplify (md);
+  wocky_jingle_media_description_simplify (md);
 
   if (jingle_media_rtp_set_local_media_description (
-          GABBLE_JINGLE_MEDIA_RTP (priv->content), md, ready, &wocky_error))
+          WOCKY_JINGLE_MEDIA_RTP (priv->content), md, ready, &wocky_error))
     return TRUE;
 
   g_set_error_literal (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
@@ -1221,7 +1214,7 @@ gabble_media_stream_set_local_codecs (TpSvcMediaStreamHandler *iface,
 
   priv->local_codecs_set = TRUE;
 
-  if (gabble_jingle_content_is_created_by_us (self->priv->content))
+  if (wocky_jingle_content_is_created_by_us (self->priv->content))
     {
       if (!pass_local_codecs (self, codecs, self->priv->created_locally,
           &error))
@@ -1255,17 +1248,17 @@ gabble_media_stream_stream_state (TpSvcMediaStreamHandler *iface,
 {
   GabbleMediaStream *self = GABBLE_MEDIA_STREAM (iface);
   GabbleMediaStreamPrivate *priv = self->priv;
-  JingleTransportState ts = JINGLE_TRANSPORT_STATE_DISCONNECTED;
+  WockyJingleTransportState ts = WOCKY_JINGLE_TRANSPORT_STATE_DISCONNECTED;
 
   switch (connection_state) {
     case TP_MEDIA_STREAM_STATE_DISCONNECTED:
-      ts = JINGLE_TRANSPORT_STATE_DISCONNECTED;
+      ts = WOCKY_JINGLE_TRANSPORT_STATE_DISCONNECTED;
       break;
     case TP_MEDIA_STREAM_STATE_CONNECTING:
-      ts = JINGLE_TRANSPORT_STATE_CONNECTING;
+      ts = WOCKY_JINGLE_TRANSPORT_STATE_CONNECTING;
       break;
     case TP_MEDIA_STREAM_STATE_CONNECTED:
-      ts = JINGLE_TRANSPORT_STATE_CONNECTED;
+      ts = WOCKY_JINGLE_TRANSPORT_STATE_CONNECTED;
       break;
     default:
       DEBUG ("ignoring unknown connection state %u", connection_state);
@@ -1273,7 +1266,7 @@ gabble_media_stream_stream_state (TpSvcMediaStreamHandler *iface,
   }
 
   g_object_set (self, "connection-state", connection_state, NULL);
-  gabble_jingle_content_set_transport_state (priv->content, ts);
+  wocky_jingle_content_set_transport_state (priv->content, ts);
 
 OUT:
   tp_svc_media_stream_handler_return_from_stream_state (context);
@@ -1435,7 +1428,7 @@ gabble_media_stream_close (GabbleMediaStream *stream)
 }
 
 static void
-insert_feedback_message (JingleFeedbackMessage *fb, GPtrArray *fb_msgs)
+insert_feedback_message (WockyJingleFeedbackMessage *fb, GPtrArray *fb_msgs)
 {
   GValueArray *msg;
 
@@ -1449,8 +1442,8 @@ insert_feedback_message (JingleFeedbackMessage *fb, GPtrArray *fb_msgs)
 }
 
 static void
-new_remote_media_description_cb (GabbleJingleContent *content,
-    JingleMediaDescription *md, GabbleMediaStream *stream)
+new_remote_media_description_cb (WockyJingleContent *content,
+    WockyJingleMediaDescription *md, GabbleMediaStream *stream)
 {
   GabbleMediaStreamPrivate *priv;
   GList *li;
@@ -1509,7 +1502,7 @@ new_remote_media_description_cb (GabbleJingleContent *content,
   for (li = md->codecs; li; li = li->next)
     {
       GValue codec = { 0, };
-      JingleCodec *c = li->data;
+      WockyJingleCodec *c = li->data;
 
       g_value_init (&codec, codec_struct_type);
       g_value_take_boxed (&codec,
@@ -1560,7 +1553,7 @@ new_remote_media_description_cb (GabbleJingleContent *content,
 
   for (li = md->hdrexts; li; li = li->next)
     {
-      JingleRtpHeaderExtension *h = li->data;
+      WockyJingleRtpHeaderExtension *h = li->data;
       TpMediaStreamDirection direction;
 
       if (!have_initiator)
@@ -1572,17 +1565,17 @@ new_remote_media_description_cb (GabbleJingleContent *content,
 
       switch (h->senders)
         {
-        case JINGLE_CONTENT_SENDERS_BOTH:
+        case WOCKY_JINGLE_CONTENT_SENDERS_BOTH:
           direction = TP_MEDIA_STREAM_DIRECTION_BIDIRECTIONAL;
           break;
-        case JINGLE_CONTENT_SENDERS_NONE:
+        case WOCKY_JINGLE_CONTENT_SENDERS_NONE:
           direction = TP_MEDIA_STREAM_DIRECTION_NONE;
           break;
-        case JINGLE_CONTENT_SENDERS_INITIATOR:
+        case WOCKY_JINGLE_CONTENT_SENDERS_INITIATOR:
           direction = initiated_by_us ? TP_MEDIA_STREAM_DIRECTION_SEND :
           TP_MEDIA_STREAM_DIRECTION_RECEIVE;
           break;
-        case JINGLE_CONTENT_SENDERS_RESPONDER:
+        case WOCKY_JINGLE_CONTENT_SENDERS_RESPONDER:
           direction = initiated_by_us ? TP_MEDIA_STREAM_DIRECTION_RECEIVE :
           TP_MEDIA_STREAM_DIRECTION_SEND;
           break;
@@ -1640,7 +1633,7 @@ push_remote_media_description (GabbleMediaStream *stream)
 }
 
 static void
-new_remote_candidates_cb (GabbleJingleContent *content,
+new_remote_candidates_cb (WockyJingleContent *content,
     GList *clist, GabbleMediaStream *stream)
 {
   GabbleMediaStreamPrivate *priv = stream->priv;
@@ -1657,7 +1650,7 @@ new_remote_candidates_cb (GabbleJingleContent *content,
       GValue candidate = { 0, };
       GPtrArray *transports;
       GValue transport = { 0, };
-      JingleCandidate *c = li->data;
+      WockyJingleCandidate *c = li->data;
       GType transport_struct_type = TP_STRUCT_TYPE_MEDIA_STREAM_HANDLER_TRANSPORT;
       GType candidate_struct_type = TP_STRUCT_TYPE_MEDIA_STREAM_HANDLER_CANDIDATE;
 
@@ -1669,7 +1662,7 @@ new_remote_candidates_cb (GabbleJingleContent *content,
           0, c->component,
           1, c->address,
           2, c->port,
-          3, c->protocol == JINGLE_TRANSPORT_PROTOCOL_UDP ? 0 : 1,
+          3, c->protocol == WOCKY_JINGLE_TRANSPORT_PROTOCOL_UDP ? 0 : 1,
           4, "RTP",
           5, "AVP",
           6, (gdouble) (c->preference / 65536.0),
@@ -1707,19 +1700,19 @@ new_remote_candidates_cb (GabbleJingleContent *content,
 }
 
 static void
-content_state_changed_cb (GabbleJingleContent *c,
+content_state_changed_cb (WockyJingleContent *c,
                           GParamSpec *pspec,
                           GabbleMediaStream *stream)
 {
   GabbleMediaStreamPrivate *priv = stream->priv;
-  JingleContentState state;
+  WockyJingleContentState state;
 
   g_object_get (c, "state", &state, NULL);
 
   DEBUG ("called");
 
   switch (state) {
-    case JINGLE_CONTENT_STATE_ACKNOWLEDGED:
+    case WOCKY_JINGLE_CONTENT_STATE_ACKNOWLEDGED:
       /* connected stream means we can play, but sending is determined
        * by content senders (in update_senders) */
       stream->playing = TRUE;
@@ -1727,7 +1720,7 @@ content_state_changed_cb (GabbleJingleContent *c,
       push_playing (stream);
       push_sending (stream);
       break;
-    case JINGLE_CONTENT_STATE_REMOVING:
+    case WOCKY_JINGLE_CONTENT_STATE_REMOVING:
       stream->playing = FALSE;
       priv->sending = FALSE;
       push_playing (stream);
@@ -1819,12 +1812,12 @@ push_sending (GabbleMediaStream *stream)
 }
 
 static void
-update_direction (GabbleMediaStream *stream, GabbleJingleContent *c)
+update_direction (GabbleMediaStream *stream, WockyJingleContent *c)
 {
   CombinedStreamDirection new_combined_dir;
   TpMediaStreamDirection requested_dir, current_dir;
   TpMediaStreamPendingSend pending_send;
-  JingleContentSenders senders;
+  WockyJingleContentSenders senders;
   gboolean local_initiator;
 
   DEBUG ("called");
@@ -1833,15 +1826,15 @@ update_direction (GabbleMediaStream *stream, GabbleJingleContent *c)
   g_object_get (c->session, "local-initiator", &local_initiator, NULL);
 
   switch (senders) {
-      case JINGLE_CONTENT_SENDERS_INITIATOR:
+      case WOCKY_JINGLE_CONTENT_SENDERS_INITIATOR:
         requested_dir = local_initiator ?
           TP_MEDIA_STREAM_DIRECTION_SEND : TP_MEDIA_STREAM_DIRECTION_RECEIVE;
         break;
-      case JINGLE_CONTENT_SENDERS_RESPONDER:
+      case WOCKY_JINGLE_CONTENT_SENDERS_RESPONDER:
         requested_dir = local_initiator ?
           TP_MEDIA_STREAM_DIRECTION_RECEIVE : TP_MEDIA_STREAM_DIRECTION_SEND;
         break;
-      case JINGLE_CONTENT_SENDERS_BOTH:
+      case WOCKY_JINGLE_CONTENT_SENDERS_BOTH:
         requested_dir = TP_MEDIA_STREAM_DIRECTION_BIDIRECTIONAL;
         break;
       default:
@@ -1873,7 +1866,7 @@ update_direction (GabbleMediaStream *stream, GabbleJingleContent *c)
 }
 
 static void
-content_senders_changed_cb (GabbleJingleContent *c,
+content_senders_changed_cb (WockyJingleContent *c,
                             GParamSpec *pspec,
                             GabbleMediaStream *stream)
 {
@@ -1881,20 +1874,20 @@ content_senders_changed_cb (GabbleJingleContent *c,
 }
 
 static void
-remote_state_changed_cb (GabbleJingleSession *session,
+remote_state_changed_cb (WockyJingleSession *session,
     GabbleMediaStream *stream)
 {
   GabbleMediaStreamPrivate *priv = stream->priv;
   gboolean old_hold = priv->on_hold;
 
-  priv->on_hold = gabble_jingle_session_get_remote_hold (session);
+  priv->on_hold = wocky_jingle_session_get_remote_hold (session);
 
   if (old_hold != priv->on_hold)
     push_sending (stream);
 }
 
 static void
-content_removed_cb (GabbleJingleContent *content, GabbleMediaStream *stream)
+content_removed_cb (WockyJingleContent *content, GabbleMediaStream *stream)
 {
   gabble_media_stream_close (stream);
 }
@@ -1908,7 +1901,7 @@ gabble_media_stream_change_direction (GabbleMediaStream *stream,
   CombinedStreamDirection new_combined_dir;
   TpMediaStreamDirection current_dir;
   TpMediaStreamPendingSend pending_send;
-  JingleContentSenders senders;
+  WockyJingleContentSenders senders;
   gboolean local_initiator;
 
   current_dir = COMBINED_DIRECTION_GET_DIRECTION (stream->combined_direction);
@@ -1930,7 +1923,7 @@ gabble_media_stream_change_direction (GabbleMediaStream *stream,
   new_combined_dir = MAKE_COMBINED_DIRECTION (requested_dir, pending_send);
   if (new_combined_dir != stream->combined_direction)
     {
-      JingleContentState state;
+      WockyJingleContentState state;
       gboolean start_sending;
 
       g_object_set (stream, "combined-direction", new_combined_dir, NULL);
@@ -1941,7 +1934,7 @@ gabble_media_stream_change_direction (GabbleMediaStream *stream,
        * This appears to be the meaning of Acknowledged. :-)
        */
       g_object_get (stream->priv->content, "state", &state, NULL);
-      start_sending = (state == JINGLE_CONTENT_STATE_ACKNOWLEDGED);
+      start_sending = (state == WOCKY_JINGLE_CONTENT_STATE_ACKNOWLEDGED);
 
       update_sending (stream, start_sending);
     }
@@ -1958,23 +1951,23 @@ gabble_media_stream_change_direction (GabbleMediaStream *stream,
     {
       case TP_MEDIA_STREAM_DIRECTION_SEND:
         senders = local_initiator ?
-          JINGLE_CONTENT_SENDERS_INITIATOR : JINGLE_CONTENT_SENDERS_RESPONDER;
+          WOCKY_JINGLE_CONTENT_SENDERS_INITIATOR : WOCKY_JINGLE_CONTENT_SENDERS_RESPONDER;
         break;
 
       case TP_MEDIA_STREAM_DIRECTION_RECEIVE:
         senders = local_initiator ?
-          JINGLE_CONTENT_SENDERS_RESPONDER : JINGLE_CONTENT_SENDERS_INITIATOR;
+          WOCKY_JINGLE_CONTENT_SENDERS_RESPONDER : WOCKY_JINGLE_CONTENT_SENDERS_INITIATOR;
         break;
 
       case TP_MEDIA_STREAM_DIRECTION_BIDIRECTIONAL:
-        senders = JINGLE_CONTENT_SENDERS_BOTH;
+        senders = WOCKY_JINGLE_CONTENT_SENDERS_BOTH;
         break;
 
       default:
         g_assert_not_reached ();
     }
 
-  if (!gabble_jingle_content_change_direction (priv->content, senders))
+  if (!wocky_jingle_content_change_direction (priv->content, senders))
     {
       g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "stream direction invalid for the Jingle dialect in use");
@@ -2051,13 +2044,13 @@ stream_handler_iface_init (gpointer g_iface, gpointer iface_data)
 #undef IMPLEMENT
 }
 
-GabbleJingleMediaRtp *
+WockyJingleMediaRtp *
 gabble_media_stream_get_content (GabbleMediaStream *self)
 {
   /* FIXME: we should fix this whole class up. It relies throughout on
-   *        self->priv->content actually secretly being a GabbleJingleMediaRtp.
+   *        self->priv->content actually secretly being a WockyJingleMediaRtp.
    */
-  return GABBLE_JINGLE_MEDIA_RTP (self->priv->content);
+  return WOCKY_JINGLE_MEDIA_RTP (self->priv->content);
 }
 
 void
