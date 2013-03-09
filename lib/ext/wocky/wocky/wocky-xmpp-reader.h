@@ -25,7 +25,7 @@
 #define __WOCKY_XMPP_READER_H__
 
 #include <glib-object.h>
-#include "wocky-xmpp-reader-enumtypes.h"
+#include "wocky-enumtypes.h"
 #include "wocky-stanza.h"
 
 G_BEGIN_DECLS
@@ -44,6 +44,10 @@ typedef struct _WockyXmppReaderPrivate WockyXmppReaderPrivate;
 struct _WockyXmppReaderClass {
     /*<private>*/
     GObjectClass parent_class;
+
+    /*<protected>*/
+    const gchar *stream_element_name;
+    const gchar *stream_element_ns;
 };
 
 struct _WockyXmppReader {
@@ -111,6 +115,8 @@ GType wocky_xmpp_reader_get_type (void);
 
 WockyXmppReader * wocky_xmpp_reader_new (void);
 WockyXmppReader * wocky_xmpp_reader_new_no_stream (void);
+WockyXmppReader * wocky_xmpp_reader_new_no_stream_ns (
+    const gchar *default_namespace);
 
 
 WockyXmppReaderState wocky_xmpp_reader_get_state (WockyXmppReader *reader);

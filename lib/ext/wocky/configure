@@ -662,6 +662,10 @@ FFLAGS
 CXXFLAGS
 MOSTLYCLEANFILES
 have_gcov
+ENABLE_GOOGLE_RELAY_FALSE
+ENABLE_GOOGLE_RELAY_TRUE
+SOUP_LIBS
+SOUP_CFLAGS
 LIBIPHB_LIBS
 LIBIPHB_CFLAGS
 HAVE_LIBSASL2_FALSE
@@ -830,6 +834,8 @@ with_installed_headers
 enable_shared_suffix
 with_tls
 enable_prefer_stream_ciphers
+with_ca_certificates
+enable_google_relay
 enable_coverage
 with_html_dir
 enable_gtk_doc
@@ -862,6 +868,8 @@ SQLITE_CFLAGS
 SQLITE_LIBS
 LIBIPHB_CFLAGS
 LIBIPHB_LIBS
+SOUP_CFLAGS
+SOUP_LIBS
 GTKDOC_DEPS_CFLAGS
 GTKDOC_DEPS_LIBS'
 
@@ -1501,6 +1509,7 @@ Optional Features:
   --enable-prefer-stream-ciphers
                           prefer stream ciphers over block ciphers to save
                           bandwidth (at the possible expense of security)
+  --disable-google-relay  disable Google Jingle relay support
   --enable-coverage       compile with coverage profiling instrumentation (gcc
                           only)
   --enable-gtk-doc        use gtk-doc to build documentation [[default=no]]
@@ -1519,6 +1528,8 @@ Optional Packages:
                           install development headers to DIR [default=nowhere]
   --with-tls=BACKEND      which TLS backend to use (gnutls, openssl, or auto)
                           [default=auto]
+  --with-ca-certificates=[path]
+                          path to system Certificate Authority list
   --with-html-dir=PATH    path to installed docs
 
 Some influential environment variables:
@@ -1558,6 +1569,8 @@ Some influential environment variables:
               C compiler flags for LIBIPHB, overriding pkg-config
   LIBIPHB_LIBS
               linker flags for LIBIPHB, overriding pkg-config
+  SOUP_CFLAGS C compiler flags for SOUP, overriding pkg-config
+  SOUP_LIBS   linker flags for SOUP, overriding pkg-config
   GTKDOC_DEPS_CFLAGS
               C compiler flags for GTKDOC_DEPS, overriding pkg-config
   GTKDOC_DEPS_LIBS
@@ -4798,7 +4811,8 @@ else
     ;;
   *)
     lt_cv_sys_max_cmd_len=`(getconf ARG_MAX) 2> /dev/null`
-    if test -n "$lt_cv_sys_max_cmd_len"; then
+    if test -n "$lt_cv_sys_max_cmd_len" && \
+	test undefined != "$lt_cv_sys_max_cmd_len"; then
       lt_cv_sys_max_cmd_len=`expr $lt_cv_sys_max_cmd_len \/ 4`
       lt_cv_sys_max_cmd_len=`expr $lt_cv_sys_max_cmd_len \* 3`
     else
@@ -5199,10 +5213,6 @@ freebsd* | dragonfly*)
   fi
   ;;
 
-gnu*)
-  lt_cv_deplibs_check_method=pass_all
-  ;;
-
 haiku*)
   lt_cv_deplibs_check_method=pass_all
   ;;
@@ -5241,7 +5251,7 @@ irix5* | irix6* | nonstopux*)
   ;;
 
 # This must be glibc/ELF.
-linux* | k*bsd*-gnu | kopensolaris*-gnu)
+linux* | k*bsd*-gnu | kopensolaris*-gnu | gnu*)
   lt_cv_deplibs_check_method=pass_all
   ;;
 
@@ -6339,7 +6349,14 @@ s390*-*linux*|s390*-*tpf*|sparc*-*linux*)
 	    LD="${LD-ld} -m elf_i386_fbsd"
 	    ;;
 	  x86_64-*linux*)
-	    LD="${LD-ld} -m elf_i386"
+	    case `/usr/bin/file conftest.o` in
+	      *x86-64*)
+		LD="${LD-ld} -m elf32_x86_64"
+		;;
+	      *)
+		LD="${LD-ld} -m elf_i386"
+		;;
+	    esac
 	    ;;
 	  ppc64-*linux*|powerpc64-*linux*)
 	    LD="${LD-ld} -m elf32ppclinux"
@@ -8168,7 +8185,7 @@ lt_prog_compiler_static=
       lt_prog_compiler_static='-non_shared'
       ;;
 
-    linux* | k*bsd*-gnu | kopensolaris*-gnu)
+    linux* | k*bsd*-gnu | kopensolaris*-gnu | gnu*)
       case $cc_basename in
       # old Intel for x86_64 which still supported -KPIC.
       ecc*)
@@ -10338,17 +10355,6 @@ freebsd* | dragonfly*)
   esac
   ;;
 
-gnu*)
-  version_type=linux # correct to gnu/linux during the next big refactor
-  need_lib_prefix=no
-  need_version=no
-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}${major} ${libname}${shared_ext}'
-  soname_spec='${libname}${release}${shared_ext}$major'
-  shlibpath_var=LD_LIBRARY_PATH
-  shlibpath_overrides_runpath=no
-  hardcode_into_libs=yes
-  ;;
-
 haiku*)
   version_type=linux # correct to gnu/linux during the next big refactor
   need_lib_prefix=no
@@ -10465,7 +10471,7 @@ linux*oldld* | linux*aout* | linux*coff*)
   ;;
 
 # This must be glibc/ELF.
-linux* | k*bsd*-gnu | kopensolaris*-gnu)
+linux* | k*bsd*-gnu | kopensolaris*-gnu | gnu*)
   version_type=linux # correct to gnu/linux during the next big refactor
   need_lib_prefix=no
   need_version=no
@@ -14142,6 +14148,52 @@ fi
   fi
 fi
 
+
+# -----------------------------------------------------------
+# Make CA certificates path configurable
+# Stolen from GIO's TLS
+# -----------------------------------------------------------
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking location of system Certificate Authority list" >&5
+$as_echo_n "checking location of system Certificate Authority list... " >&6; }
+
+# Check whether --with-ca-certificates was given.
+if test "${with_ca_certificates+set}" = set; then :
+  withval=$with_ca_certificates;
+fi
+
+if test "$with_ca_certificates" = "no"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: disabled" >&5
+$as_echo "disabled" >&6; }
+else
+    if test -z "$with_ca_certificates"; then
+        for f in /etc/pki/tls/certs/ca-bundle.crt \
+                 /etc/ssl/certs/ca-certificates.crt; do
+            if test -f "$f"; then
+                with_ca_certificates="$f"
+            fi
+        done
+        if test -z "$with_ca_certificates"; then
+            as_fn_error $? "could not find. Use --with-ca-certificates=path to set, or --without-ca-certificates to disable" "$LINENO" 5
+        fi
+    fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $with_ca_certificates" >&5
+$as_echo "$with_ca_certificates" >&6; }
+
+cat >>confdefs.h <<_ACEOF
+#define GTLS_SYSTEM_CA_CERTIFICATES "$with_ca_certificates"
+_ACEOF
+
+fi
+
+if test -n "$with_ca_certificates"; then
+    if ! test -f "$with_ca_certificates"; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Specified certificate authority file '$with_ca_certificates' does not exist" >&5
+$as_echo "$as_me: WARNING: Specified certificate authority file '$with_ca_certificates' does not exist" >&2;}
+    fi
+fi
+
+
 GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
 
 
@@ -14479,6 +14531,120 @@ $as_echo "#define HAVE_IPHB 1" >>confdefs.h
 
 fi
 
+
+
+# Check whether --enable-google-relay was given.
+if test "${enable_google_relay+set}" = set; then :
+  enableval=$enable_google_relay; enable_google_relay=$enableval
+else
+  enable_google_relay=yes
+fi
+
+
+if test x$enable_google_relay = xyes; then
+
+$as_echo "#define ENABLE_GOOGLE_RELAY /**/" >>confdefs.h
+
+
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for SOUP" >&5
+$as_echo_n "checking for SOUP... " >&6; }
+
+if test -n "$SOUP_CFLAGS"; then
+    pkg_cv_SOUP_CFLAGS="$SOUP_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libsoup-2.4\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libsoup-2.4") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_SOUP_CFLAGS=`$PKG_CONFIG --cflags "libsoup-2.4" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$SOUP_LIBS"; then
+    pkg_cv_SOUP_LIBS="$SOUP_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libsoup-2.4\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libsoup-2.4") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_SOUP_LIBS=`$PKG_CONFIG --libs "libsoup-2.4" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        SOUP_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libsoup-2.4" 2>&1`
+        else
+	        SOUP_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libsoup-2.4" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$SOUP_PKG_ERRORS" >&5
+
+	as_fn_error $? "Package requirements (libsoup-2.4) were not met:
+
+$SOUP_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables SOUP_CFLAGS
+and SOUP_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details." "$LINENO" 5
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables SOUP_CFLAGS
+and SOUP_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details" "$LINENO" 5; }
+else
+	SOUP_CFLAGS=$pkg_cv_SOUP_CFLAGS
+	SOUP_LIBS=$pkg_cv_SOUP_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+fi
+fi
+ if test "x$enable_google_relay" = xyes; then
+  ENABLE_GOOGLE_RELAY_TRUE=
+  ENABLE_GOOGLE_RELAY_FALSE='#'
+else
+  ENABLE_GOOGLE_RELAY_TRUE='#'
+  ENABLE_GOOGLE_RELAY_FALSE=
+fi
 
 
 # Check whether --enable-coverage was given.
@@ -15059,7 +15225,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile wocky/Makefile wocky/wocky-uninstalled.pc m4/Makefile tools/Makefile examples/Makefile tests/Makefile docs/Makefile docs/reference/Makefile"
+ac_config_files="$ac_config_files Makefile wocky/Makefile wocky/wocky-uninstalled.pc wocky/wocky.pc m4/Makefile tools/Makefile examples/Makefile tests/Makefile docs/Makefile docs/reference/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -15213,6 +15379,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_LIBSASL2_TRUE}" && test -z "${HAVE_LIBSASL2_FALSE}"; then
   as_fn_error $? "conditional \"HAVE_LIBSASL2\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_GOOGLE_RELAY_TRUE}" && test -z "${ENABLE_GOOGLE_RELAY_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_GOOGLE_RELAY\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_GCOV_TRUE}" && test -z "${HAVE_GCOV_FALSE}"; then
@@ -16118,6 +16288,7 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "wocky/Makefile") CONFIG_FILES="$CONFIG_FILES wocky/Makefile" ;;
     "wocky/wocky-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES wocky/wocky-uninstalled.pc" ;;
+    "wocky/wocky.pc") CONFIG_FILES="$CONFIG_FILES wocky/wocky.pc" ;;
     "m4/Makefile") CONFIG_FILES="$CONFIG_FILES m4/Makefile" ;;
     "tools/Makefile") CONFIG_FILES="$CONFIG_FILES tools/Makefile" ;;
     "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
@@ -17495,7 +17666,9 @@ Configure summary:
     Features:
         TLS Backend..........: ${with_tls}
         Prefer stream ciphers: ${prefer_stream_ciphers}
+        System CA certs......: ${with_ca_certificates}
         SASL2 Tests..........: ${HAVE_LIBSASL2}
         gtk-doc documentation: ${enable_gtk_doc}
         libiphb integration..: ${have_iphb}
+        Google relay support.: ${enable_google_relay}
 "

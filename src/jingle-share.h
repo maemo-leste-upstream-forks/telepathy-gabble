@@ -21,9 +21,7 @@
 #define __JINGLE_SHARE_H__
 
 #include <glib-object.h>
-
-#include "jingle-content.h"
-#include "jingle-types.h"
+#include <wocky/wocky.h>
 
 G_BEGIN_DECLS
 
@@ -49,13 +47,14 @@ GType gabble_jingle_share_get_type (void);
                               GabbleJingleShareClass))
 
 struct _GabbleJingleShareClass {
-    GabbleJingleContentClass parent_class;
+    WockyJingleContentClass parent_class;
 };
 
 typedef struct _GabbleJingleSharePrivate GabbleJingleSharePrivate;
+typedef struct _GabbleJingleShare GabbleJingleShare;
 
 struct _GabbleJingleShare {
-    GabbleJingleContent parent;
+    WockyJingleContent parent;
     GabbleJingleSharePrivate *priv;
 };
 
@@ -75,7 +74,7 @@ typedef struct {
   GList *entries;
 } GabbleJingleShareManifest;
 
-void jingle_share_register (GabbleJingleFactory *factory);
+void jingle_share_register (WockyJingleFactory *factory);
 
 gchar *gabble_jingle_share_get_source_url (GabbleJingleShare *content);
 gchar *gabble_jingle_share_get_preview_url (GabbleJingleShare *content);

@@ -26,7 +26,7 @@
 
 #include <glib-object.h>
 
-#include "wocky-muc-enumtypes.h"
+#include "wocky-enumtypes.h"
 #include "wocky-namespaces.h"
 #include "wocky-porter.h"
 
@@ -230,8 +230,8 @@ typedef enum {
 
 /**
  * WockyMucMember:
- * @from: the JID of the member (room@server/nick)
- * @jid: the JID of the owner (owner@domain/resource)
+ * @from: the JID of the member (room&commat;server/nick)
+ * @jid: the JID of the owner (owner&commat;domain/resource)
  * @nick: the nickname of the member
  * @role: the #WockyMucRole of the member
  * @affiliation: the #WockyMucAffiliation of the member
@@ -251,16 +251,17 @@ typedef struct {
 
 GType wocky_muc_get_type (void);
 
-struct _WockyMucClass {
-    /*<private>*/
-    GObjectClass parent_class;
-};
-
 struct _WockyMuc {
     /*<private>*/
     GObject parent;
     WockyMucPrivate *priv;
 };
+
+struct _WockyMucClass {
+    /*<private>*/
+    GObjectClass parent_class;
+};
+
 
 /* TYPE MACROS */
 #define WOCKY_TYPE_MUC (wocky_muc_get_type ())
@@ -293,16 +294,6 @@ gboolean wocky_muc_disco_info_finish (WockyMuc *muc,
 WockyStanza *wocky_muc_create_presence (WockyMuc *muc,
     WockyStanzaSubType type,
     const gchar *status);
-
-/* initiate */
-void wocky_muc_initiate_async (WockyMuc *muc,
-    GAsyncReadyCallback callback,
-    GCancellable *cancel,
-    gpointer data);
-
-gboolean wocky_muc_initiate_finish (GObject *source,
-    GAsyncResult *res,
-    GError **error);
 
 /* join */
 void wocky_muc_join (WockyMuc *muc,

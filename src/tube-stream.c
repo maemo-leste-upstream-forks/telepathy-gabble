@@ -82,11 +82,6 @@ static const gchar * const gabble_tube_stream_channel_allowed_properties[] = {
     NULL
 };
 
-static const gchar *gabble_tube_stream_interfaces[] = {
-    TP_IFACE_CHANNEL_INTERFACE_TUBE,
-    NULL
-};
-
 /* Linux glibc bits/socket.h suggests that struct sockaddr_storage is
  * not guaranteed to be big enough for AF_UNIX addresses */
 typedef union
@@ -174,6 +169,19 @@ struct _GabbleTubeStreamPrivate
 
   gboolean dispose_has_run;
 };
+
+static GPtrArray *
+gabble_tube_stream_get_interfaces (TpBaseChannel *base)
+{
+  GPtrArray *interfaces;
+
+  interfaces = TP_BASE_CHANNEL_CLASS (
+      gabble_tube_stream_parent_class)->get_interfaces (base);
+
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_TUBE);
+
+  return interfaces;
+}
 
 typedef struct
 {
@@ -398,7 +406,6 @@ extra_bytestream_state_changed_cb (GabbleBytestreamIface *bytestream,
 
 static void
 extra_bytestream_negotiate_cb (GabbleBytestreamIface *bytestream,
-                               const gchar *stream_id,
                                WockyStanza *msg,
                                GObject *object,
                                gpointer user_data)
@@ -449,7 +456,6 @@ start_stream_initiation (GabbleTubeStream *self,
   TpHandleRepoIface *contact_repo;
   const gchar *jid;
   gchar *full_jid, *stream_id, *id_str;
-  gboolean result;
 
   contact_repo = tp_base_connection_get_handles (
      base_conn, TP_HANDLE_TYPE_CONTACT);
@@ -503,33 +509,27 @@ start_stream_initiation (GabbleTubeStream *self,
 
   if (cls->target_handle_type == TP_HANDLE_TYPE_CONTACT)
     {
-      node = wocky_node_add_child_with_content (si_node, "stream", NULL);
+      node = wocky_node_add_child_ns (si_node, "stream", NS_TUBES);
     }
   else
     {
-      node = wocky_node_add_child_with_content (si_node, "muc-stream", NULL);
+      node = wocky_node_add_child_ns (si_node, "muc-stream", NS_TUBES);
     }
 
-  node->ns = g_quark_from_static_string (NS_TUBES);
   wocky_node_set_attribute (node, "tube", id_str);
 
-  result = gabble_bytestream_factory_negotiate_stream (
+  gabble_bytestream_factory_negotiate_stream (
       conn->bytestream_factory, msg, stream_id,
-      extra_bytestream_negotiate_cb, g_object_ref (transport), G_OBJECT (self),
-      error);
+      extra_bytestream_negotiate_cb, g_object_ref (transport), G_OBJECT (self));
 
   /* FIXME: data and one ref on data->transport are leaked if the tube is
    * closed before we got the SI reply. */
-
-  if (!result)
-    g_object_unref (transport);
-
   g_object_unref (msg);
   g_free (stream_id);
   g_free (full_jid);
   g_free (id_str);
 
-  return result;
+  return TRUE;
 }
 
 static guint
@@ -1445,7 +1445,7 @@ gabble_tube_stream_class_init (GabbleTubeStreamClass *gabble_tube_stream_class)
   object_class->finalize = gabble_tube_stream_finalize;
 
   base_class->channel_type = TP_IFACE_CHANNEL_TYPE_STREAM_TUBE;
-  base_class->interfaces = gabble_tube_stream_interfaces;
+  base_class->get_interfaces = gabble_tube_stream_get_interfaces;
   base_class->target_handle_type = TP_HANDLE_TYPE_CONTACT;
   base_class->close = gabble_tube_stream_close;
   base_class->fill_immutable_properties =
@@ -1760,10 +1760,7 @@ static void
 augment_si_accept_iq (WockyNode *si,
                       gpointer user_data)
 {
-  WockyNode *tube_node;
-
-  tube_node = wocky_node_add_child_with_content (si, "tube", "");
-  tube_node->ns = g_quark_from_string (NS_TUBES);
+  wocky_node_add_child_ns (si, "tube", NS_TUBES);
 }
 
 /**

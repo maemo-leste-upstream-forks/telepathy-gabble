@@ -27,10 +27,9 @@
 #include <glib.h>
 
 #include <telepathy-glib/telepathy-glib.h>
+#include <wocky/wocky.h>
 
 #include "media-stream.h"
-#include "jingle-session.h"
-#include "jingle-media-rtp.h"
 
 G_BEGIN_DECLS
 
@@ -43,7 +42,7 @@ struct _GabbleMediaChannelPrivate
   TpHandle peer;
   gboolean peer_in_rp;
 
-  GabbleJingleSession *session;
+  WockyJingleSession *session;
 
   /* array of referenced GabbleMediaStream*.  Always non-NULL. */
   GPtrArray *streams;
@@ -79,7 +78,7 @@ void gabble_media_channel_hold_latch_to_session (GabbleMediaChannel *chan);
 
 void gabble_media_channel_hold_new_stream (GabbleMediaChannel *chan,
     GabbleMediaStream *stream,
-    GabbleJingleMediaRtp *content);
+    WockyJingleMediaRtp *content);
 void gabble_media_channel_hold_stream_closed (GabbleMediaChannel *chan,
     GabbleMediaStream *stream);
 

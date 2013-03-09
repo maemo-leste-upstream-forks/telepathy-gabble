@@ -456,11 +456,10 @@ new_muc_channel (GabbleMucFactory *fac,
   char *object_path;
   GPtrArray *initial_channels_array = NULL;
 
-  g_assert (g_hash_table_lookup (priv->text_channels,
-        GUINT_TO_POINTER (handle)) == NULL);
+  g_assert (gabble_muc_factory_find_text_channel (fac, handle) == NULL);
 
   object_path = g_strdup_printf ("%s/MucChannel%u",
-      conn->object_path, handle);
+      tp_base_connection_get_object_path (conn), handle);
 
   initial_channels_array = g_ptr_array_new ();
   if (initial_channels != NULL)
@@ -487,7 +486,8 @@ new_muc_channel (GabbleMucFactory *fac,
        "object-path", object_path,
        "handle", handle,
        "invited", invited,
-       "initiator-handle", invited ? inviter : conn->self_handle,
+       "initiator-handle",
+           invited ? inviter : tp_base_connection_get_self_handle (conn),
        "invitation-message", message,
        "requested", requested,
        "initial-channels", initial_channels_array,
@@ -541,8 +541,7 @@ do_invite (GabbleMucFactory *fac,
       return;
     }
 
-  if (g_hash_table_lookup (priv->text_channels,
-        GUINT_TO_POINTER (room_handle)) == NULL)
+  if (gabble_muc_factory_find_text_channel (fac, room_handle) == NULL)
     {
       new_muc_channel (fac, room_handle, TRUE, inviter_handle, reason,
           FALSE, TRUE, NULL, NULL, NULL, NULL);
@@ -818,6 +817,9 @@ gabble_muc_factory_broadcast_presence (GabbleMucFactory *self)
   GHashTableIter iter;
   gpointer channel = NULL;
 
+  if (priv->text_channels == NULL)
+    return;
+
   g_hash_table_iter_init (&iter, priv->text_channels);
 
   while (g_hash_table_iter_next (&iter, NULL, &channel))
@@ -862,13 +864,11 @@ gabble_muc_factory_associate_request (GabbleMucFactory *self,
 }
 
 
-static gboolean
-cancel_queued_requests (gpointer k,
-                        gpointer v,
-                        gpointer d)
+static void
+cancel_queued_requests (
+    GabbleMucFactory *self,
+    GSList *requests_satisfied)
 {
-  GabbleMucFactory *self = GABBLE_MUC_FACTORY (d);
-  GSList *requests_satisfied = v;
   GSList *iter;
 
   requests_satisfied = g_slist_reverse (requests_satisfied);
@@ -881,8 +881,6 @@ cancel_queued_requests (gpointer k,
     }
 
   g_slist_free (requests_satisfied);
-
-  return TRUE;
 }
 
 
@@ -901,8 +899,17 @@ gabble_muc_factory_close_all (GabbleMucFactory *self)
     }
 
   if (priv->queued_requests != NULL)
-    g_hash_table_foreach_steal (priv->queued_requests,
-        cancel_queued_requests, self);
+    {
+      GHashTableIter iter;
+      gpointer value;
+
+      g_hash_table_iter_init (&iter, priv->queued_requests);
+      while (g_hash_table_iter_next (&iter, NULL, &value))
+        {
+          cancel_queued_requests (self, value);
+          g_hash_table_iter_steal (&iter);
+        }
+    }
 
   tp_clear_pointer (&priv->queued_requests, g_hash_table_unref);
   tp_clear_pointer (&priv->text_needed_for_tube, g_hash_table_unref);
@@ -1030,11 +1037,12 @@ ensure_muc_channel (GabbleMucFactory *fac,
 {
   TpBaseConnection *base_conn = (TpBaseConnection *) priv->conn;
 
-  *ret = g_hash_table_lookup (priv->text_channels, GUINT_TO_POINTER (handle));
+  *ret = gabble_muc_factory_find_text_channel (fac, handle);
 
   if (*ret == NULL)
     {
-      *ret = new_muc_channel (fac, handle, FALSE, base_conn->self_handle,
+      *ret = new_muc_channel (fac, handle, FALSE,
+          tp_base_connection_get_self_handle (base_conn),
           NULL, requested, export_text, initial_channels,
           initial_handles, initial_ids, room_name);
 
@@ -1073,8 +1081,7 @@ gabble_muc_factory_handle_si_stream_request (GabbleMucFactory *self,
   g_return_if_fail (stanza_type == WOCKY_STANZA_TYPE_IQ);
   g_return_if_fail (sub_type == WOCKY_STANZA_SUB_TYPE_SET);
 
-  gmuc = g_hash_table_lookup (priv->text_channels,
-      GUINT_TO_POINTER (room_handle));
+  gmuc = gabble_muc_factory_find_text_channel (self, room_handle);
 
   if (gmuc == NULL)
     {
@@ -1536,7 +1543,7 @@ handle_tube_channel_request (GabbleMucFactory *self,
   GabbleMucChannel * gmuc;
   GabbleTubeIface *new_channel;
 
-  gmuc = g_hash_table_lookup (priv->text_channels, GUINT_TO_POINTER (handle));
+  gmuc = gabble_muc_factory_find_text_channel (self, handle);
 
   if (gmuc == NULL)
     ensure_muc_channel (self, priv, handle, &gmuc, FALSE, FALSE,
@@ -1859,7 +1866,7 @@ gabble_muc_factory_ensure_channel (TpChannelManager *manager,
 #ifdef ENABLE_VOIP
 gboolean
 gabble_muc_factory_handle_jingle_session (GabbleMucFactory *self,
-  GabbleJingleSession *session)
+  WockyJingleSession *session)
 {
   GabbleMucFactoryPrivate *priv = self->priv;
   TpHandleRepoIface *room_repo = tp_base_connection_get_handles (
@@ -1867,14 +1874,13 @@ gabble_muc_factory_handle_jingle_session (GabbleMucFactory *self,
   TpHandle room;
 
   room = gabble_get_room_handle_from_jid (room_repo,
-    gabble_jingle_session_get_peer_jid (session));
+    wocky_jingle_session_get_peer_jid (session));
 
   if (room != 0)
     {
       GabbleMucChannel *channel;
 
-      channel = g_hash_table_lookup (priv->text_channels,
-        GUINT_TO_POINTER (room));
+      channel = gabble_muc_factory_find_text_channel (self, room);
       g_assert (GABBLE_IS_MUC_CHANNEL (channel));
 
       if (channel != NULL)

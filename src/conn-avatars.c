@@ -27,7 +27,6 @@
 #include <telepathy-glib/telepathy-glib.h>
 #include <telepathy-glib/telepathy-glib-dbus.h>
 
-#include "base64.h"
 #include "presence.h"
 #include "presence-cache.h"
 #include "conn-presence.h"
@@ -56,7 +55,7 @@ update_own_avatar_sha1 (GabbleConnection *conn,
     return TRUE;
 
   tp_svc_connection_interface_avatars_emit_avatar_updated (conn,
-      base->self_handle, sha1);
+      tp_base_connection_get_self_handle (base), sha1);
 
   g_free (conn->self_presence->avatar_sha1);
   conn->self_presence->avatar_sha1 = g_strdup (sha1);
@@ -87,7 +86,7 @@ connection_avatar_update_cb (GabblePresenceCache *cache,
   /* sha1 can be "" if we know there is no avatar, but must not be NULL here */
   g_assert (sha1 != NULL);
 
-  if (handle == base->self_handle)
+  if (handle == tp_base_connection_get_self_handle (base))
     update_own_avatar_sha1 (conn, sha1, NULL);
   else
     tp_svc_connection_interface_avatars_emit_avatar_updated (conn,
@@ -227,7 +226,7 @@ gabble_connection_get_avatar_tokens (TpSvcConnectionInterfaceAvatars *iface,
 
       handle = g_array_index (contacts, TpHandle, i);
 
-      if (base->self_handle == handle)
+      if (tp_base_connection_get_self_handle (base) == handle)
         {
           if (have_self_avatar)
             {
@@ -293,9 +292,10 @@ _got_self_avatar_for_get_known_avatar_tokens (GObject *obj,
 
   g_signal_handler_disconnect (obj, context->signal_conn);
 
-  g_assert (base->self_handle != 0);
+  g_assert (tp_base_connection_get_self_handle (base) != 0);
 
-  g_hash_table_insert (context->ret, GUINT_TO_POINTER (base->self_handle),
+  g_hash_table_insert (context->ret,
+      GUINT_TO_POINTER (tp_base_connection_get_self_handle (base)),
       g_strdup (sha1));
 
   tp_svc_connection_interface_avatars_return_from_get_known_avatar_tokens (
@@ -356,7 +356,7 @@ gabble_connection_get_known_avatar_tokens (TpSvcConnectionInterfaceAvatars *ifac
 
       handle = g_array_index (contacts, TpHandle, i);
 
-      if (base->self_handle == handle)
+      if (tp_base_connection_get_self_handle (base) == handle)
         {
           if (have_self_avatar)
             {
@@ -415,6 +415,8 @@ parse_avatar (WockyNode *vcard,
   WockyNode *type_node;
   WockyNode *binval_node;
   const gchar *binval_value;
+  guchar *st;
+  gsize outlen;
 
   photo_node = wocky_node_get_child (vcard, "PHOTO");
 
@@ -454,7 +456,9 @@ parse_avatar (WockyNode *vcard,
       return FALSE;
     }
 
-  *avatar = base64_decode (binval_value);
+  st = g_base64_decode (binval_value, &outlen);
+  *avatar = g_string_new_len ((gchar *) st, outlen);
+  g_free (st);
 
   if (NULL == *avatar)
     {
@@ -517,7 +521,7 @@ _request_avatar_cb (GabbleVCardManager *self,
       goto out;
     }
 
-  if (handle == base->self_handle)
+  if (handle == tp_base_connection_get_self_handle (base))
     presence = conn->self_presence;
   else
     presence = gabble_presence_cache_get (conn->presence_cache, handle);
@@ -542,7 +546,7 @@ _request_avatar_cb (GabbleVCardManager *self,
           g_error_free (error);
           error = NULL;
 
-          if (handle == base->self_handle)
+          if (handle == tp_base_connection_get_self_handle (base))
             {
               update_own_avatar_sha1 (conn, sha1, NULL);
               g_free (sha1);
@@ -789,7 +793,8 @@ _set_avatar_cb2 (GabbleVCardManager *manager,
           tp_svc_connection_interface_avatars_return_from_set_avatar (
               ctx->invocation, presence->avatar_sha1);
           tp_svc_connection_interface_avatars_emit_avatar_updated (
-              ctx->conn, base->self_handle, presence->avatar_sha1);
+              ctx->conn, tp_base_connection_get_self_handle (base),
+              presence->avatar_sha1);
         }
       else
         {
@@ -832,15 +837,25 @@ gabble_connection_set_avatar (TpSvcConnectionInterfaceAvatars *iface,
 
   if (avatar != NULL && avatar->len > 0)
     {
+      gint state = 0, save = 0, outlen;
+      /* See the documentation for g_base64_encode_step(). */
+      guint base64_data_size = (avatar->len / 3 + 1) * 4 + 4;
+      guint base64_line_wrapped_data_size =
+          base64_data_size + (base64_data_size / 72) + 1;
+
       ctx->avatar = g_string_new_len (avatar->data, avatar->len);
-      base64 = base64_encode (avatar->len, avatar->data, TRUE);
+      base64 = g_malloc (base64_line_wrapped_data_size);
+      outlen = g_base64_encode_step ((const guchar *) avatar->data,
+          avatar->len, TRUE, base64, &state, &save);
+      outlen += g_base64_encode_close (TRUE, base64 + outlen, &state, &save);
+      base64[outlen] = '\0';
 
       DEBUG ("Replacing avatar");
 
       edit_info = gabble_vcard_manager_edit_info_new ("PHOTO",
           NULL, GABBLE_VCARD_EDIT_REPLACE,
-          "TYPE", mime_type,
-          "BINVAL", base64,
+          '(', "TYPE", '$', mime_type, ')',
+          '(', "BINVAL", '$', base64, ')',
           NULL);
 
       g_free (base64);
@@ -889,7 +904,7 @@ conn_avatars_fill_contact_attributes (GObject *obj,
       TpHandle handle = g_array_index (contacts, guint, i);
       GabblePresence *presence = NULL;
 
-      if (base->self_handle == handle)
+      if (tp_base_connection_get_self_handle (base) == handle)
         presence = self->self_presence;
       else
         presence = gabble_presence_cache_get (self->presence_cache, handle);

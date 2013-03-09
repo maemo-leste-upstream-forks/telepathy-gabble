@@ -24,8 +24,7 @@
 #include <glib-object.h>
 
 #include <telepathy-glib/telepathy-glib.h>
-
-#include "jingle-types.h"
+#include <wocky/wocky.h>
 
 G_BEGIN_DECLS
 
@@ -61,7 +60,7 @@ GType gabble_call_stream_get_type (void);
   (G_TYPE_INSTANCE_GET_CLASS ((obj), GABBLE_TYPE_CALL_STREAM, \
     GabbleCallStreamClass))
 
-GabbleJingleContent *gabble_call_stream_get_jingle_content (
+WockyJingleContent *gabble_call_stream_get_jingle_content (
     GabbleCallStream *stream);
 
 void gabble_call_stream_update_member_states (GabbleCallStream *self);

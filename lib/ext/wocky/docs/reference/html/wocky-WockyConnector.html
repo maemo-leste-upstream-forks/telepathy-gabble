@@ -93,7 +93,7 @@ enum                <a class="link" href="wocky-WockyConnector.html#WockyConnect
 See: RFC3920 XEP-0077
 </p>
 <p>
-Sends and receives <span class="type">WockyStanzas</span> from an underlying <a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="type">GIOStream</span></a>.
+Sends and receives <span class="type">WockyStanza</span>s from an underlying <a href="http://library.gnome.org/devel/gio/unstable/GIOStream.html"><span class="type">GIOStream</span></a>.
 negotiating TLS if possible and completing authentication with the server
 by the "most suitable" method available.
 Returns a <span class="type">WockyXmppConnection</span> object to the user on successful completion.
@@ -112,8 +112,47 @@ The flow of control during connection is roughly as follows:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-tcp_srv_connected
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36</pre></td>
+        <td class="listing_code"><pre class="programlisting">tcp_srv_connected
 │
 ├→ tcp_host_connected
 │  ↓
@@ -131,7 +170,7 @@ tcp_srv_connected
    │ │ ↓                      │             ↑
    │ │ sasl_request_auth      │             jabber_auth_done
    │ │ ↓                      │             ↑
-   │ │ sasl_auth_done ────────┴─[no sasl]─→ jabber_request_auth
+   │ │ sasl_auth_done ────────┴─<span class="gtkdoc opt">[</span>no sasl<span class="gtkdoc opt">]</span>─→ jabber_request_auth
    │ ↓                                      ↑
    │ iq_bind_resource                       │
    │ ↓                                      │
@@ -140,7 +179,7 @@ tcp_srv_connected
    │ iq_bind_resource_recv_cb               │
    │ ↓                                      │
    │ ①                                      │
-   └──────────[old auth]────────────────────┘
+   └──────────<span class="gtkdoc opt">[</span>old auth<span class="gtkdoc opt">]</span>────────────────────┘
 
    ①
    ↓
@@ -148,8 +187,12 @@ tcp_srv_connected
    ↓                              ↑
    establish_session_sent_cb      │
    ↓                              │
-   establish_session_recv_cb ─────┘
- </pre></div>
+   establish_session_recv_cb ─────┘</pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 </div>

@@ -713,9 +713,11 @@ called until one claims to have handled the stanza (by returning <a href="http:/
 <p>
 If <em class="parameter"><code>from</code></em> is a bare JID, then the resource of the JID in the from attribute
 will be ignored: In other words, a handler registered against a bare JID
-will match _all_ stanzas from a JID with the same node and domain:
-"foo@bar.org" will match
-"foo@bar.org", "foo@bar.org/moose" and so forth.
+will match <span class="emphasis"><em>all</em></span> stanzas from a JID with the same node
+and domain:
+<code class="code">"foo@bar.org"</code> will match
+<code class="code">"foo@bar.org"</code>,
+<code class="code">"foo@bar.org/moose"</code> and so forth.
 </p>
 <p>
 To register an IQ handler from Juliet for all the Jingle stanzas related
@@ -723,16 +725,33 @@ to one Jingle session:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-id = wocky_porter_register_handler (porter,
-  WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_NONE, NULL,
-  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL, jingle_cb,
-  "juliet@example.com/Balcony",
-  '(', "jingle",
-    ':', "urn:xmpp:jingle:1",
-    '@', "sid", "my_sid",
-  ')', NULL);
-</pre></div>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td>
+        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function"><a href="wocky-WockyPorter.html#wocky-porter-register-handler-from">wocky_porter_register_handler_from</a></span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
+  WOCKY_STANZA_TYPE_IQ<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span>
+  <span class="string">&quot;juliet&#64;example.com/Balcony&quot;</span><span class="gtkdoc opt">,</span>
+  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL<span class="gtkdoc opt">,</span>
+  jingle_cb<span class="gtkdoc opt">,</span>
+  <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;jingle&quot;</span><span class="gtkdoc opt">,</span>
+    <span class="string">':'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;urn:xmpp:jingle:1&quot;</span><span class="gtkdoc opt">,</span>
+    <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;sid&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;my_sid&quot;</span><span class="gtkdoc opt">,</span>
+  <span class="string">')'</span><span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <p>
@@ -814,12 +833,23 @@ from anyone, call:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-id = wocky_porter_register_handler (porter,
-  WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE, NULL,
-  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL, message_received_cb, NULL,
-  NULL);
-</pre></div>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4</pre></td>
+        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function">wocky_porter_register_handler</span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
+  WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span>
+  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL<span class="gtkdoc opt">,</span> message_received_cb<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span>
+  NULL<span class="gtkdoc opt">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <p>
@@ -828,19 +858,37 @@ notifications for contacts' geolocation information:
 </p>
 <p>
 </p>
-<div class="informalexample"><pre class="programlisting">
-id = wocky_porter_register_handler_from_anyone (porter,
-   WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
-   WOCKY_PORTER_HANDLER_PRIORITY_MAX,
-   msg_event_cb, self,
-   '(', "event",
-     ':', WOCKY_XMPP_NS_PUBSUB_EVENT,
-     '(', "items",
-       '@', "node", "http://jabber.org/protocol/geoloc",
-     ')',
-   ')',
-   NULL);
-</pre></div>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11</pre></td>
+        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function"><a href="wocky-WockyPorter.html#wocky-porter-register-handler-from-anyone">wocky_porter_register_handler_from_anyone</a></span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
+   WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span>
+   WOCKY_PORTER_HANDLER_PRIORITY_MAX<span class="gtkdoc opt">,</span>
+   msg_event_cb<span class="gtkdoc opt">,</span> self<span class="gtkdoc opt">,</span>
+   <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;event&quot;</span><span class="gtkdoc opt">,</span>
+     <span class="string">':'</span><span class="gtkdoc opt">,</span> WOCKY_XMPP_NS_PUBSUB_EVENT<span class="gtkdoc opt">,</span>
+     <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;items&quot;</span><span class="gtkdoc opt">,</span>
+       <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;node&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;http://jabber.org/protocol/geoloc&quot;</span><span class="gtkdoc opt">,</span>
+     <span class="string">')'</span><span class="gtkdoc opt">,</span>
+   <span class="string">')'</span><span class="gtkdoc opt">,</span>
+   NULL<span class="gtkdoc opt">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
 </p>
 <div class="variablelist"><table border="0">

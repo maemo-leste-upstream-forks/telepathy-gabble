@@ -33,7 +33,6 @@
 
 #include "base-call-channel.h"
 #include "connection.h"
-#include "jingle-session.h"
 #include "jingle-tp-util.h"
 
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
@@ -201,7 +200,7 @@ gabble_base_call_channel_finalize (GObject *object)
 GabbleCallContent *
 gabble_base_call_channel_add_content (GabbleBaseCallChannel *self,
     const gchar *name,
-    JingleMediaType mtype,
+    WockyJingleMediaType mtype,
     TpCallContentDisposition disposition)
 {
   TpBaseChannel *base = TP_BASE_CHANNEL (self);
@@ -221,7 +220,7 @@ gabble_base_call_channel_add_content (GabbleBaseCallChannel *self,
     "connection", tp_base_channel_get_connection (base),
     "object-path", object_path,
     "disposition", disposition,
-    "media-type", jingle_media_type_to_tp (mtype),
+    "media-type", wocky_jingle_media_type_to_tp (mtype),
     "name", name,
     NULL);
 

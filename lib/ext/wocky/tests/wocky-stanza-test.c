@@ -586,6 +586,52 @@ test_extract_errors_legacy_code (void)
   g_object_unref (stanza);
 }
 
+
+static void
+test_extract_errors_unrecognised_condition (void)
+{
+  WockyNodeTree *error_tree;
+  WockyXmppErrorType type;
+  GError *core = NULL, *specialized = NULL;
+  WockyNode *specialized_node = NULL;
+  const gchar *text = "The room is currently overactive, please try again later";
+
+  /* I got a <policy-violation> error back from prosody with type='wait', but
+   * Wocky didn't know about policy-violation (which was introduced in
+   * RFC6120). Not only did it ignore <policy-violation>, it also ignored
+   * type='wait' and returned the default, WOCKY_XMPP_ERROR_TYPE_CANCEL.
+   */
+  g_test_bug ("43166#c9");
+
+  error_tree = wocky_node_tree_new ("error", WOCKY_XMPP_NS_JABBER_CLIENT,
+      '@', "type", "wait",
+      '(', "typo-violation", ':', WOCKY_XMPP_NS_STANZAS, ')',
+      '(', "text", ':', WOCKY_XMPP_NS_STANZAS,
+        '$', text,
+      ')', NULL);
+
+  wocky_xmpp_error_extract (wocky_node_tree_get_top_node (error_tree),
+      &type, &core, &specialized, &specialized_node);
+
+  g_assert_cmpuint (type, ==, WOCKY_XMPP_ERROR_TYPE_WAIT);
+
+  /* Wocky should default to undefined-condition when the server returns an
+   * unknown core error element.
+   */
+  g_assert_error (core, WOCKY_XMPP_ERROR, WOCKY_XMPP_ERROR_UNDEFINED_CONDITION);
+  g_assert_cmpstr (core->message, ==, text);
+  g_clear_error (&core);
+
+  /* The unrecognised error element was in the :xmpp-stanzas namespace, so it
+   * shouldn't be returned as a specialized error.
+   */
+  g_assert_no_error (specialized);
+  g_assert (specialized_node == NULL);
+
+  g_object_unref (error_tree);
+}
+
+
 static void
 test_extract_errors_no_sense (void)
 {
@@ -757,6 +803,21 @@ test_stanza_error_to_node_jingle (void)
   g_clear_error (&specialized);
 }
 
+static void
+test_unknown (
+    gconstpointer name_null_ns)
+{
+  const gchar *name = name_null_ns;
+  const gchar *ns = name + strlen (name) + 1;
+  WockyStanza *stanza = wocky_stanza_new (name, ns);
+  WockyStanzaType type;
+
+  wocky_stanza_get_type_info (stanza, &type, NULL);
+  g_assert_cmpuint (type, ==, WOCKY_STANZA_TYPE_UNKNOWN);
+
+  g_object_unref (stanza);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -790,6 +851,8 @@ main (int argc, char **argv)
       test_extract_errors_extra_application_specific);
   g_test_add_func ("/xmpp-stanza/errors/legacy-code",
       test_extract_errors_legacy_code);
+  g_test_add_func ("/xmpp-stanza/errors/unrecognised-condition",
+      test_extract_errors_unrecognised_condition);
   g_test_add_func ("/xmpp-stanza/errors/no-sense",
       test_extract_errors_no_sense);
   g_test_add_func ("/xmpp-stanza/errors/not-really",
@@ -798,6 +861,13 @@ main (int argc, char **argv)
       test_stanza_error_to_node_core);
   g_test_add_func ("/xmpp-stanza/errors/stanza-to-node-jingle",
       test_stanza_error_to_node_jingle);
+
+  g_test_add_data_func ("/xmpp-stanza/types/unknown-stanza-type",
+      "this-will-never-be-real\0" WOCKY_XMPP_NS_JABBER_CLIENT,
+      test_unknown);
+  g_test_add_data_func ("/xmpp-stanza/types/wrong-namespaces",
+      "challenge\0this:is:not:the:sasl:namespace",
+      test_unknown);
 
   result =  g_test_run ();
   test_deinit ();

@@ -95,18 +95,6 @@ static gboolean gabble_muc_channel_send_chat_state (GObject *object,
     GError **error);
 static void gabble_muc_channel_close (TpBaseChannel *base);
 
-static const gchar *gabble_muc_channel_interfaces[] = {
-    TP_IFACE_CHANNEL_INTERFACE_GROUP,
-    TP_IFACE_CHANNEL_INTERFACE_PASSWORD,
-    TP_IFACE_CHANNEL_INTERFACE_CHAT_STATE,
-    TP_IFACE_CHANNEL_INTERFACE_MESSAGES,
-    TP_IFACE_CHANNEL_INTERFACE_CONFERENCE,
-    TP_IFACE_CHANNEL_INTERFACE_ROOM,
-    TP_IFACE_CHANNEL_INTERFACE_ROOM_CONFIG,
-    TP_IFACE_CHANNEL_INTERFACE_SUBJECT,
-    NULL
-};
-
 /* signal enum */
 enum
 {
@@ -226,6 +214,8 @@ struct _GabbleMucChannelPrivate
   GPtrArray *initial_channels;
   GArray *initial_handles;
   char **initial_ids;
+
+  gboolean have_received_error_type_wait;
 };
 
 typedef struct {
@@ -233,6 +223,26 @@ typedef struct {
   TpMessage *message;
   gchar *token;
 } _GabbleMUCSendMessageCtx;
+
+static GPtrArray *
+gabble_muc_channel_get_interfaces (TpBaseChannel *base)
+{
+  GPtrArray *interfaces;
+
+  interfaces = TP_BASE_CHANNEL_CLASS (
+      gabble_muc_channel_parent_class)->get_interfaces (base);
+
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_GROUP);
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_PASSWORD);
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_CHAT_STATE);
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_MESSAGES);
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_CONFERENCE);
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_ROOM);
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_ROOM_CONFIG);
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_SUBJECT);
+
+  return interfaces;
+}
 
 static void
 gabble_muc_channel_init (GabbleMucChannel *self)
@@ -264,8 +274,8 @@ static void handle_renamed (GObject *source,
 
 static void handle_error (GObject *source,
     WockyStanza *stanza,
-    WockyXmppError errnum,
-    const gchar *message,
+    WockyXmppErrorType errtype,
+    const GError *error,
     gpointer data);
 
 static void handle_join (WockyMuc *muc,
@@ -322,8 +332,8 @@ static void handle_errmsg (GObject *source,
     GDateTime *datetime,
     WockyMucMember *who,
     const gchar *text,
-    WockyXmppError error,
     WockyXmppErrorType etype,
+    const GError *error,
     gpointer data);
 
 /* Signatures for some other stuff. */
@@ -331,11 +341,12 @@ static void handle_errmsg (GObject *source,
 static void _gabble_muc_channel_handle_subject (GabbleMucChannel *chan,
     TpHandleType handle_type,
     TpHandle sender, GDateTime *datetime, const gchar *subject,
-    WockyStanza *msg);
+    WockyStanza *msg, const GError *error);
 static void _gabble_muc_channel_receive (GabbleMucChannel *chan,
     TpChannelTextMessageType msg_type, TpHandleType handle_type,
     TpHandle sender, GDateTime *datetime, const gchar *id, const gchar *text,
-    WockyStanza *msg, TpChannelTextSendError send_error,
+    WockyStanza *msg,
+    const GError *send_error,
     TpDeliveryStatus delivery_status);
 
 static void
@@ -449,7 +460,8 @@ gabble_muc_channel_constructed (GObject *obj)
   tp_message_mixin_implement_send_chat_state (obj,
       gabble_muc_channel_send_chat_state);
 
-  tp_group_mixin_add_handle_owner (obj, self_handle, base_conn->self_handle);
+  tp_group_mixin_add_handle_owner (obj, self_handle,
+      tp_base_connection_get_self_handle (base_conn));
 
   /* Room interface */
   g_object_get (self,
@@ -526,7 +538,7 @@ gabble_muc_channel_constructed (GObject *obj)
       GError *error = NULL;
       GArray *members = g_array_sized_new (FALSE, FALSE, sizeof (TpHandle), 1);
 
-      g_assert (initiator == base_conn->self_handle);
+      g_assert (initiator == tp_base_connection_get_self_handle (base_conn));
       g_assert (priv->invitation_message == NULL);
 
       g_array_append_val (members, self_handle);
@@ -748,7 +760,7 @@ create_room_identity (GabbleMucChannel *chan)
   g_assert (priv->self_jid == NULL);
 
   source = _gabble_connection_get_cached_alias (GABBLE_CONNECTION (conn),
-      conn->self_handle, &alias);
+      tp_base_connection_get_self_handle (conn), &alias);
   g_assert (alias != NULL);
 
   if (source == GABBLE_CONNECTION_ALIAS_FROM_JID)
@@ -1067,7 +1079,7 @@ gabble_muc_channel_class_init (GabbleMucChannelClass *gabble_muc_channel_class)
 
   base_class->channel_type = TP_IFACE_CHANNEL_TYPE_TEXT;
   base_class->target_handle_type = TP_HANDLE_TYPE_ROOM;
-  base_class->interfaces = gabble_muc_channel_interfaces;
+  base_class->get_interfaces = gabble_muc_channel_get_interfaces;
   base_class->fill_immutable_properties = gabble_muc_channel_fill_immutable_properties;
   base_class->close = gabble_muc_channel_close;
 
@@ -1873,8 +1885,8 @@ update_permissions (GabbleMucChannel *chan)
 static void
 handle_error (GObject *source,
     WockyStanza *stanza,
-    WockyXmppError errnum,
-    const gchar *message,
+    WockyXmppErrorType errtype,
+    const GError *error,
     gpointer data)
 {
   GabbleMucChannel *gmuc = GABBLE_MUC_CHANNEL (data);
@@ -1889,7 +1901,7 @@ handle_error (GObject *source,
       return;
     }
 
-  if (errnum == WOCKY_XMPP_ERROR_NOT_AUTHORIZED)
+  if (error->code == WOCKY_XMPP_ERROR_NOT_AUTHORIZED)
     {
       /* channel can sit requiring a password indefinitely */
       clear_join_timer (gmuc);
@@ -1909,7 +1921,7 @@ handle_error (GObject *source,
     {
       GError *tp_error = NULL;
 
-      switch (errnum)
+      switch (error->code)
         {
           case WOCKY_XMPP_ERROR_FORBIDDEN:
             tp_error = g_error_new (TP_ERROR, TP_ERROR_CHANNEL_BANNED,
@@ -1934,7 +1946,7 @@ handle_error (GObject *source,
 
           default:
             tp_error = g_error_new (TP_ERROR, TP_ERROR_NOT_AVAILABLE,
-                "%s", wocky_xmpp_error_description (errnum));
+                "%s", wocky_xmpp_error_description (error->code));
             break;
         }
 
@@ -2259,8 +2271,6 @@ tubes_presence_update (GabbleMucChannel *gmuc,
 
               g_signal_emit (gmuc, signals[NEW_TUBE], 0, tube);
 
-              /* the tube has reffed its initiator, no need to keep a ref */
-              tp_handle_unref (contact_repo, initiator_handle);
               g_hash_table_unref (parameters);
             }
         }
@@ -2638,7 +2648,7 @@ handle_join (WockyMuc *muc,
 
   g_hash_table_insert (omap,
       GUINT_TO_POINTER (myself),
-      GUINT_TO_POINTER (base_conn->self_handle));
+      GUINT_TO_POINTER (tp_base_connection_get_self_handle (base_conn)));
 
   tp_handle_set_add (members, myself);
   tp_group_mixin_add_handle_owners (G_OBJECT (gmuc), omap);
@@ -2801,7 +2811,8 @@ handle_message (GObject *source,
   if (text != NULL)
     _gabble_muc_channel_receive (gmuc,
         msg_type, handle_type, from, datetime, xmpp_id, text, stanza,
-        GABBLE_TEXT_CHANNEL_SEND_NO_ERROR, TP_DELIVERY_STATUS_DELIVERED);
+        NULL,
+        TP_DELIVERY_STATUS_DELIVERED);
 
   if (from_member && state != WOCKY_MUC_MSG_STATE_NONE)
     {
@@ -2829,7 +2840,7 @@ handle_message (GObject *source,
 
   if (subject != NULL)
     _gabble_muc_channel_handle_subject (gmuc, handle_type, from,
-        datetime, subject, stanza);
+        datetime, subject, stanza, NULL);
 }
 
 static void
@@ -2840,8 +2851,8 @@ handle_errmsg (GObject *source,
     GDateTime *datetime,
     WockyMucMember *who,
     const gchar *text,
-    WockyXmppError error,
     WockyXmppErrorType etype,
+    const GError *error,
     gpointer data)
 {
   GabbleMucChannel *gmuc = GABBLE_MUC_CHANNEL (data);
@@ -2849,7 +2860,6 @@ handle_errmsg (GObject *source,
   TpBaseChannel *base = TP_BASE_CHANNEL (gmuc);
   TpBaseConnection *conn = tp_base_channel_get_connection (base);
   gboolean from_member = (who != NULL);
-  TpChannelTextSendError tp_err = TP_CHANNEL_TEXT_SEND_ERROR_UNKNOWN;
   TpDeliveryStatus ds = TP_DELIVERY_STATUS_DELIVERED;
   TpHandleRepoIface *repo = NULL;
   TpHandleType handle_type;
@@ -2876,16 +2886,30 @@ handle_errmsg (GObject *source,
       from = tp_base_channel_get_target_handle (base);
     }
 
-  tp_err = gabble_tp_send_error_from_wocky_xmpp_error (error);
-
   if (etype == WOCKY_XMPP_ERROR_TYPE_WAIT)
-    ds = TP_DELIVERY_STATUS_TEMPORARILY_FAILED;
+    {
+      ds = TP_DELIVERY_STATUS_TEMPORARILY_FAILED;
+      /* Some MUCs have very strict rate limiting like "at most one stanza per
+       * second". Since chat state notifications count towards this, if the
+       * user types a message very quickly then the typing notification is
+       * accepted but then the stanza containing the actual message is
+       * rejected.
+       *
+       * So: if we ever get rate-limited, let's just stop sending chat states.
+       *
+       * https://bugs.freedesktop.org/show_bug.cgi?id=43166
+       */
+      DEBUG ("got <error type='wait'>, disabling chat state notifications");
+      priv->have_received_error_type_wait = TRUE;
+    }
   else
-    ds = TP_DELIVERY_STATUS_PERMANENTLY_FAILED;
+    {
+      ds = TP_DELIVERY_STATUS_PERMANENTLY_FAILED;
+    }
 
   if (text != NULL)
     _gabble_muc_channel_receive (gmuc, TP_CHANNEL_TEXT_MESSAGE_TYPE_NOTICE,
-        handle_type, from, datetime, xmpp_id, text, stanza, tp_err, ds);
+        handle_type, from, datetime, xmpp_id, text, stanza, error, ds);
 
   /* FIXME: this is stupid. WockyMuc gives us the subject for non-errors, but
    * doesn't bother for errors.
@@ -2901,7 +2925,7 @@ handle_errmsg (GObject *source,
       (priv->set_subject_stanza_id != NULL &&
        !tp_strdiff (xmpp_id, priv->set_subject_stanza_id)))
     _gabble_muc_channel_handle_subject (gmuc,
-        handle_type, from, datetime, subject, stanza);
+        handle_type, from, datetime, subject, stanza, error);
 }
 
 /* ************************************************************************* */
@@ -2914,11 +2938,11 @@ _gabble_muc_channel_handle_subject (GabbleMucChannel *chan,
                                     TpHandle sender,
                                     GDateTime *datetime,
                                     const gchar *subject,
-                                    WockyStanza *msg)
+                                    WockyStanza *msg,
+                                    const GError *error)
 {
   GabbleMucChannelPrivate *priv;
   const gchar *actor;
-  GError *error = NULL;
   gint64 timestamp = datetime != NULL ?
     g_date_time_to_unix (datetime) : G_MAXINT64;
 
@@ -2926,7 +2950,7 @@ _gabble_muc_channel_handle_subject (GabbleMucChannel *chan,
 
   priv = chan->priv;
 
-  if (wocky_stanza_extract_errors (msg, NULL, &error, NULL, NULL))
+  if (error != NULL)
     {
       if (priv->set_subject_context != NULL)
         {
@@ -2943,7 +2967,6 @@ _gabble_muc_channel_handle_subject (GabbleMucChannel *chan,
           room_properties_update (chan);
         }
 
-      g_clear_error (&error);
       return;
     }
 
@@ -2981,7 +3004,7 @@ _gabble_muc_channel_handle_subject (GabbleMucChannel *chan,
 /**
  * _gabble_muc_channel_receive: receive MUC messages
  */
-void
+static void
 _gabble_muc_channel_receive (GabbleMucChannel *chan,
                              TpChannelTextMessageType msg_type,
                              TpHandleType sender_handle_type,
@@ -2990,7 +3013,7 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
                              const gchar *id,
                              const gchar *text,
                              WockyStanza *msg,
-                             TpChannelTextSendError send_error,
+                             const GError *send_error,
                              TpDeliveryStatus error_status)
 {
   TpBaseChannel *base;
@@ -3009,7 +3032,7 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
   muc_self_handle = chan->group.self_handle;
 
   /* Is this an error report? */
-  is_error = (send_error != GABBLE_TEXT_CHANNEL_SEND_NO_ERROR);
+  is_error = (send_error != NULL);
 
   if (is_error && sender == muc_self_handle)
     {
@@ -3085,9 +3108,21 @@ _gabble_muc_channel_receive (GabbleMucChannel *chan,
       if (id != NULL)
         tp_message_set_string (delivery_report, 0, "delivery-token", id);
 
-      if (is_error)
-        tp_message_set_uint32 (delivery_report, 0, "delivery-error",
-            send_error);
+      if (send_error != NULL)
+        {
+          tp_message_set_uint32 (delivery_report, 0, "delivery-error",
+              gabble_tp_send_error_from_wocky_xmpp_error (send_error->code));
+
+          if (!tp_str_empty (send_error->message))
+            {
+              guint body_part_number = tp_message_append_part (delivery_report);
+
+              tp_message_set_string (delivery_report, body_part_number,
+                  "content-type", "text/plain");
+              tp_message_set_string (delivery_report, body_part_number,
+                  "content", send_error->message);
+            }
+        }
 
       /* We do not set a message-sender on the report: the intended recipient
        * of the original message was the MUC, so the spec says we should omit
@@ -3305,7 +3340,7 @@ gabble_muc_channel_send_invite (GabbleMucChannel *self,
 
   if (continue_)
     {
-      wocky_node_add_child_with_content (invite_node, "continue", NULL);
+      wocky_node_add_child (invite_node, "continue");
     }
 
   DEBUG ("sending MUC invitation for room %s to contact %s with reason "
@@ -3364,7 +3399,7 @@ gabble_muc_channel_add_member (GObject *obj,
       tp_intset_add (set_remote_pending, handle);
 
       tp_group_mixin_add_handle_owner (obj, mixin->self_handle,
-          conn->self_handle);
+          tp_base_connection_get_self_handle (conn));
       tp_group_mixin_change_members (obj, "", NULL, set_remove_members,
           NULL, set_remote_pending, 0,
           priv->invited
@@ -3814,6 +3849,9 @@ gabble_muc_channel_send_chat_state (GObject *object,
   GabbleMucChannelPrivate *priv = self->priv;
   TpBaseChannel *base = TP_BASE_CHANNEL (self);
 
+  if (priv->have_received_error_type_wait)
+    return TRUE;
+
   return gabble_message_util_send_chat_state (G_OBJECT (self),
       GABBLE_CONNECTION (tp_base_channel_get_connection (base)),
       WOCKY_STANZA_SUB_TYPE_GROUPCHAT, state, priv->jid, error);
@@ -3985,7 +4023,7 @@ gabble_muc_channel_start_call_creation (GabbleMucChannel *gmuc,
    * address; and finally TpBaseChannel pastes the connection path back on. :)
    */
   prefix = tp_base_channel_get_object_path (base) +
-      strlen (base_conn->object_path) + 1 /* for the slash */;
+      strlen (tp_base_connection_get_object_path (base_conn)) + 1 /* for the slash */;
 
   /* Keep ourselves reffed while call channels are created */
   g_object_ref (gmuc);
@@ -4052,7 +4090,7 @@ gabble_muc_channel_request_call_finish (GabbleMucChannel *gmuc,
 
 gboolean
 gabble_muc_channel_handle_jingle_session (GabbleMucChannel *self,
-    GabbleJingleSession *session)
+    WockyJingleSession *session)
 {
   GabbleMucChannelPrivate *priv = self->priv;
 

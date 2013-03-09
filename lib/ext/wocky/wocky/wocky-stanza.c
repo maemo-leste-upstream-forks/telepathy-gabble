@@ -49,9 +49,10 @@ typedef struct
     WockyStanzaType type;
     const gchar *name;
     const gchar *ns;
+    GQuark ns_q;
 } StanzaTypeName;
 
-static const StanzaTypeName type_names[NUM_WOCKY_STANZA_TYPE] =
+static StanzaTypeName type_names[NUM_WOCKY_STANZA_TYPE] =
 {
     { WOCKY_STANZA_TYPE_NONE,            NULL,
         WOCKY_XMPP_NS_JABBER_CLIENT },
@@ -79,6 +80,16 @@ static const StanzaTypeName type_names[NUM_WOCKY_STANZA_TYPE] =
         WOCKY_XMPP_NS_STREAM },
     { WOCKY_STANZA_TYPE_UNKNOWN,         NULL,        NULL },
 };
+
+static void
+fill_in_namespace_quarks (void)
+{
+  int i;
+
+  /* We skip the first entry as it's NONE */
+  for (i = 1; type_names[i].type != WOCKY_STANZA_TYPE_UNKNOWN; i++)
+    type_names[i].ns_q = g_quark_from_static_string (type_names[i].ns);
+}
 
 typedef struct
 {
@@ -147,6 +158,8 @@ wocky_stanza_class_init (WockyStanzaClass *wocky_stanza_class)
 
   object_class->dispose = wocky_stanza_dispose;
   object_class->finalize = wocky_stanza_finalize;
+
+  fill_in_namespace_quarks ();
 }
 
 static void
@@ -299,10 +312,9 @@ wocky_stanza_new_with_sub_type (WockyStanzaType type,
  * @...: the description of the stanza to build,
  *  terminated with %NULL
  *
- * Build a XMPP stanza from a list of arguments.
- * Example:
+ * Build a XMPP stanza from a list of arguments. For example, the following invocation:
  *
- * <example><programlisting>
+ * |[
  * wocky_stanza_build (
  *    WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
  *    "alice@<!-- -->collabora.co.uk", "bob@<!-- -->collabora.co.uk",
@@ -314,8 +326,11 @@ wocky_stanza_new_with_sub_type (WockyStanzaType type,
  *      WOCKY_NODE_END,
  *    WOCKY_NODE_END,
  *   NULL);
- * <!-- -->
- * /<!-- -->* produces
+ * ]|
+ *
+ * produces this stanza:
+ *
+ * |[
  * &lt;message from='alice@<!-- -->collabora.co.uk' to='bob@<!-- -->collabora.co.uk'&gt;
  *   &lt;html xmlns='http://www.w3.org/1999/xhtml'&gt;
  *     &lt;body textcolor='red'&gt;
@@ -323,14 +338,13 @@ wocky_stanza_new_with_sub_type (WockyStanzaType type,
  *     &lt;/body&gt;
  *   &lt;/html&gt;
  * &lt;/message&gt;
- * *<!-- -->/
- * </programlisting></example>
+ * ]|
  *
  * You may optionally use mnemonic ASCII characters in place of the build tags,
  * to better reflect the structure of the stanza in C source. For example, the
  * above stanza could be written as:
  *
- * <example><programlisting>
+ * |[
  * wocky_stanza_build (
  *    WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
  *    "alice@<!-- -->collabora.co.uk", "bob@<!-- -->collabora.co.uk",
@@ -340,7 +354,7 @@ wocky_stanza_new_with_sub_type (WockyStanzaType type,
  *      ')',
  *    ')'
  *   NULL);
- * </programlisting></example>
+ * ]|
  *
  * Returns: a new stanza object
  */
@@ -418,8 +432,10 @@ wocky_stanza_build_va (WockyStanzaType type,
 }
 
 static WockyStanzaType
-get_type_from_name (const gchar *name)
+get_type_from_node (WockyNode *node)
 {
+  const gchar *name = node->name;
+  GQuark ns = node->ns;
   guint i;
 
   if (name == NULL)
@@ -429,6 +445,7 @@ get_type_from_name (const gchar *name)
   for (i = 1; i < WOCKY_STANZA_TYPE_UNKNOWN; i++)
     {
        if (type_names[i].name != NULL &&
+           ns == type_names[i].ns_q &&
            strcmp (name, type_names[i].name) == 0)
          {
            return type_names[i].type;
@@ -464,15 +481,32 @@ wocky_stanza_get_type_info (WockyStanza *stanza,
     WockyStanzaType *type,
     WockyStanzaSubType *sub_type)
 {
+  WockyNode *top_node;
+
   g_return_if_fail (stanza != NULL);
-  g_assert (wocky_stanza_get_top_node (stanza) != NULL);
+
+  top_node = wocky_stanza_get_top_node (stanza);
+  g_assert (top_node != NULL);
 
   if (type != NULL)
-    *type = get_type_from_name (wocky_stanza_get_top_node (stanza)->name);
+    *type = get_type_from_node (top_node);
 
   if (sub_type != NULL)
-    *sub_type = get_sub_type_from_name (wocky_node_get_attribute (
-          wocky_stanza_get_top_node (stanza), "type"));
+    *sub_type = get_sub_type_from_name (
+        wocky_node_get_attribute (top_node, "type"));
+}
+
+gboolean
+wocky_stanza_has_type (WockyStanza *stanza,
+    WockyStanzaType expected_type)
+{
+  WockyStanzaType actual_type;
+
+  g_return_val_if_fail (WOCKY_IS_STANZA (stanza), FALSE);
+
+  wocky_stanza_get_type_info (stanza, &actual_type, NULL);
+
+  return expected_type == actual_type;
 }
 
 static WockyStanza *
@@ -689,11 +723,7 @@ gboolean
 wocky_stanza_extract_stream_error (WockyStanza *stanza,
     GError **stream_error)
 {
-  WockyStanzaType type;
-
-  wocky_stanza_get_type_info (stanza, &type, NULL);
-
-  if (type != WOCKY_STANZA_TYPE_STREAM_ERROR)
+  if (!wocky_stanza_has_type (stanza, WOCKY_STANZA_TYPE_STREAM_ERROR))
     return FALSE;
 
   g_propagate_error (stream_error,

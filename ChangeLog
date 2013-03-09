@@ -1,3 +1,1420 @@
+commit 39aa8ff053de4d127af69bdbe2e896a4f098b284
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-03-01 16:45:42 +0000
+
+    Update Wocky to fix distcheck
+
+commit f831ac1e20cdc9212ffae24fadd38621e735d61b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-03-01 15:16:04 +0000
+
+    Version 0.17.3
+
+commit e5ff011d3d17cef59e48f47f06f3adae91d9b657
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-03-01 15:15:52 +0000
+
+    NEWS for 0.17.3
+
+commit 675565c73c265b7a545f45165ed97299890453fc
+Merge: 73c8044 ff28128
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-03-01 15:11:53 +0000
+
+    Merge branch 'telepathy-gabble-0.16'
+    
+    Conflicts:
+    	NEWS
+    	configure.ac
+    	lib/ext/wocky
+
+commit 73c80443fd8594212f1a0f9fb8a99a0a4d691dbc
+Merge: 0bffd2d fa8be7c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-03-01 15:09:04 +0000
+
+    Merge branch '43166-muc-rate-limit'
+
+commit ff28128c7699b7fee5757a742f07b4cf9c98764c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-03-01 15:02:50 +0000
+
+    Bump nano-version to 0.16.5.1
+
+commit ed05203947880a0f4c45a7f95316e4cc28b23442
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-03-01 12:24:16 +0000
+
+    Version 0.16.5
+
+commit 4882535eeeb5843e26dd2b6f0aeaff3f201cbfe6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-03-01 09:16:25 +0000
+
+    NEWS for 0.16.5
+
+commit 110c5af4da0dfd7cd658a1d12047f0dbc79ae2d6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-25 09:51:22 +0000
+
+    Update Wocky snapshot to fix 61433
+
+commit fa8be7c05185ce92696a5771b556e70b8eb99a00
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-22 08:31:18 +0000
+
+    MUC: stop sending chat states after <error type=wait>
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=43166#c0
+
+commit f843f499be4c16683a4a5b054a5bf747254b2050
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-22 08:16:23 +0000
+
+    muc/chat-states: fix and uncomment commented chunk
+    
+    This didn't work as-is because the <presence type='unavailable'> had no
+    <x> child. Using make_muc_presence() does the job nicely.
+
+commit 114c5bc092a9645ecb26cb3310b01d6c8fc08cbc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-22 08:15:30 +0000
+
+    muc/chat-states: tidy up checking message bodies
+
+commit 62fa6bd989afaec604f420692e10e7716a28496c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-15 08:57:14 +0000
+
+    muc: test resource-constraint is exposed reasonably
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=43166#c7
+
+commit cc90a503a9a9ef4aab30b60512f3129de0c0b752
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-20 09:26:39 +0000
+
+    Test Prosody's MUC's rate limit is exposed correctly now
+    
+    There were a combination of problems before:
+    
+    * The server's error message was not exposed in the delivery report;
+    * Wocky didn't recognise policy-violation;
+    * There was a bug in Wocky's error parsing code which clobbered the
+      message type.
+    
+    So many bugs for such a small stanza!
+
+commit 96e5379434adde498624517188be9183e3d4a443
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-20 09:19:56 +0000
+
+    Map policy-violation to Send_Error_Permission_Denied
+    
+    This code is used by prosody's MUC rate-limiter.
+
+commit 21b752bf71edc6889161dca905c3c8300c254355
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-20 09:15:04 +0000
+
+    Update Wocky snapshot
+    
+    The improvements are:
+    
+    * A new error code, WOCKY_XMPP_ERROR_POLICY_VIOLATION, added in RFC 6120
+      and used by Prosody's MUC rate-limiting;
+    * Fixes to the error parsing code when error conditions are not
+      recognised;
+    * Tweaks to WockyMuc's error signals to include the full GError and
+      WockyXmppErrorType in both.
+
+commit 8f315a9dc0e575375a8e592bf84591bdec64afc0
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-15 08:55:25 +0000
+
+    muc-channel: include error message in delivery reports
+
+commit 717c765b11fe101d9f32bb352f0377ccc762726d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-15 08:56:42 +0000
+
+    muc/send-error: refactor
+    
+    There will be more cases shortly
+
+commit f842fbbb1c09cbb60c379006958f178e7f2d34aa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-15 08:39:36 +0000
+
+    muc-channel: pass full error into _receive
+
+commit e80923ff9fb329d39962e4fdb7ba800a1f2a2cb3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-15 08:21:11 +0000
+
+    muc-channel: pull extracting stanza errors up
+    
+    Really, WockyMuc::message-error should give the error text too, not just
+    the error code, but we'll come to that.
+
+commit 0bffd2d8302d81a804f5186f17445abae16b1d85
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-02-12 10:21:54 +0000
+
+    tests: don't block on Disconnect() without sending </stream>
+    
+    These three tests were making blocking calls to Disconnect() rather than
+    using the disconnect_conn() helper. As a result, Gabble was waiting 5
+    seconds for the test server to send back </stream:stream> before timing
+    out. Using disconnect_conn(), which sends the stream close back
+    properly, shaves between 15 and 18 wasted seconds off the test suite.
+
+commit 0d65aee3d0c72ebf4c2713945524ae5b80e01c08
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-01-17 12:51:22 +0000
+
+    NEWS for the Jingle code moving to Wocky
+
+commit 1741adad14a19046aaea8109751d6f7680df0631
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-01-16 10:41:32 +0000
+
+    Update Wocky snapshot for wocky.h with Jingle headers
+
+commit 1cdfcf9b9be0b76c3c9fc2cc98683f9e10a8f8a8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-01-08 15:09:19 +0000
+
+    Remove reference to GabbleMediaSessionMode
+    
+    This enum is obsolete.
+
+commit e9cc205c266f628e74c47b4a1bb949be8cc4b8c3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-12 16:08:34 +0000
+
+    Delete all the Jingle code which moved to Wocky
+    
+    The astute reader will notice that I added a call to
+    jingle_share_register() to jingle-mint.c.
+
+commit f91a1063b57b8b50bd3301633e8620051be2e906
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-12 15:25:15 +0000
+
+    Update Wocky snapshot to contain Jingle code!
+
+commit 8bb1176913d7bbb7beaf63c61b3f95dcc4b8c3a5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-11 16:43:39 +0000
+
+    jingle-types: Remove reference to GabbleJingleShare
+    
+    This isn't getting moved into Wocky.
+
+commit 3936c9dfd5e184abc9d807be8582657aaed81c9a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-11 15:09:14 +0000
+
+    jingle-transport-iface: fix header comments
+
+commit efc093b82db19196d66e02100316295c0cc7e92e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-02-21 16:11:32 +0000
+
+    Rename most of GabbleJingle* to WockyJingle*
+    
+    This renames the classes I'm moving to Wocky, and updates all the
+    remaining code to cope. A few things are missed out because it's only
+    reasonable to change them when the code is in Wocky:
+    
+    • GABBLE_TYPE_STUN_SERVER_SOURCE (the GEnum for WockyStunServerSource)
+      can't be renamed easily because it is generated by Gabble's enumtype
+      thing.
+    • GABBLE_DEBUG_MEDIA.
+    
+    Here's the program I used, for posterity.
+    
+        #!/usr/bin/perl -pi
+        use strict;
+        BEGIN {
+            undef $/;
+        }
+    
+        my @Classes = qw(Factory Session Transport_Iface Transport_IceUdp
+                         Transport_RawUdp Transport_Google Content Info
+                         Media_Rtp Relay);
+        for my $Class (@Classes) {
+            my $FullClass = "Jingle$Class";
+            $FullClass =~ s/_//g;
+    
+            my $under_class = "jingle_" . lc($Class);
+            my $UNDER_CLASS = uc($under_class);
+            s/Gabble$FullClass/Wocky$FullClass/g;
+            s/gabble_$under_class/wocky_$under_class/g;
+            s/GABBLE_$UNDER_CLASS/WOCKY_$UNDER_CLASS/g;
+            s/GABBLE_TYPE_$UNDER_CLASS/WOCKY_TYPE_$UNDER_CLASS/g;
+            s/GABBLE_IS_$UNDER_CLASS/WOCKY_IS_$UNDER_CLASS/g;
+        }
+        s/GabbleGoogleRelay/WockyGoogleRelay/g;
+        s/gabble_google_relay/wocky_google_relay/g;
+        s/GABBLE_N_JINGLE_RELAY_TYPES/WOCKY_N_JINGLE_RELAY_TYPES/g;
+    
+        s/gabble_stun_server/wocky_stun_server/g;
+        s/GABBLE_STUN_SERVER/WOCKY_STUN_SERVER/g;
+        # Can't rename GABBLE_TYPE_STUN_SERVER_SOURCE because it's generated. Blah.
+        s/GabbleStunServer/WockyStunServer/g;
+    
+        my @Blah_Blah = qw(Candidate State Action Content_Senders Transport_Type
+                           Transport_Protocol Candidate_Type Reason
+                           Transport_State Dialect Content_State Media_Type Codec
+                           Media_Description Feedback_Message Rtp_Header_Extension
+                           Media_Profile);
+    
+        for my $Class (@Blah_Blah) {
+            my $FullClass = "Jingle$Class";
+            $FullClass =~ s/_//g;
+    
+            my $under_class = "jingle_" . lc($Class);
+            my $UNDER_CLASS = uc($under_class);
+            s/\b$FullClass/Wocky$FullClass/g;
+            s/\b_$FullClass/_Wocky$FullClass/g;
+            s/\b$under_class/wocky_$under_class/g;
+            s/\b$UNDER_CLASS/WOCKY_$UNDER_CLASS/g;
+        }
+    
+        s/MAX_JINGLE_STATES/WOCKY_N_JINGLE_STATES/g;
+        s/JINGLE_IS_GOOGLE_DIALECT/WOCKY_JINGLE_DIALECT_IS_GOOGLE/g;
+
+commit 0f1435f548071f873d7626643f250b04b53931c9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-07 19:31:31 +0000
+
+    Bump nano-version to 0.17.2.1
+
+commit 301a588cbac0745f5f737c0d8d3e45d69e88dddf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-07 18:53:18 +0000
+
+    Version 0.17.2
+
+commit bf5dcce04b9063c9482def3041dd80b79d47f5b7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-07 16:13:16 +0000
+
+    tests: don't crash in verbose mode on unicode in stanzas
+    
+    We have this hack that sets __repr__ on domish.Element to call its
+    toXml() method, which ends up being used by the verbose logging code
+    when it dumps all of an event's attributes. Unfortunately, this blows up
+    if a stanza contains non-ASCII characters, because repr() tries to
+    convert unicode to str using .encode('ascii').
+    
+    This made running jingle/test-send-file in verbose mode fail, because
+    the file being sent by the test has a non-ASCII filename. The fix is to
+    make the __repr__ hack escape non-ASCII characters using the
+    unicode-escape codec.
+
+commit 55930f39965c9d9ba356aaba4a24fe4f687a5d3d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-07 12:59:12 +0000
+
+    NEWS for 0.17.2 to date.
+
+commit 51e301d6366e7e5f0f203f19fd594cef27ae05db
+Merge: c33a817 52beb82
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-06 18:35:37 +0000
+
+    Merge branch 'xep-0184'
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=47378
+
+commit 52beb82932c6c31f43e6b4465a22f5543cff1d06
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-01 15:55:35 +0000
+
+    Advertise support for message receipts
+
+commit a997153f14872719d9be2a0947b58ab29e1ec3a1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-01 15:54:57 +0000
+
+    Add missing cap for jabber:iq:last
+
+commit 70765bfe80f49dabe5396d8be50fa61daf66b705
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-10-31 23:32:41 +0000
+
+    Test all this receipt stuff.
+    
+    I did write this test as I went along, but I forgot to commit it.
+    Whoops.
+
+commit 121fa91e6939dca982e631d104405cb2735b1ecb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-10-31 23:06:04 +0000
+
+    im-channel: send delivery reports when requested...
+    
+    ...and the sender is able to see that we are online, is not blocked, and
+    so on. This is not a presence leak: all this allows the peer to do that
+    they cannot already do is determine that our internet connection has not
+    died without our server noticing.
+    
+    Sending a receipt as soon as the message is signalled to the UI, rather
+    than after it's acknowledged, is absolutely compliant with XEP-0184 §4:
+    
+    > Finally, this protocol does not enable the sender to know that the intended
+    > recipient has read the message[, ...] that an end user client has
+    > presented the message to a human user (if any), etc.
+
+commit 4af3fe1066bfd36894fb10f80148269ed94d6c11
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-10-31 23:04:22 +0000
+
+    roster: obey blocked-ness in gets_presence_from_us
+    
+    This should be irrelevant because blocked contacts shouldn't be able to
+    send us anything which would cause us to send back a reply (eg.
+    jabber:iq:last would be blocked by our server), but just to reassure the
+    reader.
+
+commit 6077e9b79db0b7a36bc581f4dd049030289cdf72
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-10-31 22:52:52 +0000
+
+    im-channel: clean up obsolete docstring
+    
+    In 574d146 I removed the “magical adventure” aspect of
+    _gabble_im_channel_receive().
+
+commit ee3a7d4deec58856d7d1a01ad71157a9b88185b8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-10-31 22:44:07 +0000
+
+    Support requesting delivery reports when asked to.
+
+commit a990012f6e48af641686741ea52506230cdcaaad
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-10-31 20:19:18 +0000
+
+    Emit delivery reports for XEP-0184 receipts.
+
+commit c33a817b5bcf9f6bec7c744e4c5a3f0b96df4118
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-20 17:46:50 +0000
+
+    Don't crash on <success> after closing auth channel.
+
+commit a743f0475e440b8b9712df20bb8d997ff6f23177
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-20 16:21:30 +0000
+
+    tests: add a couple more cases to sasl/abort
+    
+    There's no reason these should be any different, but I thought it might
+    be worth trying them anyway.
+
+commit be0be56f6c097f1a54c64421303dfeb3b930d7a6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-20 16:06:17 +0000
+
+    Don't crash on <challenge> after closing auth channel
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=52146
+
+commit e33a5de2806bcf63543fdabb3e8607e9d699ca1c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-20 16:02:04 +0000
+
+    auth-manager: clarify _challenge_async()
+    
+    Keeping our own GSimpleAsyncResult rather than leaving it up to the
+    channel means _finish() doesn't have to worry about what happens if the
+    channel closes.
+    
+    The g_assert_not_reached () is not safe, but is equivalent to the
+    previous behaviour (wrongly chaining up to the parent class makes it
+    assert). Next, a fix…
+
+commit 9854f7cb36f71093855af32747aea0031679cf6a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-20 14:45:13 +0000
+
+    auth-manager: propagate failure both up and across
+    
+    If we're delegating up to Wocky's internal SASL machinery, it might want
+    to know about the handshake failing.
+    
+    If a SASL channel is open, we should let it know so that it can let its
+    handler know that the handshake failed.
+    
+    If we're using X-TELEPATHY-PASSWORD, both these conditions are true.
+
+commit 5077f330e3c43d6b0ad5747a4151f9b8492cb21f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-20 14:09:42 +0000
+
+    auth-manager: rename 'falling_back' field to 'chaining_up'
+
+commit 37cbec4ae810668e08764fd5f364708cd6f4c766
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-20 14:09:19 +0000
+
+    auth-manager: ensure falling_back is TRUE when we're chaining up
+
+commit 6b8656685c4c640a4e753cc94379b87a2ffbfadf
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-20 14:04:50 +0000
+
+    auth-manager: simplify chaining up in _start_auth_async()
+    
+    Rather than using whether or not priv->channel is NULL in
+    _start_auth_finish() to determine how to handle the result, let's always
+    keep our own GSimpleAsyncResult.
+    
+    In this case it doesn't matter very much, because priv->channel in
+    practice can't become NULL in the gap between the callback being called
+    and Wocky calling _start_auth_finish(). In the other cases it does
+    matter, and causes crashes. I'll be fixing those next.
+
+commit 8fd563ccf66e89aaa20bb37f397aa21b23b7d012
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-19 18:00:52 +0000
+
+    auth-manager: save GError from channel when it closes
+
+commit 2b05a3888537cda55710c804d79010677456e503
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-19 17:56:55 +0000
+
+    sasl-channel: stash a GError when Close()d
+
+commit 2dcfd322daa652c4aeb5adbf7b523e5cd36c8309
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-19 17:51:23 +0000
+
+    sasl-channel: stash a GError in more cases.
+
+commit 84e56d9c2c1c1ec20c8228c887140149dad3c07a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-19 17:25:11 +0000
+
+    sasl-channel: split changing state and setting errors
+
+commit d096c9b10d5c0d7787dccd05cd3dae23ffed99a4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-13 18:02:15 +0000
+
+    sasl-channel: don't crash on Abort() then <challenge>
+
+commit 0d347435075681741a6ffba1b75fdeb147e63143
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-13 17:53:30 +0000
+
+    sasl-channel: refactor completing operations to a function
+
+commit a4a45536a7a3c3b489d8f229e6305b014e18e983
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-06 18:11:45 +0000
+
+    Add commented-out regression tests for fd.o#52146
+    
+    test_close_then_challenge() and test_close_then_success() each trigger
+    similar bugs.
+    
+    test_abort_then_challenge() and test_abort_then_success() both trigger
+    the same bugs by a different route, which I don't think my first attempt
+    at fixing the original bug would have caught.
+    
+    test_close_then_failure() and test_abort_then_failure() pass, and are
+    here for completeness.
+
+commit 05c044cc47d87222176aee3bfdc278d176d93abe
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-13 16:47:05 +0000
+
+    sasl/abort: clean up common test code
+
+commit ea9c62166997004b97dc4a044d44df57ea4c9d91
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-06 17:51:52 +0000
+
+    sasl/abort.py: clean up invoking test cases
+
+commit 19b535ebbacf6cc20c0c3fe82cf51815e391f362
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-13 17:13:43 +0000
+
+    gabbletest: exit if we can't connect to the bus
+    
+    Previously, if the bus wasn't there (perhaps I killed it when trying and
+    failing to ^C the test suite?) the test would just sit there forever
+    after the unhandled exception made its way up to the mainloop.
+
+commit 13470c3c4f1602190bcf427911ceb6bb784d9cda
+Merge: d2db709 204d30f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-06 17:37:01 +0000
+
+    Merge branch 'vcard-manager-use-nodes'
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=57603
+
+commit 204d30fa664a2fde56529f451348c457a6e8a57a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 10:37:37 +0000
+
+    vcard-manager: find no-op replacements with wocky_node_equal
+    
+    By representing the replacement we have in mind as a WockyNode[Tree], we
+    don't have to reimplement the comparison.
+
+commit dbe5edf811d8585866eb4ac605676963a7f19601
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 10:27:40 +0000
+
+    vcard-manager: represent new node tree as a node tree.
+
+commit 1327065e89774ae1f7ffe07dcc473f21d4bdac60
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 09:46:00 +0000
+
+    vcard-manager: refactor applying edits
+    
+    I found it incredibly hard to follow the old structure; a despatch table
+    with one function per case is much clearer, albeit a little longer.
+
+commit ad66082f7e91932db4b8cdd07941951c4d6174f7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 17:13:35 +0000
+
+    vcard-manager: don't repeatedly copy while editing
+    
+    Previouly, the entire <vCard> would be copied for every single edit in
+    the queue, which is dumb: we can just make a copy, patch it according to
+    each edit, and send it if it's changed.
+
+commit f7baa0f159e36f0f859fecca4e2af726ac1a6553
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 17:08:29 +0000
+
+    vcard-manager: fix is_significant()
+    
+    gabble_vcard_manager_replace_is_significant() is meant to check whether
+    we're actually changing a value, but in fact it basically always claimed
+    we're not, because it forgot to make a note of whether it's seen the
+    relevant element.
+    
+    By fixing this, we can remove a redundant check at the end of
+    gabble_vcard_manager_edit_info_apply().
+
+commit dbd66dd645e5e17f8915cce28163f7ba34dba73f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 17:00:28 +0000
+
+    vcard-manager: clarify commentary in CLEAR path
+
+commit de157563532a3196dc55a14ee9e3887a4529ec4b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 16:58:48 +0000
+
+    Test ClearAvatar()
+    
+    I wasn't sure from reading the code that this actually worked any more,
+    and it wasn't tested. I'm happy to say that it does work.
+
+commit 2deced34fe350538fceb9ca8775f0cd8f91ddc15
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 16:43:43 +0000
+
+    vcard-manager: split up gargantuan edit_info_apply()
+
+commit b4604cc6017a7426f716ac4664ccd82b10bad1aa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 15:11:25 +0000
+
+    vcard-manager: copy vcards using WockyNodeTree.
+    
+    This is actually less efficient than what was there before, because it
+    copies the tree twice. I think this is symptomatic of Gabble's edit
+    representation being wrong.
+
+commit 9f3562e849f56bb3ecfbdf985722db3deeb00a40
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 16:01:19 +0000
+
+    Update Wocky snapshot for beautiful new node API
+
+commit 5497c9d72b41b47c0e2bc7c6c2ec1bec8bca14be
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 14:38:30 +0000
+
+    vcard-manager: use WockyNodeTree to copy vCard nodes
+    
+    There's actually another implementation of copying a node tree in this
+    file which is a little more involved. I wasn't going to touch it when I
+    thought there was just one, but finding TWO…
+
+commit 202014297342e5ba2361879734c6784f71b2cd54
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 13:51:54 +0000
+
+    vcard-manager: add children more neatly
+
+commit 7ff6d247658199261df73db47b0216fd53a05c09
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 16:09:30 +0000
+
+    ft-channel: add metadata forms a bit less stupidly
+
+commit d2db709101b0784e8689433ec547cb826f469a6b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 23:35:58 +0000
+
+    conn-presence: stop using _gabble_connection_send_with_reply()
+    
+    _gabble_connection_send_with_reply() does not call its callback if it
+    doesn't get a reply. This means all these cases were leaking the
+    GSimpleAsyncResult if the connection died while the IQ was in flight.
+
+commit 9687c65355f885bc17d7f5f6c849c5f333397021
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 18:40:29 +0000
+
+    Regression test for malformed privacy list replies
+
+commit 86ba1bdac4b88ae23b5f37e349afabacb840f03c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 18:07:56 +0000
+
+    Tidy up privacy list test very slightly
+
+commit 2c1e66315f34380a387ea11a81c227066c38e204
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 18:06:44 +0000
+
+    Regression test for 57521
+
+commit c7d2dfbe19eb5a3c1c9dfbefa61fb48b3416e064
+Merge: 3fe57e7 3b10a7f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-06 16:28:34 +0000
+
+    Merge branch 'telepathy-gabble-0.16'
+
+commit 3b10a7f1b0fcb728210eb12231df8b1a4c289c3b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 18:40:06 +0000
+
+    privacy lists: don't crash on malformed replies
+
+commit 0d908c122903a384882eff7de0e9ec6d6058d661
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 17:45:51 +0000
+
+    Don't crash when creating invisible privacy list fails.
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=57521
+
+commit 3fe57e731b2518e22ba21efb4d16f50564363a2f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-03-29 15:27:11 +0100
+
+    bytestream-socks5: send empty offer if we can't initiate.
+    
+    This looks pretty ridiculous, so needs some explanation. If you have no
+    network connection (suppose you're on a train, testing tubes using
+    Prosody on localhost), then get_local_interfaces_ips() returns NULL
+    (the loopback interface is explicitly skipped). So previously, after the
+    recipient has accepted the tube, gabble_bytestream_socks5_initiate()
+    would fail for the initiator. bytestream-multiple doesn't fall back if
+    it fails immediately; so the whole bytestream-establishment fails. The
+    initiator's tube channel would close, but no stanza gets sent to the
+    peer to tell it to stop waiting for the bytestream offer, so it's just
+    hanging there waiting forever.
+    
+    Just making bytestream-multiple fall back immediately doesn't help,
+    because the peer is still expecting a SOCKS5 offer, rather than a
+    in-band bytestream offer, so rejects it. Unlike Jingle, SI doesn't have
+    a way to cancel an offer once it's been accepted but before the
+    transport has been negotiated. So… if we send the peer an empty offer,
+    they'll send back an error, and both sides know to fall back (if they
+    understand bytestream-multiple) or give up (if not).
+    
+    There is no test case for this, because it's difficult to make
+    get_local_interfaces_ips() or gibber_listener_listen_tcp() fail from the
+    test suite. I tested it with a pair of simple D-Bus tube clients and no
+    network connection, and/or hacking get_local_interfaces_ips() to always
+    return NULL.
+    
+    Although this trick is schema-compliant
+    <http://xmpp.org/extensions/xep-0065.html#schema>, it's not compliant
+    with the wording of XEP-0065. Quoth §5.3.1
+    <http://xmpp.org/extensions/xep-0065.html#direct-proto-initiate>:
+    
+    > The <query/> element MUST contain one or more <streamhost/> elements,
+    > each of which MUST possess the 'host', 'jid', and 'port' attributes.
+    
+    But it also says:
+    
+    > If the request is malformed …, the Target MUST return an error of
+    > <bad-request/>.
+    
+    So this should work with any (robust) implementation.
+    
+    The option would be to (try to) start listening before sending the
+    SI offer—if it fails, don't offer to use SOCKS5 bytestreams.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=48050
+
+commit dfe1f729d0026ee72202f43733d9d3376b9d8447
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-03-29 13:45:47 +0100
+
+    bytestream_factory_negotiate_stream(): don't pass stream id to callbacks
+    
+    None of them use it, so…
+
+commit 6f95a1e49fb7e59eeeb3d4581e678a6c3141868d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-03-29 13:41:25 +0100
+
+    bytestream_factory_negotiate_stream(): remove return value
+    
+    It's always TRUE, so it's unneeded.
+
+commit aacafd899c775acada617c61c0418ba25166e274
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-03-29 13:35:29 +0100
+
+    bytestream_factory_negotiate_stream(): use send_iq_async
+    
+    This clarifies that this function can never fail, which can be the next
+    thing we clean up…
+
+commit a6dcef8cd434e05ffbdb569ecdceca68cd2bc04a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-03-29 13:29:04 +0100
+
+    bytestream-factory: stop NIHing TpWeakRef
+    
+    Step one in cleaning up gabble_bytestream_factory_negotiate_stream() is
+    to simplify its context structure.
+
+commit 191c3fbfa4f5309227e664273cd8b300871b04b9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-03-29 13:06:24 +0100
+
+    Split gabble_bytestream_socks5_initiate() in two
+    
+    This more clearly separates the code which sets up the listener (which
+    can fail) and the subsequent code to transmit IP addresses to the peer
+    (which cannot fail), I think.
+
+commit a188bd209fc34195a0ccd2d12485c1da68265299
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-03-29 11:56:58 +0100
+
+    bytestream-socks5: stop using _conn_send_with_reply
+    
+    This makes it clearer that gabble_bytestream_socks5_initiate() can only
+    fail synchronously for local reasons.
+    _gabble_connection_send_with_reply() only returns FALSE if we have no
+    porter; but from the moment we go to state CONNECTED (before which you
+    can't request channels) to the moment the connection is disconnected, we
+    do have a porter.
+
+commit 0adea4c2574e53a687e20177175c18a5ce038767
+Merge: d5b1bc6 89239d4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-06 12:43:41 +0000
+
+    Merge branch '57546-there-can-be-only-one-jingletest'
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=57546
+
+commit d5b1bc6cc7d76aa32bd441703c2da72213fa33ea
+Merge: de8905b 6bc2931
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-06 12:30:46 +0000
+
+    Merge branch '57615-misc-cleanup'
+
+commit de8905b5bb098c6f0468e9a2856006d1583ad80c
+Merge: b735dc9 fbd33aa
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-06 12:26:28 +0000
+
+    Merge branch '25961-stun-srv'
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=25961
+    https://bugs.freedesktop.org/show_bug.cgi?id=25385
+
+commit b735dc9c1320b9a6c206a0856758c60c130428a8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-06 12:04:17 +0000
+
+    test-multift: clean up a bit
+
+commit dd3d88b53132946ed313da29e30523761e4f9fcd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-06 11:55:14 +0000
+
+    test-multift: don't rely on q.expect timing out
+    
+    Previously, this test checked that events didn't happen by waiting for
+    them to happen, asserting if they did, and catching the TimeoutError
+    which occurred if they didn't.
+    
+    But it's more obvious what's happening to forbid the event, take all the
+    actions, and then sync the stream to make sure it hasn't appeared. Plus,
+    it shaves 6 seconds off the test.
+
+commit 57ba5c87466279069bf332006e2d0947c4807633
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-12-06 11:18:15 +0000
+
+    Fix file transfer tests for these new interfaces
+
+commit cf1795dec89679ec14cf8d48d0826d616299a654
+Author: Daniele E. Domenichelli <daniele.domenichelli@gmail.com>
+Date:   2012-11-29 15:16:01 +0100
+
+    Export o.f.T.Channel.Type.FileTransfer.FUTURE interface
+
+commit 2bbb612f31af9b8a84f8db44c68aab92a424d92d
+Author: Daniele E. Domenichelli <daniele.domenichelli@gmail.com>
+Date:   2012-11-29 12:45:36 +0100
+
+    Fix o.f.T.Channel.Interface.FileTransfer.Metadata
+    
+    Fixes: fd.o#57267
+
+commit 6bc2931e859d9c23b8d81fede23c0a962514dfae
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 15:40:29 +0000
+
+    Don't use add_child_with_content with NULL/"" content
+    
+    This is harmless, but looks messy. It's leftover clutter from the
+    loudmouth era.
+
+commit 6dacd571ae133e9f8ada918e6222b79c932e0788
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 15:08:04 +0000
+
+    Avoid manually setting WockyNode.ns where sensible.
+    
+    There's still one case in the Jingle code which seems justifiable.
+
+commit 0a7fd199e0ce6b1e67fc18cdae023c9ce9b608b4
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-27 14:45:13 +0000
+
+    jingle-session: tidy up sending content-reject in idle
+
+commit 89239d474941b766d2f41e9ee2a89094a3d4d980
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 09:50:12 +0000
+
+    Remove the olde jingletest
+
+commit 8e19ae80d2696f42fc472440ec10c89bb844d932
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 09:37:02 +0000
+
+    jingle/google-relay: use jingletest2
+
+commit 240e6529fdc298cc399aa78a45947664c6f2c2dc
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 09:34:17 +0000
+
+    jingle/test-wait-for-caps-incomplete: don't use jingletest
+    
+    This test didn't actually use any of the jingle protocol stuff at
+    all—it's just a caps test.
+
+commit 01bd7ab1c9088ce4151cdca32e58585fb95334e1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 09:31:56 +0000
+
+    jingle/test-wait-for-caps-incomplete: unskip half the test
+    
+    The connection doesn't seem to leak any more. I added this in 07822b272
+    because <https://bugs.freedesktop.org/show_bug.cgi?id=29790>. I haven't
+    investigated fully, but the test passes, sooooo... :)
+
+commit d4ffb25c14d5686c9419ece0826fe2e0de9491fe
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 09:20:46 +0000
+
+    jingle/test-wait-for-caps: use jingletest2
+
+commit 4aed845bc67b1d98b6d6f69bc1a5c4dbd2ac4deb
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 09:13:54 +0000
+
+    jingle/stream-handler: use jingletest2
+
+commit d31e229e8bdc3dad3e7d98bf291c103cb4948c8f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 09:10:39 +0000
+
+    jingle/payload-types: use jingletest2
+
+commit c52894a5facb58465bc6933277e16307f978a767
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 09:01:29 +0000
+
+    jingle/payload-types: clean up a bit
+
+commit 7cdccfed7508e5a915dcd62f8936393e67884b56
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 08:56:05 +0000
+
+    jingle/payload-types: remove obsolete FIXME
+
+commit 804cf93f08c79b400cdca43b45895b2922f05464
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-24 13:34:46 +0000
+
+    jingle/outgoing-many-streams: use jingletest2
+
+commit c953579854451a79a005ca2a5663f3230c30efc8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-23 18:47:45 +0000
+
+    jingle/decloak-peer: use jingletest2
+
+commit a6b807a29ec90046327a937c15bfe37e9f1fb6c9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-23 18:36:35 +0000
+
+    jingletest2: make classes new-style
+
+commit fbd33aa489c1d9c129e2815ed86678ceacb0ad0d
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-26 09:46:21 +0000
+
+    jingle/stun-server: use jingletest2
+    
+    In passing, test all dialects. (Though I think this may be a little
+    overzealous.)
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=25385
+
+commit 84b84e7a04cc5e5d4ca51b187f7be6ebf7886062
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-23 17:20:39 +0000
+
+    JingleInfo: add a TODO for Google returning >1 STUN servers
+
+commit 5e5080f7cd7984fb4c62cee1a1856406dc210d0e
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-23 16:29:56 +0000
+
+    tls/server-tls-channel: use with statement when reading certs
+
+commit 783e0913e2c70290ef99b86241fd60478d4abdba
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-23 10:04:08 +0000
+
+    jingle-info: discover a STUN server using SRV
+    
+    Derived from a patch by Mike Ruprecht.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=25961
+
+commit 286eadd02129048ec5c7ee7c693358db5916cf9a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-23 14:17:51 +0000
+
+    jingle-info: don't discard google:jingleinfo pushes.
+    
+    Previously, Google's reply to our original google:jingleinfo query would
+    be used correctly, but the act of passing it to
+    gabble_jingle_info_take_stun_server would set get_stun_from_jingle to
+    FALSE, causing any later calls to got_jingle_info_stanza() to ignore the
+    updated STUN server information.
+    
+    We address this by distinguishing between user-set and server-provided
+    STUN servers, as opposed to just between fallback or not.
+
+commit 149ef25677a0d4cf366c4fd0217f839d5d364ded
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-23 09:56:52 +0000
+
+    jingle/stun-server: pluralize expected stun servers
+
+commit c342df10d1a2e7f04bd40afd46549cc0a9f8ca8c
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-23 09:47:25 +0000
+
+    gabbletest: properly support domains other than @localhost
+    
+    I need to be able to vary the domain to do a variety of STUN SRV tests.
+    Previously, whatever domain Gabble tried to connect as, the server would
+    just bind you back to @localhost. The only test which tried to do
+    something exotic was the Facebook own-message test, and that one seemed
+    to work anyway… oh well!
+
+commit aae6367f43cf9fd509571e52ea87c7bee5d6124f
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-23 15:51:11 +0000
+
+    tests: share more code between XmppAuthenticator subclasses
+
+commit 106749d45b6075798f15c970d8cb44501fb4eced
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-22 18:04:30 +0000
+
+    jingle-info: make get_stun_server plural
+    
+    In practice it still returns at most one server, but just you wait…
+
+commit da988bf629a94eaaa7cd5971705f3aec4b3cb1c5
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-22 17:41:42 +0000
+
+    JingleInfo: refactor google:jingleinfo feature stuff
+
+commit e4396c735cd7ba89ab5131bc345c609d927c2ee6
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-22 16:27:37 +0000
+
+    test-resolver: remove unused field for a real GResolver
+
+commit a12bb8705eb0810b67f83dae7185a182bb1225bd
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-22 16:21:35 +0000
+
+    jingle/stun-server: remove unneeded do_connect=False
+    
+    This used to be needed to ensure that the query Gabble sends right after
+    connecting wasn't swallowed by the expect() calls that gabbletest makes
+    after Connect(). But now that Sjoerd's split the dbus and stream event
+    queues, this is no longer a problem: the only stream event it awaits is
+    stream-authenticated, which is certainly before the jingleinfo query.
+
+commit 98add3fb1749366229fc0c211f0fa939d3dfc267
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-22 16:17:51 +0000
+
+    tests: use partial in a few places for neatness
+
+commit 7852403fa7f216d43fe583a1345cd57eef0ac5a8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-22 14:44:05 +0000
+
+    tests: unduplicate fallback stun server check
+
+commit 8a7399906b40e99b6a0b5b3a7eff0879f7cca361
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-22 14:42:12 +0000
+
+    tests: use ns.GOOGLE_JINGLE_INFO constant
+
+commit ecee60dfc33f05e56eb2d2b34faf188943ff8931
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-23 18:26:20 +0000
+
+    jingle: correctly send back unknown-session errors
+    
+    I broke this in c1be75d9 but it wasn't tested. Luckily
+    WOCKY_JINGLE_ERROR_UNKNOWN_SESSION (2) is a valid WockyXmppError too so
+    we didn't crash before, we just sent <gone> instead.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=33789 is relevant.
+
+commit 1e107a46a34f2251968478052dd4a8239ec2356b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-22 10:44:37 +0000
+
+    Update Wocky snapshot for deconsting G[S]Lists
+
+commit 28ddadbd3a3ce84bf3619d83dee005d320f3a915
+Author: Olivier Crête <olivier.crete@collabora.co.uk>
+Date:   2011-03-01 14:22:37 -0500
+
+    Don't put const before GSList, the g_slist* functions aren't const-marked
+
+commit 1d6c3044f13488e5457a31be631dec8e12068b6b
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-12 14:10:57 +0000
+
+    Update Wocky snapshot to validate stanza namespaces
+    
+    This breaks the console plugin, which checks if an entered stanza is of
+    a known type, but <message xmlns=''> is not the same as <message
+    xmlns='jabber:client'> so Wocky now says the former has type UNKNOWN.
+    The plugin already had some code to fix up empty namespaces, but it's
+    after the type check. For a better fix, I added API to give
+    non-streaming WockyXmppReaders a default namespace, and used it here.
+    
+    In the course of fixing this, I found that telling the console to send
+    this:
+    
+       <message>
+         <body>
+           hai
+        </body>
+      </message>
+    
+    would send this:
+    
+       <message xmlns='jabber:client'>
+         <body xmlns=''>
+           hai
+        </body>
+      </message>
+    
+    which is wrong: the empty namespace was not being fixed up recursively.
+    This is fixed as a side-effect of the default-namespace property, but
+    this patch also adds a test.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=57016
+
+commit b09e286aa47dfafcc0809cee0e4fe97fd87f95c8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-14 15:37:05 +0000
+
+    vcard/set-avatar: improve test
+
+commit e27b7af0d486b80fe370bd9bcbe6e109dfe1aec9
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-14 15:32:42 +0000
+
+    Make line-wrapped base64 allocation clearer
+
+commit fbee99b49de53621a8a5a38534d4cc423296aeef
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-14 15:27:13 +0000
+
+    Add a regression test for line-wrapping avatars
+
+commit eae50abaec48f182b9cbe4cd2d0882f20c04be65
+Author: Alban Browaeys <prahal@yahoo.com>
+Date:   2012-11-13 18:49:17 +0100
+
+    Fix allocation of the string passed to g_base64_encode_step.
+    
+    As per g_base64 documentation the minimum size is :
+    avatar->len / 3 + 1) *4 + 4)
+    and if line breaks are enabled:
+    +  ((avatar->len / 3 + 1) * 4 + 4) / 72 + 1
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=57080
+
+commit 67bbddce3fcc200ba97957963939b770797d68a1
+Merge: 37102bb 89346a8
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-09 17:18:10 +0000
+
+    Merge branch 'telepathy-gabble-0.16'
+    
+    Conflicts:
+    	NEWS
+    	configure.ac
+
+commit 89346a8c8f48add8b090b31a9c63f8239f9bf761
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-09 17:12:48 +0000
+
+    post-release nano-version bump to 0.16.4.1
+
+commit b71ded41ee9ddad4a6b6be85759526dc39c55c79
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-09 16:47:26 +0000
+
+    Version 0.16.4
+
+commit b27c3518e2efd5151a24bbc7232155a32effefa7
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-09 16:47:12 +0000
+
+    NEWS for 0.16.4
+
+commit 37102bbdc665c58cd17dbb635fde31027e5d6111
+Author: Debarshi Ray <rishi@gnu.org>
+Date:   2012-11-09 16:55:42 +0100
+
+    caps-channel-manager: Drop reset_caps, which is now unused
+    
+    Fixes: https://bugs.freedesktop.org/56181
+
+commit 64b405cb025a00c3962a415dd90119771517cf6a
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-06 16:46:44 +0000
+
+    muc_factory_broadcast_presence(): don't crash if disconnected
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=52362 (I hope)
+
+commit 1bd50bc9f5e1cab09b506cea8dd1985b98dfe5e1
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-06 16:46:44 +0000
+
+    muc_factory_broadcast_presence(): don't crash if disconnected
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=52362 (I hope)
+
+commit d300a2e432294c77a55cdc45cd5d7b3f653e13ff
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-05 16:06:06 +0000
+
+    muc-factory: clarify cancelling queued requests.
+
+commit 5f262b5741724c0210f51e07691ba830682f5f25
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-05 15:53:23 +0000
+
+    muc-factory: use find_text_channel function.
+    
+    Reducing the number of places we directly access priv->text_channels
+    will make it easier to do the right thing when it's NULL.
+
+commit 42f4043b305a6e07f8ad87deaf96c6fc6e9f2b59
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-05 15:12:22 +0000
+
+    sidecars: fix enqueuing requests made before connecting
+    
+    tp_base_connection_get_status() returns DISCONNECTED in two states: when
+    the connection is yet to connect (internally, it is in state NEW) and
+    when the connection is defunct. tp_base_connection_is_destroyed() allows
+    us to distinguish the two in this case. This was introduced in commit
+    fde8437 and was caught by gateways.py.
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=55908
+
+commit 8d4226c28153f054afc16d6b7e7d738b5359ee42
+Author: Heiher <admin@heiher.info>
+Date:   2012-11-05 14:29:37 +0000
+
+    Use GLib's base64 implementation rather than Gabble's own
+    
+    (Patch modified to add aggravating signed <-> unsigned casts, and to
+    adjust some tests to cope with GLib appending a trailing newline where
+    Gabble's home-grown line-breaking did not.)
+    
+    Fixes: https://bugs.freedesktop.org/show_bug.cgi?id=54760
+    Signed-off-by: Will Thompson <will.thompson@collabora.co.uk>
+
+commit 1e5c99563e671ca7dece95a1fa66d5a20cb9c722
+Author: Alban Crequy <alban.crequy@collabora.co.uk>
+Date:   2012-02-09 15:12:02 +0000
+
+    test: protocol.py: make the test pass when plugins add new statuses
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=45988
+
+commit 683414706b5f83f193143e4765cd1437698d8fd3
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-05 13:51:44 +0000
+
+    tubes/accept-muc-stream-tube: remove unused imports
+
+commit 4002ab7685dc58053133f3998d31dbc2270f8829
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2012-11-05 13:49:58 +0000
+
+    accept-muc-*-tube.py: accept the list of interfaces in either order
+    
+    The order swapped in commit fde8437a, and in principle it should never
+    have mattered anyway.
+    
+    (Simon noticed this. I changed the patch in response to Jonny's review.)
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=55911
+
+commit e4c126a0ded1eb0c68bdf03d86acd64728c7beb0
+Author: Debarshi Ray <rishi@gnu.org>
+Date:   2012-10-19 16:17:35 +0200
+
+    connection: Don't reset the capabilities in UpdateCapabilities
+    
+    This ensures that a running Gabble process will always create Call1
+    channels once it has seen such a client in its lifetime.
+    
+    Remove gabble_caps_channel_manager_reset_capabilities and its
+    implementation in GabbleMediaFactory, since it is not used anymore.
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=56181
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 3a068ebe96a0586247f4f597877a0dab78b47779
+Author: Debarshi Ray <rishi@gnu.org>
+Date:   2012-10-19 16:17:35 +0200
+
+    connection: Don't reset the capabilities in UpdateCapabilities
+    
+    This ensures that a running Gabble process will always create Call1
+    channels once it has seen such a client in its lifetime.
+    
+    Remove gabble_caps_channel_manager_reset_capabilities and its
+    implementation in GabbleMediaFactory, since it is not used anymore.
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=56181
+    Reviewed-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
+commit 5c161a8c2eea38dd847c7e0c5a30aec529eb68e8
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-09-17 15:10:56 +0100
+
+    update wocky snapshot
+    
+    This is for the WockyConnector::connection-established signal.
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit d2ca56c6a3850e58e66d9dc86eba14aa2a32b53c
+Merge: 373713d 6a82d4d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-09-17 15:08:08 +0100
+
+    Merge branch 'tcp-nodelay'
+
+commit 373713d8c9d5a0a2810e57b5f5033a6b9ac516f2
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-09-11 16:25:35 +0200
+
+    Remove useless tp_handle_unref()
+
+commit fde8437a4c41f20dfe8da2439db73a0008ed4fce
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-09-11 15:36:13 +0200
+
+    Stop accessing sealed tp-glib structs
+
+commit 5fd48d98fe83c974d6e024cf4fcb8735a0016460
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-09-10 17:48:51 +0200
+
+    Disable tp-glib single include
+
+commit 351b8e5f6eae3e7d75479e65173049a8dfa4bd04
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-09-11 12:15:55 +0200
+
+    Prevent post 0.20 tp-glib API usage
+
+commit 9801e21b3489f20f8f6c88e2e40154e8e7da726a
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-09-10 17:47:10 +0200
+
+    Update tools from telepathy-glib
+    
+    I know this adds useless tools, but it's easier to have a raw copy
+    of tp-glib's directory. We should consider using a git submodule tbh.
+
+commit c7fd1d5ef73cf7ef64b54b378ae7940bb5ba369c
+Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
+Date:   2012-09-11 15:58:04 +0200
+
+    Bump nano version
+
 commit 86f15f2e3057dea4fd52ad0840c6b77cf379c47e
 Author: Xavier Claessens <xavier.claessens@collabora.co.uk>
 Date:   2012-09-11 15:54:55 +0200
@@ -214,6 +1631,32 @@ Date:   2012-09-07 15:26:19 +0100
     Turn off deprecation warnings, this is a stable branch
     
     Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 6a82d4dab2a3d89bb15d4e93f9dfe10be609d210
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-08-30 21:27:03 +0100
+
+    only set TCP_NODELAY if GABBLE_NODELAY is set
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 1600f7b3759a095f76754b62de0ad920221bb721
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-05-04 11:34:56 +0100
+
+    gabbletest: set TCP_NODELAY on Twisted's XMPP server socket
+    
+    http://i.imgur.com/mWH7b.jpg
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+
+commit 1420fafea0aa209323f6245afd3f3d9f6452fe8d
+Author: Jonny Lamb <jonny.lamb@collabora.co.uk>
+Date:   2012-05-04 11:34:22 +0100
+
+    debug build: set TCP_NODELAY on sockets that Wocky creates
+    
+    Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
 
 commit e193a39e1272931c9470884a42f1a97655438e9a
 Author: Jonny Lamb <jonny.lamb@collabora.co.uk>

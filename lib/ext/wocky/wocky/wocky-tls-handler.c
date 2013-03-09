@@ -50,6 +50,7 @@ struct _WockyTLSHandlerPrivate {
   gboolean ignore_ssl_errors;
 
   GSList *cas;
+  GSList *crl;
 };
 
 static void
@@ -101,6 +102,13 @@ wocky_tls_handler_finalize (GObject *object)
       g_slist_free (self->priv->cas);
     }
 
+  if (self->priv->crl != NULL)
+    {
+      g_slist_foreach (self->priv->crl, (GFunc) g_free, NULL);
+      g_slist_free (self->priv->crl);
+    }
+
+
   G_OBJECT_CLASS (wocky_tls_handler_parent_class)->finalize (object);
 }
 
@@ -126,7 +134,7 @@ wocky_tls_handler_class_init (WockyTLSHandlerClass *klass)
    * insecurity/expiry etc).
    */
   pspec = g_param_spec_boolean ("ignore-ssl-errors", "ignore-ssl-errors",
-      "Whether recoverable TLS errors should be ignored", TRUE,
+      "Whether recoverable TLS errors should be ignored", FALSE,
       (G_PARAM_CONSTRUCT | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (oclass, PROP_TLS_INSECURE_OK, pspec);
 }
@@ -136,6 +144,10 @@ wocky_tls_handler_init (WockyTLSHandler *self)
 {
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, WOCKY_TYPE_TLS_HANDLER,
       WockyTLSHandlerPrivate);
+
+#ifdef GTLS_SYSTEM_CA_CERTIFICATES
+  wocky_tls_handler_add_ca (self, GTLS_SYSTEM_CA_CERTIFICATES);
+#endif
 }
 
 static void
@@ -286,18 +298,15 @@ wocky_tls_handler_new (gboolean ignore_ssl_errors)
  * @self: a #WockyTLSHandler instance
  * @path: a path to a directory or file containing PEM encoded CA certificates
  *
- * Sensible default paths (under Debian derived distributions) are:
+ * Adds a single CA certificate, or directory full of CA certificates, to the
+ * set used to check certificates. By default, Wocky will check the system-wide
+ * certificate directory (as determined at compile time), so you need only add
+ * additional CA paths if you want to trust additional CAs.
  *
- * * for gnutls:  /etc/ssl/certs/ca-certificates.crt
- * * for openssl: /etc/ssl/certs
- *
- * Certificates my also be found under /usr/share/ca-certificates/...
- * if the user wishes to pick and choose which CAs to use.
- *
- * Returns: a #gboolean indicating whether the path was resolved.
- * Does not indicate that there was actually a file or directory there
- * or that any CAs were actually found. The CAs won't actually be loaded
- * until just before the TLS session setup is attempted.
+ * Returns: %TRUE if @path could be resolved to an absolute path. Note that
+ *  this does not indicate that there was actually a file or directory there or
+ *  that any CAs were actually found. The CAs won't actually be loaded until
+ *  just before the TLS session setup is attempted.
  */
 gboolean
 wocky_tls_handler_add_ca (WockyTLSHandler *self,
@@ -311,10 +320,84 @@ wocky_tls_handler_add_ca (WockyTLSHandler *self,
   return abspath != NULL;
 }
 
+
+/**
+ * wocky_tls_handler_forget_cas:
+ * @self: a #WockyTLSHandler instance
+ *
+ * Removes all known locations for CA certificates, including the system-wide
+ * certificate directory and any paths added by previous calls to
+ * wocky_tls_handler_add_ca(). This is only useful if you want Wocky to
+ * distrust your system CAs for some reason.
+ */
+void
+wocky_tls_handler_forget_cas (WockyTLSHandler *self)
+{
+  g_slist_free_full (self->priv->cas, g_free);
+  self->priv->cas = NULL;
+}
+
+
+/**
+ * wocky_tls_handler_add_crl:
+ * @self: a #WockyTLSHandler instance
+ * @path: a path to a directory or file containing PEM encoded CRL certificates
+ *
+ * Adds a single certificate revocation list file, or a directory of CRLs, to
+ * the set used to check certificates. Unlike for CA certificates, there is
+ * typically no good default path, so no CRLs are used by default. The path to
+ * use depends on the CRL-management software you use; `dirmngr`
+ * (for example) will cache CRLs in `/var/cache/dirmngr/crls.d`.
+ *
+ * Returns: %TRUE if @path could be resolved to an absolute path. Note that
+ *  this does not indicate that there was actually a file or directory there or
+ *  that any CRLs were actually found. The CRLs won't actually be loaded until
+ *  just before the TLS session setup is attempted.
+ */
+gboolean
+wocky_tls_handler_add_crl (WockyTLSHandler *self,
+    const gchar *path)
+{
+  gchar *abspath = wocky_absolutize_path (path);
+
+  if (abspath != NULL)
+    self->priv->crl = g_slist_prepend (self->priv->crl, abspath);
+
+  return abspath != NULL;
+}
+
+
+/**
+ * wocky_tls_handler_get_cas:
+ * @self: a #WockyTLSHandler instance
+ *
+ * Gets the CA certificate search path, including any extra paths added with
+ * wocky_tls_handler_add_ca().
+ *
+ * Returns: (transfer none) (element-type utf8): the paths to search for CA certificates.
+ */
 GSList *
 wocky_tls_handler_get_cas (WockyTLSHandler *self)
 {
   g_assert (WOCKY_IS_TLS_HANDLER (self));
 
   return self->priv->cas;
+}
+
+
+/**
+ * wocky_tls_handler_get_crl:
+ * @self: a #WockyTLSHandler instance
+ *
+ * Gets the CRL search path, consisting of all paths added with
+ * wocky_tls_handler_add_crl().
+ *
+ * Returns: (transfer none) (element-type utf8): the CRL search path.
+ */
+GSList *
+wocky_tls_handler_get_crl (WockyTLSHandler *self)
+{
+  g_assert (WOCKY_IS_TLS_HANDLER (self));
+
+  return self->priv->crl;
 }
