@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>wocky-utils</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-WockyTLSHandler.html" title="WockyTLSHandler">
@@ -92,8 +92,6 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-utils.description"></a><h2>Description</h2>
-<p>
-</p>
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-utils.details"></a><h2>Details</h2>
@@ -105,8 +103,11 @@ Return an absolute form of <em class="parameter"><code>path</code></em>. This cl
 ".." path segments, etc., and prepends <a href="http://library.gnome.org/devel/glib/unstable/glib-Miscellaneous-Utility-Functions.html#g-get-current-dir"><code class="function">g_get_current_dir()</code></a> if necessary, but
 does not necessarily resolve symlinks.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>path</code></em> :</span></p></td>
@@ -131,8 +132,11 @@ Composes a JID from its parts. If <em class="parameter"><code>node</code></em> i
 separator is also omitted; if <em class="parameter"><code>resource</code></em> is empty or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, the '/' separator
 is also omitted.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
@@ -176,8 +180,11 @@ XXX: Do nodeprep/resourceprep and length checking.
 <p>
 See RFC 3920 §3.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
@@ -212,8 +219,11 @@ See RFC 3920 §3.
 <p>
 
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>enum_type</code></em> :</span></p></td>
@@ -247,8 +257,11 @@ to <em class="parameter"><code>nick</code></em> if this functions returns <a hre
 <p>
 
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>enum_type</code></em> :</span></p></td>
@@ -272,15 +285,11 @@ to <em class="parameter"><code>nick</code></em> if this functions returns <a hre
 <div class="refsect2">
 <a name="wocky-g-string-dup"></a><h3>wocky_g_string_dup ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="returnvalue">GString</span></a> *           wocky_g_string_dup                  (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *str</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-g-string-free"></a><h3>wocky_g_string_free ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_g_string_free                 (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *str</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -289,8 +298,11 @@ to <em class="parameter"><code>nick</code></em> if this functions returns <a hre
 <p>
 
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
@@ -316,8 +328,11 @@ Unset and free a slice-allocated GValue.
 <code class="literal">(GDestroyNotify) wocky_g_value_slice_free</code> can be used
 as a destructor for values in a <a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td>A GValue which was allocated with the g_slice API</td>
@@ -332,8 +347,11 @@ as a destructor for values in a <a href="http://library.gnome.org/devel/glib/uns
 Slice-allocate an empty <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slice-new-boolean" title="wocky_g_value_slice_new_boolean ()"><code class="function">wocky_g_value_slice_new_boolean()</code></a> and similar
 functions are likely to be more convenient to use for the types supported.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
@@ -356,8 +374,11 @@ functions are likely to be more convenient to use for the types supported.
 Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
 use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>b</code></em> :</span></p></td>
@@ -382,8 +403,11 @@ use when constructing hash tables from string to <a href="http://library.gnome.o
 Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
 use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
@@ -411,8 +435,11 @@ to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slic
 Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
 use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>d</code></em> :</span></p></td>
@@ -436,8 +463,11 @@ use when constructing hash tables from string to <a href="http://library.gnome.o
 Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
 use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
@@ -461,8 +491,11 @@ use when constructing hash tables from string to <a href="http://library.gnome.o
 Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
 use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
@@ -488,8 +521,11 @@ use when constructing hash tables from string to <a href="http://library.gnome.o
 Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
 use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
@@ -518,8 +554,11 @@ to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slic
 Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
 use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>string</code></em> :</span></p></td>
@@ -544,8 +583,11 @@ to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slic
 Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
 use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>string</code></em> :</span></p></td>
@@ -570,8 +612,11 @@ to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slic
 Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
 use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
@@ -601,8 +646,11 @@ to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slic
 Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
 use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>string</code></em> :</span></p></td>
@@ -628,8 +676,11 @@ to be freed with <a class="link" href="wocky-wocky-utils.html#wocky-g-value-slic
 Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
 use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
@@ -653,8 +704,11 @@ use when constructing hash tables from string to <a href="http://library.gnome.o
 Slice-allocate and initialize a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>. This function is convenient to
 use when constructing hash tables from string to <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>, for example.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
@@ -675,45 +729,38 @@ use when constructing hash tables from string to <a href="http://library.gnome.o
 <a name="wocky-implement-finish-copy-pointer"></a><h3>wocky_implement_finish_copy_pointer()</h3>
 <pre class="programlisting">#define             wocky_implement_finish_copy_pointer(source, tag, copy_func, \
                 out_param)</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-implement-finish-return-copy-pointer"></a><h3>wocky_implement_finish_return_copy_pointer()</h3>
 <pre class="programlisting">#define             wocky_implement_finish_return_copy_pointer(source, tag, \
                 copy_func)</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-implement-finish-return-pointer"></a><h3>wocky_implement_finish_return_pointer()</h3>
 <pre class="programlisting">#define             wocky_implement_finish_return_pointer(source, tag)</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-implement-finish-void"></a><h3>wocky_implement_finish_void()</h3>
 <pre class="programlisting">#define             wocky_implement_finish_void(source, tag)</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-list-deep-copy"></a><h3>wocky_list_deep_copy ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_list_deep_copy                (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GBoxedCopyFunc"><span class="type">GBoxedCopyFunc</span></a> copy</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *items</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-normalise-jid"></a><h3>wocky_normalise_jid ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_normalise_jid                 (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);</pre>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
@@ -738,8 +785,11 @@ Return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macro
 function will handle null pointers, treating them as distinct from any
 string.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>left</code></em> :</span></p></td>

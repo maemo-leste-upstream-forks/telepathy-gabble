@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>WockyAuthHandler</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="ch01.html" title="API Reference">
@@ -63,8 +63,6 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 </div>
 <div class="refsect1">
 <a name="wocky-WockyAuthHandler.description"></a><h2>Description</h2>
-<p>
-</p>
 </div>
 <div class="refsect1">
 <a name="wocky-WockyAuthHandler.details"></a><h2>Details</h2>
@@ -74,8 +72,6 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *data</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -89,8 +85,11 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
     WockyAuthSuccessFunc success_func;
 };
 </pre>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="WockyAuthHandlerIface.parent"></a>parent</code></em>;</span></p></td>
@@ -142,8 +141,11 @@ The function should return <a href="http://library.gnome.org/devel/glib/unstable
 initial data to send. On error, it should return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> and set
 <em class="parameter"><code>error</code></em>.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
@@ -180,8 +182,11 @@ is considered finished. (Typically, an error is only raised if the
 <code class="code">&lt;success/&gt;</code> stanza was received earlier than
 expected)
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
@@ -216,8 +221,11 @@ server in the <code class="code">&lt;auth/&gt;</code> stanza.
 If this function returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, <em class="parameter"><code>initial_data</code></em> will be non-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>handler</code></em>
 provides an initial response, and <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> otherwise.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
@@ -249,8 +257,11 @@ any. <span class="annotation">[<acronym title="Parameter for returning results. 
 <p>
 Returns the name of the SASL mechanism <em class="parameter"><code>handler</code></em> implements.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
@@ -275,8 +286,11 @@ Asks <em class="parameter"><code>handler</code></em> to respond to a <code class
 <code class="code">&lt;success/&gt;</code> with data. On success, <em class="parameter"><code>handler</code></em> will put
 response data into <em class="parameter"><code>response</code></em>, Base64-encoding it if appropriate.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
@@ -318,8 +332,11 @@ is considered finished. (Typically, an error is only raised if the
 <code class="code">&lt;success/&gt;</code> stanza was received earlier than
 expected)
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
@@ -347,8 +364,11 @@ expected)
 Checks whether <em class="parameter"><code>handler</code></em> sends secrets in plaintext. This may be used to
 decide whether to use <em class="parameter"><code>handler</code></em> on an insecure XMPP connection.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>

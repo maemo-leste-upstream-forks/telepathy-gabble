@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>WockyMetaPorter</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-jabber-auth-password.html" title="wocky-jabber-auth-password">
@@ -64,8 +64,6 @@ enum                <a class="link" href="wocky-WockyMetaPorter.html#WockyMetaPo
 </div>
 <div class="refsect1">
 <a name="wocky-WockyMetaPorter.description"></a><h2>Description</h2>
-<p>
-</p>
 </div>
 <div class="refsect1">
 <a name="wocky-WockyMetaPorter.details"></a><h2>Details</h2>
@@ -73,8 +71,6 @@ enum                <a class="link" href="wocky-WockyMetaPorter.html#WockyMetaPo
 <a name="WOCKY-META-PORTER-ERROR:CAPS"></a><h3>WOCKY_META_PORTER_ERROR</h3>
 <pre class="programlisting">#define WOCKY_META_PORTER_ERROR (wocky_meta_porter_error_quark ())
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -83,8 +79,6 @@ enum                <a class="link" href="wocky-WockyMetaPorter.html#WockyMetaPo
   GObjectClass parent_class;
 };
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -94,8 +88,6 @@ enum                <a class="link" href="wocky-WockyMetaPorter.html#WockyMetaPo
   WOCKY_META_PORTER_ERROR_FAILED_TO_CLOSE,
 } WockyMetaPorterError;
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -113,8 +105,11 @@ operated on by the underlying <span class="type">WockyXmppConnection</span> obje
 close spontaneously unless <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-hold" title="wocky_meta_porter_hold ()"><code class="function">wocky_meta_porter_hold()</code></a> is called with
 <em class="parameter"><code>contact</code></em>.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
@@ -137,8 +132,6 @@ close spontaneously unless <a class="link" href="wocky-WockyMetaPorter.html#wock
 <div class="refsect2">
 <a name="wocky-meta-porter-error-quark"></a><h3>wocky_meta_porter_error_quark ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_meta_porter_error_quark       (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -149,8 +142,11 @@ Returns the port <em class="parameter"><code>porter</code></em> is listening in 
 connections, or 0 if it has not been started yet with
 <a class="link" href="wocky-WockyPorter.html#wocky-porter-start" title="wocky_porter_start ()"><code class="function">wocky_porter_start()</code></a>.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
@@ -181,8 +177,11 @@ count on a contact survives across connections.
 To decrement the hold count of the porter to <em class="parameter"><code>contact</code></em>, one
 must call <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-unhold" title="wocky_meta_porter_unhold ()"><code class="function">wocky_meta_porter_unhold()</code></a>.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
@@ -206,8 +205,11 @@ must call <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-unh
 Convenience function to create a new <span class="type">WockyMetaPorter</span> object. The
 JID can be set later by using <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-set-jid" title="wocky_meta_porter_set_jid ()"><code class="function">wocky_meta_porter_set_jid()</code></a>.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
@@ -245,8 +247,11 @@ the hold.
 When the request is complete, <em class="parameter"><code>callback</code></em> will be called and the user
 should call <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-open-finish" title="wocky_meta_porter_open_finish ()"><code class="function">wocky_meta_porter_open_finish()</code></a> to finish the request.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
@@ -285,8 +290,11 @@ should call <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-o
 Finishes an asynchronous request to open a connection if one is not
 already open. See <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-open-async" title="wocky_meta_porter_open_async ()"><code class="function">wocky_meta_porter_open_async()</code></a> for more details.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
@@ -322,8 +330,11 @@ can only be called once, and only if <a href="http://library.gnome.org/devel/gli
 <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-new" title="wocky_meta_porter_new ()"><code class="function">wocky_meta_porter_new()</code></a> when creating <em class="parameter"><code>porter</code></em>. Calling it again
 will be a no-op.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
@@ -348,8 +359,11 @@ one. This means that if there is a connection open to <em class="parameter"><cod
 the hold count is zero, a connection timeout will be
 started.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
