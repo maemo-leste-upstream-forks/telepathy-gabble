@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>WockyXmppReader</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-xmpp-reader-enumtypes.html" title="wocky-xmpp-reader-enumtypes">
@@ -105,8 +105,11 @@ The class of a <span class="type">WockyXmppReader</span>.
 <p>
 The different errors that can occur while reading a stream
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><a name="WOCKY-XMPP-READER-ERROR-INVALID-STREAM-START:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_READER_ERROR_INVALID_STREAM_START</code></span></p></td>
@@ -134,8 +137,11 @@ The different errors that can occur while reading a stream
 <p>
 The possible states a reader can be in.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><a name="WOCKY-XMPP-READER-STATE-INITIAL:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_READER_STATE_INITIAL</code></span></p></td>
@@ -167,8 +173,11 @@ The possible states a reader can be in.
 <p>
 Get the error quark used by the reader.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>the quark for reader errors.</td>
@@ -182,8 +191,11 @@ Get the error quark used by the reader.
 <p>
 Get the error from the reader
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
@@ -202,8 +214,11 @@ was no error. Free after use.</td>
 <div class="refsect2">
 <a name="wocky-xmpp-reader-get-state"></a><h3>wocky_xmpp_reader_get_state ()</h3>
 <pre class="programlisting"><a class="link" href="wocky-WockyXmppReader.html#WockyXmppReaderState"><span class="returnvalue">WockyXmppReaderState</span></a> wocky_xmpp_reader_get_state        (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);</pre>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
@@ -224,8 +239,11 @@ was no error. Free after use.</td>
 <p>
 Convenience function to create a new <span class="type">WockyXmppReader</span>.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>a new <span class="type">WockyXmppReader</span>
@@ -241,8 +259,11 @@ Convenience function to create a new <span class="type">WockyXmppReader</span>.
 Convenience function to create a new <span class="type">WockyXmppReader</span> that has streaming
 mode disabled.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>a new <span class="type">WockyXmppReader</span> in non-streaming mode</td>
@@ -258,8 +279,11 @@ Returns the first <span class="type">WockyStanza</span> available from reader or
 if there are no available stanzas. The stanza is not removed from the
 readers queue
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
@@ -283,8 +307,11 @@ stanza is owned by the <span class="type">WockyXmppReader</span>
 Gets one <span class="type">WockyStanza</span> out of the reader or NULL if there are no
 available stanzas.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
@@ -308,8 +335,11 @@ Caller owns the returned stanza.</td>
 <p>
 Push an amount of data to parse.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
@@ -334,8 +364,11 @@ Push an amount of data to parse.
 <p>
 Reset the xml parser.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
 <td>a <span class="type">WockyXmppReader</span>

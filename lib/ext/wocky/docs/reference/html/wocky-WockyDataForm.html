@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>WockyDataForm</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-data-form-enumtypes.html" title="wocky-data-form-enumtypes">
@@ -104,8 +104,6 @@ XEP-0004.
 <a name="WOCKY-DATA-FORM-ERROR:CAPS"></a><h3>WOCKY_DATA_FORM_ERROR</h3>
 <pre class="programlisting">#define WOCKY_DATA_FORM_ERROR (wocky_data_form_error_quark ())
 </pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -128,8 +126,11 @@ The class of a <span class="type">WockyDataForm</span>.
 <p>
 <span class="type">WockyDataForm</span> specific errors.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><a name="WOCKY-DATA-FORM-ERROR-NOT-FORM:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_ERROR_NOT_FORM</code></span></p></td>
@@ -166,8 +167,11 @@ The class of a <span class="type">WockyDataForm</span>.
 <p>
 Details about a single data form field in a <span class="type">WockyDataForm</span>.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><a class="link" href="wocky-WockyDataForm.html#WockyDataFormFieldType"><span class="type">WockyDataFormFieldType</span></a> <em class="structfield"><code><a name="WockyDataFormField.type"></a>type</code></em>;</span></p></td>
@@ -224,8 +228,11 @@ if <a class="link" href="wocky-WockyDataForm.html#WOCKY-DATA-FORM-FIELD-TYPE-LIS
 <p>
 A single data form field option.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDataFormFieldOption.label"></a>label</code></em>;</span></p></td>
@@ -258,8 +265,11 @@ A single data form field option.
 <p>
 Data form field types, as documented in XEP-0004 §3.3.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><a name="WOCKY-DATA-FORM-FIELD-TYPE-UNSPECIFIED:CAPS"></a><span class="term"><code class="literal">WOCKY_DATA_FORM_FIELD_TYPE_UNSPECIFIED</code></span></p></td>
@@ -337,8 +347,11 @@ the query node of a disco response. <a class="link" href="wocky-WockyDataForm.ht
 contrast, is for adding a node tree which submits the data form
 based on the current values set on its fields.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
@@ -355,46 +368,34 @@ based on the current values set on its fields.
 <div class="refsect2">
 <a name="wocky-data-form-error-quark"></a><h3>wocky_data_form_error_quark ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_data_form_error_quark         (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-data-form-field-cmp"></a><h3>wocky_data_form_field_cmp ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                wocky_data_form_field_cmp           (<em class="parameter"><code>const <a class="link" href="wocky-WockyDataForm.html#WockyDataFormField" title="struct WockyDataFormField"><span class="type">WockyDataFormField</span></a> *left</code></em>,
                                                          <em class="parameter"><code>const <a class="link" href="wocky-WockyDataForm.html#WockyDataFormField" title="struct WockyDataFormField"><span class="type">WockyDataFormField</span></a> *right</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-data-form-get-instructions"></a><h3>wocky_data_form_get_instructions ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_data_form_get_instructions    (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-data-form-get-title"></a><h3>wocky_data_form_get_title ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_data_form_get_title           (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-data-form-new-from-form"></a><h3>wocky_data_form_new_from_form ()</h3>
 <pre class="programlisting"><span class="returnvalue">WockyDataForm</span> *     wocky_data_form_new_from_form       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="wocky-data-form-new-from-node"></a><h3>wocky_data_form_new_from_node ()</h3>
 <pre class="programlisting"><span class="returnvalue">WockyDataForm</span> *     wocky_data_form_new_from_node       (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *x</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -402,8 +403,6 @@ based on the current values set on its fields.
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_data_form_parse_result        (<em class="parameter"><code><span class="type">WockyDataForm</span> *self</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -412,8 +411,11 @@ based on the current values set on its fields.
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *field_name</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> field_value</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> create_if_missing</code></em>);</pre>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
@@ -449,8 +451,11 @@ did not exist or does not accept a boolean</td>
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *field_name</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *field_value</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> create_if_missing</code></em>);</pre>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
@@ -486,8 +491,6 @@ did not exist or does not accept a string</td>
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *field_name</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> * const *field_values</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> create_if_missing</code></em>);</pre>
-<p>
-</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -499,8 +502,11 @@ Creates a hidden FORM_TYPE field in <em class="parameter"><code>self</code></em>
 This is intended only to be used on empty forms created for blind
 submission.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
@@ -530,8 +536,11 @@ type.</td>
 Adds a node tree which submits <em class="parameter"><code>self</code></em> based on the current values set on
 <em class="parameter"><code>self</code></em>'s fields.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>

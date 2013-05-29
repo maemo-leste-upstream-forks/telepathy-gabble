@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>WockyPepService</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="WockyNodeTree.html" title="WockyNodeTree">
@@ -92,8 +92,11 @@ Starts an asynchronous operation to get the PEP node,
 When the operation is complete, <em class="parameter"><code>callback</code></em> will be called and the
 function should call <a class="link" href="wocky-WockyPepService.html#wocky-pep-service-get-finish" title="wocky_pep_service_get_finish ()"><code class="function">wocky_pep_service_get_finish()</code></a>.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
@@ -132,8 +135,11 @@ Finishes an asynchronous operation to get the PEP node,
 <span class="type">"node"</span>. For more details, see
 <a class="link" href="wocky-WockyPepService.html#wocky-pep-service-get-async" title="wocky_pep_service_get_async ()"><code class="function">wocky_pep_service_get_async()</code></a>.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
@@ -142,6 +148,12 @@ Finishes an asynchronous operation to get the PEP node,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
 <td>a <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>item</code></em> :</span></p></td>
+<td>on success, the first &lt;item&gt; element
+in the result, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>self</code></em> has no published items. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
 </td>
 </tr>
 <tr>
@@ -164,8 +176,11 @@ Finishes an asynchronous operation to get the PEP node,
 <p>
 Generates a new IQ type='set' PEP publish stanza.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
@@ -193,8 +208,11 @@ Generates a new IQ type='set' PEP publish stanza.
 <p>
 A convenience function to create a new <span class="type">WockyPepService</span> object.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
@@ -224,8 +242,11 @@ the node, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-S
 Start listening to the PEP node <em class="parameter"><code>node</code></em> and signal changes by using
 <span class="type">"changed"</span>.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
