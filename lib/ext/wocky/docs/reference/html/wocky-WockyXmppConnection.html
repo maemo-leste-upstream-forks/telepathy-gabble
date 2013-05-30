@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>WockyXmppConnection</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-utils.html" title="wocky-utils">
@@ -161,8 +161,11 @@ The class of a <span class="type">WockyXmppConnection</span>.
 The <span class="type">WockyXmppConnection</span> specific errors that can occur while
  reading a stream.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><a name="WOCKY-XMPP-CONNECTION-ERROR-EOS:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_CONNECTION_ERROR_EOS</code></span></p></td>
@@ -203,8 +206,11 @@ the connection opening when it's already open
 <p>
 Get the error quark used by the connection.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>the quark for connection errors.</td>
@@ -235,8 +241,11 @@ Get the error quark used by the connection.
 <p>
 Convenience function to create a new <span class="type">WockyXmppConnection</span>.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>stream</code></em> :</span></p></td>
@@ -253,8 +262,11 @@ Convenience function to create a new <span class="type">WockyXmppConnection</spa
 <div class="refsect2">
 <a name="wocky-xmpp-connection-new-id"></a><h3>wocky_xmpp_connection_new_id ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_xmpp_connection_new_id        (<em class="parameter"><code><span class="type">WockyXmppConnection</span> *self</code></em>);</pre>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
@@ -281,8 +293,11 @@ Request asynchronous receiving of an XMPP stream opening over the stream.
 When the operation is finished <em class="parameter"><code>callback</code></em> will be called. You can then call
 <a class="link" href="wocky-WockyXmppConnection.html#wocky-xmpp-connection-recv-open-finish" title="wocky_xmpp_connection_recv_open_finish ()"><code class="function">wocky_xmpp_connection_recv_open_finish()</code></a> to get the result of the operation.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
@@ -318,8 +333,11 @@ When the operation is finished <em class="parameter"><code>callback</code></em> 
 <p>
 Finishes receiving a stream opening.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
@@ -383,8 +401,11 @@ the operation.
 Can only be called after wocky_xmpp_connection_recv_open_async has finished
 its operation.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
@@ -416,8 +437,11 @@ its operation.
 <p>
 Finishes receiving a stanza
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
@@ -447,8 +471,11 @@ Reset the XMPP Connection. After the reset the connection is back in its
 initial state (as if <a class="link" href="wocky-WockyXmppConnection.html#wocky-xmpp-connection-send-open-async" title="wocky_xmpp_connection_send_open_async ()"><code class="function">wocky_xmpp_connection_send_open_async()</code></a> and
 <a class="link" href="wocky-WockyXmppConnection.html#wocky-xmpp-connection-recv-open-async" title="wocky_xmpp_connection_recv_open_async ()"><code class="function">wocky_xmpp_connection_recv_open_async()</code></a> were never called).
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
 <td>a <span class="type">WockyXmppConnection</span>.</td>
@@ -473,8 +500,11 @@ operation.
 Can only be called after wocky_xmpp_connection_send_open_async has finished
 its operation.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
@@ -505,8 +535,11 @@ its operation.
 <p>
 Finishes send the xmpp stream close.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
@@ -545,8 +578,11 @@ Request asynchronous sending of an XMPP stream opening over the stream. When
 the operation is finished <em class="parameter"><code>callback</code></em> will be called. You can then call
 <a class="link" href="wocky-WockyXmppConnection.html#wocky-xmpp-connection-send-open-finish" title="wocky_xmpp_connection_send_open_finish ()"><code class="function">wocky_xmpp_connection_send_open_finish()</code></a> to get the result of the operation.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
@@ -597,8 +633,11 @@ the operation is finished <em class="parameter"><code>callback</code></em> will 
 <p>
 Finishes sending a stream opening.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
@@ -638,8 +677,11 @@ the operation.
 Can only be called after wocky_xmpp_connection_send_open_async has finished
 its operation.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
@@ -676,8 +718,11 @@ its operation.
 <p>
 Finishes sending a stanza.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
@@ -716,8 +761,11 @@ the operation.
 Can only be called after wocky_xmpp_connection_send_open_async has finished
 its operation.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
@@ -749,8 +797,11 @@ its operation.
 <p>
 Finishes sending a whitespace ping.
 </p>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
