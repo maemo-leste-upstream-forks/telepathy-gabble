@@ -43,4 +43,7 @@ override_dh_makeshlibs:
 	:
 
 override_dh_shlibdeps:
+	sed -e 's!@DEB_VERSION_UPSTREAM@!$(DEB_VERSION_UPSTREAM)!' \
+		< debian/shlibs.local.in \
+		> debian/shlibs.local
 	dh_shlibdeps -Ltelepathy-gabble
