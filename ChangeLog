@@ -1,3 +1,104 @@
+commit f14dfc2f19025a0f9252e58d8b1f6cd8ba6a2744
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-06 13:43:22 +0100
+
+    Prepare 0.17.5
+
+commit f844ca21c4074201ebb4f3e78531ae29dff97e6f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-04 18:34:14 +0100
+
+    Disable unreliable test-case
+    
+    It has a race condition or something.
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=49595
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 67d009ba2e6ac6d21c659d7586670e3e40b5ec3e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-04 12:40:45 +0100
+
+    Initialize libdbus for thread-safety
+    
+    libdbus is not thread-safe by default. This is a long-standing design
+    flaw (<https://bugs.freedesktop.org/show_bug.cgi?id=54972>).
+    
+    We call into GIO, which calls into glib-networking, which can
+    (at least in recent versions) invoke libproxy in a thread. libproxy
+    apparently has a Network-Manager plugin, which uses libdbus in that
+    thread; meanwhile, we use libdbus in the main thread and everything
+    goes badly for us.
+    
+    (It's possible that this crash is only reproducible with broken
+    connectivity: I wrote this patch on a train, with intermittent
+    mobile broadband coverage.)
+    
+    In libdbus < 1.7.4, libraries cannot safely initialize libdbus for
+    multi-threading, because that initialization is not itself
+    thread-safe (!); in particular, glib-networking cannot safely initialize
+    libdbus. So, we have to do it.
+    
+    I have written patches to make libdbus thread-safe-by-default, but
+    they haven't all been reviewed and merged yet, and in any case they
+    won't be in a stable libdbus until 1.8. Until then, each application
+    has to discover and fix this bug individually.
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=65296
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+
+commit e7efe3e1470e060b5c214f9678b7b16b7f154b47
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-04 12:38:38 +0100
+
+    NEWS
+
+commit 72c46475b6b116b431ef26ea711a53e951c2abab
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-04 12:33:16 +0100
+
+    Update Wocky to fix a regression caused by #65131
+
+commit d26688c2472ffe697e7495b2e480a1ca335ddce8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-03 12:40:50 +0100
+
+    Avoid having two of the same set of commands run in parallel
+    
+    A rule like this:
+    
+        _gen/x.c _gen/x.h: prerequisites
+            $(AM_V_GEN)x-generator
+    
+    doesn't consider x.c and x.h together. Instead, it expands to two rules,
+    one to generate x.c and one to generate x.h, which happen to run the
+    same commands.
+    
+    This means that in the worst case, you can end up running x-generator
+    twice in parallel, and they'll race with each other and overwrite or
+    delete each other's output.
+    
+    Based on commit 36c2a545c from telepathy-glib.
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=64285
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+
+commit 0c7953c80da6aa0fef030669c0588a3451678498
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-05-30 20:34:47 +0100
+
+    Update Wocky for fd.o #65131, and test it
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=65131
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+
+commit 7e8aec731742c07513419e3c3582337871b066d3
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-05-30 17:03:11 +0100
+
+    nano version and retroactive release name
+
 commit cface3d679b42bb30e4d489fd493bb6784c275e2
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2013-05-30 16:24:38 +0100
