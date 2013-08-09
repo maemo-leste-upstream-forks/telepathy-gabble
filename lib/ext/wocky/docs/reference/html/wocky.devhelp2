@@ -52,6 +52,17 @@
       <sub name="wocky-xmpp-error" link="wocky-wocky-xmpp-error.html"/>
       <sub name="WockyXmppReader" link="wocky-WockyXmppReader.html"/>
       <sub name="WockyXmppWriter" link="wocky-WockyXmppWriter.html"/>
+      <sub name="WockyJingleContent" link="WockyJingleContent.html"/>
+      <sub name="WockyJingleFactory" link="WockyJingleFactory.html"/>
+      <sub name="wocky-jingle-info-internal" link="wocky-wocky-jingle-info-internal.html"/>
+      <sub name="WockyJingleInfo" link="wocky-WockyJingleInfo.html"/>
+      <sub name="WockyJingleMediaRtp" link="WockyJingleMediaRtp.html"/>
+      <sub name="WockyJingleSession" link="WockyJingleSession.html"/>
+      <sub name="WockyJingleTransportGoogle" link="WockyJingleTransportGoogle.html"/>
+      <sub name="WockyJingleTransportIceUdp" link="WockyJingleTransportIceUdp.html"/>
+      <sub name="WockyJingleTransportIface" link="wocky-WockyJingleTransportIface.html"/>
+      <sub name="WockyJingleTransportRawUdp" link="WockyJingleTransportRawUdp.html"/>
+      <sub name="wocky-jingle-types" link="wocky-wocky-jingle-types.html"/>
     </sub>
     <sub name="Object Hierarchy" link="object-tree.html"/>
     <sub name="API Index" link="api-index-full.html"/>
@@ -701,6 +712,201 @@
     <keyword type="function" name="wocky_xmpp_writer_stream_open ()" link="wocky-WockyXmppWriter.html#wocky-xmpp-writer-stream-open"/>
     <keyword type="function" name="wocky_xmpp_writer_write_node_tree ()" link="wocky-WockyXmppWriter.html#wocky-xmpp-writer-write-node-tree"/>
     <keyword type="function" name="wocky_xmpp_writer_write_stanza ()" link="wocky-WockyXmppWriter.html#wocky-xmpp-writer-write-stanza"/>
+    <keyword type="struct" name="WockyJingleCandidate" link="WockyJingleContent.html#WockyJingleCandidate"/>
+    <keyword type="struct" name="struct WockyJingleContentClass" link="WockyJingleContent.html#WockyJingleContentClass"/>
+    <keyword type="enum" name="enum WockyJingleContentState" link="WockyJingleContent.html#WockyJingleContentState"/>
+    <keyword type="enum" name="enum WockyJingleMediaType" link="WockyJingleContent.html#WockyJingleMediaType"/>
+    <keyword type="function" name="wocky_jingle_content_add_candidates ()" link="WockyJingleContent.html#wocky-jingle-content-add-candidates"/>
+    <keyword type="function" name="wocky_jingle_content_change_direction ()" link="WockyJingleContent.html#wocky-jingle-content-change-direction"/>
+    <keyword type="function" name="wocky_jingle_content_create_share_channel ()" link="WockyJingleContent.html#wocky-jingle-content-create-share-channel"/>
+    <keyword type="function" name="wocky_jingle_content_creator_is_initiator ()" link="WockyJingleContent.html#wocky-jingle-content-creator-is-initiator"/>
+    <keyword type="function" name="wocky_jingle_content_get_credentials ()" link="WockyJingleContent.html#wocky-jingle-content-get-credentials"/>
+    <keyword type="function" name="wocky_jingle_content_get_disposition ()" link="WockyJingleContent.html#wocky-jingle-content-get-disposition"/>
+    <keyword type="function" name="wocky_jingle_content_get_local_candidates ()" link="WockyJingleContent.html#wocky-jingle-content-get-local-candidates"/>
+    <keyword type="function" name="wocky_jingle_content_get_name ()" link="WockyJingleContent.html#wocky-jingle-content-get-name"/>
+    <keyword type="function" name="wocky_jingle_content_get_ns ()" link="WockyJingleContent.html#wocky-jingle-content-get-ns"/>
+    <keyword type="function" name="wocky_jingle_content_get_remote_candidates ()" link="WockyJingleContent.html#wocky-jingle-content-get-remote-candidates"/>
+    <keyword type="function" name="wocky_jingle_content_get_transport_ns ()" link="WockyJingleContent.html#wocky-jingle-content-get-transport-ns"/>
+    <keyword type="function" name="wocky_jingle_content_get_transport_type ()" link="WockyJingleContent.html#wocky-jingle-content-get-transport-type"/>
+    <keyword type="function" name="wocky_jingle_content_inject_candidates ()" link="WockyJingleContent.html#wocky-jingle-content-inject-candidates"/>
+    <keyword type="function" name="wocky_jingle_content_is_created_by_us ()" link="WockyJingleContent.html#wocky-jingle-content-is-created-by-us"/>
+    <keyword type="function" name="wocky_jingle_content_is_ready ()" link="WockyJingleContent.html#wocky-jingle-content-is-ready"/>
+    <keyword type="function" name="wocky_jingle_content_maybe_send_description ()" link="WockyJingleContent.html#wocky-jingle-content-maybe-send-description"/>
+    <keyword type="function" name="wocky_jingle_content_parse_accept ()" link="WockyJingleContent.html#wocky-jingle-content-parse-accept"/>
+    <keyword type="function" name="wocky_jingle_content_parse_add ()" link="WockyJingleContent.html#wocky-jingle-content-parse-add"/>
+    <keyword type="function" name="wocky_jingle_content_parse_description_info ()" link="WockyJingleContent.html#wocky-jingle-content-parse-description-info"/>
+    <keyword type="function" name="wocky_jingle_content_parse_info ()" link="WockyJingleContent.html#wocky-jingle-content-parse-info"/>
+    <keyword type="function" name="wocky_jingle_content_parse_transport_info ()" link="WockyJingleContent.html#wocky-jingle-content-parse-transport-info"/>
+    <keyword type="function" name="wocky_jingle_content_produce_node ()" link="WockyJingleContent.html#wocky-jingle-content-produce-node"/>
+    <keyword type="function" name="wocky_jingle_content_receiving ()" link="WockyJingleContent.html#wocky-jingle-content-receiving"/>
+    <keyword type="function" name="wocky_jingle_content_reject ()" link="WockyJingleContent.html#wocky-jingle-content-reject"/>
+    <keyword type="function" name="wocky_jingle_content_remove ()" link="WockyJingleContent.html#wocky-jingle-content-remove"/>
+    <keyword type="function" name="wocky_jingle_content_request_receiving ()" link="WockyJingleContent.html#wocky-jingle-content-request-receiving"/>
+    <keyword type="function" name="wocky_jingle_content_retransmit_candidates ()" link="WockyJingleContent.html#wocky-jingle-content-retransmit-candidates"/>
+    <keyword type="function" name="wocky_jingle_content_send_complete ()" link="WockyJingleContent.html#wocky-jingle-content-send-complete"/>
+    <keyword type="function" name="wocky_jingle_content_sending ()" link="WockyJingleContent.html#wocky-jingle-content-sending"/>
+    <keyword type="function" name="wocky_jingle_content_set_sending ()" link="WockyJingleContent.html#wocky-jingle-content-set-sending"/>
+    <keyword type="function" name="wocky_jingle_content_set_transport_state ()" link="WockyJingleContent.html#wocky-jingle-content-set-transport-state"/>
+    <keyword type="function" name="wocky_jingle_content_update_senders ()" link="WockyJingleContent.html#wocky-jingle-content-update-senders"/>
+    <keyword type="struct" name="struct WockyJingleFactoryClass" link="WockyJingleFactory.html#WockyJingleFactoryClass"/>
+    <keyword type="function" name="wocky_jingle_factory_create_session ()" link="WockyJingleFactory.html#wocky-jingle-factory-create-session"/>
+    <keyword type="function" name="wocky_jingle_factory_get_jingle_info ()" link="WockyJingleFactory.html#wocky-jingle-factory-get-jingle-info"/>
+    <keyword type="function" name="wocky_jingle_factory_lookup_content_type ()" link="WockyJingleFactory.html#wocky-jingle-factory-lookup-content-type"/>
+    <keyword type="function" name="wocky_jingle_factory_lookup_transport ()" link="WockyJingleFactory.html#wocky-jingle-factory-lookup-transport"/>
+    <keyword type="function" name="wocky_jingle_factory_new ()" link="WockyJingleFactory.html#wocky-jingle-factory-new"/>
+    <keyword type="function" name="wocky_jingle_factory_register_content_type ()" link="WockyJingleFactory.html#wocky-jingle-factory-register-content-type"/>
+    <keyword type="function" name="wocky_jingle_factory_register_transport ()" link="WockyJingleFactory.html#wocky-jingle-factory-register-transport"/>
+    <keyword type="function" name="wocky_jingle_factory_stop ()" link="WockyJingleFactory.html#wocky-jingle-factory-stop"/>
+    <keyword type="enum" name="enum WockyStunServerSource" link="wocky-wocky-jingle-info-internal.html#WockyStunServerSource-enum"/>
+    <keyword type="macro" name="WOCKY_N_JINGLE_RELAY_TYPES" link="wocky-WockyJingleInfo.html#WOCKY-N-JINGLE-RELAY-TYPES:CAPS"/>
+    <keyword type="struct" name="struct WockyJingleInfoClass" link="wocky-WockyJingleInfo.html#WockyJingleInfoClass"/>
+    <keyword type="function" name="WockyJingleInfoRelaySessionCb ()" link="wocky-WockyJingleInfo.html#WockyJingleInfoRelaySessionCb"/>
+    <keyword type="struct" name="WockyJingleRelay" link="wocky-WockyJingleInfo.html#WockyJingleRelay"/>
+    <keyword type="enum" name="enum WockyJingleRelayType" link="wocky-WockyJingleInfo.html#WockyJingleRelayType"/>
+    <keyword type="struct" name="WockyStunServer" link="wocky-WockyJingleInfo.html#WockyStunServer"/>
+    <keyword type="function" name="wocky_jingle_info_create_google_relay_session ()" link="wocky-WockyJingleInfo.html#wocky-jingle-info-create-google-relay-session"/>
+    <keyword type="function" name="wocky_jingle_info_get_google_relay_token ()" link="wocky-WockyJingleInfo.html#wocky-jingle-info-get-google-relay-token"/>
+    <keyword type="function" name="wocky_jingle_info_get_stun_servers ()" link="wocky-WockyJingleInfo.html#wocky-jingle-info-get-stun-servers"/>
+    <keyword type="function" name="wocky_jingle_info_new ()" link="wocky-WockyJingleInfo.html#wocky-jingle-info-new"/>
+    <keyword type="function" name="wocky_jingle_info_send_request ()" link="wocky-WockyJingleInfo.html#wocky-jingle-info-send-request"/>
+    <keyword type="function" name="wocky_jingle_info_set_test_mode ()" link="wocky-WockyJingleInfo.html#wocky-jingle-info-set-test-mode"/>
+    <keyword type="function" name="wocky_jingle_info_take_stun_server ()" link="wocky-WockyJingleInfo.html#wocky-jingle-info-take-stun-server"/>
+    <keyword type="function" name="wocky_jingle_relay_free ()" link="wocky-WockyJingleInfo.html#wocky-jingle-relay-free"/>
+    <keyword type="function" name="wocky_jingle_relay_new ()" link="wocky-WockyJingleInfo.html#wocky-jingle-relay-new"/>
+    <keyword type="struct" name="WockyJingleCodec" link="WockyJingleMediaRtp.html#WockyJingleCodec"/>
+    <keyword type="struct" name="WockyJingleFeedbackMessage" link="WockyJingleMediaRtp.html#WockyJingleFeedbackMessage"/>
+    <keyword type="struct" name="WockyJingleMediaDescription" link="WockyJingleMediaRtp.html#WockyJingleMediaDescription"/>
+    <keyword type="struct" name="struct WockyJingleMediaRtpClass" link="WockyJingleMediaRtp.html#WockyJingleMediaRtpClass"/>
+    <keyword type="struct" name="WockyJingleRtpHeaderExtension" link="WockyJingleMediaRtp.html#WockyJingleRtpHeaderExtension"/>
+    <keyword type="function" name="jingle_media_rtp_codec_free ()" link="WockyJingleMediaRtp.html#jingle-media-rtp-codec-free"/>
+    <keyword type="function" name="jingle_media_rtp_codec_new ()" link="WockyJingleMediaRtp.html#jingle-media-rtp-codec-new"/>
+    <keyword type="function" name="jingle_media_rtp_compare_codecs ()" link="WockyJingleMediaRtp.html#jingle-media-rtp-compare-codecs"/>
+    <keyword type="function" name="jingle_media_rtp_copy_codecs ()" link="WockyJingleMediaRtp.html#jingle-media-rtp-copy-codecs"/>
+    <keyword type="function" name="jingle_media_rtp_free_codecs ()" link="WockyJingleMediaRtp.html#jingle-media-rtp-free-codecs"/>
+    <keyword type="function" name="jingle_media_rtp_register ()" link="WockyJingleMediaRtp.html#jingle-media-rtp-register"/>
+    <keyword type="function" name="jingle_media_rtp_set_local_media_description ()" link="WockyJingleMediaRtp.html#jingle-media-rtp-set-local-media-description"/>
+    <keyword type="function" name="wocky_jingle_feedback_message_free ()" link="WockyJingleMediaRtp.html#wocky-jingle-feedback-message-free"/>
+    <keyword type="function" name="wocky_jingle_feedback_message_new ()" link="WockyJingleMediaRtp.html#wocky-jingle-feedback-message-new"/>
+    <keyword type="function" name="wocky_jingle_media_description_copy ()" link="WockyJingleMediaRtp.html#wocky-jingle-media-description-copy"/>
+    <keyword type="function" name="wocky_jingle_media_description_free ()" link="WockyJingleMediaRtp.html#wocky-jingle-media-description-free"/>
+    <keyword type="function" name="wocky_jingle_media_description_new ()" link="WockyJingleMediaRtp.html#wocky-jingle-media-description-new"/>
+    <keyword type="function" name="wocky_jingle_media_description_simplify ()" link="WockyJingleMediaRtp.html#wocky-jingle-media-description-simplify"/>
+    <keyword type="function" name="wocky_jingle_media_rtp_get_remote_media_description ()" link="WockyJingleMediaRtp.html#wocky-jingle-media-rtp-get-remote-media-description"/>
+    <keyword type="function" name="wocky_jingle_rtp_header_extension_free ()" link="WockyJingleMediaRtp.html#wocky-jingle-rtp-header-extension-free"/>
+    <keyword type="function" name="wocky_jingle_rtp_header_extension_new ()" link="WockyJingleMediaRtp.html#wocky-jingle-rtp-header-extension-new"/>
+    <keyword type="struct" name="struct WockyJingleSessionClass" link="WockyJingleSession.html#WockyJingleSessionClass"/>
+    <keyword type="function" name="wocky_jingle_session_accept ()" link="WockyJingleSession.html#wocky-jingle-session-accept"/>
+    <keyword type="function" name="wocky_jingle_session_acknowledge_iq ()" link="WockyJingleSession.html#wocky-jingle-session-acknowledge-iq"/>
+    <keyword type="function" name="wocky_jingle_session_add_content ()" link="WockyJingleSession.html#wocky-jingle-session-add-content"/>
+    <keyword type="function" name="wocky_jingle_session_can_modify_contents ()" link="WockyJingleSession.html#wocky-jingle-session-can-modify-contents"/>
+    <keyword type="function" name="wocky_jingle_session_defines_action ()" link="WockyJingleSession.html#wocky-jingle-session-defines-action"/>
+    <keyword type="function" name="wocky_jingle_session_detect ()" link="WockyJingleSession.html#wocky-jingle-session-detect"/>
+    <keyword type="function" name="wocky_jingle_session_get_content_type ()" link="WockyJingleSession.html#wocky-jingle-session-get-content-type"/>
+    <keyword type="function" name="wocky_jingle_session_get_contents ()" link="WockyJingleSession.html#wocky-jingle-session-get-contents"/>
+    <keyword type="function" name="wocky_jingle_session_get_dialect ()" link="WockyJingleSession.html#wocky-jingle-session-get-dialect"/>
+    <keyword type="function" name="wocky_jingle_session_get_factory ()" link="WockyJingleSession.html#wocky-jingle-session-get-factory"/>
+    <keyword type="function" name="wocky_jingle_session_get_initiator ()" link="WockyJingleSession.html#wocky-jingle-session-get-initiator"/>
+    <keyword type="function" name="wocky_jingle_session_get_peer_contact ()" link="WockyJingleSession.html#wocky-jingle-session-get-peer-contact"/>
+    <keyword type="function" name="wocky_jingle_session_get_peer_jid ()" link="WockyJingleSession.html#wocky-jingle-session-get-peer-jid"/>
+    <keyword type="function" name="wocky_jingle_session_get_peer_resource ()" link="WockyJingleSession.html#wocky-jingle-session-get-peer-resource"/>
+    <keyword type="function" name="wocky_jingle_session_get_porter ()" link="WockyJingleSession.html#wocky-jingle-session-get-porter"/>
+    <keyword type="function" name="wocky_jingle_session_get_reason_name ()" link="WockyJingleSession.html#wocky-jingle-session-get-reason-name"/>
+    <keyword type="function" name="wocky_jingle_session_get_remote_hold ()" link="WockyJingleSession.html#wocky-jingle-session-get-remote-hold"/>
+    <keyword type="function" name="wocky_jingle_session_get_remote_ringing ()" link="WockyJingleSession.html#wocky-jingle-session-get-remote-ringing"/>
+    <keyword type="function" name="wocky_jingle_session_get_sid ()" link="WockyJingleSession.html#wocky-jingle-session-get-sid"/>
+    <keyword type="function" name="wocky_jingle_session_new ()" link="WockyJingleSession.html#wocky-jingle-session-new"/>
+    <keyword type="function" name="wocky_jingle_session_new_message ()" link="WockyJingleSession.html#wocky-jingle-session-new-message"/>
+    <keyword type="function" name="wocky_jingle_session_parse ()" link="WockyJingleSession.html#wocky-jingle-session-parse"/>
+    <keyword type="function" name="wocky_jingle_session_peer_has_cap ()" link="WockyJingleSession.html#wocky-jingle-session-peer-has-cap"/>
+    <keyword type="function" name="wocky_jingle_session_remove_content ()" link="WockyJingleSession.html#wocky-jingle-session-remove-content"/>
+    <keyword type="function" name="wocky_jingle_session_send ()" link="WockyJingleSession.html#wocky-jingle-session-send"/>
+    <keyword type="function" name="wocky_jingle_session_set_local_hold ()" link="WockyJingleSession.html#wocky-jingle-session-set-local-hold"/>
+    <keyword type="function" name="wocky_jingle_session_terminate ()" link="WockyJingleSession.html#wocky-jingle-session-terminate"/>
+    <keyword type="struct" name="struct WockyJingleTransportGoogleClass" link="WockyJingleTransportGoogle.html#WockyJingleTransportGoogleClass"/>
+    <keyword type="function" name="jingle_transport_google_register ()" link="WockyJingleTransportGoogle.html#jingle-transport-google-register"/>
+    <keyword type="function" name="jingle_transport_google_set_component_name ()" link="WockyJingleTransportGoogle.html#jingle-transport-google-set-component-name"/>
+    <keyword type="struct" name="struct WockyJingleTransportIceUdpClass" link="WockyJingleTransportIceUdp.html#WockyJingleTransportIceUdpClass"/>
+    <keyword type="function" name="jingle_transport_iceudp_register ()" link="WockyJingleTransportIceUdp.html#jingle-transport-iceudp-register"/>
+    <keyword type="struct" name="struct WockyJingleTransportIfaceClass" link="wocky-WockyJingleTransportIface.html#WockyJingleTransportIfaceClass"/>
+    <keyword type="enum" name="enum WockyJingleTransportState" link="wocky-WockyJingleTransportIface.html#WockyJingleTransportState"/>
+    <keyword type="function" name="jingle_transport_free_candidates ()" link="wocky-WockyJingleTransportIface.html#jingle-transport-free-candidates"/>
+    <keyword type="function" name="jingle_transport_get_credentials ()" link="wocky-WockyJingleTransportIface.html#jingle-transport-get-credentials"/>
+    <keyword type="function" name="wocky_jingle_candidate_free ()" link="wocky-WockyJingleTransportIface.html#wocky-jingle-candidate-free"/>
+    <keyword type="function" name="wocky_jingle_candidate_new ()" link="wocky-WockyJingleTransportIface.html#wocky-jingle-candidate-new"/>
+    <keyword type="function" name="wocky_jingle_transport_iface_can_accept ()" link="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-can-accept"/>
+    <keyword type="function" name="wocky_jingle_transport_iface_get_local_candidates ()" link="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-get-local-candidates"/>
+    <keyword type="function" name="wocky_jingle_transport_iface_get_remote_candidates ()" link="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-get-remote-candidates"/>
+    <keyword type="function" name="wocky_jingle_transport_iface_get_transport_type ()" link="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-get-transport-type"/>
+    <keyword type="function" name="wocky_jingle_transport_iface_inject_candidates ()" link="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-inject-candidates"/>
+    <keyword type="function" name="wocky_jingle_transport_iface_new ()" link="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-new"/>
+    <keyword type="function" name="wocky_jingle_transport_iface_new_local_candidates ()" link="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-new-local-candidates"/>
+    <keyword type="function" name="wocky_jingle_transport_iface_parse_candidates ()" link="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-parse-candidates"/>
+    <keyword type="function" name="wocky_jingle_transport_iface_send_candidates ()" link="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-send-candidates"/>
+    <keyword type="struct" name="struct WockyJingleTransportRawUdpClass" link="WockyJingleTransportRawUdp.html#WockyJingleTransportRawUdpClass"/>
+    <keyword type="function" name="jingle_transport_rawudp_register ()" link="WockyJingleTransportRawUdp.html#jingle-transport-rawudp-register"/>
+    <keyword type="enum" name="enum WockyJingleAction" link="wocky-wocky-jingle-types.html#WockyJingleAction"/>
+    <keyword type="struct" name="WockyJingleCandidate" link="wocky-wocky-jingle-types.html#WockyJingleCandidate"/>
+    <keyword type="enum" name="enum WockyJingleCandidateType" link="wocky-wocky-jingle-types.html#WockyJingleCandidateType"/>
+    <keyword type="struct" name="WockyJingleContent" link="wocky-wocky-jingle-types.html#WockyJingleContent-struct"/>
+    <keyword type="enum" name="enum WockyJingleContentSenders" link="wocky-wocky-jingle-types.html#WockyJingleContentSenders"/>
+    <keyword type="enum" name="enum WockyJingleDialect" link="wocky-wocky-jingle-types.html#WockyJingleDialect"/>
+    <keyword type="struct" name="WockyJingleFactory" link="wocky-wocky-jingle-types.html#WockyJingleFactory-struct"/>
+    <keyword type="struct" name="WockyJingleMediaRtp" link="wocky-wocky-jingle-types.html#WockyJingleMediaRtp-struct"/>
+    <keyword type="enum" name="enum WockyJingleReason" link="wocky-wocky-jingle-types.html#WockyJingleReason-enum"/>
+    <keyword type="struct" name="WockyJingleSession" link="wocky-wocky-jingle-types.html#WockyJingleSession-struct"/>
+    <keyword type="enum" name="enum WockyJingleState" link="wocky-wocky-jingle-types.html#WockyJingleState"/>
+    <keyword type="struct" name="WockyJingleTransportGoogle" link="wocky-wocky-jingle-types.html#WockyJingleTransportGoogle-struct"/>
+    <keyword type="struct" name="WockyJingleTransportIceUdp" link="wocky-wocky-jingle-types.html#WockyJingleTransportIceUdp-struct"/>
+    <keyword type="enum" name="enum WockyJingleTransportProtocol" link="wocky-wocky-jingle-types.html#WockyJingleTransportProtocol"/>
+    <keyword type="struct" name="WockyJingleTransportRawUdp" link="wocky-wocky-jingle-types.html#WockyJingleTransportRawUdp-struct"/>
+    <keyword type="enum" name="enum WockyJingleTransportType" link="wocky-wocky-jingle-types.html#WockyJingleTransportType"/>
+    <keyword type="property" name="The &quot;content-ns&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleContent--content-ns"/>
+    <keyword type="property" name="The &quot;disposition&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleContent--disposition"/>
+    <keyword type="property" name="The &quot;locally-created&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleContent--locally-created"/>
+    <keyword type="property" name="The &quot;name&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleContent--name"/>
+    <keyword type="property" name="The &quot;senders&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleContent--senders"/>
+    <keyword type="property" name="The &quot;session&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleContent--session"/>
+    <keyword type="property" name="The &quot;state&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleContent--state"/>
+    <keyword type="property" name="The &quot;transport-ns&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleContent--transport-ns"/>
+    <keyword type="property" name="The &quot;session&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleFactory--session"/>
+    <keyword type="property" name="The &quot;media-type&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleMediaRtp--media-type"/>
+    <keyword type="property" name="The &quot;remote-mute&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleMediaRtp--remote-mute"/>
+    <keyword type="property" name="The &quot;dialect&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleSession--dialect"/>
+    <keyword type="property" name="The &quot;jingle-factory&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleSession--jingle-factory"/>
+    <keyword type="property" name="The &quot;local-hold&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleSession--local-hold"/>
+    <keyword type="property" name="The &quot;local-initiator&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleSession--local-initiator"/>
+    <keyword type="property" name="The &quot;peer-contact&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleSession--peer-contact"/>
+    <keyword type="property" name="The &quot;porter&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleSession--porter"/>
+    <keyword type="property" name="The &quot;remote-hold&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleSession--remote-hold"/>
+    <keyword type="property" name="The &quot;remote-ringing&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleSession--remote-ringing"/>
+    <keyword type="property" name="The &quot;session-id&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleSession--session-id"/>
+    <keyword type="property" name="The &quot;state&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleSession--state"/>
+    <keyword type="property" name="The &quot;content&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleTransportGoogle--content"/>
+    <keyword type="property" name="The &quot;state&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleTransportGoogle--state"/>
+    <keyword type="property" name="The &quot;transport-ns&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleTransportGoogle--transport-ns"/>
+    <keyword type="property" name="The &quot;content&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleTransportIceUdp--content"/>
+    <keyword type="property" name="The &quot;state&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleTransportIceUdp--state"/>
+    <keyword type="property" name="The &quot;transport-ns&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleTransportIceUdp--transport-ns"/>
+    <keyword type="property" name="The &quot;content&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleTransportRawUdp--content"/>
+    <keyword type="property" name="The &quot;state&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleTransportRawUdp--state"/>
+    <keyword type="property" name="The &quot;transport-ns&quot; property" link="wocky-wocky-jingle-types.html#WockyJingleTransportRawUdp--transport-ns"/>
+    <keyword type="signal" name="The &quot;completed&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleContent-completed"/>
+    <keyword type="signal" name="The &quot;new-candidates&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleContent-new-candidates"/>
+    <keyword type="signal" name="The &quot;new-share-channel&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleContent-new-share-channel"/>
+    <keyword type="signal" name="The &quot;ready&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleContent-ready"/>
+    <keyword type="signal" name="The &quot;removed&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleContent-removed"/>
+    <keyword type="signal" name="The &quot;new-session&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleFactory-new-session"/>
+    <keyword type="signal" name="The &quot;query-cap&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleFactory-query-cap"/>
+    <keyword type="signal" name="The &quot;remote-media-description&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleMediaRtp-remote-media-description"/>
+    <keyword type="signal" name="The &quot;about-to-initiate&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleSession-about-to-initiate"/>
+    <keyword type="signal" name="The &quot;content-rejected&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleSession-content-rejected"/>
+    <keyword type="signal" name="The &quot;new-content&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleSession-new-content"/>
+    <keyword type="signal" name="The &quot;query-cap&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleSession-query-cap"/>
+    <keyword type="signal" name="The &quot;remote-state-changed&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleSession-remote-state-changed"/>
+    <keyword type="signal" name="The &quot;terminated&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleSession-terminated"/>
+    <keyword type="signal" name="The &quot;new-candidates&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleTransportGoogle-new-candidates"/>
+    <keyword type="signal" name="The &quot;new-candidates&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleTransportIceUdp-new-candidates"/>
+    <keyword type="signal" name="The &quot;new-candidates&quot; signal" link="wocky-wocky-jingle-types.html#WockyJingleTransportRawUdp-new-candidates"/>
     <keyword type="constant" name="WOCKY_AUTH_ERROR_INIT_FAILED" link="WockyAuthRegistry.html#WOCKY-AUTH-ERROR-INIT-FAILED:CAPS"/>
     <keyword type="constant" name="WOCKY_AUTH_ERROR_NOT_SUPPORTED" link="WockyAuthRegistry.html#WOCKY-AUTH-ERROR-NOT-SUPPORTED:CAPS"/>
     <keyword type="constant" name="WOCKY_AUTH_ERROR_NO_SUPPORTED_MECHANISMS" link="WockyAuthRegistry.html#WOCKY-AUTH-ERROR-NO-SUPPORTED-MECHANISMS:CAPS"/>
@@ -942,5 +1148,29 @@
     <keyword type="constant" name="WOCKY_XMPP_READER_STATE_OPENED" link="wocky-WockyXmppReader.html#WOCKY-XMPP-READER-STATE-OPENED:CAPS"/>
     <keyword type="constant" name="WOCKY_XMPP_READER_STATE_CLOSED" link="wocky-WockyXmppReader.html#WOCKY-XMPP-READER-STATE-CLOSED:CAPS"/>
     <keyword type="constant" name="WOCKY_XMPP_READER_STATE_ERROR" link="wocky-WockyXmppReader.html#WOCKY-XMPP-READER-STATE-ERROR:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_UNKNOWN" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-UNKNOWN:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_ALTERNATIVE_SESSION" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-ALTERNATIVE-SESSION:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_BUSY" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-BUSY:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_CANCEL" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-CANCEL:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_CONNECTIVITY_ERROR" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-CONNECTIVITY-ERROR:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_DECLINE" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-DECLINE:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_EXPIRED" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-EXPIRED:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_FAILED_APPLICATION" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-FAILED-APPLICATION:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_FAILED_TRANSPORT" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-FAILED-TRANSPORT:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_GENERAL_ERROR" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-GENERAL-ERROR:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_GONE" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-GONE:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_INCOMPATIBLE_PARAMETERS" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-INCOMPATIBLE-PARAMETERS:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_MEDIA_ERROR" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-MEDIA-ERROR:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_SECURITY_ERROR" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-SECURITY-ERROR:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_SUCCESS" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-SUCCESS:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_TIMEOUT" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-TIMEOUT:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_UNSUPPORTED_APPLICATIONS" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-UNSUPPORTED-APPLICATIONS:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_REASON_UNSUPPORTED_TRANSPORTS" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-REASON-UNSUPPORTED-TRANSPORTS:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_STATE_PENDING_CREATED" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-STATE-PENDING-CREATED:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_STATE_PENDING_INITIATE_SENT" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-STATE-PENDING-INITIATE-SENT:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_STATE_PENDING_INITIATED" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-STATE-PENDING-INITIATED:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_STATE_PENDING_ACCEPT_SENT" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-STATE-PENDING-ACCEPT-SENT:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_STATE_ACTIVE" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-STATE-ACTIVE:CAPS"/>
+    <keyword type="constant" name="WOCKY_JINGLE_STATE_ENDED" link="wocky-wocky-jingle-types.html#WOCKY-JINGLE-STATE-ENDED:CAPS"/>
   </functions>
 </book>
