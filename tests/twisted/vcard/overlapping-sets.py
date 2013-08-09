@@ -8,7 +8,7 @@ from servicetest import (EventPattern, call_async, sync_dbus, assertEquals,
         assertLength)
 from gabbletest import (
     acknowledge_iq, exec_test, expect_and_handle_get_vcard, make_result_iq,
-    sync_stream)
+    sync_stream, disconnect_conn)
 import ns
 
 def test(q, bus, conn, stream):
@@ -51,8 +51,9 @@ def test(q, bus, conn, stream):
         vcard_set_event.stanza))
     assertEquals('image/png', xpath.queryForString('/iq/vCard/PHOTO/TYPE',
         vcard_set_event.stanza))
-    assertEquals(hello_binval, xpath.queryForString('/iq/vCard/PHOTO/BINVAL',
-        vcard_set_event.stanza))
+    binval = xpath.queryForString('/iq/vCard/PHOTO/BINVAL',
+        vcard_set_event.stanza)
+    assertEquals(hello_binval, binval.strip())
     assertEquals(None, xpath.queryForNodes('/iq/vCard/FN',
         vcard_set_event.stanza))
     assertEquals(None, xpath.queryForNodes('/iq/vCard/N',
@@ -80,8 +81,9 @@ def test(q, bus, conn, stream):
         vcard_set_event.stanza))
     assertEquals('image/png', xpath.queryForString('/iq/vCard/PHOTO/TYPE',
         vcard_set_event.stanza))
-    assertEquals(hello_binval, xpath.queryForString('/iq/vCard/PHOTO/BINVAL',
-        vcard_set_event.stanza))
+    binval = xpath.queryForString('/iq/vCard/PHOTO/BINVAL',
+        vcard_set_event.stanza)
+    assertEquals(hello_binval, binval.strip())
     assertLength(1, xpath.queryForNodes('/iq/vCard/N',
         vcard_set_event.stanza))
     assertEquals('Robert', xpath.queryForString('/iq/vCard/N/GIVEN',
@@ -127,8 +129,7 @@ def test(q, bus, conn, stream):
 
     # Now Gabble gets disconnected.
     sync_stream(q, stream)
-    conn.Disconnect()
-    q.expect('dbus-signal', signal='StatusChanged', args=[2, 1])
+    disconnect_conn(q, conn, stream)
 
 if __name__ == '__main__':
     exec_test(test)

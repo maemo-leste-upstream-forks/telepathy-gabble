@@ -24,14 +24,9 @@
 #include <string.h>
 
 #include <dbus/dbus-glib.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/enums.h>
-#include <telepathy-glib/errors.h>
-#include <telepathy-glib/exportable-channel.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/channel-iface.h>
-#include <telepathy-glib/svc-channel.h>
-#include <telepathy-glib/svc-generic.h>
+
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_IM
 #include "connection.h"
@@ -44,7 +39,6 @@
 #include "roster.h"
 #include "util.h"
 
-static void chat_state_iface_init (gpointer, gpointer);
 static void destroyable_iface_init (gpointer, gpointer);
 
 G_DEFINE_TYPE_WITH_CODE (GabbleIMChannel, gabble_im_channel,
@@ -54,20 +48,16 @@ G_DEFINE_TYPE_WITH_CODE (GabbleIMChannel, gabble_im_channel,
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CHANNEL_INTERFACE_MESSAGES,
       tp_message_mixin_messages_iface_init);
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CHANNEL_INTERFACE_CHAT_STATE,
-      chat_state_iface_init);
+      tp_message_mixin_chat_state_iface_init)
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CHANNEL_INTERFACE_DESTROYABLE,
       destroyable_iface_init));
 
 static void _gabble_im_channel_send_message (GObject *object,
     TpMessage *message, TpMessageSendingFlags flags);
 static void gabble_im_channel_close (TpBaseChannel *base_chan);
-
-static const gchar *gabble_im_channel_interfaces[] = {
-    TP_IFACE_CHANNEL_INTERFACE_CHAT_STATE,
-    TP_IFACE_CHANNEL_INTERFACE_MESSAGES,
-    TP_IFACE_CHANNEL_INTERFACE_DESTROYABLE,
-    NULL
-};
+static gboolean _gabble_im_channel_send_chat_state (GObject *object,
+    TpChannelChatState state,
+    GError **error);
 
 
 /* private structure */
@@ -84,13 +74,6 @@ struct _GabbleIMChannelPrivate
   gboolean send_nick;
   ChatStateSupport chat_states_supported;
 
-  /* FALSE unless at least one chat state notification has been sent; <gone/>
-   * will only be sent when the channel closes if this is TRUE. This prevents
-   * opening a channel and closing it immediately sending a spurious <gone/> to
-   * the peer.
-   */
-  gboolean send_gone;
-
   gboolean dispose_has_run;
 };
 
@@ -98,7 +81,23 @@ typedef struct {
   GabbleIMChannel *channel;
   TpMessage *message;
   gchar *token;
+  TpMessageSendingFlags flags;
 } _GabbleIMSendMessageCtx;
+
+static GPtrArray *
+gabble_im_channel_get_interfaces (TpBaseChannel *base)
+{
+  GPtrArray *interfaces;
+
+  interfaces = TP_BASE_CHANNEL_CLASS (
+      gabble_im_channel_parent_class)->get_interfaces (base);
+
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_CHAT_STATE);
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_MESSAGES);
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_DESTROYABLE);
+
+  return interfaces;
+}
 
 static void
 gabble_im_channel_init (GabbleIMChannel *self)
@@ -143,15 +142,21 @@ gabble_im_channel_constructed (GObject *obj)
   else
     priv->send_nick = TRUE;
 
-  priv->chat_states_supported = CHAT_STATES_UNKNOWN;
-
   tp_message_mixin_init (obj, G_STRUCT_OFFSET (GabbleIMChannel, message_mixin),
       base_conn);
 
+  /* We deliberately do not include
+   * TP_DELIVERY_REPORTING_SUPPORT_FLAG_RECEIVE_SUCCESSES here, even though we
+   * support requesting receipts, because XEP-0184 provides no guarantees.
+   */
   tp_message_mixin_implement_sending (obj, _gabble_im_channel_send_message,
       G_N_ELEMENTS (types), types, 0,
       TP_DELIVERY_REPORTING_SUPPORT_FLAG_RECEIVE_FAILURES,
       supported_content_types);
+
+  priv->chat_states_supported = CHAT_STATES_UNKNOWN;
+  tp_message_mixin_implement_send_chat_state (obj,
+      _gabble_im_channel_send_chat_state);
 }
 
 static void gabble_im_channel_dispose (GObject *object);
@@ -197,7 +202,7 @@ gabble_im_channel_class_init (GabbleIMChannelClass *gabble_im_channel_class)
   object_class->finalize = gabble_im_channel_finalize;
 
   base_class->channel_type = TP_IFACE_CHANNEL_TYPE_TEXT;
-  base_class->interfaces = gabble_im_channel_interfaces;
+  base_class->get_interfaces = gabble_im_channel_get_interfaces;
   base_class->target_handle_type = TP_HANDLE_TYPE_CONTACT;
   base_class->close = gabble_im_channel_close;
   base_class->fill_immutable_properties =
@@ -237,22 +242,26 @@ chat_states_supported (GabbleIMChannel *self,
     }
 }
 
-static void
-im_channel_send_gone (GabbleIMChannel *self)
+static gboolean
+receipts_conceivably_supported (
+    GabbleIMChannel *self)
 {
-  GabbleIMChannelPrivate *priv = self->priv;
   TpBaseChannel *base = (TpBaseChannel *) self;
+  GabbleConnection *conn =
+      GABBLE_CONNECTION (tp_base_channel_get_connection (base));
+  GabblePresence *presence;
 
-  if (priv->send_gone)
-    {
-      if (chat_states_supported (self, FALSE))
-        gabble_message_util_send_chat_state (G_OBJECT (self),
-            GABBLE_CONNECTION (tp_base_channel_get_connection (base)),
-            WOCKY_STANZA_SUB_TYPE_CHAT, TP_CHANNEL_CHAT_STATE_GONE,
-            priv->peer_jid, NULL);
+  presence = gabble_presence_cache_get (conn->presence_cache,
+      tp_base_channel_get_target_handle (base));
 
-      priv->send_gone = FALSE;
-    }
+  /* ...except it's never null because _parse_message_message() in
+   * presence-cache.c. I hate this exactly as much as I did when I wrote the
+   * FIXME on that function. */
+  if (presence != NULL)
+    return gabble_presence_has_cap (presence, NS_RECEIPTS);
+
+  /* Otherwise ... who knows. Why not ask for one? */
+  return TRUE;
 }
 
 static void
@@ -282,7 +291,7 @@ gabble_im_channel_dispose (GObject *object)
         }
     }
 
-  im_channel_send_gone (self);
+  tp_message_mixin_maybe_send_gone (object);
 
   if (G_OBJECT_CLASS (gabble_im_channel_parent_class)->dispose)
     G_OBJECT_CLASS (gabble_im_channel_parent_class)->dispose (object);
@@ -318,7 +327,7 @@ _gabble_im_channel_message_sent_cb (GObject *source,
 
     if (wocky_porter_send_finish (porter, res, &error))
       {
-        tp_message_mixin_sent ((GObject *) chan, message, 0,
+        tp_message_mixin_sent ((GObject *) chan, message, context->flags,
             context->token, NULL);
       }
     else
@@ -340,9 +349,10 @@ _gabble_im_channel_send_message (GObject *object,
 {
   GabbleIMChannel *self = GABBLE_IM_CHANNEL (object);
   TpBaseChannel *base = (TpBaseChannel *) self;
+  TpBaseConnection *base_conn;
   GabbleConnection *gabble_conn;
   GabbleIMChannelPrivate *priv;
-  gint state = -1;
+  TpChannelChatState state = -1;
   WockyStanza *stanza = NULL;
   gchar *id = NULL;
   GError *error = NULL;
@@ -352,29 +362,40 @@ _gabble_im_channel_send_message (GObject *object,
   g_assert (GABBLE_IS_IM_CHANNEL (self));
   priv = self->priv;
 
+  base_conn = tp_base_channel_get_connection (base);
+  gabble_conn = GABBLE_CONNECTION (base_conn);
+
   if (chat_states_supported (self, TRUE))
     {
       state = TP_CHANNEL_CHAT_STATE_ACTIVE;
-      priv->send_gone = TRUE;
+      tp_message_mixin_change_chat_state (object,
+          tp_base_connection_get_self_handle (base_conn), state);
     }
-
-  /* We don't support providing successful delivery reports. */
-  flags = 0;
-  gabble_conn =
-      GABBLE_CONNECTION (tp_base_channel_get_connection (base));
 
   stanza = gabble_message_util_build_stanza (message,
       gabble_conn, 0, state, priv->peer_jid,
       priv->send_nick, &id, &error);
 
-
   if (stanza != NULL)
     {
+      if ((flags & TP_MESSAGE_SENDING_FLAG_REPORT_DELIVERY) &&
+          receipts_conceivably_supported (self))
+        {
+          wocky_node_add_child_ns (wocky_stanza_get_top_node (stanza),
+              "request", NS_RECEIPTS);
+          flags = TP_MESSAGE_SENDING_FLAG_REPORT_DELIVERY;
+        }
+      else
+        {
+          flags = 0;
+        }
+
       porter = gabble_connection_dup_porter (gabble_conn);
       context = g_slice_new0 (_GabbleIMSendMessageCtx);
       context->channel = g_object_ref (base);
       context->message = g_object_ref (message);
       context->token = id;
+      context->flags = flags;
       wocky_porter_send_async (porter, stanza, NULL,
           _gabble_im_channel_message_sent_cb, context);
       g_object_unref (porter);
@@ -382,7 +403,7 @@ _gabble_im_channel_send_message (GObject *object,
     }
   else
     {
-      tp_message_mixin_sent (object, message, flags, NULL, error);
+      tp_message_mixin_sent (object, message, 0, NULL, error);
       g_error_free (error);
     }
 
@@ -415,29 +436,61 @@ build_message (
   return msg;
 }
 
+static void
+maybe_send_delivery_report (
+    GabbleIMChannel *self,
+    WockyStanza *message,
+    const gchar *jid,
+    const gchar *id)
+{
+  TpBaseChannel *base = TP_BASE_CHANNEL (self);
+  TpHandle target = tp_base_channel_get_target_handle (base);
+  TpBaseConnection *base_conn = tp_base_channel_get_connection (base);
+  GabbleConnection *conn = GABBLE_CONNECTION (base_conn);
+  WockyStanza *report;
+
+  if (id == NULL)
+    return;
+
+  if (wocky_node_get_child_ns (wocky_stanza_get_top_node (message),
+          "request", NS_RECEIPTS) == NULL)
+    return;
+
+  if (conn->self_presence->status == GABBLE_PRESENCE_HIDDEN ||
+      !gabble_roster_handle_gets_presence_from_us (conn->roster, target))
+    return;
+
+  report = wocky_stanza_build (
+      WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
+      NULL, jid,
+      '(', "received", ':', NS_RECEIPTS,
+        '@', "id", id,
+      ')', NULL);
+
+  _gabble_connection_send (conn, report, NULL);
+  g_object_unref (report);
+}
+
 /*
  * _gabble_im_channel_receive:
  * @chan: a channel
+ * @message: the <message> stanza, from which all the following arguments were
+ *           extracted.
  * @type: the message type
  * @from: the full JID we received the message from
  * @timestamp: the time at which the message was sent (not the time it was
  *             received)
  * @id: the id='' attribute from the <message/> stanza, if any
  * @text: the plaintext body of the message
- * @send_error: the reason why sending @text to @sender failed, or
- *              GABBLE_TEXT_CHANNEL_SEND_NO_ERROR if this call is not to report
- *              a failure to send.
- * @delivery_status: if @send_error is GABBLE_TEXT_CHANNEL_SEND_NO_ERROR,
- *                   ignored; else the delivery status to attach to the report.
  * @state: a #TpChannelChatState, or -1 if there was no chat state in the
  *         message.
  *
  * Shoves an incoming message into @chan, possibly updating the chat state at
- * the same time; or maybe this is a delivery report? Who knows! It's a magical
- * adventure.
+ * the same time.
  */
 void
 _gabble_im_channel_receive (GabbleIMChannel *chan,
+                            WockyStanza *message,
                             TpChannelTextMessageType type,
                             const char *from,
                             time_t timestamp,
@@ -475,6 +528,7 @@ _gabble_im_channel_receive (GabbleIMChannel *chan,
     tp_message_set_string (msg, 0, "message-token", id);
 
   tp_message_mixin_take_received (G_OBJECT (chan), msg);
+  maybe_send_delivery_report (chan, message, from, id);
 }
 
 void
@@ -491,7 +545,7 @@ _gabble_im_channel_report_delivery (
   TpBaseChannel *base_chan = (TpBaseChannel *) self;
   TpBaseConnection *base_conn;
   TpHandle peer;
-  TpMessage *msg, *delivery_report;
+  TpMessage *delivery_report;
   gchar *tmp;
 
   g_return_if_fail (GABBLE_IS_IM_CHANNEL (self));
@@ -510,7 +564,6 @@ _gabble_im_channel_report_delivery (
       priv->chat_states_supported = CHAT_STATES_UNKNOWN;
     }
 
-  msg = build_message (self, type, timestamp, text);
   delivery_report = tp_cm_message_new (base_conn, 1);
   tp_message_set_uint32 (delivery_report, 0, "message-type",
       TP_CHANNEL_TEXT_MESSAGE_TYPE_DELIVERY_REPORT);
@@ -529,15 +582,20 @@ _gabble_im_channel_report_delivery (
   if (id != NULL)
     tp_message_set_string (delivery_report, 0, "delivery-token", id);
 
-  /* This is a delivery report, so the original sender of the echoed message
-   * must be us! */
-  tp_cm_message_set_sender (msg, base_conn->self_handle);
+  if (text != NULL)
+    {
+      TpMessage *msg = build_message (self, type, timestamp, text);
+      /* This is a delivery report, so the original sender of the echoed message
+       * must be us! */
+      tp_cm_message_set_sender (msg, tp_base_connection_get_self_handle (base_conn));
 
-  /* Since this is a delivery report, we can trust the id on the message. */
-  if (id != NULL)
-    tp_message_set_string (msg, 0, "message-token", id);
+      /* Since this is a delivery report, we can trust the id on the message. */
+      if (id != NULL)
+        tp_message_set_string (msg, 0, "message-token", id);
 
-  tp_cm_message_take_message (delivery_report, 0, "delivery-echo", msg);
+      tp_cm_message_take_message (delivery_report, 0, "delivery-echo", msg);
+    }
+
   tp_message_mixin_take_received (G_OBJECT (self), delivery_report);
 }
 
@@ -555,16 +613,24 @@ _gabble_im_channel_state_receive (GabbleIMChannel *chan,
   GabbleIMChannelPrivate *priv;
   TpBaseChannel *base_chan;
 
-  g_assert (state < NUM_TP_CHANNEL_CHAT_STATES);
   g_assert (GABBLE_IS_IM_CHANNEL (chan));
   base_chan = (TpBaseChannel *) chan;
   priv = chan->priv;
 
   priv->chat_states_supported = CHAT_STATES_SUPPORTED;
 
-  tp_svc_channel_interface_chat_state_emit_chat_state_changed (
-      (TpSvcChannelInterfaceChatState *) chan,
+  tp_message_mixin_change_chat_state ((GObject *) chan,
       tp_base_channel_get_target_handle (base_chan), state);
+}
+
+void
+gabble_im_channel_receive_receipt (
+    GabbleIMChannel *self,
+    const gchar *receipt_id)
+{
+  _gabble_im_channel_report_delivery (self,
+        TP_CHANNEL_TEXT_MESSAGE_TYPE_NORMAL, 0, receipt_id, NULL,
+        GABBLE_TEXT_CHANNEL_SEND_NO_ERROR, TP_DELIVERY_STATUS_DELIVERED);
 }
 
 static void
@@ -572,7 +638,7 @@ gabble_im_channel_close (TpBaseChannel *base_chan)
 {
   GabbleIMChannel *self = GABBLE_IM_CHANNEL (base_chan);
 
-  im_channel_send_gone (self);
+  tp_message_mixin_maybe_send_gone ((GObject *) self);
 
   /* The IM factory will resurrect the channel if we have pending
    * messages. When we're resurrected, we want the initiator
@@ -610,76 +676,24 @@ gabble_im_channel_destroy (TpSvcChannelInterfaceDestroyable *iface,
   tp_svc_channel_interface_destroyable_return_from_destroy (context);
 }
 
-
-/**
- * gabble_im_channel_set_chat_state
- *
- * Implements D-Bus method SetChatState
- * on interface org.freedesktop.Telepathy.Channel.Interface.ChatState
- */
-static void
-gabble_im_channel_set_chat_state (TpSvcChannelInterfaceChatState *iface,
-                                  guint state,
-                                  DBusGMethodInvocation *context)
+static gboolean
+_gabble_im_channel_send_chat_state (GObject *object,
+    TpChannelChatState state,
+    GError **error)
 {
-  GabbleIMChannel *self = GABBLE_IM_CHANNEL (iface);
+  GabbleIMChannel *self = GABBLE_IM_CHANNEL (object);
+  GabbleIMChannelPrivate *priv = self->priv;
   TpBaseChannel *base = (TpBaseChannel *) self;
-  GabbleIMChannelPrivate *priv;
-  GError *error = NULL;
+  TpBaseConnection *base_conn = tp_base_channel_get_connection (base);
 
-  g_assert (GABBLE_IS_IM_CHANNEL (self));
-  priv = self->priv;
-
-  if (state >= NUM_TP_CHANNEL_CHAT_STATES)
-    {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
-          "invalid state: %u", state);
-    }
-  else if (state == TP_CHANNEL_CHAT_STATE_GONE)
-    {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
-          "you may not explicitly set the Gone state");
-    }
   /* Only send anything to the peer if we actually know they support chat
-   * states.
-   */
-  else if (chat_states_supported (self, FALSE))
-    {
-      TpBaseConnection *base_conn = tp_base_channel_get_connection (base);
+   * states. */
+  if (!chat_states_supported (self, FALSE))
+    return TRUE;
 
-      if (gabble_message_util_send_chat_state (G_OBJECT (self),
-              GABBLE_CONNECTION (base_conn),
-              WOCKY_STANZA_SUB_TYPE_CHAT, state, priv->peer_jid, &error))
-        {
-          priv->send_gone = TRUE;
-
-          /* Send the ChatStateChanged signal for the local user */
-          tp_svc_channel_interface_chat_state_emit_chat_state_changed (iface,
-              base_conn->self_handle, state);
-        }
-    }
-
-  if (error != NULL)
-    {
-      DEBUG ("%s", error->message);
-      dbus_g_method_return_error (context, error);
-      g_error_free (error);
-    }
-  else
-    {
-      tp_svc_channel_interface_chat_state_return_from_set_chat_state (context);
-    }
-}
-
-static void
-chat_state_iface_init (gpointer g_iface, gpointer iface_data)
-{
-  TpSvcChannelInterfaceChatStateClass *klass =
-    (TpSvcChannelInterfaceChatStateClass *) g_iface;
-#define IMPLEMENT(x) tp_svc_channel_interface_chat_state_implement_##x (\
-    klass, gabble_im_channel_##x)
-  IMPLEMENT(set_chat_state);
-#undef IMPLEMENT
+  return gabble_message_util_send_chat_state (G_OBJECT (self),
+      GABBLE_CONNECTION (base_conn),
+      WOCKY_STANZA_SUB_TYPE_CHAT, state, priv->peer_jid, error);
 }
 
 static void

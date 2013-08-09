@@ -23,12 +23,13 @@
  */
 
 #include "config.h"
+
 #include "message-util.h"
 
 #include <string.h>
 #include <time.h>
 
-#include <telepathy-glib/dbus.h>
+#include <telepathy-glib/telepathy-glib.h>
 #include <wocky/wocky.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_IM
@@ -41,30 +42,31 @@ void
 gabble_message_util_add_chat_state (WockyStanza *stanza,
                  TpChannelChatState state)
 {
-  WockyNode *node = NULL;
   WockyNode *n = wocky_stanza_get_top_node (stanza);
+  const gchar *node_name = NULL;
 
   switch (state)
     {
       case TP_CHANNEL_CHAT_STATE_GONE:
-        node = wocky_node_add_child_with_content (n, "gone", NULL);
+        node_name = "gone";
         break;
       case TP_CHANNEL_CHAT_STATE_INACTIVE:
-        node = wocky_node_add_child_with_content (n, "inactive", NULL);
+        node_name = "inactive";
         break;
       case TP_CHANNEL_CHAT_STATE_ACTIVE:
-        node = wocky_node_add_child_with_content (n, "active", NULL);
+        node_name = "active";
         break;
       case TP_CHANNEL_CHAT_STATE_PAUSED:
-        node = wocky_node_add_child_with_content (n, "paused", NULL);
+        node_name = "paused";
         break;
       case TP_CHANNEL_CHAT_STATE_COMPOSING:
-        node = wocky_node_add_child_with_content (n, "composing", NULL);
+        node_name = "composing";
         break;
     }
 
-  if (node != NULL)
-    node->ns = g_quark_from_static_string (NS_CHAT_STATES);
+  if (node_name != NULL)
+    wocky_node_add_child_ns_q (n, node_name,
+        g_quark_from_static_string (NS_CHAT_STATES));
 }
 
 /**
@@ -103,7 +105,7 @@ gabble_message_util_build_stanza (TpMessage *message,
 #define RETURN_INVALID_ARGUMENT(msg, ...) \
   G_STMT_START { \
     DEBUG (msg , ## __VA_ARGS__); \
-    g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT, \
+    g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT, \
         msg , ## __VA_ARGS__); \
     return NULL; \
   } G_STMT_END
@@ -239,6 +241,7 @@ gabble_tp_send_error_from_wocky_xmpp_error (WockyXmppError err)
 
       case WOCKY_XMPP_ERROR_FORBIDDEN:
       case WOCKY_XMPP_ERROR_NOT_AUTHORIZED:
+      case WOCKY_XMPP_ERROR_POLICY_VIOLATION:
         return TP_CHANNEL_TEXT_SEND_ERROR_PERMISSION_DENIED;
 
       case WOCKY_XMPP_ERROR_RESOURCE_CONSTRAINT:

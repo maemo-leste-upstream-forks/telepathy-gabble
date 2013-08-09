@@ -95,7 +95,7 @@ gabble_console_plugin_create_sidecar_async (
     }
   else
     {
-      g_simple_async_result_set_error (result, TP_ERRORS,
+      g_simple_async_result_set_error (result, TP_ERROR,
           TP_ERROR_NOT_IMPLEMENTED, "'%s' not implemented", sidecar_interface);
     }
 
@@ -206,7 +206,8 @@ gabble_console_sidecar_init (GabbleConsoleSidecar *self)
 {
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GABBLE_TYPE_CONSOLE_SIDECAR,
       GabbleConsoleSidecarPrivate);
-  self->priv->reader = wocky_xmpp_reader_new_no_stream ();
+  self->priv->reader = wocky_xmpp_reader_new_no_stream_ns (
+      WOCKY_XMPP_NS_JABBER_CLIENT);
   self->priv->writer = wocky_xmpp_writer_new_no_stream ();
 }
 
@@ -492,7 +493,7 @@ get_iq_type (const gchar *type_str,
       return TRUE;
     }
 
-  g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+  g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
       "Type must be 'get' or 'set', not '%s'", type_str);
   return FALSE;
 }
@@ -510,14 +511,15 @@ validate_jid (const gchar **to,
   if (wocky_decode_jid (*to, NULL, NULL, NULL))
     return TRUE;
 
-  g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+  g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
       "'%s' is not a valid (or empty) JID", *to);
   return FALSE;
 }
 
 /*
  * @xml: doesn't actually have to be a top-level stanza. It can be the body of
- *  an IQ or whatever.
+ *  an IQ or whatever. If it has no namespace, it's assumed to be in
+ *  jabber:client.
  */
 static gboolean
 parse_me_a_stanza (
@@ -541,7 +543,7 @@ parse_me_a_stanza (
 
   if (stanza == NULL)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Incomplete stanza! Bad person.");
       return FALSE;
     }
@@ -620,27 +622,20 @@ stanza_looks_coherent (
 
   if (t == WOCKY_STANZA_TYPE_UNKNOWN)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
-          "I don't know what a <%s/> is", top_node->name);
+      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
+          "I don't know what a <%s xmlns='%s'/> is", top_node->name,
+          g_quark_to_string (top_node->ns));
       return FALSE;
     }
   else if (st == WOCKY_STANZA_SUB_TYPE_UNKNOWN)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "I don't know what type='%s' means",
           wocky_node_get_attribute (top_node, "type"));
       return FALSE;
     }
-  else
-    {
-      if (top_node->ns == g_quark_from_static_string (""))
-        {
-          /* So... Wocky puts an empty string in as the namespace. Greaaat. */
-          top_node->ns = g_quark_from_static_string (WOCKY_XMPP_NS_JABBER_CLIENT);
-        }
 
-      return TRUE;
-    }
+  return TRUE;
 }
 
 static void

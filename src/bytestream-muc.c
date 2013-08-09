@@ -24,11 +24,11 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_BYTESTREAM
 
-#include "base64.h"
 #include "bytestream-factory.h"
 #include "bytestream-iface.h"
 #include "connection.h"
@@ -100,15 +100,11 @@ gabble_bytestream_muc_dispose (GObject *object)
 {
   GabbleBytestreamMuc *self = GABBLE_BYTESTREAM_MUC (object);
   GabbleBytestreamMucPrivate *priv = GABBLE_BYTESTREAM_MUC_GET_PRIVATE (self);
-  TpHandleRepoIface *room_repo = tp_base_connection_get_handles (
-      (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_ROOM);
 
   if (priv->dispose_has_run)
     return;
 
   priv->dispose_has_run = TRUE;
-
-  tp_handle_unref (room_repo, priv->peer_handle);
 
   if (priv->state != GABBLE_BYTESTREAM_STATE_CLOSED)
     {
@@ -228,8 +224,6 @@ gabble_bytestream_muc_constructor (GType type,
   room_repo = tp_base_connection_get_handles (
       (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_ROOM);
 
-  tp_handle_ref (room_repo, priv->peer_handle);
-
   priv->peer_jid = tp_handle_inspect (room_repo,
         priv->peer_handle);
 
@@ -345,7 +339,7 @@ send_data_to (GabbleBytestreamMuc *self,
             frag = FRAG_LAST;
         }
 
-      encoded = base64_encode (send_now, str + sent, FALSE);
+      encoded = g_base64_encode ((const guchar *) str + sent, send_now);
       wocky_node_set_content (data, encoded);
 
       switch (frag)
@@ -411,6 +405,8 @@ gabble_bytestream_muc_receive (GabbleBytestreamMuc *self,
   const gchar *from;
   WockyNode *data;
   GString *str;
+  guchar *st;
+  gsize outlen;
   TpHandle sender;
   GString *buffer;
   const gchar *frag_val;
@@ -459,7 +455,9 @@ gabble_bytestream_muc_receive (GabbleBytestreamMuc *self,
       return;
     }
 
-  str = base64_decode (data->content);
+  st = g_base64_decode (data->content, &outlen);
+  str = g_string_new_len ((const gchar *) st, outlen);
+  g_free (st);
   if (str == NULL)
     {
       DEBUG ("base64 decoding failed");

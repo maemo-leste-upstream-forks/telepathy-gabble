@@ -15,6 +15,7 @@ override_dh_auto_configure:
 		--libexecdir="\$${prefix}/lib/telepathy" \
 		--with-ca-certificates=/etc/ssl/certs/ca-certificates.crt \
 		--disable-static \
+		--enable-installed-tests
 		$(NULL)
 
 # the regression tests are too race-prone to run on Debian buildds
@@ -26,6 +27,7 @@ override_dh_auto_test:
 override_dh_auto_install:
 	dh_auto_install
 	rm -f debian/tmp/usr/lib/telepathy/gabble-0/plugins/*.la
+	rm -f debian/tmp/usr/lib/telepathy-gabble-tests/plugins/*.la
 	rm -f debian/tmp/usr/lib/telepathy/gabble-0/lib/*.la
 	rm -f debian/tmp/usr/lib/telepathy/gabble-0/lib/libwocky.so
 	rm -f debian/tmp/usr/lib/telepathy/gabble-0/lib/libgabble-plugins.so
@@ -39,3 +41,9 @@ override_dh_strip:
 # the libraries are considered private, nothing in Debian should depend on them
 override_dh_makeshlibs:
 	:
+
+override_dh_shlibdeps:
+	sed -e 's!@DEB_VERSION_UPSTREAM@!$(DEB_VERSION_UPSTREAM)!' \
+		< debian/shlibs.local.in \
+		> debian/shlibs.local
+	dh_shlibdeps -Ltelepathy-gabble

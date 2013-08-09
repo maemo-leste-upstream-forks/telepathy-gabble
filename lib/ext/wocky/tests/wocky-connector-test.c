@@ -19,6 +19,10 @@
 #include <arpa/inet.h>
 #endif
 
+#ifdef G_OS_UNIX
+#include <netinet/tcp.h>
+#endif
+
 #include <wocky/wocky.h>
 
 #include "wocky-test-connector-server.h"
@@ -66,11 +70,6 @@
 
 #define OK 0
 #define CONNECTOR_OK { OK, OK, OK, OK, OK, OK }
-
-#if ! GLIB_CHECK_VERSION(2, 26, 0)
-#  define G_IO_ERROR_CONNECTION_REFUSED -1
-#  define G_IO_ERROR_NETWORK_UNREACHABLE -1
-#endif
 
 static GError *error = NULL;
 static GResolver *original;
@@ -188,7 +187,7 @@ test_t tests[] =
       { { TLS_SUPPORT, AUTH_MECH_OR_NULL_FOR_ALL  },
         { SERVER_PROBLEM..., CONNECTOR_PROBLEM... },
         { USERNAME, PASSWORD },
-        SERVER_LISTEN_PORT },
+        SERVER_LISTEN_PORT, SERVER_CERT },
 
       // Fake DNS Record:
       // SRV_HOSTs SRV record → { HOSTNAME, PORT }
@@ -2774,6 +2773,78 @@ test_t tests[] =
           { "moose@tomato-juice.org", "something", PLAIN, TLS },
           { NULL, 0, XMPP_V1 } } },
 
+    { "/connector/cert-verification/tls/wildcard/ok",
+      QUIET,
+      { S_NO_ERROR },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
+        { "moose", "something" },
+        PORT_XMPP, CERT_WILDCARD },
+        { "foo.weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { TLS_REQUIRED,
+          { "moose@foo.weasel-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1, STARTTLS, CERT_CHECK_STRICT, TLS_CA_DIR } } },
+
+    { "/connector/cert-verification/tls/wildcard/level-mismatch/fail",
+      QUIET,
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NAME_MISMATCH, -1 },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
+        { "moose", "something" },
+        PORT_XMPP, CERT_WILDCARD },
+        { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { PLAINTEXT_OK,
+          { "moose@weasel-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1, STARTTLS, CERT_CHECK_STRICT, TLS_CA_DIR } } },
+
+    { "/connector/cert-verification/tls/wildcard/glob-mismatch/fail",
+      QUIET,
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NAME_MISMATCH, -1 },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
+        { "moose", "something" },
+        PORT_XMPP, CERT_WILDCARD },
+        { "foo.diesel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { TLS_REQUIRED,
+          { "moose@foo.diesel-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1, STARTTLS, CERT_CHECK_STRICT, TLS_CA_DIR } } },
+
+    { "/connector/cert-verification/tls/bad-wildcard/fail",
+      QUIET,
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NAME_MISMATCH, -1 },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
+        { "moose", "something" },
+        PORT_XMPP, CERT_BADWILD },
+        { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { TLS_REQUIRED,
+          { "moose@weasel-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1, STARTTLS, CERT_CHECK_STRICT, TLS_CA_DIR } } },
+
+    { "/connector/cert-verification/tls/revoked/fail",
+      QUIET,
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_REVOKED, -1 },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
+        { "moose", "something" },
+        PORT_XMPP, CERT_REVOKED },
+        { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { TLS_REQUIRED,
+          { "moose@weasel-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1, STARTTLS, CERT_CHECK_STRICT, TLS_CA_DIR } } },
+
+    { "/connector/cert-verification/tls/revoked/lenient/fail",
+      QUIET,
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_REVOKED, -1 },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, CONNECTOR_OK },
+        { "moose", "something" },
+        PORT_XMPP, CERT_REVOKED },
+        { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { TLS_REQUIRED,
+          { "moose@weasel-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1, STARTTLS, CERT_CHECK_LENIENT, TLS_CA_DIR } } },
+
     /* ********************************************************************* */
     /* as above but with legacy ssl                                          */
     { "/connector/cert-verification/ssl/nohost/ok",
@@ -2871,6 +2942,78 @@ test_t tests[] =
         { PLAINTEXT_OK,
           { "moose@weasel-juice.org", "something", PLAIN, TLS },
           { NULL, 0, XMPP_V1, OLD_SSL } } },
+
+    { "/connector/cert-verification/ssl/wildcard/ok",
+      QUIET,
+      { S_NO_ERROR },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { "moose", "something" },
+        PORT_XMPP, CERT_WILDCARD },
+        { "foo.weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { TLS_REQUIRED,
+          { "moose@foo.weasel-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1, OLD_SSL, CERT_CHECK_STRICT, TLS_CA_DIR } } },
+
+    { "/connector/cert-verification/ssl/wildcard/level-mismatch/fail",
+      QUIET,
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NAME_MISMATCH, -1 },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { "moose", "something" },
+        PORT_XMPP, CERT_WILDCARD },
+        { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { PLAINTEXT_OK,
+          { "moose@weasel-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1, OLD_SSL, CERT_CHECK_STRICT, TLS_CA_DIR } } },
+
+    { "/connector/cert-verification/ssl/wildcard/glob-mismatch/fail",
+      QUIET,
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NAME_MISMATCH, -1 },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { "moose", "something" },
+        PORT_XMPP, CERT_WILDCARD },
+        { "foo.diesel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { TLS_REQUIRED,
+          { "moose@foo.diesel-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1, OLD_SSL, CERT_CHECK_STRICT, TLS_CA_DIR } } },
+
+    { "/connector/cert-verification/ssl/bad-wildcard/fail",
+      QUIET,
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_NAME_MISMATCH, -1 },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { "moose", "something" },
+        PORT_XMPP, CERT_BADWILD },
+        { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { TLS_REQUIRED,
+          { "moose@weasel-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1, OLD_SSL, CERT_CHECK_STRICT, TLS_CA_DIR } } },
+
+    { "/connector/cert-verification/ssl/revoked/fail",
+      QUIET,
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_REVOKED, -1 },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { "moose", "something" },
+        PORT_XMPP, CERT_REVOKED },
+        { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { TLS_REQUIRED,
+          { "moose@weasel-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1, OLD_SSL, CERT_CHECK_STRICT, TLS_CA_DIR } } },
+
+    { "/connector/cert-verification/ssl/revoked/lenient/fail",
+      QUIET,
+      { S_WOCKY_TLS_CERT_ERROR, WOCKY_TLS_CERT_REVOKED, -1 },
+      { { TLS, NULL },
+        { SERVER_PROBLEM_NO_PROBLEM, { XMPP_PROBLEM_OLD_SSL, OK, OK, OK, OK } },
+        { "moose", "something" },
+        PORT_XMPP, CERT_REVOKED },
+        { "weasel-juice.org", PORT_XMPP, "thud.org", REACHABLE, UNREACHABLE },
+        { TLS_REQUIRED,
+          { "moose@weasel-juice.org", "something", PLAIN, TLS },
+          { NULL, 0, XMPP_V1, OLD_SSL, CERT_CHECK_LENIENT, TLS_CA_DIR } } },
 
     /* ********************************************************************* */
     /* certificate non-verification tests                                    */
@@ -3190,6 +3333,9 @@ start_dummy_xmpp_server (ServerParameters *srv)
   server.sin_port = htons (port);
   ssock = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP);
   setsockopt (ssock, SOL_SOCKET, SO_REUSEADDR, (const char *) &reuse, sizeof (reuse));
+#ifdef G_OS_UNIX
+  setsockopt (ssock, IPPROTO_TCP, TCP_NODELAY, (const char *) &reuse, sizeof (reuse));
+#endif
 
   res = bind (ssock, (struct sockaddr *) &server, sizeof (server));
 
@@ -3307,6 +3453,21 @@ test_done (GObject *source,
 
 typedef void (*test_func) (gconstpointer);
 
+#ifdef G_OS_UNIX
+static void
+connection_established_cb (WockyConnector *connector,
+    GSocketConnection *conn,
+    gpointer user_data)
+{
+  GSocket *sock = g_socket_connection_get_socket (conn);
+  gint fd, flag = 1;
+
+  fd = g_socket_get_fd (sock);
+  setsockopt (fd, IPPROTO_TCP, TCP_NODELAY,
+      (const char *) &flag, sizeof (flag));
+}
+#endif
+
 static gboolean
 start_test (gpointer data)
 {
@@ -3375,15 +3536,32 @@ run_test (gpointer data)
       "tls-handler"             , handler,
       NULL);
 
+  /* Make sure we only use the test CAs, not system-wide ones. */
+  wocky_tls_handler_forget_cas (handler);
+  g_assert (wocky_tls_handler_get_cas (handler) == NULL);
+
   /* check if the cert paths are valid */
   g_assert (g_file_test (TLS_CA_CRT_FILE, G_FILE_TEST_EXISTS));
 
   wocky_tls_handler_add_ca (handler, ca);
 
+  /* not having a CRL can expose a bug in the openssl error handling
+   * (basically we get 'CRL not fetched' instead of 'Expired'):
+   * The bug has been fixed, but we can keep checking for it by
+   * dropping the CRLs when the test is for an expired cert */
+  if (test->server_parameters.cert != CERT_EXPIRED)
+    wocky_tls_handler_add_crl (handler, TLS_CRL_DIR);
+
   g_object_unref (handler);
 
   test->connector = wcon;
   g_idle_add (start_test, test);
+
+#ifdef G_OS_UNIX
+  /* set TCP_NODELAY as soon as possible */
+  g_signal_connect (test->connector, "connection-established",
+      G_CALLBACK (connection_established_cb), NULL);
+#endif
 
   g_main_loop_run (mainloop);
 
@@ -3427,7 +3605,7 @@ run_test (gpointer data)
       if (!strcmp (test->desc, CONNECTOR_INTERNALS_TEST))
         {
           int i;
-          gchar *identity = NULL;
+          gchar *identity, *session_id, *resource;
           WockyConnector *tmp =
             wocky_connector_new ("foo@bar.org", "abc", "xyz", NULL, NULL);
           WockyStanza *feat = NULL;
@@ -3453,15 +3631,17 @@ run_test (gpointer data)
           g_object_unref (feat);
           identity = NULL;
 
-          g_object_get (wcon, "session-id", &identity, NULL);
-          g_assert (identity != NULL);
-          g_assert (*identity != '\0');
-          g_free (identity);
+          g_object_get (wcon, "session-id", &session_id, NULL);
+          g_assert (session_id != NULL);
+          g_assert (*session_id != '\0');
+          g_free (session_id);
 
-          g_object_get (wcon, "resource", &identity, NULL);
-          g_assert (identity != NULL);
-          g_assert (*identity != '\0');
-          g_free (identity);
+          g_object_get (wcon, "resource", &resource, NULL);
+          /* TODO: really? :resource gets updated to contain the actual
+           * post-bind resource, but perhaps :resource should be updated too?
+           */
+          g_assert_cmpstr (resource, ==, NULL);
+          g_free (resource);
 
           g_object_get (wcon, "legacy", &jabber, "old-ssl", &oldssl, NULL);
           g_assert (jabber == (gboolean)(xproblem & XMPP_PROBLEM_OLD_SERVER));

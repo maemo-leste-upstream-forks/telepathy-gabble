@@ -23,11 +23,8 @@
 
 #include <string.h>
 
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/svc-channel.h>
-#include <telepathy-glib/util.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #include <wocky/wocky.h>
 
@@ -38,10 +35,6 @@
 #include "gabble-signals-marshal.h"
 #include "namespaces.h"
 #include "util.h"
-
-static const gchar *gabble_search_channel_interfaces[] = {
-    NULL
-};
 
 /* properties */
 enum
@@ -234,7 +227,7 @@ parse_unextended_field_response (
         }
       else
         {
-          g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+          g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
               "server is broken: %s is not a field defined in XEP 0055",
               field->name);
           g_ptr_array_unref (search_keys);
@@ -272,7 +265,7 @@ parse_data_form (
 
   if (tp_strdiff (wocky_node_get_attribute (x_node, "type"), "form"))
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "server is broken: <x> not type='form'");
       goto fail;
     }
@@ -308,7 +301,7 @@ parse_data_form (
           if (tp_strdiff (form_type, NS_SEARCH))
             {
               DEBUG ("<x> form does not have FORM_TYPE %s", NS_SEARCH);
-              g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+              g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
                   "server is broken: form lacking FORM_TYPE %s", NS_SEARCH);
               goto fail;
             }
@@ -416,7 +409,7 @@ query_reply_cb (GabbleConnection *conn,
     }
   else if (NULL == query_node)
     {
-      err = g_error_new (TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      err = g_error_new (TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "%s is broken: it replied to our <query> with an empty IQ",
           chan->priv->server);
     }
@@ -461,7 +454,7 @@ request_search_fields (GabbleSearchChannel *chan)
  * change_search_state:
  * @chan: a search channel
  * @state: the new state for the channel
- * @reason: an error in the TP_ERRORS domain if the search has failed; NULL
+ * @reason: an error in the TP_ERROR domain if the search has failed; NULL
  *          otherwise.
  */
 static void
@@ -493,7 +486,7 @@ change_search_state (GabbleSearchChannel *chan,
   if (state == TP_CHANNEL_CONTACT_SEARCH_STATE_FAILED)
     {
       g_assert (reason != NULL);
-      g_assert (reason->domain == TP_ERRORS);
+      g_assert (reason->domain == TP_ERROR);
       error_name = tp_error_get_dbus_name (reason->code);
 
       g_value_init (&v, G_TYPE_STRING);
@@ -737,7 +730,7 @@ parse_extended_search_results (GabbleSearchChannel *chan,
   x = wocky_node_get_child_ns (query_node, "x", NS_X_DATA);
   if (x == NULL)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "reply doens't contain a <x> node");
       return FALSE;
     }
@@ -802,7 +795,7 @@ search_reply_cb (GabbleConnection *conn,
     }
   else if (NULL == query_node)
     {
-      err = g_error_new (TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      err = g_error_new (TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "%s is broken: its iq reply didn't contain a <query/>",
           chan->priv->server);
     }
@@ -848,7 +841,7 @@ validate_terms (GabbleSearchChannel *chan,
       if (!tp_strv_contains (asks, field))
         {
           DEBUG ("%s is not in AvailableSearchKeys", field);
-          g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+          g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
               "%s is not in AvailableSearchKeys", field);
           return FALSE;
         }
@@ -887,12 +880,12 @@ build_extended_query (GabbleSearchChannel *self,
   GHashTableIter iter;
   gpointer key, value;
 
-  x = wocky_node_add_child_with_content (query, "x", "");
-  x->ns = g_quark_from_static_string (NS_X_DATA);
+  x = wocky_node_add_child_ns_q (query, "x",
+      g_quark_from_static_string (NS_X_DATA));
   wocky_node_set_attribute (x, "type", "submit");
 
   /* add FORM_TYPE */
-  field = wocky_node_add_child_with_content (x, "field", "");
+  field = wocky_node_add_child (x, "field");
   wocky_node_set_attributes (field,
       "type", "hidden",
       "var", "FORM_TYPE",
@@ -909,7 +902,7 @@ build_extended_query (GabbleSearchChannel *self,
 
       g_assert (xmpp_field != NULL);
 
-      field = wocky_node_add_child_with_content (x, "field", "");
+      field = wocky_node_add_child (x, "field");
       wocky_node_set_attribute (field, "var", xmpp_field);
       wocky_node_add_child_with_content (field, "value", value);
 
@@ -922,7 +915,7 @@ build_extended_query (GabbleSearchChannel *self,
             {
               xmpp_field = g_ptr_array_index (self->priv->boolean_keys, i);
 
-              field = wocky_node_add_child_with_content (x, "field", "");
+              field = wocky_node_add_child (x, "field");
               wocky_node_set_attributes (field,
                   "var", xmpp_field,
                   "type", "boolean",
@@ -1159,7 +1152,6 @@ gabble_search_channel_class_init (GabbleSearchChannelClass *klass)
   object_class->set_property = gabble_search_channel_set_property;
 
   base_class->channel_type = TP_IFACE_CHANNEL_TYPE_CONTACT_SEARCH;
-  base_class->interfaces = gabble_search_channel_interfaces;
   base_class->target_handle_type = TP_HANDLE_TYPE_NONE;
   base_class->fill_immutable_properties =
       gabble_search_channel_fill_immutable_properties;
@@ -1204,7 +1196,7 @@ gabble_search_channel_class_init (GabbleSearchChannelClass *klass)
    * server gave us a set of search keys, and they were sane, all components
    * will be 0 or %NULL, indicating that this channel can be announced and
    * used; if the server doesn't actually speak XEP 0055 or is full of bees,
-   * they'll be an error in either the GABBLE_XMPP_ERROR or the TP_ERRORS
+   * they'll be an error in either the GABBLE_XMPP_ERROR or the TP_ERROR
    * domain.
    */
   signals[READY_OR_NOT] =
@@ -1235,7 +1227,7 @@ gabble_search_channel_search (TpSvcChannelTypeContactSearch *self,
 
   if (priv->state != TP_CHANNEL_CONTACT_SEARCH_STATE_NOT_STARTED)
     {
-      error = g_error_new (TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      error = g_error_new (TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "SearchState is %s", states[priv->state]);
       goto err;
     }
@@ -1262,7 +1254,7 @@ gabble_search_channel_stop (TpSvcChannelTypeContactSearch *self,
     {
       case TP_CHANNEL_CONTACT_SEARCH_STATE_IN_PROGRESS:
         {
-          GError e = { TP_ERRORS, TP_ERROR_CANCELLED, "Stop() called" };
+          GError e = { TP_ERROR, TP_ERROR_CANCELLED, "Stop() called" };
 
           change_search_state (chan,
               TP_CHANNEL_CONTACT_SEARCH_STATE_FAILED, &e);
@@ -1274,7 +1266,7 @@ gabble_search_channel_stop (TpSvcChannelTypeContactSearch *self,
         break;
       case TP_CHANNEL_CONTACT_SEARCH_STATE_NOT_STARTED:
         {
-          GError e = { TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+          GError e = { TP_ERROR, TP_ERROR_NOT_AVAILABLE,
               "Search() hasn't been called yet" };
 
           dbus_g_method_return_error (context, &e);

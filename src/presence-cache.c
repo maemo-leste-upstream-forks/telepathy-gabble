@@ -35,8 +35,7 @@
 #define DEBUG_FLAG GABBLE_DEBUG_PRESENCE
 
 #include <dbus/dbus-glib.h>
-#include <telepathy-glib/channel-manager.h>
-#include <telepathy-glib/intset.h>
+#include <telepathy-glib/telepathy-glib.h>
 #include <wocky/wocky.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_PRESENCE
@@ -147,7 +146,6 @@ disco_waiter_new (TpHandleRepoIface *repo,
   DiscoWaiter *waiter;
 
   g_assert (repo);
-  tp_handle_ref (repo, handle);
 
   waiter = g_slice_new0 (DiscoWaiter);
   waiter->repo = repo;
@@ -170,8 +168,6 @@ disco_waiter_free (DiscoWaiter *waiter)
 
   DEBUG ("freeing waiter %p for handle %u with serial %u", waiter,
       waiter->handle, waiter->serial);
-
-  tp_handle_unref (waiter->repo, waiter->handle);
 
   g_free (waiter->resource);
   g_free (waiter->hash);
@@ -501,49 +497,9 @@ static void gabble_presence_cache_add_bundle_caps (GabblePresenceCache *cache,
 static void
 gabble_presence_cache_add_bundles (GabblePresenceCache *cache)
 {
-#define GOOGLE_BUNDLE(cap, features) \
-  gabble_presence_cache_add_bundle_caps (cache, \
-      "http://www.google.com/xmpp/client/caps#" cap, features); \
-  gabble_presence_cache_add_bundle_caps (cache, \
-      "http://talk.google.com/xmpp/client/caps#" cap, features); \
-  gabble_presence_cache_add_bundle_caps (cache, \
-      "http://www.android.com/gtalk/client/caps#" cap, features); \
-  gabble_presence_cache_add_bundle_caps (cache, \
-      "http://www.android.com/gtalk/client/caps2#" cap, features); \
-  gabble_presence_cache_add_bundle_caps (cache, \
-      "http://talk.google.com/xmpp/bot/caps#" cap, features);
-
-  /* Cache various bundle from the Google Talk clients as trusted.  Some old
-   * versions of Google Talk do not reply correctly to discovery requests.
-   * Plus, we know what Google's bundles mean, so it's a waste of time to disco
-   * them, particularly the ones for features we don't support. The desktop
-   * client doesn't currently have all of these, but it doesn't hurt to cache
-   * them anyway.
-   */
-  GOOGLE_BUNDLE ("voice-v1", NS_GOOGLE_FEAT_VOICE);
-  GOOGLE_BUNDLE ("video-v1", NS_GOOGLE_FEAT_VIDEO);
-  GOOGLE_BUNDLE ("camera-v1", NS_GOOGLE_FEAT_CAMERA);
-
-  /* File transfer support */
-  GOOGLE_BUNDLE ("share-v1", NS_GOOGLE_FEAT_SHARE);
-
-  /* Not really sure what this ones is. */
-  GOOGLE_BUNDLE ("sms-v1", NULL);
-
-  /* TODO: remove this when we fix fd.o#22768. */
-  GOOGLE_BUNDLE ("pmuc-v1", NULL);
-
-  /* The camera-v1 bundle seems to mean "I have a camera plugged in". Not
-   * having it doesn't seem to affect anything, and we have no way of exposing
-   * that information anyway.
-   */
-  GOOGLE_BUNDLE ("camera-v1", NULL);
-
-#undef GOOGLE_BUNDLE
-
-  /* We should also cache the ext='' bundles Gabble advertises: older Gabbles
-   * advertise these and don't support hashed caps, and we shouldn't need to
-   * disco them.
+  /* We cache the ext='' bundles Gabble advertises: older Gabbles
+   * advertise these and don't support hashed caps, and we shouldn't
+   * need to disco them.
    */
   gabble_presence_cache_add_bundle_caps (cache,
       NS_GABBLE_CAPS "#" BUNDLE_VOICE_V1, NS_GOOGLE_FEAT_VOICE);
@@ -839,7 +795,7 @@ self_avatar_resolve_conflict (GabblePresenceCache *cache)
   GabblePresence *presence = priv->conn->self_presence;
   GError *error = NULL;
 
-  if (base_conn->status != TP_CONNECTION_STATUS_CONNECTED)
+  if (tp_base_connection_get_status (base_conn) != TP_CONNECTION_STATUS_CONNECTED)
     {
       DEBUG ("no longer connected");
       return;
@@ -885,9 +841,10 @@ self_avatar_resolve_conflict (GabblePresenceCache *cache)
     }
 
   gabble_vcard_manager_invalidate_cache (priv->conn->vcard_manager,
-      base_conn->self_handle);
+      tp_base_connection_get_self_handle (base_conn));
   gabble_vcard_manager_request (priv->conn->vcard_manager,
-      base_conn->self_handle, 0, self_vcard_request_cb, cache,
+      tp_base_connection_get_self_handle (base_conn), 0,
+      self_vcard_request_cb, cache,
       NULL);
 }
 
@@ -903,7 +860,7 @@ _grab_avatar_sha1 (GabblePresenceCache *cache,
   WockyNode *x_node, *photo_node;
   GabblePresence *presence;
 
-  if (handle == base_conn->self_handle)
+  if (handle == tp_base_connection_get_self_handle (base_conn))
     presence = priv->conn->self_presence;
   else
     presence = gabble_presence_cache_get (cache, handle);
@@ -949,14 +906,14 @@ _grab_avatar_sha1 (GabblePresenceCache *cache,
 
   if (tp_strdiff (presence->avatar_sha1, sha1))
     {
-      if (handle == base_conn->self_handle)
+      if (handle == tp_base_connection_get_self_handle (base_conn))
         {
           DEBUG ("Avatar conflict! Received hash '%s' and our cache is '%s'",
             sha1, presence->avatar_sha1 == NULL ?
               "<NULL>" : presence->avatar_sha1);
           self_avatar_resolve_conflict (cache);
         }
-      else if (base_conn->status == TP_CONNECTION_STATUS_CONNECTED)
+      else if (tp_base_connection_get_status (base_conn) == TP_CONNECTION_STATUS_CONNECTED)
         {
           g_free (presence->avatar_sha1);
           presence->avatar_sha1 = g_strdup (sha1);
@@ -970,9 +927,10 @@ static GSList *
 _parse_cap_bundles (
     WockyNode *lm_node,
     const gchar **hash,
-    const gchar **ver)
+    const gchar **ver,
+    const gchar **node)
 {
-  const gchar *node, *ext;
+  const gchar *ext;
   GSList *uris = NULL;
   WockyNode *cap_node;
 
@@ -986,15 +944,15 @@ _parse_cap_bundles (
 
   *hash = wocky_node_get_attribute (cap_node, "hash");
 
-  node = wocky_node_get_attribute (cap_node, "node");
+  *node = wocky_node_get_attribute (cap_node, "node");
 
-  if (NULL == node)
+  if (NULL == *node)
     return NULL;
 
   *ver = wocky_node_get_attribute (cap_node, "ver");
 
   if (NULL != *ver)
-    uris = g_slist_prepend (uris, g_strdup_printf ("%s#%s", node, *ver));
+    uris = g_slist_prepend (uris, g_strdup (*ver));
 
   /* If there is a hash, the remote contact uses XEP-0115 v1.5 and the 'ext'
    * attribute MUST be ignored. */
@@ -1010,7 +968,7 @@ _parse_cap_bundles (
       exts = g_strsplit (ext, " ", 0);
 
       for (i = exts; NULL != *i; i++)
-        uris = g_slist_prepend (uris, g_strdup_printf ("%s#%s", node, *i));
+        uris = g_slist_prepend (uris, g_strdup (*i));
 
       g_strfreev (exts);
     }
@@ -1365,7 +1323,7 @@ _caps_disco_cb (GabbleDisco *disco,
   if (NULL == waiter_self)
     {
       DEBUG ("Ignoring non requested disco reply from %s", jid);
-      goto OUT;
+      return;
     }
 
   /* Now onto caps */
@@ -1507,16 +1465,51 @@ _caps_disco_cb (GabbleDisco *disco,
 
   gabble_capability_set_free (cap_set);
   g_ptr_array_unref (data_forms);
+}
 
-OUT:
-  if (handle)
-    tp_handle_unref (contact_repo, handle);
+static gboolean
+get_google_cap (const gchar *fragment,
+    const gchar **ns)
+{
+  if (!tp_strdiff (fragment, "voice-v1"))
+    {
+      *ns = NS_GOOGLE_FEAT_VOICE;
+      return TRUE;
+    }
+  else if (!tp_strdiff (fragment, "video-v1"))
+    {
+      *ns = NS_GOOGLE_FEAT_VIDEO;
+      return TRUE;
+    }
+  else if (!tp_strdiff (fragment, "share-v1"))
+    {
+      *ns = NS_GOOGLE_FEAT_SHARE;
+      return TRUE;
+    }
+  else if (!tp_strdiff (fragment, "sms-v1"))
+    {
+      *ns = NULL;
+      return TRUE;
+    }
+  else if (!tp_strdiff (fragment, "pmuc-v1"))
+    {
+      *ns = NULL;
+      return TRUE;
+    }
+  else if (!tp_strdiff (fragment, "camera-v1"))
+    {
+      *ns = NULL;
+      return TRUE;
+    }
+
+  return FALSE;
 }
 
 static void
 _process_caps_uri (GabblePresenceCache *cache,
                    const gchar *from,
-                   const gchar *uri,
+                   const gchar *node,
+                   const gchar *fragment,
                    const gchar *hash,
                    const gchar *ver,
                    TpHandle handle,
@@ -1529,6 +1522,8 @@ _process_caps_uri (GabblePresenceCache *cache,
   GabblePresenceCachePrivate *priv;
   TpHandleRepoIface *contact_repo;
   WockyCapsCache *caps_cache;
+  gchar *uri = g_strdup_printf ("%s#%s", node, fragment);
+  const gchar *ns = NULL;
 
   priv = cache->priv;
   contact_repo = tp_base_connection_get_handles (
@@ -1596,6 +1591,34 @@ _process_caps_uri (GabblePresenceCache *cache,
       if (cached_caps != NULL)
         gabble_capability_set_free (cached_caps);
     }
+  else if (hash == NULL && get_google_cap (fragment, &ns))
+    {
+      /* if the hash is NULL then are looking at the ext='...' values,
+       * so this is starting to smell like Google */
+      GabblePresence *presence = gabble_presence_cache_get (cache, handle);
+
+      /* we already know about this fragment; apply the known value to
+       * the (handle, resource) */
+      DEBUG ("we know about fragment %s, setting caps for %u (%s)", fragment, handle,
+          from);
+
+      if (presence != NULL)
+        {
+          GabbleCapabilitySet *cap_set = gabble_capability_set_new ();
+
+          if (ns != NULL)
+            gabble_capability_set_add (cap_set, ns);
+
+          gabble_presence_set_capabilities (
+              presence, resource, cap_set, NULL, serial);
+
+          gabble_capability_set_free (cap_set);
+        }
+      else
+        {
+          DEBUG ("presence not found");
+        }
+    }
   else
     {
       GSList *waiters;
@@ -1661,6 +1684,8 @@ _process_caps_uri (GabblePresenceCache *cache,
 out:
   if (cached_query_reply != NULL)
     g_object_unref (cached_query_reply);
+
+  g_free (uri);
 }
 
 static void
@@ -1672,10 +1697,11 @@ _process_caps (GabblePresenceCache *cache,
 {
   const gchar *resource;
   GSList *uris, *i;
+
   GabblePresenceCachePrivate *priv;
   GabbleCapabilitySet *old_cap_set = NULL;
   guint serial;
-  const gchar *hash, *ver;
+  const gchar *hash, *ver, *node;
 
   priv = cache->priv;
   serial = priv->caps_serial++;
@@ -1684,7 +1710,7 @@ _process_caps (GabblePresenceCache *cache,
   if (resource != NULL)
     resource++;
 
-  uris = _parse_cap_bundles (lm_node, &hash, &ver);
+  uris = _parse_cap_bundles (lm_node, &hash, &ver, &node);
 
   if (presence)
     {
@@ -1706,7 +1732,7 @@ _process_caps (GabblePresenceCache *cache,
    */
   for (i = uris; NULL != i; i = i->next)
     {
-      _process_caps_uri (cache, from, (gchar *) i->data, hash, ver, handle,
+      _process_caps_uri (cache, from, node, (gchar *) i->data, hash, ver, handle,
           resource, serial);
       g_free (i->data);
 
@@ -2217,6 +2243,7 @@ gabble_presence_cache_add_own_caps (
 {
   gchar *uri = g_strdup_printf ("%s#%s", NS_GABBLE_CAPS, ver);
   GabbleCapabilityInfo *info = capability_info_get (cache, uri);
+  TpBaseConnection *base_conn = TP_BASE_CONNECTION (cache->priv->conn);
 
   if (info->complete)
     goto out;
@@ -2246,7 +2273,7 @@ gabble_presence_cache_add_own_caps (
 
   info->complete = TRUE;
   info->trust = CAPABILITY_BUNDLE_ENOUGH_TRUST;
-  tp_intset_add (info->guys, cache->priv->conn->parent.self_handle);
+  tp_intset_add (info->guys, tp_base_connection_get_self_handle (base_conn));
 
   replace_data_forms (info, data_forms);
 
@@ -2440,7 +2467,7 @@ gabble_presence_cache_is_unsure (GabblePresenceCache *cache,
    * Presences with keep_unavailable are the result of caching someone's
    * nick from <message> stanzas, so they don't count as real presence - if
    * someone sends us a <message>, their presence might still follow. */
-  if (base_conn->status != TP_CONNECTION_STATUS_CONNECTED ||
+  if (tp_base_connection_get_status (base_conn) != TP_CONNECTION_STATUS_CONNECTED ||
       priv->unsure_id != 0)
     {
       GabblePresence *presence = gabble_presence_cache_get (cache, handle);

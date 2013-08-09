@@ -21,7 +21,7 @@
 #define __GTALK_FILE_COLLECTION_H__
 
 #include <glib-object.h>
-#include "jingle-session.h"
+#include <wocky/wocky.h>
 #include "connection.h"
 
 typedef struct _GTalkFileCollection GTalkFileCollection;
@@ -73,11 +73,11 @@ struct _GTalkFileCollection {
 };
 
 GTalkFileCollection *gtalk_file_collection_new (
-    GabbleFileTransferChannel *channel, GabbleJingleFactory *jingle_factory,
+    GabbleFileTransferChannel *channel, WockyJingleFactory *jingle_factory,
     TpHandle handle, const gchar *jid);
 
 GTalkFileCollection *gtalk_file_collection_new_from_session (
-    GabbleJingleFactory *jingle_factory, GabbleJingleSession *session);
+    WockyJingleFactory *jingle_factory, WockyJingleSession *session);
 
 void gtalk_file_collection_add_channel (GTalkFileCollection *self,
     GabbleFileTransferChannel *channel);

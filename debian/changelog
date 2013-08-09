@@ -1,3 +1,62 @@
+telepathy-gabble (0.17.5-1) experimental; urgency=low
+
+  * Generate debian/shlibs.local based on upstream version, rather than
+    having to update it every time
+  * New upstream development release
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 06 Jun 2013 14:40:43 +0100
+
+telepathy-gabble (0.17.4-1) experimental; urgency=low
+
+  * New upstream development release
+    - CVE-2013-1431: respect the require-encryption flag on legacy Jabber
+      servers.
+      This flag is on by default: to connect to legacy Jabber servers,
+      either disable "Encryption required (TLS/SSL)" or enable "Use old SSL".
+    - update shlibs.local
+  * Canonicalize Vcs-* fields (Lintian)
+  * Standards-Version: 3.9.4 (no changes)
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 30 May 2013 16:54:27 +0100
+
+telepathy-gabble (0.17.3-1) experimental; urgency=low
+
+  * New upstream release
+    - drop all patches, applied upstream
+    - fixes a remotely-triggerable DoS (CVE-2013-1769, Closes: #702252)
+    - debian/shlibs.local: Bump version
+  * debian/control: Fix duplicate package description
+
+ -- Laurent Bigonville <bigon@debian.org>  Sun, 10 Mar 2013 13:10:28 +0100
+
+telepathy-gabble (0.17.1-3) experimental; urgency=low
+
+  * Remove .la files from telepathy-gabble-tests
+  * debian/telepathy-gabble-tests.lintian-overrides:
+    + Added. override binary-or-shlib-defines-rpath lintian warning
+  * debian/rules: Add ${shlibs:Depends}, ${misc:Depends} to
+    telepathy-gabble-tests depends
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Sun, 21 Oct 2012 20:55:46 +0200
+
+telepathy-gabble (0.17.1-2) experimental; urgency=low
+
+  * d/p/Don-t-reset-the-capabilities-in-UpdateCap.patch
+    + Added. Don't reset the capability to do Call1, fixes issues with
+      calls breaking because StreamedMedia channels are emitted. (From upstream
+      git)
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Sun, 21 Oct 2012 12:28:26 +0200
+
+telepathy-gabble (0.17.1-1) experimental; urgency=low
+
+  * New upstream release
+  * debian/{control,rules,telepathy-gabble-test}: Package the installable tests
+  * debian/rules, debian/shlibs.local: Add a local shlibs for the private
+    libraries part of telepathy-gabble
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Tue, 11 Sep 2012 20:42:52 +0200
+
 telepathy-gabble (0.16.6-1) unstable; urgency=high
 
   * New upstream stable release

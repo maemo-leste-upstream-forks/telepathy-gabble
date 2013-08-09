@@ -51,9 +51,10 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@USING_OPENSSL_FALSE@am__append_1 = wocky-dump-certificates
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/tools/check-coding-style.mk
-noinst_PROGRAMS = $(am__EXEEXT_1)
+noinst_PROGRAMS = $(am__EXEEXT_2)
 subdir = examples
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-compiler-flag.m4 \
@@ -70,16 +71,27 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__EXEEXT_1 = wocky-send-message$(EXEEXT) \
+@USING_OPENSSL_FALSE@am__EXEEXT_1 = wocky-dump-certificates$(EXEEXT)
+am__EXEEXT_2 = $(am__EXEEXT_1) wocky-send-message$(EXEEXT) \
 	wocky-receive-messages$(EXEEXT) wocky-register$(EXEEXT) \
 	wocky-unregister$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
-am_wocky_receive_messages_OBJECTS = receive-messages.$(OBJEXT)
-wocky_receive_messages_OBJECTS = $(am_wocky_receive_messages_OBJECTS)
-wocky_receive_messages_LDADD = $(LDADD)
+am_wocky_dump_certificates_OBJECTS =  \
+	wocky_dump_certificates-dump-certificates.$(OBJEXT)
+wocky_dump_certificates_OBJECTS =  \
+	$(am_wocky_dump_certificates_OBJECTS)
+am__DEPENDENCIES_1 =
+am__DEPENDENCIES_2 = $(top_builddir)/wocky/libwocky.la
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
+wocky_dump_certificates_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(wocky_dump_certificates_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am_wocky_receive_messages_OBJECTS = receive-messages.$(OBJEXT)
+wocky_receive_messages_OBJECTS = $(am_wocky_receive_messages_OBJECTS)
+wocky_receive_messages_LDADD = $(LDADD)
 am_wocky_register_OBJECTS = register.$(OBJEXT)
 wocky_register_OBJECTS = $(am_wocky_register_OBJECTS)
 wocky_register_LDADD = $(LDADD)
@@ -115,11 +127,12 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_@AM_V@)
 am__v_GEN_ = $(am__v_GEN_@AM_DEFAULT_V@)
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(wocky_receive_messages_SOURCES) $(wocky_register_SOURCES) \
+SOURCES = $(wocky_dump_certificates_SOURCES) \
+	$(wocky_receive_messages_SOURCES) $(wocky_register_SOURCES) \
 	$(wocky_send_message_SOURCES) $(wocky_unregister_SOURCES)
-DIST_SOURCES = $(wocky_receive_messages_SOURCES) \
-	$(wocky_register_SOURCES) $(wocky_send_message_SOURCES) \
-	$(wocky_unregister_SOURCES)
+DIST_SOURCES = $(wocky_dump_certificates_SOURCES) \
+	$(wocky_receive_messages_SOURCES) $(wocky_register_SOURCES) \
+	$(wocky_send_message_SOURCES) $(wocky_unregister_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -222,6 +235,8 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHARED_SUFFIX = @SHARED_SUFFIX@
 SHELL = @SHELL@
+SOUP_CFLAGS = @SOUP_CFLAGS@
+SOUP_LIBS = @SOUP_LIBS@
 SQLITE_CFLAGS = @SQLITE_CFLAGS@
 SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
@@ -282,9 +297,13 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXAMPLES = wocky-send-message wocky-receive-messages wocky-register \
-	wocky-unregister
+EXAMPLES = $(am__append_1) wocky-send-message wocky-receive-messages \
+	wocky-register wocky-unregister
 INCLUDES := -I$(top_builddir)/wocky
+wocky_dump_certificates_SOURCES = dump-certificates.c
+wocky_dump_certificates_DEPENDENCIES = $(top_builddir)/wocky/libwocky.la
+wocky_dump_certificates_CFLAGS = $(TLS_CFLAGS) $(AM_CFLAGS)
+wocky_dump_certificates_LDADD = $(TLS_LIBS) $(LDADD)
 wocky_send_message_SOURCES = send-message.c
 wocky_send_message_DEPENDENCIES = $(top_builddir)/wocky/libwocky.la
 wocky_receive_messages_SOURCES = receive-messages.c
@@ -302,10 +321,12 @@ AM_CFLAGS = \
     $(ERROR_CFLAGS) \
     @GLIB_CFLAGS@
 
-check_c_sources = $(wocky_send_message_SOURCES)    \
-                  $(wocky_receive_messages_SOURCES) \
-                  $(wocky_register_SOURCES)   \
-                  $(wocky_unregister_SOURCES)
+check_c_sources = \
+    $(wocky_dump_certificates_SOURCES) \
+    $(wocky_send_message_SOURCES) \
+    $(wocky_receive_messages_SOURCES) \
+    $(wocky_register_SOURCES) \
+    $(wocky_unregister_SOURCES)
 
 all: all-am
 
@@ -351,6 +372,9 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+wocky-dump-certificates$(EXEEXT): $(wocky_dump_certificates_OBJECTS) $(wocky_dump_certificates_DEPENDENCIES) $(EXTRA_wocky_dump_certificates_DEPENDENCIES) 
+	@rm -f wocky-dump-certificates$(EXEEXT)
+	$(AM_V_CCLD)$(wocky_dump_certificates_LINK) $(wocky_dump_certificates_OBJECTS) $(wocky_dump_certificates_LDADD) $(LIBS)
 wocky-receive-messages$(EXEEXT): $(wocky_receive_messages_OBJECTS) $(wocky_receive_messages_DEPENDENCIES) $(EXTRA_wocky_receive_messages_DEPENDENCIES) 
 	@rm -f wocky-receive-messages$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(wocky_receive_messages_OBJECTS) $(wocky_receive_messages_LDADD) $(LIBS)
@@ -374,6 +398,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/register.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/send-message.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unregister.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wocky_dump_certificates-dump-certificates.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -395,6 +420,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+wocky_dump_certificates-dump-certificates.o: dump-certificates.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dump_certificates_CFLAGS) $(CFLAGS) -MT wocky_dump_certificates-dump-certificates.o -MD -MP -MF $(DEPDIR)/wocky_dump_certificates-dump-certificates.Tpo -c -o wocky_dump_certificates-dump-certificates.o `test -f 'dump-certificates.c' || echo '$(srcdir)/'`dump-certificates.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/wocky_dump_certificates-dump-certificates.Tpo $(DEPDIR)/wocky_dump_certificates-dump-certificates.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dump-certificates.c' object='wocky_dump_certificates-dump-certificates.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dump_certificates_CFLAGS) $(CFLAGS) -c -o wocky_dump_certificates-dump-certificates.o `test -f 'dump-certificates.c' || echo '$(srcdir)/'`dump-certificates.c
+
+wocky_dump_certificates-dump-certificates.obj: dump-certificates.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dump_certificates_CFLAGS) $(CFLAGS) -MT wocky_dump_certificates-dump-certificates.obj -MD -MP -MF $(DEPDIR)/wocky_dump_certificates-dump-certificates.Tpo -c -o wocky_dump_certificates-dump-certificates.obj `if test -f 'dump-certificates.c'; then $(CYGPATH_W) 'dump-certificates.c'; else $(CYGPATH_W) '$(srcdir)/dump-certificates.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/wocky_dump_certificates-dump-certificates.Tpo $(DEPDIR)/wocky_dump_certificates-dump-certificates.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dump-certificates.c' object='wocky_dump_certificates-dump-certificates.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(wocky_dump_certificates_CFLAGS) $(CFLAGS) -c -o wocky_dump_certificates-dump-certificates.obj `if test -f 'dump-certificates.c'; then $(CYGPATH_W) 'dump-certificates.c'; else $(CYGPATH_W) '$(srcdir)/dump-certificates.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

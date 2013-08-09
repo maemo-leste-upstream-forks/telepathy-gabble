@@ -31,13 +31,11 @@
 #include <gobject/gvaluecollector.h>
 
 #include <wocky/wocky.h>
-#include <telepathy-glib/handle-repo-dynamic.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/gtypes.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_JID
 
-#include "base64.h"
 #include "conn-aliasing.h"
 #include "connection.h"
 #include "debug.h"
@@ -134,16 +132,6 @@ gabble_generate_id (void)
   return str;
 }
 
-
-static void
-lm_message_node_add_nick (WockyNode *node, const gchar *nick)
-{
-  WockyNode *nick_node;
-
-  nick_node = wocky_node_add_child_with_content (node, "nick", nick);
-  nick_node->ns = g_quark_from_string (NS_NICK);
-}
-
 void
 lm_message_node_add_own_nick (WockyNode *node,
                               GabbleConnection *connection)
@@ -153,10 +141,11 @@ lm_message_node_add_own_nick (WockyNode *node,
   TpBaseConnection *base = (TpBaseConnection *) connection;
 
   source = _gabble_connection_get_cached_alias (connection,
-        base->self_handle, &nick);
+      tp_base_connection_get_self_handle (base), &nick);
 
   if (source > GABBLE_CONNECTION_ALIAS_FROM_JID)
-    lm_message_node_add_nick (node, nick);
+    wocky_node_add_child_with_content_ns_q (node, "nick", nick,
+        g_quark_from_static_string (NS_NICK));
 
   g_free (nick);
 }
@@ -193,7 +182,7 @@ gabble_get_room_handle_from_jid (TpHandleRepoIface *room_repo,
 #define INVALID_HANDLE(e, f, ...) \
   G_STMT_START { \
   DEBUG (f, ##__VA_ARGS__); \
-  g_set_error (e, TP_ERRORS, TP_ERROR_INVALID_HANDLE, f, ##__VA_ARGS__);\
+  g_set_error (e, TP_ERROR, TP_ERROR_INVALID_HANDLE, f, ##__VA_ARGS__);\
   } G_STMT_END
 
 gchar *
@@ -404,19 +393,20 @@ lm_message_node_extract_properties (WockyNode *node,
       if (0 == strcmp (type, "bytes"))
         {
           GArray *arr;
-          GString *decoded;
+          guchar *st;
+          gsize outlen;
 
-          decoded = base64_decode (value);
-          if (!decoded)
+          st = g_base64_decode (value, &outlen);
+          if (!st)
             continue;
 
           arr = g_array_new (FALSE, FALSE, sizeof (guchar));
-          g_array_append_vals (arr, decoded->str, decoded->len);
+          g_array_append_vals (arr, st, outlen);
           gvalue = g_slice_new0 (GValue);
           g_value_init (gvalue, DBUS_TYPE_G_UCHAR_ARRAY);
           g_value_take_boxed (gvalue, arr);
           g_hash_table_insert (properties, g_strdup (name), gvalue);
-          g_string_free (decoded, TRUE);
+          g_free (st);
         }
       else if (0 == strcmp (type, "str"))
         {
@@ -512,7 +502,7 @@ set_child_from_property (gpointer key,
       return;
     }
 
-  child = wocky_node_add_child_with_content (data->node, data->prop, "");
+  child = wocky_node_add_child (data->node, data->prop);
 
   if (G_VALUE_TYPE (gvalue) == G_TYPE_STRING)
     {
@@ -526,7 +516,7 @@ set_child_from_property (gpointer key,
 
       type = "bytes";
       arr = g_value_get_boxed (gvalue);
-      str = base64_encode (arr->len, arr->data, FALSE);
+      str = g_base64_encode ((guchar *) arr->data, arr->len);
       wocky_node_set_content (child, str);
 
       g_free (str);
@@ -824,7 +814,7 @@ jingle_pick_best_resource (GabbleConnection *conn,
     gboolean want_audio,
     gboolean want_video,
     const char **transport_ns,
-    JingleDialect *dialect,
+    WockyJingleDialect *dialect,
     const gchar **resource_out)
 {
   /* We prefer gtalk-p2p to ice, because it can use tcp and https relays (if
@@ -848,7 +838,7 @@ jingle_pick_best_resource (GabbleConnection *conn,
       return FALSE;
     }
 
-  *dialect = JINGLE_DIALECT_ERROR;
+  *dialect = WOCKY_JINGLE_DIALECT_ERROR;
   *transport_ns = NULL;
 
   g_return_val_if_fail (want_audio || want_video, FALSE);
@@ -866,7 +856,7 @@ jingle_pick_best_resource (GabbleConnection *conn,
 
   if (jingle_pick_resource_or_bare_jid (presence, caps, &resource))
     {
-      *dialect = JINGLE_DIALECT_V032;
+      *dialect = WOCKY_JINGLE_DIALECT_V032;
       goto CHOOSE_TRANSPORT;
     }
 
@@ -880,7 +870,7 @@ jingle_pick_best_resource (GabbleConnection *conn,
 
   if (jingle_pick_resource_or_bare_jid (presence, caps, &resource))
     {
-      *dialect = JINGLE_DIALECT_V015;
+      *dialect = WOCKY_JINGLE_DIALECT_V015;
       goto CHOOSE_TRANSPORT;
     }
 
@@ -900,7 +890,7 @@ jingle_pick_best_resource (GabbleConnection *conn,
 
   if (jingle_pick_resource_or_bare_jid (presence, caps, &resource))
     {
-      *dialect = JINGLE_DIALECT_GTALK3;
+      *dialect = WOCKY_JINGLE_DIALECT_GTALK3;
       goto CHOOSE_TRANSPORT;
     }
 
@@ -917,7 +907,7 @@ jingle_pick_best_resource (GabbleConnection *conn,
 
   if (jingle_pick_resource_or_bare_jid (presence, caps, &resource))
     {
-      *dialect = JINGLE_DIALECT_GTALK4;
+      *dialect = WOCKY_JINGLE_DIALECT_GTALK4;
       goto CHOOSE_TRANSPORT;
     }
 
@@ -931,7 +921,7 @@ CHOOSE_TRANSPORT:
 
   success = TRUE;
 
-  if (*dialect == JINGLE_DIALECT_GTALK4 || *dialect == JINGLE_DIALECT_GTALK3)
+  if (*dialect == WOCKY_JINGLE_DIALECT_GTALK4 || *dialect == WOCKY_JINGLE_DIALECT_GTALK3)
     {
       /* the GTalk dialects only support google p2p as transport protocol. */
       *transport_ns = NS_GOOGLE_TRANSPORT_P2P;
@@ -959,20 +949,20 @@ const gchar *
 jingle_pick_best_content_type (GabbleConnection *conn,
   TpHandle peer,
   const gchar *resource,
-  JingleMediaType type)
+  WockyJingleMediaType type)
 {
   GabblePresence *presence;
   const GabbleFeatureFallback content_types[] = {
       /* if $thing is supported, then use it */
         { TRUE, TWICE (NS_JINGLE_RTP) },
-        { type == JINGLE_MEDIA_TYPE_VIDEO,
+        { type == WOCKY_JINGLE_MEDIA_TYPE_VIDEO,
             TWICE (NS_JINGLE_DESCRIPTION_VIDEO) },
-        { type == JINGLE_MEDIA_TYPE_AUDIO,
+        { type == WOCKY_JINGLE_MEDIA_TYPE_AUDIO,
             TWICE (NS_JINGLE_DESCRIPTION_AUDIO) },
       /* odd Google ones: if $thing is supported, use $other_thing */
-        { type == JINGLE_MEDIA_TYPE_AUDIO,
+        { type == WOCKY_JINGLE_MEDIA_TYPE_AUDIO,
           NS_GOOGLE_FEAT_VOICE, NS_GOOGLE_SESSION_PHONE },
-        { type == JINGLE_MEDIA_TYPE_VIDEO,
+        { type == WOCKY_JINGLE_MEDIA_TYPE_VIDEO,
           NS_GOOGLE_FEAT_VIDEO, NS_GOOGLE_SESSION_VIDEO },
         { FALSE, NULL, NULL }
   };
@@ -998,23 +988,23 @@ jingle_pick_best_content_type (GabbleConnection *conn,
 }
 
 static TpCallStreamCandidateType
-tp_candidate_type_from_jingle (JingleCandidateType type)
+tp_candidate_type_from_jingle (WockyJingleCandidateType type)
 {
   switch (type)
     {
     default:
       /* Consider UNKNOWN as LOCAL/HOST */
-    case JINGLE_CANDIDATE_TYPE_LOCAL:
+    case WOCKY_JINGLE_CANDIDATE_TYPE_LOCAL:
       return TP_CALL_STREAM_CANDIDATE_TYPE_HOST;
-    case JINGLE_CANDIDATE_TYPE_STUN:
+    case WOCKY_JINGLE_CANDIDATE_TYPE_STUN:
       return TP_CALL_STREAM_CANDIDATE_TYPE_SERVER_REFLEXIVE;
-    case JINGLE_CANDIDATE_TYPE_RELAY:
+    case WOCKY_JINGLE_CANDIDATE_TYPE_RELAY:
       return TP_CALL_STREAM_CANDIDATE_TYPE_RELAY;
     }
 }
 
 /**
- * @candidates: (element-type JingleCandidate): candidates
+ * @candidates: (element-type WockyJingleCandidate): candidates
  *
  * Returns: (transfer full): a GABBLE_ARRAY_TYPE_CANDIDATE_LIST, i.e.
  *  a(usqa{sv})
@@ -1029,7 +1019,7 @@ gabble_call_candidates_to_array (GList *candidates)
 
   for (c = candidates; c != NULL; c = g_list_next (c))
     {
-        JingleCandidate *cand = (JingleCandidate *) c->data;
+        WockyJingleCandidate *cand = (WockyJingleCandidate *) c->data;
         GValueArray *a;
         GHashTable *info;
 

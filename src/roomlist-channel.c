@@ -24,14 +24,9 @@
 #include <string.h>
 
 #include <dbus/dbus-glib.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/enums.h>
-#include <telepathy-glib/exportable-channel.h>
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/channel-iface.h>
-#include <telepathy-glib/svc-channel.h>
-#include <telepathy-glib/svc-generic.h>
+
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_ROOMLIST
 
@@ -48,10 +43,6 @@ G_DEFINE_TYPE_WITH_CODE (GabbleRoomlistChannel, gabble_roomlist_channel,
     G_IMPLEMENT_INTERFACE (TP_TYPE_SVC_CHANNEL_TYPE_ROOM_LIST,
       roomlist_iface_init);
     );
-
-static const gchar *gabble_roomlist_channel_interfaces[] = {
-    NULL
-};
 
 /* properties */
 enum
@@ -192,7 +183,6 @@ gabble_roomlist_channel_class_init (GabbleRoomlistChannelClass *klass)
   object_class->finalize = gabble_roomlist_channel_finalize;
 
   base_class->channel_type = TP_IFACE_CHANNEL_TYPE_ROOM_LIST;
-  base_class->interfaces = gabble_roomlist_channel_interfaces;
   base_class->target_handle_type = TP_HANDLE_TYPE_NONE;
   base_class->get_object_path_suffix =
       gabble_roomlist_channel_get_object_path_suffix;
@@ -415,7 +405,6 @@ room_info_cb (gpointer pipeline, GabbleDiscoItem *item, gpointer user_data)
 
   /* transfer the room handle ref to signalled_rooms */
   tp_handle_set_add (priv->signalled_rooms, handle);
-  tp_handle_unref (room_handles, handle);
 
   g_value_init (&room, room_info_type);
   g_value_take_boxed (&room,

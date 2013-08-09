@@ -38,6 +38,7 @@ G_BEGIN_DECLS
  * @WOCKY_NODE_ATTRIBUTE: A node attribute
  * @WOCKY_NODE_XMLNS: A node XML namespace
  * @WOCKY_NODE_ASSIGN_TO: a #WockyNode to assign
+ * @WOCKY_NODE_LANGUAGE: <literal>xml:lang</literal> of a node
  *
  * Tags for building a stanza using wocky_stanza_build() or
  * wocky_node_add_build().
@@ -229,7 +230,9 @@ gboolean wocky_node_is_superset (WockyNode *node,
  */
 typedef struct {
   /*<private>*/
+  WockyNode *node;
   GSList *pending;
+  GSList *current;
   const gchar *name;
   GQuark ns;
 } WockyNodeIter;
@@ -242,6 +245,7 @@ void wocky_node_iter_init (WockyNodeIter *iter,
 gboolean wocky_node_iter_next (WockyNodeIter *iter,
     WockyNode **next);
 
+void wocky_node_iter_remove (WockyNodeIter *iter);
 
 void wocky_node_add_build (WockyNode *node,
     ...) G_GNUC_NULL_TERMINATED;
@@ -249,8 +253,8 @@ void wocky_node_add_build (WockyNode *node,
 void wocky_node_add_build_va (WockyNode *node,
     va_list va);
 
-void wocky_node_add_node_tree (WockyNode *node, WockyNodeTree *tree);
-void wocky_node_prepend_node_tree (
+WockyNode *wocky_node_add_node_tree (WockyNode *node, WockyNodeTree *tree);
+WockyNode *wocky_node_prepend_node_tree (
     WockyNode *node,
     WockyNodeTree *tree);
 

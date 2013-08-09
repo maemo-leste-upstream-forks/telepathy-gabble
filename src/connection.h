@@ -25,11 +25,7 @@
 
 #include <dbus/dbus-glib.h>
 #include <glib-object.h>
-#include <telepathy-glib/base-connection.h>
-#include <telepathy-glib/contacts-mixin.h>
-#include <telepathy-glib/presence-mixin.h>
-#include <telepathy-glib/dbus-properties-mixin.h>
-#include <telepathy-glib/dbus.h>
+#include <telepathy-glib/telepathy-glib.h>
 
 #include <wocky/wocky.h>
 
@@ -42,9 +38,6 @@
 #endif
 #include "muc-factory.h"
 #include "types.h"
-
-#include <telepathy-glib/base-connection.h>
-#include <telepathy-glib/base-contact-list.h>
 
 #include <gabble/capabilities-set.h>
 #include <gabble/types.h>
@@ -143,6 +136,7 @@ typedef enum
   GABBLE_CONNECTION_FEATURES_GOOGLE_SHARED_STATUS = 1 << 7,
   GABBLE_CONNECTION_FEATURES_GOOGLE_QUEUE = 1 << 8,
   GABBLE_CONNECTION_FEATURES_GOOGLE_SETTING = 1 << 9,
+  GABBLE_CONNECTION_FEATURES_WLM_JID_LOOKUP = 1 << 10,
 } GabbleConnectionFeatures;
 
 typedef struct _GabbleConnectionPrivate GabbleConnectionPrivate;

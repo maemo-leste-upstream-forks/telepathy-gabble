@@ -17,14 +17,14 @@ Build-Depends: autotools-dev (>= 20100122.1~),
                libgnutls-dev (>= 2.8.2),
                libsasl2-dev,
                libsoup2.4-dev,
-               libtelepathy-glib-dev (>= 0.18.0),
+               libtelepathy-glib-dev (>= 0.19.7),
                python,
                xsltproc,
                libsqlite3-dev,
                libnice-dev (>= 0.0.11)
-Standards-Version: 3.9.3
-Vcs-Git: git://git.debian.org/git/pkg-telepathy/telepathy-gabble.git
-Vcs-Browser: http://git.debian.org/?p=pkg-telepathy/telepathy-gabble.git
+Standards-Version: 3.9.4
+Vcs-Git: git://anonscm.debian.org/pkg-telepathy/telepathy-gabble.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-telepathy/telepathy-gabble.git
 Homepage: http://telepathy.freedesktop.org/wiki/
 
 Package: telepathy-gabble
@@ -45,4 +45,17 @@ Architecture: any
 Depends: telepathy-gabble (= ${binary:Version}), ${misc:Depends}
 Description: Jabber/XMPP connection manager (debug symbols)
  Gabble is a Jabber/XMPP connection manager for the Telepathy framework.
+ .
  This package contains debug symbols necessary to debug crashes in Gabble.
+
+Package: telepathy-gabble-tests
+Priority: extra
+Section: debug
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},
+ telepathy-gabble (= ${binary:Version}),
+ python-twisted, python-openssl, python-gobject
+Description: Jabber/XMPP connection manager (automated tests)
+ Gabble is a Jabber/XMPP connection manager for the Telepathy framework.
+ .
+ This package contains automated tests for Gabble

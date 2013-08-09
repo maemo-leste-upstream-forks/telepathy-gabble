@@ -1,6 +1,9 @@
 import dbus
 
-from servicetest import assertEquals, assertNotEquals, call_async, EventPattern
+from servicetest import (
+    assertEquals, assertNotEquals, assertSameSets,
+    call_async, EventPattern,
+)
 from gabbletest import exec_test, acknowledge_iq, make_muc_presence
 import constants as cs
 
@@ -37,20 +40,20 @@ def test(q, bus, conn, stream, access_control):
     parameter.addContent('bar')
     stream.send(presence)
 
-    # tubes channel is created
-    event = q.expect('dbus-signal', signal='NewChannels')
-    channels = event.args[0]
-    path, props = channels[0]
-
     # tube channel is created
-    event = q.expect('dbus-signal', signal='NewChannels')
+    def new_chan_predicate(e):
+        path, props = e.args[0][0]
+        return props[cs.CHANNEL_TYPE] == cs.CHANNEL_TYPE_DBUS_TUBE
+
+    event = q.expect('dbus-signal', signal='NewChannels',
+                     predicate=new_chan_predicate)
     channels = event.args[0]
     path, props = channels[0]
 
     assertEquals(cs.CHANNEL_TYPE_DBUS_TUBE, props[cs.CHANNEL_TYPE])
     assertEquals('chat@conf.localhost/bob', props[cs.INITIATOR_ID])
     bob_handle = props[cs.INITIATOR_HANDLE]
-    assertEquals([cs.CHANNEL_IFACE_GROUP, cs.CHANNEL_IFACE_TUBE],
+    assertSameSets([cs.CHANNEL_IFACE_GROUP, cs.CHANNEL_IFACE_TUBE],
         props[cs.INTERFACES])
     assertEquals(False, props[cs.REQUESTED])
     assertEquals('chat@conf.localhost', props[cs.TARGET_ID])

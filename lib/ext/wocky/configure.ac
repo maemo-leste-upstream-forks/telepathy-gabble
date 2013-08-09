@@ -118,11 +118,11 @@ dnl Check endianness (Needed for the sha1 implementation)
 AC_C_BIGENDIAN
 
 dnl Check for Glib
-PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.28, gobject-2.0 >= 2.16, gthread-2.0 >=
-2.4, gio-2.0 >= 2.26])
+PKG_CHECK_MODULES(GLIB,
+  [glib-2.0 >= 2.32, gobject-2.0 >= 2.32, gthread-2.0 >= 2.32, gio-2.0 >= 2.32])
 
-AC_DEFINE(GLIB_VERSION_MIN_REQUIRED, GLIB_VERSION_2_28, [Ignore post 2.28 deprecations])
-AC_DEFINE(GLIB_VERSION_MAX_ALLOWED, GLIB_VERSION_2_28, [Prevent post 2.28 APIs])
+AC_DEFINE([GLIB_VERSION_MIN_REQUIRED], [GLIB_VERSION_2_32], [Ignore post 2.32 deprecations])
+AC_DEFINE([GLIB_VERSION_MAX_ALLOWED], [GLIB_VERSION_2_32], [Prevent post 2.32 APIs])
 
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
@@ -177,6 +177,41 @@ if test x$prefer_stream_ciphers = xyes; then
   fi
 fi
 
+
+# -----------------------------------------------------------
+# Make CA certificates path configurable
+# Stolen from GIO's TLS
+# -----------------------------------------------------------
+AC_MSG_CHECKING([location of system Certificate Authority list])
+AC_ARG_WITH(ca-certificates,
+            [AC_HELP_STRING([--with-ca-certificates=@<:@path@:>@],
+                            [path to system Certificate Authority list])])
+if test "$with_ca_certificates" = "no"; then
+    AC_MSG_RESULT([disabled])
+else
+    if test -z "$with_ca_certificates"; then
+        for f in /etc/pki/tls/certs/ca-bundle.crt \
+                 /etc/ssl/certs/ca-certificates.crt; do
+            if test -f "$f"; then
+                with_ca_certificates="$f"
+            fi
+        done
+        if test -z "$with_ca_certificates"; then
+            AC_MSG_ERROR([could not find. Use --with-ca-certificates=path to set, or --without-ca-certificates to disable])
+        fi
+    fi
+
+    AC_MSG_RESULT($with_ca_certificates)
+    AC_DEFINE_UNQUOTED([GTLS_SYSTEM_CA_CERTIFICATES], ["$with_ca_certificates"], [path to system Certificate Authority list])
+fi
+
+if test -n "$with_ca_certificates"; then
+    if ! test -f "$with_ca_certificates"; then
+        AC_MSG_WARN([Specified certificate authority file '$with_ca_certificates' does not exist])
+    fi
+fi
+
+
 GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
 
@@ -215,6 +250,19 @@ PKG_CHECK_MODULES(LIBIPHB, [libiphb >= 0.61.31],
 AC_SUBST(LIBIPHB_CFLAGS)
 AC_SUBST(LIBIPHB_LIBS)
 
+AC_ARG_ENABLE(google-relay,
+  AC_HELP_STRING([--disable-google-relay],
+                 [disable Google Jingle relay support]),
+    [enable_google_relay=$enableval], [enable_google_relay=yes])
+
+if test x$enable_google_relay = xyes; then
+  AC_DEFINE(ENABLE_GOOGLE_RELAY, [], [Enable Google Jingle relay support])
+
+  dnl Check for libsoup
+  PKG_CHECK_MODULES(SOUP, libsoup-2.4)
+fi
+AM_CONDITIONAL([ENABLE_GOOGLE_RELAY], [test "x$enable_google_relay" = xyes])
+
 AC_ARG_ENABLE(coverage, AC_HELP_STRING([--enable-coverage],
       [compile with coverage profiling instrumentation (gcc only)]),
     [
@@ -243,6 +291,7 @@ GTK_DOC_CHECK([1.17],[--flavour no-tmpl])
 AC_OUTPUT( Makefile            \
            wocky/Makefile      \
            wocky/wocky-uninstalled.pc \
+           wocky/wocky.pc \
            m4/Makefile         \
            tools/Makefile      \
            examples/Makefile   \
@@ -263,7 +312,9 @@ Configure summary:
     Features:
         TLS Backend..........: ${with_tls}
         Prefer stream ciphers: ${prefer_stream_ciphers}
+        System CA certs......: ${with_ca_certificates}
         SASL2 Tests..........: ${HAVE_LIBSASL2}
         gtk-doc documentation: ${enable_gtk_doc}
         libiphb integration..: ${have_iphb}
+        Google relay support.: ${enable_google_relay}
 "

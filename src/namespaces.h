@@ -103,6 +103,7 @@
 #define NS_PRESENCE_INVISIBLE   "presence-invisible"
 #define NS_PRIVACY              "jabber:iq:privacy"
 #define NS_INVISIBLE            "urn:xmpp:invisible:0"
+#define NS_RECEIPTS             "urn:xmpp:receipts"
 #define NS_REGISTER             "jabber:iq:register"
 #define NS_ROSTER               "jabber:iq:roster"
 #define NS_SEARCH               "jabber:iq:search"
@@ -134,5 +135,9 @@
 
 #define NS_TP_FT_METADATA_SERVICE "http://telepathy.freedesktop.org/xmpp/file-transfer-service"
 #define NS_TP_FT_METADATA       "http://telepathy.freedesktop.org/xmpp/file-transfer-metadata"
+
+/* This is used by WLM to convert Windows Live ID to XMPP jid.
+ * See http://msdn.microsoft.com/en-us/library/live/hh550849.aspx */
+#define NS_WLM_JID_LOOKUP "http://messenger.live.com/xmpp/jidlookup"
 
 #endif /* __GABBLE_NAMESPACES__H__ */

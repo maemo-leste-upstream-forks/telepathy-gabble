@@ -113,6 +113,7 @@ TWISTED_TESTS = \
 	text/facebook-own-message.py \
 	text/initiate.py \
 	text/initiate-requestotron.py \
+	text/receipts.py \
 	text/respawn.py \
 	text/send-error.py \
 	text/send-to-correct-resource.py \
@@ -132,10 +133,8 @@ TWISTED_TUBE_TESTS = \
 	tubes/accept-private-stream-tube.py \
 	tubes/check-create-tube-return.py \
 	tubes/close-muc-with-closed-tube.py \
-	tubes/crash-on-list-channels.py \
 	tubes/create-invalid-tube-channels.py \
 	tubes/ensure-si-tube.py \
-	tubes/muc-presence.py \
 	tubes/offer-muc-dbus-tube.py \
 	tubes/offer-muc-stream-tube.py \
 	tubes/offer-no-caps.py \
@@ -147,12 +146,14 @@ TWISTED_TUBE_TESTS = \
 	$(NULL)
 
 TWISTED_VCARD_TESTS = \
+	vcard/clear-avatar.py \
 	vcard/disconnect-during-pep.py \
 	vcard/get-contact-info.py \
 	vcard/item-not-found.py \
 	vcard/overlapping-sets.py \
 	vcard/redundant-set.py \
 	vcard/refresh-contact-info.py \
+	vcard/set-avatar.py \
 	vcard/set-contact-info.py \
 	vcard/set-set-disconnect.py \
 	vcard/supported-fields.py \
@@ -217,6 +218,7 @@ TWISTED_JINGLE_TESTS = \
 	jingle/test-wait-for-caps-incomplete.py \
 	jingle/test-wait-for-caps.py \
 	jingle/transport-info-parsing.py \
+	jingle/unknown-session.py \
 	$(NULL)
 
 TWISTED_FT_TESTS = \
@@ -263,12 +265,12 @@ TWISTED_OTHER_FILES = \
 	jingle/callutils.py \
 	jingle/__init__.py \
 	jingle/jingletest2.py \
-	jingle/jingletest.py \
 	jingle-share/file_transfer_helper.py \
 	jingle-share/jingleshareutils.py \
 	mucutil.py \
 	ns.py \
 	olpc/util.py \
+	presence/__init__.py \
 	presence/invisible_helper.py \
 	rostertest.py \
 	sasl/saslutil.py \
@@ -276,7 +278,6 @@ TWISTED_OTHER_FILES = \
 	test-helper.py \
 	tls-cert.pem \
 	tls-key.pem \
-	tubes/muctubeutil.py \
 	tubes/tubetestutil.py \
 	$(NULL)
 

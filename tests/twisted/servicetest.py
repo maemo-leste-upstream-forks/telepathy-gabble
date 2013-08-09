@@ -8,6 +8,7 @@ from twisted.internet.protocol import Protocol, Factory, ClientFactory
 glib2reactor.install()
 import sys
 import time
+import os
 
 import pprint
 import unittest
@@ -153,6 +154,12 @@ class BaseEventQueue:
         were passed to forbid_events.
         """
         self.forbidden_events.difference_update(set(patterns))
+
+    def unforbid_all(self):
+        """
+        Remove all patterns from the set of forbidden events.
+        """
+        self.forbidden_events.clear()
 
     def _check_forbidden(self, event):
         for e in self.forbidden_events:
@@ -647,6 +654,16 @@ def install_colourer():
     sys.stdout = Colourer(sys.stdout, patterns)
     return sys.stdout
 
-if __name__ == '__main__':
-    unittest.main()
+# this is just to shut up unittest.
+class DummyStream(object):
+    def write(self, s):
+        if 'CHECK_TWISTED_VERBOSE' in os.environ:
+            print s,
 
+    def flush(self):
+        pass
+
+if __name__ == '__main__':
+    stream = DummyStream()
+    runner = unittest.TextTestRunner(stream=stream)
+    unittest.main(testRunner=runner)

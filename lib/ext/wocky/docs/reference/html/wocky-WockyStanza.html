@@ -79,6 +79,8 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <span class="returnvalue">void</span>                <a class="link" href="wocky-WockyStanza.html#wocky-stanza-get-type-info" title="wocky_stanza_get_type_info ()">wocky_stanza_get_type_info</a>          (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> *type</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> *sub_type</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyStanza.html#wocky-stanza-has-type" title="wocky_stanza_has_type ()">wocky_stanza_has_type</a>               (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> expected_type</code></em>);
 <span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyStanza.html#wocky-stanza-new" title="wocky_stanza_new ()">wocky_stanza_new</a>                    (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="wocky-WockyStanza.html#wocky-stanza-set-from-contact" title="wocky_stanza_set_from_contact ()">wocky_stanza_set_from_contact</a>       (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>,
@@ -337,14 +339,11 @@ XMPP stanza types.
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *to</code></em>,
                                                          <em class="parameter"><code>...</code></em>);</pre>
 <p>
-Build a XMPP stanza from a list of arguments.
-Example:
+Build a XMPP stanza from a list of arguments. For example, the following invocation:
 </p>
 <p>
 </p>
-<div class="example">
-<a name="idp20377408"></a><p class="title"><b>Example 3. </b></p>
-<div class="example-contents">
+<div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
       <tr>
@@ -358,17 +357,7 @@ Example:
 8
 9
 10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21</pre></td>
+11</pre></td>
         <td class="listing_code"><pre class="programlisting"><span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build">wocky_stanza_build</a></span> <span class="gtkdoc opt">(</span>
    WOCKY_STANZA_TYPE_MESSAGE<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span>
    <span class="string">&quot;alice&#64;collabora.co.uk&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;bob&#64;collabora.co.uk&quot;</span><span class="gtkdoc opt">,</span>
@@ -379,24 +368,43 @@ Example:
        WOCKY_NODE_TEXT<span class="gtkdoc opt">,</span> <span class="string">&quot;Telepathy rocks!&quot;</span><span class="gtkdoc opt">,</span>
      WOCKY_NODE_END<span class="gtkdoc opt">,</span>
    WOCKY_NODE_END<span class="gtkdoc opt">,</span>
-  NULL<span class="gtkdoc opt">);</span>
-
-<span class="comment">/* produces</span>
-<span class="comment">&lt;message from='alice&#64;collabora.co.uk' to='bob&#64;collabora.co.uk'&gt;</span>
-<span class="comment">  &lt;html xmlns='http://www.w3.org/1999/xhtml'&gt;</span>
-<span class="comment">    &lt;body textcolor='red'&gt;</span>
-<span class="comment">      Telepathy rocks!</span>
-<span class="comment">    &lt;/body&gt;</span>
-<span class="comment">  &lt;/html&gt;</span>
-<span class="comment">&lt;/message&gt;</span>
-<span class="comment">*/</span></pre></td>
+  NULL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
 </div>
 
+<p>
+</p>
+<p>
+produces this stanza:
+</p>
+<p>
+</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">&lt;</span>message from<span class="gtkdoc opt">=</span><span class="string">'alice&#64;collabora.co.uk'</span> to<span class="gtkdoc opt">=</span><span class="string">'bob&#64;collabora.co.uk'</span><span class="gtkdoc opt">&gt;</span>
+  <span class="gtkdoc opt">&lt;</span>html xmlns<span class="gtkdoc opt">=</span><span class="string">'http://www.w3.org/1999/xhtml'</span><span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>body textcolor<span class="gtkdoc opt">=</span><span class="string">'red'</span><span class="gtkdoc opt">&gt;</span>
+      Telepathy rocks<span class="gtkdoc opt">!</span>
+    <span class="gtkdoc opt">&lt;/</span>body<span class="gtkdoc opt">&gt;</span>
+  <span class="gtkdoc opt">&lt;/</span>html<span class="gtkdoc opt">&gt;</span>
+<span class="gtkdoc opt">&lt;/</span>message<span class="gtkdoc opt">&gt;</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-<p><br class="example-break">
+
+<p>
 </p>
 <p>
 You may optionally use mnemonic ASCII characters in place of the build tags,
@@ -405,9 +413,7 @@ above stanza could be written as:
 </p>
 <p>
 </p>
-<div class="example">
-<a name="idp20382144"></a><p class="title"><b>Example 4. </b></p>
-<div class="example-contents">
+<div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
       <tr>
@@ -434,8 +440,7 @@ above stanza could be written as:
   </table>
 </div>
 
-</div>
-<p><br class="example-break">
+<p>
 </p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
@@ -756,6 +761,12 @@ error.</td>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_stanza_get_type_info          (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> *type</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> *sub_type</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-has-type"></a><h3>wocky_stanza_has_type ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_stanza_has_type               (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> expected_type</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">

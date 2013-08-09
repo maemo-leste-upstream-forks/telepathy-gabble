@@ -749,9 +749,11 @@ called until one claims to have handled the stanza (by returning <a href="http:/
 <p>
 If <em class="parameter"><code>from</code></em> is a bare JID, then the resource of the JID in the from attribute
 will be ignored: In other words, a handler registered against a bare JID
-will match _all_ stanzas from a JID with the same node and domain:
-"foo@bar.org" will match
-"foo@bar.org", "foo@bar.org/moose" and so forth.
+will match <span class="emphasis"><em>all</em></span> stanzas from a JID with the same node
+and domain:
+<code class="code">"foo@bar.org"</code> will match
+<code class="code">"foo@bar.org"</code>,
+<code class="code">"foo@bar.org/moose"</code> and so forth.
 </p>
 <p>
 To register an IQ handler from Juliet for all the Jingle stanzas related
@@ -770,11 +772,13 @@ to one Jingle session:
 5
 6
 7
-8</pre></td>
-        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function">wocky_porter_register_handler</span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
-  WOCKY_STANZA_TYPE_IQ<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span>
-  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL<span class="gtkdoc opt">,</span> jingle_cb<span class="gtkdoc opt">,</span>
+8
+9</pre></td>
+        <td class="listing_code"><pre class="programlisting">id <span class="gtkdoc opt">=</span> <span class="function"><a href="wocky-WockyPorter.html#wocky-porter-register-handler-from">wocky_porter_register_handler_from</a></span> <span class="gtkdoc opt">(</span>porter<span class="gtkdoc opt">,</span>
+  WOCKY_STANZA_TYPE_IQ<span class="gtkdoc opt">,</span> WOCKY_STANZA_SUB_TYPE_NONE<span class="gtkdoc opt">,</span>
   <span class="string">&quot;juliet&#64;example.com/Balcony&quot;</span><span class="gtkdoc opt">,</span>
+  WOCKY_PORTER_HANDLER_PRIORITY_NORMAL<span class="gtkdoc opt">,</span>
+  jingle_cb<span class="gtkdoc opt">,</span>
   <span class="string">'('</span><span class="gtkdoc opt">,</span> <span class="string">&quot;jingle&quot;</span><span class="gtkdoc opt">,</span>
     <span class="string">':'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;urn:xmpp:jingle:1&quot;</span><span class="gtkdoc opt">,</span>
     <span class="string">'&#64;'</span><span class="gtkdoc opt">,</span> <span class="string">&quot;sid&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;my_sid&quot;</span><span class="gtkdoc opt">,</span>
