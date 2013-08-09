@@ -8,8 +8,7 @@ XEP-0016 or XEP-0126. Some servers silently support it, like certain
 version of Ejabberd and all released versions of Prosody (as of 7.0).
 """
 from gabbletest import (
-    exec_test, XmppXmlStream, acknowledge_iq, send_error_reply,
-    disconnect_conn, elem, elem_iq
+    exec_test, acknowledge_iq, send_error_reply, elem, elem_iq
 )
 from servicetest import (
     EventPattern, assertEquals, assertNotEquals, assertContains,
@@ -19,6 +18,7 @@ import ns
 import constants as cs
 from twisted.words.xish import xpath, domish
 from invisible_helper import ManualPrivacyListStream
+from functools import partial
 
 def test_create_invisible_list(q, bus, conn, stream):
     conn.SimplePresence.SetPresence("away", "")
@@ -47,6 +47,35 @@ def test_create_invisible_list(q, bus, conn, stream):
         args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
 
     assertContains("hidden",
+        conn.Properties.Get(cs.CONN_IFACE_SIMPLE_PRESENCE, "Statuses"))
+
+def test_create_invisible_list_failed(q, bus, conn, stream):
+    conn.SimplePresence.SetPresence("away", "")
+
+    conn.Connect()
+
+    stream.handle_get_all_privacy_lists(q, bus, conn)
+
+    get_list = q.expect('stream-iq', query_ns=ns.PRIVACY, iq_type='get')
+    list_node = xpath.queryForNodes('//list', get_list.query)[0]
+    assertEquals('invisible', list_node['name'])
+
+    error = domish.Element((None, 'error'))
+    error['type'] = 'cancel'
+    error.addElement((ns.STANZA, 'item-not-found'))
+    send_error_reply (stream, get_list.stanza, error)
+
+    create_list = q.expect('stream-iq', query_ns=ns.PRIVACY, iq_type='set')
+    list_node = xpath.queryForNodes('//list', create_list.query)[0]
+    assertEquals('invisible', list_node['name'])
+    assertNotEquals([],
+        xpath.queryForNodes('/query/list/item/presence-out', create_list.query))
+    send_error_reply(stream, create_list.stanza)
+
+    q.expect('dbus-signal', signal='StatusChanged',
+        args=[cs.CONN_STATUS_CONNECTED, cs.CSR_REQUESTED])
+
+    assertDoesNotContain("hidden",
         conn.Properties.Get(cs.CONN_IFACE_SIMPLE_PRESENCE, "Statuses"))
 
 def test_invisible_on_connect_fail_no_list(q, bus, conn, stream):
@@ -83,7 +112,8 @@ def test_invisible_on_connect_fail_no_list(q, bus, conn, stream):
     assertDoesNotContain("hidden",
         conn.Properties.Get(cs.CONN_IFACE_SIMPLE_PRESENCE, "Statuses"))
 
-def test_invisible_on_connect_fail_invalid_list(q, bus, conn, stream):
+def test_invisible_on_connect_fail_invalid_list(q, bus, conn, stream,
+                                                really_invalid=False):
     props = conn.Properties.GetAll(cs.CONN_IFACE_SIMPLE_PRESENCE)
     assertNotEquals({}, props['Statuses'])
 
@@ -101,10 +131,15 @@ def test_invisible_on_connect_fail_invalid_list(q, bus, conn, stream):
     list_node = xpath.queryForNodes('//list', get_list.query)[0]
     assertEquals('invisible', list_node['name'])
 
-    stream.send_privacy_list(get_list.stanza,
-        [elem('item', type='jid', value='tybalt@example.com', action='allow',
-             order='1')(elem('presence-out')),
-        elem('item', action='deny', order='2')(elem('presence-out'))])
+    if really_invalid:
+        # At one point Gabble would crash if the reply was of type 'result' but
+        # wasn't well-formed.
+        acknowledge_iq(stream, get_list.stanza)
+    else:
+        stream.send_privacy_list(get_list.stanza,
+            [elem('item', type='jid', value='tybalt@example.com', action='allow',
+                 order='1')(elem('presence-out')),
+            elem('item', action='deny', order='2')(elem('presence-out'))])
 
     create_list = q.expect('stream-iq', query_ns=ns.PRIVACY, iq_type='set')
     created = xpath.queryForNodes('//list', create_list.stanza)[0]
@@ -267,8 +302,7 @@ def test_privacy_list_push_conflict(q, bus, conn, stream):
     set_id = stream.send_privacy_list_push_iq("invisible")
 
     _, req_list = q.expect_many(
-        EventPattern('stream-iq', iq_type='result', predicate=lambda event: \
-                         event.stanza['id'] == set_id),
+        EventPattern('stream-iq', iq_type='result', iq_id=set_id),
         EventPattern('stream-iq', query_ns=ns.PRIVACY, iq_type="get"))
 
     stream.send_privacy_list(req_list.stanza,
@@ -293,8 +327,7 @@ def test_privacy_list_push_valid(q, bus, conn, stream):
     set_id = stream.send_privacy_list_push_iq("invisible")
 
     _, req_list = q.expect_many(
-        EventPattern('stream-iq', iq_type='result', predicate=lambda event: \
-                         event.stanza['id'] == set_id),
+        EventPattern('stream-iq', iq_type='result', iq_id=set_id),
         EventPattern('stream-iq', query_ns=ns.PRIVACY, iq_type="get"))
 
     stream.send_privacy_list(req_list.stanza,
@@ -316,9 +349,14 @@ if __name__ == '__main__':
               do_connect=False)
     exec_test(test_create_invisible_list, protocol=ManualPrivacyListStream,
               do_connect=False)
+    exec_test(test_create_invisible_list_failed, protocol=ManualPrivacyListStream,
+              do_connect=False)
     exec_test(test_invisible_on_connect_fail_no_list,
               protocol=ManualPrivacyListStream, do_connect=False)
     exec_test(test_invisible_on_connect_fail_invalid_list,
+              protocol=ManualPrivacyListStream, do_connect=False)
+    exec_test(partial(test_invisible_on_connect_fail_invalid_list,
+                      really_invalid=True),
               protocol=ManualPrivacyListStream, do_connect=False)
     exec_test(test_privacy_list_push_valid, protocol=ManualPrivacyListStream,
               do_connect=False)

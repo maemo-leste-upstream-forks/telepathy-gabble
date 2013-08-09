@@ -25,13 +25,12 @@
 # include <unistd.h>
 #endif
 
+#include <dbus/dbus.h>
+
 #include <glib/gstdio.h>
 
-#include <telepathy-glib/debug.h>
-#include <telepathy-glib/debug-sender.h>
-#include <telepathy-glib/run.h>
-#include <telepathy-glib/util.h>
-#include <wocky/wocky.h>
+#include <telepathy-glib/telepathy-glib.h>
+
 #include <wocky/wocky.h>
 
 #include "debug.h"
@@ -115,6 +114,9 @@ gabble_init (void)
   if (!g_thread_supported ())
     g_thread_init (NULL);
 #endif
+
+  if (!dbus_threads_init_default ())
+    g_error ("Unable to initialize libdbus thread-safety (out of memory?)");
 
   g_type_init ();
   wocky_init ();

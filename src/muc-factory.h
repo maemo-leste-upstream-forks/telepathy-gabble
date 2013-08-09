@@ -26,9 +26,6 @@
 #include <wocky/wocky.h>
 
 #include "bytestream-iface.h"
-#ifdef ENABLE_VOIP
-#include "jingle-types.h"
-#endif
 #include "types.h"
 
 G_BEGIN_DECLS
@@ -76,7 +73,7 @@ void gabble_muc_factory_broadcast_presence (GabbleMucFactory *self);
 
 #ifdef ENABLE_VOIP
 gboolean gabble_muc_factory_handle_jingle_session (GabbleMucFactory *self,
-  GabbleJingleSession *session);
+  WockyJingleSession *session);
 #endif
 
 G_END_DECLS

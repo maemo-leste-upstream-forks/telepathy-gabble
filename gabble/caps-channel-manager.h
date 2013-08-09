@@ -24,8 +24,7 @@
 #define GABBLE_CAPS_CHANNEL_MANAGER_H
 
 #include <glib-object.h>
-#include <telepathy-glib/exportable-channel.h>
-#include <telepathy-glib/handle.h>
+#include <telepathy-glib/telepathy-glib.h>
 
 #include "capabilities.h"
 
@@ -90,7 +89,6 @@ void gabble_caps_channel_manager_represent_client (
 struct _GabbleCapsChannelManagerInterface {
     GTypeInterface parent;
 
-    GabbleCapsChannelManagerResetCapsFunc reset_caps;
     GabbleCapsChannelManagerGetContactCapsFunc get_contact_caps;
     GabbleCapsChannelManagerRepresentClientFunc represent_client;
 

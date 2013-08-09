@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="wocky-wocky-data-form-enumtypes.html" title="wocky-data-form-enumtypes">
+<link rel="prev" href="WockyContact.html" title="WockyContact">
 <link rel="next" href="wocky-wocky-debug.html" title="wocky-debug">
 <meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -14,7 +14,7 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="wocky-wocky-data-form-enumtypes.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="WockyContact.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Wocky Reference Manual</th>
@@ -155,8 +155,6 @@ The class of a <span class="type">WockyDataForm</span>.
   gchar *desc;
   gboolean required;
   GValue *default_value;
-  /* a GStrv of actual values so can be {"1", NULL} or {"false", NULL}
-   * for BOOLEAN or {"hi", "there", NULL} TEXT_MULTI, for example. */
   gchar **raw_value_contents;
   GValue *value;
   /* for LIST_MULTI and LIST_SINGLE only.
@@ -201,7 +199,12 @@ Details about a single data form field in a <span class="type">WockyDataForm</sp
 </tr>
 <tr>
 <td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **<em class="structfield"><code><a name="WockyDataFormField.raw-value-contents"></a>raw_value_contents</code></em>;</span></p></td>
-<td></td>
+<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>-terminated array holding the literal value(s) as
+specified in the original XML. For example, this might be something like
+<code class="code">{ "1", NULL }</code> or <code class="code">{ "false",
+NULL }</code> for a <a class="link" href="wocky-WockyDataForm.html#WOCKY-DATA-FORM-FIELD-TYPE-BOOLEAN:CAPS"><span class="type">WOCKY_DATA_FORM_FIELD_TYPE_BOOLEAN</span></a> field, or
+<code class="code">{ "hi", "there", NULL }</code> for a
+<a class="link" href="wocky-WockyDataForm.html#WOCKY-DATA-FORM-FIELD-TYPE-TEXT-MULTI:CAPS"><span class="type">WOCKY_DATA_FORM_FIELD_TYPE_TEXT_MULTI</span></a> field.</td>
 </tr>
 <tr>
 <td><p><span class="term"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *<em class="structfield"><code><a name="WockyDataFormField.value"></a>value</code></em>;</span></p></td>

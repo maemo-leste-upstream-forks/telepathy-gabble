@@ -44,7 +44,9 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-#include <telepathy-glib/interfaces.h>
+
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #include <gibber/gibber-transport.h>
 #include <gibber/gibber-tcp-transport.h>
@@ -52,10 +54,10 @@
 
 #define DEBUG_FLAG GABBLE_DEBUG_BYTESTREAM
 
-#include "base64.h"
 #include "bytestream-factory.h"
 #include "bytestream-iface.h"
 #include "connection.h"
+#include "conn-util.h"
 #include "debug.h"
 #include "disco.h"
 #include "gabble-signals-marshal.h"
@@ -232,8 +234,6 @@ gabble_bytestream_socks5_dispose (GObject *object)
   GabbleBytestreamSocks5 *self = GABBLE_BYTESTREAM_SOCKS5 (object);
   GabbleBytestreamSocks5Private *priv =
       GABBLE_BYTESTREAM_SOCKS5_GET_PRIVATE (self);
-  TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
-      (TpBaseConnection *) priv->conn, TP_HANDLE_TYPE_CONTACT);
 
   if (priv->dispose_has_run)
     return;
@@ -241,8 +241,6 @@ gabble_bytestream_socks5_dispose (GObject *object)
   priv->dispose_has_run = TRUE;
 
   stop_timer (self);
-
-  tp_handle_unref (contact_repo, priv->peer_handle);
 
   if (priv->bytestream_state != GABBLE_BYTESTREAM_STATE_CLOSED)
     {
@@ -397,8 +395,6 @@ gabble_bytestream_socks5_constructor (GType type,
       TP_HANDLE_TYPE_CONTACT);
   room_repo = tp_base_connection_get_handles (base_conn,
       TP_HANDLE_TYPE_ROOM);
-
-  tp_handle_ref (contact_repo, priv->peer_handle);
 
   jid = tp_handle_inspect (contact_repo, priv->peer_handle);
 
@@ -766,17 +762,22 @@ target_got_connect_reply (GabbleBytestreamSocks5 *self)
 }
 
 static void
-socks5_activation_reply_cb (GabbleConnection *conn,
-                            WockyStanza *sent_msg,
-                            WockyStanza *reply_msg,
-                            GObject *obj,
-                            gpointer user_data)
+socks5_activation_reply_cb (
+    GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
-  GabbleBytestreamSocks5 *self = GABBLE_BYTESTREAM_SOCKS5 (user_data);
-  GabbleBytestreamSocks5Private *priv = GABBLE_BYTESTREAM_SOCKS5_GET_PRIVATE (
-      self);
+  TpWeakRef *weak_ref = user_data;
+  GabbleBytestreamSocks5 *self = tp_weak_ref_dup_object (weak_ref);
+  GabbleBytestreamSocks5Private *priv;
+  WockyStanza *reply_msg = NULL;
 
-  if (wocky_stanza_extract_errors (reply_msg, NULL, NULL, NULL, NULL))
+  tp_weak_ref_destroy (weak_ref);
+  if (self == NULL)
+    return;
+  priv = self->priv;
+
+  if (!conn_util_send_iq_finish (GABBLE_CONNECTION (source), result, &reply_msg, NULL))
     {
       DEBUG ("Activation failed");
       goto activation_failed;
@@ -795,11 +796,15 @@ socks5_activation_reply_cb (GabbleConnection *conn,
   g_object_set (self, "state", GABBLE_BYTESTREAM_STATE_OPEN, NULL);
   /* We can read data from the sock5 socket now */
   gibber_transport_block_receiving (priv->transport, FALSE);
+  goto out;
 
-  return;
 activation_failed:
   g_signal_emit_by_name (self, "connection-error");
   g_object_set (self, "state", GABBLE_BYTESTREAM_STATE_CLOSED, NULL);
+
+out:
+  g_clear_object (&reply_msg);
+  g_object_unref (self);
 }
 
 static void
@@ -825,15 +830,8 @@ initiator_got_connect_reply (GabbleBytestreamSocks5 *self)
   /* Block reading while waiting for the activation reply */
   gibber_transport_block_receiving (priv->transport, TRUE);
 
-  if (!_gabble_connection_send_with_reply (priv->conn, iq,
-      socks5_activation_reply_cb, G_OBJECT (self), self, NULL))
-    {
-      DEBUG ("Sending activation IQ failed");
-
-      g_signal_emit_by_name (self, "connection-error");
-      g_object_set (self, "state", GABBLE_BYTESTREAM_STATE_CLOSED, NULL);
-    }
-
+  conn_util_send_iq_async (priv->conn, iq, NULL,
+      socks5_activation_reply_cb, tp_weak_ref_new (self, NULL, NULL));
   g_object_unref (iq);
 }
 
@@ -1543,17 +1541,22 @@ initiator_connected_to_proxy (GabbleBytestreamSocks5 *self)
 }
 
 static void
-socks5_init_reply_cb (GabbleConnection *conn,
-                      WockyStanza *sent_msg,
-                      WockyStanza *reply_msg,
-                      GObject *obj,
-                      gpointer user_data)
+socks5_init_reply_cb (
+    GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
-  GabbleBytestreamSocks5 *self = GABBLE_BYTESTREAM_SOCKS5 (obj);
-  GabbleBytestreamSocks5Private *priv =
-      GABBLE_BYTESTREAM_SOCKS5_GET_PRIVATE (self);
+  TpWeakRef *weak_ref = user_data;
+  GabbleBytestreamSocks5 *self = tp_weak_ref_dup_object (weak_ref);
+  GabbleBytestreamSocks5Private *priv;
+  WockyStanza *reply_msg = NULL;
 
-  if (!wocky_stanza_extract_errors (reply_msg, NULL, NULL, NULL, NULL))
+  tp_weak_ref_destroy (weak_ref);
+  if (self == NULL)
+    return;
+  priv = self->priv;
+
+  if (conn_util_send_iq_finish (GABBLE_CONNECTION (source), result, &reply_msg, NULL))
     {
       WockyNode *query, *streamhost = NULL;
       const gchar *jid;
@@ -1590,7 +1593,7 @@ socks5_init_reply_cb (GabbleConnection *conn,
 
           priv->proxy_jid = g_strdup (jid);
           initiator_connected_to_proxy (self);
-          return;
+          goto out;
         }
 
       /* No proxy used */
@@ -1609,7 +1612,7 @@ socks5_init_reply_cb (GabbleConnection *conn,
       g_object_set (self, "state", GABBLE_BYTESTREAM_STATE_OPEN, NULL);
       /* We can read data from the sock5 socket now */
       gibber_transport_block_receiving (priv->transport, FALSE);
-      return;
+      goto out;
     }
 
 socks5_init_error:
@@ -1617,6 +1620,10 @@ socks5_init_error:
 
   g_signal_emit_by_name (self, "connection-error");
   g_object_set (self, "state", GABBLE_BYTESTREAM_STATE_CLOSED, NULL);
+
+out:
+  g_clear_object (&reply_msg);
+  g_object_unref (self);
 }
 
 #ifdef G_OS_WIN32
@@ -1866,49 +1873,19 @@ new_connection_cb (GibberListener *listener,
 }
 
 /*
- * gabble_bytestream_socks5_initiate
- *
- * Implements gabble_bytestream_iface_initiate on GabbleBytestreamIface
+ * Consumes @ips.
  */
-static gboolean
-gabble_bytestream_socks5_initiate (GabbleBytestreamIface *iface)
+static void
+send_streamhosts (
+    GabbleBytestreamSocks5 *self,
+    GSList *ips,
+    gint port_num)
 {
-  GabbleBytestreamSocks5 *self = GABBLE_BYTESTREAM_SOCKS5 (iface);
-  GabbleBytestreamSocks5Private *priv =
-      GABBLE_BYTESTREAM_SOCKS5_GET_PRIVATE (self);
+  GabbleBytestreamSocks5Private *priv = self->priv;
   gchar *port;
-  gint port_num;
   WockyStanza *msg;
   WockyNode *query_node;
-  GSList *ips, *ip;
 
-  if (priv->bytestream_state != GABBLE_BYTESTREAM_STATE_INITIATING)
-    {
-      DEBUG ("bytestream is not is the initiating state (state %d)",
-          priv->bytestream_state);
-      return FALSE;
-    }
-
-  ips = get_local_interfaces_ips ();
-  if (ips == NULL)
-    {
-      DEBUG ("Can't get IP addresses");
-      return FALSE;
-    }
-
-  g_assert (priv->listener == NULL);
-  priv->listener = gibber_listener_new ();
-
-  g_signal_connect (priv->listener, "new-connection",
-      G_CALLBACK (new_connection_cb), self);
-
-  if (!gibber_listener_listen_tcp (priv->listener, 0, NULL))
-    {
-      DEBUG ("can't listen for incoming connection");
-      return FALSE;
-    }
-
-  port_num = gibber_listener_get_port (priv->listener);
   port = g_strdup_printf ("%d", port_num);
 
   msg = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ, WOCKY_STANZA_SUB_TYPE_SET,
@@ -1920,17 +1897,17 @@ gabble_bytestream_socks5_initiate (GabbleBytestreamIface *iface)
         '*', &query_node,
       ')', NULL);
 
-  for (ip = ips; ip != NULL; ip = g_slist_next (ip))
+  for (; port_num != 0 && ips != NULL; ips = g_slist_delete_link (ips, ips))
     {
       WockyNode *node = wocky_node_add_child (query_node, "streamhost");
 
       wocky_node_set_attributes (node,
           "jid", priv->self_full_jid,
-          "host", ip->data,
+          "host", ips->data,
           "port", port,
           NULL);
 
-      g_free (ip->data);
+      g_free (ips->data);
     }
 
   g_slist_free (ips);
@@ -1958,7 +1935,7 @@ gabble_bytestream_socks5_initiate (GabbleBytestreamIface *iface)
               NULL);
           g_free (portstr);
         }
-      g_slist_free (proxies);
+     g_slist_free (proxies);
     }
   else
     {
@@ -1968,17 +1945,57 @@ gabble_bytestream_socks5_initiate (GabbleBytestreamIface *iface)
 
   priv->socks5_state = SOCKS5_STATE_INITIATOR_OFFER_SENT;
 
-  if (!_gabble_connection_send_with_reply (priv->conn, msg,
-      socks5_init_reply_cb, G_OBJECT (self), NULL, NULL))
-    {
-      DEBUG ("Error when sending Socks5 init stanza");
+  conn_util_send_iq_async (priv->conn, msg, NULL,
+      socks5_init_reply_cb, tp_weak_ref_new (self, NULL, NULL));
+  g_object_unref (msg);
+}
 
-      g_object_unref (msg);
+/*
+ * gabble_bytestream_socks5_initiate
+ *
+ * Implements gabble_bytestream_iface_initiate on GabbleBytestreamIface
+ */
+static gboolean
+gabble_bytestream_socks5_initiate (GabbleBytestreamIface *iface)
+{
+  GabbleBytestreamSocks5 *self = GABBLE_BYTESTREAM_SOCKS5 (iface);
+  GabbleBytestreamSocks5Private *priv =
+      GABBLE_BYTESTREAM_SOCKS5_GET_PRIVATE (self);
+  GSList *ips;
+  guint port_num = 0;
+
+  if (priv->bytestream_state != GABBLE_BYTESTREAM_STATE_INITIATING)
+    {
+      DEBUG ("bytestream is not is the initiating state (state %d)",
+          priv->bytestream_state);
       return FALSE;
     }
 
-  g_object_unref (msg);
+  ips = get_local_interfaces_ips ();
+  if (ips == NULL)
+    {
+      DEBUG ("Can't get IP addresses; will send empty offer.");
+    }
+  else
+    {
+      g_assert (priv->listener == NULL);
+      priv->listener = gibber_listener_new ();
 
+      g_signal_connect (priv->listener, "new-connection",
+          G_CALLBACK (new_connection_cb), self);
+
+      if (!gibber_listener_listen_tcp (priv->listener, 0, NULL))
+        {
+          DEBUG ("can't listen for incoming connection; will send empty offer.");
+          g_slist_foreach (ips, (GFunc) g_free, NULL);
+          g_slist_free (ips);
+          ips = NULL;
+        }
+
+      port_num = gibber_listener_get_port (priv->listener);
+    }
+
+  send_streamhosts (self, ips, port_num);
   return TRUE;
 }
 

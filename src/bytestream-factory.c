@@ -26,7 +26,8 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <wocky/wocky.h>
-#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_BYTESTREAM
 
@@ -36,6 +37,7 @@
 #include "bytestream-multiple.h"
 #include "bytestream-socks5.h"
 #include "connection.h"
+#include "conn-util.h"
 #include "debug.h"
 #include "disco.h"
 #include "namespaces.h"
@@ -1298,8 +1300,6 @@ out:
   g_slist_free (stream_methods);
   g_free (peer_resource);
   g_free (self_jid);
-  if (peer_handle != 0)
-    tp_handle_unref (contact_repo, peer_handle);
 
   return TRUE;
 }
@@ -1987,37 +1987,23 @@ streaminit_get_bytestream (GabbleBytestreamFactory *self,
 
 struct _streaminit_reply_cb_data
 {
+  GabbleBytestreamFactory *self;
   gchar *stream_id;
   GabbleBytestreamFactoryNegotiateReplyFunc func;
-  gpointer user_data;
-  GObject *object;
-  gboolean object_alive;
+  TpWeakRef *weak_object;
 };
-
-static void
-negotiate_stream_object_destroy_notify_cb (gpointer _data,
-                                           GObject *where_the_object_was)
-{
-  struct _streaminit_reply_cb_data *data =
-    (struct _streaminit_reply_cb_data*) _data;
-
-  data->object = NULL;
-  data->object_alive = FALSE;
-}
 
 /* Called when we receive the reply of a SI request */
 static void
-streaminit_reply_cb (GabbleConnection *conn,
-                     WockyStanza *sent_msg,
-                     WockyStanza *reply_msg,
-                     GObject *obj,
-                     gpointer user_data)
+streaminit_reply_cb (
+    GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
-  GabbleBytestreamFactory *self = GABBLE_BYTESTREAM_FACTORY (obj);
-  GabbleBytestreamFactoryPrivate *priv = GABBLE_BYTESTREAM_FACTORY_GET_PRIVATE (
-      self);
-  struct _streaminit_reply_cb_data *data =
-    (struct _streaminit_reply_cb_data*) user_data;
+  GabbleConnection *conn = GABBLE_CONNECTION (source);
+  struct _streaminit_reply_cb_data *data = user_data;
+  GabbleBytestreamFactory *self = data->self;
+  GabbleBytestreamFactoryPrivate *priv = self->priv;
   GabbleBytestreamIface *bytestream = NULL;
   gchar *peer_resource = NULL;
   WockyNode *si;
@@ -2030,20 +2016,16 @@ streaminit_reply_cb (GabbleConnection *conn,
   TpHandle room_handle;
   gboolean success = FALSE;
   gchar *self_jid = NULL;
+  GObject *object = tp_weak_ref_dup_object (data->weak_object);
+  WockyStanza *reply_msg = NULL;
 
-  if (data->object != NULL)
-    {
-      g_object_weak_unref (data->object,
-          negotiate_stream_object_destroy_notify_cb, data);
-    }
-
-  if (!data->object_alive)
+  if (object == NULL)
     {
       DEBUG ("Object which requested the bytestream was disposed. Ignoring");
       goto END;
     }
 
-  if (wocky_stanza_extract_errors (reply_msg, NULL, NULL, NULL, NULL))
+  if (!conn_util_send_iq_finish (conn, result, &reply_msg, NULL))
     {
       DEBUG ("stream %s declined", data->stream_id);
       goto END;
@@ -2139,18 +2121,21 @@ END:
     }
 
   /* user callback */
-  if (data->object_alive)
-    data->func (bytestream, (const gchar*) data->stream_id, reply_msg,
-        data->object, data->user_data);
+  if (object != NULL)
+    {
+      data->func (bytestream, reply_msg,
+          object, tp_weak_ref_get_user_data (data->weak_object));
+      g_clear_object (&object);
+    }
 
   if (peer_resource != NULL)
     g_free (peer_resource);
 
-  if (peer_handle != 0)
-    tp_handle_unref (contact_repo, peer_handle);
-
+  g_clear_object (&reply_msg);
+  g_clear_object (&data->self);
   g_free (self_jid);
   g_free (data->stream_id);
+  tp_weak_ref_destroy (data->weak_object);
   g_slice_free (struct _streaminit_reply_cb_data, data);
 }
 
@@ -2162,54 +2147,37 @@ END:
  * @stream_id: the stream identifier
  * @func: the callback to call when we receive the answser of the request
  * @user_data: user data to pass to the callback
- * @object: if non-NULL the handler will follow the lifetime of that object,
+ * @object: the handler will follow the lifetime of this object,
  * which means that if the object is destroyed the callback will not be invoked.
- * @error: pointer in which to return a GError in case of failure.
  *
  * Send a Stream Initiation (XEP-0095) request.
  */
-gboolean
+void
 gabble_bytestream_factory_negotiate_stream (GabbleBytestreamFactory *self,
                                             WockyStanza *msg,
                                             const gchar *stream_id,
                                             GabbleBytestreamFactoryNegotiateReplyFunc func,
                                             gpointer user_data,
-                                            GObject *object,
-                                            GError **error)
+                                            GObject *object)
 {
   GabbleBytestreamFactoryPrivate *priv;
   struct _streaminit_reply_cb_data *data;
-  gboolean result;
 
   g_assert (GABBLE_IS_BYTESTREAM_FACTORY (self));
   g_assert (stream_id != NULL);
   g_assert (func != NULL);
+  g_assert (object != NULL);
 
   priv = GABBLE_BYTESTREAM_FACTORY_GET_PRIVATE (self);
 
   data = g_slice_new (struct _streaminit_reply_cb_data);
+  data->self = g_object_ref (self);
   data->stream_id = g_strdup (stream_id);
   data->func = func;
-  data->user_data = user_data;
-  data->object_alive = TRUE;
-  data->object = object;
+  data->weak_object = tp_weak_ref_new (object, user_data, NULL);
 
-  if (object != NULL)
-    {
-      g_object_weak_ref (object, negotiate_stream_object_destroy_notify_cb,
-          data);
-    }
-
-  result = _gabble_connection_send_with_reply (priv->conn, msg,
-      streaminit_reply_cb, G_OBJECT (self), data, error);
-
-  if (!result)
-    {
-      g_free (data->stream_id);
-      g_slice_free (struct _streaminit_reply_cb_data, data);
-    }
-
-  return result;
+  conn_util_send_iq_async (priv->conn, msg, NULL,
+      streaminit_reply_cb, data);
 }
 
 /*

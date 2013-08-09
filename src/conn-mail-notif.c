@@ -33,11 +33,9 @@
 #include <string.h>
 
 #include <dbus/dbus-glib-lowlevel.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/svc-connection.h>
-#include <telepathy-glib/util.h>
+
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #include <wocky/wocky.h>
 
@@ -90,12 +88,12 @@ return_from_request_inbox_url (GabbleConnection *conn)
 
   if (priv->inbox_url != NULL && priv->inbox_url[0] == '\0')
       {
-        error = g_error_new (TP_ERRORS, TP_ERROR_NETWORK_ERROR,
+        error = g_error_new (TP_ERROR, TP_ERROR_NETWORK_ERROR,
             "Server did not provide base URL.");
       }
   else if (priv->inbox_url == NULL)
       {
-        error = g_error_new (TP_ERRORS, TP_ERROR_DISCONNECTED,
+        error = g_error_new (TP_ERROR, TP_ERROR_DISCONNECTED,
             "Connection was disconnected during request.");
       }
   else
@@ -141,9 +139,11 @@ static inline gboolean
 check_supported_or_dbus_return (GabbleConnection *conn,
     DBusGMethodInvocation *context)
 {
-  if (TP_BASE_CONNECTION (conn)->status != TP_CONNECTION_STATUS_CONNECTED)
+  TpBaseConnection *base = TP_BASE_CONNECTION (conn);
+
+  if (tp_base_connection_get_status (base) != TP_CONNECTION_STATUS_CONNECTED)
     {
-      GError e = { TP_ERRORS, TP_ERROR_DISCONNECTED, "Not connected" };
+      GError e = { TP_ERROR, TP_ERROR_DISCONNECTED, "Not connected" };
       dbus_g_method_return_error (context, &e);
       return TRUE;
     }
@@ -220,7 +220,7 @@ gabble_mail_notification_request_mail_url (
     }
   else
     {
-      GError error = { TP_ERRORS, TP_ERROR_NETWORK_ERROR,
+      GError error = { TP_ERROR, TP_ERROR_NETWORK_ERROR,
           "Failed to retrieve URL from server."};
       dbus_g_method_return_error (context, &error);
     }
@@ -521,11 +521,11 @@ query_unread_mails_cb (GObject *source_object,
 static void
 update_unread_mails (GabbleConnection *conn)
 {
-  TpBaseConnection *base_conn = TP_BASE_CONNECTION (conn);
+  TpBaseConnection *base = TP_BASE_CONNECTION (conn);
   WockyStanza *query;
   WockyPorter *porter = wocky_session_get_porter (conn->session);
 
-  if (base_conn->status != TP_CONNECTION_STATUS_CONNECTED)
+  if (tp_base_connection_get_status (base) != TP_CONNECTION_STATUS_CONNECTED)
     return;
 
   if (!(conn->features & GABBLE_CONNECTION_FEATURES_GOOGLE_MAIL_NOTIFY))
@@ -606,14 +606,14 @@ new_mail_handler (WockyPorter *porter,
 static void
 ensure_google_settings (GabbleConnection *self)
 {
-  TpBaseConnection *base_conn = TP_BASE_CONNECTION (self);
+  TpBaseConnection *base = TP_BASE_CONNECTION (self);
   WockyStanza *query;
   WockyPorter *porter;
 
   if (!self->mail_priv->should_set_google_settings)
     return;
 
-  if (base_conn->status != TP_CONNECTION_STATUS_CONNECTED)
+  if (tp_base_connection_get_status (base) != TP_CONNECTION_STATUS_CONNECTED)
     return;
 
   porter = wocky_session_get_porter (self->session);

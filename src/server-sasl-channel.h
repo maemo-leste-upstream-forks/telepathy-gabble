@@ -22,7 +22,7 @@
 
 #include <glib-object.h>
 
-#include <telepathy-glib/base-channel.h>
+#include <telepathy-glib/telepathy-glib.h>
 #include <wocky/wocky.h>
 
 #include "types.h"
@@ -94,7 +94,8 @@ void gabble_server_sasl_channel_fail (GabbleServerSaslChannel *self,
 
 gboolean gabble_server_sasl_channel_get_failure_details (
     GabbleServerSaslChannel *self, gchar **dbus_error, GHashTable **details,
-    TpConnectionStatusReason *reason);
+    TpConnectionStatusReason *reason,
+    GError **error);
 
 G_END_DECLS
 

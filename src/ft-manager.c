@@ -31,7 +31,6 @@
 #include <glib/gstdio.h>
 
 #ifdef ENABLE_JINGLE_FILE_TRANSFER
-#include "jingle-session.h"
 #include "jingle-share.h"
 #endif
 #include "gabble/caps-channel-manager.h"
@@ -45,14 +44,8 @@
 
 #include <wocky/wocky.h>
 
-#include <telepathy-glib/base-connection.h>
-#include <telepathy-glib/base-channel.h>
-#include <telepathy-glib/channel-factory-iface.h>
-#include <telepathy-glib/channel-manager.h>
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/util.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_FT
 #include "debug.h"
@@ -346,24 +339,24 @@ gabble_ft_manager_channel_created (GabbleFtManager *self,
 #ifdef ENABLE_JINGLE_FILE_TRANSFER
 static void
 new_jingle_session_cb (GabbleJingleMint *jm,
-    GabbleJingleSession *sess,
+    WockyJingleSession *sess,
     gpointer data)
 {
   GabbleFtManager *self = GABBLE_FT_MANAGER (data);
   GTalkFileCollection *gtalk_fc = NULL;
-  GabbleJingleContent *content = NULL;
+  WockyJingleContent *content = NULL;
   GabbleJingleShareManifest *manifest = NULL;
   GList *channels = NULL;
   GList *cs, *i;
 
-  if (gabble_jingle_session_get_content_type (sess) ==
+  if (wocky_jingle_session_get_content_type (sess) ==
       GABBLE_TYPE_JINGLE_SHARE)
     {
-      cs = gabble_jingle_session_get_contents (sess);
+      cs = wocky_jingle_session_get_contents (sess);
 
       if (cs != NULL)
         {
-          content = GABBLE_JINGLE_CONTENT (cs->data);
+          content = WOCKY_JINGLE_CONTENT (cs->data);
           g_list_free (cs);
         }
 
@@ -393,7 +386,7 @@ new_jingle_session_cb (GabbleJingleMint *jm,
                   TP_BASE_CONNECTION (self->priv->connection),
                   TP_HANDLE_TYPE_CONTACT);
               TpHandle peer = tp_handle_ensure (contacts,
-                  gabble_jingle_session_get_peer_jid (sess), NULL, NULL);
+                  wocky_jingle_session_get_peer_jid (sess), NULL, NULL);
 
               filename = g_strdup_printf ("%s%s",
                   entry->name, entry->folder? ".tar":"");
@@ -457,10 +450,9 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
 {
   GabbleFtManager *self = GABBLE_FT_MANAGER (manager);
   GabbleFileTransferChannel *chan;
-  TpBaseConnection *base_connection = TP_BASE_CONNECTION (
-      self->priv->connection);
+  TpBaseConnection *base_conn = TP_BASE_CONNECTION (self->priv->connection);
   TpHandleRepoIface *contact_repo =
-      tp_base_connection_get_handles (base_connection, TP_HANDLE_TYPE_CONTACT);
+      tp_base_connection_get_handles (base_conn, TP_HANDLE_TYPE_CONTACT);
   TpHandle handle;
   const gchar *content_type, *filename, *content_hash, *description;
   const gchar *file_uri, *service_name;
@@ -491,9 +483,9 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
     goto error;
 
   /* Don't support opening a channel to our self handle */
-  if (handle == base_connection->self_handle)
+  if (handle == tp_base_connection_get_self_handle (base_conn))
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
           "Can't open a file transfer channel to yourself");
       goto error;
     }
@@ -502,7 +494,7 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
       TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER ".ContentType");
   if (content_type == NULL)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (&error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "ContentType property is mandatory");
       goto error;
     }
@@ -511,7 +503,7 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
       TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER ".Filename");
   if (filename == NULL)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (&error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Filename property is mandatory");
       goto error;
     }
@@ -520,7 +512,7 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
       TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER ".Size", NULL);
   if (size == 0)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (&error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Size property is mandatory");
       goto error;
     }
@@ -536,7 +528,7 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
     {
       if (content_hash_type >= NUM_TP_FILE_HASH_TYPES)
         {
-          g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+          g_set_error (&error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
               "%u is not a valid ContentHashType", content_hash_type);
           goto error;
         }
@@ -548,7 +540,7 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
           TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER ".ContentHash");
       if (content_hash == NULL)
         {
-          g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+          g_set_error (&error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
               "ContentHash property is mandatory if ContentHashType is "
               "not None");
           goto error;
@@ -580,7 +572,7 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
 
   if (metadata != NULL && g_hash_table_lookup ((GHashTable *) metadata, "FORM_TYPE"))
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (&error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Metadata cannot contain an item with key 'FORM_TYPE'");
       goto error;
     }
@@ -589,7 +581,8 @@ gabble_ft_manager_handle_request (TpChannelManager *manager,
       tp_handle_inspect (contact_repo, handle));
 
   chan = gabble_file_transfer_channel_new (self->priv->connection,
-      handle, base_connection->self_handle, TP_FILE_TRANSFER_STATE_PENDING,
+      handle, tp_base_connection_get_self_handle (base_conn),
+      TP_FILE_TRANSFER_STATE_PENDING,
       content_type, filename, size, content_hash_type, content_hash,
       description, date, initial_offset, TRUE, NULL, NULL, NULL, file_uri,
       service_name, metadata);

@@ -26,7 +26,7 @@
  *
  * See: RFC3920 XEP-0077
  *
- * Sends and receives #WockyStanzas from an underlying #GIOStream.
+ * Sends and receives #WockyStanza<!-- -->s from an underlying #GIOStream.
  * negotiating TLS if possible and completing authentication with the server
  * by the "most suitable" method available.
  * Returns a #WockyXmppConnection object to the user on successful completion.
@@ -113,6 +113,13 @@
 #include "wocky-utils.h"
 
 G_DEFINE_TYPE (WockyConnector, wocky_connector, G_TYPE_OBJECT);
+
+enum {
+  CONNECTION_ESTABLISHED,
+  LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
 
 static void wocky_connector_class_init (WockyConnectorClass *klass);
 
@@ -296,27 +303,36 @@ struct _WockyConnectorPrivate
 };
 
 /* choose an appropriate chunk of text describing our state for debug/error */
-static char *
-state_message (WockyConnectorPrivate *priv, const char *str)
+static const gchar *
+state_message (WockyConnectorPrivate *priv)
 {
-  const char *state = NULL;
-
   if (priv->authed)
-    state = "Authentication Completed";
+    return "Authentication Completed";
   else if (priv->encrypted)
     {
       if (priv->legacy_ssl)
-        state = "SSL Negotiated";
+        return "SSL Negotiated";
       else
-        state = "TLS Negotiated";
+        return "TLS Negotiated";
     }
   else if (priv->connected)
-    state = "TCP Connection Established";
+    return "TCP Connection Established";
   else
-    state = "Connecting... ";
-
-  return g_strdup_printf ("%s: %s", state, str);
+    return "Connecting... ";
 }
+
+static void
+complete_operation (WockyConnector *connector)
+{
+  WockyConnectorPrivate *priv = connector->priv;
+  GSimpleAsyncResult *tmp;
+
+  tmp = priv->result;
+  priv->result = NULL;
+  g_simple_async_result_complete (tmp);
+  g_object_unref (tmp);
+}
+
 
 static void
 abort_connect_error (WockyConnector *connector,
@@ -324,7 +340,6 @@ abort_connect_error (WockyConnector *connector,
     const char *fmt,
     ...)
 {
-  GSimpleAsyncResult *tmp = NULL;
   WockyConnectorPrivate *priv = NULL;
   va_list args;
 
@@ -356,18 +371,14 @@ abort_connect_error (WockyConnector *connector,
       priv->cancellable = NULL;
     }
 
-  tmp = priv->result;
-  priv->result = NULL;
-  g_simple_async_result_set_from_error (tmp, *error);
-  g_simple_async_result_complete (tmp);
-  g_object_unref (tmp);
+  g_simple_async_result_set_from_error (priv->result, *error);
+  complete_operation (connector);
 }
 
 static void
 abort_connect (WockyConnector *connector,
     GError *error)
 {
-  GSimpleAsyncResult *tmp = NULL;
   WockyConnectorPrivate *priv = connector->priv;
 
   if (priv->sock != NULL)
@@ -383,11 +394,8 @@ abort_connect (WockyConnector *connector,
       priv->cancellable = NULL;
     }
 
-  tmp = priv->result;
-  priv->result = NULL;
-  g_simple_async_result_set_from_error (tmp, error);
-  g_simple_async_result_complete (tmp);
-  g_object_unref (tmp);
+  g_simple_async_result_set_from_error (priv->result, error);
+  complete_operation (connector);
 }
 
 static void
@@ -463,7 +471,7 @@ wocky_connector_set_property (GObject *object,
             *g_value_get_string (value) != '\0')
           priv->resource = g_value_dup_string (value);
         else
-          priv->resource = g_strdup_printf ("Wocky_%x", rand());
+          priv->resource = NULL;
         break;
       case PROP_XMPP_PORT:
         priv->xmpp_port = g_value_get_uint (value);
@@ -641,9 +649,9 @@ wocky_connector_class_init (WockyConnectorClass *klass)
   /**
    * WockyConnector:resource:
    *
-   * The resource (sans '/') for this connection. Will be generated
-   * automatically if not set. May be altered by the server anyway
-   * upon successful binding.
+   * The resource (sans '/') for this connection. If %NULL or the empty string,
+   * Wocky will let the server decide. Even if you specify a particular
+   * resource, the server may modify it.
    */
   spec = g_param_spec_string ("resource", "resource",
       "XMPP resource to append to the jid", NULL,
@@ -756,9 +764,28 @@ wocky_connector_class_init (WockyConnectorClass *klass)
       "TLS Handler", WOCKY_TYPE_TLS_HANDLER,
       (G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (oclass, PROP_TLS_HANDLER, spec);
+
+  /**
+   * WockyConnector::connection-established:
+   * @connection: the #GSocketConnection
+   *
+   * Emitted as soon as a connection to the remote server has been
+   * established. This can be useful if you want to do something
+   * unusual to the connection early in its lifetime not supported by
+   * the #WockyConnector APIs.
+   *
+   * As the connection process has only just started and the stream
+   * not even opened yet, no data must be sent over @connection. This
+   * signal is merely intended to set esoteric socket options (such as
+   * TCP_NODELAY) on the connection.
+   */
+  signals[CONNECTION_ESTABLISHED] = g_signal_new ("connection-established",
+      G_OBJECT_CLASS_TYPE (klass),
+      G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+      g_cclosure_marshal_VOID__OBJECT,
+      G_TYPE_NONE, 1, G_TYPE_SOCKET_CONNECTION);
 }
 
-#define UNREF_AND_FORGET(x) if (x != NULL) { g_object_unref (x); x = NULL; }
 #define GFREE_AND_FORGET(x) g_free (x); x = NULL;
 
 static void
@@ -771,12 +798,12 @@ wocky_connector_dispose (GObject *object)
     return;
 
   priv->dispose_has_run = TRUE;
-  UNREF_AND_FORGET (priv->conn);
-  UNREF_AND_FORGET (priv->client);
-  UNREF_AND_FORGET (priv->sock);
-  UNREF_AND_FORGET (priv->features);
-  UNREF_AND_FORGET (priv->auth_registry);
-  UNREF_AND_FORGET (priv->tls_handler);
+  g_clear_object (&priv->conn);
+  g_clear_object (&priv->client);
+  g_clear_object (&priv->sock);
+  g_clear_object (&priv->features);
+  g_clear_object (&priv->auth_registry);
+  g_clear_object (&priv->tls_handler);
 
   if (G_OBJECT_CLASS (wocky_connector_parent_class )->dispose)
     G_OBJECT_CLASS (wocky_connector_parent_class)->dispose (object);
@@ -912,6 +939,9 @@ tcp_srv_connected (GObject *source,
   else
     {
       DEBUG ("SRV connection succeeded");
+
+      g_signal_emit (self, signals[CONNECTION_ESTABLISHED], 0, priv->sock);
+
       priv->connected = TRUE;
       priv->state = WCON_TCP_CONNECTED;
       maybe_old_ssl (self);
@@ -952,6 +982,9 @@ tcp_host_connected (GObject *source,
   else
     {
       DEBUG ("HOST connection succeeded");
+
+      g_signal_emit (self, signals[CONNECTION_ESTABLISHED], 0, priv->sock);
+
       priv->connected = TRUE;
       priv->state = WCON_TCP_CONNECTED;
       maybe_old_ssl (self);
@@ -1104,7 +1137,6 @@ xmpp_init_recv_cb (GObject *source,
   GError *error = NULL;
   WockyConnector *self = WOCKY_CONNECTOR (data);
   WockyConnectorPrivate *priv = self->priv;
-  gchar *debug = NULL;
   gchar *version = NULL;
   gchar *from = NULL;
   gchar *id = NULL;
@@ -1113,9 +1145,8 @@ xmpp_init_recv_cb (GObject *source,
   if (!wocky_xmpp_connection_recv_open_finish (priv->conn, result, NULL,
           &from, &version, NULL, &id, &error))
     {
-      char *msg = state_message (priv, error->message);
-      abort_connect_error (self, &error, msg);
-      g_free (msg);
+      abort_connect_error (self, &error, "%s: %s",
+          state_message (priv), error->message);
       g_error_free (error);
       goto out;
     }
@@ -1123,10 +1154,9 @@ xmpp_init_recv_cb (GObject *source,
   g_free (priv->session_id);
   priv->session_id = g_strdup (id);
 
-  debug = state_message (priv, "");
-  DEBUG ("%s: received XMPP version=%s stream open from server", debug,
+  DEBUG ("%s: received XMPP version=%s stream open from server",
+      state_message (priv),
       version != NULL ? version : "(unspecified)");
-  g_free (debug);
 
   ver = (version != NULL) ? atof (version) : -1;
 
@@ -1231,16 +1261,15 @@ xmpp_features_cb (GObject *source,
   if (stream_error_abort (self, stanza))
     goto out;
 
-  DEBUG ("received feature stanza from server");
-  node = wocky_stanza_get_top_node (stanza);
-
-  if (!wocky_node_matches (node, "features", WOCKY_XMPP_NS_STREAM))
+  if (!wocky_stanza_has_type (stanza, WOCKY_STANZA_TYPE_STREAM_FEATURES))
     {
-      char *msg = state_message (priv, "Malformed or missing feature stanza");
-      abort_connect_code (data, WOCKY_CONNECTOR_ERROR_BAD_FEATURES, msg);
-      g_free (msg);
+      abort_connect_code (data, WOCKY_CONNECTOR_ERROR_BAD_FEATURES, "%s: %s",
+          state_message (priv), "Malformed or missing feature stanza");
       goto out;
     }
+
+  DEBUG ("received feature stanza from server");
+  node = wocky_stanza_get_top_node (stanza);
 
   /* cache the current feature set: according to the RFC, we should forget
    * any previous feature set as soon as we open a new stream, so that
@@ -1548,7 +1577,7 @@ xep77_cancel_recv (GObject *source,
       g_object_unref (priv->cancellable);
       priv->cancellable = NULL;
     }
-  g_simple_async_result_complete (priv->result);
+  complete_operation (self);
   priv->state = WCON_DISCONNECTED;
 }
 
@@ -2047,17 +2076,13 @@ establish_session (WockyConnector *self)
     }
   else
     {
-      GSimpleAsyncResult *tmp = priv->result;
-
       if (priv->cancellable != NULL)
         {
           g_object_unref (priv->cancellable);
           priv->cancellable = NULL;
         }
 
-      priv->result = NULL;
-      g_simple_async_result_complete (tmp);
-      g_object_unref (tmp);
+      complete_operation (self);
     }
 }
 
@@ -2117,7 +2142,6 @@ establish_session_recv_cb (GObject *source,
   switch (sub)
     {
       WockyConnectorError code;
-      GSimpleAsyncResult *tmp;
 
       case WOCKY_STANZA_SUB_TYPE_ERROR:
         wocky_stanza_extract_errors (reply, NULL, &error, NULL, NULL);
@@ -2157,9 +2181,7 @@ establish_session_recv_cb (GObject *source,
                 priv->cancellable = NULL;
               }
 
-            tmp = priv->result;
-            g_simple_async_result_complete (tmp);
-            g_object_unref (tmp);
+            complete_operation (self);
           }
         break;
 

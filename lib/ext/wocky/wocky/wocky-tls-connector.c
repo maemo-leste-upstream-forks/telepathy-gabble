@@ -92,7 +92,7 @@ wocky_tls_connector_set_property (GObject *object,
     {
       case PROP_HANDLER:
         if (g_value_get_object (value) == NULL)
-          self->priv->handler = wocky_tls_handler_new (TRUE);
+          self->priv->handler = wocky_tls_handler_new (FALSE);
         else
           self->priv->handler = g_value_dup_object (value);
         break;
@@ -175,13 +175,28 @@ add_ca (gpointer data,
 }
 
 static void
+add_crl (gpointer data,
+    gpointer user_data)
+{
+  WockyTLSSession *session = user_data;
+  const gchar *path = data;
+
+  wocky_tls_session_add_crl (session, path);
+}
+
+
+
+static void
 prepare_session (WockyTLSConnector *self)
 {
   GSList *cas;
+  GSList *crl;
 
   cas = wocky_tls_handler_get_cas (self->priv->handler);
+  crl = wocky_tls_handler_get_crl (self->priv->handler);
 
   g_slist_foreach (cas, add_ca, self->priv->session);
+  g_slist_foreach (crl, add_crl, self->priv->session);
 }
 
 static void

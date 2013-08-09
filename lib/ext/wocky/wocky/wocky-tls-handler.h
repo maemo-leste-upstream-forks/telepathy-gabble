@@ -104,8 +104,12 @@ gboolean wocky_tls_handler_verify_finish (WockyTLSHandler *self,
 
 gboolean wocky_tls_handler_add_ca (WockyTLSHandler *self,
     const gchar *path);
+void wocky_tls_handler_forget_cas (WockyTLSHandler *self);
+
+gboolean wocky_tls_handler_add_crl (WockyTLSHandler *self, const gchar *path);
 
 GSList *wocky_tls_handler_get_cas (WockyTLSHandler *self);
+GSList *wocky_tls_handler_get_crl (WockyTLSHandler *self);
 
 G_END_DECLS
 

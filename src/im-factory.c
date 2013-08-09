@@ -24,10 +24,8 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-#include <telepathy-glib/channel-manager.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 #include <wocky/wocky.h>
 
 #define DEBUG_FLAG GABBLE_DEBUG_IM
@@ -62,6 +60,7 @@ struct _GabbleImFactoryPrivate
 {
   GabbleConnection *conn;
   guint message_cb_id;
+  guint delivery_report_cb_id;
   GHashTable *channels;
 
   gulong status_changed_id;
@@ -258,13 +257,50 @@ im_factory_message_cb (
     }
   else if (body != NULL)
     {
-      _gabble_im_channel_receive (chan, msgtype, from, stamp, id, body, state);
+      _gabble_im_channel_receive (chan, message, msgtype, from, stamp, id,
+          body, state);
     }
   else if (state != -1)
     {
       _gabble_im_channel_state_receive (chan, (TpChannelChatState) state);
     }
 
+  return TRUE;
+}
+
+/* Signals incoming delivery receipts. http://xmpp.org/extensions/xep-0184.html
+ */
+static gboolean
+im_factory_receipt_cb (
+    WockyPorter *porter,
+    WockyStanza *message,
+    gpointer user_data)
+{
+  GabbleImFactory *self = GABBLE_IM_FACTORY (user_data);
+  WockyNode *received;
+  const gchar *from, *received_id;
+  GabbleIMChannel *channel;
+
+  received = wocky_node_get_child_ns (wocky_stanza_get_top_node (message),
+      "received", NS_RECEIPTS);
+  g_return_val_if_fail (received != NULL, FALSE);
+
+  received_id = wocky_node_get_attribute (received, "id");
+  if (received_id == NULL)
+    {
+      STANZA_DEBUG (message, "but *what* did you receive?!");
+      return TRUE;
+    }
+
+  from = wocky_stanza_get_from (message);
+  channel = get_channel_for_incoming_message (self, from, FALSE);
+  if (channel == NULL)
+    {
+      DEBUG ("no existing channel with '%s'; ignoring receipt", from);
+      return TRUE;
+    }
+
+  gabble_im_channel_receive_receipt (channel, received_id);
   return TRUE;
 }
 
@@ -281,34 +317,38 @@ im_channel_closed_cb (GabbleIMChannel *chan, gpointer user_data)
 {
   GabbleImFactory *self = GABBLE_IM_FACTORY (user_data);
   GabbleImFactoryPrivate *priv = self->priv;
-  TpHandle contact_handle;
-  gboolean really_destroyed;
+  TpBaseChannel *base = TP_BASE_CHANNEL (chan);
+  TpHandle contact_handle = tp_base_channel_get_target_handle (base);
 
   DEBUG ("%p, channel %p", self, chan);
 
-  tp_channel_manager_emit_channel_closed_for_object (self,
-      (TpExportableChannel *) chan);
+  if (tp_base_channel_is_registered (base))
+    {
+      tp_channel_manager_emit_channel_closed_for_object (self,
+          (TpExportableChannel *) chan);
+    }
 
   if (priv->channels != NULL)
     {
-      g_object_get (chan,
-          "handle", &contact_handle,
-          "channel-destroyed", &really_destroyed,
-          NULL);
-
-      if (really_destroyed)
+      if (tp_base_channel_is_destroyed (base))
         {
           DEBUG ("removing channel with handle %u", contact_handle);
           g_hash_table_remove (priv->channels,
               GUINT_TO_POINTER (contact_handle));
         }
-      else
+      else if (tp_base_channel_is_respawning (base))
         {
-
           DEBUG ("reopening channel with handle %u due to pending messages",
               contact_handle);
           tp_channel_manager_emit_new_channel (self,
               (TpExportableChannel *) chan, NULL);
+        }
+      else
+        {
+          /* this basically means tp_base_channel_disappear() must
+           * have been called; this doesn't have any meaning in this
+           * channel manager. */
+          g_assert_not_reached ();
         }
     }
 }
@@ -339,7 +379,7 @@ new_im_channel (GabbleImFactory *fac,
   g_return_val_if_fail (handle != 0, NULL);
 
   if (request_token != NULL)
-    initiator = conn->self_handle;
+    initiator = tp_base_connection_get_self_handle (conn);
   else
     initiator = handle;
 
@@ -431,6 +471,10 @@ gabble_im_factory_close_all (GabbleImFactory *self)
 
       wocky_porter_unregister_handler (porter, self->priv->message_cb_id);
       self->priv->message_cb_id = 0;
+
+      wocky_porter_unregister_handler (porter, self->priv->delivery_report_cb_id);
+      self->priv->delivery_report_cb_id = 0;
+
       g_object_unref (porter);
     }
 }
@@ -517,6 +561,12 @@ porter_available_cb (
       WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
       WOCKY_PORTER_HANDLER_PRIORITY_MIN, im_factory_message_cb, self,
       NULL);
+  self->priv->delivery_report_cb_id = wocky_porter_register_handler_from_anyone (porter,
+      WOCKY_STANZA_TYPE_MESSAGE, WOCKY_STANZA_SUB_TYPE_NONE,
+      WOCKY_PORTER_HANDLER_PRIORITY_MIN, im_factory_receipt_cb, self,
+      '(',
+        "received", ':', NS_RECEIPTS,
+      ')', NULL);
 
   g_object_get (conn, "stream-server", &stream_server, NULL);
 
@@ -704,7 +754,7 @@ gabble_im_factory_requestotron (GabbleImFactory *self,
 
   if (require_new)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "Already chatting with contact #%u in another channel", handle);
       goto error;
     }

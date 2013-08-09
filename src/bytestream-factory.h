@@ -21,7 +21,7 @@
 #define __BYTESTREAM_FACTORY_H__
 
 #include <glib-object.h>
-#include <telepathy-glib/base-connection.h>
+#include <telepathy-glib/telepathy-glib.h>
 #include "types.h"
 #include "bytestream-iface.h"
 #include "bytestream-ibb.h"
@@ -71,7 +71,7 @@ typedef struct {
 } GabbleSocks5Proxy;
 
 typedef void (* GabbleBytestreamFactoryNegotiateReplyFunc) (
-    GabbleBytestreamIface *bytestream, const gchar *stream_id, WockyStanza *msg,
+    GabbleBytestreamIface *bytestream, WockyStanza *msg,
     GObject *object, gpointer user_data);
 
 GabbleBytestreamFactory *gabble_bytestream_factory_new (
@@ -97,10 +97,10 @@ WockyStanza *gabble_bytestream_factory_make_multi_accept_iq (
     const gchar *full_jid, const gchar *stream_init_id,
     GList *stream_methods);
 
-gboolean gabble_bytestream_factory_negotiate_stream (
+void gabble_bytestream_factory_negotiate_stream (
     GabbleBytestreamFactory *fac, WockyStanza *msg, const gchar *stream_id,
     GabbleBytestreamFactoryNegotiateReplyFunc func,
-    gpointer user_data, GObject *object, GError **error);
+    gpointer user_data, GObject *object);
 
 gchar *gabble_bytestream_factory_generate_stream_id (void);
 

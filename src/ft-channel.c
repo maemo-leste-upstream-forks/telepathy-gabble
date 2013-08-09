@@ -48,14 +48,8 @@
 #include "presence-cache.h"
 #include "util.h"
 
-#include <telepathy-glib/base-channel.h>
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/gtypes.h>
-#include <telepathy-glib/svc-generic.h>
-#include <telepathy-glib/svc-channel.h>
-
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 static void file_transfer_iface_init (gpointer g_iface, gpointer iface_data);
 static void transferred_chunk (GabbleFileTransferChannel *self, guint64 count);
@@ -78,8 +72,6 @@ G_DEFINE_TYPE_WITH_CODE (GabbleFileTransferChannel, gabble_file_transfer_channel
 );
 
 #define GABBLE_UNDEFINED_FILE_SIZE G_MAXUINT64
-
-static const char *gabble_file_transfer_channel_interfaces[] = { NULL };
 
 /* properties */
 enum
@@ -481,21 +473,21 @@ file_transfer_channel_properties_setter (GObject *object,
 
   if (self->priv->uri != NULL)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "URI has already be set");
       return FALSE;
     }
 
   if (tp_base_channel_is_requested (base))
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Channel is not an incoming transfer");
       return FALSE;
     }
 
   if (self->priv->state != TP_FILE_TRANSFER_STATE_PENDING)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
         "State is not pending; cannot set URI");
       return FALSE;
     }
@@ -546,6 +538,20 @@ static gchar *
 gabble_file_transfer_channel_get_object_path_suffix (TpBaseChannel *chan)
 {
   return g_strdup_printf ("FileTransferChannel/%p", chan);
+}
+
+static GPtrArray *
+gabble_file_transfer_channel_get_interfaces (TpBaseChannel *base)
+{
+  GPtrArray *interfaces;
+
+  interfaces = TP_BASE_CHANNEL_CLASS (
+      gabble_file_transfer_channel_parent_class)->get_interfaces (base);
+
+  g_ptr_array_add (interfaces, GABBLE_IFACE_CHANNEL_TYPE_FILETRANSFER_FUTURE);
+  g_ptr_array_add (interfaces, TP_IFACE_CHANNEL_INTERFACE_FILE_TRANSFER_METADATA);
+
+  return interfaces;
 }
 
 static void
@@ -614,8 +620,8 @@ gabble_file_transfer_channel_class_init (
   object_class->set_property = gabble_file_transfer_channel_set_property;
 
   base_class->channel_type = TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER;
-  base_class->interfaces = gabble_file_transfer_channel_interfaces;
   base_class->target_handle_type = TP_HANDLE_TYPE_CONTACT;
+  base_class->get_interfaces = gabble_file_transfer_channel_get_interfaces;
   base_class->close = gabble_file_transfer_channel_close;
   base_class->fill_immutable_properties =
     gabble_file_transfer_channel_fill_immutable_properties;
@@ -931,7 +937,7 @@ check_address_and_access_control (GabbleFileTransferChannel *self,
       GUINT_TO_POINTER (address_type));
   if (access_arr == NULL)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
           "AddressType %u is not implemented", address_type);
       return FALSE;
     }
@@ -946,7 +952,7 @@ check_address_and_access_control (GabbleFileTransferChannel *self,
         return TRUE;
     }
 
-  g_set_error (error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
+  g_set_error (error, TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
       "AccesControl %u is not implemented with AddressType %u",
       access_control, address_type);
 
@@ -1073,7 +1079,6 @@ set_gtalk_file_collection (
 
 static void
 bytestream_negotiate_cb (GabbleBytestreamIface *bytestream,
-                         const gchar *stream_id,
                          WockyStanza *msg,
                          GObject *object,
                          gpointer user_data)
@@ -1127,8 +1132,7 @@ add_metadata_forms (GabbleFileTransferChannel *self,
 {
   if (!tp_str_empty (self->priv->service_name))
     {
-      WockyStanza *tmp = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
-          WOCKY_STANZA_SUB_TYPE_RESULT, NULL, NULL,
+      wocky_node_add_build (file,
           '(', "x",
             ':', NS_X_DATA,
             '@', "type", "result",
@@ -1147,21 +1151,19 @@ add_metadata_forms (GabbleFileTransferChannel *self,
             ')',
           ')',
           NULL);
-      WockyNode *x = wocky_node_get_first_child (wocky_stanza_get_top_node (tmp));
-      WockyNodeTree *tree = wocky_node_tree_new_from_node (x);
-
-      wocky_node_add_node_tree (file, tree);
-      g_object_unref (tree);
-      g_object_unref (tmp);
     }
 
   if (self->priv->metadata != NULL
       && g_hash_table_size (self->priv->metadata) > 0)
     {
-      WockyStanza *tmp = wocky_stanza_build (WOCKY_STANZA_TYPE_IQ,
-          WOCKY_STANZA_SUB_TYPE_RESULT, NULL, NULL,
+      WockyNode *x;
+      GHashTableIter iter;
+      gpointer key, val;
+
+      wocky_node_add_build (file,
           '(', "x",
             ':', NS_X_DATA,
+            '*', &x,
             '@', "type", "result",
             '(', "field",
               '@', "var", "FORM_TYPE",
@@ -1172,10 +1174,6 @@ add_metadata_forms (GabbleFileTransferChannel *self,
             ')',
           ')',
           NULL);
-      WockyNode *x = wocky_node_get_first_child (wocky_stanza_get_top_node (tmp));
-      WockyNodeTree *tree;
-      GHashTableIter iter;
-      gpointer key, val;
 
       g_hash_table_iter_init (&iter, self->priv->metadata);
       while (g_hash_table_iter_next (&iter, &key, &val))
@@ -1190,21 +1188,15 @@ add_metadata_forms (GabbleFileTransferChannel *self,
               wocky_node_add_child_with_content (field, "value", *values);
             }
         }
-
-      tree = wocky_node_tree_new_from_node (x);
-      wocky_node_add_node_tree (file, tree);
-      g_object_unref (tree);
-      g_object_unref (tmp);
     }
 }
 
-static gboolean
+static void
 offer_bytestream (GabbleFileTransferChannel *self, const gchar *jid,
-                  const gchar *resource, GError **error)
+                  const gchar *resource)
 {
   GabbleConnection *conn = GABBLE_CONNECTION (tp_base_channel_get_connection (
           TP_BASE_CHANNEL (self)));
-  gboolean result;
   WockyStanza *msg;
   WockyNode *si_node, *file_node;
   gchar *stream_id, *size_str, *full_jid;
@@ -1232,8 +1224,7 @@ offer_bytestream (GabbleFileTransferChannel *self, const gchar *jid,
 
   size_str = g_strdup_printf ("%" G_GUINT64_FORMAT, self->priv->size);
 
-  file_node = wocky_node_add_child_with_content (si_node, "file", NULL);
-  file_node->ns = g_quark_from_string (NS_FILE_TRANSFER);
+  file_node = wocky_node_add_child_ns (si_node, "file", NS_FILE_TRANSFER);
   wocky_node_set_attributes (file_node,
       "name", self->priv->filename,
       "size", size_str,
@@ -1266,18 +1257,16 @@ offer_bytestream (GabbleFileTransferChannel *self, const gchar *jid,
   wocky_node_add_child_with_content (file_node, "desc", self->priv->description);
 
   /* we support resume */
-  wocky_node_add_child_with_content (file_node, "range", NULL);
+  wocky_node_add_child (file_node, "range");
 
-  result = gabble_bytestream_factory_negotiate_stream (
+  gabble_bytestream_factory_negotiate_stream (
       conn->bytestream_factory, msg, stream_id,
-      bytestream_negotiate_cb, self, G_OBJECT (self), error);
+      bytestream_negotiate_cb, self, G_OBJECT (self));
 
   g_object_unref (msg);
   g_free (stream_id);
   g_free (size_str);
   g_free (full_jid);
-
-  return result;
 }
 
 #ifdef ENABLE_JINGLE_FILE_TRANSFER
@@ -1349,7 +1338,7 @@ offer_gtalk_file_transfer (GabbleFileTransferChannel *self,
   TpBaseChannel *base = TP_BASE_CHANNEL (self);
   GabbleConnection *conn = GABBLE_CONNECTION (
       tp_base_channel_get_connection (base));
-  GabbleJingleFactory *jf;
+  WockyJingleFactory *jf;
   GTalkFileCollection *gtalk_file_collection;
 
   DEBUG ("Offering Gtalk file transfer to %s", full_jid);
@@ -1410,7 +1399,7 @@ gabble_file_transfer_channel_offer_file (GabbleFileTransferChannel *self,
   if (presence == NULL)
     {
       DEBUG ("can't find contact's presence");
-      g_set_error (error, TP_ERRORS, TP_ERROR_OFFLINE,
+      g_set_error (error, TP_ERROR, TP_ERROR_OFFLINE,
           "can't find contact's presence");
 
       return FALSE;
@@ -1422,7 +1411,7 @@ gabble_file_transfer_channel_offer_file (GabbleFileTransferChannel *self,
         {
           DEBUG ("trying to use Metadata properties on a contact "
               "who doesn't support it");
-          g_set_error (error, TP_ERRORS, TP_ERROR_NOT_CAPABLE,
+          g_set_error (error, TP_ERROR, TP_ERROR_NOT_CAPABLE,
               "The specified contact does not support the "
               "Metadata extension; you should ensure both ServiceName and "
               "Metadata properties are not present in the channel "
@@ -1468,7 +1457,7 @@ gabble_file_transfer_channel_offer_file (GabbleFileTransferChannel *self,
 #ifdef ENABLE_JINGLE_FILE_TRANSFER
   use_si = si &&
     (!jingle_share ||
-     gabble_jingle_info_get_google_relay_token (
+     wocky_jingle_info_get_google_relay_token (
        gabble_jingle_mint_get_info (conn->jingle_mint)) == NULL);
 #else
   use_si = si;
@@ -1476,7 +1465,8 @@ gabble_file_transfer_channel_offer_file (GabbleFileTransferChannel *self,
 
   if (use_si)
     {
-      result = offer_bytestream (self, jid, si_resource, error);
+      offer_bytestream (self, jid, si_resource);
+      result = TRUE;
     }
 #ifdef ENABLE_JINGLE_FILE_TRANSFER
   else if (jingle_share)
@@ -1490,7 +1480,7 @@ gabble_file_transfer_channel_offer_file (GabbleFileTransferChannel *self,
   else
     {
       DEBUG ("contact doesn't have file transfer capabilities");
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_CAPABLE,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_CAPABLE,
           "contact doesn't have file transfer capabilities");
       result = FALSE;
     }
@@ -1658,15 +1648,14 @@ augment_si_reply (WockyNode *si,
   GabbleFileTransferChannel *self = GABBLE_FILE_TRANSFER_CHANNEL (user_data);
   WockyNode *file;
 
-  file = wocky_node_add_child_with_content (si, "file", NULL);
-  file->ns = g_quark_from_string (NS_FILE_TRANSFER);
+  file = wocky_node_add_child_ns (si, "file", NS_FILE_TRANSFER);
 
   if (self->priv->initial_offset != 0)
     {
       WockyNode *range;
       gchar *offset_str;
 
-      range = wocky_node_add_child_with_content (file, "range", NULL);
+      range = wocky_node_add_child (file, "range");
       offset_str = g_strdup_printf ("%" G_GUINT64_FORMAT,
           self->priv->initial_offset);
       wocky_node_set_attribute (range, "offset", offset_str);
@@ -1698,7 +1687,7 @@ gabble_file_transfer_channel_accept_file (TpSvcChannelTypeFileTransfer *iface,
 
   if (tp_base_channel_is_requested (base))
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "Channel is not an incoming transfer");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -1707,7 +1696,7 @@ gabble_file_transfer_channel_accept_file (TpSvcChannelTypeFileTransfer *iface,
 
   if (self->priv->state != TP_FILE_TRANSFER_STATE_PENDING)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
         "State is not pending; cannot accept file");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -1726,7 +1715,7 @@ gabble_file_transfer_channel_accept_file (TpSvcChannelTypeFileTransfer *iface,
         access_control_param))
     {
       DEBUG ("Could not set up local socket");
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "Could not set up local socket");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -1798,7 +1787,7 @@ gabble_file_transfer_channel_provide_file (
 
   if (!tp_base_channel_is_requested (TP_BASE_CHANNEL (self)))
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "Channel is not an outgoing transfer");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -1808,7 +1797,7 @@ gabble_file_transfer_channel_provide_file (
   if (self->priv->state != TP_FILE_TRANSFER_STATE_PENDING &&
       self->priv->state != TP_FILE_TRANSFER_STATE_ACCEPTED)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
         "State is not pending or accepted; cannot provide file");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -1817,7 +1806,7 @@ gabble_file_transfer_channel_provide_file (
 
   if (self->priv->socket_address != NULL)
     {
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "ProvideFile has already been called for this channel");
       dbus_g_method_return_error (context, error);
       g_error_free (error);
@@ -1836,7 +1825,7 @@ gabble_file_transfer_channel_provide_file (
         access_control_param))
     {
       DEBUG ("Could not set up local socket");
-      g_set_error (&error, TP_ERRORS, TP_ERROR_NOT_AVAILABLE,
+      g_set_error (&error, TP_ERROR, TP_ERROR_NOT_AVAILABLE,
           "Could not set up local socket");
       dbus_g_method_return_error (context, error);
       g_error_free (error);

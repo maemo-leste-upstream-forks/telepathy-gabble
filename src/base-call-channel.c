@@ -25,23 +25,14 @@
 
 #include <gio/gio.h>
 
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/dtmf.h>
-#include <telepathy-glib/enums.h>
-#include <telepathy-glib/exportable-channel.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/channel-iface.h>
-#include <telepathy-glib/svc-channel.h>
-#include <telepathy-glib/svc-properties-interface.h>
-#include <telepathy-glib/base-connection.h>
-#include <telepathy-glib/gtypes.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
 #include "util.h"
 #include "call-content.h"
 
 #include "base-call-channel.h"
 #include "connection.h"
-#include "jingle-session.h"
 #include "jingle-tp-util.h"
 
 #define DEBUG_FLAG GABBLE_DEBUG_MEDIA
@@ -209,7 +200,7 @@ gabble_base_call_channel_finalize (GObject *object)
 GabbleCallContent *
 gabble_base_call_channel_add_content (GabbleBaseCallChannel *self,
     const gchar *name,
-    JingleMediaType mtype,
+    WockyJingleMediaType mtype,
     TpCallContentDisposition disposition)
 {
   TpBaseChannel *base = TP_BASE_CHANNEL (self);
@@ -229,7 +220,7 @@ gabble_base_call_channel_add_content (GabbleBaseCallChannel *self,
     "connection", tp_base_channel_get_connection (base),
     "object-path", object_path,
     "disposition", disposition,
-    "media-type", jingle_media_type_to_tp (mtype),
+    "media-type", wocky_jingle_media_type_to_tp (mtype),
     "name", name,
     NULL);
 

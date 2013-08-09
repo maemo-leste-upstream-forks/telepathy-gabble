@@ -215,6 +215,16 @@ static const XmppErrorSpec xmpp_errors[NUM_WOCKY_XMPP_ERRORS] =
       WOCKY_XMPP_ERROR_TYPE_CANCEL,
       { 503, 502, 510, },
     },
+
+    /* policy-violation */
+    {
+      "the entity has violated some local service policy (e.g., a message "
+      "contains words that are prohibited by the service)",
+      /* TODO: should support either MODIFY or WAIT depending on the policy
+       * being violated */
+      WOCKY_XMPP_ERROR_TYPE_MODIFY,
+      { 406, 0, },
+    },
 };
 
 GQuark
@@ -451,9 +461,17 @@ wocky_xmpp_error_extract (WockyNode *error,
 
       if (type_attr != NULL &&
           wocky_enum_from_nick (WOCKY_TYPE_XMPP_ERROR_TYPE, type_attr, &type_i))
-        *type = type_i;
+        {
+          *type = type_i;
+          /* Don't let the xmpp_error_from_code() path below clobber the valid
+           * type we found.
+           */
+          type = NULL;
+        }
       else
-        *type = WOCKY_XMPP_ERROR_TYPE_CANCEL;
+        {
+          *type = WOCKY_XMPP_ERROR_TYPE_CANCEL;
+        }
     }
 
   for (l = error->children; l != NULL; l = g_slist_next (l))

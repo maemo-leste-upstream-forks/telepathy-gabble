@@ -27,16 +27,13 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include <telepathy-glib/base-channel.h>
-#include <telepathy-glib/dbus-properties-mixin.h>
-#include <telepathy-glib/group-mixin.h>
-#include <telepathy-glib/message-mixin.h>
+#include <telepathy-glib/telepathy-glib.h>
 
 #include "types.h"
-#include "tubes-channel.h"
 #ifdef ENABLE_VOIP
 #include "call-muc-channel.h"
 #endif
+#include "tube-iface.h"
 
 G_BEGIN_DECLS
 
@@ -88,15 +85,29 @@ GType gabble_muc_channel_get_type (void);
 
 gboolean _gabble_muc_channel_is_ready (GabbleMucChannel *chan);
 
+void gabble_muc_channel_set_autoclose (GabbleMucChannel *chan,
+    gboolean autoclose);
+
+gboolean gabble_muc_channel_get_autoclose (GabbleMucChannel *chan);
+
+gboolean gabble_muc_channel_can_be_closed (GabbleMucChannel *chan);
+
 void gabble_muc_channel_send_presence (GabbleMucChannel *chan);
 
 gboolean gabble_muc_channel_send_invite (GabbleMucChannel *self,
     const gchar *jid, const gchar *message, gboolean continue_, GError **error);
 
-GabbleTubesChannel *
-gabble_muc_channel_open_tube (GabbleMucChannel *gmuc,
-    TpHandle initiator,
-    gboolean requested);
+GabbleTubeIface * gabble_muc_channel_tube_request (GabbleMucChannel *self,
+    gpointer request_token,
+    GHashTable *request_properties,
+    gboolean require_new);
+
+void gabble_muc_channel_foreach_tubes (GabbleMucChannel *gmuc,
+    TpExportableChannelFunc foreach, gpointer user_data);
+
+void gabble_muc_channel_handle_si_stream_request (GabbleMucChannel *self,
+    GabbleBytestreamIface *bytestream, const gchar *stream_id,
+    WockyStanza *msg);
 
 #ifdef ENABLE_VOIP
 GabbleCallMucChannel * gabble_muc_channel_get_call (GabbleMucChannel *gmuc);
@@ -114,7 +125,7 @@ gboolean gabble_muc_channel_request_call_finish (GabbleMucChannel *gmuc,
     GError **error);
 
 gboolean gabble_muc_channel_handle_jingle_session (GabbleMucChannel *channel,
-    GabbleJingleSession *session);
+    WockyJingleSession *session);
 #endif
 
 void gabble_muc_channel_update_configuration_async (
@@ -128,7 +139,6 @@ gboolean gabble_muc_channel_update_configuration_finish (
     GError **error);
 
 void gabble_muc_channel_teardown (GabbleMucChannel *gmuc);
-void gabble_muc_channel_close_tube (GabbleMucChannel *gmuc);
 
 
 G_END_DECLS

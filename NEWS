@@ -1,9 +1,33 @@
-telepathy-gabble 0.16.6 (2013-05-30)
+telepathy-gabble 0.17.5 (2013-06-06)
 ====================================
 
-The “repeated gas boiler replacement” release.
+The “4.5kg of laptops” release.
 
-This release fixes a man-in-the-middle attack. You should upgrade.
+Dependencies:
+
+• GLib 2.32 is now directly required. It was already indirectly required
+  by telepathy-glib 0.19.x.
+
+Fixes:
+
+• update Wocky:
+  · fd.o #65131: interoperate with non-XMPP-Core-compliant Jingle IQs
+    sent by Google's webmail UI (Simon)
+  · improve reference-counting for better stability (Simon)
+
+• fd.o #65296: initialize libdbus for thread-safety (Simon)
+
+• fd.o #64285: avoid running the same commands twice in parallel when doing a
+  highly parallel build (Simon)
+
+• fd.o #49595: disable an unreliable test-case (Simon)
+
+telepathy-gabble 0.17.4 (2013-05-30)
+====================================
+
+The “unattainably high curry standards” release.
+
+This development release fixes the same man-in-the-middle attack as 0.16.6.
 
 If you use an unencrypted connection to a "legacy Jabber" (pre-XMPP)
 server, this version of Gabble will not connect until you make
@@ -15,18 +39,27 @@ one of these configuration changes:
 
 Fixes:
 
-• fd.o #65036 (CVE-2013-1431): update Wocky to respect the tls-required
-  flag on legacy Jabber servers (Simon)
+• update Wocky:
+  · fd.o #61792: fix linking an example program with ld versions that
+    default to --no-copy-dt-needed-entries
+  · fd.o #65036 (CVE-2013-1431): update Wocky to respect the tls-required
+    flag on legacy Jabber servers
 
 • fd.o #63119: improve regression tests' isolation from the session bus
   (Simon)
 
-telepathy-gabble 0.16.5 (2013-03-01)
+• fd.o #64319: consider the <URL> field to be "supported" on Google servers
+  (it's currently read-only and contains a Google+ URL) (Xavier)
+
+• fd.o #64354: don't claim we support X-TELEPATHY-PASSWORD if we don't
+  know the username (Xavier)
+
+telepathy-gabble 0.17.3 (2013-03-01)
 ====================================
 
-The “In Actuality You Are A Gigantic, Bloodthirsty Grizzly Bear”
-release. This fixes a remotely-triggered denial-of-service bug. You
-should upgrade.
+The “less resplendent backup ruffs” release. This includes the fixes
+from telepathy-gabble 0.16.5, including fixing a remotely-triggered
+denial-of-service bug. You should upgrade.
 
 Fixes:
 
@@ -40,8 +73,36 @@ Fixes:
   is just a NULL pointer dereference, rather than allowing the attacker
   to do anything more nefarious like execute code. (wjt)
 
-telepathy-gabble 0.16.4 (2012-11-09)
+• fd.o#43166: handle rate-limiting by MUCs better, including disabling
+  typing notifications if we get rate-limited, and including the error
+  message from the server in the D-Bus signal so that the user interface
+  could, in principle, show it to the user. (wjt)
+
+Enhancements:
+
+• fd.o#58198: the Jingle protocol code now lives in Wocky. This should make no
+  functional difference to Gabble. (wjt)
+
+
+telepathy-gabble 0.17.2 (2012-12-07)
 ====================================
+
+Hooray! Hooray! Hooray!
+
+Dependencies:
+
+• telepathy-glib 0.19.9 is now required.
+
+Enhancements:
+
+• fd.o#54760, fd.o#57080: Gabble now uses GLib's base64 implementation
+  rather than including its own.  (Heiher, Alban Browaeys)
+
+• fd.o#25961, fd.o#25385: Gabble now looks up a STUN server from the
+  _stun._udp SRV record for the user's domain. (Maiku, wjt)
+
+• fd.o#47378: XEP-0184 delivery reports are now supported. Note that
+  Empathy neither requests nor displays them. (wjt)
 
 Fixes:
 
@@ -50,13 +111,33 @@ Fixes:
 • fd.o#52362: hopefully, don't crash if we disconnect in the middle of trying
   to change our Google Talk presence. (wjt)
 
-telepathy-gabble 0.16.3 (2012-09-11)
+• The Jingle code now sends back unknown-session errors correctly, as
+  mentioned on fd.o#33789. (wjt)
+
+• fd.o#57267: File transfer channels now include FileTransfer.FUTURE and
+  FileTransfer.METADATA in their Interfaces property (Daniele
+  Domenichelli)
+
+• fd.o#57521: Don't crash when connecting to the League of Legends XMPP
+  server. (wjt)
+
+• fd.o#52146: Don't crash in sympathy if the auth channel handler
+  crashes. (wjt)
+
+telepathy-gabble 0.17.1 (2012-09-11)
 ====================================
 
-Fixes:
+Dependencies:
 
-• Turn off deprecation warnings: we're not going to fix them on a
-  stable branch (Simon)
+• telepathy-glib 0.19.7 is now required. (sorry about that)
+
+Enhancements:
+
+• fd.o#32612: Old-style Tubes channels have been removed. (Jonny)
+
+• Tube and Text channels are no longer announced together. (Jonny)
+
+Fixes:
 
 • Make sure capability discovery works for the camera-v1 capability bundle,
   avoiding an iChat bug in which it repeats failed capability discovery
@@ -64,28 +145,25 @@ Fixes:
 
 • Fix some race conditions and other brokenness in the tests (Sjoerd)
 
-telepathy-gabble 0.16.2 (2012-08-14)
+• Make sure capability discovery works for the camera-v1 capability bundle,
+  avoiding an iChat bug in which it repeats failed capability discovery
+  requests in a rapid loop (fd.o #54634, Simon)
+
+• Fix some race conditions and other brokenness in the tests (Sjoerd)
+
+telepathy-gabble 0.17.0 (2012-08-14)
 ====================================
 
-Fixes:
+Dependencies:
 
-• fd.o#53087 - Crash in tp_base_channel_close
+• telepathy-glib 0.19.2 is now required.
 
-telepathy-gabble 0.16.1 (2012-06-20)
-====================================
+Changes since 0.16.2:
 
-Requirements:
-
-• glib 2.30 is now required.
-
-Enhancements:
-
-• "see-other-host" stream error is now supported. This fix connection issue
-  with Windows Live XMPP server.
-
-Fixes:
-
-• fd.o#36998: Fail to establish a video call with Android
+• Fix calls with android devices (Marcus)
+• Implement WLM jidlookup. This makes possible to add MSN contacts using XMPP.
+  (Xavier)
+• Fix google caps parsing (Jonny)
 
 telepathy-gabble 0.16.0 (2012-04-02)
 ====================================

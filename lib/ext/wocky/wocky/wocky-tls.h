@@ -31,7 +31,7 @@
 
 #include <gio/gio.h>
 
-#include "wocky-tls-enumtypes.h"
+#include "wocky-enumtypes.h"
 
 #define WOCKY_TYPE_TLS_CONNECTION (wocky_tls_connection_get_type ())
 #define WOCKY_TYPE_TLS_SESSION    (wocky_tls_session_get_type ())
@@ -108,6 +108,7 @@ wocky_tls_session_handshake_finish (WockyTLSSession   *session,
                                     GError       **error);
 
 void wocky_tls_session_add_ca (WockyTLSSession *session, const gchar *path);
+void wocky_tls_session_add_crl (WockyTLSSession *session, const gchar *path);
 
 WockyTLSSession *wocky_tls_session_new (GIOStream *stream);
 

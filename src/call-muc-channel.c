@@ -23,11 +23,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <telepathy-glib/dbus.h>
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/gtypes.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
 
-#include <wocky/wocky.h>
 #include "call-content.h"
 
 #include "muc-channel.h"
@@ -418,7 +416,7 @@ call_muc_channel_member_content_added_cb (GabbleCallMember *member,
 {
   GabbleCallMucChannel *self = GABBLE_CALL_MUC_CHANNEL (user_data);
   const gchar *name;
-  JingleMediaType mtype;
+  WockyJingleMediaType mtype;
   GList *l;
   GabbleCallContent *ccontent;
 
@@ -433,7 +431,7 @@ call_muc_channel_member_content_added_cb (GabbleCallMember *member,
       TP_BASE_CALL_CHANNEL (self)); l != NULL; l = g_list_next (l))
     {
       const char *cname;
-      JingleMediaType cmtype;
+      WockyJingleMediaType cmtype;
 
       ccontent = GABBLE_CALL_CONTENT (l->data);
       cname = tp_base_call_content_get_name (
@@ -470,7 +468,7 @@ call_muc_channel_parse_codecs (GabbleCallMucChannel *self,
       guint id;
       guint clockrate = 0;
       guint channels = 0;
-      JingleCodec *codec;
+      WockyJingleCodec *codec;
       WockyNodeIter param_iter;
       WockyNode *parameter;
 
@@ -542,13 +540,13 @@ call_muc_channel_send_new_state (GabbleCallMucChannel *self)
       GHashTable *tp_md;
       GPtrArray *codecs;
       guint i;
-      JingleMediaType mtype = gabble_call_content_get_media_type (content);
+      WockyJingleMediaType mtype = gabble_call_content_get_media_type (content);
 
 
       wocky_node_add_build (m,
         '(', "content", '@', "name", name,
           '(', "description", ':', NS_JINGLE_RTP, '*', &description,
-            '@', "media", mtype == JINGLE_MEDIA_TYPE_AUDIO ? "audio" : "video",
+            '@', "media", mtype == WOCKY_JINGLE_MEDIA_TYPE_AUDIO ? "audio" : "video",
           ')',
         ')',
         NULL);
@@ -626,7 +624,7 @@ call_muc_channel_parse_participant (GabbleCallMucChannel *self,
     {
       GabbleCallMemberContent *member_content;
       WockyNode *description;
-      JingleMediaType mtype;
+      WockyJingleMediaType mtype;
       const gchar *name;
       const gchar *mattr;
       GList *codecs;
@@ -656,11 +654,11 @@ call_muc_channel_parse_participant (GabbleCallMucChannel *self,
 
       if (!tp_strdiff (mattr, "video"))
         {
-          mtype = JINGLE_MEDIA_TYPE_VIDEO;
+          mtype = WOCKY_JINGLE_MEDIA_TYPE_VIDEO;
         }
       else if (!tp_strdiff (mattr, "audio"))
         {
-          mtype = JINGLE_MEDIA_TYPE_AUDIO;
+          mtype = WOCKY_JINGLE_MEDIA_TYPE_AUDIO;
         }
       else
         {
@@ -679,7 +677,7 @@ call_muc_channel_parse_participant (GabbleCallMucChannel *self,
 
       if (!priv->initialized)
         {
-          if (mtype == JINGLE_MEDIA_TYPE_AUDIO)
+          if (mtype == WOCKY_JINGLE_MEDIA_TYPE_AUDIO)
             g_object_set (self, "initial-audio", TRUE, NULL);
           else
             g_object_set (self, "initial-video", TRUE, NULL);
@@ -998,7 +996,7 @@ call_muc_channel_init_async (GAsyncInitable *initable,
     {
       content = gabble_base_call_channel_add_content (
         GABBLE_BASE_CALL_CHANNEL (base),
-        initial_audio_name, JINGLE_MEDIA_TYPE_AUDIO,
+        initial_audio_name, WOCKY_JINGLE_MEDIA_TYPE_AUDIO,
         TP_CALL_CONTENT_DISPOSITION_INITIAL);
       call_muc_channel_setup_content (self, content);
     }
@@ -1007,7 +1005,7 @@ call_muc_channel_init_async (GAsyncInitable *initable,
     {
       content = gabble_base_call_channel_add_content (
         GABBLE_BASE_CALL_CHANNEL (base),
-        initial_video_name, JINGLE_MEDIA_TYPE_VIDEO,
+        initial_video_name, WOCKY_JINGLE_MEDIA_TYPE_VIDEO,
         TP_CALL_CONTENT_DISPOSITION_INITIAL);
       call_muc_channel_setup_content (self, content);
     }
@@ -1110,13 +1108,13 @@ gabble_call_muc_channel_new_finish (GObject *source,
 
 void
 gabble_call_muc_channel_incoming_session (GabbleCallMucChannel *self,
-    GabbleJingleSession *session)
+    WockyJingleSession *session)
 {
   GabbleCallMember *member;
   TpHandleRepoIface *contact_repo = tp_base_connection_get_handles (
       tp_base_channel_get_connection (TP_BASE_CHANNEL (self)),
       TP_HANDLE_TYPE_CONTACT);
-  const gchar *jid = gabble_jingle_session_get_peer_jid (session);
+  const gchar *jid = wocky_jingle_session_get_peer_jid (session);
   TpHandle peer = tp_handle_ensure (contact_repo, jid, NULL, NULL);
 
   DEBUG ("New incoming session from %s", jid);
@@ -1125,8 +1123,8 @@ gabble_call_muc_channel_incoming_session (GabbleCallMucChannel *self,
 
   if (member == NULL || gabble_call_member_get_session (member) != NULL)
     {
-      gabble_jingle_session_terminate (session,
-        JINGLE_REASON_UNKNOWN,
+      wocky_jingle_session_terminate (session,
+        WOCKY_JINGLE_REASON_UNKNOWN,
         "Muji jingle session initiated while there already was one",
         NULL);
     }
@@ -1163,14 +1161,14 @@ call_muc_channel_add_content (TpBaseCallChannel *base,
 
   if (initial_direction == TP_MEDIA_STREAM_DIRECTION_NONE)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      g_set_error (error, TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Jingle can not do contents with direction = NONE");
       return NULL;
     }
 
   if (initial_direction != TP_MEDIA_STREAM_DIRECTION_BIDIRECTIONAL)
     {
-      g_set_error (error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
+      g_set_error (error, TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
           "Adding un-directional contents is not supported"
           " in MUC channels");
       return NULL;
@@ -1178,7 +1176,7 @@ call_muc_channel_add_content (TpBaseCallChannel *base,
 
   content = gabble_base_call_channel_add_content (
         GABBLE_BASE_CALL_CHANNEL (base),
-        name, jingle_media_type_from_tp (type),
+        name, wocky_jingle_media_type_from_tp (type),
         TP_CALL_CONTENT_DISPOSITION_NONE);
 
   call_muc_channel_setup_content (self, content);

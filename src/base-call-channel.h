@@ -23,11 +23,10 @@
 
 #include <glib-object.h>
 
-#include <telepathy-glib/base-channel.h>
-#include <telepathy-glib/base-call-channel.h>
-#include <telepathy-glib/base-media-call-channel.h>
+#include <telepathy-glib/telepathy-glib.h>
+#include <telepathy-glib/telepathy-glib-dbus.h>
+#include <wocky/wocky.h>
 
-#include "jingle-content.h"
 #include "call-member.h"
 #include "call-content.h"
 
@@ -84,7 +83,7 @@ GabbleCallMember * gabble_base_call_channel_get_member_from_handle (
 GabbleCallContent * gabble_base_call_channel_add_content (
     GabbleBaseCallChannel *self,
     const gchar *name,
-    JingleMediaType mtype,
+    WockyJingleMediaType mtype,
     TpCallContentDisposition disposition);
 
 void gabble_base_call_channel_remove_content (GabbleBaseCallChannel *self,

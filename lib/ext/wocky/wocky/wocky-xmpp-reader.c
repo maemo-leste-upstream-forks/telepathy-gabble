@@ -51,6 +51,7 @@
 /* properties */
 enum {
   PROP_STREAMING_MODE = 1,
+  PROP_DEFAULT_NAMESPACE,
   PROP_TO,
   PROP_FROM,
   PROP_VERSION,
@@ -124,6 +125,7 @@ struct _WockyXmppReaderPrivate
   gboolean dispose_has_run;
   GError *error /* defeat the coding style checker... */;
   gboolean stream_mode;
+  gchar *default_namespace;
   GQueue *stanzas;
   WockyXmppReaderState state;
 };
@@ -242,6 +244,8 @@ wocky_xmpp_reader_class_init (WockyXmppReaderClass *wocky_xmpp_reader_class)
 
   g_type_class_add_private (wocky_xmpp_reader_class,
       sizeof (WockyXmppReaderPrivate));
+  wocky_xmpp_reader_class->stream_element_name = "stream";
+  wocky_xmpp_reader_class->stream_element_ns = WOCKY_XMPP_NS_STREAM;
 
   object_class->constructed = wocky_xmpp_reader_constructed;
   object_class->dispose = wocky_xmpp_reader_dispose;
@@ -255,6 +259,14 @@ wocky_xmpp_reader_class_init (WockyXmppReaderClass *wocky_xmpp_reader_class)
     G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_property (object_class, PROP_STREAMING_MODE,
+    param_spec);
+
+  param_spec = g_param_spec_string ("default-namespace", "default namespace",
+      "The default namespace for the root element of the document. "
+      "Only meaningful if streaming-mode is FALSE.",
+      "",
+      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (object_class, PROP_DEFAULT_NAMESPACE,
     param_spec);
 
   param_spec = g_param_spec_string ("to", "to",
@@ -337,6 +349,14 @@ wocky_xmpp_reader_set_property (GObject *object,
       case PROP_STREAMING_MODE:
         priv->stream_mode = g_value_get_boolean (value);
         break;
+      case PROP_DEFAULT_NAMESPACE:
+        g_free (priv->default_namespace);
+        priv->default_namespace = g_value_dup_string (value);
+
+        if (priv->default_namespace == NULL)
+          priv->default_namespace = g_strdup ("");
+
+        break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
         break;
@@ -356,6 +376,9 @@ wocky_xmpp_reader_get_property (GObject *object,
     {
       case PROP_STREAMING_MODE:
         g_value_set_boolean (value, priv->stream_mode);
+        break;
+      case PROP_DEFAULT_NAMESPACE:
+        g_value_set_string (value, priv->default_namespace);
         break;
       case PROP_FROM:
         g_value_set_string (value, priv->from);
@@ -379,7 +402,7 @@ wocky_xmpp_reader_get_property (GObject *object,
 }
 
 /**
- * wocky_xmpp_reader_new
+ * wocky_xmpp_reader_new:
  *
  * Convenience function to create a new #WockyXmppReader.
  *
@@ -392,7 +415,7 @@ wocky_xmpp_reader_new (void)
 }
 
 /**
- * wocky_xmpp_reader_new_no_stream
+ * wocky_xmpp_reader_new_no_stream:
  *
  * Convenience function to create a new #WockyXmppReader that has streaming
  * mode disabled.
@@ -407,6 +430,25 @@ wocky_xmpp_reader_new_no_stream (void)
       NULL);
 }
 
+/**
+ * wocky_xmpp_reader_new_no_stream_ns:
+ * @default_namespace: default XML namespace to apply to the top-level element
+ *
+ * Create a new #WockyXmppReader, with #WockyXmppReader:streaming-mode disabled
+ * and the specified #WockyXmppReader:default-namespace.
+ *
+ * Returns: (transfer full): a new #WockyXmppReader in non-streaming mode.
+ */
+WockyXmppReader *
+wocky_xmpp_reader_new_no_stream_ns (
+    const gchar *default_namespace)
+{
+  return g_object_new (WOCKY_TYPE_XMPP_READER,
+      "streaming-mode", FALSE,
+      "default-namespace", default_namespace,
+      NULL);
+}
+
 static void
 handle_stream_open (
     WockyXmppReader *self,
@@ -416,15 +458,19 @@ handle_stream_open (
     int nb_attributes,
     const xmlChar **attributes)
 {
+  WockyXmppReaderClass *klass = WOCKY_XMPP_READER_GET_CLASS (self);
   WockyXmppReaderPrivate *priv = self->priv;
   int i;
 
-  if (wocky_strdiff ("stream", localname)
-      || wocky_strdiff (WOCKY_XMPP_NS_STREAM, uri))
+  if (wocky_strdiff (klass->stream_element_name, localname)
+      || wocky_strdiff (klass->stream_element_ns, uri))
     {
-      priv->error = g_error_new_literal (WOCKY_XMPP_READER_ERROR,
+      priv->error = g_error_new (WOCKY_XMPP_READER_ERROR,
         WOCKY_XMPP_READER_ERROR_INVALID_STREAM_START,
-        "Invalid start of the XMPP stream");
+        "Invalid start of the XMPP stream "
+        "(expected <%s xmlns=%s>, got <%s xmlns=%s>)",
+        klass->stream_element_name, klass->stream_element_ns,
+        localname, uri);
       g_queue_push_tail (priv->stanzas, NULL);
       return;
     }
@@ -509,8 +555,9 @@ handle_regular_element (
         {
           /* This can only happy in non-streaming mode when the top node
            * of the document doesn't have a namespace. */
-          DEBUG ("Stanza without a namespace, using dummy namespace..");
-          priv->stanza = wocky_stanza_new (localname, "");
+          DEBUG ("Stanza without a namespace, using default namespace '%s'",
+              priv->default_namespace);
+          priv->stanza = wocky_stanza_new (localname, priv->default_namespace);
         }
 
       priv->node = wocky_stanza_get_top_node (priv->stanza);

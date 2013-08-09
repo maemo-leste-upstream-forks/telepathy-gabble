@@ -18,6 +18,7 @@
  */
 
 #include "config.h"
+
 #include "room-config.h"
 #include "muc-channel.h"
 
