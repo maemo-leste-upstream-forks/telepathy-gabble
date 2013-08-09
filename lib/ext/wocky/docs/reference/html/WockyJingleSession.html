@@ -1,0 +1,425 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyJingleSession</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="WockyJingleMediaRtp.html" title="WockyJingleMediaRtp">
+<link rel="next" href="WockyJingleTransportGoogle.html" title="WockyJingleTransportGoogle">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="WockyJingleMediaRtp.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="WockyJingleTransportGoogle.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#WockyJingleSession.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#WockyJingleSession.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="WockyJingleSession"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="WockyJingleSession.top_of_page"></a>WockyJingleSession</span></h2>
+<p>WockyJingleSession</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="WockyJingleSession.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">struct              <a class="link" href="WockyJingleSession.html#WockyJingleSessionClass" title="struct WockyJingleSessionClass">WockyJingleSessionClass</a>;
+<span class="returnvalue">void</span>                <a class="link" href="WockyJingleSession.html#wocky-jingle-session-accept" title="wocky_jingle_session_accept ()">wocky_jingle_session_accept</a>         (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyJingleSession.html#wocky-jingle-session-acknowledge-iq" title="wocky_jingle_session_acknowledge_iq ()">wocky_jingle_session_acknowledge_iq</a> (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>);
+<a class="link" href="WockyJingleContent.html" title="WockyJingleContent"><span class="returnvalue">WockyJingleContent</span></a> * <a class="link" href="WockyJingleSession.html#wocky-jingle-session-add-content" title="wocky_jingle_session_add_content ()">wocky_jingle_session_add_content</a>   (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyJingleContent.html#WockyJingleMediaType" title="enum WockyJingleMediaType"><span class="type">WockyJingleMediaType</span></a> mtype</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleContentSenders" title="enum WockyJingleContentSenders"><span class="type">WockyJingleContentSenders</span></a> senders</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *content_ns</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *transport_ns</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyJingleSession.html#wocky-jingle-session-can-modify-contents" title="wocky_jingle_session_can_modify_contents ()">wocky_jingle_session_can_modify_contents</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyJingleSession.html#wocky-jingle-session-defines-action" title="wocky_jingle_session_defines_action ()">wocky_jingle_session_defines_action</a> (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleAction" title="enum WockyJingleAction"><span class="type">WockyJingleAction</span></a> action</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyJingleSession.html#wocky-jingle-session-detect" title="wocky_jingle_session_detect ()">wocky_jingle_session_detect</a>         (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleAction" title="enum WockyJingleAction"><span class="type">WockyJingleAction</span></a> *action</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleDialect" title="enum WockyJingleDialect"><span class="type">WockyJingleDialect</span></a> *dialect</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-content-type" title="wocky_jingle_session_get_content_type ()">wocky_jingle_session_get_content_type</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *Param1</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-contents" title="wocky_jingle_session_get_contents ()">wocky_jingle_session_get_contents</a>   (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);
+<a class="link" href="wocky-wocky-jingle-types.html#WockyJingleDialect" title="enum WockyJingleDialect"><span class="returnvalue">WockyJingleDialect</span></a>  <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-dialect" title="wocky_jingle_session_get_dialect ()">wocky_jingle_session_get_dialect</a>    (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);
+<a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="returnvalue">WockyJingleFactory</span></a> * <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-factory" title="wocky_jingle_session_get_factory ()">wocky_jingle_session_get_factory</a>   (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-initiator" title="wocky_jingle_session_get_initiator ()">wocky_jingle_session_get_initiator</a>  (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);
+<a class="link" href="WockyContact.html" title="WockyContact"><span class="returnvalue">WockyContact</span></a> *      <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-peer-contact" title="wocky_jingle_session_get_peer_contact ()">wocky_jingle_session_get_peer_contact</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-peer-jid" title="wocky_jingle_session_get_peer_jid ()">wocky_jingle_session_get_peer_jid</a>   (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-peer-resource" title="wocky_jingle_session_get_peer_resource ()">wocky_jingle_session_get_peer_resource</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);
+<span class="returnvalue">WockyPorter</span> *       <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-porter" title="wocky_jingle_session_get_porter ()">wocky_jingle_session_get_porter</a>     (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-reason-name" title="wocky_jingle_session_get_reason_name ()">wocky_jingle_session_get_reason_name</a>
+                                                        (<em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleReason"><span class="type">WockyJingleReason</span></a> reason</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-remote-hold" title="wocky_jingle_session_get_remote_hold ()">wocky_jingle_session_get_remote_hold</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-remote-ringing" title="wocky_jingle_session_get_remote_ringing ()">wocky_jingle_session_get_remote_ringing</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockyJingleSession.html#wocky-jingle-session-get-sid" title="wocky_jingle_session_get_sid ()">wocky_jingle_session_get_sid</a>        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);
+<a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="returnvalue">WockyJingleSession</span></a> * <a class="link" href="WockyJingleSession.html#wocky-jingle-session-new" title="wocky_jingle_session_new ()">wocky_jingle_session_new</a>           (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *factory</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *session_id</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> local_initiator</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *peer</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleDialect" title="enum WockyJingleDialect"><span class="type">WockyJingleDialect</span></a> dialect</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> local_hold</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="WockyJingleSession.html#wocky-jingle-session-new-message" title="wocky_jingle_session_new_message ()">wocky_jingle_session_new_message</a>    (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleAction" title="enum WockyJingleAction"><span class="type">WockyJingleAction</span></a> action</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **sess_node</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyJingleSession.html#wocky-jingle-session-parse" title="wocky_jingle_session_parse ()">wocky_jingle_session_parse</a>          (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleAction" title="enum WockyJingleAction"><span class="type">WockyJingleAction</span></a> action</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyJingleSession.html#wocky-jingle-session-peer-has-cap" title="wocky_jingle_session_peer_has_cap ()">wocky_jingle_session_peer_has_cap</a>   (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *cap_or_quirk</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyJingleSession.html#wocky-jingle-session-remove-content" title="wocky_jingle_session_remove_content ()">wocky_jingle_session_remove_content</a> (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyJingleContent.html" title="WockyJingleContent"><span class="type">WockyJingleContent</span></a> *c</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyJingleSession.html#wocky-jingle-session-send" title="wocky_jingle_session_send ()">wocky_jingle_session_send</a>           (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyJingleSession.html#wocky-jingle-session-set-local-hold" title="wocky_jingle_session_set_local_hold ()">wocky_jingle_session_set_local_hold</a> (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> held</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyJingleSession.html#wocky-jingle-session-terminate" title="wocky_jingle_session_terminate ()">wocky_jingle_session_terminate</a>      (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleReason"><span class="type">WockyJingleReason</span></a> reason</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *text</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="WockyJingleSession.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="WockyJingleSession.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyJingleSessionClass"></a><h3>struct WockyJingleSessionClass</h3>
+<pre class="programlisting">struct WockyJingleSessionClass {
+    GObjectClass parent_class;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-accept"></a><h3>wocky_jingle_session_accept ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_session_accept         (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);</pre>
+<p>
+For incoming calls, accepts the call. For outgoing calls, indicates that the
+initial contents for the call have been created and the offer can be sent to
+the peer.
+</p>
+<p>
+The acceptance or offer will only be signalled to the peer once all contents
+are ready (as returned by <a class="link" href="WockyJingleContent.html#wocky-jingle-content-is-ready" title="wocky_jingle_content_is_ready ()"><code class="function">wocky_jingle_content_is_ready()</code></a>). For an RTP
+session with <a class="link" href="WockyJingleMediaRtp.html" title="WockyJingleMediaRtp"><span class="type">WockyJingleMediaRtp</span></a> contents, this translates to a media
+description and transport candidates having been provided to all contents.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td>the session.</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-acknowledge-iq"></a><h3>wocky_jingle_session_acknowledge_iq ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_session_acknowledge_iq (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-add-content"></a><h3>wocky_jingle_session_add_content ()</h3>
+<pre class="programlisting"><a class="link" href="WockyJingleContent.html" title="WockyJingleContent"><span class="returnvalue">WockyJingleContent</span></a> * wocky_jingle_session_add_content   (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyJingleContent.html#WockyJingleMediaType" title="enum WockyJingleMediaType"><span class="type">WockyJingleMediaType</span></a> mtype</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleContentSenders" title="enum WockyJingleContentSenders"><span class="type">WockyJingleContentSenders</span></a> senders</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *content_ns</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *transport_ns</code></em>);</pre>
+<p>
+Adds a content to the session. Once it has its codecs and transport
+candidates filled in, it will be signalled to the peer (either as part of
+the session-initiate, if it has not been sent yet, or as a content-add if
+<em class="parameter"><code>sess</code></em> has already been initiated).
+</p>
+<p>
+Legal values for <em class="parameter"><code>content_ns</code></em> and <em class="parameter"><code>transport_ns</code></em> depend on the Jingle dialect
+in use for this session (and in some cases on <em class="parameter"><code>mtype</code></em>); sensible values
+depend on the peer's capabilities.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td>the session</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mtype</code></em> :</span></p></td>
+<td>what kind of media will be exchanged on the content</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>senders</code></em> :</span></p></td>
+<td>which directions media should initially flow in.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
+<td>a descriptive name to use for the content; this is
+typically not shown to users. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>content_ns</code></em> :</span></p></td>
+<td>the namespace to use for the content's description</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>transport_ns</code></em> :</span></p></td>
+<td>the namespace of the media transport to use for the call</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the new content, which is guaranteed not to be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-can-modify-contents"></a><h3>wocky_jingle_session_can_modify_contents ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_jingle_session_can_modify_contents
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-defines-action"></a><h3>wocky_jingle_session_defines_action ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_jingle_session_defines_action (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleAction" title="enum WockyJingleAction"><span class="type">WockyJingleAction</span></a> action</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-detect"></a><h3>wocky_jingle_session_detect ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_jingle_session_detect         (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleAction" title="enum WockyJingleAction"><span class="type">WockyJingleAction</span></a> *action</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleDialect" title="enum WockyJingleDialect"><span class="type">WockyJingleDialect</span></a> *dialect</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-content-type"></a><h3>wocky_jingle_session_get_content_type ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               wocky_jingle_session_get_content_type
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *Param1</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-contents"></a><h3>wocky_jingle_session_get_contents ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_jingle_session_get_contents   (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-dialect"></a><h3>wocky_jingle_session_get_dialect ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleDialect" title="enum WockyJingleDialect"><span class="returnvalue">WockyJingleDialect</span></a>  wocky_jingle_session_get_dialect    (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-factory"></a><h3>wocky_jingle_session_get_factory ()</h3>
+<pre class="programlisting"><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="returnvalue">WockyJingleFactory</span></a> * wocky_jingle_session_get_factory   (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *self</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-initiator"></a><h3>wocky_jingle_session_get_initiator ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_jingle_session_get_initiator  (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-peer-contact"></a><h3>wocky_jingle_session_get_peer_contact ()</h3>
+<pre class="programlisting"><a class="link" href="WockyContact.html" title="WockyContact"><span class="returnvalue">WockyContact</span></a> *      wocky_jingle_session_get_peer_contact
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *self</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-peer-jid"></a><h3>wocky_jingle_session_get_peer_jid ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_jingle_session_get_peer_jid   (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-peer-resource"></a><h3>wocky_jingle_session_get_peer_resource ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_jingle_session_get_peer_resource
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-porter"></a><h3>wocky_jingle_session_get_porter ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyPorter</span> *       wocky_jingle_session_get_porter     (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *self</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-reason-name"></a><h3>wocky_jingle_session_get_reason_name ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_jingle_session_get_reason_name
+                                                        (<em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleReason"><span class="type">WockyJingleReason</span></a> reason</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-remote-hold"></a><h3>wocky_jingle_session_get_remote_hold ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_jingle_session_get_remote_hold
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-remote-ringing"></a><h3>wocky_jingle_session_get_remote_ringing ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_jingle_session_get_remote_ringing
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-get-sid"></a><h3>wocky_jingle_session_get_sid ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_jingle_session_get_sid        (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-new"></a><h3>wocky_jingle_session_new ()</h3>
+<pre class="programlisting"><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="returnvalue">WockyJingleSession</span></a> * wocky_jingle_session_new           (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *factory</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *session_id</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> local_initiator</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *peer</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleDialect" title="enum WockyJingleDialect"><span class="type">WockyJingleDialect</span></a> dialect</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> local_hold</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-new-message"></a><h3>wocky_jingle_session_new_message ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_jingle_session_new_message    (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleAction" title="enum WockyJingleAction"><span class="type">WockyJingleAction</span></a> action</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **sess_node</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-parse"></a><h3>wocky_jingle_session_parse ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_jingle_session_parse          (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleAction" title="enum WockyJingleAction"><span class="type">WockyJingleAction</span></a> action</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-peer-has-cap"></a><h3>wocky_jingle_session_peer_has_cap ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_jingle_session_peer_has_cap   (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *cap_or_quirk</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-remove-content"></a><h3>wocky_jingle_session_remove_content ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_session_remove_content (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyJingleContent.html" title="WockyJingleContent"><span class="type">WockyJingleContent</span></a> *c</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-send"></a><h3>wocky_jingle_session_send ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_session_send           (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>);</pre>
+<p>
+A shorthand for sending a Jingle IQ without waiting for the reply.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td>a session</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td>a stanza, of which this function will take ownership. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-set-local-hold"></a><h3>wocky_jingle_session_set_local_hold ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_session_set_local_hold (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> held</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-session-terminate"></a><h3>wocky_jingle_session_terminate ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_jingle_session_terminate      (<em class="parameter"><code><a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="type">WockyJingleSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleReason"><span class="type">WockyJingleReason</span></a> reason</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *text</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+Ends a session.
+</p>
+<p>
+If called for an outgoing session which has not yet been signalled to the
+peer (perhaps because <a class="link" href="WockyJingleSession.html#wocky-jingle-session-accept" title="wocky_jingle_session_accept ()"><code class="function">wocky_jingle_session_accept()</code></a> has not been called, or
+codecs or candidates have not been provided), the session will quietly
+terminate without the peer hearing anything about it.
+</p>
+<p>
+If called for an already-terminated session, this is a no-op.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td>the session</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em> :</span></p></td>
+<td>the reason the session should be terminated</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>text</code></em> :</span></p></td>
+<td>human-readable information about why the session
+terminated. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>Unused, because this function never fails.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.18</div>
+</body>
+</html>

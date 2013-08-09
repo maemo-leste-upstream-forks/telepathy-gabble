@@ -1,3 +1,297 @@
+commit 1537fdb051a75fc432eb6cb18d42a5f33afb28ac
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-08-09 15:54:45 +0100
+
+    0.18.0
+
+commit 80f731d13c3a6d97f531955f1806a436c545236a
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-08-09 15:53:15 +0100
+
+    more NEWS
+
+commit 2d22f5d22a5d859998971e6c20ab7b0e8108bcb8
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-08-09 16:44:56 +0100
+
+    tests/twisted: make the necessary directories to put *.conf in
+    
+    This fails during parallel distcheck.
+    
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 11971e65916a87e240504f0c105a12f151ca797f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-08-09 16:44:21 +0100
+
+    Update Wocky again
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=67953
+
+commit b5138f5abc201c6f3140e1bafa0c8f52031339f4
+Author: Samuel Thibault <sthibault@debian.org>
+Date:   2013-08-09 15:49:24 +0100
+
+    errno is actually a reserved word in C, avoid it
+    
+    [Commit message added -smcv]
+    
+    Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=714534
+    Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit cb6fa296255213c842ca119ab4b0e1796e8a2c6e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-08-09 15:27:42 +0100
+
+    NEWS for 0.18
+
+commit 3a01321d2b2f49fdb2788126513408242d8a114e
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-08-09 15:24:51 +0100
+
+    Update Wocky to a version whose tests pass
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=67875
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=67900
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit a4be3bf914b0a3ab7ecba92e3a199310241f1197
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-08-06 15:37:18 +0100
+
+    Turn off deprecation warnings, this is a stable branch
+    
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+
+commit 1a5bfd386fb23b0690fe99722ed46d2eb1608a85
+Merge: 6df8c13 42c0c8f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-08-06 15:29:35 +0100
+
+    Merge branch 'telepathy-gabble-0.16'
+    
+    Conflicts:
+    	NEWS
+
+commit 42c0c8f2b03a8ac9b94f268d41f379f8773c885f
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-08-06 15:28:30 +0100
+
+    NEWS
+
+commit 08ac84725bdc135e199146f180be2ea474b452c9
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-08-06 15:28:24 +0100
+
+    roster/groups: don't rely on an implementation detail
+    
+    Before telepathy-glib 0.20.3 and 0.21.1, we had this incorrect sequence
+    (pseudocode) for each group:
+    
+    * NewChannels(the group)
+    * GroupsChanged([the group], added: [...], removed: [])
+    * NewChannels(the group)
+    
+    In 0.20.3 and 0.20.1, we removed the second emission of NewChannels.
+    Unfortunately, that broke this test, which was specifically expecting
+    GroupsChanged followed by NewChannels.
+    
+    Rather than reversing the assumption, I'm doing it properly, by
+    expecting the events in no particular order.
+    
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=67828
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 6df8c13f5817b3c9f6e7f0592195257a3d857147
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-05-30 14:26:19 +0100
+
+    run-test.sh.in: make the indentation make sense
+    
+    The Python invocation is indented, because it's a command-line argument
+    for the sh invocation. The case shouldn't be.
+    
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=65290
+
+commit 54d037ab9b532e70a7fa80ad69a18bed58ccb480
+Author: Will Thompson <will.thompson@collabora.co.uk>
+Date:   2013-04-11 19:33:29 +0100
+
+    gabbletest: add hooks for hazetest
+    
+    I need these so that hazetest can just override what it needs, rather
+    than actually modifying the copy of gabbletest.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=65658
+
+commit 4b23e0ec83024ebbfcaaeb12cdcd086f7a640b9f
+Merge: 4d4fc2f 794a02b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-11 14:49:31 +0100
+
+    Merge branch 'telepathy-gabble-0.16' and update NEWS
+
+commit 794a02b84472ddbbadd6f5f920e2c523f68b27fc
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-11 14:46:51 +0100
+
+    NEWS for recent changes
+
+commit fa48076ccef7e5c8c4a08a88c399d0dbbb3ac624
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-11 14:39:42 +0100
+
+    Avoid having two of the same set of commands run in parallel
+    
+    A rule like this:
+    
+        _gen/x.c _gen/x.h: prerequisites
+            $(AM_V_GEN)x-generator
+    
+    doesn't consider x.c and x.h together. Instead, it expands to two rules,
+    one to generate x.c and one to generate x.h, which happen to run the
+    same commands.
+    
+    This means that in the worst case, you can end up running x-generator
+    twice in parallel, and they'll race with each other and overwrite or
+    delete each other's output.
+    
+    Based on commit 36c2a545c from telepathy-glib.
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=64285
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+    Conflicts:
+    	extensions/Makefile.am
+
+commit 4d4fc2f948dcaaa029c065d5c7e48238eefa3423
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-03 11:14:12 +0100
+
+    Use run-test.sh to run uninstalled tests
+
+commit fcc3900f4e6f6c9a58d95d15af8175b5d04fdaf4
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-03 09:14:54 +0100
+
+    Adapt run-test.sh to be able to run the tests uninstalled
+    
+    When autoreconfiscated with Automake 1.13, the way in which we were
+    (ab?)using Automake's test driver no longer works. We can't just
+    switch back to the old serial test driver without a dependency on
+    at least Automake 1.12, either. However, run-test.sh (which was already
+    used for installed tests) is quite capable of running uninstalled
+    tests, with a bit of adjustment:
+    
+    * if GABBLE_TEST_UNINSTALLED is set, expect GABBLE_ABS_TOP_SRCDIR,
+      GABBLE_ABS_TOP_BUILDDIR and optionally GABBLE_TEST_SLEEP in the
+      environment
+    * look for installed or uninstalled files, as appropriate
+    * use TEST_PYTHON (which might differ from PYTHON)
+    * use python -u (unbuffered stdout) for better debugging
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=65290
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+
+commit 2a54c7cd0c55d636f33666f4a6ac626e3c6f0f55
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-05-30 13:57:57 +0100
+
+    .gitignore: automake 1.13 installs test-driver
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=65290
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+
+commit 7931b9960bc4d357ff04e7381c9d91e161be969d
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-04 12:41:12 +0100
+
+    Remove obsolete GLib < 2.32 code paths
+    
+    We now depend on 2.32.
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=65290
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+
+commit 2a8a6a50be5241627108a23f1dd1ba8d12693f8b
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-05-30 14:02:19 +0100
+
+    Officially depend on GLib 2.32
+    
+    In practice we depend on it anyway, via telepathy-glib 0.19.9.
+    Also update the telepathy-glib dependency in the .pc files to match
+    configure.ac.
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=65290
+    Signed-off-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+
+commit bae4f7493376cccb2cd629e56b4e4cc0624720b6
+Merge: 991c397 5a349b2
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-06 16:28:31 +0100
+
+    Merge branch 'telepathy-gabble-0.16'
+    
+    Conflicts:
+    	NEWS
+    	configure.ac
+
+commit 991c397c6cd33fa970afe8fa46143ae9201b2002
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-06 16:27:58 +0100
+
+    nano version
+
+commit 5a349b2323f8bfd8a5d18c1bc2d79ef14689c0fe
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-04 18:34:14 +0100
+
+    Disable unreliable test-case
+    
+    It has a race condition or something.
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=49595
+    Reviewed-by: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+
+commit 83bb468e0d4b386d88821ba2981f981214e9ebc6
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-06-04 12:40:45 +0100
+
+    Initialize libdbus for thread-safety
+    
+    libdbus is not thread-safe by default. This is a long-standing design
+    flaw (<https://bugs.freedesktop.org/show_bug.cgi?id=54972>).
+    
+    We call into GIO, which calls into glib-networking, which can
+    (at least in recent versions) invoke libproxy in a thread. libproxy
+    apparently has a Network-Manager plugin, which uses libdbus in that
+    thread; meanwhile, we use libdbus in the main thread and everything
+    goes badly for us.
+    
+    (It's possible that this crash is only reproducible with broken
+    connectivity: I wrote this patch on a train, with intermittent
+    mobile broadband coverage.)
+    
+    In libdbus < 1.7.4, libraries cannot safely initialize libdbus for
+    multi-threading, because that initialization is not itself
+    thread-safe (!); in particular, glib-networking cannot safely initialize
+    libdbus. So, we have to do it.
+    
+    I have written patches to make libdbus thread-safe-by-default, but
+    they haven't all been reviewed and merged yet, and in any case they
+    won't be in a stable libdbus until 1.8. Until then, each application
+    has to discover and fix this bug individually.
+    
+    Bug: https://bugs.freedesktop.org/show_bug.cgi?id=65296
+    Reviewed-by: Xavier Claessens <xavier.claessens@collabora.co.uk>
+
 commit f14dfc2f19025a0f9252e58d8b1f6cd8ba6a2744
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2013-06-06 13:43:22 +0100
@@ -98,6 +392,12 @@ Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
 Date:   2013-05-30 17:03:11 +0100
 
     nano version and retroactive release name
+
+commit 9e7500178fa2395c8955680e5c17c40a4b981407
+Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date:   2013-05-30 17:01:16 +0100
+
+    nano version
 
 commit cface3d679b42bb30e4d489fd493bb6784c275e2
 Author: Simon McVittie <simon.mcvittie@collabora.co.uk>
