@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="WockyCapsCache.html" title="WockyCapsCache">
 <link rel="next" href="wocky-WockyConnector.html" title="WockyConnector">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -37,10 +37,10 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="wocky-WockyCapsHash.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="wocky-WockyCapsHash.html#wocky-caps-hash-compute-from-lists" title="wocky_caps_hash_compute_from_lists ()">wocky_caps_hash_compute_from_lists</a>  (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *features</code></em>,
+<pre class="synopsis"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="wocky-WockyCapsHash.html#wocky-caps-hash-compute-from-node" title="wocky_caps_hash_compute_from_node ()">wocky_caps_hash_compute_from_node</a>   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="wocky-WockyCapsHash.html#wocky-caps-hash-compute-from-lists" title="wocky_caps_hash_compute_from_lists ()">wocky_caps_hash_compute_from_lists</a>  (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *features</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *identities</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *dataforms</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="wocky-WockyCapsHash.html#wocky-caps-hash-compute-from-node" title="wocky_caps_hash_compute_from_node ()">wocky_caps_hash_compute_from_node</a>   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -51,6 +51,37 @@ Computes verification string hashes according to XEP-0115 v1.5
 </div>
 <div class="refsect1">
 <a name="wocky-WockyCapsHash.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="wocky-caps-hash-compute-from-node"></a><h3>wocky_caps_hash_compute_from_node ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_caps_hash_compute_from_node   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
+<p>
+Compute the hash as defined by the XEP-0115 from a received
+<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
+</p>
+<p>
+<em class="parameter"><code>node</code></em> should be the top-level node from a disco response such as
+the example given in XEP-0115 §5.3 "Complex Generation Example".
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the hash. The called must free the returned hash with
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
 <div class="refsect2">
 <a name="wocky-caps-hash-compute-from-lists"></a><h3>wocky_caps_hash_compute_from_lists ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_caps_hash_compute_from_lists  (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *features</code></em>,
@@ -88,41 +119,10 @@ freed using <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Al
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="wocky-caps-hash-compute-from-node"></a><h3>wocky_caps_hash_compute_from_node ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             wocky_caps_hash_compute_from_node   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *node</code></em>);</pre>
-<p>
-Compute the hash as defined by the XEP-0115 from a received
-<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>.
-</p>
-<p>
-<em class="parameter"><code>node</code></em> should be the top-level node from a disco response such as
-the example given in XEP-0115 §5.3 "Complex Generation Example".
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>a <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the hash. The called must free the returned hash with
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.19</div>
 </body>
 </html>

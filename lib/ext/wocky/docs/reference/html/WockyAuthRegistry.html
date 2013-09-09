@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-WockyAuthHandler.html" title="WockyAuthHandler">
 <link rel="next" href="WockyBareContact.html" title="WockyBareContact">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -39,27 +39,15 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="WockyAuthRegistry.synopsis"></a><h2>Synopsis</h2>
-<a name="WockyAuthError"></a><pre class="synopsis">#define             <a class="link" href="WockyAuthRegistry.html#WOCKY-AUTH-ERROR:CAPS" title="WOCKY_AUTH_ERROR">WOCKY_AUTH_ERROR</a>
+<a name="WockyAuthError"></a><pre class="synopsis"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="WockyAuthRegistry.html#wocky-auth-error-quark" title="wocky_auth_error_quark ()">wocky_auth_error_quark</a>              (<em class="parameter"><code><span class="type">void</span></code></em>);
+#define             <a class="link" href="WockyAuthRegistry.html#WOCKY-AUTH-ERROR:CAPS" title="WOCKY_AUTH_ERROR">WOCKY_AUTH_ERROR</a>
+enum                <a class="link" href="WockyAuthRegistry.html#WockyAuthError-enum" title="enum WockyAuthError">WockyAuthError</a>;
 #define             <a class="link" href="WockyAuthRegistry.html#WOCKY-AUTH-MECH-JABBER-DIGEST:CAPS" title="WOCKY_AUTH_MECH_JABBER_DIGEST">WOCKY_AUTH_MECH_JABBER_DIGEST</a>
 #define             <a class="link" href="WockyAuthRegistry.html#WOCKY-AUTH-MECH-JABBER-PASSWORD:CAPS" title="WOCKY_AUTH_MECH_JABBER_PASSWORD">WOCKY_AUTH_MECH_JABBER_PASSWORD</a>
 #define             <a class="link" href="WockyAuthRegistry.html#WOCKY-AUTH-MECH-SASL-DIGEST-MD5:CAPS" title="WOCKY_AUTH_MECH_SASL_DIGEST_MD5">WOCKY_AUTH_MECH_SASL_DIGEST_MD5</a>
 #define             <a class="link" href="WockyAuthRegistry.html#WOCKY-AUTH-MECH-SASL-PLAIN:CAPS" title="WOCKY_AUTH_MECH_SASL_PLAIN">WOCKY_AUTH_MECH_SASL_PLAIN</a>
 #define             <a class="link" href="WockyAuthRegistry.html#WOCKY-AUTH-MECH-SASL-SCRAM-SHA-1:CAPS" title="WOCKY_AUTH_MECH_SASL_SCRAM_SHA_1">WOCKY_AUTH_MECH_SASL_SCRAM_SHA_1</a>
-enum                <a class="link" href="WockyAuthRegistry.html#WockyAuthError-enum" title="enum WockyAuthError">WockyAuthError</a>;
-struct              <a class="link" href="WockyAuthRegistry.html#WockyAuthRegistry-struct" title="struct WockyAuthRegistry">WockyAuthRegistry</a>;
-<span class="returnvalue">void</span>                (<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryChallengeAsyncFunc" title="WockyAuthRegistryChallengeAsyncFunc ()">*WockyAuthRegistryChallengeAsyncFunc</a>)
-                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *challenge_data</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryChallengeFinishFunc" title="WockyAuthRegistryChallengeFinishFunc ()">*WockyAuthRegistryChallengeFinishFunc</a>)
-                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-struct              <a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryClass" title="struct WockyAuthRegistryClass">WockyAuthRegistryClass</a>;
-<span class="returnvalue">void</span>                (<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryFailureFunc" title="WockyAuthRegistryFailureFunc ()">*WockyAuthRegistryFailureFunc</a>)     (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>);
+                    <a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData">WockyAuthRegistryStartData</a>;
 <span class="returnvalue">void</span>                (<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartAuthAsyncFunc" title="WockyAuthRegistryStartAuthAsyncFunc ()">*WockyAuthRegistryStartAuthAsyncFunc</a>)
                                                         (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="type">GSList</span></a> *mechanisms</code></em>,
@@ -76,7 +64,16 @@ struct              <a class="link" href="WockyAuthRegistry.html#WockyAuthRegist
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="type">WockyAuthRegistryStartData</span></a> **start_data</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-                    <a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData">WockyAuthRegistryStartData</a>;
+<span class="returnvalue">void</span>                (<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryChallengeAsyncFunc" title="WockyAuthRegistryChallengeAsyncFunc ()">*WockyAuthRegistryChallengeAsyncFunc</a>)
+                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *challenge_data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryChallengeFinishFunc" title="WockyAuthRegistryChallengeFinishFunc ()">*WockyAuthRegistryChallengeFinishFunc</a>)
+                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
 <span class="returnvalue">void</span>                (<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistrySuccessAsyncFunc" title="WockyAuthRegistrySuccessAsyncFunc ()">*WockyAuthRegistrySuccessAsyncFunc</a>)
                                                         (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
@@ -85,20 +82,10 @@ struct              <a class="link" href="WockyAuthRegistry.html#WockyAuthRegist
                                                         (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="WockyAuthRegistry.html#wocky-auth-error-quark" title="wocky_auth_error_quark ()">wocky_auth_error_quark</a>              (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-add-handler" title="wocky_auth_registry_add_handler ()">wocky_auth_registry_add_handler</a>     (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-challenge-async" title="wocky_auth_registry_challenge_async ()">wocky_auth_registry_challenge_async</a> (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *challenge_data</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-challenge-finish" title="wocky_auth_registry_challenge_finish ()">wocky_auth_registry_challenge_finish</a>
-                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-failure" title="wocky_auth_registry_failure ()">wocky_auth_registry_failure</a>         (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+<span class="returnvalue">void</span>                (<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryFailureFunc" title="WockyAuthRegistryFailureFunc ()">*WockyAuthRegistryFailureFunc</a>)     (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>);
+struct              <a class="link" href="WockyAuthRegistry.html#WockyAuthRegistry-struct" title="struct WockyAuthRegistry">WockyAuthRegistry</a>;
+struct              <a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryClass" title="struct WockyAuthRegistryClass">WockyAuthRegistryClass</a>;
 <a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="returnvalue">WockyAuthRegistry</span></a> * <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-new" title="wocky_auth_registry_new ()">wocky_auth_registry_new</a>             (<em class="parameter"><code><span class="type">void</span></code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-start-auth-async" title="wocky_auth_registry_start_auth_async ()">wocky_auth_registry_start_auth_async</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
@@ -116,18 +103,31 @@ struct              <a class="link" href="WockyAuthRegistry.html#WockyAuthRegist
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
                                                          <em class="parameter"><code><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="type">WockyAuthRegistryStartData</span></a> **start_data</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="returnvalue">WockyAuthRegistryStartData</span></a> * <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-start-data-dup" title="wocky_auth_registry_start_data_dup ()">wocky_auth_registry_start_data_dup</a>
-                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="type">WockyAuthRegistryStartData</span></a> *start_data</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-start-data-free" title="wocky_auth_registry_start_data_free ()">wocky_auth_registry_start_data_free</a> (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="type">WockyAuthRegistryStartData</span></a> *start_data</code></em>);
-<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="returnvalue">WockyAuthRegistryStartData</span></a> * <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-start-data-new" title="wocky_auth_registry_start_data_new ()">wocky_auth_registry_start_data_new</a>
-                                                        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *mechanism</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *initial_response</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-challenge-async" title="wocky_auth_registry_challenge_async ()">wocky_auth_registry_challenge_async</a> (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *challenge_data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-challenge-finish" title="wocky_auth_registry_challenge_finish ()">wocky_auth_registry_challenge_finish</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-success-async" title="wocky_auth_registry_success_async ()">wocky_auth_registry_success_async</a>   (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-success-finish" title="wocky_auth_registry_success_finish ()">wocky_auth_registry_success_finish</a>  (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-add-handler" title="wocky_auth_registry_add_handler ()">wocky_auth_registry_add_handler</a>     (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-start-data-free" title="wocky_auth_registry_start_data_free ()">wocky_auth_registry_start_data_free</a> (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="type">WockyAuthRegistryStartData</span></a> *start_data</code></em>);
+<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="returnvalue">WockyAuthRegistryStartData</span></a> * <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-start-data-new" title="wocky_auth_registry_start_data_new ()">wocky_auth_registry_start_data_new</a>
+                                                        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *mechanism</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *initial_response</code></em>);
+<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="returnvalue">WockyAuthRegistryStartData</span></a> * <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-start-data-dup" title="wocky_auth_registry_start_data_dup ()">wocky_auth_registry_start_data_dup</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="type">WockyAuthRegistryStartData</span></a> *start_data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-failure" title="wocky_auth_registry_failure ()">wocky_auth_registry_failure</a>         (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-supports-one-of" title="wocky_auth_registry_supports_one_of ()">wocky_auth_registry_supports_one_of</a> (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="type">GSList</span></a> *mechanisms</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> allow_plain</code></em>);
@@ -150,38 +150,13 @@ struct              <a class="link" href="WockyAuthRegistry.html#WockyAuthRegist
 <div class="refsect1">
 <a name="WockyAuthRegistry.details"></a><h2>Details</h2>
 <div class="refsect2">
+<a name="wocky-auth-error-quark"></a><h3>wocky_auth_error_quark ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_auth_error_quark              (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
 <a name="WOCKY-AUTH-ERROR:CAPS"></a><h3>WOCKY_AUTH_ERROR</h3>
 <pre class="programlisting">#define             WOCKY_AUTH_ERROR</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="WOCKY-AUTH-MECH-JABBER-DIGEST:CAPS"></a><h3>WOCKY_AUTH_MECH_JABBER_DIGEST</h3>
-<pre class="programlisting">#define WOCKY_AUTH_MECH_JABBER_DIGEST "X-WOCKY-JABBER-DIGEST"
-</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="WOCKY-AUTH-MECH-JABBER-PASSWORD:CAPS"></a><h3>WOCKY_AUTH_MECH_JABBER_PASSWORD</h3>
-<pre class="programlisting">#define WOCKY_AUTH_MECH_JABBER_PASSWORD "X-WOCKY-JABBER-PASSWORD"
-</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="WOCKY-AUTH-MECH-SASL-DIGEST-MD5:CAPS"></a><h3>WOCKY_AUTH_MECH_SASL_DIGEST_MD5</h3>
-<pre class="programlisting">#define WOCKY_AUTH_MECH_SASL_DIGEST_MD5 "DIGEST-MD5"
-</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="WOCKY-AUTH-MECH-SASL-PLAIN:CAPS"></a><h3>WOCKY_AUTH_MECH_SASL_PLAIN</h3>
-<pre class="programlisting">#define WOCKY_AUTH_MECH_SASL_PLAIN "PLAIN"
-</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="WOCKY-AUTH-MECH-SASL-SCRAM-SHA-1:CAPS"></a><h3>WOCKY_AUTH_MECH_SASL_SCRAM_SHA_1</h3>
-<pre class="programlisting">#define WOCKY_AUTH_MECH_SASL_SCRAM_SHA_1 "SCRAM-SHA-1"
-</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -275,111 +250,44 @@ struct              <a class="link" href="WockyAuthRegistry.html#WockyAuthRegist
 </div>
 <hr>
 <div class="refsect2">
-<a name="WockyAuthRegistry-struct"></a><h3>struct WockyAuthRegistry</h3>
-<pre class="programlisting">struct WockyAuthRegistry;</pre>
+<a name="WOCKY-AUTH-MECH-JABBER-DIGEST:CAPS"></a><h3>WOCKY_AUTH_MECH_JABBER_DIGEST</h3>
+<pre class="programlisting">#define WOCKY_AUTH_MECH_JABBER_DIGEST "X-WOCKY-JABBER-DIGEST"
+</pre>
 </div>
 <hr>
 <div class="refsect2">
-<a name="WockyAuthRegistryChallengeAsyncFunc"></a><h3>WockyAuthRegistryChallengeAsyncFunc ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                (*WockyAuthRegistryChallengeAsyncFunc)
-                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *challenge_data</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
-<p>
-Recieves a challenge and asynchronously provides a reply. By
-default the challenge is passed on to the chosen <span class="type">WockyAuthHandler</span>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
-<td>a <a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> object</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>challenge_data</code></em> :</span></p></td>
-<td>the challenge data string</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
-<td>a callback to call when finished</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>data to pass to <em class="parameter"><code>callback</code></em>
-</td>
-</tr>
-</tbody>
-</table></div>
+<a name="WOCKY-AUTH-MECH-JABBER-PASSWORD:CAPS"></a><h3>WOCKY_AUTH_MECH_JABBER_PASSWORD</h3>
+<pre class="programlisting">#define WOCKY_AUTH_MECH_JABBER_PASSWORD "X-WOCKY-JABBER-PASSWORD"
+</pre>
 </div>
 <hr>
 <div class="refsect2">
-<a name="WockyAuthRegistryChallengeFinishFunc"></a><h3>WockyAuthRegistryChallengeFinishFunc ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*WockyAuthRegistryChallengeFinishFunc)
-                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
-<p>
-Finishes a <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> from
-<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryChallengeAsyncFunc" title="WockyAuthRegistryChallengeAsyncFunc ()"><span class="type">WockyAuthRegistryChallengeAsyncFunc</span></a>. By default it extracts a
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> response from the given <a href="http://library.gnome.org/devel/gio/unstable/GSimpleAsyncResult.html"><span class="type">GSimpleAsyncResult</span></a> and copies it
-to the out param.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
-<td>a <a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> object</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
-<td>a <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> object</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>response</code></em> :</span></p></td>
-<td>a location to be filled with the response string</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>a location to fill with a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> if an error is hit, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
-</td>
-</tr>
-</tbody>
-</table></div>
+<a name="WOCKY-AUTH-MECH-SASL-DIGEST-MD5:CAPS"></a><h3>WOCKY_AUTH_MECH_SASL_DIGEST_MD5</h3>
+<pre class="programlisting">#define WOCKY_AUTH_MECH_SASL_DIGEST_MD5 "DIGEST-MD5"
+</pre>
 </div>
 <hr>
 <div class="refsect2">
-<a name="WockyAuthRegistryClass"></a><h3>struct WockyAuthRegistryClass</h3>
-<pre class="programlisting">struct WockyAuthRegistryClass {
-  WockyAuthRegistryStartAuthAsyncFunc start_auth_async_func;
-  WockyAuthRegistryStartAuthFinishFunc start_auth_finish_func;
-
-  WockyAuthRegistryChallengeAsyncFunc challenge_async_func;
-  WockyAuthRegistryChallengeFinishFunc challenge_finish_func;
-
-  WockyAuthRegistrySuccessAsyncFunc success_async_func;
-  WockyAuthRegistrySuccessFinishFunc success_finish_func;
-
-  WockyAuthRegistryFailureFunc failure_func;
-};
+<a name="WOCKY-AUTH-MECH-SASL-PLAIN:CAPS"></a><h3>WOCKY_AUTH_MECH_SASL_PLAIN</h3>
+<pre class="programlisting">#define WOCKY_AUTH_MECH_SASL_PLAIN "PLAIN"
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WOCKY-AUTH-MECH-SASL-SCRAM-SHA-1:CAPS"></a><h3>WOCKY_AUTH_MECH_SASL_SCRAM_SHA_1</h3>
+<pre class="programlisting">#define WOCKY_AUTH_MECH_SASL_SCRAM_SHA_1 "SCRAM-SHA-1"
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyAuthRegistryStartData"></a><h3>WockyAuthRegistryStartData</h3>
+<pre class="programlisting">typedef struct {
+  gchar *mechanism;
+  GString *initial_response;
+} WockyAuthRegistryStartData;
 </pre>
 <p>
-The class of a <a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a>.
+A structure to hold the mechanism and response data.
 </p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
@@ -388,71 +296,12 @@ The class of a <a class="link" href="WockyAuthRegistry.html" title="WockyAuthReg
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartAuthAsyncFunc" title="WockyAuthRegistryStartAuthAsyncFunc ()"><span class="type">WockyAuthRegistryStartAuthAsyncFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.start-auth-async-func"></a>start_auth_async_func</code></em>;</span></p></td>
-<td>a function to call to start an asynchronous
-start auth operation; see <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-start-auth-async" title="wocky_auth_registry_start_auth_async ()"><code class="function">wocky_auth_registry_start_auth_async()</code></a> for
-more details.</td>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyAuthRegistryStartData.mechanism"></a>mechanism</code></em>;</span></p></td>
+<td>the name of the mechanism</td>
 </tr>
 <tr>
-<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartAuthFinishFunc" title="WockyAuthRegistryStartAuthFinishFunc ()"><span class="type">WockyAuthRegistryStartAuthFinishFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.start-auth-finish-func"></a>start_auth_finish_func</code></em>;</span></p></td>
-<td>a function to call to finish an
-asynchronous start auth operation; see
-<a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-start-auth-finish" title="wocky_auth_registry_start_auth_finish ()"><code class="function">wocky_auth_registry_start_auth_finish()</code></a> for more details.</td>
-</tr>
-<tr>
-<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryChallengeAsyncFunc" title="WockyAuthRegistryChallengeAsyncFunc ()"><span class="type">WockyAuthRegistryChallengeAsyncFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.challenge-async-func"></a>challenge_async_func</code></em>;</span></p></td>
-<td>a function to call to start an asynchronous
-challenge operation; see <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-challenge-async" title="wocky_auth_registry_challenge_async ()"><code class="function">wocky_auth_registry_challenge_async()</code></a> for
-more details.</td>
-</tr>
-<tr>
-<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryChallengeFinishFunc" title="WockyAuthRegistryChallengeFinishFunc ()"><span class="type">WockyAuthRegistryChallengeFinishFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.challenge-finish-func"></a>challenge_finish_func</code></em>;</span></p></td>
-<td>a function to call to finish an asynchronous
-challenge operation; see <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-challenge-finish" title="wocky_auth_registry_challenge_finish ()"><code class="function">wocky_auth_registry_challenge_finish()</code></a> for
-more details.</td>
-</tr>
-<tr>
-<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistrySuccessAsyncFunc" title="WockyAuthRegistrySuccessAsyncFunc ()"><span class="type">WockyAuthRegistrySuccessAsyncFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.success-async-func"></a>success_async_func</code></em>;</span></p></td>
-<td>a function to call to start an asynchronous
-success operation; see <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-success-async" title="wocky_auth_registry_success_async ()"><code class="function">wocky_auth_registry_success_async()</code></a> for
-more details.</td>
-</tr>
-<tr>
-<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistrySuccessFinishFunc" title="WockyAuthRegistrySuccessFinishFunc ()"><span class="type">WockyAuthRegistrySuccessFinishFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.success-finish-func"></a>success_finish_func</code></em>;</span></p></td>
-<td>a function to call to finish an asynchronous
-success operation; see <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-success-finish" title="wocky_auth_registry_success_finish ()"><code class="function">wocky_auth_registry_success_finish()</code></a> for
-more details.</td>
-</tr>
-<tr>
-<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryFailureFunc" title="WockyAuthRegistryFailureFunc ()"><span class="type">WockyAuthRegistryFailureFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.failure-func"></a>failure_func</code></em>;</span></p></td>
-<td>a function to call on failure; see
-<a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-failure" title="wocky_auth_registry_failure ()"><code class="function">wocky_auth_registry_failure()</code></a> for more details.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="WockyAuthRegistryFailureFunc"></a><h3>WockyAuthRegistryFailureFunc ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                (*WockyAuthRegistryFailureFunc)     (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>);</pre>
-<p>
-Notifies the client of a server-side error. By default this is not
-implemented.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
-<td>a <a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> object</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> describing the failure</td>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *<em class="structfield"><code><a name="WockyAuthRegistryStartData.initial-response"></a>initial_response</code></em>;</span></p></td>
+<td>the data in the response</td>
 </tr>
 </tbody>
 </table></div>
@@ -578,14 +427,15 @@ param.
 </div>
 <hr>
 <div class="refsect2">
-<a name="WockyAuthRegistryStartData"></a><h3>WockyAuthRegistryStartData</h3>
-<pre class="programlisting">typedef struct {
-  gchar *mechanism;
-  GString *initial_response;
-} WockyAuthRegistryStartData;
-</pre>
+<a name="WockyAuthRegistryChallengeAsyncFunc"></a><h3>WockyAuthRegistryChallengeAsyncFunc ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                (*WockyAuthRegistryChallengeAsyncFunc)
+                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *challenge_data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>
-A structure to hold the mechanism and response data.
+Recieves a challenge and asynchronously provides a reply. By
+default the challenge is passed on to the chosen <span class="type">WockyAuthHandler</span>.
 </p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
@@ -594,12 +444,67 @@ A structure to hold the mechanism and response data.
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyAuthRegistryStartData.mechanism"></a>mechanism</code></em>;</span></p></td>
-<td>the name of the mechanism</td>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> object</td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *<em class="structfield"><code><a name="WockyAuthRegistryStartData.initial-response"></a>initial_response</code></em>;</span></p></td>
-<td>the data in the response</td>
+<td><p><span class="term"><em class="parameter"><code>challenge_data</code></em> :</span></p></td>
+<td>the challenge data string</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>a callback to call when finished</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>data to pass to <em class="parameter"><code>callback</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyAuthRegistryChallengeFinishFunc"></a><h3>WockyAuthRegistryChallengeFinishFunc ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*WockyAuthRegistryChallengeFinishFunc)
+                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+Finishes a <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> from
+<a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryChallengeAsyncFunc" title="WockyAuthRegistryChallengeAsyncFunc ()"><span class="type">WockyAuthRegistryChallengeAsyncFunc</span></a>. By default it extracts a
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> response from the given <a href="http://library.gnome.org/devel/gio/unstable/GSimpleAsyncResult.html"><span class="type">GSimpleAsyncResult</span></a> and copies it
+to the out param.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
+<td>a <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>response</code></em> :</span></p></td>
+<td>a location to be filled with the response string</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>a location to fill with a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> if an error is hit, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
+</td>
 </tr>
 </tbody>
 </table></div>
@@ -680,37 +585,103 @@ and returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-auth-error-quark"></a><h3>wocky_auth_error_quark ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_auth_error_quark              (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-auth-registry-add-handler"></a><h3>wocky_auth_registry_add_handler ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_auth_registry_add_handler     (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-auth-registry-challenge-async"></a><h3>wocky_auth_registry_challenge_async ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_auth_registry_challenge_async (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *challenge_data</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-auth-registry-challenge-finish"></a><h3>wocky_auth_registry_challenge_finish ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_auth_registry_challenge_finish
-                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-auth-registry-failure"></a><h3>wocky_auth_registry_failure ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_auth_registry_failure         (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+<a name="WockyAuthRegistryFailureFunc"></a><h3>WockyAuthRegistryFailureFunc ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                (*WockyAuthRegistryFailureFunc)     (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>);</pre>
+<p>
+Notifies the client of a server-side error. By default this is not
+implemented.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> describing the failure</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyAuthRegistry-struct"></a><h3>struct WockyAuthRegistry</h3>
+<pre class="programlisting">struct WockyAuthRegistry;</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyAuthRegistryClass"></a><h3>struct WockyAuthRegistryClass</h3>
+<pre class="programlisting">struct WockyAuthRegistryClass {
+  WockyAuthRegistryStartAuthAsyncFunc start_auth_async_func;
+  WockyAuthRegistryStartAuthFinishFunc start_auth_finish_func;
+
+  WockyAuthRegistryChallengeAsyncFunc challenge_async_func;
+  WockyAuthRegistryChallengeFinishFunc challenge_finish_func;
+
+  WockyAuthRegistrySuccessAsyncFunc success_async_func;
+  WockyAuthRegistrySuccessFinishFunc success_finish_func;
+
+  WockyAuthRegistryFailureFunc failure_func;
+};
+</pre>
+<p>
+The class of a <a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartAuthAsyncFunc" title="WockyAuthRegistryStartAuthAsyncFunc ()"><span class="type">WockyAuthRegistryStartAuthAsyncFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.start-auth-async-func"></a>start_auth_async_func</code></em>;</span></p></td>
+<td>a function to call to start an asynchronous
+start auth operation; see <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-start-auth-async" title="wocky_auth_registry_start_auth_async ()"><code class="function">wocky_auth_registry_start_auth_async()</code></a> for
+more details.</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartAuthFinishFunc" title="WockyAuthRegistryStartAuthFinishFunc ()"><span class="type">WockyAuthRegistryStartAuthFinishFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.start-auth-finish-func"></a>start_auth_finish_func</code></em>;</span></p></td>
+<td>a function to call to finish an
+asynchronous start auth operation; see
+<a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-start-auth-finish" title="wocky_auth_registry_start_auth_finish ()"><code class="function">wocky_auth_registry_start_auth_finish()</code></a> for more details.</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryChallengeAsyncFunc" title="WockyAuthRegistryChallengeAsyncFunc ()"><span class="type">WockyAuthRegistryChallengeAsyncFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.challenge-async-func"></a>challenge_async_func</code></em>;</span></p></td>
+<td>a function to call to start an asynchronous
+challenge operation; see <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-challenge-async" title="wocky_auth_registry_challenge_async ()"><code class="function">wocky_auth_registry_challenge_async()</code></a> for
+more details.</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryChallengeFinishFunc" title="WockyAuthRegistryChallengeFinishFunc ()"><span class="type">WockyAuthRegistryChallengeFinishFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.challenge-finish-func"></a>challenge_finish_func</code></em>;</span></p></td>
+<td>a function to call to finish an asynchronous
+challenge operation; see <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-challenge-finish" title="wocky_auth_registry_challenge_finish ()"><code class="function">wocky_auth_registry_challenge_finish()</code></a> for
+more details.</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistrySuccessAsyncFunc" title="WockyAuthRegistrySuccessAsyncFunc ()"><span class="type">WockyAuthRegistrySuccessAsyncFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.success-async-func"></a>success_async_func</code></em>;</span></p></td>
+<td>a function to call to start an asynchronous
+success operation; see <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-success-async" title="wocky_auth_registry_success_async ()"><code class="function">wocky_auth_registry_success_async()</code></a> for
+more details.</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistrySuccessFinishFunc" title="WockyAuthRegistrySuccessFinishFunc ()"><span class="type">WockyAuthRegistrySuccessFinishFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.success-finish-func"></a>success_finish_func</code></em>;</span></p></td>
+<td>a function to call to finish an asynchronous
+success operation; see <a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-success-finish" title="wocky_auth_registry_success_finish ()"><code class="function">wocky_auth_registry_success_finish()</code></a> for
+more details.</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryFailureFunc" title="WockyAuthRegistryFailureFunc ()"><span class="type">WockyAuthRegistryFailureFunc</span></a> <em class="structfield"><code><a name="WockyAuthRegistryClass.failure-func"></a>failure_func</code></em>;</span></p></td>
+<td>a function to call on failure; see
+<a class="link" href="WockyAuthRegistry.html#wocky-auth-registry-failure" title="wocky_auth_registry_failure ()"><code class="function">wocky_auth_registry_failure()</code></a> for more details.</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2">
@@ -743,9 +714,40 @@ and returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-auth-registry-start-data-dup"></a><h3>wocky_auth_registry_start_data_dup ()</h3>
-<pre class="programlisting"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="returnvalue">WockyAuthRegistryStartData</span></a> * wocky_auth_registry_start_data_dup
-                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="type">WockyAuthRegistryStartData</span></a> *start_data</code></em>);</pre>
+<a name="wocky-auth-registry-challenge-async"></a><h3>wocky_auth_registry_challenge_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_auth_registry_challenge_async (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *challenge_data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-auth-registry-challenge-finish"></a><h3>wocky_auth_registry_challenge_finish ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_auth_registry_challenge_finish
+                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-auth-registry-success-async"></a><h3>wocky_auth_registry_success_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_auth_registry_success_async   (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-auth-registry-success-finish"></a><h3>wocky_auth_registry_success_finish ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_auth_registry_success_finish  (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-auth-registry-add-handler"></a><h3>wocky_auth_registry_add_handler ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_auth_registry_add_handler     (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -761,17 +763,15 @@ and returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-auth-registry-success-async"></a><h3>wocky_auth_registry_success_async ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_auth_registry_success_async   (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+<a name="wocky-auth-registry-start-data-dup"></a><h3>wocky_auth_registry_start_data_dup ()</h3>
+<pre class="programlisting"><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="returnvalue">WockyAuthRegistryStartData</span></a> * wocky_auth_registry_start_data_dup
+                                                        (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html#WockyAuthRegistryStartData" title="WockyAuthRegistryStartData"><span class="type">WockyAuthRegistryStartData</span></a> *start_data</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-auth-registry-success-finish"></a><h3>wocky_auth_registry_success_finish ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_auth_registry_success_finish  (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<a name="wocky-auth-registry-failure"></a><h3>wocky_auth_registry_failure ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_auth_registry_failure         (<em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -815,6 +815,6 @@ Wocky itself only implements password-based authentication mechanisms.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.19</div>
 </body>
 </html>
