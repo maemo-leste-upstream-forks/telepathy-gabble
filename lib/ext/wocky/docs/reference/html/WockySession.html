@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="wocky-wocky-sasl-scram.html" title="wocky-sasl-scram">
 <link rel="next" href="wocky-WockyStanza.html" title="WockyStanza">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -41,15 +41,15 @@
 #include &lt;wocky/wocky-session.h&gt;
 
 struct              <a class="link" href="WockySession.html#WockySessionClass" title="struct WockySessionClass">WockySessionClass</a>;
-<span class="returnvalue">WockyContactFactory</span> * <a class="link" href="WockySession.html#wocky-session-get-contact-factory" title="wocky_session_get_contact_factory ()">wocky_session_get_contact_factory</a> (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockySession.html#wocky-session-get-jid" title="wocky_session_get_jid ()">wocky_session_get_jid</a>               (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
-<span class="returnvalue">WockyPorter</span> *       <a class="link" href="WockySession.html#wocky-session-get-porter" title="wocky_session_get_porter ()">wocky_session_get_porter</a>            (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
 <a class="link" href="WockySession.html" title="WockySession"><span class="returnvalue">WockySession</span></a> *      <a class="link" href="WockySession.html#wocky-session-new-ll" title="wocky_session_new_ll ()">wocky_session_new_ll</a>                (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *full_jid</code></em>);
 <a class="link" href="WockySession.html" title="WockySession"><span class="returnvalue">WockySession</span></a> *      <a class="link" href="WockySession.html#wocky-session-new-with-connection" title="wocky_session_new_with_connection ()">wocky_session_new_with_connection</a>   (<em class="parameter"><code><span class="type">WockyXmppConnection</span> *conn</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *full_jid</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockySession.html#wocky-session-start" title="wocky_session_start ()">wocky_session_start</a>                 (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
+<span class="returnvalue">WockyPorter</span> *       <a class="link" href="WockySession.html#wocky-session-get-porter" title="wocky_session_get_porter ()">wocky_session_get_porter</a>            (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
+<span class="returnvalue">WockyContactFactory</span> * <a class="link" href="WockySession.html#wocky-session-get-contact-factory" title="wocky_session_get_contact_factory ()">wocky_session_get_contact_factory</a> (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="WockySession.html#wocky-session-set-jid" title="wocky_session_set_jid ()">wocky_session_set_jid</a>               (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockySession.html#wocky-session-start" title="wocky_session_start ()">wocky_session_start</a>                 (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="WockySession.html#wocky-session-get-jid" title="wocky_session_get_jid ()">wocky_session_get_jid</a>               (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -68,21 +68,6 @@ The class of a <a class="link" href="WockySession.html" title="WockySession"><sp
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-session-get-contact-factory"></a><h3>wocky_session_get_contact_factory ()</h3>
-<pre class="programlisting"><span class="returnvalue">WockyContactFactory</span> * wocky_session_get_contact_factory (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-session-get-jid"></a><h3>wocky_session_get_jid ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_session_get_jid               (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-session-get-porter"></a><h3>wocky_session_get_porter ()</h3>
-<pre class="programlisting"><span class="returnvalue">WockyPorter</span> *       wocky_session_get_porter            (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
 <a name="wocky-session-new-ll"></a><h3>wocky_session_new_ll ()</h3>
 <pre class="programlisting"><a class="link" href="WockySession.html" title="WockySession"><span class="returnvalue">WockySession</span></a> *      wocky_session_new_ll                (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *full_jid</code></em>);</pre>
 </div>
@@ -94,19 +79,34 @@ The class of a <a class="link" href="WockySession.html" title="WockySession"><sp
 </div>
 <hr>
 <div class="refsect2">
+<a name="wocky-session-start"></a><h3>wocky_session_start ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_session_start                 (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-session-get-porter"></a><h3>wocky_session_get_porter ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyPorter</span> *       wocky_session_get_porter            (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-session-get-contact-factory"></a><h3>wocky_session_get_contact_factory ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyContactFactory</span> * wocky_session_get_contact_factory (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
 <a name="wocky-session-set-jid"></a><h3>wocky_session_set_jid ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                wocky_session_set_jid               (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-session-start"></a><h3>wocky_session_start ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_session_start                 (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
+<a name="wocky-session-get-jid"></a><h3>wocky_session_get_jid ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_session_get_jid               (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.19</div>
 </body>
 </html>

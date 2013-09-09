@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="WockyJingleContent.html" title="WockyJingleContent">
 <link rel="next" href="wocky-wocky-jingle-info-internal.html" title="wocky-jingle-info-internal">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -38,6 +38,22 @@
 <div class="refsynopsisdiv">
 <a name="WockyJingleFactory.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">struct              <a class="link" href="WockyJingleFactory.html#WockyJingleFactoryClass" title="struct WockyJingleFactoryClass">WockyJingleFactoryClass</a>;
+<a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="returnvalue">WockyJingleFactory</span></a> * <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-new" title="wocky_jingle_factory_new ()">wocky_jingle_factory_new</a>           (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-stop" title="wocky_jingle_factory_stop ()">wocky_jingle_factory_stop</a>           (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-register-content-type" title="wocky_jingle_factory_register_content_type ()">wocky_jingle_factory_register_content_type</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> content_type</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-lookup-content-type" title="wocky_jingle_factory_lookup_content_type ()">wocky_jingle_factory_lookup_content_type</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-register-transport" title="wocky_jingle_factory_register_transport ()">wocky_jingle_factory_register_transport</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> transport_type</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-lookup-transport" title="wocky_jingle_factory_lookup_transport ()">wocky_jingle_factory_lookup_transport</a>
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>);
 <a class="link" href="WockyJingleSession.html" title="WockyJingleSession"><span class="returnvalue">WockyJingleSession</span></a> * <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-create-session" title="wocky_jingle_factory_create_session ()">wocky_jingle_factory_create_session</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *fac</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
@@ -45,22 +61,6 @@
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> local_hold</code></em>);
 <span class="returnvalue">WockyJingleInfo</span> *   <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-get-jingle-info" title="wocky_jingle_factory_get_jingle_info ()">wocky_jingle_factory_get_jingle_info</a>
                                                         (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *fac</code></em>);
-<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-lookup-content-type" title="wocky_jingle_factory_lookup_content_type ()">wocky_jingle_factory_lookup_content_type</a>
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>);
-<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-lookup-transport" title="wocky_jingle_factory_lookup_transport ()">wocky_jingle_factory_lookup_transport</a>
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>);
-<a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="returnvalue">WockyJingleFactory</span></a> * <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-new" title="wocky_jingle_factory_new ()">wocky_jingle_factory_new</a>           (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-register-content-type" title="wocky_jingle_factory_register_content_type ()">wocky_jingle_factory_register_content_type</a>
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> content_type</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-register-transport" title="wocky_jingle_factory_register_transport ()">wocky_jingle_factory_register_transport</a>
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> transport_type</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyJingleFactory.html#wocky-jingle-factory-stop" title="wocky_jingle_factory_stop ()">wocky_jingle_factory_stop</a>           (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -74,6 +74,46 @@
     GObjectClass parent_class;
 };
 </pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-factory-new"></a><h3>wocky_jingle_factory_new ()</h3>
+<pre class="programlisting"><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="returnvalue">WockyJingleFactory</span></a> * wocky_jingle_factory_new           (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-factory-stop"></a><h3>wocky_jingle_factory_stop ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_factory_stop           (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-factory-register-content-type"></a><h3>wocky_jingle_factory_register_content_type ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_factory_register_content_type
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> content_type</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-factory-lookup-content-type"></a><h3>wocky_jingle_factory_lookup_content_type ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               wocky_jingle_factory_lookup_content_type
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-factory-register-transport"></a><h3>wocky_jingle_factory_register_transport ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_factory_register_transport
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> transport_type</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-factory-lookup-transport"></a><h3>wocky_jingle_factory_lookup_transport ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               wocky_jingle_factory_lookup_transport
+                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -130,50 +170,10 @@ with</td>
 <pre class="programlisting"><span class="returnvalue">WockyJingleInfo</span> *   wocky_jingle_factory_get_jingle_info
                                                         (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *fac</code></em>);</pre>
 </div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-factory-lookup-content-type"></a><h3>wocky_jingle_factory_lookup_content_type ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               wocky_jingle_factory_lookup_content_type
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-factory-lookup-transport"></a><h3>wocky_jingle_factory_lookup_transport ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>               wocky_jingle_factory_lookup_transport
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-factory-new"></a><h3>wocky_jingle_factory_new ()</h3>
-<pre class="programlisting"><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="returnvalue">WockyJingleFactory</span></a> * wocky_jingle_factory_new           (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-factory-register-content-type"></a><h3>wocky_jingle_factory_register_content_type ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_factory_register_content_type
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> content_type</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-factory-register-transport"></a><h3>wocky_jingle_factory_register_transport ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_factory_register_transport
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *xmlns</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> transport_type</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-factory-stop"></a><h3>wocky_jingle_factory_stop ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_factory_stop           (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *self</code></em>);</pre>
-</div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.19</div>
 </body>
 </html>

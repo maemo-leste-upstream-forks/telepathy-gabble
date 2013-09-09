@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity">
 <link rel="next" href="wocky-wocky-jabber-auth-digest.html" title="wocky-jabber-auth-digest">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -38,6 +38,12 @@
 <div class="refsynopsisdiv">
 <a name="wocky-WockyJabberAuth.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">struct              <a class="link" href="wocky-WockyJabberAuth.html#WockyJabberAuthClass" title="struct WockyJabberAuthClass">WockyJabberAuthClass</a>;
+<span class="returnvalue">WockyJabberAuth</span> *   <a class="link" href="wocky-WockyJabberAuth.html#wocky-jabber-auth-new" title="wocky_jabber_auth_new ()">wocky_jabber_auth_new</a>               (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *server</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *username</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *resource</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *password</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyXmppConnection</span> *connection</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *auth_registry</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJabberAuth.html#wocky-jabber-auth-add-handler" title="wocky_jabber_auth_add_handler ()">wocky_jabber_auth_add_handler</a>       (<em class="parameter"><code><span class="type">WockyJabberAuth</span> *self</code></em>,
                                                          <em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJabberAuth.html#wocky-jabber-auth-authenticate-async" title="wocky_jabber_auth_authenticate_async ()">wocky_jabber_auth_authenticate_async</a>
@@ -51,12 +57,6 @@
                                                         (<em class="parameter"><code><span class="type">WockyJabberAuth</span> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<span class="returnvalue">WockyJabberAuth</span> *   <a class="link" href="wocky-WockyJabberAuth.html#wocky-jabber-auth-new" title="wocky_jabber_auth_new ()">wocky_jabber_auth_new</a>               (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *server</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *username</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *resource</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *password</code></em>,
-                                                         <em class="parameter"><code><span class="type">WockyXmppConnection</span> *connection</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *auth_registry</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -72,6 +72,16 @@
 <p>
 The class of a <span class="type">WockyJabberAuth</span>.
 </p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jabber-auth-new"></a><h3>wocky_jabber_auth_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyJabberAuth</span> *   wocky_jabber_auth_new               (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *server</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *username</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *resource</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *password</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyXmppConnection</span> *connection</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *auth_registry</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -98,20 +108,10 @@ The class of a <span class="type">WockyJabberAuth</span>.
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 </div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jabber-auth-new"></a><h3>wocky_jabber_auth_new ()</h3>
-<pre class="programlisting"><span class="returnvalue">WockyJabberAuth</span> *   wocky_jabber_auth_new               (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *server</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *username</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *resource</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *password</code></em>,
-                                                         <em class="parameter"><code><span class="type">WockyXmppConnection</span> *connection</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *auth_registry</code></em>);</pre>
-</div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.19</div>
 </body>
 </html>

@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="API Reference">
 <link rel="prev" href="WockyJingleTransportIceUdp.html" title="WockyJingleTransportIceUdp">
 <link rel="next" href="WockyJingleTransportRawUdp.html" title="WockyJingleTransportRawUdp">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -37,13 +37,36 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="wocky-WockyJingleTransportIface.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">struct              <a class="link" href="wocky-WockyJingleTransportIface.html#WockyJingleTransportIfaceClass" title="struct WockyJingleTransportIfaceClass">WockyJingleTransportIfaceClass</a>;
-enum                <a class="link" href="wocky-WockyJingleTransportIface.html#WockyJingleTransportState" title="enum WockyJingleTransportState">WockyJingleTransportState</a>;
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleTransportIface.html#jingle-transport-free-candidates" title="jingle_transport_free_candidates ()">jingle_transport_free_candidates</a>    (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *candidates</code></em>);
+<pre class="synopsis">enum                <a class="link" href="wocky-WockyJingleTransportIface.html#WockyJingleTransportState" title="enum WockyJingleTransportState">WockyJingleTransportState</a>;
+struct              <a class="link" href="wocky-WockyJingleTransportIface.html#WockyJingleTransportIfaceClass" title="struct WockyJingleTransportIfaceClass">WockyJingleTransportIfaceClass</a>;
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-parse-candidates" title="wocky_jingle_transport_iface_parse_candidates ()">wocky_jingle_transport_iface_parse_candidates</a>
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *Param2</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **Param3</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-new-local-candidates" title="wocky_jingle_transport_iface_new_local_candidates ()">wocky_jingle_transport_iface_new_local_candidates</a>
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *candidates</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-inject-candidates" title="wocky_jingle_transport_iface_inject_candidates ()">wocky_jingle_transport_iface_inject_candidates</a>
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *transport_node</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-send-candidates" title="wocky_jingle_transport_iface_send_candidates ()">wocky_jingle_transport_iface_send_candidates</a>
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> all</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-can-accept" title="wocky_jingle_transport_iface_can_accept ()">wocky_jingle_transport_iface_can_accept</a>
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-get-remote-candidates" title="wocky_jingle_transport_iface_get_remote_candidates ()">wocky_jingle_transport_iface_get_remote_candidates</a>
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-get-local-candidates" title="wocky_jingle_transport_iface_get_local_candidates ()">wocky_jingle_transport_iface_get_local_candidates</a>
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>);
+<a class="link" href="wocky-wocky-jingle-types.html#WockyJingleTransportType" title="enum WockyJingleTransportType"><span class="returnvalue">WockyJingleTransportType</span></a> <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-get-transport-type" title="wocky_jingle_transport_iface_get_transport_type ()">wocky_jingle_transport_iface_get_transport_type</a>
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyJingleTransportIface.html#jingle-transport-get-credentials" title="jingle_transport_get_credentials ()">jingle_transport_get_credentials</a>    (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **ufrag</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **pwd</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-candidate-free" title="wocky_jingle_candidate_free ()">wocky_jingle_candidate_free</a>         (<em class="parameter"><code><a class="link" href="WockyJingleContent.html#WockyJingleCandidate" title="WockyJingleCandidate"><span class="type">WockyJingleCandidate</span></a> *c</code></em>);
+<span class="returnvalue">WockyJingleTransportIface</span> * <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-new" title="wocky_jingle_transport_iface_new ()">wocky_jingle_transport_iface_new</a>
+                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyJingleContent.html" title="WockyJingleContent"><span class="type">WockyJingleContent</span></a> *content</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *transport_ns</code></em>);
 <a class="link" href="WockyJingleContent.html#WockyJingleCandidate" title="WockyJingleCandidate"><span class="returnvalue">WockyJingleCandidate</span></a> * <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-candidate-new" title="wocky_jingle_candidate_new ()">wocky_jingle_candidate_new</a>       (<em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleTransportProtocol" title="enum WockyJingleTransportProtocol"><span class="type">WockyJingleTransportProtocol</span></a> protocol</code></em>,
                                                          <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleCandidateType" title="enum WockyJingleCandidateType"><span class="type">WockyJingleCandidateType</span></a> type</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *id</code></em>,
@@ -55,31 +78,8 @@ enum                <a class="link" href="wocky-WockyJingleTransportIface.html#W
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *username</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *password</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> network</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-can-accept" title="wocky_jingle_transport_iface_can_accept ()">wocky_jingle_transport_iface_can_accept</a>
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-get-local-candidates" title="wocky_jingle_transport_iface_get_local_candidates ()">wocky_jingle_transport_iface_get_local_candidates</a>
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-get-remote-candidates" title="wocky_jingle_transport_iface_get_remote_candidates ()">wocky_jingle_transport_iface_get_remote_candidates</a>
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>);
-<a class="link" href="wocky-wocky-jingle-types.html#WockyJingleTransportType" title="enum WockyJingleTransportType"><span class="returnvalue">WockyJingleTransportType</span></a> <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-get-transport-type" title="wocky_jingle_transport_iface_get_transport_type ()">wocky_jingle_transport_iface_get_transport_type</a>
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-inject-candidates" title="wocky_jingle_transport_iface_inject_candidates ()">wocky_jingle_transport_iface_inject_candidates</a>
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *transport_node</code></em>);
-<span class="returnvalue">WockyJingleTransportIface</span> * <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-new" title="wocky_jingle_transport_iface_new ()">wocky_jingle_transport_iface_new</a>
-                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyJingleContent.html" title="WockyJingleContent"><span class="type">WockyJingleContent</span></a> *content</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *transport_ns</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-new-local-candidates" title="wocky_jingle_transport_iface_new_local_candidates ()">wocky_jingle_transport_iface_new_local_candidates</a>
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *candidates</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-parse-candidates" title="wocky_jingle_transport_iface_parse_candidates ()">wocky_jingle_transport_iface_parse_candidates</a>
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *Param2</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **Param3</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-transport-iface-send-candidates" title="wocky_jingle_transport_iface_send_candidates ()">wocky_jingle_transport_iface_send_candidates</a>
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> all</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleTransportIface.html#wocky-jingle-candidate-free" title="wocky_jingle_candidate_free ()">wocky_jingle_candidate_free</a>         (<em class="parameter"><code><a class="link" href="WockyJingleContent.html#WockyJingleCandidate" title="WockyJingleCandidate"><span class="type">WockyJingleCandidate</span></a> *c</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleTransportIface.html#jingle-transport-free-candidates" title="jingle_transport_free_candidates ()">jingle_transport_free_candidates</a>    (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *candidates</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -87,6 +87,36 @@ enum                <a class="link" href="wocky-WockyJingleTransportIface.html#W
 </div>
 <div class="refsect1">
 <a name="wocky-WockyJingleTransportIface.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyJingleTransportState"></a><h3>enum WockyJingleTransportState</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_JINGLE_TRANSPORT_STATE_DISCONNECTED,
+  WOCKY_JINGLE_TRANSPORT_STATE_CONNECTING,
+  WOCKY_JINGLE_TRANSPORT_STATE_CONNECTED
+} WockyJingleTransportState;
+</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="WOCKY-JINGLE-TRANSPORT-STATE-DISCONNECTED:CAPS"></a><span class="term"><code class="literal">WOCKY_JINGLE_TRANSPORT_STATE_DISCONNECTED</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-JINGLE-TRANSPORT-STATE-CONNECTING:CAPS"></a><span class="term"><code class="literal">WOCKY_JINGLE_TRANSPORT_STATE_CONNECTING</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-JINGLE-TRANSPORT-STATE-CONNECTED:CAPS"></a><span class="term"><code class="literal">WOCKY_JINGLE_TRANSPORT_STATE_CONNECTED</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
 <div class="refsect2">
 <a name="WockyJingleTransportIfaceClass"></a><h3>struct WockyJingleTransportIfaceClass</h3>
 <pre class="programlisting">struct WockyJingleTransportIfaceClass {
@@ -112,18 +142,56 @@ enum                <a class="link" href="wocky-WockyJingleTransportIface.html#W
 </div>
 <hr>
 <div class="refsect2">
-<a name="WockyJingleTransportState"></a><h3>enum WockyJingleTransportState</h3>
-<pre class="programlisting">typedef enum {
-  WOCKY_JINGLE_TRANSPORT_STATE_DISCONNECTED,
-  WOCKY_JINGLE_TRANSPORT_STATE_CONNECTING,
-  WOCKY_JINGLE_TRANSPORT_STATE_CONNECTED
-} WockyJingleTransportState;
-</pre>
+<a name="wocky-jingle-transport-iface-parse-candidates"></a><h3>wocky_jingle_transport_iface_parse_candidates ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_transport_iface_parse_candidates
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *Param2</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **Param3</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
-<a name="jingle-transport-free-candidates"></a><h3>jingle_transport_free_candidates ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                jingle_transport_free_candidates    (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *candidates</code></em>);</pre>
+<a name="wocky-jingle-transport-iface-new-local-candidates"></a><h3>wocky_jingle_transport_iface_new_local_candidates ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_transport_iface_new_local_candidates
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *candidates</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-transport-iface-inject-candidates"></a><h3>wocky_jingle_transport_iface_inject_candidates ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_transport_iface_inject_candidates
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *transport_node</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-transport-iface-send-candidates"></a><h3>wocky_jingle_transport_iface_send_candidates ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_transport_iface_send_candidates
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> all</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-transport-iface-can-accept"></a><h3>wocky_jingle_transport_iface_can_accept ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_jingle_transport_iface_can_accept
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-transport-iface-get-remote-candidates"></a><h3>wocky_jingle_transport_iface_get_remote_candidates ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_jingle_transport_iface_get_remote_candidates
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-transport-iface-get-local-candidates"></a><h3>wocky_jingle_transport_iface_get_local_candidates ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_jingle_transport_iface_get_local_candidates
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-transport-iface-get-transport-type"></a><h3>wocky_jingle_transport_iface_get_transport_type ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleTransportType" title="enum WockyJingleTransportType"><span class="returnvalue">WockyJingleTransportType</span></a> wocky_jingle_transport_iface_get_transport_type
+                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -134,8 +202,11 @@ enum                <a class="link" href="wocky-WockyJingleTransportIface.html#W
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-jingle-candidate-free"></a><h3>wocky_jingle_candidate_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_candidate_free         (<em class="parameter"><code><a class="link" href="WockyJingleContent.html#WockyJingleCandidate" title="WockyJingleCandidate"><span class="type">WockyJingleCandidate</span></a> *c</code></em>);</pre>
+<a name="wocky-jingle-transport-iface-new"></a><h3>wocky_jingle_transport_iface_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyJingleTransportIface</span> * wocky_jingle_transport_iface_new
+                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyJingleContent.html" title="WockyJingleContent"><span class="type">WockyJingleContent</span></a> *content</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *transport_ns</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -154,69 +225,18 @@ enum                <a class="link" href="wocky-WockyJingleTransportIface.html#W
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-jingle-transport-iface-can-accept"></a><h3>wocky_jingle_transport_iface_can_accept ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_jingle_transport_iface_can_accept
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>);</pre>
+<a name="wocky-jingle-candidate-free"></a><h3>wocky_jingle_candidate_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_candidate_free         (<em class="parameter"><code><a class="link" href="WockyJingleContent.html#WockyJingleCandidate" title="WockyJingleCandidate"><span class="type">WockyJingleCandidate</span></a> *c</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-jingle-transport-iface-get-local-candidates"></a><h3>wocky_jingle_transport_iface_get_local_candidates ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_jingle_transport_iface_get_local_candidates
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-transport-iface-get-remote-candidates"></a><h3>wocky_jingle_transport_iface_get_remote_candidates ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_jingle_transport_iface_get_remote_candidates
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-transport-iface-get-transport-type"></a><h3>wocky_jingle_transport_iface_get_transport_type ()</h3>
-<pre class="programlisting"><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleTransportType" title="enum WockyJingleTransportType"><span class="returnvalue">WockyJingleTransportType</span></a> wocky_jingle_transport_iface_get_transport_type
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-transport-iface-inject-candidates"></a><h3>wocky_jingle_transport_iface_inject_candidates ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_transport_iface_inject_candidates
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *transport_node</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-transport-iface-new"></a><h3>wocky_jingle_transport_iface_new ()</h3>
-<pre class="programlisting"><span class="returnvalue">WockyJingleTransportIface</span> * wocky_jingle_transport_iface_new
-                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyJingleContent.html" title="WockyJingleContent"><span class="type">WockyJingleContent</span></a> *content</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *transport_ns</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-transport-iface-new-local-candidates"></a><h3>wocky_jingle_transport_iface_new_local_candidates ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_transport_iface_new_local_candidates
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *candidates</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-transport-iface-parse-candidates"></a><h3>wocky_jingle_transport_iface_parse_candidates ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_transport_iface_parse_candidates
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *Param1</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *Param2</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **Param3</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-transport-iface-send-candidates"></a><h3>wocky_jingle_transport_iface_send_candidates ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_transport_iface_send_candidates
-                                                        (<em class="parameter"><code><span class="type">WockyJingleTransportIface</span> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> all</code></em>);</pre>
+<a name="jingle-transport-free-candidates"></a><h3>jingle_transport_free_candidates ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                jingle_transport_free_candidates    (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *candidates</code></em>);</pre>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.19</div>
 </body>
 </html>
