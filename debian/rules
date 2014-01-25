@@ -3,7 +3,7 @@
 include /usr/share/dpkg/default.mk
 
 %:
-	dh $@ --with autotools_dev --parallel
+	dh $@ --with autoreconf --parallel
 
 # Now that we use debhelper 9, dh_auto_configure defaults to
 # $libexecdir=$libdir, which might be better than this, but doesn't match
