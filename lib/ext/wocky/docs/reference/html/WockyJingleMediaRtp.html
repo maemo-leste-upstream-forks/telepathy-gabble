@@ -2,30 +2,29 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>WockyJingleMediaRtp</title>
+<title>Wocky Reference Manual: WockyJingleMediaRtp</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="wocky-WockyJingleInfo.html" title="WockyJingleInfo">
+<link rel="prev" href="WockyJingleInfo.html" title="WockyJingleInfo">
 <link rel="next" href="WockyJingleSession.html" title="WockyJingleSession">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="wocky-WockyJingleInfo.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">Wocky Reference Manual</th>
-<td><a accesskey="n" href="WockyJingleSession.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#WockyJingleMediaRtp.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#WockyJingleMediaRtp.description" class="shortcut">Description</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#WockyJingleMediaRtp.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#WockyJingleMediaRtp.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#WockyJingleMediaRtp.properties" class="shortcut">Properties</a></span><span id="nav_signals"> <span class="dim">|</span> 
+                  <a href="#WockyJingleMediaRtp.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="WockyJingleInfo.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="WockyJingleSession.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="WockyJingleMediaRtp"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -33,67 +32,504 @@
 <h2><span class="refentrytitle"><a name="WockyJingleMediaRtp.top_of_page"></a>WockyJingleMediaRtp</span></h2>
 <p>WockyJingleMediaRtp</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="WockyJingleMediaRtp.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">struct              <a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaRtpClass" title="struct WockyJingleMediaRtpClass">WockyJingleMediaRtpClass</a>;
-                    <a class="link" href="WockyJingleMediaRtp.html#WockyJingleCodec" title="WockyJingleCodec">WockyJingleCodec</a>;
-                    <a class="link" href="WockyJingleMediaRtp.html#WockyJingleFeedbackMessage" title="WockyJingleFeedbackMessage">WockyJingleFeedbackMessage</a>;
-                    <a class="link" href="WockyJingleMediaRtp.html#WockyJingleRtpHeaderExtension" title="WockyJingleRtpHeaderExtension">WockyJingleRtpHeaderExtension</a>;
-                    <a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription">WockyJingleMediaDescription</a>;
-<span class="returnvalue">void</span>                <a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-register" title="jingle_media_rtp_register ()">jingle_media_rtp_register</a>           (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *factory</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-set-local-media-description" title="jingle_media_rtp_set_local_media_description ()">jingle_media_rtp_set_local_media_description</a>
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html" title="WockyJingleMediaRtp"><span class="type">WockyJingleMediaRtp</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a> *md</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> ready</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="returnvalue">WockyJingleMediaDescription</span></a> * <a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-media-rtp-get-remote-media-description" title="wocky_jingle_media_rtp_get_remote_media_description ()">wocky_jingle_media_rtp_get_remote_media_description</a>
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html" title="WockyJingleMediaRtp"><span class="type">WockyJingleMediaRtp</span></a> *self</code></em>);
-<a class="link" href="WockyJingleMediaRtp.html#WockyJingleCodec" title="WockyJingleCodec"><span class="returnvalue">WockyJingleCodec</span></a> *  <a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-codec-new" title="jingle_media_rtp_codec_new ()">jingle_media_rtp_codec_new</a>          (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> id</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> clockrate</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> channels</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a> *params</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-codec-free" title="jingle_media_rtp_codec_free ()">jingle_media_rtp_codec_free</a>         (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleCodec" title="WockyJingleCodec"><span class="type">WockyJingleCodec</span></a> *p</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-free-codecs" title="jingle_media_rtp_free_codecs ()">jingle_media_rtp_free_codecs</a>        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *codecs</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-copy-codecs" title="jingle_media_rtp_copy_codecs ()">jingle_media_rtp_copy_codecs</a>        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *codecs</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-compare-codecs" title="jingle_media_rtp_compare_codecs ()">jingle_media_rtp_compare_codecs</a>     (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *old</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *new</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **changed</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **e</code></em>);
-<a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="returnvalue">WockyJingleMediaDescription</span></a> * <a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-media-description-new" title="wocky_jingle_media_description_new ()">wocky_jingle_media_description_new</a>
-                                                        (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-media-description-free" title="wocky_jingle_media_description_free ()">wocky_jingle_media_description_free</a> (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a> *md</code></em>);
-<a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="returnvalue">WockyJingleMediaDescription</span></a> * <a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-media-description-copy" title="wocky_jingle_media_description_copy ()">wocky_jingle_media_description_copy</a>
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a> *md</code></em>);
-<a class="link" href="WockyJingleMediaRtp.html#WockyJingleRtpHeaderExtension" title="WockyJingleRtpHeaderExtension"><span class="returnvalue">WockyJingleRtpHeaderExtension</span></a> * <a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-rtp-header-extension-new" title="wocky_jingle_rtp_header_extension_new ()">wocky_jingle_rtp_header_extension_new</a>
-                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> id</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleContentSenders" title="enum WockyJingleContentSenders"><span class="type">WockyJingleContentSenders</span></a> senders</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *uri</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-rtp-header-extension-free" title="wocky_jingle_rtp_header_extension_free ()">wocky_jingle_rtp_header_extension_free</a>
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleRtpHeaderExtension" title="WockyJingleRtpHeaderExtension"><span class="type">WockyJingleRtpHeaderExtension</span></a> *hdrext</code></em>);
-<a class="link" href="WockyJingleMediaRtp.html#WockyJingleFeedbackMessage" title="WockyJingleFeedbackMessage"><span class="returnvalue">WockyJingleFeedbackMessage</span></a> * <a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-feedback-message-new" title="wocky_jingle_feedback_message_new ()">wocky_jingle_feedback_message_new</a>
-                                                        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *type</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *subtype</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-feedback-message-free" title="wocky_jingle_feedback_message_free ()">wocky_jingle_feedback_message_free</a>  (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleFeedbackMessage" title="WockyJingleFeedbackMessage"><span class="type">WockyJingleFeedbackMessage</span></a> *fb</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-media-description-simplify" title="wocky_jingle_media_description_simplify ()">wocky_jingle_media_description_simplify</a>
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a> *md</code></em>);
+<div class="refsect1">
+<a name="WockyJingleMediaRtp.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-register" title="jingle_media_rtp_register ()">jingle_media_rtp_register</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-set-local-media-description" title="jingle_media_rtp_set_local_media_description ()">jingle_media_rtp_set_local_media_description</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="returnvalue">WockyJingleMediaDescription</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-media-rtp-get-remote-media-description" title="wocky_jingle_media_rtp_get_remote_media_description ()">wocky_jingle_media_rtp_get_remote_media_description</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyJingleMediaRtp.html#WockyJingleCodec" title="WockyJingleCodec"><span class="returnvalue">WockyJingleCodec</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-codec-new" title="jingle_media_rtp_codec_new ()">jingle_media_rtp_codec_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-codec-free" title="jingle_media_rtp_codec_free ()">jingle_media_rtp_codec_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-free-codecs" title="jingle_media_rtp_free_codecs ()">jingle_media_rtp_free_codecs</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-copy-codecs" title="jingle_media_rtp_copy_codecs ()">jingle_media_rtp_copy_codecs</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-compare-codecs" title="jingle_media_rtp_compare_codecs ()">jingle_media_rtp_compare_codecs</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="returnvalue">WockyJingleMediaDescription</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-media-description-new" title="wocky_jingle_media_description_new ()">wocky_jingle_media_description_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-media-description-free" title="wocky_jingle_media_description_free ()">wocky_jingle_media_description_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="returnvalue">WockyJingleMediaDescription</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-media-description-copy" title="wocky_jingle_media_description_copy ()">wocky_jingle_media_description_copy</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyJingleMediaRtp.html#WockyJingleRtpHeaderExtension" title="WockyJingleRtpHeaderExtension"><span class="returnvalue">WockyJingleRtpHeaderExtension</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-rtp-header-extension-new" title="wocky_jingle_rtp_header_extension_new ()">wocky_jingle_rtp_header_extension_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-rtp-header-extension-free" title="wocky_jingle_rtp_header_extension_free ()">wocky_jingle_rtp_header_extension_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyJingleMediaRtp.html#WockyJingleFeedbackMessage" title="WockyJingleFeedbackMessage"><span class="returnvalue">WockyJingleFeedbackMessage</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-feedback-message-new" title="wocky_jingle_feedback_message_new ()">wocky_jingle_feedback_message_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-feedback-message-free" title="wocky_jingle_feedback_message_free ()">wocky_jingle_feedback_message_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-media-description-simplify" title="wocky_jingle_media_description_simplify ()">wocky_jingle_media_description_simplify</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="WockyJingleMediaRtp.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaRtp--media-type" title="The “media-type” property">media-type</a></td>
+<td class="property_flags">Read / Write / Construct Only</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaRtp--remote-mute" title="The “remote-mute” property">remote-mute</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="WockyJingleMediaRtp.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody><tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaRtp-remote-media-description" title="The “remote-media-description” signal">remote-media-description</a></td>
+<td class="signal_flags"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="WockyJingleMediaRtp.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleCodec" title="WockyJingleCodec">WockyJingleCodec</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleFeedbackMessage" title="WockyJingleFeedbackMessage">WockyJingleFeedbackMessage</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleRtpHeaderExtension" title="WockyJingleRtpHeaderExtension">WockyJingleRtpHeaderExtension</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription">WockyJingleMediaDescription</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="WockyJingleMediaRtp.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a class="link" href="WockyJingleContent.html" title="WockyJingleContent">WockyJingleContent</a>
+        <span class="lineart">╰──</span> WockyJingleMediaRtp
 </pre>
 </div>
 <div class="refsect1">
 <a name="WockyJingleMediaRtp.description"></a><h2>Description</h2>
 </div>
 <div class="refsect1">
-<a name="WockyJingleMediaRtp.details"></a><h2>Details</h2>
+<a name="WockyJingleMediaRtp.functions_details"></a><h2>Functions</h2>
 <div class="refsect2">
-<a name="WockyJingleMediaRtpClass"></a><h3>struct WockyJingleMediaRtpClass</h3>
-<pre class="programlisting">struct WockyJingleMediaRtpClass {
-    WockyJingleContentClass parent_class;
-};
-</pre>
+<a name="jingle-media-rtp-register"></a><h3>jingle_media_rtp_register ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+jingle_media_rtp_register (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *factory</code></em>);</pre>
 </div>
 <hr>
+<div class="refsect2">
+<a name="jingle-media-rtp-set-local-media-description"></a><h3>jingle_media_rtp_set_local_media_description ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+jingle_media_rtp_set_local_media_description
+                               (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html" title="WockyJingleMediaRtp"><span class="type">WockyJingleMediaRtp</span></a> *self</code></em>,
+                                <em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a> *md</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> ready</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>Sets or updates the media description (codecs, feedback messages, etc) for
+<em class="parameter"><code>self</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.55.9.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>a content in an RTP session</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>md</p></td>
+<td class="parameter_description"><p> new media description for this content. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>ready</p></td>
+<td class="parameter_description"><p>whether the codecs can regarded as ready to sent from now on</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>used to return a <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS" title="WOCKY_XMPP_ERROR"><code class="literal">WOCKY_XMPP_ERROR</code></a> if the codec update is illegal.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.55.9.3.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if no description was previously set, or if the update is
+compatible with the existing description; <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if the update is illegal
+(due to adding previously-unknown codecs or renaming an existing codec, for
+example)</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-media-rtp-get-remote-media-description"></a><h3>wocky_jingle_media_rtp_get_remote_media_description ()</h3>
+<pre class="programlisting"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="returnvalue">WockyJingleMediaDescription</span></a> *
+wocky_jingle_media_rtp_get_remote_media_description
+                               (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html" title="WockyJingleMediaRtp"><span class="type">WockyJingleMediaRtp</span></a> *self</code></em>);</pre>
+<p>Gets the current remote media description, if known. The
+<span class="type">“remote-media-description”</span> signal is emitted when this
+value changes.</p>
+<div class="refsect3">
+<a name="id-1.2.55.9.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>the RTP content</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.55.9.4.6"></a><h4>Returns</h4>
+<p> the current remote media description, which may be
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for outgoing calls until it is first received. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="jingle-media-rtp-codec-new"></a><h3>jingle_media_rtp_codec_new ()</h3>
+<pre class="programlisting"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleCodec" title="WockyJingleCodec"><span class="returnvalue">WockyJingleCodec</span></a> *
+jingle_media_rtp_codec_new (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> id</code></em>,
+                            <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                            <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> clockrate</code></em>,
+                            <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> channels</code></em>,
+                            <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a> *params</code></em>);</pre>
+<p>Creates a new structure describing a codec, suitable for including in a
+<a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.55.9.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>id</p></td>
+<td class="parameter_description"><p>a codec ID, as specified in tables 4 and 5 of RFC 3551.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>name</p></td>
+<td class="parameter_description"><p> the codec's name. This is optional if <em class="parameter"><code>id</code></em>
+is one of the
+statically-defined codec identifiers, and required if <em class="parameter"><code>id</code></em>
+is in the range
+96–127. (This is not enforced by this library.). </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>clockrate</p></td>
+<td class="parameter_description"><p>the clock rate for this codec, or 0 to not specify a clock rate.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>channels</p></td>
+<td class="parameter_description"><p>the number of channels, or 0 to leave this unspecified (which the
+peer should interpret as the default value, 1).</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>params</p></td>
+<td class="parameter_description"><p> parameters
+for this codec. This is referenced, not copied, so you should avoid
+modifying this parameter after calling this function. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> utf8 utf8][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.55.9.5.6"></a><h4>Returns</h4>
+<p> the codec description. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="jingle-media-rtp-codec-free"></a><h3>jingle_media_rtp_codec_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+jingle_media_rtp_codec_free (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleCodec" title="WockyJingleCodec"><span class="type">WockyJingleCodec</span></a> *p</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="jingle-media-rtp-free-codecs"></a><h3>jingle_media_rtp_free_codecs ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+jingle_media_rtp_free_codecs (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *codecs</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="jingle-media-rtp-copy-codecs"></a><h3>jingle_media_rtp_copy_codecs ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+jingle_media_rtp_copy_codecs (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *codecs</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="jingle-media-rtp-compare-codecs"></a><h3>jingle_media_rtp_compare_codecs ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+jingle_media_rtp_compare_codecs (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *old</code></em>,
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *new</code></em>,
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **changed</code></em>,
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **e</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-media-description-new"></a><h3>wocky_jingle_media_description_new ()</h3>
+<pre class="programlisting"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="returnvalue">WockyJingleMediaDescription</span></a> *
+wocky_jingle_media_description_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Allocates a new media description. You should fill in all the fields yourself.</p>
+<div class="refsect3">
+<a name="id-1.2.55.9.10.5"></a><h4>Returns</h4>
+<p> a new, empty, media description</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-media-description-free"></a><h3>wocky_jingle_media_description_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+wocky_jingle_media_description_free (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a> *md</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-media-description-copy"></a><h3>wocky_jingle_media_description_copy ()</h3>
+<pre class="programlisting"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="returnvalue">WockyJingleMediaDescription</span></a> *
+wocky_jingle_media_description_copy (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a> *md</code></em>);</pre>
+<p>Performs a deep copy of a media description.</p>
+<div class="refsect3">
+<a name="id-1.2.55.9.12.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>md</p></td>
+<td class="parameter_description"><p>a media description</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.55.9.12.6"></a><h4>Returns</h4>
+<p> a deep copy of <em class="parameter"><code>md</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-rtp-header-extension-new"></a><h3>wocky_jingle_rtp_header_extension_new ()</h3>
+<pre class="programlisting"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleRtpHeaderExtension" title="WockyJingleRtpHeaderExtension"><span class="returnvalue">WockyJingleRtpHeaderExtension</span></a> *
+wocky_jingle_rtp_header_extension_new (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> id</code></em>,
+                                       <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleContentSenders" title="enum WockyJingleContentSenders"><span class="type">WockyJingleContentSenders</span></a> senders</code></em>,
+                                       <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *uri</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-rtp-header-extension-free"></a><h3>wocky_jingle_rtp_header_extension_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+wocky_jingle_rtp_header_extension_free
+                               (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleRtpHeaderExtension" title="WockyJingleRtpHeaderExtension"><span class="type">WockyJingleRtpHeaderExtension</span></a> *hdrext</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-feedback-message-new"></a><h3>wocky_jingle_feedback_message_new ()</h3>
+<pre class="programlisting"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleFeedbackMessage" title="WockyJingleFeedbackMessage"><span class="returnvalue">WockyJingleFeedbackMessage</span></a> *
+wocky_jingle_feedback_message_new (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *type</code></em>,
+                                   <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *subtype</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-feedback-message-free"></a><h3>wocky_jingle_feedback_message_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+wocky_jingle_feedback_message_free (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleFeedbackMessage" title="WockyJingleFeedbackMessage"><span class="type">WockyJingleFeedbackMessage</span></a> *fb</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-media-description-simplify"></a><h3>wocky_jingle_media_description_simplify ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+wocky_jingle_media_description_simplify
+                               (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a> *md</code></em>);</pre>
+<p>Removes duplicated Feedback message and put them in the global structure</p>
+<p>This function will iterate over every codec in a description and look for
+feedback messages that are exactly the same in every codec and will instead
+put the in the list in the description and remove them from the childs.
+This limits the amount of duplication in the resulting XML.</p>
+<div class="refsect3">
+<a name="id-1.2.55.9.17.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>md</p></td>
+<td class="parameter_description"><p>a description to simplify</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="WockyJingleMediaRtp.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="WockyJingleCodec"></a><h3>WockyJingleCodec</h3>
 <pre class="programlisting">typedef struct {
@@ -136,301 +572,104 @@
   GList *feedback_msgs;
 } WockyJingleMediaDescription;
 </pre>
-<p>
-Media description for a <a class="link" href="WockyJingleMediaRtp.html" title="WockyJingleMediaRtp"><span class="type">WockyJingleMediaRtp</span></a> content.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p>Media description for a <a class="link" href="WockyJingleMediaRtp.html" title="WockyJingleMediaRtp"><span class="type">WockyJingleMediaRtp</span></a> content.</p>
+<div class="refsect3">
+<a name="id-1.2.55.10.5.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *<em class="structfield"><code><a name="WockyJingleMediaDescription.codecs"></a>codecs</code></em>;</span></p></td>
-<td>a list of <a class="link" href="WockyJingleMediaRtp.html#WockyJingleCodec" title="WockyJingleCodec"><span class="type">WockyJingleCodec</span></a>s, allocated with
-<a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-codec-new" title="jingle_media_rtp_codec_new ()"><code class="function">jingle_media_rtp_codec_new()</code></a>
-</td>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *<em class="structfield"><code><a name="WockyJingleMediaDescription.codecs"></a>codecs</code></em>;</p></td>
+<td class="struct_member_description"><p>a list of <a class="link" href="WockyJingleMediaRtp.html#WockyJingleCodec" title="WockyJingleCodec"><span class="type">WockyJingleCodec</span></a>s, allocated with
+<a class="link" href="WockyJingleMediaRtp.html#jingle-media-rtp-codec-new" title="jingle_media_rtp_codec_new ()"><code class="function">jingle_media_rtp_codec_new()</code></a></p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *<em class="structfield"><code><a name="WockyJingleMediaDescription.hdrexts"></a>hdrexts</code></em>;</span></p></td>
-<td>a list of <a class="link" href="WockyJingleMediaRtp.html#WockyJingleRtpHeaderExtension" title="WockyJingleRtpHeaderExtension"><span class="type">WockyJingleRtpHeaderExtension</span></a>s, allocated with
-<a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-rtp-header-extension-new" title="wocky_jingle_rtp_header_extension_new ()"><code class="function">wocky_jingle_rtp_header_extension_new()</code></a>
-</td>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *<em class="structfield"><code><a name="WockyJingleMediaDescription.hdrexts"></a>hdrexts</code></em>;</p></td>
+<td class="struct_member_description"><p>a list of <a class="link" href="WockyJingleMediaRtp.html#WockyJingleRtpHeaderExtension" title="WockyJingleRtpHeaderExtension"><span class="type">WockyJingleRtpHeaderExtension</span></a>s, allocated with
+<a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-rtp-header-extension-new" title="wocky_jingle_rtp_header_extension_new ()"><code class="function">wocky_jingle_rtp_header_extension_new()</code></a></p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="WockyJingleMediaDescription.trr-int"></a>trr_int</code></em>;</span></p></td>
-<td>number of milliseconds between regular RTCP reports</td>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="WockyJingleMediaDescription.trr-int"></a>trr_int</code></em>;</p></td>
+<td class="struct_member_description"><p>number of milliseconds between regular RTCP reports</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *<em class="structfield"><code><a name="WockyJingleMediaDescription.feedback-msgs"></a>feedback_msgs</code></em>;</span></p></td>
-<td>a list of <a class="link" href="WockyJingleMediaRtp.html#WockyJingleFeedbackMessage" title="WockyJingleFeedbackMessage"><span class="type">WockyJingleFeedbackMessage</span></a>s, allocated
-with <a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-feedback-message-new" title="wocky_jingle_feedback_message_new ()"><code class="function">wocky_jingle_feedback_message_new()</code></a>
-</td>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *<em class="structfield"><code><a name="WockyJingleMediaDescription.feedback-msgs"></a>feedback_msgs</code></em>;</p></td>
+<td class="struct_member_description"><p>a list of <a class="link" href="WockyJingleMediaRtp.html#WockyJingleFeedbackMessage" title="WockyJingleFeedbackMessage"><span class="type">WockyJingleFeedbackMessage</span></a>s, allocated
+with <a class="link" href="WockyJingleMediaRtp.html#wocky-jingle-feedback-message-new" title="wocky_jingle_feedback_message_new ()"><code class="function">wocky_jingle_feedback_message_new()</code></a></p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
+</div>
+</div>
+<div class="refsect1">
+<a name="WockyJingleMediaRtp.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="jingle-media-rtp-register"></a><h3>jingle_media_rtp_register ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                jingle_media_rtp_register           (<em class="parameter"><code><a class="link" href="WockyJingleFactory.html" title="WockyJingleFactory"><span class="type">WockyJingleFactory</span></a> *factory</code></em>);</pre>
+<a name="WockyJingleMediaRtp--media-type"></a><h3>The <code class="literal">“media-type”</code> property</h3>
+<pre class="programlisting">  “media-type”               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>Media type.</p>
+<p>Flags: Read / Write / Construct Only</p>
+<p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="jingle-media-rtp-set-local-media-description"></a><h3>jingle_media_rtp_set_local_media_description ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            jingle_media_rtp_set_local_media_description
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html" title="WockyJingleMediaRtp"><span class="type">WockyJingleMediaRtp</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a> *md</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> ready</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
-<p>
-Sets or updates the media description (codecs, feedback messages, etc) for
-<em class="parameter"><code>self</code></em>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="WockyJingleMediaRtp--remote-mute"></a><h3>The <code class="literal">“remote-mute”</code> property</h3>
+<pre class="programlisting">  “remote-mute”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>TRUE if the peer has muted this stream.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="WockyJingleMediaRtp.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2">
+<a name="WockyJingleMediaRtp-remote-media-description"></a><h3>The <code class="literal">“remote-media-description”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="WockyJingleMediaRtp.html" title="WockyJingleMediaRtp"><span class="type">WockyJingleMediaRtp</span></a> *content,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>             md,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>             user_data)</pre>
+<p>Emitted when the remote media description is received or subsequently updated.</p>
+<div class="refsect3">
+<a name="id-1.2.55.12.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
-<td>a content in an RTP session</td>
+<td class="parameter_name"><p>content</p></td>
+<td class="parameter_description"><p>the RTP content</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>md</code></em> :</span></p></td>
-<td>new media description for this content. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
+<td class="parameter_name"><p>md</p></td>
+<td class="parameter_description"><p>a <a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>ready</code></em> :</span></p></td>
-<td>whether the codecs can regarded as ready to sent from now on</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>used to return a <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS" title="WOCKY_XMPP_ERROR"><code class="literal">WOCKY_XMPP_ERROR</code></a> if the codec update is illegal.</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if no description was previously set, or if the update is
-compatible with the existing description; <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if the update is illegal
-(due to adding previously-unknown codecs or renaming an existing codec, for
-example)</td>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-media-rtp-get-remote-media-description"></a><h3>wocky_jingle_media_rtp_get_remote_media_description ()</h3>
-<pre class="programlisting"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="returnvalue">WockyJingleMediaDescription</span></a> * wocky_jingle_media_rtp_get_remote_media_description
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html" title="WockyJingleMediaRtp"><span class="type">WockyJingleMediaRtp</span></a> *self</code></em>);</pre>
-<p>
-Gets the current remote media description, if known. The
-<span class="type">"remote-media-description"</span> signal is emitted when this
-value changes.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
-<td>the RTP content</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the current remote media description, which may be
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for outgoing calls until it is first received. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="jingle-media-rtp-codec-new"></a><h3>jingle_media_rtp_codec_new ()</h3>
-<pre class="programlisting"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleCodec" title="WockyJingleCodec"><span class="returnvalue">WockyJingleCodec</span></a> *  jingle_media_rtp_codec_new          (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> id</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> clockrate</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> channels</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a> *params</code></em>);</pre>
-<p>
-Creates a new structure describing a codec, suitable for including in a
-<a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>id</code></em> :</span></p></td>
-<td>a codec ID, as specified in tables 4 and 5 of RFC 3551.</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>the codec's name. This is optional if <em class="parameter"><code>id</code></em> is one of the
-statically-defined codec identifiers, and required if <em class="parameter"><code>id</code></em> is in the range
-96–127. (This is not enforced by this library.). <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>clockrate</code></em> :</span></p></td>
-<td>the clock rate for this codec, or 0 to not specify a clock rate.</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>channels</code></em> :</span></p></td>
-<td>the number of channels, or 0 to leave this unspecified (which the
-peer should interpret as the default value, 1).</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>params</code></em> :</span></p></td>
-<td>parameters
-for this codec. This is referenced, not copied, so you should avoid
-modifying this parameter after calling this function. <span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> utf8 utf8][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the codec description. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="jingle-media-rtp-codec-free"></a><h3>jingle_media_rtp_codec_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                jingle_media_rtp_codec_free         (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleCodec" title="WockyJingleCodec"><span class="type">WockyJingleCodec</span></a> *p</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="jingle-media-rtp-free-codecs"></a><h3>jingle_media_rtp_free_codecs ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                jingle_media_rtp_free_codecs        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *codecs</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="jingle-media-rtp-copy-codecs"></a><h3>jingle_media_rtp_copy_codecs ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             jingle_media_rtp_copy_codecs        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *codecs</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="jingle-media-rtp-compare-codecs"></a><h3>jingle_media_rtp_compare_codecs ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            jingle_media_rtp_compare_codecs     (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *old</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *new</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **changed</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **e</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-media-description-new"></a><h3>wocky_jingle_media_description_new ()</h3>
-<pre class="programlisting"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="returnvalue">WockyJingleMediaDescription</span></a> * wocky_jingle_media_description_new
-                                                        (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-Allocates a new media description. You should fill in all the fields yourself.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a new, empty, media description</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-media-description-free"></a><h3>wocky_jingle_media_description_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_media_description_free (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a> *md</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-media-description-copy"></a><h3>wocky_jingle_media_description_copy ()</h3>
-<pre class="programlisting"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="returnvalue">WockyJingleMediaDescription</span></a> * wocky_jingle_media_description_copy
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a> *md</code></em>);</pre>
-<p>
-Performs a deep copy of a media description.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>md</code></em> :</span></p></td>
-<td>a media description</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a deep copy of <em class="parameter"><code>md</code></em>. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-rtp-header-extension-new"></a><h3>wocky_jingle_rtp_header_extension_new ()</h3>
-<pre class="programlisting"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleRtpHeaderExtension" title="WockyJingleRtpHeaderExtension"><span class="returnvalue">WockyJingleRtpHeaderExtension</span></a> * wocky_jingle_rtp_header_extension_new
-                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> id</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-jingle-types.html#WockyJingleContentSenders" title="enum WockyJingleContentSenders"><span class="type">WockyJingleContentSenders</span></a> senders</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *uri</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-rtp-header-extension-free"></a><h3>wocky_jingle_rtp_header_extension_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_rtp_header_extension_free
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleRtpHeaderExtension" title="WockyJingleRtpHeaderExtension"><span class="type">WockyJingleRtpHeaderExtension</span></a> *hdrext</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-feedback-message-new"></a><h3>wocky_jingle_feedback_message_new ()</h3>
-<pre class="programlisting"><a class="link" href="WockyJingleMediaRtp.html#WockyJingleFeedbackMessage" title="WockyJingleFeedbackMessage"><span class="returnvalue">WockyJingleFeedbackMessage</span></a> * wocky_jingle_feedback_message_new
-                                                        (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *type</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *subtype</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-feedback-message-free"></a><h3>wocky_jingle_feedback_message_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_feedback_message_free  (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleFeedbackMessage" title="WockyJingleFeedbackMessage"><span class="type">WockyJingleFeedbackMessage</span></a> *fb</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-media-description-simplify"></a><h3>wocky_jingle_media_description_simplify ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_media_description_simplify
-                                                        (<em class="parameter"><code><a class="link" href="WockyJingleMediaRtp.html#WockyJingleMediaDescription" title="WockyJingleMediaDescription"><span class="type">WockyJingleMediaDescription</span></a> *md</code></em>);</pre>
-<p>
-Removes duplicated Feedback message and put them in the global structure
-</p>
-<p>
-This function will iterate over every codec in a description and look for
-feedback messages that are exactly the same in every codec and will instead
-put the in the list in the description and remove them from the childs.
-This limits the amount of duplication in the resulting XML.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>md</code></em> :</span></p></td>
-<td>a description to simplify</td>
-</tr></tbody>
-</table></div>
+<p>Flags: <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

@@ -2,30 +2,27 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>wocky-pubsub-service-protected</title>
+<title>Wocky Reference Manual: wocky-pubsub-service-protected</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="wocky-WockyPubsubService.html" title="WockyPubsubService">
+<link rel="prev" href="WockyPubsubService.html" title="WockyPubsubService">
 <link rel="next" href="WockyResourceContact.html" title="WockyResourceContact">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="wocky-WockyPubsubService.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">Wocky Reference Manual</th>
-<td><a accesskey="n" href="WockyResourceContact.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#wocky-wocky-pubsub-service-protected.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#wocky-wocky-pubsub-service-protected.description" class="shortcut">Description</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#wocky-wocky-pubsub-service-protected.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#wocky-wocky-pubsub-service-protected.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="WockyPubsubService.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="WockyResourceContact.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="wocky-wocky-pubsub-service-protected"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -33,134 +30,185 @@
 <h2><span class="refentrytitle"><a name="wocky-wocky-pubsub-service-protected.top_of_page"></a>wocky-pubsub-service-protected</span></h2>
 <p>wocky-pubsub-service-protected</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="wocky-wocky-pubsub-service-protected.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis"><span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-wocky-pubsub-service-protected.html#wocky-pubsub-service-create-retrieve-subscriptions-stanza" title="wocky_pubsub_service_create_retrieve_subscriptions_stanza ()">wocky_pubsub_service_create_retrieve_subscriptions_stanza</a>
-                                                        (<em class="parameter"><code><span class="type">WockyPubsubService</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **subscriptions_node</code></em>);
-<a class="link" href="wocky-WockyPubsubService.html#WockyPubsubSubscription"><span class="returnvalue">WockyPubsubSubscription</span></a> * <a class="link" href="wocky-wocky-pubsub-service-protected.html#wocky-pubsub-service-parse-subscription" title="wocky_pubsub_service_parse_subscription ()">wocky_pubsub_service_parse_subscription</a>
-                                                        (<em class="parameter"><code><span class="type">WockyPubsubService</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *subscription_node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *parent_node_attr</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="wocky-wocky-pubsub-service-protected.html#wocky-pubsub-service-parse-subscriptions" title="wocky_pubsub_service_parse_subscriptions ()">wocky_pubsub_service_parse_subscriptions</a>
-                                                        (<em class="parameter"><code><span class="type">WockyPubsubService</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *subscriptions_node</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **subscription_nodes</code></em>);
-<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-wocky-pubsub-service-protected.html#wocky-pubsub-service-create-create-node-stanza" title="wocky_pubsub_service_create_create_node_stanza ()">wocky_pubsub_service_create_create_node_stanza</a>
-                                                        (<em class="parameter"><code><span class="type">WockyPubsubService</span> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
-                                                         <em class="parameter"><code><span class="type">WockyDataForm</span> *config</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **create_node</code></em>);
-<a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="returnvalue">WockyPubsubNode</span></a> *   <a class="link" href="wocky-wocky-pubsub-service-protected.html#wocky-pubsub-service-handle-create-node-reply" title="wocky_pubsub_service_handle_create_node_reply ()">wocky_pubsub_service_handle_create_node_reply</a>
-                                                        (<em class="parameter"><code><span class="type">WockyPubsubService</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *create_tree</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *requested_name</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<span class="returnvalue">WockyPorter</span> *       <a class="link" href="wocky-wocky-pubsub-service-protected.html#wocky-pubsub-service-get-porter" title="wocky_pubsub_service_get_porter ()">wocky_pubsub_service_get_porter</a>     (<em class="parameter"><code><span class="type">WockyPubsubService</span> *self</code></em>);
+<div class="refsect1">
+<a name="wocky-wocky-pubsub-service-protected.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-service-protected.html#wocky-pubsub-service-create-retrieve-subscriptions-stanza" title="wocky_pubsub_service_create_retrieve_subscriptions_stanza ()">wocky_pubsub_service_create_retrieve_subscriptions_stanza</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyPubsubService.html#WockyPubsubSubscription"><span class="returnvalue">WockyPubsubSubscription</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-service-protected.html#wocky-pubsub-service-parse-subscription" title="wocky_pubsub_service_parse_subscription ()">wocky_pubsub_service_parse_subscription</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-service-protected.html#wocky-pubsub-service-parse-subscriptions" title="wocky_pubsub_service_parse_subscriptions ()">wocky_pubsub_service_parse_subscriptions</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-service-protected.html#wocky-pubsub-service-create-create-node-stanza" title="wocky_pubsub_service_create_create_node_stanza ()">wocky_pubsub_service_create_create_node_stanza</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="returnvalue">WockyPubsubNode</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-service-protected.html#wocky-pubsub-service-handle-create-node-reply" title="wocky_pubsub_service_handle_create_node_reply ()">wocky_pubsub_service_handle_create_node_reply</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyPorter.html" title="WockyPorter"><span class="returnvalue">WockyPorter</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-service-protected.html#wocky-pubsub-service-get-porter" title="wocky_pubsub_service_get_porter ()">wocky_pubsub_service_get_porter</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="wocky-wocky-pubsub-service-protected.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">
 </pre>
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-pubsub-service-protected.description"></a><h2>Description</h2>
 </div>
 <div class="refsect1">
-<a name="wocky-wocky-pubsub-service-protected.details"></a><h2>Details</h2>
+<a name="wocky-wocky-pubsub-service-protected.functions_details"></a><h2>Functions</h2>
 <div class="refsect2">
-<a name="wocky-pubsub-service-create-retrieve-subscriptions-stanza"></a><h3>wocky_pubsub_service_create_retrieve_subscriptions_stanza ()</h3>
-<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_pubsub_service_create_retrieve_subscriptions_stanza
-                                                        (<em class="parameter"><code><span class="type">WockyPubsubService</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **subscriptions_node</code></em>);</pre>
+<a name="wocky-pubsub-service-create-retrieve-subscriptions-stanza"></a><h3>wocky_pubsub_service_create_retrieve_subscriptions_stanza ()</h3>
+<pre class="programlisting"><a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *
+wocky_pubsub_service_create_retrieve_subscriptions_stanza
+                               (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
+                                <em class="parameter"><code><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="type">WockyPubsubNode</span></a> *node</code></em>,
+                                <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
+                                <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **subscriptions_node</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-pubsub-service-parse-subscription"></a><h3>wocky_pubsub_service_parse_subscription ()</h3>
-<pre class="programlisting"><a class="link" href="wocky-WockyPubsubService.html#WockyPubsubSubscription"><span class="returnvalue">WockyPubsubSubscription</span></a> * wocky_pubsub_service_parse_subscription
-                                                        (<em class="parameter"><code><span class="type">WockyPubsubService</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *subscription_node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *parent_node_attr</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<a name="wocky-pubsub-service-parse-subscription"></a><h3>wocky_pubsub_service_parse_subscription ()</h3>
+<pre class="programlisting"><a class="link" href="WockyPubsubService.html#WockyPubsubSubscription"><span class="returnvalue">WockyPubsubSubscription</span></a> *
+wocky_pubsub_service_parse_subscription
+                               (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
+                                <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *subscription_node</code></em>,
+                                <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *parent_node_attr</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-pubsub-service-parse-subscriptions"></a><h3>wocky_pubsub_service_parse_subscriptions ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_pubsub_service_parse_subscriptions
-                                                        (<em class="parameter"><code><span class="type">WockyPubsubService</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *subscriptions_node</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **subscription_nodes</code></em>);</pre>
+<a name="wocky-pubsub-service-parse-subscriptions"></a><h3>wocky_pubsub_service_parse_subscriptions ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+wocky_pubsub_service_parse_subscriptions
+                               (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
+                                <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *subscriptions_node</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> **subscription_nodes</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-pubsub-service-create-create-node-stanza"></a><h3>wocky_pubsub_service_create_create_node_stanza ()</h3>
-<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_pubsub_service_create_create_node_stanza
-                                                        (<em class="parameter"><code><span class="type">WockyPubsubService</span> *self</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
-                                                         <em class="parameter"><code><span class="type">WockyDataForm</span> *config</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **create_node</code></em>);</pre>
+<a name="wocky-pubsub-service-create-create-node-stanza"></a><h3>wocky_pubsub_service_create_create_node_stanza ()</h3>
+<pre class="programlisting"><a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *
+wocky_pubsub_service_create_create_node_stanza
+                               (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
+                                <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                <em class="parameter"><code><a class="link" href="WockyDataForm.html" title="WockyDataForm"><span class="type">WockyDataForm</span></a> *config</code></em>,
+                                <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
+                                <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **create_node</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-pubsub-service-handle-create-node-reply"></a><h3>wocky_pubsub_service_handle_create_node_reply ()</h3>
-<pre class="programlisting"><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="returnvalue">WockyPubsubNode</span></a> *   wocky_pubsub_service_handle_create_node_reply
-                                                        (<em class="parameter"><code><span class="type">WockyPubsubService</span> *self</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *create_tree</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *requested_name</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
-<p>
-Handles the body of a reply to a create node request. This is
+<a name="wocky-pubsub-service-handle-create-node-reply"></a><h3>wocky_pubsub_service_handle_create_node_reply ()</h3>
+<pre class="programlisting"><a class="link" href="WockyPubsubNode.html" title="WockyPubsubNode"><span class="returnvalue">WockyPubsubNode</span></a> *
+wocky_pubsub_service_handle_create_node_reply
+                               (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>,
+                                <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *create_tree</code></em>,
+                                <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *requested_name</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>Handles the body of a reply to a create node request. This is
 ever-so-slightly involved, because the server is allowed to omit the body of
 the reply if you specified a node name and it created a node with that name,
 but it may also tell you "hey, you asked for 'ringo', but I gave you
-'george'". Good times.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+'george'". Good times.</p>
+<div class="refsect3">
+<a name="id-1.2.33.6.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
-<td>a pubsub service</td>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>a pubsub service</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>create_tree</code></em> :</span></p></td>
-<td>the &lt;create/&gt; tree from the reply to an attempt to
-create a node, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none was present in the reply.</td>
+<td class="parameter_name"><p>create_tree</p></td>
+<td class="parameter_description"><p>the &lt;create/&gt; tree from the reply to an attempt to
+create a node, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none was present in the reply.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>requested_name</code></em> :</span></p></td>
-<td>the name we asked the server to use for the node, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-if we requested an instant node</td>
+<td class="parameter_name"><p>requested_name</p></td>
+<td class="parameter_description"><p>the name we asked the server to use for the node, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+if we requested an instant node</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>location at which to store an error</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a pubsub node if the reply made sense, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> with <em class="parameter"><code>error</code></em> set if
-not.</td>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>location at which to store an error</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<div class="refsect3">
+<a name="id-1.2.33.6.6.6"></a><h4>Returns</h4>
+<p> a pubsub node if the reply made sense, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> with <em class="parameter"><code>error</code></em>
+set if
+not.</p>
+<p></p>
+</div>
+</div>
 <hr>
 <div class="refsect2">
-<a name="wocky-pubsub-service-get-porter"></a><h3>wocky_pubsub_service_get_porter ()</h3>
-<pre class="programlisting"><span class="returnvalue">WockyPorter</span> *       wocky_pubsub_service_get_porter     (<em class="parameter"><code><span class="type">WockyPubsubService</span> *self</code></em>);</pre>
+<a name="wocky-pubsub-service-get-porter"></a><h3>wocky_pubsub_service_get_porter ()</h3>
+<pre class="programlisting"><a class="link" href="WockyPorter.html" title="WockyPorter"><span class="returnvalue">WockyPorter</span></a> *
+wocky_pubsub_service_get_porter (<em class="parameter"><code><a class="link" href="WockyPubsubService.html" title="WockyPubsubService"><span class="type">WockyPubsubService</span></a> *self</code></em>);</pre>
 </div>
+</div>
+<div class="refsect1">
+<a name="wocky-wocky-pubsub-service-protected.other_details"></a><h2>Types and Values</h2>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>
