@@ -1,0 +1,403 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyMetaPorter</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="wocky-wocky-jabber-auth-password.html" title="wocky-jabber-auth-password">
+<link rel="next" href="WockyMuc.html" title="WockyMuc">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="wocky-wocky-jabber-auth-password.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="WockyMuc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockyMetaPorter.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockyMetaPorter.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="wocky-WockyMetaPorter"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockyMetaPorter.top_of_page"></a>WockyMetaPorter</span></h2>
+<p>WockyMetaPorter</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="wocky-WockyMetaPorter.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">enum                <a class="link" href="wocky-WockyMetaPorter.html#WockyMetaPorterError" title="enum WockyMetaPorterError">WockyMetaPorterError</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-error-quark" title="wocky_meta_porter_error_quark ()">wocky_meta_porter_error_quark</a>       (<em class="parameter"><code><span class="type">void</span></code></em>);
+#define             <a class="link" href="wocky-WockyMetaPorter.html#WOCKY-META-PORTER-ERROR:CAPS" title="WOCKY_META_PORTER_ERROR">WOCKY_META_PORTER_ERROR</a>
+struct              <a class="link" href="wocky-WockyMetaPorter.html#WockyMetaPorterClass" title="struct WockyMetaPorterClass">WockyMetaPorterClass</a>;
+<span class="returnvalue">WockyPorter</span> *       <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-new" title="wocky_meta_porter_new ()">wocky_meta_porter_new</a>               (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyContactFactory</span> *contact_factory</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint16"><span class="returnvalue">guint16</span></a>             <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-get-port" title="wocky_meta_porter_get_port ()">wocky_meta_porter_get_port</a>          (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-hold" title="wocky_meta_porter_hold ()">wocky_meta_porter_hold</a>              (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *contact</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-unhold" title="wocky_meta_porter_unhold ()">wocky_meta_porter_unhold</a>            (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *contact</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-set-jid" title="wocky_meta_porter_set_jid ()">wocky_meta_porter_set_jid</a>           (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-open-async" title="wocky_meta_porter_open_async ()">wocky_meta_porter_open_async</a>        (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyLLContact</span> *contact</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-open-finish" title="wocky_meta_porter_open_finish ()">wocky_meta_porter_open_finish</a>       (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<a href="http://library.gnome.org/devel/gio/unstable/GSocketConnection.html"><span class="returnvalue">GSocketConnection</span></a> * <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-borrow-connection" title="wocky_meta_porter_borrow_connection ()">wocky_meta_porter_borrow_connection</a> (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyLLContact</span> *contact</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyMetaPorter.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyMetaPorter.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyMetaPorterError"></a><h3>enum WockyMetaPorterError</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_META_PORTER_ERROR_NO_CONTACT_ADDRESS,
+  WOCKY_META_PORTER_ERROR_FAILED_TO_CLOSE,
+} WockyMetaPorterError;
+</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="WOCKY-META-PORTER-ERROR-NO-CONTACT-ADDRESS:CAPS"></a><span class="term"><code class="literal">WOCKY_META_PORTER_ERROR_NO_CONTACT_ADDRESS</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-META-PORTER-ERROR-FAILED-TO-CLOSE:CAPS"></a><span class="term"><code class="literal">WOCKY_META_PORTER_ERROR_FAILED_TO_CLOSE</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-meta-porter-error-quark"></a><h3>wocky_meta_porter_error_quark ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_meta_porter_error_quark       (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WOCKY-META-PORTER-ERROR:CAPS"></a><h3>WOCKY_META_PORTER_ERROR</h3>
+<pre class="programlisting">#define WOCKY_META_PORTER_ERROR (wocky_meta_porter_error_quark ())
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyMetaPorterClass"></a><h3>struct WockyMetaPorterClass</h3>
+<pre class="programlisting">struct WockyMetaPorterClass {
+  GObjectClass parent_class;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-meta-porter-new"></a><h3>wocky_meta_porter_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyPorter</span> *       wocky_meta_porter_new               (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyContactFactory</span> *contact_factory</code></em>);</pre>
+<p>
+Convenience function to create a new <span class="type">WockyMetaPorter</span> object. The
+JID can be set later by using <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-set-jid" title="wocky_meta_porter_set_jid ()"><code class="function">wocky_meta_porter_set_jid()</code></a>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
+<td>the JID of the local user, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>contact_factory</code></em> :</span></p></td>
+<td>a <span class="type">WockyContactFactory</span> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new <span class="type">WockyMetaPorter</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-meta-porter-get-port"></a><h3>wocky_meta_porter_get_port ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint16"><span class="returnvalue">guint16</span></a>             wocky_meta_porter_get_port          (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>);</pre>
+<p>
+Returns the port <em class="parameter"><code>porter</code></em> is listening in on for new incoming XMPP
+connections, or 0 if it has not been started yet with
+<a class="link" href="wocky-WockyPorter.html#wocky-porter-start" title="wocky_porter_start ()"><code class="function">wocky_porter_start()</code></a>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>a <span class="type">WockyMetaPorter</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the port <em class="parameter"><code>porter</code></em> is listening in on for new incoming XMPP
+connections, or 0 if it has not been started.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-meta-porter-hold"></a><h3>wocky_meta_porter_hold ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_meta_porter_hold              (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *contact</code></em>);</pre>
+<p>
+Increases the hold count of the porter to <em class="parameter"><code>contact</code></em> by
+one. This means that if there is a connection open to <em class="parameter"><code>contact</code></em> then
+it will not disconnected after a timeout. Note that calling this
+function does not mean a connection will be opened. The hold
+count on a contact survives across connections.
+</p>
+<p>
+To decrement the hold count of the porter to <em class="parameter"><code>contact</code></em>, one
+must call <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-unhold" title="wocky_meta_porter_unhold ()"><code class="function">wocky_meta_porter_unhold()</code></a>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>a <span class="type">WockyMetaPorter</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
+<td>a <a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-meta-porter-unhold"></a><h3>wocky_meta_porter_unhold ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_meta_porter_unhold            (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *contact</code></em>);</pre>
+<p>
+Decreases the hold count of the porter to <em class="parameter"><code>contact</code></em> by
+one. This means that if there is a connection open to <em class="parameter"><code>contact</code></em> and
+the hold count is zero, a connection timeout will be
+started.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>a <span class="type">WockyMetaPorter</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
+<td>a <a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-meta-porter-set-jid"></a><h3>wocky_meta_porter_set_jid ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_meta_porter_set_jid           (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);</pre>
+<p>
+Changes the local JID according to <em class="parameter"><code>porter</code></em>. Note that this function
+can only be called once, and only if <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> was passed to
+<a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-new" title="wocky_meta_porter_new ()"><code class="function">wocky_meta_porter_new()</code></a> when creating <em class="parameter"><code>porter</code></em>. Calling it again
+will be a no-op.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>a <span class="type">WockyMetaPorter</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
+<td>a new JID</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-meta-porter-open-async"></a><h3>wocky_meta_porter_open_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_meta_porter_open_async        (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyLLContact</span> *contact</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+<p>
+Make an asynchronous request to open a connection to <em class="parameter"><code>contact</code></em> if
+one is not already open. The hold count of the porter to
+<em class="parameter"><code>contact</code></em> will be incrememented and so after completion
+<a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-unhold" title="wocky_meta_porter_unhold ()"><code class="function">wocky_meta_porter_unhold()</code></a> should be called on contact to release
+the hold.
+</p>
+<p>
+When the request is complete, <em class="parameter"><code>callback</code></em> will be called and the user
+should call <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-open-finish" title="wocky_meta_porter_open_finish ()"><code class="function">wocky_meta_porter_open_finish()</code></a> to finish the request.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>a <span class="type">WockyMetaPorter</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
+<td>the <span class="type">WockyLLContact</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td>an optional <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>a callback to be called</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>data for <em class="parameter"><code>callback</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-meta-porter-open-finish"></a><h3>wocky_meta_porter_open_finish ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_meta_porter_open_finish       (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+Finishes an asynchronous request to open a connection if one is not
+already open. See <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-open-async" title="wocky_meta_porter_open_async ()"><code class="function">wocky_meta_porter_open_async()</code></a> for more details.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>a <span class="type">WockyMetaPorter</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
+<td>the <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>an optional <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> location to store an error message</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the operation was a success, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-meta-porter-borrow-connection"></a><h3>wocky_meta_porter_borrow_connection ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gio/unstable/GSocketConnection.html"><span class="returnvalue">GSocketConnection</span></a> * wocky_meta_porter_borrow_connection (<em class="parameter"><code><span class="type">WockyMetaPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyLLContact</span> *contact</code></em>);</pre>
+<p>
+Borrow the <a href="http://library.gnome.org/devel/gio/unstable/GSocketConnection.html"><span class="type">GSocketConnection</span></a> of the porter to <em class="parameter"><code>contact</code></em>, if one
+exists, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> will be returned.
+</p>
+<p>
+Note that the connection returned should be reffed using
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-ref"><code class="function">g_object_ref()</code></a> if it needs to be kept. However, it will still be
+operated on by the underlying <span class="type">WockyXmppConnection</span> object so can
+close spontaneously unless <a class="link" href="wocky-WockyMetaPorter.html#wocky-meta-porter-hold" title="wocky_meta_porter_hold ()"><code class="function">wocky_meta_porter_hold()</code></a> is called with
+<em class="parameter"><code>contact</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>a <span class="type">WockyMetaPorter</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
+<td>the <a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the <a href="http://library.gnome.org/devel/gio/unstable/GSocketConnection.html"><span class="type">GSocketConnection</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if no connection is open</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>

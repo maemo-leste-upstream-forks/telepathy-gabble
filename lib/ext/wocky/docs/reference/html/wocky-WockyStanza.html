@@ -1,0 +1,795 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyStanza</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="WockySession.html" title="WockySession">
+<link rel="next" href="wocky-WockyTLSConnector.html" title="WockyTLSConnector">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="WockySession.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="wocky-WockyTLSConnector.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockyStanza.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockyStanza.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="wocky-WockyStanza"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockyStanza.top_of_page"></a>WockyStanza</span></h2>
+<p>WockyStanza</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="wocky-WockyStanza.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">struct              <a class="link" href="wocky-WockyStanza.html#WockyStanzaClass" title="struct WockyStanzaClass">WockyStanzaClass</a>;
+enum                <a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType">WockyStanzaType</a>;
+enum                <a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType">WockyStanzaSubType</a>;
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyStanza.html#wocky-stanza-new" title="wocky_stanza_new ()">wocky_stanza_new</a>                    (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyStanza.html#wocky-stanza-copy" title="wocky_stanza_copy ()">wocky_stanza_copy</a>                   (<em class="parameter"><code><span class="type">WockyStanza</span> *old</code></em>);
+<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-WockyStanza.html#wocky-stanza-get-top-node" title="wocky_stanza_get_top_node ()">wocky_stanza_get_top_node</a>           (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build" title="wocky_stanza_build ()">wocky_stanza_build</a>                  (<em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *to</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build-to-contact" title="wocky_stanza_build_to_contact ()">wocky_stanza_build_to_contact</a>       (<em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *to</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyStanza.html#wocky-stanza-get-type-info" title="wocky_stanza_get_type_info ()">wocky_stanza_get_type_info</a>          (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> *type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> *sub_type</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyStanza.html#wocky-stanza-has-type" title="wocky_stanza_has_type ()">wocky_stanza_has_type</a>               (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> expected_type</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyStanza.html#wocky-stanza-get-from" title="wocky_stanza_get_from ()">wocky_stanza_get_from</a>               (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyStanza.html#wocky-stanza-get-to" title="wocky_stanza_get_to ()">wocky_stanza_get_to</a>                 (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build-va" title="wocky_stanza_build_va ()">wocky_stanza_build_va</a>               (<em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *to</code></em>,
+                                                         <em class="parameter"><code><span class="type">va_list</span> ap</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build-iq-result" title="wocky_stanza_build_iq_result ()">wocky_stanza_build_iq_result</a>        (<em class="parameter"><code><span class="type">WockyStanza</span> *iq</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build-iq-result-va" title="wocky_stanza_build_iq_result_va ()">wocky_stanza_build_iq_result_va</a>     (<em class="parameter"><code><span class="type">WockyStanza</span> *iq</code></em>,
+                                                         <em class="parameter"><code><span class="type">va_list</span> ap</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build-iq-error" title="wocky_stanza_build_iq_error ()">wocky_stanza_build_iq_error</a>         (<em class="parameter"><code><span class="type">WockyStanza</span> *iq</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build-iq-error-va" title="wocky_stanza_build_iq_error_va ()">wocky_stanza_build_iq_error_va</a>      (<em class="parameter"><code><span class="type">WockyStanza</span> *iq</code></em>,
+                                                         <em class="parameter"><code><span class="type">va_list</span> ap</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyStanza.html#wocky-stanza-extract-errors" title="wocky_stanza_extract_errors ()">wocky_stanza_extract_errors</a>         (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorType"><span class="type">WockyXmppErrorType</span></a> *type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **core</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **specialized</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **specialized_node</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyStanza.html#wocky-stanza-extract-stream-error" title="wocky_stanza_extract_stream_error ()">wocky_stanza_extract_stream_error</a>   (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **stream_error</code></em>);
+<a class="link" href="WockyContact.html" title="WockyContact"><span class="returnvalue">WockyContact</span></a> *      <a class="link" href="wocky-WockyStanza.html#wocky-stanza-get-to-contact" title="wocky_stanza_get_to_contact ()">wocky_stanza_get_to_contact</a>         (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>);
+<a class="link" href="WockyContact.html" title="WockyContact"><span class="returnvalue">WockyContact</span></a> *      <a class="link" href="wocky-WockyStanza.html#wocky-stanza-get-from-contact" title="wocky_stanza_get_from_contact ()">wocky_stanza_get_from_contact</a>       (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyStanza.html#wocky-stanza-set-to-contact" title="wocky_stanza_set_to_contact ()">wocky_stanza_set_to_contact</a>         (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *contact</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyStanza.html#wocky-stanza-set-from-contact" title="wocky_stanza_set_from_contact ()">wocky_stanza_set_from_contact</a>       (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *contact</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyStanza.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyStanza.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyStanzaClass"></a><h3>struct WockyStanzaClass</h3>
+<pre class="programlisting">struct WockyStanzaClass {
+};
+</pre>
+<p>
+The class of a <span class="type">WockyStanza</span>.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyStanzaType"></a><h3>enum WockyStanzaType</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_STANZA_TYPE_NONE,
+  WOCKY_STANZA_TYPE_MESSAGE,
+  WOCKY_STANZA_TYPE_PRESENCE,
+  WOCKY_STANZA_TYPE_IQ,
+  WOCKY_STANZA_TYPE_STREAM,
+  WOCKY_STANZA_TYPE_STREAM_FEATURES,
+  WOCKY_STANZA_TYPE_AUTH,
+  WOCKY_STANZA_TYPE_CHALLENGE,
+  WOCKY_STANZA_TYPE_RESPONSE,
+  WOCKY_STANZA_TYPE_SUCCESS,
+  WOCKY_STANZA_TYPE_FAILURE,
+  WOCKY_STANZA_TYPE_STREAM_ERROR,
+  WOCKY_STANZA_TYPE_UNKNOWN,
+} WockyStanzaType;
+</pre>
+<p>
+XMPP stanza types.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-NONE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_NONE</code></span></p></td>
+<td>no stanza type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-MESSAGE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_MESSAGE</code></span></p></td>
+<td>
+<code class="code">&lt;message/&gt;</code> stanza
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-PRESENCE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_PRESENCE</code></span></p></td>
+<td>
+<code class="code">&lt;presence/&gt;</code> stanza
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-IQ:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_IQ</code></span></p></td>
+<td>
+<code class="code">&lt;iq/&gt;</code> stanza
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-STREAM:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_STREAM</code></span></p></td>
+<td>
+<code class="code">&lt;stream/&gt;</code> stanza
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-STREAM-FEATURES:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_STREAM_FEATURES</code></span></p></td>
+<td>
+<code class="code">&lt;stream:features/&gt;</code> stanza
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-AUTH:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_AUTH</code></span></p></td>
+<td>
+<code class="code">&lt;auth/&gt;</code> stanza
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-CHALLENGE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_CHALLENGE</code></span></p></td>
+<td>
+<code class="code">&lt;challenge/&gt;</code> stanza
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-RESPONSE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_RESPONSE</code></span></p></td>
+<td>
+<code class="code">&lt;response/&gt;</code> stanza
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-SUCCESS:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_SUCCESS</code></span></p></td>
+<td>
+<code class="code">&lt;success/&gt;</code> stanza
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-FAILURE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_FAILURE</code></span></p></td>
+<td>
+<code class="code">&lt;failure/&gt;</code> stanza
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-STREAM-ERROR:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_STREAM_ERROR</code></span></p></td>
+<td>
+<code class="code">&lt;stream:error/&gt;</code> stanza
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-TYPE-UNKNOWN:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_TYPE_UNKNOWN</code></span></p></td>
+<td>unknown stanza type
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyStanzaSubType"></a><h3>enum WockyStanzaSubType</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_STANZA_SUB_TYPE_NONE,
+  WOCKY_STANZA_SUB_TYPE_AVAILABLE,
+  WOCKY_STANZA_SUB_TYPE_NORMAL,
+  WOCKY_STANZA_SUB_TYPE_CHAT,
+  WOCKY_STANZA_SUB_TYPE_GROUPCHAT,
+  WOCKY_STANZA_SUB_TYPE_HEADLINE,
+  WOCKY_STANZA_SUB_TYPE_UNAVAILABLE,
+  WOCKY_STANZA_SUB_TYPE_PROBE,
+  WOCKY_STANZA_SUB_TYPE_SUBSCRIBE,
+  WOCKY_STANZA_SUB_TYPE_UNSUBSCRIBE,
+  WOCKY_STANZA_SUB_TYPE_SUBSCRIBED,
+  WOCKY_STANZA_SUB_TYPE_UNSUBSCRIBED,
+  WOCKY_STANZA_SUB_TYPE_GET,
+  WOCKY_STANZA_SUB_TYPE_SET,
+  WOCKY_STANZA_SUB_TYPE_RESULT,
+  WOCKY_STANZA_SUB_TYPE_ERROR,
+  WOCKY_STANZA_SUB_TYPE_UNKNOWN,
+} WockyStanzaSubType;
+</pre>
+<p>
+XMPP stanza sub types.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-NONE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_NONE</code></span></p></td>
+<td>no sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-AVAILABLE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_AVAILABLE</code></span></p></td>
+<td>"available" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-NORMAL:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_NORMAL</code></span></p></td>
+<td>"normal" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-CHAT:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_CHAT</code></span></p></td>
+<td>"chat" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-GROUPCHAT:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_GROUPCHAT</code></span></p></td>
+<td>"groupchat" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-HEADLINE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_HEADLINE</code></span></p></td>
+<td>"headline" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-UNAVAILABLE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_UNAVAILABLE</code></span></p></td>
+<td>"unavailable" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-PROBE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_PROBE</code></span></p></td>
+<td>"probe" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-SUBSCRIBE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_SUBSCRIBE</code></span></p></td>
+<td>"subscribe" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-UNSUBSCRIBE:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_UNSUBSCRIBE</code></span></p></td>
+<td>"unsubscribe" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-SUBSCRIBED:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_SUBSCRIBED</code></span></p></td>
+<td>"subscribed" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-UNSUBSCRIBED:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_UNSUBSCRIBED</code></span></p></td>
+<td>"unsubscribed" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-GET:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_GET</code></span></p></td>
+<td>"get" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-SET:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_SET</code></span></p></td>
+<td>"set" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-RESULT:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_RESULT</code></span></p></td>
+<td>"result" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-ERROR:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_ERROR</code></span></p></td>
+<td>"error" stanza sub type
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-STANZA-SUB-TYPE-UNKNOWN:CAPS"></a><span class="term"><code class="literal">WOCKY_STANZA_SUB_TYPE_UNKNOWN</code></span></p></td>
+<td>unknown stanza sub type
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-new"></a><h3>wocky_stanza_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_new                    (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ns</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-copy"></a><h3>wocky_stanza_copy ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_copy                   (<em class="parameter"><code><span class="type">WockyStanza</span> *old</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-get-top-node"></a><h3>wocky_stanza_get_top_node ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_stanza_get_top_node           (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>);</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a stanza</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A pointer to the topmost node of the stanza</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-build"></a><h3>wocky_stanza_build ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_build                  (<em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *to</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);</pre>
+<p>
+Build a XMPP stanza from a list of arguments. For example, the following invocation:
+</p>
+<p>
+</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build">wocky_stanza_build</a></span><span class="normal"> </span><span class="symbol">(</span>
+<span class="normal">   <a href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-MESSAGE:CAPS">WOCKY_STANZA_TYPE_MESSAGE</a></span><span class="symbol">,</span><span class="normal"> <a href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-NONE:CAPS">WOCKY_STANZA_SUB_TYPE_NONE</a></span><span class="symbol">,</span>
+<span class="normal">   </span><span class="string">"alice@collabora.co.uk"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"bob@collabora.co.uk"</span><span class="symbol">,</span>
+<span class="normal">   <a href="wocky-WockyNode.html#WOCKY-NODE-START:CAPS">WOCKY_NODE_START</a></span><span class="symbol">,</span><span class="normal"> </span><span class="string">"html"</span><span class="symbol">,</span>
+<span class="normal">     <a href="wocky-WockyNode.html#WOCKY-NODE-XMLNS:CAPS">WOCKY_NODE_XMLNS</a></span><span class="symbol">,</span><span class="normal"> </span><span class="string">"http://www.w3.org/1999/xhtml"</span><span class="symbol">,</span>
+<span class="normal">     WOCKY_NODE</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"body"</span><span class="symbol">,</span>
+<span class="normal">       <a href="wocky-WockyNode.html#WOCKY-NODE-ATTRIBUTE:CAPS">WOCKY_NODE_ATTRIBUTE</a></span><span class="symbol">,</span><span class="normal"> </span><span class="string">"textcolor"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"red"</span><span class="symbol">,</span>
+<span class="normal">       <a href="wocky-WockyNode.html#WOCKY-NODE-TEXT:CAPS">WOCKY_NODE_TEXT</a></span><span class="symbol">,</span><span class="normal"> </span><span class="string">"Telepathy rocks!"</span><span class="symbol">,</span>
+<span class="normal">     <a href="wocky-WockyNode.html#WOCKY-NODE-END:CAPS">WOCKY_NODE_END</a></span><span class="symbol">,</span>
+<span class="normal">   <a href="wocky-WockyNode.html#WOCKY-NODE-END:CAPS">WOCKY_NODE_END</a></span><span class="symbol">,</span>
+<span class="normal">  <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+</p>
+<p>
+produces this stanza:
+</p>
+<p>
+</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="symbol">&lt;</span><span class="usertype">message</span><span class="normal"> from</span><span class="symbol">=</span><span class="string">'alice@collabora.co.uk'</span><span class="normal"> to</span><span class="symbol">=</span><span class="string">'bob@collabora.co.uk'</span><span class="symbol">&gt;</span>
+<span class="normal">  </span><span class="symbol">&lt;</span><span class="usertype">html</span><span class="normal"> xmlns</span><span class="symbol">=</span><span class="string">'http://www.w3.org/1999/xhtml'</span><span class="symbol">&gt;</span>
+<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">body</span><span class="normal"> textcolor</span><span class="symbol">=</span><span class="string">'red'</span><span class="symbol">&gt;</span>
+<span class="normal">      </span><span class="usertype">Telepathy</span><span class="normal"> rocks</span><span class="symbol">!</span>
+<span class="normal">    </span><span class="symbol">&lt;/</span><span class="normal">body</span><span class="symbol">&gt;</span>
+<span class="normal">  </span><span class="symbol">&lt;/</span><span class="normal">html</span><span class="symbol">&gt;</span>
+<span class="symbol">&lt;/</span><span class="normal">message</span><span class="symbol">&gt;</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+</p>
+<p>
+You may optionally use mnemonic ASCII characters in place of the build tags,
+to better reflect the structure of the stanza in C source. For example, the
+above stanza could be written as:
+</p>
+<p>
+</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build">wocky_stanza_build</a></span><span class="normal"> </span><span class="symbol">(</span>
+<span class="normal">   <a href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-MESSAGE:CAPS">WOCKY_STANZA_TYPE_MESSAGE</a></span><span class="symbol">,</span><span class="normal"> <a href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-NONE:CAPS">WOCKY_STANZA_SUB_TYPE_NONE</a></span><span class="symbol">,</span>
+<span class="normal">   </span><span class="string">"alice@collabora.co.uk"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"bob@collabora.co.uk"</span><span class="symbol">,</span>
+<span class="normal">   </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"html"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">':'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"http://www.w3.org/1999/xhtml"</span><span class="symbol">,</span>
+<span class="normal">     </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"body"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">'@'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"textcolor"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"red"</span><span class="symbol">,</span>
+<span class="normal">       </span><span class="string">'$'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"Telepathy rocks!"</span><span class="symbol">,</span>
+<span class="normal">     </span><span class="string">')'</span><span class="symbol">,</span>
+<span class="normal">   </span><span class="string">')'</span>
+<span class="normal">  <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
+<td>The type of stanza to build</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sub_type</code></em> :</span></p></td>
+<td>The stanza's subtype; valid values depend on <em class="parameter"><code>type</code></em>. (For instance,
+<a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-IQ:CAPS"><span class="type">WOCKY_STANZA_TYPE_IQ</span></a> can use <a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-GET:CAPS"><span class="type">WOCKY_STANZA_SUB_TYPE_GET</span></a>, but not
+<a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-SUBSCRIBED:CAPS"><span class="type">WOCKY_STANZA_SUB_TYPE_SUBSCRIBED</span></a>.)</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from</code></em> :</span></p></td>
+<td>The sender's JID, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to leave it unspecified.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>to</code></em> :</span></p></td>
+<td>The target's JID, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to leave it unspecified.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
+<td>the description of the stanza to build,
+terminated with <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new stanza object</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-build-to-contact"></a><h3>wocky_stanza_build_to_contact ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_build_to_contact       (<em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *to</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-get-type-info"></a><h3>wocky_stanza_get_type_info ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_stanza_get_type_info          (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> *type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> *sub_type</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-has-type"></a><h3>wocky_stanza_has_type ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_stanza_has_type               (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> expected_type</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-get-from"></a><h3>wocky_stanza_get_from ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_stanza_get_from               (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a stanza</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The sender of <em class="parameter"><code>self</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if no sender was specified.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-get-to"></a><h3>wocky_stanza_get_to ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_stanza_get_to                 (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a stanza</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The recipient of <em class="parameter"><code>self</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if no recipient was specified.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-build-va"></a><h3>wocky_stanza_build_va ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_build_va               (<em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *to</code></em>,
+                                                         <em class="parameter"><code><span class="type">va_list</span> ap</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-build-iq-result"></a><h3>wocky_stanza_build_iq_result ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_build_iq_result        (<em class="parameter"><code><span class="type">WockyStanza</span> *iq</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-build-iq-result-va"></a><h3>wocky_stanza_build_iq_result_va ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_build_iq_result_va     (<em class="parameter"><code><span class="type">WockyStanza</span> *iq</code></em>,
+                                                         <em class="parameter"><code><span class="type">va_list</span> ap</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-build-iq-error"></a><h3>wocky_stanza_build_iq_error ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_build_iq_error         (<em class="parameter"><code><span class="type">WockyStanza</span> *iq</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);</pre>
+<p>
+Builds an error reply to <em class="parameter"><code>iq</code></em> containing the given body. This function also
+adds the child element of <em class="parameter"><code>iq</code></em> to the reply, as recommended by <a class="ulink" href="http://xmpp.org/rfcs/rfc3920.html#stanzas-semantics-iq" target="_top">RFC3920 §9.2.3
+‘IQ Semantics’</a>.
+</p>
+<p>
+No <code class="code">&lt;error/&gt;</code> element is added to the reply. To add a
+standard stanza error, plus message, consider using
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-stanza-error-to-node" title="wocky_stanza_error_to_node ()"><code class="function">wocky_stanza_error_to_node()</code></a>. To add a more complicated error with an
+application-specific condition, specify it when calling this function. For
+example:
+</p>
+<p>
+</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="usertype">WockyStanza</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">reply </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="wocky-WockyStanza.html#wocky-stanza-build-iq-error">wocky_stanza_build_iq_error</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">iq</span><span class="symbol">,</span>
+<span class="normal">   </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"error"</span><span class="symbol">,</span>
+<span class="normal">     </span><span class="string">'@'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"type"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"cancel"</span><span class="symbol">,</span>
+<span class="normal">     </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"feature-not-implemented"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">':'</span><span class="symbol">,</span><span class="normal"> <a href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-STANZAS:CAPS">WOCKY_XMPP_NS_STANZAS</a></span><span class="symbol">,</span><span class="normal"> </span><span class="string">')'</span><span class="symbol">,</span>
+<span class="normal">     </span><span class="string">'('</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"unsupported"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">':'</span><span class="symbol">,</span><span class="normal"> <a href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB-ERRORS:CAPS">WOCKY_XMPP_NS_PUBSUB_ERRORS</a></span><span class="symbol">,</span>
+<span class="normal">       </span><span class="string">'@'</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"feature"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"subscribe"</span><span class="symbol">,</span>
+<span class="normal">     </span><span class="string">')'</span><span class="symbol">,</span>
+<span class="normal">   </span><span class="string">')'</span><span class="symbol">,</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>iq</code></em> :</span></p></td>
+<td>a stanza of type <a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-IQ:CAPS"><span class="type">WOCKY_STANZA_TYPE_IQ</span></a> and sub-type either
+<a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-SET:CAPS"><span class="type">WOCKY_STANZA_SUB_TYPE_SET</span></a> or <a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-GET:CAPS"><span class="type">WOCKY_STANZA_SUB_TYPE_GET</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build" title="wocky_stanza_build ()"><code class="function">wocky_stanza_build()</code></a> specification</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>an error reply for <em class="parameter"><code>iq</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-build-iq-error-va"></a><h3>wocky_stanza_build_iq_error_va ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_stanza_build_iq_error_va      (<em class="parameter"><code><span class="type">WockyStanza</span> *iq</code></em>,
+                                                         <em class="parameter"><code><span class="type">va_list</span> ap</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-extract-errors"></a><h3>wocky_stanza_extract_errors ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_stanza_extract_errors         (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorType"><span class="type">WockyXmppErrorType</span></a> *type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **core</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **specialized</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **specialized_node</code></em>);</pre>
+<p>
+Given a message, iq or presence stanza with type='error', breaks it down
+into values describing the error. <em class="parameter"><code>type</code></em> and <em class="parameter"><code>core</code></em> are guaranteed to be set;
+<em class="parameter"><code>specialized</code></em> and <em class="parameter"><code>specialized_node</code></em> will be set if a recognised
+application-specific error is found, and the latter will be set to <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if
+no application-specific error is found.
+</p>
+<p>
+Any or all of the out parameters may be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore the value.  The
+value stored in <em class="parameter"><code>specialized_node</code></em> is borrowed from <em class="parameter"><code>stanza</code></em>, and is only
+valid as long as the latter is alive.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td>a message/iq/presence stanza</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
+<td>location at which to store the error type</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>core</code></em> :</span></p></td>
+<td>location at which to store an error in the domain <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS" title="WOCKY_XMPP_ERROR"><span class="type">WOCKY_XMPP_ERROR</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>specialized</code></em> :</span></p></td>
+<td>location at which to store an error in an application-specific
+domain, if one is found</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>specialized_node</code></em> :</span></p></td>
+<td>location at which to store the node representing an
+application-specific error, if one is found</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the stanza had type='error'; <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-extract-stream-error"></a><h3>wocky_stanza_extract_stream_error ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_stanza_extract_stream_error   (<em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **stream_error</code></em>);</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td>a stanza</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stream_error</code></em> :</span></p></td>
+<td>location at which to store an error in domain
+<a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-STREAM-ERROR:CAPS" title="WOCKY_XMPP_STREAM_ERROR"><span class="type">WOCKY_XMPP_STREAM_ERROR</span></a>, if one is found.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> and sets <em class="parameter"><code>stream_error</code></em> if the stanza was indeed a stream
+error.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-get-to-contact"></a><h3>wocky_stanza_get_to_contact ()</h3>
+<pre class="programlisting"><a class="link" href="WockyContact.html" title="WockyContact"><span class="returnvalue">WockyContact</span></a> *      wocky_stanza_get_to_contact         (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-get-from-contact"></a><h3>wocky_stanza_get_from_contact ()</h3>
+<pre class="programlisting"><a class="link" href="WockyContact.html" title="WockyContact"><span class="returnvalue">WockyContact</span></a> *      wocky_stanza_get_from_contact       (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-set-to-contact"></a><h3>wocky_stanza_set_to_contact ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_stanza_set_to_contact         (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *contact</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-set-from-contact"></a><h3>wocky_stanza_set_from_contact ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_stanza_set_from_contact       (<em class="parameter"><code><span class="type">WockyStanza</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> *contact</code></em>);</pre>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>

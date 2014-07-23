@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyJingleInfo</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="wocky-wocky-jingle-info-internal.html" title="wocky-jingle-info-internal">
+<link rel="next" href="WockyJingleMediaRtp.html" title="WockyJingleMediaRtp">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="wocky-wocky-jingle-info-internal.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="WockyJingleMediaRtp.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockyJingleInfo.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockyJingleInfo.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="wocky-WockyJingleInfo"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockyJingleInfo.top_of_page"></a>WockyJingleInfo</span></h2>
+<p>WockyJingleInfo</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="wocky-WockyJingleInfo.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">struct              <a class="link" href="wocky-WockyJingleInfo.html#WockyJingleInfoClass" title="struct WockyJingleInfoClass">WockyJingleInfoClass</a>;
+<span class="returnvalue">WockyJingleInfo</span> *   <a class="link" href="wocky-WockyJingleInfo.html#wocky-jingle-info-new" title="wocky_jingle_info_new ()">wocky_jingle_info_new</a>               (<em class="parameter"><code><span class="type">WockyPorter</span> *porter</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleInfo.html#wocky-jingle-info-take-stun-server" title="wocky_jingle_info_take_stun_server ()">wocky_jingle_info_take_stun_server</a>  (<em class="parameter"><code><span class="type">WockyJingleInfo</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *stun_server</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint16"><span class="type">guint16</span></a> stun_port</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> is_fallback</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleInfo.html#wocky-jingle-info-send-request" title="wocky_jingle_info_send_request ()">wocky_jingle_info_send_request</a>      (<em class="parameter"><code><span class="type">WockyJingleInfo</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> google_jingleinfo_supported</code></em>);
+                    <a class="link" href="wocky-WockyJingleInfo.html#WockyStunServer" title="WockyStunServer">WockyStunServer</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="wocky-WockyJingleInfo.html#wocky-jingle-info-get-stun-servers" title="wocky_jingle_info_get_stun_servers ()">wocky_jingle_info_get_stun_servers</a>  (<em class="parameter"><code><span class="type">WockyJingleInfo</span> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyJingleInfo.html#wocky-jingle-info-get-google-relay-token" title="wocky_jingle_info_get_google_relay_token ()">wocky_jingle_info_get_google_relay_token</a>
+                                                        (<em class="parameter"><code><span class="type">WockyJingleInfo</span> *self</code></em>);
+enum                <a class="link" href="wocky-WockyJingleInfo.html#WockyJingleRelayType" title="enum WockyJingleRelayType">WockyJingleRelayType</a>;
+#define             <a class="link" href="wocky-WockyJingleInfo.html#WOCKY-N-JINGLE-RELAY-TYPES:CAPS" title="WOCKY_N_JINGLE_RELAY_TYPES">WOCKY_N_JINGLE_RELAY_TYPES</a>
+                    <a class="link" href="wocky-WockyJingleInfo.html#WockyJingleRelay" title="WockyJingleRelay">WockyJingleRelay</a>;
+<a class="link" href="wocky-WockyJingleInfo.html#WockyJingleRelay" title="WockyJingleRelay"><span class="returnvalue">WockyJingleRelay</span></a> *  <a class="link" href="wocky-WockyJingleInfo.html#wocky-jingle-relay-new" title="wocky_jingle_relay_new ()">wocky_jingle_relay_new</a>              (<em class="parameter"><code><a class="link" href="wocky-WockyJingleInfo.html#WockyJingleRelayType" title="enum WockyJingleRelayType"><span class="type">WockyJingleRelayType</span></a> type</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ip</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> port</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *username</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *password</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> component</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleInfo.html#wocky-jingle-relay-free" title="wocky_jingle_relay_free ()">wocky_jingle_relay_free</a>             (<em class="parameter"><code><a class="link" href="wocky-WockyJingleInfo.html#WockyJingleRelay" title="WockyJingleRelay"><span class="type">WockyJingleRelay</span></a> *relay</code></em>);
+<span class="returnvalue">void</span>                (<a class="link" href="wocky-WockyJingleInfo.html#WockyJingleInfoRelaySessionCb" title="WockyJingleInfoRelaySessionCb ()">*WockyJingleInfoRelaySessionCb</a>)    (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *relays</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleInfo.html#wocky-jingle-info-create-google-relay-session" title="wocky_jingle_info_create_google_relay_session ()">wocky_jingle_info_create_google_relay_session</a>
+                                                        (<em class="parameter"><code><span class="type">WockyJingleInfo</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> components</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyJingleInfo.html#WockyJingleInfoRelaySessionCb" title="WockyJingleInfoRelaySessionCb ()"><span class="type">WockyJingleInfoRelaySessionCb</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyJingleInfo.html#wocky-jingle-info-set-test-mode" title="wocky_jingle_info_set_test_mode ()">wocky_jingle_info_set_test_mode</a>     (<em class="parameter"><code><span class="type">void</span></code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyJingleInfo.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyJingleInfo.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyJingleInfoClass"></a><h3>struct WockyJingleInfoClass</h3>
+<pre class="programlisting">struct WockyJingleInfoClass {
+    GObjectClass parent_class;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-info-new"></a><h3>wocky_jingle_info_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyJingleInfo</span> *   wocky_jingle_info_new               (<em class="parameter"><code><span class="type">WockyPorter</span> *porter</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-info-take-stun-server"></a><h3>wocky_jingle_info_take_stun_server ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_info_take_stun_server  (<em class="parameter"><code><span class="type">WockyJingleInfo</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *stun_server</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint16"><span class="type">guint16</span></a> stun_port</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> is_fallback</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-info-send-request"></a><h3>wocky_jingle_info_send_request ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_info_send_request      (<em class="parameter"><code><span class="type">WockyJingleInfo</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> google_jingleinfo_supported</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyStunServer"></a><h3>WockyStunServer</h3>
+<pre class="programlisting">typedef struct {
+    gchar *address;
+    guint16 port;
+} WockyStunServer;
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-info-get-stun-servers"></a><h3>wocky_jingle_info_get_stun_servers ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_jingle_info_get_stun_servers  (<em class="parameter"><code><span class="type">WockyJingleInfo</span> *self</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-info-get-google-relay-token"></a><h3>wocky_jingle_info_get_google_relay_token ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_jingle_info_get_google_relay_token
+                                                        (<em class="parameter"><code><span class="type">WockyJingleInfo</span> *self</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyJingleRelayType"></a><h3>enum WockyJingleRelayType</h3>
+<pre class="programlisting">typedef enum {
+    WOCKY_JINGLE_RELAY_TYPE_UDP,
+    WOCKY_JINGLE_RELAY_TYPE_TCP,
+    WOCKY_JINGLE_RELAY_TYPE_TLS
+} WockyJingleRelayType;
+</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="WOCKY-JINGLE-RELAY-TYPE-UDP:CAPS"></a><span class="term"><code class="literal">WOCKY_JINGLE_RELAY_TYPE_UDP</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-JINGLE-RELAY-TYPE-TCP:CAPS"></a><span class="term"><code class="literal">WOCKY_JINGLE_RELAY_TYPE_TCP</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-JINGLE-RELAY-TYPE-TLS:CAPS"></a><span class="term"><code class="literal">WOCKY_JINGLE_RELAY_TYPE_TLS</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WOCKY-N-JINGLE-RELAY-TYPES:CAPS"></a><h3>WOCKY_N_JINGLE_RELAY_TYPES</h3>
+<pre class="programlisting">#define WOCKY_N_JINGLE_RELAY_TYPES 3
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyJingleRelay"></a><h3>WockyJingleRelay</h3>
+<pre class="programlisting">typedef struct {
+    WockyJingleRelayType type;
+    gchar *ip;
+    guint port;
+    gchar *username;
+    gchar *password;
+    guint component;
+} WockyJingleRelay;
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-relay-new"></a><h3>wocky_jingle_relay_new ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-WockyJingleInfo.html#WockyJingleRelay" title="WockyJingleRelay"><span class="returnvalue">WockyJingleRelay</span></a> *  wocky_jingle_relay_new              (<em class="parameter"><code><a class="link" href="wocky-WockyJingleInfo.html#WockyJingleRelayType" title="enum WockyJingleRelayType"><span class="type">WockyJingleRelayType</span></a> type</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ip</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> port</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *username</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *password</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> component</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-relay-free"></a><h3>wocky_jingle_relay_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_relay_free             (<em class="parameter"><code><a class="link" href="wocky-WockyJingleInfo.html#WockyJingleRelay" title="WockyJingleRelay"><span class="type">WockyJingleRelay</span></a> *relay</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyJingleInfoRelaySessionCb"></a><h3>WockyJingleInfoRelaySessionCb ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                (*WockyJingleInfoRelaySessionCb)    (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *relays</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-info-create-google-relay-session"></a><h3>wocky_jingle_info_create_google_relay_session ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_info_create_google_relay_session
+                                                        (<em class="parameter"><code><span class="type">WockyJingleInfo</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> components</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyJingleInfo.html#WockyJingleInfoRelaySessionCb" title="WockyJingleInfoRelaySessionCb ()"><span class="type">WockyJingleInfoRelaySessionCb</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-info-set-test-mode"></a><h3>wocky_jingle_info_set_test_mode ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_jingle_info_set_test_mode     (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>

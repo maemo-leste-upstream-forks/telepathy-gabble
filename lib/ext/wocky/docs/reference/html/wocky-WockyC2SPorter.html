@@ -1,0 +1,494 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyC2SPorter</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="WockyBareContact.html" title="WockyBareContact">
+<link rel="next" href="WockyCapsCache.html" title="WockyCapsCache">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="WockyBareContact.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="WockyCapsCache.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockyC2SPorter.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockyC2SPorter.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="wocky-WockyC2SPorter"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockyC2SPorter.top_of_page"></a>WockyC2SPorter</span></h2>
+<p>WockyC2SPorter — Wrapper around a <span class="type">WockyXmppConnection</span> providing a
+higher level API.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="wocky-WockyC2SPorter.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">struct              <a class="link" href="wocky-WockyC2SPorter.html#WockyC2SPorterClass" title="struct WockyC2SPorterClass">WockyC2SPorterClass</a>;
+<span class="returnvalue">WockyPorter</span> *       <a class="link" href="wocky-WockyC2SPorter.html#wocky-c2s-porter-new" title="wocky_c2s_porter_new ()">wocky_c2s_porter_new</a>                (<em class="parameter"><code><span class="type">WockyXmppConnection</span> *connection</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *full_jid</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyC2SPorter.html#wocky-c2s-porter-send-whitespace-ping-async" title="wocky_c2s_porter_send_whitespace_ping_async ()">wocky_c2s_porter_send_whitespace_ping_async</a>
+                                                        (<em class="parameter"><code><span class="type">WockyC2SPorter</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyC2SPorter.html#wocky-c2s-porter-send-whitespace-ping-finish" title="wocky_c2s_porter_send_whitespace_ping_finish ()">wocky_c2s_porter_send_whitespace_ping_finish</a>
+                                                        (<em class="parameter"><code><span class="type">WockyC2SPorter</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a class="link" href="wocky-WockyC2SPorter.html#wocky-c2s-porter-register-handler-from-server-va" title="wocky_c2s_porter_register_handler_from_server_va ()">wocky_c2s_porter_register_handler_from_server_va</a>
+                                                        (<em class="parameter"><code><span class="type">WockyC2SPorter</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> priority</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyPorter.html#WockyPorterHandlerFunc" title="WockyPorterHandlerFunc ()"><span class="type">WockyPorterHandlerFunc</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>,
+                                                         <em class="parameter"><code><span class="type">va_list</span> ap</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a class="link" href="wocky-WockyC2SPorter.html#wocky-c2s-porter-register-handler-from-server-by-stanza" title="wocky_c2s_porter_register_handler_from_server_by_stanza ()">wocky_c2s_porter_register_handler_from_server_by_stanza</a>
+                                                        (<em class="parameter"><code><span class="type">WockyC2SPorter</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> priority</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyPorter.html#WockyPorterHandlerFunc" title="WockyPorterHandlerFunc ()"><span class="type">WockyPorterHandlerFunc</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a class="link" href="wocky-WockyC2SPorter.html#wocky-c2s-porter-register-handler-from-server" title="wocky_c2s_porter_register_handler_from_server ()">wocky_c2s_porter_register_handler_from_server</a>
+                                                        (<em class="parameter"><code><span class="type">WockyC2SPorter</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> priority</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyPorter.html#WockyPorterHandlerFunc" title="WockyPorterHandlerFunc ()"><span class="type">WockyPorterHandlerFunc</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyC2SPorter.html#wocky-c2s-porter-enable-power-saving-mode" title="wocky_c2s_porter_enable_power_saving_mode ()">wocky_c2s_porter_enable_power_saving_mode</a>
+                                                        (<em class="parameter"><code><span class="type">WockyC2SPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enable</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyC2SPorter.description"></a><h2>Description</h2>
+<p>
+Sends and receives <span class="type">WockyStanza</span> from an underlying
+<span class="type">WockyXmppConnection</span>.
+</p>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyC2SPorter.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyC2SPorterClass"></a><h3>struct WockyC2SPorterClass</h3>
+<pre class="programlisting">struct WockyC2SPorterClass {
+};
+</pre>
+<p>
+The class of a <span class="type">WockyC2SPorter</span>.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-c2s-porter-new"></a><h3>wocky_c2s_porter_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyPorter</span> *       wocky_c2s_porter_new                (<em class="parameter"><code><span class="type">WockyXmppConnection</span> *connection</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *full_jid</code></em>);</pre>
+<p>
+Convenience function to create a new <span class="type">WockyC2SPorter</span>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>connection</code></em> :</span></p></td>
+<td>
+<span class="type">WockyXmppConnection</span> which will be used to receive and send
+<span class="type">WockyStanza</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>full_jid</code></em> :</span></p></td>
+<td>the full JID of the user</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new <span class="type">WockyPorter</span>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-c2s-porter-send-whitespace-ping-async"></a><h3>wocky_c2s_porter_send_whitespace_ping_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_c2s_porter_send_whitespace_ping_async
+                                                        (<em class="parameter"><code><span class="type">WockyC2SPorter</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+<p>
+Request asynchronous sending of a whitespace ping. When the operation is
+finished <em class="parameter"><code>callback</code></em> will be called. You can then call
+<a class="link" href="wocky-WockyC2SPorter.html#wocky-c2s-porter-send-whitespace-ping-finish" title="wocky_c2s_porter_send_whitespace_ping_finish ()"><code class="function">wocky_c2s_porter_send_whitespace_ping_finish()</code></a> to get the result of the
+operation.
+No pings are sent if there are already other stanzas or pings being sent
+when this function is called; it would be useless.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <span class="type">WockyC2SPorter</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td>optional GCancellable object, NULL to ignore.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>callback to call when the request is satisfied.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>the data to pass to callback function.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-c2s-porter-send-whitespace-ping-finish"></a><h3>wocky_c2s_porter_send_whitespace_ping_finish ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_c2s_porter_send_whitespace_ping_finish
+                                                        (<em class="parameter"><code><span class="type">WockyC2SPorter</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+Finishes sending a whitespace ping.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <span class="type">WockyC2SPorter</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
+<td>a GAsyncResult.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>a GError location to store the error occuring, or NULL to ignore.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>TRUE if the ping was succesfully sent, FALSE on error.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-c2s-porter-register-handler-from-server-va"></a><h3>wocky_c2s_porter_register_handler_from_server_va ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               wocky_c2s_porter_register_handler_from_server_va
+                                                        (<em class="parameter"><code><span class="type">WockyC2SPorter</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> priority</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyPorter.html#WockyPorterHandlerFunc" title="WockyPorterHandlerFunc ()"><span class="type">WockyPorterHandlerFunc</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>,
+                                                         <em class="parameter"><code><span class="type">va_list</span> ap</code></em>);</pre>
+<p>
+A <span class="type">va_list</span> version of
+<a class="link" href="wocky-WockyC2SPorter.html#wocky-c2s-porter-register-handler-from-server" title="wocky_c2s_porter_register_handler_from_server ()"><code class="function">wocky_c2s_porter_register_handler_from_server()</code></a>; see that function for more
+details.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>A <span class="type">WockyC2SPorter</span> instance (passed to <em class="parameter"><code>callback</code></em>).</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
+<td>The type of stanza to be handled, or WOCKY_STANZA_TYPE_NONE to match
+any type of stanza.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sub_type</code></em> :</span></p></td>
+<td>The subtype of stanza to be handled, or
+WOCKY_STANZA_SUB_TYPE_NONE to match any type of stanza.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>priority</code></em> :</span></p></td>
+<td>a priority between <a class="link" href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MIN:CAPS" title="WOCKY_PORTER_HANDLER_PRIORITY_MIN"><code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_MIN</code></a> and
+<a class="link" href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MAX:CAPS" title="WOCKY_PORTER_HANDLER_PRIORITY_MAX"><code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_MAX</code></a> (often
+<a class="link" href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS" title="WOCKY_PORTER_HANDLER_PRIORITY_NORMAL"><code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</code></a>). Handlers with a higher priority
+(larger number) are called first.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>A <a class="link" href="wocky-WockyPorter.html#WockyPorterHandlerFunc" title="WockyPorterHandlerFunc ()"><span class="type">WockyPorterHandlerFunc</span></a>, which should return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> to decline
+the stanza (Wocky will continue to the next handler, if any), or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to
+stop further processing.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>Passed to <em class="parameter"><code>callback</code></em>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ap</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build" title="wocky_stanza_build ()"><code class="function">wocky_stanza_build()</code></a> specification. The handler
+will match a stanza only if the stanza received is a superset of the one
+passed to this function, as per <a class="link" href="wocky-WockyNode.html#wocky-node-is-superset" title="wocky_node_is_superset ()"><code class="function">wocky_node_is_superset()</code></a>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a non-zero ID for use with <a class="link" href="wocky-WockyPorter.html#wocky-porter-unregister-handler" title="wocky_porter_unregister_handler ()"><code class="function">wocky_porter_unregister_handler()</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-c2s-porter-register-handler-from-server-by-stanza"></a><h3>wocky_c2s_porter_register_handler_from_server_by_stanza ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               wocky_c2s_porter_register_handler_from_server_by_stanza
+                                                        (<em class="parameter"><code><span class="type">WockyC2SPorter</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> priority</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyPorter.html#WockyPorterHandlerFunc" title="WockyPorterHandlerFunc ()"><span class="type">WockyPorterHandlerFunc</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>);</pre>
+<p>
+A <span class="type">WockyStanza</span> version of
+<a class="link" href="wocky-WockyC2SPorter.html#wocky-c2s-porter-register-handler-from-server" title="wocky_c2s_porter_register_handler_from_server ()"><code class="function">wocky_c2s_porter_register_handler_from_server()</code></a>; see that function for more
+details.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>A <span class="type">WockyC2SPorter</span> instance (passed to <em class="parameter"><code>callback</code></em>).</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
+<td>The type of stanza to be handled, or WOCKY_STANZA_TYPE_NONE to match
+any type of stanza.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sub_type</code></em> :</span></p></td>
+<td>The subtype of stanza to be handled, or
+WOCKY_STANZA_SUB_TYPE_NONE to match any type of stanza.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>priority</code></em> :</span></p></td>
+<td>a priority between <a class="link" href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MIN:CAPS" title="WOCKY_PORTER_HANDLER_PRIORITY_MIN"><code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_MIN</code></a> and
+<a class="link" href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MAX:CAPS" title="WOCKY_PORTER_HANDLER_PRIORITY_MAX"><code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_MAX</code></a> (often
+<a class="link" href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS" title="WOCKY_PORTER_HANDLER_PRIORITY_NORMAL"><code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</code></a>). Handlers with a higher priority
+(larger number) are called first.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>A <a class="link" href="wocky-WockyPorter.html#WockyPorterHandlerFunc" title="WockyPorterHandlerFunc ()"><span class="type">WockyPorterHandlerFunc</span></a>, which should return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> to decline
+the stanza (Wocky will continue to the next handler, if any), or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to
+stop further processing.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>Passed to <em class="parameter"><code>callback</code></em>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td>a <span class="type">WockyStanza</span>. The handler will match a stanza only if
+the stanza received is a superset of the one passed to this
+function, as per <a class="link" href="wocky-WockyNode.html#wocky-node-is-superset" title="wocky_node_is_superset ()"><code class="function">wocky_node_is_superset()</code></a>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a non-zero ID for use with <a class="link" href="wocky-WockyPorter.html#wocky-porter-unregister-handler" title="wocky_porter_unregister_handler ()"><code class="function">wocky_porter_unregister_handler()</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-c2s-porter-register-handler-from-server"></a><h3>wocky_c2s_porter_register_handler_from_server ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               wocky_c2s_porter_register_handler_from_server
+                                                        (<em class="parameter"><code><span class="type">WockyC2SPorter</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaType" title="enum WockyStanzaType"><span class="type">WockyStanzaType</span></a> type</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> priority</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyPorter.html#WockyPorterHandlerFunc" title="WockyPorterHandlerFunc ()"><span class="type">WockyPorterHandlerFunc</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>,
+                                                         <em class="parameter"><code>...</code></em>);</pre>
+<p>
+Registers a handler for incoming stanzas from the local user's server; that
+is, stanzas with no "from" attribute, or where the sender is the user's own
+bare or full JID.
+</p>
+<p>
+For example, to register a handler for roster pushes, call:
+</p>
+<p>
+</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="normal">id </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="wocky-WockyC2SPorter.html#wocky-c2s-porter-register-handler-from-server">wocky_c2s_porter_register_handler_from_server</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">porter</span><span class="symbol">,</span>
+<span class="normal">  <a href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-MESSAGE:CAPS">WOCKY_STANZA_TYPE_MESSAGE</a></span><span class="symbol">,</span><span class="normal"> <a href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-SET:CAPS">WOCKY_STANZA_SUB_TYPE_SET</a></span><span class="symbol">,</span>
+<span class="normal">  <a href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</a></span><span class="symbol">,</span><span class="normal"> roster_push_received_cb</span><span class="symbol">,</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span>
+<span class="normal">  </span><span class="string">'('</span><span class="symbol">,</span>
+<span class="normal">    </span><span class="string">"query"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">':'</span><span class="symbol">,</span><span class="normal"> <a href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-ROSTER:CAPS">WOCKY_XMPP_NS_ROSTER</a></span><span class="symbol">,</span>
+<span class="normal">  </span><span class="string">')'</span><span class="symbol">,</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>A <span class="type">WockyC2SPorter</span> instance (passed to <em class="parameter"><code>callback</code></em>).</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
+<td>The type of stanza to be handled, or WOCKY_STANZA_TYPE_NONE to match
+any type of stanza.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sub_type</code></em> :</span></p></td>
+<td>The subtype of stanza to be handled, or
+WOCKY_STANZA_SUB_TYPE_NONE to match any type of stanza.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>priority</code></em> :</span></p></td>
+<td>a priority between <a class="link" href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MIN:CAPS" title="WOCKY_PORTER_HANDLER_PRIORITY_MIN"><code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_MIN</code></a> and
+<a class="link" href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-MAX:CAPS" title="WOCKY_PORTER_HANDLER_PRIORITY_MAX"><code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_MAX</code></a> (often
+<a class="link" href="wocky-WockyPorter.html#WOCKY-PORTER-HANDLER-PRIORITY-NORMAL:CAPS" title="WOCKY_PORTER_HANDLER_PRIORITY_NORMAL"><code class="literal">WOCKY_PORTER_HANDLER_PRIORITY_NORMAL</code></a>). Handlers with a higher priority
+(larger number) are called first.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>A <a class="link" href="wocky-WockyPorter.html#WockyPorterHandlerFunc" title="WockyPorterHandlerFunc ()"><span class="type">WockyPorterHandlerFunc</span></a>, which should return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> to decline
+the stanza (Wocky will continue to the next handler, if any), or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to
+stop further processing.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>Passed to <em class="parameter"><code>callback</code></em>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
+<td>a <a class="link" href="wocky-WockyStanza.html#wocky-stanza-build" title="wocky_stanza_build ()"><code class="function">wocky_stanza_build()</code></a> specification. The handler
+will match a stanza only if the stanza received is a superset of the one
+passed to this function, as per <a class="link" href="wocky-WockyNode.html#wocky-node-is-superset" title="wocky_node_is_superset ()"><code class="function">wocky_node_is_superset()</code></a>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a non-zero ID for use with <a class="link" href="wocky-WockyPorter.html#wocky-porter-unregister-handler" title="wocky_porter_unregister_handler ()"><code class="function">wocky_porter_unregister_handler()</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-c2s-porter-enable-power-saving-mode"></a><h3>wocky_c2s_porter_enable_power_saving_mode ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_c2s_porter_enable_power_saving_mode
+                                                        (<em class="parameter"><code><span class="type">WockyC2SPorter</span> *porter</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enable</code></em>);</pre>
+<p>
+Enable or disable power saving. In power saving mode, Wocky will
+attempt to queue "uninteresting" stanza until it is either manually
+flushed, until important stanza arrives, or until the power saving
+mode is disabled.
+</p>
+<p>
+Queueable stanzas are:
+</p>
+<p>
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+<code class="code">&lt;presence/&gt;</code> and
+     <code class="code">&lt;presence type="unavailable"/&gt;</code>;</li>
+<li class="listitem">PEP updates for a hardcoded list of namespaces.</li>
+</ul></div>
+<p>
+</p>
+<p>
+Whenever stanza is handled, all previously queued stanzas
+(if any) are handled as well, in the order they arrived. This preserves
+stanza ordering.
+</p>
+<p>
+Note that exiting the power saving mode will immediately handle any
+queued stanzas.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>porter</code></em> :</span></p></td>
+<td>a <span class="type">WockyC2SPorter</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>enable</code></em> :</span></p></td>
+<td>A boolean specifying whether power saving mode should be used</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>

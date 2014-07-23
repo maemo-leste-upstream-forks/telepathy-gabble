@@ -1,0 +1,412 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyXmppReader</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="wocky-wocky-xmpp-error.html" title="wocky-xmpp-error">
+<link rel="next" href="wocky-WockyXmppWriter.html" title="WockyXmppWriter">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="wocky-wocky-xmpp-error.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="wocky-WockyXmppWriter.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockyXmppReader.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockyXmppReader.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#wocky-WockyXmppReader.object-hierarchy" class="shortcut">Object Hierarchy</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="wocky-WockyXmppReader"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockyXmppReader.top_of_page"></a>WockyXmppReader</span></h2>
+<p>WockyXmppReader — Xmpp XML to stanza deserializer</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="wocky-WockyXmppReader.synopsis"></a><h2>Synopsis</h2>
+<a name="WockyXmppReaderState"></a><a name="WockyXmppReaderError"></a><pre class="synopsis">struct              <a class="link" href="wocky-WockyXmppReader.html#WockyXmppReaderClass" title="struct WockyXmppReaderClass">WockyXmppReaderClass</a>;
+enum                <a class="link" href="wocky-WockyXmppReader.html#WockyXmppReaderState-enum" title="enum WockyXmppReaderState">WockyXmppReaderState</a>;
+enum                <a class="link" href="wocky-WockyXmppReader.html#WockyXmppReaderError-enum" title="enum WockyXmppReaderError">WockyXmppReaderError</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-error-quark" title="wocky_xmpp_reader_error_quark ()">wocky_xmpp_reader_error_quark</a>       (<em class="parameter"><code><span class="type">void</span></code></em>);
+#define             <a class="link" href="wocky-WockyXmppReader.html#WOCKY-XMPP-READER-ERROR:CAPS" title="WOCKY_XMPP_READER_ERROR">WOCKY_XMPP_READER_ERROR</a>
+<span class="returnvalue">WockyXmppReader</span> *   <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-new" title="wocky_xmpp_reader_new ()">wocky_xmpp_reader_new</a>               (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">WockyXmppReader</span> *   <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-new-no-stream" title="wocky_xmpp_reader_new_no_stream ()">wocky_xmpp_reader_new_no_stream</a>     (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">WockyXmppReader</span> *   <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-new-no-stream-ns" title="wocky_xmpp_reader_new_no_stream_ns ()">wocky_xmpp_reader_new_no_stream_ns</a>  (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *default_namespace</code></em>);
+<a class="link" href="wocky-WockyXmppReader.html#WockyXmppReaderState"><span class="returnvalue">WockyXmppReaderState</span></a> <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-get-state" title="wocky_xmpp_reader_get_state ()">wocky_xmpp_reader_get_state</a>        (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-push" title="wocky_xmpp_reader_push ()">wocky_xmpp_reader_push</a>              (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint8"><span class="type">guint8</span></a> *data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> length</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-pop-stanza" title="wocky_xmpp_reader_pop_stanza ()">wocky_xmpp_reader_pop_stanza</a>        (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-peek-stanza" title="wocky_xmpp_reader_peek_stanza ()">wocky_xmpp_reader_peek_stanza</a>       (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *            <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-get-error" title="wocky_xmpp_reader_get_error ()">wocky_xmpp_reader_get_error</a>         (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyXmppReader.html#wocky-xmpp-reader-reset" title="wocky_xmpp_reader_reset ()">wocky_xmpp_reader_reset</a>             (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyXmppReader.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GEnum
+   +----WockyXmppReaderState
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----WockyXmppReaderError
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyXmppReader.description"></a><h2>Description</h2>
+<p>
+The <span class="type">WockyXmppReader</span> deserializes XML to <span class="type">WockyStanza</span>s,
+misc, other
+</p>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyXmppReader.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyXmppReaderClass"></a><h3>struct WockyXmppReaderClass</h3>
+<pre class="programlisting">struct WockyXmppReaderClass {
+};
+</pre>
+<p>
+The class of a <span class="type">WockyXmppReader</span>.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyXmppReaderState-enum"></a><h3>enum WockyXmppReaderState</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_XMPP_READER_STATE_INITIAL,
+  WOCKY_XMPP_READER_STATE_OPENED,
+  WOCKY_XMPP_READER_STATE_CLOSED,
+  WOCKY_XMPP_READER_STATE_ERROR,
+} WockyXmppReaderState;
+</pre>
+<p>
+The possible states a reader can be in.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="WOCKY-XMPP-READER-STATE-INITIAL:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_READER_STATE_INITIAL</code></span></p></td>
+<td>initial state
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-XMPP-READER-STATE-OPENED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_READER_STATE_OPENED</code></span></p></td>
+<td>stream is open
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-XMPP-READER-STATE-CLOSED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_READER_STATE_CLOSED</code></span></p></td>
+<td>stream has been closed
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-XMPP-READER-STATE-ERROR:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_READER_STATE_ERROR</code></span></p></td>
+<td>stream reader hit an error
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyXmppReaderError-enum"></a><h3>enum WockyXmppReaderError</h3>
+<pre class="programlisting">typedef enum {
+  WOCKY_XMPP_READER_ERROR_INVALID_STREAM_START,
+  WOCKY_XMPP_READER_ERROR_PARSE_ERROR,
+} WockyXmppReaderError;
+</pre>
+<p>
+The different errors that can occur while reading a stream
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="WOCKY-XMPP-READER-ERROR-INVALID-STREAM-START:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_READER_ERROR_INVALID_STREAM_START</code></span></p></td>
+<td>invalid start of xmpp stream
+</td>
+</tr>
+<tr>
+<td><p><a name="WOCKY-XMPP-READER-ERROR-PARSE-ERROR:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_READER_ERROR_PARSE_ERROR</code></span></p></td>
+<td>error in parsing the XML
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-reader-error-quark"></a><h3>wocky_xmpp_reader_error_quark ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_xmpp_reader_error_quark       (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Get the error quark used by the reader.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the quark for reader errors.</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WOCKY-XMPP-READER-ERROR:CAPS"></a><h3>WOCKY_XMPP_READER_ERROR</h3>
+<pre class="programlisting">#define WOCKY_XMPP_READER_ERROR (wocky_xmpp_reader_error_quark ())
+</pre>
+<p>
+Get access to the error quark of the reader.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-reader-new"></a><h3>wocky_xmpp_reader_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyXmppReader</span> *   wocky_xmpp_reader_new               (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Convenience function to create a new <span class="type">WockyXmppReader</span>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new <span class="type">WockyXmppReader</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-reader-new-no-stream"></a><h3>wocky_xmpp_reader_new_no_stream ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyXmppReader</span> *   wocky_xmpp_reader_new_no_stream     (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Convenience function to create a new <span class="type">WockyXmppReader</span> that has streaming
+mode disabled.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new <span class="type">WockyXmppReader</span> in non-streaming mode</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-reader-new-no-stream-ns"></a><h3>wocky_xmpp_reader_new_no_stream_ns ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyXmppReader</span> *   wocky_xmpp_reader_new_no_stream_ns  (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *default_namespace</code></em>);</pre>
+<p>
+Create a new <span class="type">WockyXmppReader</span>, with <span class="type">"streaming-mode"</span> disabled
+and the specified <span class="type">"default-namespace"</span>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>default_namespace</code></em> :</span></p></td>
+<td>default XML namespace to apply to the top-level element</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new <span class="type">WockyXmppReader</span> in non-streaming mode. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-reader-get-state"></a><h3>wocky_xmpp_reader_get_state ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-WockyXmppReader.html#WockyXmppReaderState"><span class="returnvalue">WockyXmppReaderState</span></a> wocky_xmpp_reader_get_state        (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td>a <span class="type">WockyXmppReader</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The current state of the reader</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-reader-push"></a><h3>wocky_xmpp_reader_push ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_reader_push              (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint8"><span class="type">guint8</span></a> *data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> length</code></em>);</pre>
+<p>
+Push an amount of data to parse.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td>a WockyXmppReader</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
+<td>Data to read</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>length</code></em> :</span></p></td>
+<td>Size of <em class="parameter"><code>data</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-reader-pop-stanza"></a><h3>wocky_xmpp_reader_pop_stanza ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_xmpp_reader_pop_stanza        (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);</pre>
+<p>
+Gets one <span class="type">WockyStanza</span> out of the reader or NULL if there are no
+available stanzas.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td>a <span class="type">WockyXmppReader</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>One <span class="type">WockyStanza</span> or NULL if there are no available stanzas.
+Caller owns the returned stanza.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-reader-peek-stanza"></a><h3>wocky_xmpp_reader_peek_stanza ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_xmpp_reader_peek_stanza       (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);</pre>
+<p>
+Returns the first <span class="type">WockyStanza</span> available from reader or NULL
+if there are no available stanzas. The stanza is not removed from the
+readers queue
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td>a <span class="type">WockyXmppReader</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>One <span class="type">WockyStanza</span> or NULL if there are no available stanzas. The
+stanza is owned by the <span class="type">WockyXmppReader</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-reader-get-error"></a><h3>wocky_xmpp_reader_get_error ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *            wocky_xmpp_reader_get_error         (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);</pre>
+<p>
+Get the error from the reader
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td>a <span class="type">WockyXmppReader</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A copy of the error as encountered by the reader or NULL if there
+was no error. Free after use.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-reader-reset"></a><h3>wocky_xmpp_reader_reset ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_reader_reset             (<em class="parameter"><code><span class="type">WockyXmppReader</span> *reader</code></em>);</pre>
+<p>
+Reset the xml parser.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td>a <span class="type">WockyXmppReader</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>

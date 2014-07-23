@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyContactFactory</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="wocky-WockyConnector.html" title="WockyConnector">
+<link rel="next" href="WockyContact.html" title="WockyContact">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="wocky-WockyConnector.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="WockyContact.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockyContactFactory.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockyContactFactory.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="wocky-WockyContactFactory"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockyContactFactory.top_of_page"></a>WockyContactFactory</span></h2>
+<p>WockyContactFactory — creates and looks up <a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> objects</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="wocky-WockyContactFactory.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+#include &lt;wocky/wocky-contact-factory.h&gt;
+
+struct              <a class="link" href="wocky-WockyContactFactory.html#WockyContactFactoryClass" title="struct WockyContactFactoryClass">WockyContactFactoryClass</a>;
+<span class="returnvalue">WockyContactFactory</span> * <a class="link" href="wocky-WockyContactFactory.html#wocky-contact-factory-new" title="wocky_contact_factory_new ()">wocky_contact_factory_new</a>         (<em class="parameter"><code><span class="type">void</span></code></em>);
+<a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="returnvalue">WockyBareContact</span></a> *  <a class="link" href="wocky-WockyContactFactory.html#wocky-contact-factory-ensure-bare-contact" title="wocky_contact_factory_ensure_bare_contact ()">wocky_contact_factory_ensure_bare_contact</a>
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *bare_jid</code></em>);
+<a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="returnvalue">WockyBareContact</span></a> *  <a class="link" href="wocky-WockyContactFactory.html#wocky-contact-factory-lookup-bare-contact" title="wocky_contact_factory_lookup_bare_contact ()">wocky_contact_factory_lookup_bare_contact</a>
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *bare_jid</code></em>);
+<a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="returnvalue">WockyResourceContact</span></a> * <a class="link" href="wocky-WockyContactFactory.html#wocky-contact-factory-ensure-resource-contact" title="wocky_contact_factory_ensure_resource_contact ()">wocky_contact_factory_ensure_resource_contact</a>
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *full_jid</code></em>);
+<a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="returnvalue">WockyResourceContact</span></a> * <a class="link" href="wocky-WockyContactFactory.html#wocky-contact-factory-lookup-resource-contact" title="wocky_contact_factory_lookup_resource_contact ()">wocky_contact_factory_lookup_resource_contact</a>
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *full_jid</code></em>);
+<span class="returnvalue">WockyLLContact</span> *    <a class="link" href="wocky-WockyContactFactory.html#wocky-contact-factory-ensure-ll-contact" title="wocky_contact_factory_ensure_ll_contact ()">wocky_contact_factory_ensure_ll_contact</a>
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);
+<span class="returnvalue">WockyLLContact</span> *    <a class="link" href="wocky-WockyContactFactory.html#wocky-contact-factory-lookup-ll-contact" title="wocky_contact_factory_lookup_ll_contact ()">wocky_contact_factory_lookup_ll_contact</a>
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyContactFactory.html#wocky-contact-factory-add-ll-contact" title="wocky_contact_factory_add_ll_contact ()">wocky_contact_factory_add_ll_contact</a>
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyLLContact</span> *contact</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="wocky-WockyContactFactory.html#wocky-contact-factory-get-ll-contacts" title="wocky_contact_factory_get_ll_contacts ()">wocky_contact_factory_get_ll_contacts</a>
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyContactFactory.description"></a><h2>Description</h2>
+<p>
+Provides a way to create <a class="link" href="WockyContact.html" title="WockyContact"><span class="type">WockyContact</span></a> objects. The objects created
+this way are cached by the factory and you can eventually look them up
+without creating them again.
+</p>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyContactFactory.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyContactFactoryClass"></a><h3>struct WockyContactFactoryClass</h3>
+<pre class="programlisting">struct WockyContactFactoryClass {
+};
+</pre>
+<p>
+The class of a <span class="type">WockyContactFactory</span>.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-contact-factory-new"></a><h3>wocky_contact_factory_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyContactFactory</span> * wocky_contact_factory_new         (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Convenience function to create a new <span class="type">WockyContactFactory</span> object.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a newly created instance of <span class="type">WockyContactFactory</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-contact-factory-ensure-bare-contact"></a><h3>wocky_contact_factory_ensure_bare_contact ()</h3>
+<pre class="programlisting"><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="returnvalue">WockyBareContact</span></a> *  wocky_contact_factory_ensure_bare_contact
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *bare_jid</code></em>);</pre>
+<p>
+Returns an instance of <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> for <em class="parameter"><code>bare_jid</code></em>. The factory cache
+is used, but if the contact is not found in the cache, a new
+<a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> is created and cached for future use.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>factory</code></em> :</span></p></td>
+<td>a <span class="type">WockyContactFactory</span> instance</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>bare_jid</code></em> :</span></p></td>
+<td>the JID of a bare contact</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new reference to a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance, which the caller
+is expected to release with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> after use.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-contact-factory-lookup-bare-contact"></a><h3>wocky_contact_factory_lookup_bare_contact ()</h3>
+<pre class="programlisting"><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="returnvalue">WockyBareContact</span></a> *  wocky_contact_factory_lookup_bare_contact
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *bare_jid</code></em>);</pre>
+<p>
+Looks up if there's a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> for <em class="parameter"><code>bare_jid</code></em> in the cache, and
+returns it if it's found.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>factory</code></em> :</span></p></td>
+<td>a <span class="type">WockyContactFactory</span> instance</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>bare_jid</code></em> :</span></p></td>
+<td>the JID of a bare contact</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a borrowed <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> instance (which the caller should
+reference with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-ref"><code class="function">g_object_ref()</code></a> if it will be kept), or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the
+contact is not found.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-contact-factory-ensure-resource-contact"></a><h3>wocky_contact_factory_ensure_resource_contact ()</h3>
+<pre class="programlisting"><a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="returnvalue">WockyResourceContact</span></a> * wocky_contact_factory_ensure_resource_contact
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *full_jid</code></em>);</pre>
+<p>
+Returns an instance of <a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="type">WockyResourceContact</span></a> for <em class="parameter"><code>full_jid</code></em>.
+The factory cache is used, but if the resource is not found in the cache,
+a new <a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="type">WockyResourceContact</span></a> is created and cached for future use.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>factory</code></em> :</span></p></td>
+<td>a <span class="type">WockyContactFactory</span> instance</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>full_jid</code></em> :</span></p></td>
+<td>the full JID of a resource</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new reference to a <a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="type">WockyResourceContact</span></a> instance, which the
+caller is expected to release with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> after use.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-contact-factory-lookup-resource-contact"></a><h3>wocky_contact_factory_lookup_resource_contact ()</h3>
+<pre class="programlisting"><a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="returnvalue">WockyResourceContact</span></a> * wocky_contact_factory_lookup_resource_contact
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *full_jid</code></em>);</pre>
+<p>
+Looks up if there's a <a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="type">WockyResourceContact</span></a> for <em class="parameter"><code>full_jid</code></em> in the cache, and
+returns it if it's found.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>factory</code></em> :</span></p></td>
+<td>a <span class="type">WockyContactFactory</span> instance</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>full_jid</code></em> :</span></p></td>
+<td>the full JID of a resource</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a borrowed <a class="link" href="WockyResourceContact.html" title="WockyResourceContact"><span class="type">WockyResourceContact</span></a> instance (which the caller should
+reference with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-ref"><code class="function">g_object_ref()</code></a> if it will be kept), or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the
+contact is not found.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-contact-factory-ensure-ll-contact"></a><h3>wocky_contact_factory_ensure_ll_contact ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyLLContact</span> *    wocky_contact_factory_ensure_ll_contact
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);</pre>
+<p>
+Returns an instance of <span class="type">WockyLLContact</span> for <em class="parameter"><code>jid</code></em>.
+The factory cache is used, but if the contact is not found in the cache,
+a new <span class="type">WockyLLContact</span> is created and cached for future use.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>factory</code></em> :</span></p></td>
+<td>a <span class="type">WockyContactFactory</span> instance</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
+<td>the JID of a contact</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new reference to a <span class="type">WockyLLContact</span> instance, which the
+caller is expected to release with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> after use.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-contact-factory-lookup-ll-contact"></a><h3>wocky_contact_factory_lookup_ll_contact ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyLLContact</span> *    wocky_contact_factory_lookup_ll_contact
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *jid</code></em>);</pre>
+<p>
+Looks up if there's a <span class="type">WockyLLContact</span> for <em class="parameter"><code>jid</code></em> in the cache, and
+returns it if it's found.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>factory</code></em> :</span></p></td>
+<td>a <span class="type">WockyContactFactory</span> instance</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>jid</code></em> :</span></p></td>
+<td>the JID of a contact</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a borrowed <span class="type">WockyLLContact</span> instance (which the caller should
+reference with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-ref"><code class="function">g_object_ref()</code></a> if it will be kept), or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the
+contact is not found.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-contact-factory-add-ll-contact"></a><h3>wocky_contact_factory_add_ll_contact ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_contact_factory_add_ll_contact
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyLLContact</span> *contact</code></em>);</pre>
+<p>
+Adds <em class="parameter"><code>contact</code></em> to the contact factory.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>factory</code></em> :</span></p></td>
+<td>a <span class="type">WockyContactFactory</span> instance</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
+<td>a <span class="type">WockyLLContact</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-contact-factory-get-ll-contacts"></a><h3>wocky_contact_factory_get_ll_contacts ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             wocky_contact_factory_get_ll_contacts
+                                                        (<em class="parameter"><code><span class="type">WockyContactFactory</span> *factory</code></em>);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>factory</code></em> :</span></p></td>
+<td>a <span class="type">WockyContactFactory</span> instance</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a newly allocated <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> of <span class="type">WockyLLContact</span>s which
+should be freed using <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#g-list-free"><code class="function">g_list_free()</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>
