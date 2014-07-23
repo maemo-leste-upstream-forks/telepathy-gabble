@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyPepService</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="WockyNodeTree.html" title="WockyNodeTree">
+<link rel="next" href="wocky-WockyPing.html" title="WockyPing">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="WockyNodeTree.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="wocky-WockyPing.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockyPepService.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockyPepService.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="wocky-WockyPepService"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockyPepService.top_of_page"></a>WockyPepService</span></h2>
+<p>WockyPepService — Object to represent a single PEP service</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="wocky-WockyPepService.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+#include &lt;wocky/wocky-pep-service.h&gt;
+
+struct              <a class="link" href="wocky-WockyPepService.html#WockyPepServiceClass" title="struct WockyPepServiceClass">WockyPepServiceClass</a>;
+<span class="returnvalue">WockyPepService</span> *   <a class="link" href="wocky-WockyPepService.html#wocky-pep-service-new" title="wocky_pep_service_new ()">wocky_pep_service_new</a>               (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> subscribe</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyPepService.html#wocky-pep-service-start" title="wocky_pep_service_start ()">wocky_pep_service_start</a>             (<em class="parameter"><code><span class="type">WockyPepService</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyPepService.html#wocky-pep-service-get-async" title="wocky_pep_service_get_async ()">wocky_pep_service_get_async</a>         (<em class="parameter"><code><span class="type">WockyPepService</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyPepService.html#wocky-pep-service-get-finish" title="wocky_pep_service_get_finish ()">wocky_pep_service_get_finish</a>        (<em class="parameter"><code><span class="type">WockyPepService</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **item</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-WockyPepService.html#wocky-pep-service-make-publish-stanza" title="wocky_pep_service_make_publish_stanza ()">wocky_pep_service_make_publish_stanza</a>
+                                                        (<em class="parameter"><code><span class="type">WockyPepService</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **item</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyPepService.description"></a><h2>Description</h2>
+<p>
+Object to aid with looking up PEP nodes and listening for changes.
+</p>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyPepService.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyPepServiceClass"></a><h3>struct WockyPepServiceClass</h3>
+<pre class="programlisting">struct WockyPepServiceClass {
+};
+</pre>
+<p>
+The class of a <span class="type">WockyPepService</span>.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-pep-service-new"></a><h3>wocky_pep_service_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyPepService</span> *   wocky_pep_service_new               (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> subscribe</code></em>);</pre>
+<p>
+A convenience function to create a new <span class="type">WockyPepService</span> object.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
+<td>the namespace of the PEP node</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>subscribe</code></em> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if Wocky is to subscribe to the notifications of
+the node, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new <span class="type">WockyPepService</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-pep-service-start"></a><h3>wocky_pep_service_start ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_pep_service_start             (<em class="parameter"><code><span class="type">WockyPepService</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>);</pre>
+<p>
+Start listening to the PEP node <em class="parameter"><code>node</code></em> and signal changes by using
+<span class="type">"changed"</span>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <span class="type">WockyPepService</span> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>a <a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> object</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-pep-service-get-async"></a><h3>wocky_pep_service_get_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_pep_service_get_async         (<em class="parameter"><code><span class="type">WockyPepService</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> *contact</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+<p>
+Starts an asynchronous operation to get the PEP node,
+<span class="type">"node"</span>.
+</p>
+<p>
+When the operation is complete, <em class="parameter"><code>callback</code></em> will be called and the
+function should call <a class="link" href="wocky-WockyPepService.html#wocky-pep-service-get-finish" title="wocky_pep_service_get_finish ()"><code class="function">wocky_pep_service_get_finish()</code></a>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <span class="type">WockyPepService</span> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>contact</code></em> :</span></p></td>
+<td>a <a class="link" href="WockyBareContact.html" title="WockyBareContact"><span class="type">WockyBareContact</span></a> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td>an optional <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> object, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em> :</span></p></td>
+<td>a function to call when the node is retrieved</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data for <em class="parameter"><code>callback</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-pep-service-get-finish"></a><h3>wocky_pep_service_get_finish ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_pep_service_get_finish        (<em class="parameter"><code><span class="type">WockyPepService</span> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **item</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+Finishes an asynchronous operation to get the PEP node,
+<span class="type">"node"</span>. For more details, see
+<a class="link" href="wocky-WockyPepService.html#wocky-pep-service-get-async" title="wocky_pep_service_get_async ()"><code class="function">wocky_pep_service_get_async()</code></a>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <span class="type">WockyPepService</span> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
+<td>a <a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>item</code></em> :</span></p></td>
+<td>on success, the first &lt;item&gt; element
+in the result, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>self</code></em> has no published items. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>a location to store a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> if an error occurs</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the <span class="type">WockyStanza</span> retrieved from getting the PEP node.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-pep-service-make-publish-stanza"></a><h3>wocky_pep_service_make_publish_stanza ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_pep_service_make_publish_stanza
+                                                        (<em class="parameter"><code><span class="type">WockyPepService</span> *self</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **item</code></em>);</pre>
+<p>
+Generates a new IQ type='set' PEP publish stanza.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>a <span class="type">WockyPepService</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>item</code></em> :</span></p></td>
+<td>a location to store the item <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new <span class="type">WockyStanza</span> PEP publish stanza; free with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>

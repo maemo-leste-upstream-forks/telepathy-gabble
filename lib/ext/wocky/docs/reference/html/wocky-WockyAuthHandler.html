@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyAuthHandler</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="ch01.html" title="API Reference">
+<link rel="next" href="WockyAuthRegistry.html" title="WockyAuthRegistry">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="ch01.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="WockyAuthRegistry.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockyAuthHandler.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockyAuthHandler.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="wocky-WockyAuthHandler"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockyAuthHandler.top_of_page"></a>WockyAuthHandler</span></h2>
+<p>WockyAuthHandler</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="wocky-WockyAuthHandler.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a class="link" href="wocky-WockyAuthHandler.html#WockyAuthInitialResponseFunc" title="WockyAuthInitialResponseFunc ()">*WockyAuthInitialResponseFunc</a>)     (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **initial_data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a class="link" href="wocky-WockyAuthHandler.html#WockyAuthAuthDataFunc" title="WockyAuthAuthDataFunc ()">*WockyAuthAuthDataFunc</a>)            (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a class="link" href="wocky-WockyAuthHandler.html#WockyAuthSuccessFunc" title="WockyAuthSuccessFunc ()">*WockyAuthSuccessFunc</a>)             (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-WockyAuthHandler.html#wocky-auth-handler-get-mechanism" title="wocky_auth_handler_get_mechanism ()">wocky_auth_handler_get_mechanism</a>    (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyAuthHandler.html#wocky-auth-handler-is-plain" title="wocky_auth_handler_is_plain ()">wocky_auth_handler_is_plain</a>         (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyAuthHandler.html#wocky-auth-handler-get-initial-response" title="wocky_auth_handler_get_initial_response ()">wocky_auth_handler_get_initial_response</a>
+                                                        (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **initial_data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyAuthHandler.html#wocky-auth-handler-handle-auth-data" title="wocky_auth_handler_handle_auth_data ()">wocky_auth_handler_handle_auth_data</a> (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockyAuthHandler.html#wocky-auth-handler-handle-success" title="wocky_auth_handler_handle_success ()">wocky_auth_handler_handle_success</a>   (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+struct              <a class="link" href="wocky-WockyAuthHandler.html#WockyAuthHandlerIface" title="struct WockyAuthHandlerIface">WockyAuthHandlerIface</a>;
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyAuthHandler.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyAuthHandler.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyAuthInitialResponseFunc"></a><h3>WockyAuthInitialResponseFunc ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*WockyAuthInitialResponseFunc)     (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **initial_data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+Called when authentication begins, if the mechanism allows a
+response to an implicit challenge during AUTH initiation (which, in
+XMPP, corresponds to sending the <code class="code">&lt;auth/&gt;</code> stanza
+to the server).
+</p>
+<p>
+The function should return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success, and optionally set the
+<em class="parameter"><code>initial_data</code></em> to a string if there is
+initial data to send. On error, it should return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> and set
+<em class="parameter"><code>error</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
+<td>a <span class="type">WockyAuthHandler</span> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>initial_data</code></em> :</span></p></td>
+<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> location to fill with the initial data. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>an optional location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> to fill, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyAuthAuthDataFunc"></a><h3>WockyAuthAuthDataFunc ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*WockyAuthAuthDataFunc)            (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyAuthSuccessFunc"></a><h3>WockyAuthSuccessFunc ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*WockyAuthSuccessFunc)             (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+Called when a <code class="code">&lt;success/&gt;</code> stanza is received
+during authentication. If no error is returned, then authentication
+is considered finished. (Typically, an error is only raised if the
+<code class="code">&lt;success/&gt;</code> stanza was received earlier than
+expected)
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
+<td>a <span class="type">WockyAuthHandler</span> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>an optional location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> to fill, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-auth-handler-get-mechanism"></a><h3>wocky_auth_handler_get_mechanism ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_auth_handler_get_mechanism    (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>);</pre>
+<p>
+Returns the name of the SASL mechanism <em class="parameter"><code>handler</code></em> implements.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
+<td>a handler for a SASL mechanism.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the name of the SASL mechanism <em class="parameter"><code>handler</code></em> implements.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-auth-handler-is-plain"></a><h3>wocky_auth_handler_is_plain ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_auth_handler_is_plain         (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>);</pre>
+<p>
+Checks whether <em class="parameter"><code>handler</code></em> sends secrets in plaintext. This may be used to
+decide whether to use <em class="parameter"><code>handler</code></em> on an insecure XMPP connection.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
+<td>a handler for a SASL mechanism.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>handler</code></em> sends secrets in plaintext.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-auth-handler-get-initial-response"></a><h3>wocky_auth_handler_get_initial_response ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_auth_handler_get_initial_response
+                                                        (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **initial_data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+Called when authentication begins to fetch the initial data to send to the
+server in the <code class="code">&lt;auth/&gt;</code> stanza.
+</p>
+<p>
+If this function returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, <em class="parameter"><code>initial_data</code></em> will be non-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>handler</code></em>
+provides an initial response, and <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> otherwise.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
+<td>a handler for a SASL mechanism</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>initial_data</code></em> :</span></p></td>
+<td>initial data to send to the server, if
+any. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>an optional location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> to fill, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success; <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-auth-handler-handle-auth-data"></a><h3>wocky_auth_handler_handle_auth_data ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_auth_handler_handle_auth_data (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> *data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a> **response</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+Asks <em class="parameter"><code>handler</code></em> to respond to a <code class="code">&lt;challenge/&gt;</code> stanza or a
+<code class="code">&lt;success/&gt;</code> with data. On success, <em class="parameter"><code>handler</code></em> will put
+response data into <em class="parameter"><code>response</code></em>, Base64-encoding it if appropriate.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
+<td>a <span class="type">WockyAuthHandler</span> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
+<td>the challenge string</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>response</code></em> :</span></p></td>
+<td>a location to fill with a challenge
+response in a <a href="http://library.gnome.org/devel/glib/unstable/glib-Strings.html#GString"><span class="type">GString</span></a>. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>an optional location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> to fill, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-auth-handler-handle-success"></a><h3>wocky_auth_handler_handle_success ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_auth_handler_handle_success   (<em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>
+Called when a <code class="code">&lt;success/&gt;</code> stanza is received
+during authentication. If no error is returned, then authentication
+is considered finished. (Typically, an error is only raised if the
+<code class="code">&lt;success/&gt;</code> stanza was received earlier than
+expected)
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>handler</code></em> :</span></p></td>
+<td>a <span class="type">WockyAuthHandler</span> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td>an optional location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> to fill, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyAuthHandlerIface"></a><h3>struct WockyAuthHandlerIface</h3>
+<pre class="programlisting">struct WockyAuthHandlerIface {
+    GTypeInterface parent;
+    gchar *mechanism;
+    gboolean plain;
+    WockyAuthInitialResponseFunc initial_response_func;
+    WockyAuthAuthDataFunc auth_data_func;
+    WockyAuthSuccessFunc success_func;
+};
+</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="WockyAuthHandlerIface.parent"></a>parent</code></em>;</span></p></td>
+<td>The parent interface.</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyAuthHandlerIface.mechanism"></a>mechanism</code></em>;</span></p></td>
+<td>The AUTH mechanism which this handler responds to
+challenges for.</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="WockyAuthHandlerIface.plain"></a>plain</code></em>;</span></p></td>
+<td>Whether the mechanism this handler handles sends secrets in
+plaintext.</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="wocky-WockyAuthHandler.html#WockyAuthInitialResponseFunc" title="WockyAuthInitialResponseFunc ()"><span class="type">WockyAuthInitialResponseFunc</span></a> <em class="structfield"><code><a name="WockyAuthHandlerIface.initial-response-func"></a>initial_response_func</code></em>;</span></p></td>
+<td>Called when the initial <code class="code">&lt;auth
+/&gt;</code> stanza is generated</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="wocky-WockyAuthHandler.html#WockyAuthAuthDataFunc" title="WockyAuthAuthDataFunc ()"><span class="type">WockyAuthAuthDataFunc</span></a> <em class="structfield"><code><a name="WockyAuthHandlerIface.auth-data-func"></a>auth_data_func</code></em>;</span></p></td>
+<td>Called when any authentication data from the
+server is received</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="wocky-WockyAuthHandler.html#WockyAuthSuccessFunc" title="WockyAuthSuccessFunc ()"><span class="type">WockyAuthSuccessFunc</span></a> <em class="structfield"><code><a name="WockyAuthHandlerIface.success-func"></a>success_func</code></em>;</span></p></td>
+<td>Called when a <code class="code">&lt;success/&gt;</code> stanza
+is received.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>

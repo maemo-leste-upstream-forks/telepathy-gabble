@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockySaslAuth</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="wocky-WockyRoster.html" title="WockyRoster">
+<link rel="next" href="wocky-wocky-sasl-digest-md5.html" title="wocky-sasl-digest-md5">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="wocky-WockyRoster.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="wocky-wocky-sasl-digest-md5.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockySaslAuth.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockySaslAuth.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="wocky-WockySaslAuth"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockySaslAuth.top_of_page"></a>WockySaslAuth</span></h2>
+<p>WockySaslAuth</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="wocky-WockySaslAuth.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">struct              <a class="link" href="wocky-WockySaslAuth.html#WockySaslAuthClass" title="struct WockySaslAuthClass">WockySaslAuthClass</a>;
+<span class="returnvalue">WockySaslAuth</span> *     <a class="link" href="wocky-WockySaslAuth.html#wocky-sasl-auth-new" title="wocky_sasl_auth_new ()">wocky_sasl_auth_new</a>                 (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *server</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *username</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *password</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyXmppConnection</span> *connection</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *auth_registry</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockySaslAuth.html#wocky-sasl-auth-add-handler" title="wocky_sasl_auth_add_handler ()">wocky_sasl_auth_add_handler</a>         (<em class="parameter"><code><span class="type">WockySaslAuth</span> *sasl</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockySaslAuth.html#wocky-sasl-auth-authenticate-async" title="wocky_sasl_auth_authenticate_async ()">wocky_sasl_auth_authenticate_async</a>  (<em class="parameter"><code><span class="type">WockySaslAuth</span> *sasl</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *features</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> allow_plain</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> is_secure</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-WockySaslAuth.html#wocky-sasl-auth-authenticate-finish" title="wocky_sasl_auth_authenticate_finish ()">wocky_sasl_auth_authenticate_finish</a> (<em class="parameter"><code><span class="type">WockySaslAuth</span> *sasl</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockySaslAuth.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="wocky-WockySaslAuth.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockySaslAuthClass"></a><h3>struct WockySaslAuthClass</h3>
+<pre class="programlisting">struct WockySaslAuthClass {
+};
+</pre>
+<p>
+The class of a <span class="type">WockySaslAuth</span>.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-sasl-auth-new"></a><h3>wocky_sasl_auth_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockySaslAuth</span> *     wocky_sasl_auth_new                 (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *server</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *username</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *password</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyXmppConnection</span> *connection</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyAuthRegistry.html" title="WockyAuthRegistry"><span class="type">WockyAuthRegistry</span></a> *auth_registry</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-sasl-auth-add-handler"></a><h3>wocky_sasl_auth_add_handler ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_sasl_auth_add_handler         (<em class="parameter"><code><span class="type">WockySaslAuth</span> *sasl</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyAuthHandler</span> *handler</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-sasl-auth-authenticate-async"></a><h3>wocky_sasl_auth_authenticate_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_sasl_auth_authenticate_async  (<em class="parameter"><code><span class="type">WockySaslAuth</span> *sasl</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *features</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> allow_plain</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> is_secure</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html#GAsyncReadyCallback"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-sasl-auth-authenticate-finish"></a><h3>wocky_sasl_auth_authenticate_finish ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_sasl_auth_authenticate_finish (<em class="parameter"><code><span class="type">WockySaslAuth</span> *sasl</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *result</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>

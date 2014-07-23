@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WockyXmppWriter</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Wocky Reference Manual">
+<link rel="up" href="ch01.html" title="API Reference">
+<link rel="prev" href="wocky-WockyXmppReader.html" title="WockyXmppReader">
+<link rel="next" href="WockyJingleContent.html" title="WockyJingleContent">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="wocky-WockyXmppReader.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Wocky Reference Manual</th>
+<td><a accesskey="n" href="WockyJingleContent.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#wocky-WockyXmppWriter.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#wocky-WockyXmppWriter.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="wocky-WockyXmppWriter"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="wocky-WockyXmppWriter.top_of_page"></a>WockyXmppWriter</span></h2>
+<p>WockyXmppWriter — Xmpp stanza to XML serializer</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="wocky-WockyXmppWriter.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">struct              <a class="link" href="wocky-WockyXmppWriter.html#WockyXmppWriterClass" title="struct WockyXmppWriterClass">WockyXmppWriterClass</a>;
+<span class="returnvalue">WockyXmppWriter</span> *   <a class="link" href="wocky-WockyXmppWriter.html#wocky-xmpp-writer-new" title="wocky_xmpp_writer_new ()">wocky_xmpp_writer_new</a>               (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">WockyXmppWriter</span> *   <a class="link" href="wocky-WockyXmppWriter.html#wocky-xmpp-writer-new-no-stream" title="wocky_xmpp_writer_new_no_stream ()">wocky_xmpp_writer_new_no_stream</a>     (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyXmppWriter.html#wocky-xmpp-writer-stream-open" title="wocky_xmpp_writer_stream_open ()">wocky_xmpp_writer_stream_open</a>       (<em class="parameter"><code><span class="type">WockyXmppWriter</span> *writer</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *to</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *version</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *id</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint8"><span class="type">guint8</span></a> **data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> *length</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyXmppWriter.html#wocky-xmpp-writer-stream-close" title="wocky_xmpp_writer_stream_close ()">wocky_xmpp_writer_stream_close</a>      (<em class="parameter"><code><span class="type">WockyXmppWriter</span> *writer</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint8"><span class="type">guint8</span></a> **data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> *length</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyXmppWriter.html#wocky-xmpp-writer-write-stanza" title="wocky_xmpp_writer_write_stanza ()">wocky_xmpp_writer_write_stanza</a>      (<em class="parameter"><code><span class="type">WockyXmppWriter</span> *writer</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint8"><span class="type">guint8</span></a> **data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> *length</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyXmppWriter.html#wocky-xmpp-writer-write-node-tree" title="wocky_xmpp_writer_write_node_tree ()">wocky_xmpp_writer_write_node_tree</a>   (<em class="parameter"><code><span class="type">WockyXmppWriter</span> *writer</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *tree</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint8"><span class="type">guint8</span></a> **data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> *length</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="wocky-WockyXmppWriter.html#wocky-xmpp-writer-flush" title="wocky_xmpp_writer_flush ()">wocky_xmpp_writer_flush</a>             (<em class="parameter"><code><span class="type">WockyXmppWriter</span> *writer</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyXmppWriter.description"></a><h2>Description</h2>
+<p>
+The <span class="type">WockyXmppWriter</span> serializes <span class="type">WockyStanza</span>s and XMPP stream opening
+and closing to raw XML. The various functions provide a pointer to an
+internal buffer, which remains valid until the next call to the writer.
+</p>
+</div>
+<div class="refsect1">
+<a name="wocky-WockyXmppWriter.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="WockyXmppWriterClass"></a><h3>struct WockyXmppWriterClass</h3>
+<pre class="programlisting">struct WockyXmppWriterClass {
+};
+</pre>
+<p>
+The class of a <span class="type">WockyXmppWriter</span>.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-writer-new"></a><h3>wocky_xmpp_writer_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyXmppWriter</span> *   wocky_xmpp_writer_new               (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Convenience function to create a new <span class="type">WockyXmppWriter</span>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new <span class="type">WockyXmppWriter</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-writer-new-no-stream"></a><h3>wocky_xmpp_writer_new_no_stream ()</h3>
+<pre class="programlisting"><span class="returnvalue">WockyXmppWriter</span> *   wocky_xmpp_writer_new_no_stream     (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Convenience function to create a new <span class="type">WockyXmppWriter</span> that has streaming
+mode disabled.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new <span class="type">WockyXmppWriter</span> in non-streaming mode</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-writer-stream-open"></a><h3>wocky_xmpp_writer_stream_open ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_writer_stream_open       (<em class="parameter"><code><span class="type">WockyXmppWriter</span> *writer</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *to</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *version</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *id</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint8"><span class="type">guint8</span></a> **data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> *length</code></em>);</pre>
+<p>
+Create the XML opening header of an XMPP stream. The result is available in
+the <em class="parameter"><code>data</code></em> buffer. The buffer is only valid until the next call to a function
+the writer.
+</p>
+<p>
+This function can only be called in streaming mode.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>writer</code></em> :</span></p></td>
+<td>a WockyXmppWriter</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>to</code></em> :</span></p></td>
+<td>the target of the stream opening (usually the xmpp server name)</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from</code></em> :</span></p></td>
+<td>the sender of the stream opening (usually the jid of the client)</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>version</code></em> :</span></p></td>
+<td>XMPP version</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>lang</code></em> :</span></p></td>
+<td>default XMPP stream language</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>id</code></em> :</span></p></td>
+<td>XMPP Stream ID, if any, or NULL</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
+<td>location to store a pointer to the data buffer</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>length</code></em> :</span></p></td>
+<td>length of the data buffer</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-writer-stream-close"></a><h3>wocky_xmpp_writer_stream_close ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_writer_stream_close      (<em class="parameter"><code><span class="type">WockyXmppWriter</span> *writer</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint8"><span class="type">guint8</span></a> **data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> *length</code></em>);</pre>
+<p>
+Create the XML closing footer of an XMPP stream . The result is available
+in the <em class="parameter"><code>data</code></em> buffer. The buffer is only valid until the next call to a
+function
+</p>
+<p>
+This function can only be called in streaming mode.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>writer</code></em> :</span></p></td>
+<td>a WockyXmppWriter</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
+<td>location to store a pointer to the data buffer</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>length</code></em> :</span></p></td>
+<td>length of the data buffer</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-writer-write-stanza"></a><h3>wocky_xmpp_writer_write_stanza ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_writer_write_stanza      (<em class="parameter"><code><span class="type">WockyXmppWriter</span> *writer</code></em>,
+                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint8"><span class="type">guint8</span></a> **data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> *length</code></em>);</pre>
+<p>
+Serialize the <em class="parameter"><code>stanza</code></em> to XML. The result is available in the
+<em class="parameter"><code>data</code></em> buffer. The buffer is only valid until the next call to a function
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>writer</code></em> :</span></p></td>
+<td>a WockyXmppWriter</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
+<td>the stanza to serialize</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
+<td>location to store a pointer to the data buffer</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>length</code></em> :</span></p></td>
+<td>length of the data buffer</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-writer-write-node-tree"></a><h3>wocky_xmpp_writer_write_node_tree ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_writer_write_node_tree   (<em class="parameter"><code><span class="type">WockyXmppWriter</span> *writer</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> *tree</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint8"><span class="type">guint8</span></a> **data</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> *length</code></em>);</pre>
+<p>
+Serialize the <em class="parameter"><code>tree</code></em> to XML. The result is available in the
+<em class="parameter"><code>data</code></em> buffer. The buffer is only valid until the next call to a function.
+This function may only be called in non-streaming mode.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>writer</code></em> :</span></p></td>
+<td>a WockyXmppWriter</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>tree</code></em> :</span></p></td>
+<td>the node tree to serialize</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
+<td>location to store a pointer to the data buffer</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>length</code></em> :</span></p></td>
+<td>length of the data buffer</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-writer-flush"></a><h3>wocky_xmpp_writer_flush ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_writer_flush             (<em class="parameter"><code><span class="type">WockyXmppWriter</span> *writer</code></em>);</pre>
+<p>
+Flushes and frees the internal data buffer
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>writer</code></em> :</span></p></td>
+<td>a WockyXmppWriter</td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>
