@@ -38,7 +38,7 @@ override_dh_install:
 	dh_install --list-missing
 
 override_dh_strip:
-	dh_strip --dbg-package=telepathy-gabble-dbg
+	dh_strip --dbgsym-migration='telepathy-gabble-dbg (<< 0.18.3-3~)'
 
 # the libraries are considered private, nothing in Debian should depend on them
 override_dh_makeshlibs:
