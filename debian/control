@@ -8,6 +8,7 @@ Uploaders: Dafydd Harries <daf@debian.org>,
 Build-Depends: autotools-dev (>= 20100122.1~),
                debhelper (>= 9),
                dh-autoreconf,
+               dh-python,
                dpkg-dev (>= 1.16.1~),
                gnutls-bin,
                libdbus-1-dev (>= 1.1.0),
@@ -54,7 +55,7 @@ Package: telepathy-gabble-tests
 Priority: extra
 Section: devel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends},
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends},
  telepathy-gabble (= ${binary:Version}),
  python-twisted, python-openssl, python-gobject
 Description: Jabber/XMPP connection manager (automated tests)

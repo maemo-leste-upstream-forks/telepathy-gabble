@@ -3,7 +3,7 @@
 include /usr/share/dpkg/default.mk
 
 %:
-	dh $@ --with autoreconf --parallel
+	dh $@ --with autoreconf,python2 --parallel
 
 # Now that we use debhelper 9, dh_auto_configure defaults to
 # $libexecdir=$libdir, which might be better than this, but doesn't match
