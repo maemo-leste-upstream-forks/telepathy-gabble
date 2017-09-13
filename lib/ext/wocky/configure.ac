@@ -119,21 +119,13 @@ AC_C_BIGENDIAN
 
 dnl Check for Glib
 PKG_CHECK_MODULES(GLIB,
-  [glib-2.0 >= 2.32, gobject-2.0 >= 2.32, gthread-2.0 >= 2.32, gio-2.0 >= 2.32])
+  [glib-2.0 >= 2.44, gobject-2.0 >= 2.44, gthread-2.0 >= 2.44, gio-2.0 >= 2.44])
 
-AC_DEFINE([GLIB_VERSION_MIN_REQUIRED], [GLIB_VERSION_2_32], [Ignore post 2.32 deprecations])
-AC_DEFINE([GLIB_VERSION_MAX_ALLOWED], [GLIB_VERSION_2_32], [Prevent post 2.32 APIs])
+AC_DEFINE([GLIB_VERSION_MIN_REQUIRED], [GLIB_VERSION_2_44], [Ignore post 2.44 deprecations])
+AC_DEFINE([GLIB_VERSION_MAX_ALLOWED], [GLIB_VERSION_2_44], [Prevent post 2.44 APIs])
 
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
-
-dnl Check GIO proxy support
-PKG_CHECK_EXISTS([gio-2.0 >= 2.25.15],
-  [HAVE_GIO_PROXY=yes
-   AC_DEFINE(HAVE_GIO_PROXY, [1], [Defined if GIO supports proxy])],
-  [HAVE_GIO_PROXY=no])
-AM_CONDITIONAL(HAVE_GIO_PROXY, [test "x${HAVE_GIO_PROXY}" = "xyes"])
-
 
 dnl Choose an SSL/TLS backend (default gnutls)
 AC_ARG_WITH([tls],
@@ -259,7 +251,7 @@ if test x$enable_google_relay = xyes; then
   AC_DEFINE(ENABLE_GOOGLE_RELAY, [], [Enable Google Jingle relay support])
 
   dnl Check for libsoup
-  PKG_CHECK_MODULES(SOUP, libsoup-2.4)
+  PKG_CHECK_MODULES(SOUP, libsoup-2.4 >= 2.42)
 fi
 AM_CONDITIONAL([ENABLE_GOOGLE_RELAY], [test "x$enable_google_relay" = xyes])
 

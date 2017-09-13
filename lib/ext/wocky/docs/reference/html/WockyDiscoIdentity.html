@@ -2,32 +2,27 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>WockyDiscoIdentity</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<title>WockyDiscoIdentity: Wocky Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="wocky-wocky-http-proxy.html" title="wocky-http-proxy">
-<link rel="next" href="wocky-WockyJabberAuth.html" title="WockyJabberAuth">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="prev" href="wocky-wocky-heartbeat-source.html" title="wocky-heartbeat-source">
+<link rel="next" href="WockyJabberAuth.html" title="WockyJabberAuth">
+<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="wocky-wocky-http-proxy.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">Wocky Reference Manual</th>
-<td><a accesskey="n" href="wocky-WockyJabberAuth.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#WockyDiscoIdentity.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#WockyDiscoIdentity.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#WockyDiscoIdentity.object-hierarchy" class="shortcut">Object Hierarchy</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#WockyDiscoIdentity.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#WockyDiscoIdentity.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="wocky-wocky-heartbeat-source.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="WockyJabberAuth.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="WockyDiscoIdentity"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -35,40 +30,317 @@
 <h2><span class="refentrytitle"><a name="WockyDiscoIdentity.top_of_page"></a>WockyDiscoIdentity</span></h2>
 <p>WockyDiscoIdentity — Structure holding XMPP disco identity information.</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="WockyDiscoIdentity.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">struct              <a class="link" href="WockyDiscoIdentity.html#WockyDiscoIdentity-struct" title="struct WockyDiscoIdentity">WockyDiscoIdentity</a>;
-<a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="returnvalue">WockyDiscoIdentity</span></a> * <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-new" title="wocky_disco_identity_new ()">wocky_disco_identity_new</a>           (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *category</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *type</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
-<a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="returnvalue">WockyDiscoIdentity</span></a> * <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-copy" title="wocky_disco_identity_copy ()">wocky_disco_identity_copy</a>          (<em class="parameter"><code>const <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> *source</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-free" title="wocky_disco_identity_free ()">wocky_disco_identity_free</a>           (<em class="parameter"><code><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> *identity</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-cmp" title="wocky_disco_identity_cmp ()">wocky_disco_identity_cmp</a>            (<em class="parameter"><code><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> *left</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> *right</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="returnvalue">GPtrArray</span></a> *         <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-new" title="wocky_disco_identity_array_new ()">wocky_disco_identity_array_new</a>      (<em class="parameter"><code><span class="type">void</span></code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="returnvalue">GPtrArray</span></a> *         <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-copy" title="wocky_disco_identity_array_copy ()">wocky_disco_identity_array_copy</a>     (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *source</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-free" title="wocky_disco_identity_array_free ()">wocky_disco_identity_array_free</a>     (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *arr</code></em>);
-</pre>
+<div class="refsect1">
+<a name="WockyDiscoIdentity.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="returnvalue">WockyDiscoIdentity</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-new" title="wocky_disco_identity_new ()">wocky_disco_identity_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="returnvalue">WockyDiscoIdentity</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-copy" title="wocky_disco_identity_copy ()">wocky_disco_identity_copy</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-free" title="wocky_disco_identity_free ()">wocky_disco_identity_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-cmp" title="wocky_disco_identity_cmp ()">wocky_disco_identity_cmp</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Pointer-Arrays.html#GPtrArray"><span class="returnvalue">GPtrArray</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-new" title="wocky_disco_identity_array_new ()">wocky_disco_identity_array_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Pointer-Arrays.html#GPtrArray"><span class="returnvalue">GPtrArray</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-copy" title="wocky_disco_identity_array_copy ()">wocky_disco_identity_array_copy</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-free" title="wocky_disco_identity_array_free ()">wocky_disco_identity_array_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="WockyDiscoIdentity.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="WockyDiscoIdentity.html#WockyDiscoIdentity-struct" title="struct WockyDiscoIdentity">WockyDiscoIdentity</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="WockyDiscoIdentity.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  GBoxed
-   +----WockyDiscoIdentity
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-Boxed-Types.html">GBoxed</a>
+    <span class="lineart">╰──</span> WockyDiscoIdentity
 </pre>
 </div>
 <div class="refsect1">
 <a name="WockyDiscoIdentity.description"></a><h2>Description</h2>
-<p>
-Contains information regarding the identity information in disco
-replies, as described in XEP-0030.
-</p>
+<p>Contains information regarding the identity information in disco
+replies, as described in XEP-0030.</p>
 </div>
 <div class="refsect1">
-<a name="WockyDiscoIdentity.details"></a><h2>Details</h2>
+<a name="WockyDiscoIdentity.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="wocky-disco-identity-new"></a><h3>wocky_disco_identity_new ()</h3>
+<pre class="programlisting"><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="returnvalue">WockyDiscoIdentity</span></a> *
+wocky_disco_identity_new (<em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *category</code></em>,
+                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *type</code></em>,
+                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>,
+                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
+<p></p>
+<div class="refsect3">
+<a name="wocky-disco-identity-new.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>category</p></td>
+<td class="parameter_description"><p>disco category</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>type</p></td>
+<td class="parameter_description"><p>disco type</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>lang</p></td>
+<td class="parameter_description"><p>disco language</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>name</p></td>
+<td class="parameter_description"><p>disco name</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="wocky-disco-identity-new.returns"></a><h4>Returns</h4>
+<p> a new <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> which should be freed using
+<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-free" title="wocky_disco_identity_free ()"><code class="function">wocky_disco_identity_free()</code></a>.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-disco-identity-copy"></a><h3>wocky_disco_identity_copy ()</h3>
+<pre class="programlisting"><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="returnvalue">WockyDiscoIdentity</span></a> *
+wocky_disco_identity_copy (<em class="parameter"><code>const <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> *source</code></em>);</pre>
+<p>Creates a new <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> structure with the data given by
+<em class="parameter"><code>source</code></em>
+. The copy also copies the internal data so <em class="parameter"><code>source</code></em>
+ can be
+freed after this function is called.</p>
+<div class="refsect3">
+<a name="wocky-disco-identity-copy.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>source</p></td>
+<td class="parameter_description"><p>the <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> to copy</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="wocky-disco-identity-copy.returns"></a><h4>Returns</h4>
+<p> a new <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> which is a deep copy of <em class="parameter"><code>source</code></em>
+</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-disco-identity-free"></a><h3>wocky_disco_identity_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+wocky_disco_identity_free (<em class="parameter"><code><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> *identity</code></em>);</pre>
+<p>Frees the memory used by <em class="parameter"><code>identity</code></em>
+.</p>
+<div class="refsect3">
+<a name="wocky-disco-identity-free.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>identity</p></td>
+<td class="parameter_description"><p>a <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-disco-identity-cmp"></a><h3>wocky_disco_identity_cmp ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>
+wocky_disco_identity_cmp (<em class="parameter"><code><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> *left</code></em>,
+                          <em class="parameter"><code><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> *right</code></em>);</pre>
+<p>Compares <em class="parameter"><code>left</code></em>
+ and <em class="parameter"><code>right</code></em>
+. It returns an integer less than, equal
+to, or greater than zero if <em class="parameter"><code>left</code></em>
+ is found, respectively, to be
+less than, to match, or be greater than <code class="literal">right</code>.</p>
+<p>This function can be casted to a <a href="/usr/share/gtk-doc/html/glibglib-Doubly-Linked-Lists.html#GCompareFunc"><code class="literal">GCompareFunc</code></a> to sort a list of
+<a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> structures.</p>
+<div class="refsect3">
+<a name="wocky-disco-identity-cmp.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>left</p></td>
+<td class="parameter_description"><p>a <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>right</p></td>
+<td class="parameter_description"><p>a <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="wocky-disco-identity-cmp.returns"></a><h4>Returns</h4>
+<p> the result of comparing <em class="parameter"><code>left</code></em>
+and <em class="parameter"><code>right</code></em>
+</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-disco-identity-array-new"></a><h3>wocky_disco_identity_array_new ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Pointer-Arrays.html#GPtrArray"><span class="returnvalue">GPtrArray</span></a> *
+wocky_disco_identity_array_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Creates a new array of <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> structures.</p>
+<div class="refsect3">
+<a name="wocky-disco-identity-array-new.returns"></a><h4>Returns</h4>
+<p> A newly instantiated
+array. <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-free" title="wocky_disco_identity_array_free ()"><code class="function">wocky_disco_identity_array_free()</code></a> should beq used
+to free the memory allocated by this array.
+See: <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-free" title="wocky_disco_identity_array_free ()"><code class="function">wocky_disco_identity_array_free()</code></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-disco-identity-array-copy"></a><h3>wocky_disco_identity_array_copy ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Pointer-Arrays.html#GPtrArray"><span class="returnvalue">GPtrArray</span></a> *
+wocky_disco_identity_array_copy (<em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *source</code></em>);</pre>
+<p>Copies an array of <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> objects. The returned array contains
+new copies of the contents of the source array.</p>
+<div class="refsect3">
+<a name="wocky-disco-identity-array-copy.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>source</p></td>
+<td class="parameter_description"><p>The source array to be copied.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="wocky-disco-identity-array-copy.returns"></a><h4>Returns</h4>
+<p> A newly instantiated array with new copies of the contents of the
+source array.
+See: <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-new" title="wocky_disco_identity_array_new ()"><code class="function">wocky_disco_identity_array_new()</code></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-disco-identity-array-free"></a><h3>wocky_disco_identity_array_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+wocky_disco_identity_array_free (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *arr</code></em>);</pre>
+<p>Frees an array of <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> objects created with
+<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-new" title="wocky_disco_identity_array_new ()"><code class="function">wocky_disco_identity_array_new()</code></a> or returned by
+<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-copy" title="wocky_disco_identity_array_copy ()"><code class="function">wocky_disco_identity_array_copy()</code></a>.</p>
+<p>Note that if this method is called with an array created with
+<a href="/usr/share/gtk-doc/html/glibglib-Pointer-Arrays.html#g-ptr-array-new"><code class="function">g_ptr_array_new()</code></a>, the caller should also free the array contents.</p>
+<p>See: <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-new" title="wocky_disco_identity_array_new ()"><code class="function">wocky_disco_identity_array_new()</code></a>, <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-copy" title="wocky_disco_identity_array_copy ()"><code class="function">wocky_disco_identity_array_copy()</code></a></p>
+<div class="refsect3">
+<a name="wocky-disco-identity-array-free.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>arr</p></td>
+<td class="parameter_description"><p>Array to be freed.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="WockyDiscoIdentity.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="WockyDiscoIdentity-struct"></a><h3>struct WockyDiscoIdentity</h3>
 <pre class="programlisting">struct WockyDiscoIdentity {
@@ -78,240 +350,44 @@ replies, as described in XEP-0030.
   gchar *name;
 };
 </pre>
-<p>
-A structure used to hold information regarding an identity from a
-disco reply as described in XEP-0030.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p>A structure used to hold information regarding an identity from a
+disco reply as described in XEP-0030.</p>
+<div class="refsect3">
+<a name="WockyDiscoIdentity.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDiscoIdentity-struct.category"></a>category</code></em>;</span></p></td>
-<td>the identity category</td>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDiscoIdentity-struct.category"></a>category</code></em>;</p></td>
+<td class="struct_member_description"><p>the identity category</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDiscoIdentity-struct.type"></a>type</code></em>;</span></p></td>
-<td>the identity type</td>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDiscoIdentity-struct.type"></a>type</code></em>;</p></td>
+<td class="struct_member_description"><p>the identity type</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDiscoIdentity-struct.lang"></a>lang</code></em>;</span></p></td>
-<td>the identity language</td>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDiscoIdentity-struct.lang"></a>lang</code></em>;</p></td>
+<td class="struct_member_description"><p>the identity language</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDiscoIdentity-struct.name"></a>name</code></em>;</span></p></td>
-<td>the identity name</td>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyDiscoIdentity-struct.name"></a>name</code></em>;</p></td>
+<td class="struct_member_description"><p>the identity name</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="wocky-disco-identity-new"></a><h3>wocky_disco_identity_new ()</h3>
-<pre class="programlisting"><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="returnvalue">WockyDiscoIdentity</span></a> * wocky_disco_identity_new           (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *category</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *type</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *lang</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
-<p>
-
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>category</code></em> :</span></p></td>
-<td>disco category</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
-<td>disco type</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>lang</code></em> :</span></p></td>
-<td>disco language</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
-<td>disco name</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a new <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> which should be freed using
-<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-free" title="wocky_disco_identity_free ()"><code class="function">wocky_disco_identity_free()</code></a>.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-disco-identity-copy"></a><h3>wocky_disco_identity_copy ()</h3>
-<pre class="programlisting"><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="returnvalue">WockyDiscoIdentity</span></a> * wocky_disco_identity_copy          (<em class="parameter"><code>const <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> *source</code></em>);</pre>
-<p>
-Creates a new <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> structure with the data given by
-<em class="parameter"><code>source</code></em>. The copy also copies the internal data so <em class="parameter"><code>source</code></em> can be
-freed after this function is called.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>source</code></em> :</span></p></td>
-<td>the <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> to copy</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a new <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> which is a deep copy of <em class="parameter"><code>source</code></em>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-disco-identity-free"></a><h3>wocky_disco_identity_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_disco_identity_free           (<em class="parameter"><code><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> *identity</code></em>);</pre>
-<p>
-Frees the memory used by <em class="parameter"><code>identity</code></em>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>identity</code></em> :</span></p></td>
-<td>a <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a>
-</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-disco-identity-cmp"></a><h3>wocky_disco_identity_cmp ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                wocky_disco_identity_cmp            (<em class="parameter"><code><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> *left</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> *right</code></em>);</pre>
-<p>
-Compares <em class="parameter"><code>left</code></em> and <em class="parameter"><code>right</code></em>. It returns an integer less than, equal
-to, or greater than zero if <em class="parameter"><code>left</code></em> is found, respectively, to be
-less than, to match, or be greater than <code class="literal">right</code>.
-</p>
-<p>
-This function can be casted to a <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GCompareFunc"><code class="literal">GCompareFunc</code></a> to sort a list of
-<a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> structures.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>left</code></em> :</span></p></td>
-<td>a <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>right</code></em> :</span></p></td>
-<td>a <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the result of comparing <em class="parameter"><code>left</code></em> and <em class="parameter"><code>right</code></em>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-disco-identity-array-new"></a><h3>wocky_disco_identity_array_new ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="returnvalue">GPtrArray</span></a> *         wocky_disco_identity_array_new      (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-Creates a new array of <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> structures.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>A newly instantiated
-array. <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-free" title="wocky_disco_identity_array_free ()"><code class="function">wocky_disco_identity_array_free()</code></a> should beq used
-to free the memory allocated by this array.
-See: <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-free" title="wocky_disco_identity_array_free ()"><code class="function">wocky_disco_identity_array_free()</code></a>
-</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-disco-identity-array-copy"></a><h3>wocky_disco_identity_array_copy ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="returnvalue">GPtrArray</span></a> *         wocky_disco_identity_array_copy     (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *source</code></em>);</pre>
-<p>
-Copies an array of <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> objects. The returned array contains
-new copies of the contents of the source array.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>source</code></em> :</span></p></td>
-<td>The source array to be copied.</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>A newly instantiated array with new copies of the contents of the
-source array.
-See: <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-new" title="wocky_disco_identity_array_new ()"><code class="function">wocky_disco_identity_array_new()</code></a>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-disco-identity-array-free"></a><h3>wocky_disco_identity_array_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_disco_identity_array_free     (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *arr</code></em>);</pre>
-<p>
-Frees an array of <a class="link" href="WockyDiscoIdentity.html" title="WockyDiscoIdentity"><span class="type">WockyDiscoIdentity</span></a> objects created with
-<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-new" title="wocky_disco_identity_array_new ()"><code class="function">wocky_disco_identity_array_new()</code></a> or returned by
-<a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-copy" title="wocky_disco_identity_array_copy ()"><code class="function">wocky_disco_identity_array_copy()</code></a>.
-</p>
-<p>
-Note that if this method is called with an array created with
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#g-ptr-array-new"><code class="function">g_ptr_array_new()</code></a>, the caller should also free the array contents.
-</p>
-<p>
-See: <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-new" title="wocky_disco_identity_array_new ()"><code class="function">wocky_disco_identity_array_new()</code></a>, <a class="link" href="WockyDiscoIdentity.html#wocky-disco-identity-array-copy" title="wocky_disco_identity_array_copy ()"><code class="function">wocky_disco_identity_array_copy()</code></a>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>arr</code></em> :</span></p></td>
-<td>Array to be freed.</td>
-</tr></tbody>
-</table></div>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.19</div>
+<hr>Generated by GTK-Doc V1.25</div>
 </body>
 </html>
