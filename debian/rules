@@ -5,7 +5,7 @@ include /usr/share/dpkg/default.mk
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 %:
-	dh $@ --with autoreconf,python2 --parallel
+	dh $@ --with python2
 
 # Now that we use debhelper 9, dh_auto_configure defaults to
 # $libexecdir=$libdir, which might be better than this, but doesn't match
