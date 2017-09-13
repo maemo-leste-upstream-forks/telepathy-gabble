@@ -2,32 +2,27 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>wocky-xmpp-error</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<title>wocky-xmpp-error: Wocky Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="wocky-WockyXmppConnection.html" title="WockyXmppConnection">
-<link rel="next" href="wocky-WockyXmppReader.html" title="WockyXmppReader">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="prev" href="WockyXmppConnection.html" title="WockyXmppConnection">
+<link rel="next" href="WockyXmppReader.html" title="WockyXmppReader">
+<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="wocky-WockyXmppConnection.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">Wocky Reference Manual</th>
-<td><a accesskey="n" href="wocky-WockyXmppReader.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#wocky-wocky-xmpp-error.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#wocky-wocky-xmpp-error.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#wocky-wocky-xmpp-error.object-hierarchy" class="shortcut">Object Hierarchy</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#wocky-wocky-xmpp-error.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#wocky-wocky-xmpp-error.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="WockyXmppConnection.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="WockyXmppReader.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="wocky-wocky-xmpp-error"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -35,334 +30,708 @@
 <h2><span class="refentrytitle"><a name="wocky-wocky-xmpp-error.top_of_page"></a>wocky-xmpp-error</span></h2>
 <p>wocky-xmpp-error</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="wocky-wocky-xmpp-error.synopsis"></a><h2>Synopsis</h2>
-<a name="WockyXmppErrorType"></a><a name="WockyXmppError"></a><a name="WockyJingleError"></a><a name="WockySIError"></a><a name="WockyXmppStreamError"></a><pre class="synopsis">enum                <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorType-enum" title="enum WockyXmppErrorType">WockyXmppErrorType</a>;
-enum                <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError-enum" title="enum WockyXmppError">WockyXmppError</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-quark" title="wocky_xmpp_error_quark ()">wocky_xmpp_error_quark</a>              (<em class="parameter"><code><span class="type">void</span></code></em>);
-#define             <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS" title="WOCKY_XMPP_ERROR">WOCKY_XMPP_ERROR</a>
-struct              <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorSpecialization" title="struct WockyXmppErrorSpecialization">WockyXmppErrorSpecialization</a>;
-struct              <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain" title="struct WockyXmppErrorDomain">WockyXmppErrorDomain</a>;
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-register-domain" title="wocky_xmpp_error_register_domain ()">wocky_xmpp_error_register_domain</a>    (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain" title="struct WockyXmppErrorDomain"><span class="type">WockyXmppErrorDomain</span></a> *domain</code></em>);
-enum                <a class="link" href="wocky-wocky-xmpp-error.html#WockyJingleError-enum" title="enum WockyJingleError">WockyJingleError</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="wocky-wocky-xmpp-error.html#wocky-jingle-error-quark" title="wocky_jingle_error_quark ()">wocky_jingle_error_quark</a>            (<em class="parameter"><code><span class="type">void</span></code></em>);
-#define             <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-JINGLE-ERROR:CAPS" title="WOCKY_JINGLE_ERROR">WOCKY_JINGLE_ERROR</a>
-enum                <a class="link" href="wocky-wocky-xmpp-error.html#WockySIError-enum" title="enum WockySIError">WockySIError</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="wocky-wocky-xmpp-error.html#wocky-si-error-quark" title="wocky_si_error_quark ()">wocky_si_error_quark</a>                (<em class="parameter"><code><span class="type">void</span></code></em>);
-#define             <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-SI-ERROR:CAPS" title="WOCKY_SI_ERROR">WOCKY_SI_ERROR</a>
-enum                <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppStreamError-enum" title="enum WockyXmppStreamError">WockyXmppStreamError</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-stream-error-quark" title="wocky_xmpp_stream_error_quark ()">wocky_xmpp_stream_error_quark</a>       (<em class="parameter"><code><span class="type">void</span></code></em>);
-#define             <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-STREAM-ERROR:CAPS" title="WOCKY_XMPP_STREAM_ERROR">WOCKY_XMPP_STREAM_ERROR</a>
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-string" title="wocky_xmpp_error_string ()">wocky_xmpp_error_string</a>             (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError"><span class="type">WockyXmppError</span></a> error</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-description" title="wocky_xmpp_error_description ()">wocky_xmpp_error_description</a>        (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError"><span class="type">WockyXmppError</span></a> error</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *            <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-stream-error-from-node" title="wocky_xmpp_stream_error_from_node ()">wocky_xmpp_stream_error_from_node</a>   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *error</code></em>);
-<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         <a class="link" href="wocky-wocky-xmpp-error.html#wocky-stanza-error-to-node" title="wocky_stanza_error_to_node ()">wocky_stanza_error_to_node</a>          (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *parent_node</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-stanza-error-to-string" title="wocky_xmpp_stanza_error_to_string ()">wocky_xmpp_stanza_error_to_string</a>   (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-extract" title="wocky_xmpp_error_extract ()">wocky_xmpp_error_extract</a>            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *error</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorType"><span class="type">WockyXmppErrorType</span></a> *type</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **core</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **specialized</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **specialized_node</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-init" title="wocky_xmpp_error_init ()">wocky_xmpp_error_init</a>               (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-deinit" title="wocky_xmpp_error_deinit ()">wocky_xmpp_error_deinit</a>             (<em class="parameter"><code><span class="type">void</span></code></em>);
-</pre>
+<div class="refsect1">
+<a name="wocky-wocky-xmpp-error.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-quark" title="wocky_xmpp_error_quark ()">wocky_xmpp_error_quark</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-register-domain" title="wocky_xmpp_error_register_domain ()">wocky_xmpp_error_register_domain</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-jingle-error-quark" title="wocky_jingle_error_quark ()">wocky_jingle_error_quark</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-si-error-quark" title="wocky_si_error_quark ()">wocky_si_error_quark</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-stream-error-quark" title="wocky_xmpp_stream_error_quark ()">wocky_xmpp_stream_error_quark</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-string" title="wocky_xmpp_error_string ()">wocky_xmpp_error_string</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-description" title="wocky_xmpp_error_description ()">wocky_xmpp_error_description</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-stream-error-from-node" title="wocky_xmpp_stream_error_from_node ()">wocky_xmpp_stream_error_from_node</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-stanza-error-to-node" title="wocky_stanza_error_to_node ()">wocky_stanza_error_to_node</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-stanza-error-to-string" title="wocky_xmpp_stanza_error_to_string ()">wocky_xmpp_stanza_error_to_string</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-extract" title="wocky_xmpp_error_extract ()">wocky_xmpp_error_extract</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-init" title="wocky_xmpp_error_init ()">wocky_xmpp_error_init</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-deinit" title="wocky_xmpp_error_deinit ()">wocky_xmpp_error_deinit</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="wocky-wocky-xmpp-error.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorType" title="enum WockyXmppErrorType">WockyXmppErrorType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError" title="enum WockyXmppError">WockyXmppError</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS" title="WOCKY_XMPP_ERROR">WOCKY_XMPP_ERROR</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorSpecialization" title="struct WockyXmppErrorSpecialization">WockyXmppErrorSpecialization</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain" title="struct WockyXmppErrorDomain">WockyXmppErrorDomain</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="wocky-wocky-xmpp-error.html#WockyJingleError" title="enum WockyJingleError">WockyJingleError</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-JINGLE-ERROR:CAPS" title="WOCKY_JINGLE_ERROR">WOCKY_JINGLE_ERROR</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="wocky-wocky-xmpp-error.html#WockySIError" title="enum WockySIError">WockySIError</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-SI-ERROR:CAPS" title="WOCKY_SI_ERROR">WOCKY_SI_ERROR</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppStreamError" title="enum WockyXmppStreamError">WockyXmppStreamError</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-STREAM-ERROR:CAPS" title="WOCKY_XMPP_STREAM_ERROR">WOCKY_XMPP_STREAM_ERROR</a></td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-xmpp-error.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  GEnum
-   +----WockyXmppErrorType
-</pre>
-<pre class="synopsis">
-  GEnum
-   +----WockyXmppError
-</pre>
-<pre class="synopsis">
-  GEnum
-   +----WockyJingleError
-</pre>
-<pre class="synopsis">
-  GEnum
-   +----WockySIError
-</pre>
-<pre class="synopsis">
-  GEnum
-   +----WockyXmppStreamError
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-Enumeration-and-Flag-Types.html">GEnum</a>
+    <span class="lineart">├──</span> WockyJingleError
+    <span class="lineart">├──</span> WockySIError
+    <span class="lineart">├──</span> WockyXmppError
+    <span class="lineart">├──</span> WockyXmppErrorType
+    <span class="lineart">╰──</span> WockyXmppStreamError
 </pre>
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-xmpp-error.description"></a><h2>Description</h2>
 </div>
 <div class="refsect1">
-<a name="wocky-wocky-xmpp-error.details"></a><h2>Details</h2>
+<a name="wocky-wocky-xmpp-error.functions_details"></a><h2>Functions</h2>
 <div class="refsect2">
-<a name="WockyXmppErrorType-enum"></a><h3>enum WockyXmppErrorType</h3>
-<pre class="programlisting">typedef enum {
-  WOCKY_XMPP_ERROR_TYPE_CANCEL,
-  WOCKY_XMPP_ERROR_TYPE_CONTINUE,
-  WOCKY_XMPP_ERROR_TYPE_MODIFY,
-  WOCKY_XMPP_ERROR_TYPE_AUTH,
-  WOCKY_XMPP_ERROR_TYPE_WAIT
-} WockyXmppErrorType;
-</pre>
-<p>
-XMPP error types as described in RFC 3920 §9.3.2.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="wocky-xmpp-error-quark"></a><h3>wocky_xmpp_error_quark ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>
+wocky_xmpp_error_quark (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-error-register-domain"></a><h3>wocky_xmpp_error_register_domain ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+wocky_xmpp_error_register_domain (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain" title="struct WockyXmppErrorDomain"><span class="type">WockyXmppErrorDomain</span></a> *domain</code></em>);</pre>
+<p>Registers a new set of application-specific stanza errors. This allows
+GErrors in that domain to be passed to <a class="link" href="wocky-wocky-xmpp-error.html#wocky-stanza-error-to-node" title="wocky_stanza_error_to_node ()"><code class="function">wocky_stanza_error_to_node()</code></a>, and to
+be recognized and returned by <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-extract" title="wocky_xmpp_error_extract ()"><code class="function">wocky_xmpp_error_extract()</code></a> (and
+<a class="link" href="WockyStanza.html#wocky-stanza-extract-errors" title="wocky_stanza_extract_errors ()"><code class="function">wocky_stanza_extract_errors()</code></a>, by extension).</p>
+<div class="refsect3">
+<a name="wocky-xmpp-error-register-domain.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>domain</p></td>
+<td class="parameter_description"><p>a description of the error domain</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-jingle-error-quark"></a><h3>wocky_jingle_error_quark ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>
+wocky_jingle_error_quark (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-si-error-quark"></a><h3>wocky_si_error_quark ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>
+wocky_si_error_quark (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-stream-error-quark"></a><h3>wocky_xmpp_stream_error_quark ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>
+wocky_xmpp_stream_error_quark (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Get the error quark used for stream errors</p>
+<div class="refsect3">
+<a name="wocky-xmpp-stream-error-quark.returns"></a><h4>Returns</h4>
+<p> the quark for stream errors.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-error-string"></a><h3>wocky_xmpp_error_string ()</h3>
+<pre class="programlisting">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+wocky_xmpp_error_string (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError" title="enum WockyXmppError"><span class="type">WockyXmppError</span></a> error</code></em>);</pre>
+<p></p>
+<div class="refsect3">
+<a name="wocky-xmpp-error-string.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>a core stanza error</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="wocky-xmpp-error-string.returns"></a><h4>Returns</h4>
+<p> the name of the tag corresponding to <em class="parameter"><code>error</code></em>
+</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-error-description"></a><h3>wocky_xmpp_error_description ()</h3>
+<pre class="programlisting">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+wocky_xmpp_error_description (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError" title="enum WockyXmppError"><span class="type">WockyXmppError</span></a> error</code></em>);</pre>
+<p></p>
+<div class="refsect3">
+<a name="wocky-xmpp-error-description.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>a core stanza error</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="wocky-xmpp-error-description.returns"></a><h4>Returns</h4>
+<p> a description of the error, in English, as specified in XMPP Core</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-stream-error-from-node"></a><h3>wocky_xmpp_stream_error_from_node ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *
+wocky_xmpp_stream_error_from_node (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *error</code></em>);</pre>
+<div class="refsect3">
+<a name="wocky-xmpp-stream-error-from-node.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>the root node of a <a class="link" href="WockyStanza.html#WOCKY-STANZA-TYPE-STREAM-ERROR:CAPS"><span class="type">WOCKY_STANZA_TYPE_STREAM_ERROR</span></a> stanza</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="wocky-xmpp-stream-error-from-node.returns"></a><h4>Returns</h4>
+<p> a GError in the <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-STREAM-ERROR:CAPS" title="WOCKY_XMPP_STREAM_ERROR"><span class="type">WOCKY_XMPP_STREAM_ERROR</span></a> domain.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-stanza-error-to-node"></a><h3>wocky_stanza_error_to_node ()</h3>
+<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *
+wocky_stanza_error_to_node (<em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
+                            <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *parent_node</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-stanza-error-to-string"></a><h3>wocky_xmpp_stanza_error_to_string ()</h3>
+<pre class="programlisting">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+wocky_xmpp_stanza_error_to_string (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>);</pre>
+<p>Returns the name of the XMPP stanza error element represented by <em class="parameter"><code>error</code></em>
+.
+This is intended for use in debugging messages, with <a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><code class="literal">GErrors</code></a> returned by
+<a class="link" href="WockyStanza.html#wocky-stanza-extract-errors" title="wocky_stanza_extract_errors ()"><code class="function">wocky_stanza_extract_errors()</code></a>.</p>
+<div class="refsect3">
+<a name="wocky-xmpp-stanza-error-to-string.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>an error in the domain <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS" title="WOCKY_XMPP_ERROR"><code class="literal">WOCKY_XMPP_ERROR</code></a>, or another domain
+registered with <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-register-domain" title="wocky_xmpp_error_register_domain ()"><code class="function">wocky_xmpp_error_register_domain()</code></a> (such as
+<a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-JINGLE-ERROR:CAPS" title="WOCKY_JINGLE_ERROR"><code class="literal">WOCKY_JINGLE_ERROR</code></a>).</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="wocky-xmpp-stanza-error-to-string.returns"></a><h4>Returns</h4>
+<p> the error code as a string, or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if</p>
+<code class="code">error-&gt;domain</code> is not known to Wocky.
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-error-extract"></a><h3>wocky_xmpp_error_extract ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+wocky_xmpp_error_extract (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *error</code></em>,
+                          <em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorType" title="enum WockyXmppErrorType"><span class="type">WockyXmppErrorType</span></a> *type</code></em>,
+                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="type">GError</span></a> **core</code></em>,
+                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="type">GError</span></a> **specialized</code></em>,
+                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **specialized_node</code></em>);</pre>
+<p>Given an &lt;error/&gt; node, breaks it down into values describing the error.
+<em class="parameter"><code>type</code></em>
+ and <em class="parameter"><code>core</code></em>
+ are guaranteed to be set; <em class="parameter"><code>specialized</code></em>
+ and <em class="parameter"><code>specialized_node</code></em>
+
+will be set if a recognised application-specific error is found, and the
+latter will be set to <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if no application-specific error is found.</p>
+<p>Any or all of the out parameters may be <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore the value.  The
+value stored in <em class="parameter"><code>specialized_node</code></em>
+ is borrowed from <em class="parameter"><code>stanza</code></em>
+, and is only
+valid as long as the latter is alive.</p>
+<div class="refsect3">
+<a name="wocky-xmpp-error-extract.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-TYPE-CANCEL:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_TYPE_CANCEL</code></span></p></td>
-<td>do not retry (the error is
-  unrecoverable)
-</td>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>the &lt;error/&gt; child of a stanza with type='error'</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-TYPE-CONTINUE:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_TYPE_CONTINUE</code></span></p></td>
-<td>proceed (the condition was only a
-  warning)
-</td>
+<td class="parameter_name"><p>type</p></td>
+<td class="parameter_description"><p>location at which to store the error type</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-TYPE-MODIFY:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_TYPE_MODIFY</code></span></p></td>
-<td>retry after changing the data sent
-</td>
+<td class="parameter_name"><p>core</p></td>
+<td class="parameter_description"><p>location at which to store an error in the domain <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS" title="WOCKY_XMPP_ERROR"><span class="type">WOCKY_XMPP_ERROR</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-TYPE-AUTH:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_TYPE_AUTH</code></span></p></td>
-<td>retry after providing credentials
-</td>
+<td class="parameter_name"><p>specialized</p></td>
+<td class="parameter_description"><p>location at which to store an error in an application-specific
+domain, if one is found</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-TYPE-WAIT:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_TYPE_WAIT</code></span></p></td>
-<td>retry after waiting (the error is
-  temporary)
-</td>
+<td class="parameter_name"><p>specialized_node</p></td>
+<td class="parameter_description"><p>location at which to store the node representing an
+application-specific error, if one is found</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+</div>
 <hr>
 <div class="refsect2">
-<a name="WockyXmppError-enum"></a><h3>enum WockyXmppError</h3>
-<pre class="programlisting">typedef enum {
-    WOCKY_XMPP_ERROR_UNDEFINED_CONDITION = 0, /* 500 */
-
-    WOCKY_XMPP_ERROR_REDIRECT,                /* 302 */
-    WOCKY_XMPP_ERROR_GONE,                    /* 302 */
-
-    WOCKY_XMPP_ERROR_BAD_REQUEST,             /* 400 */
-    WOCKY_XMPP_ERROR_UNEXPECTED_REQUEST,      /* 400 */
-    WOCKY_XMPP_ERROR_JID_MALFORMED,           /* 400 */
-
-    WOCKY_XMPP_ERROR_NOT_AUTHORIZED,          /* 401 */
-
-    WOCKY_XMPP_ERROR_PAYMENT_REQUIRED,        /* 402 */
-
-    WOCKY_XMPP_ERROR_FORBIDDEN,               /* 403 */
-
-    WOCKY_XMPP_ERROR_ITEM_NOT_FOUND,          /* 404 */
-    WOCKY_XMPP_ERROR_RECIPIENT_UNAVAILABLE,   /* 404 */
-    WOCKY_XMPP_ERROR_REMOTE_SERVER_NOT_FOUND, /* 404 */
-
-    WOCKY_XMPP_ERROR_NOT_ALLOWED,             /* 405 */
-
-    WOCKY_XMPP_ERROR_NOT_ACCEPTABLE,          /* 406 */
-
-    WOCKY_XMPP_ERROR_REGISTRATION_REQUIRED,   /* 407 */
-    WOCKY_XMPP_ERROR_SUBSCRIPTION_REQUIRED,   /* 407 */
-
-    WOCKY_XMPP_ERROR_REMOTE_SERVER_TIMEOUT,   /* 408, 504 */
-
-    WOCKY_XMPP_ERROR_CONFLICT,                /* 409 */
-
-    WOCKY_XMPP_ERROR_INTERNAL_SERVER_ERROR,   /* 500 */
-    WOCKY_XMPP_ERROR_RESOURCE_CONSTRAINT,     /* 500 */
-
-    WOCKY_XMPP_ERROR_FEATURE_NOT_IMPLEMENTED, /* 501 */
-
-    WOCKY_XMPP_ERROR_SERVICE_UNAVAILABLE,     /* 502, 503, 510 */
-
-    WOCKY_XMPP_ERROR_POLICY_VIOLATION,
-} WockyXmppError;
-</pre>
-<p>
-Possible stanza-level errors, as defined by <a class="ulink" href="http://xmpp.org/rfcs/rfc6120.html#stanzas-error-conditions" target="_top">RFC 6210
-§8.3.3</a>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="wocky-xmpp-error-init"></a><h3>wocky_xmpp_error_init ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+wocky_xmpp_error_init (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="wocky-xmpp-error-deinit"></a><h3>wocky_xmpp_error_deinit ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+wocky_xmpp_error_deinit (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="wocky-wocky-xmpp-error.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="WockyXmppErrorType"></a><h3>enum WockyXmppErrorType</h3>
+<p>XMPP error types as described in RFC 3920 §9.3.2.</p>
+<div class="refsect3">
+<a name="WockyXmppErrorType.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-UNDEFINED-CONDITION:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_UNDEFINED_CONDITION</code></span></p></td>
-<td>the error condition is not one
-  of those defined by the other conditions in this list
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-TYPE-CANCEL:CAPS"></a>WOCKY_XMPP_ERROR_TYPE_CANCEL</p></td>
+<td class="enum_member_description">
+<p>do not retry (the error is
+  unrecoverable)</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-REDIRECT:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_REDIRECT</code></span></p></td>
-<td>the recipient or server is redirecting
-  requests for this information to another entity
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-TYPE-CONTINUE:CAPS"></a>WOCKY_XMPP_ERROR_TYPE_CONTINUE</p></td>
+<td class="enum_member_description">
+<p>proceed (the condition was only a
+  warning)</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-GONE:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_GONE</code></span></p></td>
-<td>the recipient or server can no longer be
-  contacted at this address
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-TYPE-MODIFY:CAPS"></a>WOCKY_XMPP_ERROR_TYPE_MODIFY</p></td>
+<td class="enum_member_description">
+<p>retry after changing the data sent</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-BAD-REQUEST:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_BAD_REQUEST</code></span></p></td>
-<td>the sender has sent XML that is
-  malformed or that cannot be processed
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-TYPE-AUTH:CAPS"></a>WOCKY_XMPP_ERROR_TYPE_AUTH</p></td>
+<td class="enum_member_description">
+<p>retry after providing credentials</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-UNEXPECTED-REQUEST:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_UNEXPECTED_REQUEST</code></span></p></td>
-<td>the recipient or server
-  understood the request but was not expecting it at this time
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-TYPE-WAIT:CAPS"></a>WOCKY_XMPP_ERROR_TYPE_WAIT</p></td>
+<td class="enum_member_description">
+<p>retry after waiting (the error is
+  temporary)</p>
 </td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="WockyXmppError"></a><h3>enum WockyXmppError</h3>
+<p>Possible stanza-level errors, as defined by <a class="ulink" href="http://xmpp.org/rfcs/rfc6120.html#stanzas-error-conditions" target="_top">RFC 6210
+§8.3.3</a>.</p>
+<div class="refsect3">
+<a name="WockyXmppError.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-UNDEFINED-CONDITION:CAPS"></a>WOCKY_XMPP_ERROR_UNDEFINED_CONDITION</p></td>
+<td class="enum_member_description">
+<p>the error condition is not one
+  of those defined by the other conditions in this list</p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-JID-MALFORMED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_JID_MALFORMED</code></span></p></td>
-<td>the sending entity has provided or
-  communicated an XMPP address
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-REDIRECT:CAPS"></a>WOCKY_XMPP_ERROR_REDIRECT</p></td>
+<td class="enum_member_description">
+<p>the recipient or server is redirecting
+  requests for this information to another entity</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-NOT-AUTHORIZED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_NOT_AUTHORIZED</code></span></p></td>
-<td>the sender must provide proper
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-GONE:CAPS"></a>WOCKY_XMPP_ERROR_GONE</p></td>
+<td class="enum_member_description">
+<p>the recipient or server can no longer be
+  contacted at this address</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-BAD-REQUEST:CAPS"></a>WOCKY_XMPP_ERROR_BAD_REQUEST</p></td>
+<td class="enum_member_description">
+<p>the sender has sent XML that is
+  malformed or that cannot be processed</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-UNEXPECTED-REQUEST:CAPS"></a>WOCKY_XMPP_ERROR_UNEXPECTED_REQUEST</p></td>
+<td class="enum_member_description">
+<p>the recipient or server
+  understood the request but was not expecting it at this time</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-JID-MALFORMED:CAPS"></a>WOCKY_XMPP_ERROR_JID_MALFORMED</p></td>
+<td class="enum_member_description">
+<p>the sending entity has provided or
+  communicated an XMPP address</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-NOT-AUTHORIZED:CAPS"></a>WOCKY_XMPP_ERROR_NOT_AUTHORIZED</p></td>
+<td class="enum_member_description">
+<p>the sender must provide proper
   credentials before being allowed to perform the action, or has
-  provided improper credentials
+  provided improper credentials</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-PAYMENT-REQUIRED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_PAYMENT_REQUIRED</code></span></p></td>
-<td>the requesting entity is not
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-PAYMENT-REQUIRED:CAPS"></a>WOCKY_XMPP_ERROR_PAYMENT_REQUIRED</p></td>
+<td class="enum_member_description">
+<p>the requesting entity is not
   authorized to access the requested service because payment is
   required. This code is no longer defined in RFC 6120, the current version
   of XMPP Core. It's preserved here for interoperability, but new
-  applications should not send it.
+  applications should not send it.</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-FORBIDDEN:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_FORBIDDEN</code></span></p></td>
-<td>the requesting entity does not possess
-  the required permissions to perform the action
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-FORBIDDEN:CAPS"></a>WOCKY_XMPP_ERROR_FORBIDDEN</p></td>
+<td class="enum_member_description">
+<p>the requesting entity does not possess
+  the required permissions to perform the action</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-ITEM-NOT-FOUND:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_ITEM_NOT_FOUND</code></span></p></td>
-<td>the addressed JID or item requested
-  cannot be found
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-ITEM-NOT-FOUND:CAPS"></a>WOCKY_XMPP_ERROR_ITEM_NOT_FOUND</p></td>
+<td class="enum_member_description">
+<p>the addressed JID or item requested
+  cannot be found</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-RECIPIENT-UNAVAILABLE:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_RECIPIENT_UNAVAILABLE</code></span></p></td>
-<td>the intended recipient is
-  temporarily unavailable
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-RECIPIENT-UNAVAILABLE:CAPS"></a>WOCKY_XMPP_ERROR_RECIPIENT_UNAVAILABLE</p></td>
+<td class="enum_member_description">
+<p>the intended recipient is
+  temporarily unavailable</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-REMOTE-SERVER-NOT-FOUND:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_REMOTE_SERVER_NOT_FOUND</code></span></p></td>
-<td>a remote server or
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-REMOTE-SERVER-NOT-FOUND:CAPS"></a>WOCKY_XMPP_ERROR_REMOTE_SERVER_NOT_FOUND</p></td>
+<td class="enum_member_description">
+<p>a remote server or
   service specified as part or all of the JID of the intended
-  recipient does not exist
+  recipient does not exist</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-NOT-ALLOWED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_NOT_ALLOWED</code></span></p></td>
-<td>the recipient or server does not
-  allow any entity to perform the action
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-NOT-ALLOWED:CAPS"></a>WOCKY_XMPP_ERROR_NOT_ALLOWED</p></td>
+<td class="enum_member_description">
+<p>the recipient or server does not
+  allow any entity to perform the action</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-NOT-ACCEPTABLE:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_NOT_ACCEPTABLE</code></span></p></td>
-<td>the recipient or server
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-NOT-ACCEPTABLE:CAPS"></a>WOCKY_XMPP_ERROR_NOT_ACCEPTABLE</p></td>
+<td class="enum_member_description">
+<p>the recipient or server
   understands the request but is refusing to process it because it
-  does not meet criteria defined by the recipient or server
+  does not meet criteria defined by the recipient or server</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-REGISTRATION-REQUIRED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_REGISTRATION_REQUIRED</code></span></p></td>
-<td>the requesting entity is
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-REGISTRATION-REQUIRED:CAPS"></a>WOCKY_XMPP_ERROR_REGISTRATION_REQUIRED</p></td>
+<td class="enum_member_description">
+<p>the requesting entity is
   not authorized to access the requested service because
-  registration is required
+  registration is required</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-SUBSCRIPTION-REQUIRED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_SUBSCRIPTION_REQUIRED</code></span></p></td>
-<td>the requesting entity is
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-SUBSCRIPTION-REQUIRED:CAPS"></a>WOCKY_XMPP_ERROR_SUBSCRIPTION_REQUIRED</p></td>
+<td class="enum_member_description">
+<p>the requesting entity is
   not authorized to access the requested service because a
-  subscription is required
+  subscription is required</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-REMOTE-SERVER-TIMEOUT:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_REMOTE_SERVER_TIMEOUT</code></span></p></td>
-<td>a remote server or service
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-REMOTE-SERVER-TIMEOUT:CAPS"></a>WOCKY_XMPP_ERROR_REMOTE_SERVER_TIMEOUT</p></td>
+<td class="enum_member_description">
+<p>a remote server or service
   specified as part or all of the JID of the intended recipient (or
   required to fulfill a request) could not be contacted within a
-  reasonable amount of time
+  reasonable amount of time</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-CONFLICT:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_CONFLICT</code></span></p></td>
-<td>access cannot be granted because an
-  existing resource or session exists with the same name or address
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-CONFLICT:CAPS"></a>WOCKY_XMPP_ERROR_CONFLICT</p></td>
+<td class="enum_member_description">
+<p>access cannot be granted because an
+  existing resource or session exists with the same name or address</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-INTERNAL-SERVER-ERROR:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_INTERNAL_SERVER_ERROR</code></span></p></td>
-<td>the server could not
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-INTERNAL-SERVER-ERROR:CAPS"></a>WOCKY_XMPP_ERROR_INTERNAL_SERVER_ERROR</p></td>
+<td class="enum_member_description">
+<p>the server could not
   process the stanza because of a misconfiguration or an
-  otherwise-undefined internal server error
+  otherwise-undefined internal server error</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-RESOURCE-CONSTRAINT:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_RESOURCE_CONSTRAINT</code></span></p></td>
-<td>the server or recipient lacks
-  the system resources necessary to service the request
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-RESOURCE-CONSTRAINT:CAPS"></a>WOCKY_XMPP_ERROR_RESOURCE_CONSTRAINT</p></td>
+<td class="enum_member_description">
+<p>the server or recipient lacks
+  the system resources necessary to service the request</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-FEATURE-NOT-IMPLEMENTED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_FEATURE_NOT_IMPLEMENTED</code></span></p></td>
-<td>the feature requested is
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-FEATURE-NOT-IMPLEMENTED:CAPS"></a>WOCKY_XMPP_ERROR_FEATURE_NOT_IMPLEMENTED</p></td>
+<td class="enum_member_description">
+<p>the feature requested is
   not implemented by the recipient or server and therefore cannot
-  be processed
+  be processed</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-SERVICE-UNAVAILABLE:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_SERVICE_UNAVAILABLE</code></span></p></td>
-<td>the server or recipient does
-  not currently provide the requested service
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-SERVICE-UNAVAILABLE:CAPS"></a>WOCKY_XMPP_ERROR_SERVICE_UNAVAILABLE</p></td>
+<td class="enum_member_description">
+<p>the server or recipient does
+  not currently provide the requested service</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-ERROR-POLICY-VIOLATION:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_ERROR_POLICY_VIOLATION</code></span></p></td>
-<td>the entity has violated some local
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-ERROR-POLICY-VIOLATION:CAPS"></a>WOCKY_XMPP_ERROR_POLICY_VIOLATION</p></td>
+<td class="enum_member_description">
+<p>the entity has violated some local
   service policy (e.g., a message contains words that are prohibited by the
   service) and the server MAY choose to specify the policy as the text of
   the error or in an application-specific condition element; the associated
   error type SHOULD be <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR-TYPE-MODIFY:CAPS"><code class="literal">WOCKY_XMPP_ERROR_TYPE_MODIFY</code></a> or
-  <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR-TYPE-WAIT:CAPS"><code class="literal">WOCKY_XMPP_ERROR_TYPE_WAIT</code></a> depending on the policy being violated.
+  <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR-TYPE-WAIT:CAPS"><code class="literal">WOCKY_XMPP_ERROR_TYPE_WAIT</code></a> depending on the policy being violated.</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="wocky-xmpp-error-quark"></a><h3>wocky_xmpp_error_quark ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_xmpp_error_quark              (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -380,36 +749,43 @@ Possible stanza-level errors, as defined by <a class="ulink" href="http://xmpp.o
   WockyXmppErrorType type;
 };
 </pre>
-<p>
-A struct to represent a specialization of an existing
-<a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError"><span class="type">WockyXmppError</span></a> member.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p>A struct to represent a specialization of an existing
+<a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError" title="enum WockyXmppError"><span class="type">WockyXmppError</span></a> member.</p>
+<div class="refsect3">
+<a name="WockyXmppErrorSpecialization.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyXmppErrorSpecialization.description"></a>description</code></em>;</span></p></td>
-<td>description of the error</td>
+<td class="struct_member_name"><p>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="WockyXmppErrorSpecialization.description"></a>description</code></em>;</p></td>
+<td class="struct_member_description"><p>description of the error</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError"><span class="type">WockyXmppError</span></a> <em class="structfield"><code><a name="WockyXmppErrorSpecialization.specializes"></a>specializes</code></em>;</span></p></td>
-<td>which <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError"><span class="type">WockyXmppError</span></a> this error specializes</td>
+<td class="struct_member_name"><p><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError" title="enum WockyXmppError"><span class="type">WockyXmppError</span></a> <em class="structfield"><code><a name="WockyXmppErrorSpecialization.specializes"></a>specializes</code></em>;</p></td>
+<td class="struct_member_description"><p>which <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError" title="enum WockyXmppError"><span class="type">WockyXmppError</span></a> this error specializes</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="WockyXmppErrorSpecialization.override-type"></a>override_type</code></em>;</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>type</code></em> should be used, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if the
-default error type for <em class="parameter"><code>specializes</code></em> should be used</td>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="WockyXmppErrorSpecialization.override-type"></a>override_type</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>type</code></em>
+should be used, or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if the
+default error type for <em class="parameter"><code>specializes</code></em>
+should be used</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorType"><span class="type">WockyXmppErrorType</span></a> <em class="structfield"><code><a name="WockyXmppErrorSpecialization.type"></a>type</code></em>;</span></p></td>
-<td>the XMPP error type</td>
+<td class="struct_member_name"><p><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorType" title="enum WockyXmppErrorType"><span class="type">WockyXmppErrorType</span></a> <em class="structfield"><code><a name="WockyXmppErrorSpecialization.type"></a>type</code></em>;</p></td>
+<td class="struct_member_description"><p>the XMPP error type</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <hr>
 <div class="refsect2">
@@ -420,102 +796,84 @@ default error type for <em class="parameter"><code>specializes</code></em> shoul
   WockyXmppErrorSpecialization *codes;
 };
 </pre>
-<p>
-A struct to represent extra XMPP error domains added.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p>A struct to represent extra XMPP error domains added.</p>
+<div class="refsect3">
+<a name="WockyXmppErrorDomain.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> <em class="structfield"><code><a name="WockyXmppErrorDomain.domain"></a>domain</code></em>;</span></p></td>
-<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> of the error domain</td>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Quarks.html#GQuark"><span class="type">GQuark</span></a> <em class="structfield"><code><a name="WockyXmppErrorDomain.domain"></a>domain</code></em>;</p></td>
+<td class="struct_member_description"><p>a <a href="/usr/share/gtk-doc/html/glibglib-Quarks.html#GQuark"><span class="type">GQuark</span></a> of the error domain</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> <em class="structfield"><code><a name="WockyXmppErrorDomain.enum-type"></a>enum_type</code></em>;</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> of the error enum</td>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/gobjectgobject-Type-Information.html#GType"><span class="type">GType</span></a> <em class="structfield"><code><a name="WockyXmppErrorDomain.enum-type"></a>enum_type</code></em>;</p></td>
+<td class="struct_member_description"><p>the <a href="/usr/share/gtk-doc/html/gobjectgobject-Type-Information.html#GType"><span class="type">GType</span></a> of the error enum</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorSpecialization" title="struct WockyXmppErrorSpecialization"><span class="type">WockyXmppErrorSpecialization</span></a> *<em class="structfield"><code><a name="WockyXmppErrorDomain.codes"></a>codes</code></em>;</span></p></td>
-<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>-terminated array of of <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorSpecialization" title="struct WockyXmppErrorSpecialization"><span class="type">WockyXmppErrorSpecialization</span></a>s</td>
+<td class="struct_member_name"><p><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorSpecialization" title="struct WockyXmppErrorSpecialization"><span class="type">WockyXmppErrorSpecialization</span></a> *<em class="structfield"><code><a name="WockyXmppErrorDomain.codes"></a>codes</code></em>;</p></td>
+<td class="struct_member_description"><p>a <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>-terminated array of of <a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorSpecialization" title="struct WockyXmppErrorSpecialization"><span class="type">WockyXmppErrorSpecialization</span></a>s</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="wocky-xmpp-error-register-domain"></a><h3>wocky_xmpp_error_register_domain ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_register_domain    (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorDomain" title="struct WockyXmppErrorDomain"><span class="type">WockyXmppErrorDomain</span></a> *domain</code></em>);</pre>
-<p>
-Registers a new set of application-specific stanza errors. This allows
-GErrors in that domain to be passed to <a class="link" href="wocky-wocky-xmpp-error.html#wocky-stanza-error-to-node" title="wocky_stanza_error_to_node ()"><code class="function">wocky_stanza_error_to_node()</code></a>, and to
-be recognized and returned by <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-extract" title="wocky_xmpp_error_extract ()"><code class="function">wocky_xmpp_error_extract()</code></a> (and
-<a class="link" href="wocky-WockyStanza.html#wocky-stanza-extract-errors" title="wocky_stanza_extract_errors ()"><code class="function">wocky_stanza_extract_errors()</code></a>, by extension).
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>domain</code></em> :</span></p></td>
-<td>a description of the error domain</td>
-</tr></tbody>
-</table></div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="WockyJingleError-enum"></a><h3>enum WockyJingleError</h3>
-<pre class="programlisting">typedef enum {
-    WOCKY_JINGLE_ERROR_OUT_OF_ORDER,
-    WOCKY_JINGLE_ERROR_TIE_BREAK,
-    WOCKY_JINGLE_ERROR_UNKNOWN_SESSION,
-    WOCKY_JINGLE_ERROR_UNSUPPORTED_INFO
-} WockyJingleError;
-</pre>
-<p>
-Jingle specific errors.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="WockyJingleError"></a><h3>enum WockyJingleError</h3>
+<p>Jingle specific errors.</p>
+<div class="refsect3">
+<a name="WockyJingleError.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><a name="WOCKY-JINGLE-ERROR-OUT-OF-ORDER:CAPS"></a><span class="term"><code class="literal">WOCKY_JINGLE_ERROR_OUT_OF_ORDER</code></span></p></td>
-<td>the request cannot occur at this
-  point in the state machine
+<td class="enum_member_name"><p><a name="WOCKY-JINGLE-ERROR-OUT-OF-ORDER:CAPS"></a>WOCKY_JINGLE_ERROR_OUT_OF_ORDER</p></td>
+<td class="enum_member_description">
+<p>the request cannot occur at this
+  point in the state machine</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-JINGLE-ERROR-TIE-BREAK:CAPS"></a><span class="term"><code class="literal">WOCKY_JINGLE_ERROR_TIE_BREAK</code></span></p></td>
-<td>the request is rejected because it
+<td class="enum_member_name"><p><a name="WOCKY-JINGLE-ERROR-TIE-BREAK:CAPS"></a>WOCKY_JINGLE_ERROR_TIE_BREAK</p></td>
+<td class="enum_member_description">
+<p>the request is rejected because it
   was sent while the initiator was awaiting a reply on a similar
-  request
+  request</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-JINGLE-ERROR-UNKNOWN-SESSION:CAPS"></a><span class="term"><code class="literal">WOCKY_JINGLE_ERROR_UNKNOWN_SESSION</code></span></p></td>
-<td>the 'sid' attribute specifies
-  a session that is unknown to the recipient
+<td class="enum_member_name"><p><a name="WOCKY-JINGLE-ERROR-UNKNOWN-SESSION:CAPS"></a>WOCKY_JINGLE_ERROR_UNKNOWN_SESSION</p></td>
+<td class="enum_member_description">
+<p>the 'sid' attribute specifies
+  a session that is unknown to the recipient</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-JINGLE-ERROR-UNSUPPORTED-INFO:CAPS"></a><span class="term"><code class="literal">WOCKY_JINGLE_ERROR_UNSUPPORTED_INFO</code></span></p></td>
-<td>the recipient does not
-  support the informational payload of a session-info action.
+<td class="enum_member_name"><p><a name="WOCKY-JINGLE-ERROR-UNSUPPORTED-INFO:CAPS"></a>WOCKY_JINGLE_ERROR_UNSUPPORTED_INFO</p></td>
+<td class="enum_member_description">
+<p>the recipient does not
+  support the informational payload of a session-info action.</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="wocky-jingle-error-quark"></a><h3>wocky_jingle_error_quark ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_jingle_error_quark            (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -525,40 +883,36 @@ Jingle specific errors.
 </div>
 <hr>
 <div class="refsect2">
-<a name="WockySIError-enum"></a><h3>enum WockySIError</h3>
-<pre class="programlisting">typedef enum {
-    WOCKY_SI_ERROR_NO_VALID_STREAMS,
-    WOCKY_SI_ERROR_BAD_PROFILE
-} WockySIError;
-</pre>
-<p>
-SI specific errors.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="WockySIError"></a><h3>enum WockySIError</h3>
+<p>SI specific errors.</p>
+<div class="refsect3">
+<a name="WockySIError.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><a name="WOCKY-SI-ERROR-NO-VALID-STREAMS:CAPS"></a><span class="term"><code class="literal">WOCKY_SI_ERROR_NO_VALID_STREAMS</code></span></p></td>
-<td>none of the available streams are
-  acceptable
+<td class="enum_member_name"><p><a name="WOCKY-SI-ERROR-NO-VALID-STREAMS:CAPS"></a>WOCKY_SI_ERROR_NO_VALID_STREAMS</p></td>
+<td class="enum_member_description">
+<p>none of the available streams are
+  acceptable</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-SI-ERROR-BAD-PROFILE:CAPS"></a><span class="term"><code class="literal">WOCKY_SI_ERROR_BAD_PROFILE</code></span></p></td>
-<td>the profile is not understood or
-  invalid
+<td class="enum_member_name"><p><a name="WOCKY-SI-ERROR-BAD-PROFILE:CAPS"></a>WOCKY_SI_ERROR_BAD_PROFILE</p></td>
+<td class="enum_member_description">
+<p>the profile is not understood or
+  invalid</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="wocky-si-error-quark"></a><h3>wocky_si_error_quark ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_si_error_quark                (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -568,413 +922,250 @@ SI specific errors.
 </div>
 <hr>
 <div class="refsect2">
-<a name="WockyXmppStreamError-enum"></a><h3>enum WockyXmppStreamError</h3>
-<pre class="programlisting">typedef enum {
-  WOCKY_XMPP_STREAM_ERROR_BAD_FORMAT,
-  WOCKY_XMPP_STREAM_ERROR_BAD_NAMESPACE_PREFIX,
-  WOCKY_XMPP_STREAM_ERROR_CONFLICT,
-  WOCKY_XMPP_STREAM_ERROR_CONNECTION_TIMEOUT,
-  WOCKY_XMPP_STREAM_ERROR_HOST_GONE,
-  WOCKY_XMPP_STREAM_ERROR_HOST_UNKNOWN,
-  WOCKY_XMPP_STREAM_ERROR_IMPROPER_ADDRESSING,
-  WOCKY_XMPP_STREAM_ERROR_INTERNAL_SERVER_ERROR,
-  WOCKY_XMPP_STREAM_ERROR_INVALID_FROM,
-  WOCKY_XMPP_STREAM_ERROR_INVALID_ID,
-  WOCKY_XMPP_STREAM_ERROR_INVALID_NAMESPACE,
-  WOCKY_XMPP_STREAM_ERROR_INVALID_XML,
-  WOCKY_XMPP_STREAM_ERROR_NOT_AUTHORIZED,
-  WOCKY_XMPP_STREAM_ERROR_POLICY_VIOLATION,
-  WOCKY_XMPP_STREAM_ERROR_REMOTE_CONNECTION_FAILED,
-  WOCKY_XMPP_STREAM_ERROR_RESOURCE_CONSTRAINT,
-  WOCKY_XMPP_STREAM_ERROR_RESTRICTED_XML,
-  WOCKY_XMPP_STREAM_ERROR_SEE_OTHER_HOST,
-  WOCKY_XMPP_STREAM_ERROR_SYSTEM_SHUTDOWN,
-  WOCKY_XMPP_STREAM_ERROR_UNDEFINED_CONDITION,
-  WOCKY_XMPP_STREAM_ERROR_UNSUPPORTED_ENCODING,
-  WOCKY_XMPP_STREAM_ERROR_UNSUPPORTED_STANZA_TYPE,
-  WOCKY_XMPP_STREAM_ERROR_UNSUPPORTED_VERSION,
-  WOCKY_XMPP_STREAM_ERROR_XML_NOT_WELL_FORMED,
-  WOCKY_XMPP_STREAM_ERROR_UNKNOWN,
-} WockyXmppStreamError;
-</pre>
-<p>
-Stream-level error conditions as described in RFC 3920 §4.7.3.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="WockyXmppStreamError"></a><h3>enum WockyXmppStreamError</h3>
+<p>Stream-level error conditions as described in RFC 3920 §4.7.3.</p>
+<div class="refsect3">
+<a name="WockyXmppStreamError.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-BAD-FORMAT:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_BAD_FORMAT</code></span></p></td>
-<td>the entity has sent XML that
-  cannot be processed
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-BAD-FORMAT:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_BAD_FORMAT</p></td>
+<td class="enum_member_description">
+<p>the entity has sent XML that
+  cannot be processed</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-BAD-NAMESPACE-PREFIX:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_BAD_NAMESPACE_PREFIX</code></span></p></td>
-<td>the entity has sent
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-BAD-NAMESPACE-PREFIX:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_BAD_NAMESPACE_PREFIX</p></td>
+<td class="enum_member_description">
+<p>the entity has sent
   a namespace prefix that is unsupported, or has sent no namespace
-  prefix on an element that requires such a prefix
+  prefix on an element that requires such a prefix</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-CONFLICT:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_CONFLICT</code></span></p></td>
-<td>the server is closing the active
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-CONFLICT:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_CONFLICT</p></td>
+<td class="enum_member_description">
+<p>the server is closing the active
   stream for this entity because a new stream has been initiated
-  that conflicts with the existing stream
+  that conflicts with the existing stream</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-CONNECTION-TIMEOUT:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_CONNECTION_TIMEOUT</code></span></p></td>
-<td>the entity has not
-  generated any traffic over the stream for some period of time
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-CONNECTION-TIMEOUT:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_CONNECTION_TIMEOUT</p></td>
+<td class="enum_member_description">
+<p>the entity has not
+  generated any traffic over the stream for some period of time</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-HOST-GONE:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_HOST_GONE</code></span></p></td>
-<td>the value of the 'to' attribute
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-HOST-GONE:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_HOST_GONE</p></td>
+<td class="enum_member_description">
+<p>the value of the 'to' attribute
   provided by the initiating entity in the stream header
-  corresponds to a hostname that is no longer hosted by the server
+  corresponds to a hostname that is no longer hosted by the server</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-HOST-UNKNOWN:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_HOST_UNKNOWN</code></span></p></td>
-<td>the value of the 'to'
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-HOST-UNKNOWN:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_HOST_UNKNOWN</p></td>
+<td class="enum_member_description">
+<p>the value of the 'to'
   attribute provided by the initiating entity in the stream header
-  does not correspond to a hostname that is hosted by the server
+  does not correspond to a hostname that is hosted by the server</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-IMPROPER-ADDRESSING:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_IMPROPER_ADDRESSING</code></span></p></td>
-<td>a stanza sent between
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-IMPROPER-ADDRESSING:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_IMPROPER_ADDRESSING</p></td>
+<td class="enum_member_description">
+<p>a stanza sent between
   two servers lacks a 'to' or 'from' attribute (or the attribute
-  has no value)
+  has no value)</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-INTERNAL-SERVER-ERROR:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_INTERNAL_SERVER_ERROR</code></span></p></td>
-<td>the server has
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-INTERNAL-SERVER-ERROR:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_INTERNAL_SERVER_ERROR</p></td>
+<td class="enum_member_description">
+<p>the server has
   experienced a misconfiguration or an otherwise-undefined internal
-  error that prevents it from servicing the stream
+  error that prevents it from servicing the stream</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-INVALID-FROM:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_INVALID_FROM</code></span></p></td>
-<td>the JID or hostname provided
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-INVALID-FROM:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_INVALID_FROM</p></td>
+<td class="enum_member_description">
+<p>the JID or hostname provided
   in a 'from' address does not match an authorized JID or validated
   domain negotiated between servers via SASL or dialback, or
   between a client and a server via authentication and resource
-  binding
+  binding</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-INVALID-ID:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_INVALID_ID</code></span></p></td>
-<td>the stream ID or dialback ID
-  is invalid or does not match an ID previously provided
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-INVALID-ID:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_INVALID_ID</p></td>
+<td class="enum_member_description">
+<p>the stream ID or dialback ID
+  is invalid or does not match an ID previously provided</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-INVALID-NAMESPACE:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_INVALID_NAMESPACE</code></span></p></td>
-<td>the streams namespace
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-INVALID-NAMESPACE:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_INVALID_NAMESPACE</p></td>
+<td class="enum_member_description">
+<p>the streams namespace
   name is something other than "http://etherx.jabber.org/streams"
   or the dialback namespace name is something other than
-  "jabber:server:dialback"
+  "jabber:server:dialback"</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-INVALID-XML:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_INVALID_XML</code></span></p></td>
-<td>the entity has sent invalid
-  XML over the stream to a server that performs validation
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-INVALID-XML:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_INVALID_XML</p></td>
+<td class="enum_member_description">
+<p>the entity has sent invalid
+  XML over the stream to a server that performs validation</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-NOT-AUTHORIZED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_NOT_AUTHORIZED</code></span></p></td>
-<td>the entity has attempted
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-NOT-AUTHORIZED:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_NOT_AUTHORIZED</p></td>
+<td class="enum_member_description">
+<p>the entity has attempted
   to send data before the stream has been authenticated, or
   otherwise is not authorized to perform an action related to
-  stream negotiation
+  stream negotiation</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-POLICY-VIOLATION:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_POLICY_VIOLATION</code></span></p></td>
-<td>the entity has violated
-  some local service policy
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-POLICY-VIOLATION:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_POLICY_VIOLATION</p></td>
+<td class="enum_member_description">
+<p>the entity has violated
+  some local service policy</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-REMOTE-CONNECTION-FAILED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_REMOTE_CONNECTION_FAILED</code></span></p></td>
-<td>the server is
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-REMOTE-CONNECTION-FAILED:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_REMOTE_CONNECTION_FAILED</p></td>
+<td class="enum_member_description">
+<p>the server is
   unable to properly connect to a remote entity that is required
-  for authentication or authorization
+  for authentication or authorization</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-RESOURCE-CONSTRAINT:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_RESOURCE_CONSTRAINT</code></span></p></td>
-<td>the server lacks the
-  system resources necessary to service the stream
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-RESOURCE-CONSTRAINT:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_RESOURCE_CONSTRAINT</p></td>
+<td class="enum_member_description">
+<p>the server lacks the
+  system resources necessary to service the stream</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-RESTRICTED-XML:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_RESTRICTED_XML</code></span></p></td>
-<td>the entity has attempted
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-RESTRICTED-XML:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_RESTRICTED_XML</p></td>
+<td class="enum_member_description">
+<p>the entity has attempted
   to send restricted XML features such as a comment, processing
-  instruction, DTD, entity reference, or unescaped character
+  instruction, DTD, entity reference, or unescaped character</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-SEE-OTHER-HOST:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_SEE_OTHER_HOST</code></span></p></td>
-<td>the server will not
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-SEE-OTHER-HOST:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_SEE_OTHER_HOST</p></td>
+<td class="enum_member_description">
+<p>the server will not
   provide service to the initiating entity but is redirecting
-  traffic to another host
+  traffic to another host</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-SYSTEM-SHUTDOWN:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_SYSTEM_SHUTDOWN</code></span></p></td>
-<td>the server is being shut
-  down and all active streams are being closed
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-SYSTEM-SHUTDOWN:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_SYSTEM_SHUTDOWN</p></td>
+<td class="enum_member_description">
+<p>the server is being shut
+  down and all active streams are being closed</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-UNDEFINED-CONDITION:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_UNDEFINED_CONDITION</code></span></p></td>
-<td>the error condition
-  is not one of those defined by the other conditions in this list
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-UNDEFINED-CONDITION:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_UNDEFINED_CONDITION</p></td>
+<td class="enum_member_description">
+<p>the error condition
+  is not one of those defined by the other conditions in this list</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-UNSUPPORTED-ENCODING:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_UNSUPPORTED_ENCODING</code></span></p></td>
-<td>the initiating
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-UNSUPPORTED-ENCODING:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_UNSUPPORTED_ENCODING</p></td>
+<td class="enum_member_description">
+<p>the initiating
   entity has encoded the stream in an encoding that is not
-  supported by the server
+  supported by the server</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-UNSUPPORTED-STANZA-TYPE:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_UNSUPPORTED_STANZA_TYPE</code></span></p></td>
-<td>the initiating
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-UNSUPPORTED-STANZA-TYPE:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_UNSUPPORTED_STANZA_TYPE</p></td>
+<td class="enum_member_description">
+<p>the initiating
   entity has sent a first-level child of the stream that is not
-  supported by the server
+  supported by the server</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-UNSUPPORTED-VERSION:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_UNSUPPORTED_VERSION</code></span></p></td>
-<td>the value of the
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-UNSUPPORTED-VERSION:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_UNSUPPORTED_VERSION</p></td>
+<td class="enum_member_description">
+<p>the value of the
   'version' attribute provided by the initiating entity in the
   stream header specifies a version of XMPP that is not supported
-  by the server
+  by the server</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-XML-NOT-WELL-FORMED:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_XML_NOT_WELL_FORMED</code></span></p></td>
-<td>the initiating entity
-  has sent XML that is not well-formed
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-XML-NOT-WELL-FORMED:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_XML_NOT_WELL_FORMED</p></td>
+<td class="enum_member_description">
+<p>the initiating entity
+  has sent XML that is not well-formed</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="WOCKY-XMPP-STREAM-ERROR-UNKNOWN:CAPS"></a><span class="term"><code class="literal">WOCKY_XMPP_STREAM_ERROR_UNKNOWN</code></span></p></td>
-<td>an unknown stream error
+<td class="enum_member_name"><p><a name="WOCKY-XMPP-STREAM-ERROR-UNKNOWN:CAPS"></a>WOCKY_XMPP_STREAM_ERROR_UNKNOWN</p></td>
+<td class="enum_member_description">
+<p>an unknown stream error</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="wocky-xmpp-stream-error-quark"></a><h3>wocky_xmpp_stream_error_quark ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>              wocky_xmpp_stream_error_quark       (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>
-Get the error quark used for stream errors
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the quark for stream errors.</td>
-</tr></tbody>
-</table></div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="WOCKY-XMPP-STREAM-ERROR:CAPS"></a><h3>WOCKY_XMPP_STREAM_ERROR</h3>
 <pre class="programlisting">#define WOCKY_XMPP_STREAM_ERROR (wocky_xmpp_stream_error_quark ())
 </pre>
-<p>
-Get access to the error quark of the xmpp stream errors.
-</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-xmpp-error-string"></a><h3>wocky_xmpp_error_string ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_error_string             (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError"><span class="type">WockyXmppError</span></a> error</code></em>);</pre>
-<p>
-
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>a core stanza error</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the name of the tag corresponding to <em class="parameter"><code>error</code></em>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-xmpp-error-description"></a><h3>wocky_xmpp_error_description ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_error_description        (<em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppError"><span class="type">WockyXmppError</span></a> error</code></em>);</pre>
-<p>
-
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>a core stanza error</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a description of the error, in English, as specified in XMPP Core</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-xmpp-stream-error-from-node"></a><h3>wocky_xmpp_stream_error_from_node ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="returnvalue">GError</span></a> *            wocky_xmpp_stream_error_from_node   (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *error</code></em>);</pre>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>the root node of a <a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-TYPE-STREAM-ERROR:CAPS"><span class="type">WOCKY_STANZA_TYPE_STREAM_ERROR</span></a> stanza</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a GError in the <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-STREAM-ERROR:CAPS" title="WOCKY_XMPP_STREAM_ERROR"><span class="type">WOCKY_XMPP_STREAM_ERROR</span></a> domain.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-stanza-error-to-node"></a><h3>wocky_stanza_error_to_node ()</h3>
-<pre class="programlisting"><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="returnvalue">WockyNode</span></a> *         wocky_stanza_error_to_node          (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *parent_node</code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-xmpp-stanza-error-to-string"></a><h3>wocky_xmpp_stanza_error_to_string ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       wocky_xmpp_stanza_error_to_string   (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> *error</code></em>);</pre>
-<p>
-Returns the name of the XMPP stanza error element represented by <em class="parameter"><code>error</code></em>.
-This is intended for use in debugging messages, with <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><code class="literal">GErrors</code></a> returned by
-<a class="link" href="wocky-WockyStanza.html#wocky-stanza-extract-errors" title="wocky_stanza_extract_errors ()"><code class="function">wocky_stanza_extract_errors()</code></a>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>an error in the domain <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS" title="WOCKY_XMPP_ERROR"><code class="literal">WOCKY_XMPP_ERROR</code></a>, or another domain
-registered with <a class="link" href="wocky-wocky-xmpp-error.html#wocky-xmpp-error-register-domain" title="wocky_xmpp_error_register_domain ()"><code class="function">wocky_xmpp_error_register_domain()</code></a> (such as
-<a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-JINGLE-ERROR:CAPS" title="WOCKY_JINGLE_ERROR"><code class="literal">WOCKY_JINGLE_ERROR</code></a>).</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the error code as a string, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if
-<code class="code">error-&gt;domain</code> is not known to Wocky.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-xmpp-error-extract"></a><h3>wocky_xmpp_error_extract ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_extract            (<em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> *error</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-wocky-xmpp-error.html#WockyXmppErrorType"><span class="type">WockyXmppErrorType</span></a> *type</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **core</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **specialized</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **specialized_node</code></em>);</pre>
-<p>
-Given an &lt;error/&gt; node, breaks it down into values describing the error.
-<em class="parameter"><code>type</code></em> and <em class="parameter"><code>core</code></em> are guaranteed to be set; <em class="parameter"><code>specialized</code></em> and <em class="parameter"><code>specialized_node</code></em>
-will be set if a recognised application-specific error is found, and the
-latter will be set to <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if no application-specific error is found.
-</p>
-<p>
-Any or all of the out parameters may be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore the value.  The
-value stored in <em class="parameter"><code>specialized_node</code></em> is borrowed from <em class="parameter"><code>stanza</code></em>, and is only
-valid as long as the latter is alive.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>the &lt;error/&gt; child of a stanza with type='error'</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
-<td>location at which to store the error type</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>core</code></em> :</span></p></td>
-<td>location at which to store an error in the domain <a class="link" href="wocky-wocky-xmpp-error.html#WOCKY-XMPP-ERROR:CAPS" title="WOCKY_XMPP_ERROR"><span class="type">WOCKY_XMPP_ERROR</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>specialized</code></em> :</span></p></td>
-<td>location at which to store an error in an application-specific
-domain, if one is found</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>specialized_node</code></em> :</span></p></td>
-<td>location at which to store the node representing an
-application-specific error, if one is found</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-xmpp-error-init"></a><h3>wocky_xmpp_error_init ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_init               (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-</div>
-<hr>
-<div class="refsect2">
-<a name="wocky-xmpp-error-deinit"></a><h3>wocky_xmpp_error_deinit ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_xmpp_error_deinit             (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Get access to the error quark of the xmpp stream errors.</p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.19</div>
+<hr>Generated by GTK-Doc V1.25</div>
 </body>
 </html>

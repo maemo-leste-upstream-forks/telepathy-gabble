@@ -2,30 +2,26 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>wocky-pubsub-helpers</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<title>wocky-pubsub-helpers: Wocky Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Wocky Reference Manual">
 <link rel="up" href="ch01.html" title="API Reference">
-<link rel="prev" href="wocky-WockyPorter.html" title="WockyPorter">
+<link rel="prev" href="WockyPorter.html" title="WockyPorter">
 <link rel="next" href="WockyPubsubNode.html" title="WockyPubsubNode">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="wocky-WockyPorter.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">Wocky Reference Manual</th>
-<td><a accesskey="n" href="WockyPubsubNode.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#wocky-wocky-pubsub-helpers.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#wocky-wocky-pubsub-helpers.description" class="shortcut">Description</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#wocky-wocky-pubsub-helpers.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="WockyPorter.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="WockyPubsubNode.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="wocky-wocky-pubsub-helpers"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -33,458 +29,548 @@
 <h2><span class="refentrytitle"><a name="wocky-wocky-pubsub-helpers.top_of_page"></a>wocky-pubsub-helpers</span></h2>
 <p>wocky-pubsub-helpers</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="wocky-wocky-pubsub-helpers.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis"><span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-make-event-stanza" title="wocky_pubsub_make_event_stanza ()">wocky_pubsub_make_event_stanza</a>      (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **item_out</code></em>);
-<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-make-stanza" title="wocky_pubsub_make_stanza ()">wocky_pubsub_make_stanza</a>            (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *service</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pubsub_ns</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *action_name</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **action_node</code></em>);
-<span class="returnvalue">WockyStanza</span> *       <a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-make-publish-stanza" title="wocky_pubsub_make_publish_stanza ()">wocky_pubsub_make_publish_stanza</a>    (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *service</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_out</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **publish_out</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **item_out</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-send-ll-pep-event" title="wocky_send_ll_pep_event ()">wocky_send_ll_pep_event</a>             (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>,
-                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-iq-reply" title="wocky_pubsub_distill_iq_reply ()">wocky_pubsub_distill_iq_reply</a>       (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *source</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pubsub_ns</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *child_name</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> **child_out</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-ambivalent-iq-reply" title="wocky_pubsub_distill_ambivalent_iq_reply ()">wocky_pubsub_distill_ambivalent_iq_reply</a>
-                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *source</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pubsub_ns</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *child_name</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> **child_out</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-void-iq-reply" title="wocky_pubsub_distill_void_iq_reply ()">wocky_pubsub_distill_void_iq_reply</a>  (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *source</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-stanza" title="wocky_pubsub_distill_stanza ()">wocky_pubsub_distill_stanza</a>         (<em class="parameter"><code><span class="type">WockyStanza</span> *result</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pubsub_ns</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *child_name</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> body_optional</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> **child_out</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-</pre>
+<div class="refsect1">
+<a name="wocky-wocky-pubsub-helpers.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-make-event-stanza" title="wocky_pubsub_make_event_stanza ()">wocky_pubsub_make_event_stanza</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-make-stanza" title="wocky_pubsub_make_stanza ()">wocky_pubsub_make_stanza</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-make-publish-stanza" title="wocky_pubsub_make_publish_stanza ()">wocky_pubsub_make_publish_stanza</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-send-ll-pep-event" title="wocky_send_ll_pep_event ()">wocky_send_ll_pep_event</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-iq-reply" title="wocky_pubsub_distill_iq_reply ()">wocky_pubsub_distill_iq_reply</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-ambivalent-iq-reply" title="wocky_pubsub_distill_ambivalent_iq_reply ()">wocky_pubsub_distill_ambivalent_iq_reply</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-void-iq-reply" title="wocky_pubsub_distill_void_iq_reply ()">wocky_pubsub_distill_void_iq_reply</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-stanza" title="wocky_pubsub_distill_stanza ()">wocky_pubsub_distill_stanza</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="wocky-wocky-pubsub-helpers.description"></a><h2>Description</h2>
 </div>
 <div class="refsect1">
-<a name="wocky-wocky-pubsub-helpers.details"></a><h2>Details</h2>
+<a name="wocky-wocky-pubsub-helpers.functions_details"></a><h2>Functions</h2>
 <div class="refsect2">
-<a name="wocky-pubsub-make-event-stanza"></a><h3>wocky_pubsub_make_event_stanza ()</h3>
-<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_pubsub_make_event_stanza      (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **item_out</code></em>);</pre>
-<p>
-Generates a new message stanza to send to other contacts about an
-updated PEP node.
-</p>
-<p>
-Note that this should only be used in link-local
+<a name="wocky-pubsub-make-event-stanza"></a><h3>wocky_pubsub_make_event_stanza ()</h3>
+<pre class="programlisting"><a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *
+wocky_pubsub_make_event_stanza (<em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>,
+                                <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *from</code></em>,
+                                <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **item_out</code></em>);</pre>
+<p>Generates a new message stanza to send to other contacts about an
+updated PEP node.</p>
+<p>Note that this should only be used in link-local
 connections. Regular pubsub consists of making a publish stanza
-with <a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-make-publish-stanza" title="wocky_pubsub_make_publish_stanza ()"><code class="function">wocky_pubsub_make_publish_stanza()</code></a> and sending it to your own
+with <a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-make-publish-stanza" title="wocky_pubsub_make_publish_stanza ()"><code class="function">wocky_pubsub_make_publish_stanza()</code></a> and sending it to your own
 server. The server will then send the event stanza on to your
-contacts who have the appropriate capability.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+contacts who have the appropriate capability.</p>
+<div class="refsect3">
+<a name="wocky-pubsub-make-event-stanza.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>the the name of the pubsub node; may not be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
+<td class="parameter_name"><p>node</p></td>
+<td class="parameter_description"><p>the the name of the pubsub node; may not be <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>from</code></em> :</span></p></td>
-<td>a JID to use as the 'from' attribute, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
+<td class="parameter_name"><p>from</p></td>
+<td class="parameter_description"><p>a JID to use as the 'from' attribute, or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>item_out</code></em> :</span></p></td>
-<td>a location to store the <code class="code">item</code> <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a new <span class="type">WockyStanza</span> pubsub event stanza; free with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a>
-</td>
+<td class="parameter_name"><p>item_out</p></td>
+<td class="parameter_description"><p>a location to store the <code class="code">item</code> <a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a>, or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<div class="refsect3">
+<a name="wocky-pubsub-make-event-stanza.returns"></a><h4>Returns</h4>
+<p> a new <a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a> pubsub event stanza; free with <a href="/usr/share/gtk-doc/html/gobjectgobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a></p>
+</div>
+</div>
 <hr>
 <div class="refsect2">
-<a name="wocky-pubsub-make-stanza"></a><h3>wocky_pubsub_make_stanza ()</h3>
-<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_pubsub_make_stanza            (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *service</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pubsub_ns</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *action_name</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **action_node</code></em>);</pre>
-<p>
-
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="wocky-pubsub-make-stanza"></a><h3>wocky_pubsub_make_stanza ()</h3>
+<pre class="programlisting"><a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *
+wocky_pubsub_make_stanza (<em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *service</code></em>,
+                          <em class="parameter"><code><a class="link" href="WockyStanza.html#WockyStanzaSubType" title="enum WockyStanzaSubType"><span class="type">WockyStanzaSubType</span></a> sub_type</code></em>,
+                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pubsub_ns</code></em>,
+                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *action_name</code></em>,
+                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_node</code></em>,
+                          <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **action_node</code></em>);</pre>
+<p></p>
+<div class="refsect3">
+<a name="wocky-pubsub-make-stanza.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>service</code></em> :</span></p></td>
-<td>the JID of a PubSub service, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
+<td class="parameter_name"><p>service</p></td>
+<td class="parameter_description"><p>the JID of a PubSub service, or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>sub_type</code></em> :</span></p></td>
-<td>
-<a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-SET:CAPS"><span class="type">WOCKY_STANZA_SUB_TYPE_SET</span></a> or <a class="link" href="wocky-WockyStanza.html#WOCKY-STANZA-SUB-TYPE-GET:CAPS"><span class="type">WOCKY_STANZA_SUB_TYPE_GET</span></a>, as you wish</td>
+<td class="parameter_name"><p>sub_type</p></td>
+<td class="parameter_description"><p><a class="link" href="WockyStanza.html#WOCKY-STANZA-SUB-TYPE-SET:CAPS"><span class="type">WOCKY_STANZA_SUB_TYPE_SET</span></a> or <a class="link" href="WockyStanza.html#WOCKY-STANZA-SUB-TYPE-GET:CAPS"><span class="type">WOCKY_STANZA_SUB_TYPE_GET</span></a>, as you wish</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pubsub_ns</code></em> :</span></p></td>
-<td>the namespace for the &lt;pubsub/&gt; node of the stanza</td>
+<td class="parameter_name"><p>pubsub_ns</p></td>
+<td class="parameter_description"><p>the namespace for the &lt;pubsub/&gt; node of the stanza</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>action_name</code></em> :</span></p></td>
-<td>the action node to add to &lt;pubsub/&gt;</td>
+<td class="parameter_name"><p>action_name</p></td>
+<td class="parameter_description"><p>the action node to add to &lt;pubsub/&gt;</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pubsub_node</code></em> :</span></p></td>
-<td>address at which to store a pointer to the &lt;pubsub/&gt; node</td>
+<td class="parameter_name"><p>pubsub_node</p></td>
+<td class="parameter_description"><p>address at which to store a pointer to the &lt;pubsub/&gt; node</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>action_node</code></em> :</span></p></td>
-<td>address at wihch to store a pointer to the &lt;<em class="parameter"><code>action</code></em>/&gt;
-node</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a new iq[type=<em class="parameter"><code>sub_type</code></em>]/pubsub/<em class="parameter"><code>action</code></em> stanza</td>
+<td class="parameter_name"><p>action_node</p></td>
+<td class="parameter_description"><p>address at wihch to store a pointer to the &lt;<em class="parameter"><code>action</code></em>
+/&gt;
+node</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<div class="refsect3">
+<a name="wocky-pubsub-make-stanza.returns"></a><h4>Returns</h4>
+<p> a new iq[type=<em class="parameter"><code>sub_type</code></em>
+]/pubsub/<em class="parameter"><code>action</code></em>
+stanza</p>
+</div>
+</div>
 <hr>
 <div class="refsect2">
-<a name="wocky-pubsub-make-publish-stanza"></a><h3>wocky_pubsub_make_publish_stanza ()</h3>
-<pre class="programlisting"><span class="returnvalue">WockyStanza</span> *       wocky_pubsub_make_publish_stanza    (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *service</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_out</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **publish_out</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **item_out</code></em>);</pre>
-<p>
-
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="wocky-pubsub-make-publish-stanza"></a><h3>wocky_pubsub_make_publish_stanza ()</h3>
+<pre class="programlisting"><a class="link" href="WockyStanza.html" title="WockyStanza"><span class="returnvalue">WockyStanza</span></a> *
+wocky_pubsub_make_publish_stanza (<em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *service</code></em>,
+                                  <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *node</code></em>,
+                                  <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **pubsub_out</code></em>,
+                                  <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **publish_out</code></em>,
+                                  <em class="parameter"><code><a class="link" href="wocky-WockyNode.html#WockyNode" title="struct WockyNode"><span class="type">WockyNode</span></a> **item_out</code></em>);</pre>
+<p></p>
+<div class="refsect3">
+<a name="wocky-pubsub-make-publish-stanza.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>service</code></em> :</span></p></td>
-<td>the JID of a PubSub service, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
+<td class="parameter_name"><p>service</p></td>
+<td class="parameter_description"><p>the JID of a PubSub service, or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>node</code></em> :</span></p></td>
-<td>the name of a node on <em class="parameter"><code>service</code></em>; may not be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
+<td class="parameter_name"><p>node</p></td>
+<td class="parameter_description"><p>the name of a node on <em class="parameter"><code>service</code></em>
+; may not be <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pubsub_out</code></em> :</span></p></td>
-<td>address at which to store a pointer to the &lt;pubsub/&gt; node</td>
+<td class="parameter_name"><p>pubsub_out</p></td>
+<td class="parameter_description"><p>address at which to store a pointer to the &lt;pubsub/&gt; node</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>publish_out</code></em> :</span></p></td>
-<td>address at which to store a pointer to the &lt;publish/&gt;
-node</td>
+<td class="parameter_name"><p>publish_out</p></td>
+<td class="parameter_description"><p>address at which to store a pointer to the &lt;publish/&gt;
+node</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>item_out</code></em> :</span></p></td>
-<td>address at which to store a pointer to the &lt;item/&gt; node</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a new iq[type='set']/pubsub/publish/item stanza</td>
+<td class="parameter_name"><p>item_out</p></td>
+<td class="parameter_description"><p>address at which to store a pointer to the &lt;item/&gt; node</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<div class="refsect3">
+<a name="wocky-pubsub-make-publish-stanza.returns"></a><h4>Returns</h4>
+<p> a new iq[type='set']/pubsub/publish/item stanza</p>
+</div>
+</div>
 <hr>
 <div class="refsect2">
-<a name="wocky-send-ll-pep-event"></a><h3>wocky_send_ll_pep_event ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                wocky_send_ll_pep_event             (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>,
-                                                         <em class="parameter"><code><span class="type">WockyStanza</span> *stanza</code></em>);</pre>
-<p>
-Send a PEP event to all link-local contacts interested in receiving it.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="wocky-send-ll-pep-event"></a><h3>wocky_send_ll_pep_event ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+wocky_send_ll_pep_event (<em class="parameter"><code><a class="link" href="WockySession.html" title="WockySession"><span class="type">WockySession</span></a> *session</code></em>,
+                         <em class="parameter"><code><a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a> *stanza</code></em>);</pre>
+<p>Send a PEP event to all link-local contacts interested in receiving it.</p>
+<div class="refsect3">
+<a name="wocky-send-ll-pep-event.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
-<td>the WockySession to send on</td>
+<td class="parameter_name"><p>session</p></td>
+<td class="parameter_description"><p>the WockySession to send on</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>stanza</code></em> :</span></p></td>
-<td>the PEP event stanza to send</td>
+<td class="parameter_name"><p>stanza</p></td>
+<td class="parameter_description"><p>the PEP event stanza to send</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+</div>
 <hr>
 <div class="refsect2">
-<a name="wocky-pubsub-distill-iq-reply"></a><h3>wocky_pubsub_distill_iq_reply ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_pubsub_distill_iq_reply       (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *source</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pubsub_ns</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *child_name</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> **child_out</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
-<p>
-Helper function to finish a <a class="link" href="wocky-WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a> operation
-and extract a particular pubsub child from the resulting reply, if needed.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="wocky-pubsub-distill-iq-reply"></a><h3>wocky_pubsub_distill_iq_reply ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+wocky_pubsub_distill_iq_reply (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobjectgobject-The-Base-Object-Type.html#GObject-struct"><span class="type">GObject</span></a> *source</code></em>,
+                               <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gioGAsyncResult.html#GAsyncResult-struct"><span class="type">GAsyncResult</span></a> *res</code></em>,
+                               <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pubsub_ns</code></em>,
+                               <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *child_name</code></em>,
+                               <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> **child_out</code></em>,
+                               <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>Helper function to finish a <a class="link" href="WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a> operation
+and extract a particular pubsub child from the resulting reply, if needed.</p>
+<div class="refsect3">
+<a name="wocky-pubsub-distill-iq-reply.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>source</code></em> :</span></p></td>
-<td>a <span class="type">WockyPorter</span> instance</td>
+<td class="parameter_name"><p>source</p></td>
+<td class="parameter_description"><p>a <a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>res</code></em> :</span></p></td>
-<td>a result passed to the callback for <a class="link" href="wocky-WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a>
-</td>
+<td class="parameter_name"><p>res</p></td>
+<td class="parameter_description"><p>a result passed to the callback for <a class="link" href="WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pubsub_ns</code></em> :</span></p></td>
-<td>the namespace of the &lt;pubsub/&gt; node expected in this reply
-(such as <a class="link" href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB:CAPS" title="WOCKY_XMPP_NS_PUBSUB"><span class="type">WOCKY_XMPP_NS_PUBSUB</span></a>), or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if one is not expected</td>
+<td class="parameter_name"><p>pubsub_ns</p></td>
+<td class="parameter_description"><p>the namespace of the &lt;pubsub/&gt; node expected in this reply
+(such as <a class="link" href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB:CAPS" title="WOCKY_XMPP_NS_PUBSUB"><span class="type">WOCKY_XMPP_NS_PUBSUB</span></a>), or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if one is not expected</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>child_name</code></em> :</span></p></td>
-<td>the name of the child of &lt;pubsub/&gt; expected in this reply
-(such as "subscriptions"); ignored if <em class="parameter"><code>pubsub_ns</code></em> is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
+<td class="parameter_name"><p>child_name</p></td>
+<td class="parameter_description"><p>the name of the child of &lt;pubsub/&gt; expected in this reply
+(such as "subscriptions"); ignored if <em class="parameter"><code>pubsub_ns</code></em>
+is <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>child_out</code></em> :</span></p></td>
-<td>location at which to store a reference to the node tree at
-<em class="parameter"><code>child_name</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if you don't need it.</td>
+<td class="parameter_name"><p>child_out</p></td>
+<td class="parameter_description"><p>location at which to store a reference to the node tree at
+<em class="parameter"><code>child_name</code></em>
+, or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if you don't need it.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>location at which to store an error if the call to
-<a class="link" href="wocky-WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a> returned an error, or if the reply was
-an error</td>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>location at which to store an error if the call to
+<a class="link" href="WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a> returned an error, or if the reply was
+an error</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the desired pubsub child was found; <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="wocky-pubsub-distill-iq-reply.returns"></a><h4>Returns</h4>
+<p> <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the desired pubsub child was found; <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if
 sending the IQ failed, the reply had type='error', or the
-pubsub child was not found, with <em class="parameter"><code>error</code></em> set appropriately.</td>
-</tr>
-</tbody>
-</table></div>
+pubsub child was not found, with <em class="parameter"><code>error</code></em>
+set appropriately.</p>
+</div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="wocky-pubsub-distill-ambivalent-iq-reply"></a><h3>wocky_pubsub_distill_ambivalent_iq_reply ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_pubsub_distill_ambivalent_iq_reply
-                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *source</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pubsub_ns</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *child_name</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> **child_out</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
-<p>
-Helper function to finish a <a class="link" href="wocky-WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a> operation
+<a name="wocky-pubsub-distill-ambivalent-iq-reply"></a><h3>wocky_pubsub_distill_ambivalent_iq_reply ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+wocky_pubsub_distill_ambivalent_iq_reply
+                               (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobjectgobject-The-Base-Object-Type.html#GObject-struct"><span class="type">GObject</span></a> *source</code></em>,
+                                <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gioGAsyncResult.html#GAsyncResult-struct"><span class="type">GAsyncResult</span></a> *res</code></em>,
+                                <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pubsub_ns</code></em>,
+                                <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *child_name</code></em>,
+                                <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> **child_out</code></em>,
+                                <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>Helper function to finish a <a class="link" href="WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a> operation
 and extract a particular pubsub child from the resulting reply, if it is
-present. This is like <a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-iq-reply" title="wocky_pubsub_distill_iq_reply ()"><code class="function">wocky_pubsub_distill_iq_reply()</code></a>, but is ambivalent as
-to whether the &lt;pubsub/&gt; structure has to be included.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+present. This is like <a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-iq-reply" title="wocky_pubsub_distill_iq_reply ()"><code class="function">wocky_pubsub_distill_iq_reply()</code></a>, but is ambivalent as
+to whether the &lt;pubsub/&gt; structure has to be included.</p>
+<div class="refsect3">
+<a name="wocky-pubsub-distill-ambivalent-iq-reply.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>source</code></em> :</span></p></td>
-<td>a <span class="type">WockyPorter</span> instance</td>
+<td class="parameter_name"><p>source</p></td>
+<td class="parameter_description"><p>a <a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>res</code></em> :</span></p></td>
-<td>a result passed to the callback for <a class="link" href="wocky-WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a>
-</td>
+<td class="parameter_name"><p>res</p></td>
+<td class="parameter_description"><p>a result passed to the callback for <a class="link" href="WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pubsub_ns</code></em> :</span></p></td>
-<td>the namespace of the &lt;pubsub/&gt; node accepted in this reply
-(such as <a class="link" href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB:CAPS" title="WOCKY_XMPP_NS_PUBSUB"><span class="type">WOCKY_XMPP_NS_PUBSUB</span></a>)</td>
+<td class="parameter_name"><p>pubsub_ns</p></td>
+<td class="parameter_description"><p>the namespace of the &lt;pubsub/&gt; node accepted in this reply
+(such as <a class="link" href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB:CAPS" title="WOCKY_XMPP_NS_PUBSUB"><span class="type">WOCKY_XMPP_NS_PUBSUB</span></a>)</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>child_name</code></em> :</span></p></td>
-<td>the name of the child of &lt;pubsub/&gt; accepted in this reply
-(such as "subscriptions")</td>
+<td class="parameter_name"><p>child_name</p></td>
+<td class="parameter_description"><p>the name of the child of &lt;pubsub/&gt; accepted in this reply
+(such as "subscriptions")</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>child_out</code></em> :</span></p></td>
-<td>location at which to store a reference to the node tree at
-<em class="parameter"><code>child_name</code></em>, if it is found, or to be set to <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if it is not
-found</td>
+<td class="parameter_name"><p>child_out</p></td>
+<td class="parameter_description"><p>location at which to store a reference to the node tree at
+<em class="parameter"><code>child_name</code></em>
+, if it is found, or to be set to <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if it is not
+found</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>location at which to store an error if the call to
-<a class="link" href="wocky-WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a> returned an error, or if the reply was
-an error</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the IQ was a success; <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if
-sending the IQ failed or the reply had type='error',
-with <em class="parameter"><code>error</code></em> set appropriately.</td>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>location at which to store an error if the call to
+<a class="link" href="WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a> returned an error, or if the reply was
+an error</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<div class="refsect3">
+<a name="wocky-pubsub-distill-ambivalent-iq-reply.returns"></a><h4>Returns</h4>
+<p> <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the IQ was a success; <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if
+sending the IQ failed or the reply had type='error',
+with <em class="parameter"><code>error</code></em>
+set appropriately.</p>
+</div>
+</div>
 <hr>
 <div class="refsect2">
-<a name="wocky-pubsub-distill-void-iq-reply"></a><h3>wocky_pubsub_distill_void_iq_reply ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_pubsub_distill_void_iq_reply  (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *source</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GAsyncResult.html"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
-<p>
-Helper function to finish a <a class="link" href="wocky-WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a> operation where no
-pubsub child is expected in the resulting reply.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="wocky-pubsub-distill-void-iq-reply"></a><h3>wocky_pubsub_distill_void_iq_reply ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+wocky_pubsub_distill_void_iq_reply (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobjectgobject-The-Base-Object-Type.html#GObject-struct"><span class="type">GObject</span></a> *source</code></em>,
+                                    <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gioGAsyncResult.html#GAsyncResult-struct"><span class="type">GAsyncResult</span></a> *res</code></em>,
+                                    <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>Helper function to finish a <a class="link" href="WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a> operation where no
+pubsub child is expected in the resulting reply.</p>
+<div class="refsect3">
+<a name="wocky-pubsub-distill-void-iq-reply.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>source</code></em> :</span></p></td>
-<td>a <span class="type">WockyPorter</span> instance</td>
+<td class="parameter_name"><p>source</p></td>
+<td class="parameter_description"><p>a <a class="link" href="WockyPorter.html" title="WockyPorter"><span class="type">WockyPorter</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>res</code></em> :</span></p></td>
-<td>a result passed to the callback for <a class="link" href="wocky-WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a>
-</td>
+<td class="parameter_name"><p>res</p></td>
+<td class="parameter_description"><p>a result passed to the callback for <a class="link" href="WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>location at which to store an error if the call to
-<a class="link" href="wocky-WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a> returned an error, or if the reply was
-an error</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the IQ was a success; <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if
-sending the IQ failed or the reply had type='error',
-with <em class="parameter"><code>error</code></em> set appropriately.</td>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>location at which to store an error if the call to
+<a class="link" href="WockyPorter.html#wocky-porter-send-iq-async" title="wocky_porter_send_iq_async ()"><code class="function">wocky_porter_send_iq_async()</code></a> returned an error, or if the reply was
+an error</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<div class="refsect3">
+<a name="wocky-pubsub-distill-void-iq-reply.returns"></a><h4>Returns</h4>
+<p> <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the IQ was a success; <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if
+sending the IQ failed or the reply had type='error',
+with <em class="parameter"><code>error</code></em>
+set appropriately.</p>
+</div>
+</div>
 <hr>
 <div class="refsect2">
-<a name="wocky-pubsub-distill-stanza"></a><h3>wocky_pubsub_distill_stanza ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            wocky_pubsub_distill_stanza         (<em class="parameter"><code><span class="type">WockyStanza</span> *result</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pubsub_ns</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *child_name</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> body_optional</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> **child_out</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
-<p>
-Helper function to extract a particular pubsub child node from a reply, if
-it is present. If <em class="parameter"><code>body_optional</code></em> is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>, the
-&lt;pubsub&gt;&lt;<em class="parameter"><code>child_name</code></em>/&gt;&lt;/pubsub&gt; tree being absent is not
-considered an error: <em class="parameter"><code>child_out</code></em> is set to <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> and the function returns
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>.
-</p>
-<p>
-If you are happy to delegate calling <a class="link" href="wocky-WockyPorter.html#wocky-porter-send-iq-finish" title="wocky_porter_send_iq_finish ()"><code class="function">wocky_porter_send_iq_finish()</code></a> and
+<a name="wocky-pubsub-distill-stanza"></a><h3>wocky_pubsub_distill_stanza ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+wocky_pubsub_distill_stanza (<em class="parameter"><code><a class="link" href="WockyStanza.html" title="WockyStanza"><span class="type">WockyStanza</span></a> *result</code></em>,
+                             <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *pubsub_ns</code></em>,
+                             <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *child_name</code></em>,
+                             <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> body_optional</code></em>,
+                             <em class="parameter"><code><a class="link" href="WockyNodeTree.html" title="WockyNodeTree"><span class="type">WockyNodeTree</span></a> **child_out</code></em>,
+                             <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>Helper function to extract a particular pubsub child node from a reply, if
+it is present. If <em class="parameter"><code>body_optional</code></em>
+ is <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>, the
+&lt;pubsub&gt;&lt;<em class="parameter"><code>child_name</code></em>
+/&gt;&lt;/pubsub&gt; tree being absent is not
+considered an error: <em class="parameter"><code>child_out</code></em>
+ is set to <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> and the function returns
+<a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>.</p>
+<p>If you are happy to delegate calling <a class="link" href="WockyPorter.html#wocky-porter-send-iq-finish" title="wocky_porter_send_iq_finish ()"><code class="function">wocky_porter_send_iq_finish()</code></a> and
 extracting stanza errors, you would probably be better served by one of
-<a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-iq-reply" title="wocky_pubsub_distill_iq_reply ()"><code class="function">wocky_pubsub_distill_iq_reply()</code></a> or
-<a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-ambivalent-iq-reply" title="wocky_pubsub_distill_ambivalent_iq_reply ()"><code class="function">wocky_pubsub_distill_ambivalent_iq_reply()</code></a>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-iq-reply" title="wocky_pubsub_distill_iq_reply ()"><code class="function">wocky_pubsub_distill_iq_reply()</code></a> or
+<a class="link" href="wocky-wocky-pubsub-helpers.html#wocky-pubsub-distill-ambivalent-iq-reply" title="wocky_pubsub_distill_ambivalent_iq_reply ()"><code class="function">wocky_pubsub_distill_ambivalent_iq_reply()</code></a>.</p>
+<div class="refsect3">
+<a name="wocky-pubsub-distill-stanza.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
-<td>an iq type='result'</td>
+<td class="parameter_name"><p>result</p></td>
+<td class="parameter_description"><p>an iq type='result'</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pubsub_ns</code></em> :</span></p></td>
-<td>the namespace of the &lt;pubsub/&gt; node expected in this reply
-(such as <a class="link" href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB:CAPS" title="WOCKY_XMPP_NS_PUBSUB"><span class="type">WOCKY_XMPP_NS_PUBSUB</span></a>)</td>
+<td class="parameter_name"><p>pubsub_ns</p></td>
+<td class="parameter_description"><p>the namespace of the &lt;pubsub/&gt; node expected in this reply
+(such as <a class="link" href="wocky-wocky-namespaces.html#WOCKY-XMPP-NS-PUBSUB:CAPS" title="WOCKY_XMPP_NS_PUBSUB"><span class="type">WOCKY_XMPP_NS_PUBSUB</span></a>)</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>child_name</code></em> :</span></p></td>
-<td>the name of the child of &lt;pubsub/&gt; expected in this reply
-(such as "subscriptions")</td>
+<td class="parameter_name"><p>child_name</p></td>
+<td class="parameter_description"><p>the name of the child of &lt;pubsub/&gt; expected in this reply
+(such as "subscriptions")</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>body_optional</code></em> :</span></p></td>
-<td>If <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, the child being absent is not considered an error</td>
+<td class="parameter_name"><p>body_optional</p></td>
+<td class="parameter_description"><p>If <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, the child being absent is not considered an error</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>child_out</code></em> :</span></p></td>
-<td>location at which to store a reference to the node tree at
-<em class="parameter"><code>child_name</code></em>, if it is found, or to be set to <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if it is not.</td>
+<td class="parameter_name"><p>child_out</p></td>
+<td class="parameter_description"><p>location at which to store a reference to the node tree at
+<em class="parameter"><code>child_name</code></em>
+, if it is found, or to be set to <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if it is not.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>location at which to store an error if the child node is not found
-and <em class="parameter"><code>body_optional</code></em> is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the child was found or was optional; <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> with <em class="parameter"><code>error</code></em>
-set otherwise.</td>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>location at which to store an error if the child node is not found
+and <em class="parameter"><code>body_optional</code></em>
+is <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<div class="refsect3">
+<a name="wocky-pubsub-distill-stanza.returns"></a><h4>Returns</h4>
+<p> <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the child was found or was optional; <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> with <em class="parameter"><code>error</code></em>
+set otherwise.</p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="wocky-wocky-pubsub-helpers.other_details"></a><h2>Types and Values</h2>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.19</div>
+<hr>Generated by GTK-Doc V1.25</div>
 </body>
 </html>
