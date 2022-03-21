@@ -17,6 +17,8 @@ override_dh_auto_configure:
 		--libexecdir="\$${prefix}/lib/telepathy" \
 		--with-ca-certificates=/etc/ssl/certs/ca-certificates.crt \
 		--disable-static \
+		--enable-is-a-phone \
+		--with-tls=openssl \
 		--enable-installed-tests
 		$(NULL)
 
