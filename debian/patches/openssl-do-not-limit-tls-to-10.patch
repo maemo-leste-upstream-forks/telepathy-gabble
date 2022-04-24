@@ -1,0 +1,111 @@
+Index: telepathy-gabble/lib/ext/wocky/wocky/wocky-openssl.c
+===================================================================
+--- telepathy-gabble.orig/lib/ext/wocky/wocky/wocky-openssl.c
++++ telepathy-gabble/lib/ext/wocky/wocky/wocky-openssl.c
+@@ -100,6 +100,7 @@ enum
+   PROP_S_DHBITS,
+   PROP_S_KEYFILE,
+   PROP_S_CERTFILE,
++  PROP_S_PEERNAME,
+ };
+ 
+ enum
+@@ -173,6 +174,7 @@ struct _WockyTLSSession
+   guint dh_bits;
+   gchar *key_file;
+   gchar *cert_file;
++  gchar *peername;
+ 
+   /* frontend jobs */
+   struct
+@@ -390,6 +392,11 @@ ssl_handshake (WockyTLSSession *session)
+   if (tls_debug_level >= DEBUG_ASYNC_DETAIL_LEVEL)
+     DEBUG ("");
+ 
++#if defined(SSL_set_tlsext_host_name)
++  if (session->peername)
++    SSL_set_tlsext_host_name(session->ssl, session->peername);
++#endif
++
+   if (!done)
+     {
+       const gchar *method;
+@@ -1748,6 +1755,9 @@ wocky_tls_session_set_property (GObject
+     case PROP_S_CERTFILE:
+       session->cert_file = g_value_dup_string (value);
+       break;
++    case PROP_S_PEERNAME:
++      session->peername = g_value_dup_string (value);
++      break;
+      default:
+       g_assert_not_reached ();
+     }
+@@ -1805,16 +1815,16 @@ wocky_tls_session_constructed (GObject *
+ 
+   if (session->server)
+     {
+-      DEBUG ("I'm a server; using TLSv1_server_method");
++      DEBUG ("I'm a server; using TLS_server_method");
+       /* OpenSSL >= 1.0 returns a const here, but we need to be also   *
+        * compatible with older versions that return a non-const value, *
+        * hence the cast                                                */
+-      session->method = (SSL_METHOD *) TLSv1_server_method ();
++      session->method = (SSL_METHOD *) TLS_server_method ();
+     }
+   else
+     {
+-      DEBUG ("I'm a client; using TLSv1_client_method");
+-      session->method = (SSL_METHOD *) TLSv1_client_method ();
++      DEBUG ("I'm a client; using TLS_client_method");
++      session->method = (SSL_METHOD *) TLS_client_method ();
+     }
+ 
+   session->ctx = SSL_CTX_new (session->method);
+@@ -1934,6 +1944,9 @@ wocky_tls_session_dispose (GObject *obje
+   g_free (session->cert_file);
+   session->cert_file = NULL;
+ 
++  g_free (session->peername);
++  session->peername = NULL;
++
+   G_OBJECT_CLASS (wocky_tls_session_parent_class)->dispose (object);
+ }
+ 
+@@ -1979,6 +1992,13 @@ wocky_tls_session_class_init (GObjectCla
+                          NULL, G_PARAM_WRITABLE |
+                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME |
+                          G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB));
++
++  g_object_class_install_property (class, PROP_S_PEERNAME,
++    g_param_spec_string ("peername", "Peername",
++                         "The name of the remote peer",
++                         NULL, G_PARAM_WRITABLE | G_PARAM_STATIC_NAME |
++                         G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB));
++
+ }
+ 
+ static void
+Index: telepathy-gabble/lib/ext/wocky/wocky/wocky-tls-connector.c
+===================================================================
+--- telepathy-gabble.orig/lib/ext/wocky/wocky/wocky-tls-connector.c
++++ telepathy-gabble/lib/ext/wocky/wocky/wocky-tls-connector.c
+@@ -189,14 +189,17 @@ add_crl (gpointer data,
+ static void
+ prepare_session (WockyTLSConnector *self)
+ {
++  WockyTLSSession *  session = self->priv->session;
+   GSList *cas;
+   GSList *crl;
+ 
+   cas = wocky_tls_handler_get_cas (self->priv->handler);
+   crl = wocky_tls_handler_get_crl (self->priv->handler);
+ 
+-  g_slist_foreach (cas, add_ca, self->priv->session);
+-  g_slist_foreach (crl, add_crl, self->priv->session);
++  g_slist_foreach (cas, add_ca, session);
++  g_slist_foreach (crl, add_crl, session);
++
++  g_object_set(G_OBJECT(session), "peername", self->priv->peername, NULL);
+ }
+ 
+ static void
