@@ -1,0 +1,20 @@
+Index: telepathy-gabble/lib/ext/wocky/wocky/wocky-openssl.c
+===================================================================
+--- telepathy-gabble.orig/lib/ext/wocky/wocky/wocky-openssl.c
++++ telepathy-gabble/lib/ext/wocky/wocky/wocky-openssl.c
+@@ -1147,12 +1147,13 @@ _cert_status (WockyTLSSession *session,
+           long old_flags = store->param->flags;
+ #endif
+           long new_flags = old_flags;
++          long clear_flags = X509_V_FLAG_CRL_CHECK|X509_V_FLAG_CRL_CHECK_ALL;
+           DEBUG("No CRL available, but not in strict mode - re-verifying");
+ 
+-          new_flags &= ~(X509_V_FLAG_CRL_CHECK|X509_V_FLAG_CRL_CHECK_ALL);
++          new_flags &= ~clear_flags;
+ 
+ #if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
+-          X509_VERIFY_PARAM_set_flags(param, new_flags);
++          X509_VERIFY_PARAM_clear_flags(param, clear_flags);
+ #else
+           store->param->flags = new_flags;
+ #endif
