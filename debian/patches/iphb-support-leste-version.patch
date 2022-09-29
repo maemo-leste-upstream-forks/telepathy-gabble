@@ -1,0 +1,21 @@
+Index: telepathy-gabble/lib/ext/wocky/configure.ac
+===================================================================
+--- telepathy-gabble.orig/lib/ext/wocky/configure.ac
++++ telepathy-gabble/lib/ext/wocky/configure.ac
+@@ -234,9 +234,13 @@ AC_SUBST(LIBSASL2_LIBS)
+ AC_SUBST(LIBSASL2_CFLAGS)
+ AM_CONDITIONAL(HAVE_LIBSASL2, test "x$HAVE_LIBSASL2" = "xyes")
+ 
+-PKG_CHECK_MODULES(LIBIPHB, [libiphb >= 0.61.31],
+-    [AC_DEFINE(HAVE_IPHB, 1, [libiphb is available])
+-     have_iphb=yes
++PKG_CHECK_MODULES(LIBIPHB, [libiphb],
++    [ AC_CHECK_DECL(iphb_I_woke_up,
++      [ AC_DEFINE(HAVE_IPHB, 1, [libiphb is available])
++        have_iphb=yes
++      ],
++      [have_iphb=no],
++      [#include <iphbd/libiphb.h>])
+     ],
+     [have_iphb=no])
+ AC_SUBST(LIBIPHB_CFLAGS)
