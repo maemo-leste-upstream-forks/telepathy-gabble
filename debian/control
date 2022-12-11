@@ -6,7 +6,6 @@ Uploaders: Dafydd Harries <daf@debian.org>,
            Laurent Bigonville <bigon@debian.org>,
            Sjoerd Simons <sjoerd@debian.org>
 Build-Depends: debhelper (>= 10),
-               dh-python,
                dpkg-dev (>= 1.16.1~),
                libdbus-1-dev (>= 1.1.0),
                libdbus-glib-1-dev (>= 0.82),
@@ -15,10 +14,6 @@ Build-Depends: debhelper (>= 10),
                libsasl2-dev,
                libsoup2.4-dev (>= 2.42),
                libtelepathy-glib-dev (>= 0.19.7),
-               python,
-               python-gobject,
-               python-openssl,
-               python-twisted,
                xsltproc,
                libsqlite3-dev,
                libnice-dev (>= 0.0.11)
@@ -37,15 +32,3 @@ Description: Jabber/XMPP connection manager
  currently supporting single user chats, multi user chats and voice/video
  calls. Install this package to use Telepathy instant messaging clients
  with Jabber/XMPP servers, including Google Talk and Facebook Chat.
-
-Package: telepathy-gabble-tests
-Priority: extra
-Section: devel
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends},
- telepathy-gabble (= ${binary:Version}),
- python-twisted, python-openssl, python-gobject, python-dbus
-Description: Jabber/XMPP connection manager (automated tests)
- Gabble is a Jabber/XMPP connection manager for the Telepathy framework.
- .
- This package contains automated tests for Gabble
