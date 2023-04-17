@@ -29,7 +29,7 @@ override_dh_auto_test:
 # remove the development symlinks - nothing in Debian should depend on these
 # private libraries
 override_dh_auto_install:
-	dh_auto_install
+	dh_auto_install --destdir=debian/tmp
 	rm -f debian/tmp/usr/lib/telepathy/gabble-0/plugins/*.la
 	rm -f debian/tmp/usr/lib/telepathy-gabble-tests/plugins/*.la
 	rm -f debian/tmp/usr/lib/telepathy/gabble-0/lib/*.la
