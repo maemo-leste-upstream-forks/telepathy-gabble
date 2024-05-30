@@ -1,0 +1,48 @@
+Index: telepathy-gabble/lib/ext/wocky/wocky/wocky-muc.c
+===================================================================
+--- telepathy-gabble.orig/lib/ext/wocky/wocky/wocky-muc.c
++++ telepathy-gabble/lib/ext/wocky/wocky/wocky-muc.c
+@@ -1428,8 +1428,15 @@ get_message_sender (WockyMuc *muc,
+ static GDateTime *
+ extract_timestamp (WockyNode *msg)
+ {
+-  WockyNode *x = wocky_node_get_child_ns (msg, "x", WOCKY_XMPP_NS_DELAY);
++  WockyNode *x = wocky_node_get_child_ns (msg, "x", WOCKY_NS_JABBER_DELAY);
+   GDateTime *stamp = NULL;
++  const char *Z = "Z";
++
++  if (x == NULL)
++    {
++      Z = "";
++      x = wocky_node_get_child_ns (msg, "delay", WOCKY_XMPP_NS_DELAY);
++    }
+ 
+   if (x != NULL)
+     {
+@@ -1442,7 +1449,7 @@ extract_timestamp (WockyNode *msg)
+       if (tm != NULL)
+         {
+           GTimeVal timeval = { 0, 0 };
+-          gchar *tm_dup = g_strdup_printf ("%sZ", tm);
++          gchar *tm_dup = g_strdup_printf ("%s%s", tm, Z);
+ 
+           /* FIXME: GTimeVal should go away */
+           if (!g_time_val_from_iso8601 (tm_dup, &timeval))
+Index: telepathy-gabble/lib/ext/wocky/wocky/wocky-namespaces.h
+===================================================================
+--- telepathy-gabble.orig/lib/ext/wocky/wocky/wocky-namespaces.h
++++ telepathy-gabble/lib/ext/wocky/wocky/wocky-namespaces.h
+@@ -65,9 +65,12 @@
+ #define WOCKY_XMPP_NS_EVENT \
+   "jabber:x:event"
+ 
+-#define WOCKY_XMPP_NS_DELAY \
++#define WOCKY_NS_JABBER_DELAY \
+   "jabber:x:delay"
+ 
++#define WOCKY_XMPP_NS_DELAY \
++  "urn:xmpp:delay"
++
+ #define WOCKY_XMPP_NS_STANZAS \
+   "urn:ietf:params:xml:ns:xmpp-stanzas"
+ 
