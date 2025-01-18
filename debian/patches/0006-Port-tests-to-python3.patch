@@ -62,7 +62,6 @@ Subject: [PATCH 6/7] Port tests to python3
  tests/twisted/jingle/call-basics.py           | 24 ++++----
  tests/twisted/jingle/call-codecoffer.py       | 18 +++---
  .../jingle/call-content-adding-removal.py     |  6 +-
- tests/twisted/jingle/call-dtmf-no-audio.py    |  6 +-
  tests/twisted/jingle/call-dtmf.py             |  6 +-
  tests/twisted/jingle/call-google-relay.py     |  8 +--
  tests/twisted/jingle/call-hold-audio.py       | 10 ++--
@@ -110,7 +109,6 @@ Subject: [PATCH 6/7] Port tests to python3
  tests/twisted/muc/banned.py                   |  2 +-
  tests/twisted/muc/chat-states.py              |  2 +-
  tests/twisted/muc/kicked.py                   |  2 +-
- tests/twisted/muc/only-text-when-needed.py    |  4 +-
  tests/twisted/muc/password.py                 |  2 +-
  tests/twisted/muc/room-config.py              |  4 +-
  tests/twisted/muc/scrollback.py               |  6 +-
@@ -1798,27 +1796,6 @@ index 074968043..3bae0bddf 100644
      raise SystemExit(77)
  
  class CallContentAddingRemovalTest(CallTest):
-diff --git a/tests/twisted/jingle/call-dtmf-no-audio.py b/tests/twisted/jingle/call-dtmf-no-audio.py
-index f87ba6492..0e543e341 100644
---- a/tests/twisted/jingle/call-dtmf-no-audio.py
-+++ b/tests/twisted/jingle/call-dtmf-no-audio.py
-@@ -4,13 +4,13 @@ Test DMTF events in a Call channel
- 
- from functools import partial
- from servicetest import call_async
--from jingletest2 import test_all_dialects
--from call_helper import CallTest, run_call_test
-+from .jingletest2 import test_all_dialects
-+from .call_helper import CallTest, run_call_test
- 
- from config import VOIP_ENABLED
- 
- if not VOIP_ENABLED:
--    print "NOTE: built with --disable-voip"
-+    print("NOTE: built with --disable-voip")
-     raise SystemExit(77)
- 
- class CallDtmfNoAudioTest(CallTest):
 diff --git a/tests/twisted/jingle/call-dtmf.py b/tests/twisted/jingle/call-dtmf.py
 index 5b19fc7fb..e28103352 100644
 --- a/tests/twisted/jingle/call-dtmf.py
@@ -3320,28 +3297,6 @@ index e32648853..956c8cba4 100644
                )
              ),
              elem('status', code='307'),
-diff --git a/tests/twisted/muc/only-text-when-needed.py b/tests/twisted/muc/only-text-when-needed.py
-index 260d26c8a..2bed3337b 100644
---- a/tests/twisted/muc/only-text-when-needed.py
-+++ b/tests/twisted/muc/only-text-when-needed.py
-@@ -301,7 +301,7 @@ def test_message(q, bus, conn, stream):
-     stream.send(
-         elem('message', from_=bob_jid, type='groupchat')(
-           elem('body')(
--            u'oh hey i didnt see you there'
-+            'oh hey i didnt see you there'
-           ),
-         )
-       )
-@@ -354,7 +354,7 @@ def test_requested_message(q, bus, conn, stream):
-     stream.send(
-         elem('message', from_=bob_jid, type='groupchat')(
-           elem('body')(
--            u'hello again'
-+            'hello again'
-           ),
-         )
-       )
 diff --git a/tests/twisted/muc/password.py b/tests/twisted/muc/password.py
 index 7a67d17af..0b514db29 100644
 --- a/tests/twisted/muc/password.py
