@@ -1,0 +1,28 @@
+From ba755ff4768b3f38d0c174984782b6cf0bf06873 Mon Sep 17 00:00:00 2001
+From: Pekka Vuorela <pekka.vuorela@jolla.com>
+Date: Mon, 22 Mar 2021 16:00:21 +0200
+Subject: [PATCH 7/7] Switch readlink parameter from -e to -f
+
+Should be good enough here and works with the busybox tool.
+---
+ tests/twisted/run-test.sh.in | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tests/twisted/run-test.sh.in b/tests/twisted/run-test.sh.in
+index 8dd5fd660..99f3f3358 100644
+--- a/tests/twisted/run-test.sh.in
++++ b/tests/twisted/run-test.sh.in
+@@ -1,8 +1,8 @@
+ #!/bin/sh
+ 
+ if test "x$GABBLE_TEST_UNINSTALLED" = x; then
+-  script_fullname=`readlink -e "@gabbletestsdir@/twisted/run-test.sh"`
+-  if [ `readlink -e "$0"` != "$script_fullname" ] ; then
++  script_fullname=`readlink -f "@gabbletestsdir@/twisted/run-test.sh"`
++  if [ `readlink -f "$0"` != "$script_fullname" ] ; then
+     echo "This script is meant to be installed at $script_fullname" >&2
+     exit 1
+   fi
+-- 
+2.30.2
+

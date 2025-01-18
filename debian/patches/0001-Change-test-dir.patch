@@ -1,0 +1,25 @@
+From d7a1817b963b54a82fd33fc6a750cc2785379011 Mon Sep 17 00:00:00 2001
+From: Pekka Vuorela <pekka.vuorela@jolla.com>
+Date: Mon, 22 Mar 2021 15:53:39 +0200
+Subject: [PATCH 1/7] Change test dir
+
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 0b40754fd..0b979fbba 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -185,7 +185,7 @@ if test x$installed_tests = xyes; then
+ fi
+ AM_CONDITIONAL([ENABLE_INSTALLED_TESTS], [test "x$installed_tests" = xyes])
+ 
+-gabbletestsdir=${libdir}/telepathy-gabble-tests
++gabbletestsdir=/opt/tests/telepathy-gabble
+ AC_SUBST(gabbletestsdir)
+ 
+ AC_ARG_ENABLE([is-a-phone],
+-- 
+2.30.2
+

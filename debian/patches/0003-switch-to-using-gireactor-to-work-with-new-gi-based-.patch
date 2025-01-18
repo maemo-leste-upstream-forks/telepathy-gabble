@@ -1,0 +1,45 @@
+From bc814d028d6a733b93f839767f693b4f5d1744bf Mon Sep 17 00:00:00 2001
+From: Islam Amer <islam.amer@jollamobile.com>
+Date: Wed, 30 Apr 2014 00:30:43 +0300
+Subject: [PATCH 3/7] switch to using gireactor to work with new gi based
+ pygobject2
+
+---
+ tests/twisted/servicetest.py | 4 ++--
+ tests/twisted/test-helper.py | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tests/twisted/servicetest.py b/tests/twisted/servicetest.py
+index 31c00f476..adb303051 100644
+--- a/tests/twisted/servicetest.py
++++ b/tests/twisted/servicetest.py
+@@ -3,9 +3,9 @@
+ Infrastructure code for testing connection managers.
+ """
+ 
+-from twisted.internet import glib2reactor
++from twisted.internet import gireactor
+ from twisted.internet.protocol import Protocol, Factory, ClientFactory
+-glib2reactor.install()
++gireactor.install()
+ import sys
+ import time
+ import os
+diff --git a/tests/twisted/test-helper.py b/tests/twisted/test-helper.py
+index 4909a9611..5fb5e8e3e 100644
+--- a/tests/twisted/test-helper.py
++++ b/tests/twisted/test-helper.py
+@@ -18,8 +18,8 @@ Once your'e done, the test code is written to a file called test.dump.
+ import pdb
+ import pprint
+ 
+-from twisted.internet import glib2reactor
+-glib2reactor.install()
++from twisted.internet import gireactor
++gireactor.install()
+ 
+ from gabbletest import EventTest, run
+ 
+-- 
+2.30.2
+

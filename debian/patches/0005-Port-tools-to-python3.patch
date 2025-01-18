@@ -1,0 +1,453 @@
+From d25b5f74758f0e13f08ef9aa5a061f5040299845 Mon Sep 17 00:00:00 2001
+From: Pekka Vuorela <pekka.vuorela@jolla.com>
+Date: Mon, 22 Mar 2021 15:51:15 +0200
+Subject: [PATCH 5/7] Port tools to python3
+
+---
+ tools/c-constants-gen.py            |  6 ++---
+ tools/glib-client-gen.py            |  6 ++---
+ tools/glib-client-marshaller-gen.py | 22 +++++++++----------
+ tools/glib-errors-str-gen.py        |  6 ++---
+ tools/glib-ginterface-gen.py        | 20 ++++++++---------
+ tools/glib-gtypes-generator.py      |  6 ++---
+ tools/glib-interfaces-gen.py        |  6 ++---
+ tools/gobject-foo.py                |  2 +-
+ tools/libglibcodegen.py             |  5 ++---
+ tools/libtpcodegen.py               |  5 ++++-
+ tools/make-release-mail.py          | 10 ++++-----
+ tools/manager-file.py               | 34 ++++++++++++++---------------
+ tools/xincludator.py                | 12 +++++-----
+ 13 files changed, 71 insertions(+), 69 deletions(-)
+
+diff --git a/tools/c-constants-gen.py b/tools/c-constants-gen.py
+index c7a93d371..7dbe3517f 100644
+--- a/tools/c-constants-gen.py
++++ b/tools/c-constants-gen.py
+@@ -12,7 +12,7 @@ class Generator(object):
+         self.prefix = prefix + '_'
+         self.spec = get_by_path(dom, "spec")[0]
+ 
+-	self.output_base = output_base
++        self.output_base = output_base
+         self.__header = []
+         self.__docs = []
+ 
+@@ -25,10 +25,10 @@ class Generator(object):
+         file_set_contents(self.output_base + '-gtk-doc.h', ''.join(self.__docs))
+ 
+     def write(self, code):
+-        self.__header.append(code.encode('utf-8'))
++        self.__header.append(code)
+ 
+     def d(self, code):
+-        self.__docs.append(code.encode('utf-8'))
++        self.__docs.append(code)
+ 
+     # Header
+     def do_header(self):
+diff --git a/tools/glib-client-gen.py b/tools/glib-client-gen.py
+index f8465a62b..28eab2ec1 100644
+--- a/tools/glib-client-gen.py
++++ b/tools/glib-client-gen.py
+@@ -74,17 +74,17 @@ class Generator(object):
+         self.guard = opts.get('--guard', None)
+ 
+     def h(self, s):
+-        if isinstance(s, unicode):
++        if isinstance(s, str):
+             s = s.encode('utf-8')
+         self.__header.append(s)
+ 
+     def b(self, s):
+-        if isinstance(s, unicode):
++        if isinstance(s, str):
+             s = s.encode('utf-8')
+         self.__body.append(s)
+ 
+     def d(self, s):
+-        if isinstance(s, unicode):
++        if isinstance(s, str):
+             s = s.encode('utf-8')
+         self.__docs.append(s)
+ 
+diff --git a/tools/glib-client-marshaller-gen.py b/tools/glib-client-marshaller-gen.py
+index cb27d638a..ac61a1928 100644
+--- a/tools/glib-client-marshaller-gen.py
++++ b/tools/glib-client-marshaller-gen.py
+@@ -31,23 +31,23 @@ class Generator(object):
+         for signal in signals:
+             self.do_signal(signal)
+ 
+-        print 'void'
+-        print '%s_register_dbus_glib_marshallers (void)' % self.prefix
+-        print '{'
++        print('void')
++        print('%s_register_dbus_glib_marshallers (void)' % self.prefix)
++        print('{')
+ 
+-        all = self.marshallers.keys()
+-        all.sort()
++        all = list(self.marshallers.keys())
++        sorted(all)
+         for marshaller in all:
+             rhs = self.marshallers[marshaller]
+ 
+-            print '  dbus_g_object_register_marshaller ('
+-            print '      g_cclosure_marshal_generic,'
+-            print '      G_TYPE_NONE,       /* return */'
++            print('  dbus_g_object_register_marshaller (')
++            print('      g_cclosure_marshal_generic,')
++            print('      G_TYPE_NONE,       /* return */')
+             for type in rhs:
+-                print '      G_TYPE_%s,' % type.replace('VOID', 'NONE')
+-            print '      G_TYPE_INVALID);'
++                print('      G_TYPE_%s,' % type.replace('VOID', 'NONE'))
++            print('      G_TYPE_INVALID);')
+ 
+-        print '}'
++        print('}')
+ 
+ 
+ def types_to_gtypes(types):
+diff --git a/tools/glib-errors-str-gen.py b/tools/glib-errors-str-gen.py
+index b2cf520bd..b78836f9e 100644
+--- a/tools/glib-errors-str-gen.py
++++ b/tools/glib-errors-str-gen.py
+@@ -17,17 +17,17 @@ class Generator(object):
+         self.__docs = []
+ 
+     def h(self, s):
+-        if isinstance(s, unicode):
++        if isinstance(s, str):
+             s = s.encode('utf-8')
+         self.__header.append(s)
+ 
+     def b(self, s):
+-        if isinstance(s, unicode):
++        if isinstance(s, str):
+             s = s.encode('utf-8')
+         self.__body.append(s)
+ 
+     def d(self, s):
+-        if isinstance(s, unicode):
++        if isinstance(s, str):
+             s = s.encode('utf-8')
+         self.__docs.append(s)
+ 
+diff --git a/tools/glib-ginterface-gen.py b/tools/glib-ginterface-gen.py
+index 6fec0d3c4..42a4a1a62 100644
+--- a/tools/glib-ginterface-gen.py
++++ b/tools/glib-ginterface-gen.py
+@@ -27,7 +27,7 @@ import os.path
+ import xml.dom.minidom
+ 
+ from libtpcodegen import file_set_contents
+-from libglibcodegen import Signature, type_to_gtype, cmp_by_name, \
++from libglibcodegen import Signature, type_to_gtype, \
+         NS_TP, dbus_gutils_wincaps_to_uscore
+ 
+ 
+@@ -85,18 +85,18 @@ class Generator(object):
+         self.allow_havoc = allow_havoc
+ 
+     def h(self, s):
+-        if isinstance(s, unicode):
+-            s = s.encode('utf-8')
++        if isinstance(s, bytes):
++            s = str(s, 'ascii')
+         self.__header.append(s)
+ 
+     def b(self, s):
+-        if isinstance(s, unicode):
+-            s = s.encode('utf-8')
++        if isinstance(s, bytes):
++            s = str(s, 'ascii')
+         self.__body.append(s)
+ 
+     def d(self, s):
+-        if isinstance(s, unicode):
+-            s = s.encode('utf-8')
++        if isinstance(s, bytes):
++            s = str(s, 'ascii')
+         self.__docs.append(s)
+ 
+     def do_node(self, node):
+@@ -733,7 +733,7 @@ class Generator(object):
+ 
+     def __call__(self):
+         nodes = self.dom.getElementsByTagName('node')
+-        nodes.sort(cmp_by_name)
++        nodes.sort(key=lambda node : node.getAttributeNode('name').nodeValue)
+ 
+         self.h('#include <glib-object.h>')
+         self.h('#include <dbus/dbus-glib.h>')
+@@ -766,7 +766,7 @@ class Generator(object):
+         file_set_contents(self.basename + '-gtk-doc.h', '\n'.join(self.__docs))
+ 
+ def cmdline_error():
+-    print """\
++    print("""\
+ usage:
+     gen-ginterface [OPTIONS] xmlfile Prefix_
+ options:
+@@ -786,7 +786,7 @@ options:
+             void symbol (DBusGMethodInvocation *context)
+         and return some sort of "not implemented" error via
+             dbus_g_method_return_error (context, ...)
+-"""
++""")
+     sys.exit(1)
+ 
+ 
+diff --git a/tools/glib-gtypes-generator.py b/tools/glib-gtypes-generator.py
+index 21dfc6aa7..25bc05f71 100644
+--- a/tools/glib-gtypes-generator.py
++++ b/tools/glib-gtypes-generator.py
+@@ -68,13 +68,13 @@ class GTypesGenerator(object):
+         self.need_other_arrays = {}
+ 
+     def h(self, code):
+-        self.header.append(code.encode("utf-8"))
++        self.header.append(code)
+ 
+     def c(self, code):
+-        self.body.append(code.encode("utf-8"))
++        self.body.append(code)
+ 
+     def d(self, code):
+-        self.docs.append(code.encode('utf-8'))
++        self.docs.append(code)
+ 
+     def do_mapping_header(self, mapping):
+         members = mapping.getElementsByTagNameNS(NS_TP, 'member')
+diff --git a/tools/glib-interfaces-gen.py b/tools/glib-interfaces-gen.py
+index 410762cde..43eab2ffc 100644
+--- a/tools/glib-interfaces-gen.py
++++ b/tools/glib-interfaces-gen.py
+@@ -24,13 +24,13 @@ class Generator(object):
+         self.spec = get_by_path(dom, "spec")[0]
+ 
+     def h(self, code):
+-        self.decls.append(code.encode('utf-8'))
++        self.decls.append(code)
+ 
+     def c(self, code):
+-        self.impls.append(code.encode('utf-8'))
++        self.impls.append(code)
+ 
+     def d(self, code):
+-        self.docs.append(code.encode('utf-8'))
++        self.docs.append(code)
+ 
+     def __call__(self):
+         for f in self.h, self.c:
+diff --git a/tools/gobject-foo.py b/tools/gobject-foo.py
+index 002a290ba..a2abd7667 100644
+--- a/tools/gobject-foo.py
++++ b/tools/gobject-foo.py
+@@ -87,4 +87,4 @@ if __name__ == '__main__':
+ 
+     head, tail = argv
+ 
+-    print '\n'.join(gobject_header(head, tail, as_interface=as_interface))
++    print('\n'.join(gobject_header(head, tail, as_interface=as_interface)))
+diff --git a/tools/libglibcodegen.py b/tools/libglibcodegen.py
+index 6a9d21485..578960997 100644
+--- a/tools/libglibcodegen.py
++++ b/tools/libglibcodegen.py
+@@ -23,7 +23,6 @@ please make any changes there.
+ 
+ from libtpcodegen import NS_TP, \
+                          Signature, \
+-                         cmp_by_name, \
+                          escape_as_identifier, \
+                          get_by_path, \
+                          get_descendant_text, \
+@@ -154,7 +153,7 @@ def type_to_gtype(s):
+         return ("GHashTable *", "DBUS_TYPE_G_STRING_STRING_HASHTABLE", "BOXED", False)
+     elif s[:2] == 'a{':  #some arbitrary hash tables
+         if s[2] not in ('y', 'b', 'n', 'q', 'i', 'u', 's', 'o', 'g'):
+-            raise Exception, "can't index a hashtable off non-basic type " + s
++            raise Exception("can't index a hashtable off non-basic type " + s)
+         first = type_to_gtype(s[2])
+         second = type_to_gtype(s[3:-1])
+         return ("GHashTable *", "(dbus_g_type_get_map (\"GHashTable\", " + first[1] + ", " + second[1] + "))", "BOXED", False)
+@@ -169,4 +168,4 @@ def type_to_gtype(s):
+         return ("GValueArray *", gtype, "BOXED", True)
+ 
+     # we just don't know ..
+-    raise Exception, "don't know the GType for " + s
++    raise Exception("don't know the GType for " + s)
+diff --git a/tools/libtpcodegen.py b/tools/libtpcodegen.py
+index 7e9eb9a50..8e052c28d 100644
+--- a/tools/libtpcodegen.py
++++ b/tools/libtpcodegen.py
+@@ -167,7 +167,10 @@ class _SignatureIter:
+     def __init__(self, string):
+         self.remaining = string
+ 
+-    def next(self):
++    def __iter__(self):
++        self
++
++    def __next__(self):
+         if self.remaining == '':
+             raise StopIteration
+ 
+diff --git a/tools/make-release-mail.py b/tools/make-release-mail.py
+index b03ebd256..33438382b 100644
+--- a/tools/make-release-mail.py
++++ b/tools/make-release-mail.py
+@@ -28,8 +28,8 @@ def extract_description(package, version, news_path):
+                 break
+ 
+         # Skip the ====== line, and the first blank line
+-        lines.next()
+-        lines.next()
++        next(lines)
++        next(lines)
+ 
+         got_release_name = False
+ 
+@@ -59,7 +59,7 @@ GIT_URL = 'http://cgit.freedesktop.org/telepathy'
+ def main(package, version, news_path):
+     release_name, details = extract_description(package, version, news_path)
+ 
+-    print """
++    print("""
+ %(release_name)s
+ 
+ tarball: %(base_url)s/%(package)s/%(package)s-%(version)s.tar.gz
+@@ -73,14 +73,14 @@ git: %(git_url)s/%(package)s
+         'version': version,
+         'release_name': release_name,
+         'details': details,
+-    }
++    })
+ 
+ if __name__ == '__main__':
+     try:
+         package, version, news_path = sys.argv[1:]
+ 
+         main(package, version, news_path)
+-    except ValueError, e:
++    except ValueError as e:
+         sys.stderr.write(
+             'Usage: %s package-name package.version.number path/to/NEWS\n' %
+             sys.argv[0])
+diff --git a/tools/manager-file.py b/tools/manager-file.py
+index e1b51a616..73778ffc2 100644
+--- a/tools/manager-file.py
++++ b/tools/manager-file.py
+@@ -87,18 +87,18 @@ gflags = {
+ 
+ def write_manager(f, manager, protos):
+     # pointless backwards compat section
+-    print >> f, '[ConnectionManager]'
+-    print >> f, 'BusName=org.freedesktop.Telepathy.ConnectionManager.' + manager
+-    print >> f, 'ObjectPath=/org/freedesktop/Telepathy/ConnectionManager/' + manager
++    print('[ConnectionManager]', file=f)
++    print('BusName=org.freedesktop.Telepathy.ConnectionManager.' + manager, file=f)
++    print('ObjectPath=/org/freedesktop/Telepathy/ConnectionManager/' + manager, file=f)
+ 
+     # protocols
+-    for proto, params in protos.iteritems():
+-        print >> f
+-        print >> f, '[Protocol %s]' % proto
++    for proto, params in protos.items():
++        print(file=f)
++        print('[Protocol %s]' % proto, file=f)
+ 
+         defaults = {}
+ 
+-        for param, info in params.iteritems():
++        for param, info in params.items():
+             dtype = info['dtype']
+             flags = info.get('flags', '').split()
+             struct_field = info.get('struct_field', param.replace('-', '_'))
+@@ -115,15 +115,15 @@ def write_manager(f, manager, protos):
+             else:
+                 flags = ''
+ 
+-            print >> f, 'param-%s=%s%s' % (param, desktop_string(dtype), flags)
++            print('param-%s=%s%s' % (param, desktop_string(dtype), flags), file=f)
+ 
+-        for param, default in defaults.iteritems():
+-            print >> f, 'default-%s=%s' % (param, default)
++        for param, default in defaults.items():
++            print('default-%s=%s' % (param, default), file=f)
+ 
+ def write_c_params(f, manager, proto, struct, params):
+-    print >> f, "static const TpCMParamSpec %s_%s_params[] = {" % (manager, proto)
++    print("static const TpCMParamSpec %s_%s_params[] = {" % (manager, proto), file=f)
+ 
+-    for param, info in params.iteritems():
++    for param, info in params.items():
+         dtype = info['dtype']
+         flags = info.get('flags', '').split()
+         struct_field = info.get('struct_field', param.replace('-', '_'))
+@@ -146,7 +146,7 @@ def write_c_params(f, manager, proto, struct, params):
+         else:
+             struct_offset = 'G_STRUCT_OFFSET (%s, %s)' % (struct, struct_field)
+ 
+-        print >> f, ('''  { %s, %s, %s,
++        print(('''  { %s, %s, %s,
+     %s,
+     %s, /* default */
+     %s, /* struct offset */
+@@ -154,14 +154,14 @@ def write_c_params(f, manager, proto, struct, params):
+     %s, /* filter data */
+     %s /* setter data */ },''' %
+                 (c_string(param), c_string(dtype), gtypes[dtype], flags,
+-                    default, struct_offset, filter, filter_data, setter_data))
++                    default, struct_offset, filter, filter_data, setter_data)), file=f)
+ 
+-    print >> f, "  { NULL }"
+-    print >> f, "};"
++    print("  { NULL }", file=f)
++    print("};", file=f)
+ 
+ if __name__ == '__main__':
+     environment = {}
+-    execfile(sys.argv[1], environment)
++    exec(compile(open(sys.argv[1], "rb").read(), sys.argv[1], 'exec'), environment)
+ 
+     filename = '%s/%s.manager' % (sys.argv[2], environment['MANAGER'])
+     try:
+diff --git a/tools/xincludator.py b/tools/xincludator.py
+index 63e106ace..972d884ae 100644
+--- a/tools/xincludator.py
++++ b/tools/xincludator.py
+@@ -1,17 +1,17 @@
+ #!/usr/bin/python
+ 
+ from sys import argv, stdout, stderr
+-import codecs, locale
+-import os
++import locale
++import os, sys
+ import xml.dom.minidom
+ 
+-stdout = codecs.getwriter('utf-8')(stdout)
++sys.stdout.reconfigure(encoding='utf-8')
+ 
+ NS_XI = 'http://www.w3.org/2001/XInclude'
+ 
+ def xincludate(dom, base, dropns = []):
+     remove_attrs = []
+-    for i in xrange(dom.documentElement.attributes.length):
++    for i in range(dom.documentElement.attributes.length):
+         attr = dom.documentElement.attributes.item(i)
+         if attr.prefix == 'xmlns':
+             if attr.localName in dropns:
+@@ -35,5 +35,5 @@ if __name__ == '__main__':
+     dom = xml.dom.minidom.parse(argv[0])
+     xincludate(dom, argv[0])
+     xml = dom.toxml()
+-    stdout.write(xml)
+-    stdout.write('\n')
++    sys.stdout.write(xml)
++    sys.stdout.write('\n')
+-- 
+2.30.2
+

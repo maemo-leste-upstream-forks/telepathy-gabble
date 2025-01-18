@@ -1,0 +1,85 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Raine Makelainen <raine.makelainen@jolla.com>
+Date: Thu, 27 Jan 2022 10:05:39 +0200
+Subject: [PATCH] Add make tests script
+
+Signed-off-by: Raine Makelainen <raine.makelainen@jolla.com>
+---
+ tests/INSIGNIFICANT |  2 ++
+ tests/mktests.sh    | 55 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 57 insertions(+)
+ create mode 100644 tests/INSIGNIFICANT
+ create mode 100644 tests/mktests.sh
+
+diff --git a/tests/INSIGNIFICANT b/tests/INSIGNIFICANT
+new file mode 100644
+index 000000000..43812989f
+--- /dev/null
++++ b/tests/INSIGNIFICANT
+@@ -0,0 +1,2 @@
++jingle-share/test-send-file-send-before-accept.py - this often runs into a time out (https://bugs.freedesktop.org/show_bug.cgi?id=49595)
++client-types.py - this fails from time to time (https://bugs.freedesktop.org/show_bug.cgi?id=37381)
+diff --git a/tests/mktests.sh b/tests/mktests.sh
+new file mode 100644
+index 000000000..ffa17120d
+--- /dev/null
++++ b/tests/mktests.sh
+@@ -0,0 +1,55 @@
++#!/bin/sh
++
++cat <<EOF
++<?xml version="1.0" encoding="UTF-8"?>
++<testdefinition version="1.0">
++    <suite name="telepathy-gabble-tests">
++        <description>Telepathy Gabble tests</description>
++        <set name="telepathy-gabble-C-tests">
++EOF
++
++for testcase in $(cat tests/gabble-C-tests.list)
++do
++    testcase_name=$(echo $testcase|sed 's/\//_/')
++    attributes="name=\"$testcase_name\""
++    insignificant=`grep "^$testcase" tests/INSIGNIFICANT || true`
++    if test -n "$insignificant"
++    then
++        continue
++        attributes="$attributes insignificant=\"true\""
++    fi
++    cat <<EOF
++        <case $attributes>
++            <step>/opt/tests/telepathy-gabble/$testcase</step>
++        </case>
++EOF
++done
++
++cat <<EOF
++        </set>
++        <set name="telepathy-gabble-twisted-tests">
++EOF
++
++for testcase in $(cat tests/twisted/gabble-twisted-tests.list)
++do
++    testcase_name=$(echo $testcase|sed 's/\//_/')
++    attributes="name=\"$testcase_name\""
++    insignificant=`grep "^$testcase" tests/INSIGNIFICANT || true`
++    if test -n "$insignificant"
++    then
++        continue
++        attributes="$attributes insignificant=\"true\""
++    fi
++    cat <<EOF
++        <case $attributes>
++            <step>/opt/tests/telepathy-gabble/twisted/run-test.sh $testcase</step>
++        </case>
++EOF
++done
++
++cat <<EOF
++        </set>
++    </suite>
++</testdefinition>
++EOF
++
+-- 
+2.34.1
+

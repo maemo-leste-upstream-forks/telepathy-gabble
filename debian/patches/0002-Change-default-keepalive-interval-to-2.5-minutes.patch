@@ -1,0 +1,28 @@
+From db4530c886411b3925a566a8eb7d3494f6894429 Mon Sep 17 00:00:00 2001
+From: John Brooks <john.brooks@jollamobile.com>
+Date: Tue, 10 Dec 2013 19:45:53 -0700
+Subject: [PATCH 2/7] Change default keepalive-interval to 2.5 minutes
+
+Waking up and sending packets at 30 second intervals is unreasonable for
+mobile, and seems more frequent than actually necessary. An interval of
+150 seconds puts it in the next bracket of iphb wakeups.
+---
+ src/protocol.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/protocol.c b/src/protocol.c
+index deeaa8d9e..77a20f27d 100644
+--- a/src/protocol.c
++++ b/src/protocol.c
+@@ -158,7 +158,7 @@ static TpCMParamSpec jabber_params[] = {
+     NULL, NULL },
+ 
+   { "keepalive-interval", "u", G_TYPE_UINT,
+-    TP_CONN_MGR_PARAM_FLAG_HAS_DEFAULT, GUINT_TO_POINTER (30),
++    TP_CONN_MGR_PARAM_FLAG_HAS_DEFAULT, GUINT_TO_POINTER (150),
+     0 /* unused */, NULL, NULL },
+ 
+   { TP_PROP_CONNECTION_INTERFACE_CONTACT_LIST_DOWNLOAD_AT_CONNECTION,
+-- 
+2.30.2
+

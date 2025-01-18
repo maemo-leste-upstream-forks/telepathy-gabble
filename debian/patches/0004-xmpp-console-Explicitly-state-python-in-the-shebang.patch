@@ -1,0 +1,24 @@
+From 2bbcbb875e2e434c658e9a0d79b5d0deca3e2ab1 Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@freedesktop.org>
+Date: Tue, 5 Nov 2013 16:42:06 +0100
+Subject: [PATCH 4/7] xmpp-console: Explicitly state python in the shebang
+
+This will make sure that we are not running against an unwanted version
+of Python offered by a software collection.
+---
+ plugins/telepathy-gabble-xmpp-console | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/plugins/telepathy-gabble-xmpp-console b/plugins/telepathy-gabble-xmpp-console
+index 8b96469d8..019b5ec38 100755
+--- a/plugins/telepathy-gabble-xmpp-console
++++ b/plugins/telepathy-gabble-xmpp-console
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python3
+ # vim: set fileencoding=utf-8 sts=4 sw=4 et :
+ """
+ The world's worst XMPP console user interface.
+-- 
+2.30.2
+
