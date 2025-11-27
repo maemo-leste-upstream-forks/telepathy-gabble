@@ -3,6 +3,8 @@
 include /usr/share/dpkg/default.mk
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DEB_CFLAGS_MAINT_APPEND = -Wno-incompatible-pointer-types
+export DEB_CFLAGS_MAINT_APPEND
 
 %:
 	dh $@
